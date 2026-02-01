@@ -2,140 +2,130 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Mon Compagnon de Constance - Islamic-Inspired Design System */
+/* ISTIQAMAH - Par Marianne Seck
+   Visual Identity: Life With Allah inspired, minimalist, zen, pastel gradients */
 
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
 
 @layer base {
   :root {
-    /* Core Palette - Warm Emerald & Gold */
-    --background: 45 30% 97%;
-    --foreground: 160 30% 15%;
+    /* Core Palette - Soft Pastels */
+    --background: 0 0% 99%;
+    --foreground: 220 20% 20%;
 
-    --card: 45 25% 99%;
-    --card-foreground: 160 30% 15%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 20% 20%;
 
-    --popover: 45 25% 99%;
-    --popover-foreground: 160 30% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 20%;
 
-    /* Primary - Deep Emerald (spiritual, calming) */
-    --primary: 158 45% 25%;
-    --primary-foreground: 45 30% 97%;
+    /* Primary - Mint Green (soothing, spiritual) */
+    --primary: 158 45% 70%;
+    --primary-foreground: 220 20% 15%;
 
-    /* Secondary - Soft Sage */
-    --secondary: 150 20% 92%;
-    --secondary-foreground: 158 45% 25%;
+    /* Secondary - Peach */
+    --secondary: 20 70% 90%;
+    --secondary-foreground: 20 50% 25%;
 
-    /* Muted - Warm Gray */
-    --muted: 45 15% 92%;
-    --muted-foreground: 160 10% 45%;
+    /* Muted - Soft Gray */
+    --muted: 220 15% 95%;
+    --muted-foreground: 220 10% 45%;
 
-    /* Accent - Warm Gold (Islamic art inspired) */
-    --accent: 38 70% 55%;
-    --accent-foreground: 160 30% 12%;
+    /* Accent - Lavender */
+    --accent: 260 50% 85%;
+    --accent-foreground: 260 40% 25%;
 
-    /* Spiritual accent for special elements */
-    --spiritual: 158 40% 35%;
-    --spiritual-foreground: 45 30% 97%;
+    /* Sky - For highlights */
+    --sky: 200 70% 85%;
+    --sky-foreground: 200 50% 20%;
 
-    /* Success - For completed tasks */
-    --success: 142 60% 40%;
-    --success-foreground: 45 30% 97%;
+    /* Peach - Warm accent */
+    --peach: 20 80% 88%;
+    --peach-foreground: 20 60% 25%;
+
+    /* Success - For completed items */
+    --success: 142 50% 75%;
+    --success-foreground: 142 40% 20%;
 
     /* Destructive */
-    --destructive: 0 65% 55%;
-    --destructive-foreground: 45 30% 97%;
+    --destructive: 0 60% 70%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 45 20% 88%;
-    --input: 45 20% 88%;
-    --ring: 158 45% 25%;
+    --border: 220 15% 90%;
+    --input: 220 15% 90%;
+    --ring: 158 45% 70%;
 
-    --radius: 0.75rem;
+    --radius: 1rem;
 
     /* Gradients */
-    --gradient-spiritual: linear-gradient(135deg, hsl(158 45% 25%), hsl(158 40% 35%));
-    --gradient-gold: linear-gradient(135deg, hsl(38 70% 55%), hsl(42 80% 60%));
-    --gradient-serene: linear-gradient(180deg, hsl(45 30% 97%), hsl(45 25% 94%));
-    --gradient-card: linear-gradient(145deg, hsl(45 25% 99%), hsl(45 20% 96%));
+    --gradient-mint: linear-gradient(135deg, hsl(158 45% 75%), hsl(158 50% 85%));
+    --gradient-peach: linear-gradient(135deg, hsl(20 80% 88%), hsl(30 70% 92%));
+    --gradient-lavender: linear-gradient(135deg, hsl(260 50% 85%), hsl(280 45% 90%));
+    --gradient-sky: linear-gradient(135deg, hsl(200 70% 85%), hsl(210 60% 90%));
+    --gradient-warm: linear-gradient(180deg, hsl(20 70% 96%), hsl(0 0% 99%));
 
-    /* Shadows */
-    --shadow-soft: 0 4px 20px -4px hsl(160 30% 15% / 0.08);
-    --shadow-medium: 0 8px 30px -6px hsl(160 30% 15% / 0.12);
-    --shadow-glow: 0 0 40px -10px hsl(158 45% 25% / 0.25);
+    /* Shadows - Soft and subtle */
+    --shadow-soft: 0 4px 20px -4px hsl(220 20% 20% / 0.06);
+    --shadow-medium: 0 8px 30px -6px hsl(220 20% 20% / 0.08);
+    --shadow-card: 0 2px 12px -2px hsl(220 20% 20% / 0.05);
 
     /* Sidebar */
-    --sidebar-background: 45 25% 98%;
-    --sidebar-foreground: 160 30% 15%;
-    --sidebar-primary: 158 45% 25%;
-    --sidebar-primary-foreground: 45 30% 97%;
-    --sidebar-accent: 150 20% 94%;
-    --sidebar-accent-foreground: 158 45% 25%;
-    --sidebar-border: 45 20% 90%;
-    --sidebar-ring: 158 45% 25%;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 220 20% 20%;
+    --sidebar-primary: 158 45% 70%;
+    --sidebar-primary-foreground: 220 20% 15%;
+    --sidebar-accent: 260 50% 92%;
+    --sidebar-accent-foreground: 260 40% 25%;
+    --sidebar-border: 220 15% 92%;
+    --sidebar-ring: 158 45% 70%;
   }
 
   .dark {
-    --background: 160 25% 8%;
-    --foreground: 45 20% 95%;
+    --background: 220 20% 10%;
+    --foreground: 0 0% 95%;
 
-    --card: 160 20% 12%;
-    --card-foreground: 45 20% 95%;
+    --card: 220 20% 14%;
+    --card-foreground: 0 0% 95%;
 
-    --popover: 160 20% 12%;
-    --popover-foreground: 45 20% 95%;
+    --popover: 220 20% 14%;
+    --popover-foreground: 0 0% 95%;
 
-    --primary: 158 50% 45%;
-    --primary-foreground: 160 25% 8%;
+    --primary: 158 40% 55%;
+    --primary-foreground: 220 20% 10%;
 
-    --secondary: 160 15% 18%;
-    --secondary-foreground: 45 20% 95%;
+    --secondary: 20 50% 25%;
+    --secondary-foreground: 20 70% 90%;
 
-    --muted: 160 15% 18%;
-    --muted-foreground: 45 15% 60%;
+    --muted: 220 15% 20%;
+    --muted-foreground: 220 10% 60%;
 
-    --accent: 38 70% 55%;
-    --accent-foreground: 160 25% 8%;
+    --accent: 260 40% 35%;
+    --accent-foreground: 260 50% 90%;
 
-    --spiritual: 158 45% 50%;
-    --spiritual-foreground: 160 25% 8%;
+    --sky: 200 50% 35%;
+    --sky-foreground: 200 70% 90%;
 
-    --success: 142 55% 45%;
-    --success-foreground: 160 25% 8%;
+    --peach: 20 60% 30%;
+    --peach-foreground: 20 80% 90%;
 
-    --destructive: 0 60% 50%;
-    --destructive-foreground: 45 20% 95%;
+    --success: 142 40% 40%;
+    --success-foreground: 142 50% 90%;
 
-    --border: 160 15% 20%;
-    --input: 160 15% 20%;
-    --ring: 158 50% 45%;
+    --destructive: 0 50% 45%;
+    --destructive-foreground: 0 0% 95%;
 
-    --sidebar-background: 160 20% 10%;
-    --sidebar-foreground: 45 20% 95%;
-    --sidebar-primary: 158 50% 45%;
-    --sidebar-primary-foreground: 160 25% 8%;
-    --sidebar-accent: 160 15% 16%;
-    --sidebar-accent-foreground: 45 20% 95%;
-    --sidebar-border: 160 15% 18%;
-    --sidebar-ring: 158 50% 45%;
-  }
+    --border: 220 15% 22%;
+    --input: 220 15% 22%;
+    --ring: 158 40% 55%;
 
-  /* Theme variations for onboarding selection */
-  .theme-ocean {
-    --primary: 200 60% 35%;
-    --accent: 38 70% 55%;
-    --spiritual: 200 50% 45%;
-  }
-
-  .theme-sunset {
-    --primary: 15 60% 45%;
-    --accent: 38 70% 55%;
-    --spiritual: 25 55% 50%;
-  }
-
-  .theme-midnight {
-    --primary: 240 40% 35%;
-    --accent: 38 70% 55%;
-    --spiritual: 240 35% 45%;
+    --sidebar-background: 220 20% 12%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 158 40% 55%;
+    --sidebar-primary-foreground: 220 20% 10%;
+    --sidebar-accent: 260 40% 25%;
+    --sidebar-accent-foreground: 260 50% 90%;
+    --sidebar-border: 220 15% 20%;
+    --sidebar-ring: 158 40% 55%;
   }
 }
 
@@ -159,42 +149,42 @@
 }
 
 @layer components {
-  /* Glass morphism card */
-  .glass-card {
-    @apply bg-card/80 backdrop-blur-md border border-border/50 rounded-xl;
+  /* Pastel card with soft shadow */
+  .pastel-card {
+    @apply bg-card rounded-2xl border border-border/50;
+    box-shadow: var(--shadow-card);
+  }
+
+  /* Illustrated card style (Life With Allah inspired) */
+  .illustrated-card {
+    @apply bg-card rounded-3xl border-2 border-border/30 p-6;
     box-shadow: var(--shadow-soft);
   }
 
-  /* Spiritual glow effect */
-  .spiritual-glow {
-    box-shadow: var(--shadow-glow);
+  /* Gradient backgrounds */
+  .bg-gradient-mint {
+    background: var(--gradient-mint);
   }
 
-  /* Gradient text */
-  .gradient-text {
-    @apply bg-clip-text text-transparent;
-    background-image: var(--gradient-spiritual);
+  .bg-gradient-peach {
+    background: var(--gradient-peach);
   }
 
-  /* Gold accent text */
-  .gold-text {
-    @apply bg-clip-text text-transparent;
-    background-image: var(--gradient-gold);
+  .bg-gradient-lavender {
+    background: var(--gradient-lavender);
   }
 
-  /* Islamic geometric pattern overlay */
-  .pattern-overlay {
-    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0L30 60M0 30L60 30M0 0L60 60M60 0L0 60' stroke='%23166534' stroke-opacity='0.03' fill='none'/%3E%3C/svg%3E");
+  .bg-gradient-sky {
+    background: var(--gradient-sky);
   }
 
-  /* Smooth page transition container */
-  .page-transition {
-    @apply transition-all duration-500 ease-out;
+  .bg-gradient-warm {
+    background: var(--gradient-warm);
   }
 
-  /* Button hover lift effect */
+  /* Soft button hover */
   .hover-lift {
-    @apply transition-all duration-300;
+    @apply transition-all duration-300 ease-out;
   }
   
   .hover-lift:hover {
@@ -202,53 +192,66 @@
     box-shadow: var(--shadow-medium);
   }
 
+  /* Page container with generous whitespace */
+  .page-container {
+    @apply min-h-screen pb-28 pt-6 px-5;
+  }
+
+  /* Section spacing */
+  .section-spacing {
+    @apply space-y-8;
+  }
+
+  /* Zen header style */
+  .zen-header {
+    @apply text-center space-y-2 mb-8;
+  }
+
+  .zen-header h1 {
+    @apply text-2xl font-display text-foreground;
+  }
+
+  .zen-header p {
+    @apply text-sm text-muted-foreground;
+  }
+
   /* Progress ring */
   .progress-ring {
     transform: rotate(-90deg);
   }
 
-  /* Streak flame animation */
-  @keyframes flame {
-    0%, 100% { transform: scaleY(1) scaleX(1); }
-    50% { transform: scaleY(1.1) scaleX(0.95); }
-  }
-
-  .animate-flame {
-    animation: flame 1s ease-in-out infinite;
-  }
-
-  /* Pulse glow for badges */
-  @keyframes pulse-glow {
-    0%, 100% { box-shadow: 0 0 0 0 hsl(38 70% 55% / 0.4); }
-    50% { box-shadow: 0 0 20px 4px hsl(38 70% 55% / 0.2); }
-  }
-
-  .animate-pulse-glow {
-    animation: pulse-glow 2s ease-in-out infinite;
-  }
-
-  /* Fade in animation */
+  /* Smooth fade in */
   @keyframes fade-in {
-    from { opacity: 0; transform: translateY(10px); }
+    from { opacity: 0; transform: translateY(8px); }
     to { opacity: 1; transform: translateY(0); }
   }
 
   .animate-fade-in {
-    animation: fade-in 0.5s ease-out forwards;
+    animation: fade-in 0.4s ease-out forwards;
   }
 
   /* Stagger children animation */
   .stagger-children > * {
     opacity: 0;
-    animation: fade-in 0.4s ease-out forwards;
+    animation: fade-in 0.3s ease-out forwards;
   }
 
-  .stagger-children > *:nth-child(1) { animation-delay: 0.1s; }
-  .stagger-children > *:nth-child(2) { animation-delay: 0.2s; }
-  .stagger-children > *:nth-child(3) { animation-delay: 0.3s; }
-  .stagger-children > *:nth-child(4) { animation-delay: 0.4s; }
-  .stagger-children > *:nth-child(5) { animation-delay: 0.5s; }
-  .stagger-children > *:nth-child(6) { animation-delay: 0.6s; }
+  .stagger-children > *:nth-child(1) { animation-delay: 0.05s; }
+  .stagger-children > *:nth-child(2) { animation-delay: 0.1s; }
+  .stagger-children > *:nth-child(3) { animation-delay: 0.15s; }
+  .stagger-children > *:nth-child(4) { animation-delay: 0.2s; }
+  .stagger-children > *:nth-child(5) { animation-delay: 0.25s; }
+  .stagger-children > *:nth-child(6) { animation-delay: 0.3s; }
+
+  /* Celebration animation */
+  @keyframes celebrate {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+
+  .animate-celebrate {
+    animation: celebrate 0.5s ease-in-out;
+  }
 }
 
 @layer utilities {
@@ -258,5 +261,17 @@
 
   .font-sans {
     font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  /* Arabic text styling */
+  .arabic-text {
+    font-family: 'Scheherazade New', 'Traditional Arabic', serif;
+    direction: rtl;
+  }
+
+  /* Honorific styling (عز وجل) and (عليه السلام) */
+  .honorific {
+    @apply text-primary font-medium;
+    font-family: 'Scheherazade New', 'Traditional Arabic', serif;
   }
 }
