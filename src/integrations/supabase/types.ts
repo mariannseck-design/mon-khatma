@@ -14,143 +14,37 @@ export type Database = {
   }
   public: {
     Tables: {
-      adhkar_tracker: {
+      circle_members: {
         Row: {
-          adhkar_type: string
-          completed: boolean | null
-          completed_at: string | null
-          created_at: string
-          date: string
+          accepted_charter: boolean | null
+          circle_id: string
           id: string
+          joined_at: string
           user_id: string
         }
         Insert: {
-          adhkar_type: string
-          completed?: boolean | null
-          completed_at?: string | null
-          created_at?: string
-          date?: string
+          accepted_charter?: boolean | null
+          circle_id: string
           id?: string
+          joined_at?: string
           user_id: string
         }
         Update: {
-          adhkar_type?: string
-          completed?: boolean | null
-          completed_at?: string | null
-          created_at?: string
-          date?: string
+          accepted_charter?: boolean | null
+          circle_id?: string
           id?: string
+          joined_at?: string
           user_id?: string
         }
-        Relationships: []
-      }
-      badges: {
-        Row: {
-          category: string
-          created_at: string
-          description: string
-          icon: string
-          id: string
-          name: string
-          points_required: number | null
-        }
-        Insert: {
-          category: string
-          created_at?: string
-          description: string
-          icon: string
-          id?: string
-          name: string
-          points_required?: number | null
-        }
-        Update: {
-          category?: string
-          created_at?: string
-          description?: string
-          icon?: string
-          id?: string
-          name?: string
-          points_required?: number | null
-        }
-        Relationships: []
-      }
-      hifz_progress: {
-        Row: {
-          ayah_end: number
-          ayah_start: number
-          created_at: string
-          ease_factor: number | null
-          id: string
-          interval_days: number | null
-          last_reviewed: string | null
-          next_review: string | null
-          review_count: number | null
-          status: string
-          surah_number: number
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          ayah_end: number
-          ayah_start: number
-          created_at?: string
-          ease_factor?: number | null
-          id?: string
-          interval_days?: number | null
-          last_reviewed?: string | null
-          next_review?: string | null
-          review_count?: number | null
-          status?: string
-          surah_number: number
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          ayah_end?: number
-          ayah_start?: number
-          created_at?: string
-          ease_factor?: number | null
-          id?: string
-          interval_days?: number | null
-          last_reviewed?: string | null
-          next_review?: string | null
-          review_count?: number | null
-          status?: string
-          surah_number?: number
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      prayer_tracker: {
-        Row: {
-          completed: boolean | null
-          completed_at: string | null
-          created_at: string
-          date: string
-          id: string
-          prayer_type: Database["public"]["Enums"]["prayer_type"]
-          user_id: string
-        }
-        Insert: {
-          completed?: boolean | null
-          completed_at?: string | null
-          created_at?: string
-          date?: string
-          id?: string
-          prayer_type: Database["public"]["Enums"]["prayer_type"]
-          user_id: string
-        }
-        Update: {
-          completed?: boolean | null
-          completed_at?: string | null
-          created_at?: string
-          date?: string
-          id?: string
-          prayer_type?: Database["public"]["Enums"]["prayer_type"]
-          user_id?: string
-        }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "circle_members_circle_id_fkey"
+            columns: ["circle_id"]
+            isOneToOne: false
+            referencedRelation: "sisters_circles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -158,10 +52,6 @@ export type Database = {
           display_name: string | null
           id: string
           onboarding_completed: boolean | null
-          ramadan_mode: boolean | null
-          streak_days: number | null
-          theme_color: Database["public"]["Enums"]["theme_color"] | null
-          total_points: number | null
           updated_at: string
           user_id: string
         }
@@ -170,10 +60,6 @@ export type Database = {
           display_name?: string | null
           id?: string
           onboarding_completed?: boolean | null
-          ramadan_mode?: boolean | null
-          streak_days?: number | null
-          theme_color?: Database["public"]["Enums"]["theme_color"] | null
-          total_points?: number | null
           updated_at?: string
           user_id: string
         }
@@ -182,102 +68,157 @@ export type Database = {
           display_name?: string | null
           id?: string
           onboarding_completed?: boolean | null
-          ramadan_mode?: boolean | null
-          streak_days?: number | null
-          theme_color?: Database["public"]["Enums"]["theme_color"] | null
-          total_points?: number | null
           updated_at?: string
           user_id?: string
         }
         Relationships: []
       }
-      ramadan_journal: {
+      quran_goals: {
+        Row: {
+          created_at: string
+          end_date: string | null
+          goal_type: string
+          id: string
+          is_active: boolean | null
+          start_date: string
+          target_value: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          end_date?: string | null
+          goal_type: string
+          id?: string
+          is_active?: boolean | null
+          start_date?: string
+          target_value: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          end_date?: string | null
+          goal_type?: string
+          id?: string
+          is_active?: boolean | null
+          start_date?: string
+          target_value?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      quran_progress: {
         Row: {
           created_at: string
           date: string
-          evening_reflection: string | null
-          gratitude_notes: string | null
+          goal_id: string | null
           id: string
-          mood_rating: number | null
-          morning_objectives: string | null
+          juz_completed: number | null
+          notes: string | null
+          pages_read: number
           updated_at: string
           user_id: string
         }
         Insert: {
           created_at?: string
           date?: string
-          evening_reflection?: string | null
-          gratitude_notes?: string | null
+          goal_id?: string | null
           id?: string
-          mood_rating?: number | null
-          morning_objectives?: string | null
+          juz_completed?: number | null
+          notes?: string | null
+          pages_read?: number
           updated_at?: string
           user_id: string
         }
         Update: {
           created_at?: string
           date?: string
-          evening_reflection?: string | null
-          gratitude_notes?: string | null
+          goal_id?: string | null
           id?: string
-          mood_rating?: number | null
-          morning_objectives?: string | null
+          juz_completed?: number | null
+          notes?: string | null
+          pages_read?: number
           updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      user_badges: {
-        Row: {
-          badge_id: string
-          earned_at: string
-          id: string
-          user_id: string
-        }
-        Insert: {
-          badge_id: string
-          earned_at?: string
-          id?: string
-          user_id: string
-        }
-        Update: {
-          badge_id?: string
-          earned_at?: string
-          id?: string
           user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "user_badges_badge_id_fkey"
-            columns: ["badge_id"]
+            foreignKeyName: "quran_progress_goal_id_fkey"
+            columns: ["goal_id"]
             isOneToOne: false
-            referencedRelation: "badges"
+            referencedRelation: "quran_goals"
             referencedColumns: ["id"]
           },
         ]
+      }
+      sisters_circles: {
+        Row: {
+          created_at: string
+          created_by: string
+          description: string | null
+          id: string
+          max_members: number | null
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          description?: string | null
+          id?: string
+          max_members?: number | null
+          name?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          id?: string
+          max_members?: number | null
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
       }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      prayer_type:
-        | "fajr_sunnah"
-        | "dhuhr_before"
-        | "dhuhr_after"
-        | "asr_sunnah"
-        | "maghrib_after"
-        | "isha_before"
-        | "isha_after"
-        | "witr"
-        | "duha"
-        | "tahajjud"
-        | "ishraq"
-        | "awwabin"
-      theme_color: "emerald" | "ocean" | "sunset" | "midnight"
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -405,21 +346,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      prayer_type: [
-        "fajr_sunnah",
-        "dhuhr_before",
-        "dhuhr_after",
-        "asr_sunnah",
-        "maghrib_after",
-        "isha_before",
-        "isha_after",
-        "witr",
-        "duha",
-        "tahajjud",
-        "ishraq",
-        "awwabin",
-      ],
-      theme_color: ["emerald", "ocean", "sunset", "midnight"],
+      app_role: ["admin", "user"],
     },
   },
 } as const

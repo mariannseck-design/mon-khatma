@@ -6,11 +6,14 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import LandingPage from "./pages/LandingPage";
 import AuthPage from "./pages/AuthPage";
-import DashboardPage from "./pages/DashboardPage";
-import TrackersPage from "./pages/TrackersPage";
-import HifzPage from "./pages/HifzPage";
-import JournalPage from "./pages/JournalPage";
-import RewardsPage from "./pages/RewardsPage";
+import AccueilPage from "./pages/AccueilPage";
+import PlanificateurPage from "./pages/PlanificateurPage";
+import CerclePage from "./pages/CerclePage";
+import FavorisPage from "./pages/FavorisPage";
+import RecitsPage from "./pages/RecitsPage";
+import EmotionsPage from "./pages/EmotionsPage";
+import RappelsPage from "./pages/RappelsPage";
+import AdminPage from "./pages/AdminPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -45,7 +48,7 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
   }
   
   if (user) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/accueil" replace />;
   }
   
   return <>{children}</>;
@@ -56,11 +59,17 @@ function AppRoutes() {
     <Routes>
       <Route path="/" element={<PublicRoute><LandingPage /></PublicRoute>} />
       <Route path="/auth" element={<PublicRoute><AuthPage /></PublicRoute>} />
-      <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
-      <Route path="/trackers" element={<ProtectedRoute><TrackersPage /></ProtectedRoute>} />
-      <Route path="/hifz" element={<ProtectedRoute><HifzPage /></ProtectedRoute>} />
-      <Route path="/journal" element={<ProtectedRoute><JournalPage /></ProtectedRoute>} />
-      <Route path="/rewards" element={<ProtectedRoute><RewardsPage /></ProtectedRoute>} />
+      
+      {/* Protected Routes */}
+      <Route path="/accueil" element={<ProtectedRoute><AccueilPage /></ProtectedRoute>} />
+      <Route path="/planificateur" element={<ProtectedRoute><PlanificateurPage /></ProtectedRoute>} />
+      <Route path="/cercle" element={<ProtectedRoute><CerclePage /></ProtectedRoute>} />
+      <Route path="/favoris" element={<ProtectedRoute><FavorisPage /></ProtectedRoute>} />
+      <Route path="/recits" element={<ProtectedRoute><RecitsPage /></ProtectedRoute>} />
+      <Route path="/emotions" element={<ProtectedRoute><EmotionsPage /></ProtectedRoute>} />
+      <Route path="/rappels" element={<ProtectedRoute><RappelsPage /></ProtectedRoute>} />
+      <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
+      
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
