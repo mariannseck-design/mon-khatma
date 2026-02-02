@@ -13,7 +13,7 @@ const features = [
   },
   {
     icon: Users,
-    title: 'Cercle des Sœurs',
+    title: 'Coins des Sœurs',
     description: 'Lis en groupe avec 30 sœurs motivées',
     color: 'bg-gradient-lavender'
   },
