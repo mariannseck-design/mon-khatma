@@ -104,7 +104,7 @@ export default function LandingPage() {
           </Link>
           
           <p className="text-center text-xs text-muted-foreground">
-            Gratuit • Sans publicité • Fait avec amour 💚
+            Fait avec amour 💚
           </p>
         </motion.div>
       </div>
