@@ -7,7 +7,7 @@ import { Card } from '@/components/ui/card';
 const features = [
   {
     icon: Target,
-    title: 'Planificateur Coran',
+    title: 'Planificateur Tilawah',
     description: 'Définis tes objectifs de lecture quotidiens',
     color: 'bg-gradient-mint'
   },
