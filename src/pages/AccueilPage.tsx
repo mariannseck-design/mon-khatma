@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { BookOpen, Target, Users, ChevronRight, Sparkles } from 'lucide-react';
+import { BookOpen, Target, Users, ChevronRight } from 'lucide-react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -69,11 +69,28 @@ export default function AccueilPage() {
   return (
     <AppLayout title="Accueil">
       <div className="section-spacing stagger-children">
+        {/* Spiritual Anchor - Static Verse */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+        >
+          <Card className="spiritual-anchor bg-gradient-to-br from-primary/20 via-secondary/15 to-peach/20 border-2 border-primary/20 p-6 rounded-3xl text-center">
+            <p className="font-display text-xl md:text-2xl text-foreground italic leading-relaxed">
+              "Sois constant (Istaqim) comme il t'a été ordonné."
+            </p>
+            <p className="text-sm text-muted-foreground mt-3 font-medium">
+              — Sourate Hud, verset 112
+            </p>
+          </Card>
+        </motion.div>
+
         {/* Greeting */}
         <motion.div 
           className="zen-header"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
         >
           <p className="text-muted-foreground text-sm">{greeting()}</p>
           <h1 className="text-3xl">{displayName} ✨</h1>
@@ -135,14 +152,6 @@ export default function AccueilPage() {
           </Link>
         </div>
 
-        {/* Motivational Quote */}
-        <Card className="illustrated-card bg-gradient-sky text-center">
-          <Sparkles className="h-6 w-6 text-sky-foreground mx-auto mb-3" />
-          <p className="font-display text-lg text-sky-foreground italic">
-            "La constance dans le bien, même si elle est petite, est meilleure que beaucoup de bien interrompu."
-          </p>
-          <p className="text-sm text-sky-foreground/70 mt-2">— Sagesse prophétique</p>
-        </Card>
       </div>
     </AppLayout>
   );
