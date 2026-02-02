@@ -48,9 +48,6 @@ export default function LandingPage() {
           <h1 className="font-display text-4xl text-foreground mb-3">
             Istiqamah
           </h1>
-          <p className="text-lg text-muted-foreground mb-2">
-            Par Marianne Seck
-          </p>
           <p className="text-muted-foreground max-w-xs mx-auto">
             Ton compagnon spirituel pour une lecture constante du Coran, 
             avec l'aide d'Allah <span className="honorific">(عز وجل)</span>
