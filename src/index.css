@@ -161,6 +161,12 @@
     box-shadow: var(--shadow-soft);
   }
 
+  /* Spiritual anchor card - static verse */
+  .spiritual-anchor {
+    box-shadow: 0 8px 32px -8px hsl(158 45% 60% / 0.15), 
+                0 4px 16px -4px hsl(20 60% 70% / 0.1);
+  }
+
   /* Gradient backgrounds */
   .bg-gradient-mint {
     background: var(--gradient-mint);
