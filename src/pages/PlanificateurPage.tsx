@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Target, Plus, Check, BookOpen } from 'lucide-react';
+import { Plus, Check, BookOpen } from 'lucide-react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -10,6 +10,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { GoalCard } from '@/components/planificateur/GoalCard';
+import { SparkleEffect } from '@/components/planificateur/SparkleEffect';
+import { SuccessModal } from '@/components/planificateur/SuccessModal';
 
 interface QuranGoal {
   id: string;
@@ -33,6 +36,9 @@ export default function PlanificateurPage() {
   const [isCreatingGoal, setIsCreatingGoal] = useState(false);
   const [newGoalType, setNewGoalType] = useState<'pages_per_day' | 'duration_days'>('pages_per_day');
   const [newGoalValue, setNewGoalValue] = useState(5);
+  const [showSparkles, setShowSparkles] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [goalMetToday, setGoalMetToday] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -65,7 +71,13 @@ export default function PlanificateurPage() {
       .eq('date', today)
       .maybeSingle();
     
-    setTodayPages(todayData?.pages_read || 0);
+    const pagesRead = todayData?.pages_read || 0;
+    setTodayPages(pagesRead);
+
+    // Check if goal is met today
+    if (activeGoal?.goal_type === 'pages_per_day' && pagesRead >= activeGoal.target_value) {
+      setGoalMetToday(true);
+    }
 
     // Week's progress
     const lastWeek = new Date();
@@ -111,7 +123,7 @@ export default function PlanificateurPage() {
   };
 
   const logReading = async (pages: number) => {
-    if (!user) return;
+    if (!user || goalMetToday) return;
     const today = new Date().toISOString().split('T')[0];
 
     const { data: existing } = await supabase
@@ -121,10 +133,13 @@ export default function PlanificateurPage() {
       .eq('date', today)
       .maybeSingle();
 
+    let newTotal = pages;
+
     if (existing) {
+      newTotal = existing.pages_read + pages;
       await supabase
         .from('quran_progress')
-        .update({ pages_read: existing.pages_read + pages })
+        .update({ pages_read: newTotal })
         .eq('id', existing.id);
     } else {
       await supabase
@@ -136,9 +151,23 @@ export default function PlanificateurPage() {
         });
     }
 
-    toast.success(`${pages} page(s) enregistrée(s)! Masha'Allah! 📖`);
+    // Check if goal is now met
+    if (activeGoal?.goal_type === 'pages_per_day' && newTotal >= activeGoal.target_value) {
+      setShowSparkles(true);
+      setTimeout(() => {
+        setShowSuccessModal(true);
+        setGoalMetToday(true);
+      }, 800);
+    } else {
+      toast.success(`${pages} page(s) enregistrée(s)! Masha'Allah! 📖`);
+    }
+    
     fetchProgress();
   };
+
+  const handleSparkleComplete = useCallback(() => {
+    setShowSparkles(false);
+  }, []);
 
   const totalPagesThisWeek = weekProgress.reduce((sum, day) => sum + day.pages_read, 0);
   const goalProgress = activeGoal?.goal_type === 'pages_per_day' 
@@ -158,43 +187,14 @@ export default function PlanificateurPage() {
 
         {/* Current Goal or Create New */}
         {activeGoal ? (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            <Card className="illustrated-card bg-gradient-mint">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-2xl bg-white/30 flex items-center justify-center">
-                    <Target className="h-6 w-6 text-primary-foreground" />
-                  </div>
-                  <div>
-                    <p className="font-medium text-primary-foreground">Objectif actif</p>
-                    <p className="text-sm text-primary-foreground/70">
-                      {activeGoal.goal_type === 'pages_per_day' 
-                        ? `${activeGoal.target_value} pages/jour`
-                        : `Terminer en ${activeGoal.target_value} jours`}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Progress bar */}
-              <div className="bg-white/20 rounded-full h-3 overflow-hidden">
-                <motion.div 
-                  className="bg-white h-full rounded-full"
-                  initial={{ width: 0 }}
-                  animate={{ width: `${goalProgress}%` }}
-                  transition={{ duration: 0.5 }}
-                />
-              </div>
-              <p className="text-sm text-primary-foreground/70 mt-2 text-center">
-                {todayPages}/{activeGoal.target_value} pages aujourd'hui
-              </p>
-            </Card>
-          </motion.div>
+          <GoalCard
+            goalType={activeGoal.goal_type}
+            targetValue={activeGoal.target_value}
+            todayPages={todayPages}
+            goalProgress={goalProgress}
+          />
         ) : (
-          <Card className="pastel-card p-6 text-center">
+          <Card className="pastel-card p-6 text-center shadow-[0_8px_30px_-12px_rgba(0,0,0,0.08)]">
             <BookOpen className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
             <p className="text-muted-foreground mb-4">Aucun objectif actif</p>
             <Button 
@@ -278,26 +278,43 @@ export default function PlanificateurPage() {
 
         {/* Quick Log */}
         {activeGoal && (
-          <Card className="pastel-card p-6">
+          <Card className="pastel-card p-6 relative overflow-hidden shadow-[0_8px_30px_-12px_rgba(0,0,0,0.08)]">
+            <SparkleEffect isActive={showSparkles} onComplete={handleSparkleComplete} />
             <h3 className="font-display text-lg mb-4">Enregistrer ma lecture</h3>
-            <div className="grid grid-cols-4 gap-2">
-              {[1, 2, 3, 5].map((pages) => (
-                <Button
-                  key={pages}
-                  variant="outline"
-                  onClick={() => logReading(pages)}
-                  className="hover-lift h-16 flex flex-col"
-                >
-                  <span className="text-xl font-bold">{pages}</span>
-                  <span className="text-xs text-muted-foreground">page{pages > 1 ? 's' : ''}</span>
-                </Button>
-              ))}
-            </div>
+            
+            {goalMetToday ? (
+              <Button
+                disabled
+                className="w-full h-14 bg-gradient-mint text-primary-foreground cursor-not-allowed opacity-90"
+              >
+                ✨ Objectif atteint, Macha'Allah !
+              </Button>
+            ) : (
+              <div className="grid grid-cols-4 gap-2">
+                {[1, 2, 3, 5].map((pages) => (
+                  <Button
+                    key={pages}
+                    variant="outline"
+                    onClick={() => logReading(pages)}
+                    className="hover-lift h-16 flex flex-col shadow-[0_4px_15px_-5px_rgba(0,0,0,0.08)]"
+                  >
+                    <span className="text-xl font-bold">{pages}</span>
+                    <span className="text-xs text-muted-foreground">page{pages > 1 ? 's' : ''}</span>
+                  </Button>
+                ))}
+              </div>
+            )}
           </Card>
         )}
 
+        {/* Success Modal */}
+        <SuccessModal 
+          isOpen={showSuccessModal} 
+          onClose={() => setShowSuccessModal(false)} 
+        />
+
         {/* Week Summary */}
-        <Card className="pastel-card p-6">
+        <Card className="pastel-card p-6 shadow-[0_8px_30px_-12px_rgba(0,0,0,0.08)]">
           <h3 className="font-display text-lg mb-4">Cette semaine</h3>
           <div className="flex items-center justify-between">
             <div>
