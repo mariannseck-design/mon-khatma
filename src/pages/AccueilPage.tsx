@@ -113,9 +113,6 @@ export default function AccueilPage() {
         >
           <p className="text-muted-foreground text-base mb-1">{greeting()}</p>
           <h1 className="text-4xl font-display font-bold text-foreground">{displayName}</h1>
-          <p className="text-muted-foreground mt-2">
-            Qu'Allah <span className="honorific">(عز وجل)</span> bénisse ta journée
-          </p>
         </motion.div>
 
         {/* Spiritual Anchor Card - Full Width */}
