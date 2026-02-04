@@ -11,7 +11,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { PlannerCalculator } from '@/components/planificateur/PlannerCalculator';
-import { ReadingSlider } from '@/components/planificateur/ReadingSlider';
+import { ReadingLogForm } from '@/components/planificateur/ReadingLogForm';
 import { TotalProgressBar } from '@/components/planificateur/TotalProgressBar';
 import { SparkleEffect } from '@/components/planificateur/SparkleEffect';
 import { SuccessModal } from '@/components/planificateur/SuccessModal';
@@ -32,12 +32,18 @@ interface DailyProgress {
   pages_read: number;
 }
 
+interface LastReading {
+  surahName: string | null;
+  ayahNumber: number | null;
+}
+
 export default function PlanificateurPage() {
   const { user } = useAuth();
   const [activeGoal, setActiveGoal] = useState<QuranGoal | null>(null);
   const [todayPages, setTodayPages] = useState(0);
   const [totalPagesRead, setTotalPagesRead] = useState(0);
   const [weekProgress, setWeekProgress] = useState<DailyProgress[]>([]);
+  const [lastReading, setLastReading] = useState<LastReading>({ surahName: null, ayahNumber: null });
   const [isCreatingGoal, setIsCreatingGoal] = useState(false);
   const [newGoalType, setNewGoalType] = useState<'pages_per_day' | 'duration_days'>('pages_per_day');
   const [newGoalValue, setNewGoalValue] = useState(5);
@@ -71,13 +77,30 @@ export default function PlanificateurPage() {
     // Today's progress
     const { data: todayData } = await supabase
       .from('quran_progress')
-      .select('pages_read')
+      .select('pages_read, surah_name, ayah_number')
       .eq('user_id', user.id)
       .eq('date', today)
       .maybeSingle();
     
     const pagesRead = todayData?.pages_read || 0;
     setTodayPages(pagesRead);
+
+    // Get last reading (most recent entry with surah info)
+    const { data: lastReadingData } = await supabase
+      .from('quran_progress')
+      .select('surah_name, ayah_number')
+      .eq('user_id', user.id)
+      .not('surah_name', 'is', null)
+      .order('date', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    
+    if (lastReadingData) {
+      setLastReading({
+        surahName: lastReadingData.surah_name,
+        ayahNumber: lastReadingData.ayah_number,
+      });
+    }
 
     // Total pages read (all time)
     const { data: allProgress } = await supabase
@@ -138,7 +161,12 @@ export default function PlanificateurPage() {
     fetchGoal();
   };
 
-  const logReading = async (pages: number) => {
+  const logReading = async (data: {
+    pages: number;
+    surahName: string;
+    surahNumber: number;
+    ayahNumber: number;
+  }) => {
     if (!user) return;
     const today = new Date().toISOString().split('T')[0];
 
@@ -149,13 +177,17 @@ export default function PlanificateurPage() {
       .eq('date', today)
       .maybeSingle();
 
-    let newTotal = pages;
+    let newTotal = data.pages;
 
     if (existing) {
-      newTotal = existing.pages_read + pages;
+      newTotal = Math.max(existing.pages_read, data.pages); // Keep the highest page reached
       await supabase
         .from('quran_progress')
-        .update({ pages_read: newTotal })
+        .update({ 
+          pages_read: newTotal,
+          surah_name: data.surahName,
+          ayah_number: data.ayahNumber,
+        })
         .eq('id', existing.id);
     } else {
       await supabase
@@ -163,7 +195,9 @@ export default function PlanificateurPage() {
         .insert({
           user_id: user.id,
           goal_id: activeGoal?.id,
-          pages_read: pages
+          pages_read: data.pages,
+          surah_name: data.surahName,
+          ayah_number: data.ayahNumber,
         });
     }
 
@@ -175,7 +209,7 @@ export default function PlanificateurPage() {
         setGoalMetToday(true);
       }, 800);
     } else {
-      toast.success(`${pages} page(s) enregistrée(s)! Masha'Allah! 📖`);
+      toast.success(`Sourate ${data.surahName}, Verset ${data.ayahNumber} enregistré! Masha'Allah! 📖`);
     }
     
     await fetchProgress();
@@ -297,15 +331,15 @@ export default function PlanificateurPage() {
           </motion.div>
         )}
 
-        {/* Reading Slider */}
+        {/* Reading Log Form */}
         <div className="relative overflow-hidden">
           <SparkleEffect isActive={showSparkles} onComplete={handleSparkleComplete} />
-          <ReadingSlider
+          <ReadingLogForm
             onLogReading={logReading}
             isDisabled={goalMetToday}
             todayPages={todayPages}
-            targetPages={activeGoal?.target_value || 0}
-            totalPagesRead={totalPagesRead}
+            lastSurah={lastReading.surahName}
+            lastAyah={lastReading.ayahNumber}
           />
         </div>
 

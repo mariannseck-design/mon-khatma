@@ -111,6 +111,7 @@ export type Database = {
       }
       quran_progress: {
         Row: {
+          ayah_number: number | null
           created_at: string
           date: string
           goal_id: string | null
@@ -118,10 +119,12 @@ export type Database = {
           juz_completed: number | null
           notes: string | null
           pages_read: number
+          surah_name: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
+          ayah_number?: number | null
           created_at?: string
           date?: string
           goal_id?: string | null
@@ -129,10 +132,12 @@ export type Database = {
           juz_completed?: number | null
           notes?: string | null
           pages_read?: number
+          surah_name?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
+          ayah_number?: number | null
           created_at?: string
           date?: string
           goal_id?: string | null
@@ -140,6 +145,7 @@ export type Database = {
           juz_completed?: number | null
           notes?: string | null
           pages_read?: number
+          surah_name?: string | null
           updated_at?: string
           user_id?: string
         }
