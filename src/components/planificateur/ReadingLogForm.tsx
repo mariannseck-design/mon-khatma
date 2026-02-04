@@ -89,13 +89,13 @@ export function ReadingLogForm({
     return (
       <Card className="p-6 bg-gradient-mint border-none shadow-[0_8px_30px_-12px_rgba(0,0,0,0.08)]">
         <div className="flex items-center justify-center gap-3">
-          <span className="text-2xl">✨</span>
-          <p className="text-primary-foreground font-medium">
+          <span className="text-3xl">✨</span>
+          <p className="text-primary-foreground font-semibold text-lg">
             Objectif atteint, Macha'Allah !
           </p>
-          <span className="text-2xl">✨</span>
+          <span className="text-3xl">✨</span>
         </div>
-        <p className="text-primary-foreground/70 text-sm text-center mt-2">
+        <p className="text-primary-foreground/80 text-base text-center mt-3">
           Qu'Allah <span className="honorific">(عز وجل)</span> accepte ta lecture
         </p>
       </Card>
@@ -115,10 +115,10 @@ export function ReadingLogForm({
               <BookOpen className="h-6 w-6 text-primary" />
             </div>
             <div>
-              <h3 className="font-display text-xl font-bold text-foreground">
+              <h3 className="font-display text-xl sm:text-2xl font-bold text-foreground">
                 Enregistrer ma Tilawah
               </h3>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-base text-muted-foreground">
                 Avec l'aide d'Allah <span className="honorific">(عز وجل)</span>
               </p>
             </div>
@@ -127,8 +127,8 @@ export function ReadingLogForm({
           {/* Last reading reminder */}
           {lastSurah && lastAyah && (
             <div className="bg-secondary/50 rounded-2xl p-4 mb-6">
-              <p className="text-sm text-muted-foreground">Dernière lecture :</p>
-              <p className="font-display font-bold text-foreground">
+              <p className="text-base text-muted-foreground">Dernière lecture :</p>
+              <p className="font-display font-bold text-lg text-foreground">
                 Sourate {lastSurah}, Verset {lastAyah}
               </p>
             </div>
@@ -136,7 +136,7 @@ export function ReadingLogForm({
 
           {/* Surah Selection */}
           <div className="space-y-4 mb-6">
-            <Label className="text-base font-semibold">Sourate</Label>
+            <Label className="text-lg font-semibold">Sourate</Label>
             <Popover open={isOpen} onOpenChange={setIsOpen}>
               <PopoverTrigger asChild>
                 <Button
@@ -222,7 +222,7 @@ export function ReadingLogForm({
                 exit={{ opacity: 0, height: 0 }}
                 className="space-y-4 mb-6"
               >
-                <Label className="text-base font-semibold">
+                <Label className="text-lg font-semibold">
                   Verset (Ayah) où tu t'es arrêtée
                 </Label>
                 <div className="flex items-center gap-4">
@@ -232,17 +232,17 @@ export function ReadingLogForm({
                     max={selectedSurah.versesCount}
                     value={ayahNumber}
                     onChange={(e) => handleAyahChange(e.target.value)}
-                    className="text-center text-2xl font-bold h-14 w-28"
+                    className="text-center text-2xl font-bold h-16 w-28"
                   />
-                  <span className="text-muted-foreground">
+                  <span className="text-base text-muted-foreground">
                     sur {selectedSurah.versesCount} versets
                   </span>
                 </div>
 
                 {/* Page estimate */}
                 <div className="bg-primary/5 rounded-2xl p-4">
-                  <p className="text-sm text-primary">
-                    📖 Environ page <span className="font-bold">{estimatedPage}</span> sur 604
+                  <p className="text-base text-primary">
+                    📖 Environ page <span className="font-bold text-lg">{estimatedPage}</span> sur 604
                   </p>
                 </div>
               </motion.div>
