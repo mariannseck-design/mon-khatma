@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { Header } from './Header';
 import { Navigation } from './Navigation';
+import { ZoomControl } from '@/components/ui/ZoomControl';
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -16,6 +17,7 @@ export function AppLayout({ children, title, hideNav = false }: AppLayoutProps) 
         {children}
       </main>
       {!hideNav && <Navigation />}
+      <ZoomControl />
     </div>
   );
 }
