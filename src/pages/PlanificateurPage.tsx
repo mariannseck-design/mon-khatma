@@ -10,9 +10,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { GoalCard } from '@/components/planificateur/GoalCard';
+import { PlannerCalculator } from '@/components/planificateur/PlannerCalculator';
+import { ReadingInput } from '@/components/planificateur/ReadingInput';
+import { TotalProgressBar } from '@/components/planificateur/TotalProgressBar';
 import { SparkleEffect } from '@/components/planificateur/SparkleEffect';
 import { SuccessModal } from '@/components/planificateur/SuccessModal';
+
+const TOTAL_QURAN_PAGES = 604;
 
 interface QuranGoal {
   id: string;
@@ -32,6 +36,7 @@ export default function PlanificateurPage() {
   const { user } = useAuth();
   const [activeGoal, setActiveGoal] = useState<QuranGoal | null>(null);
   const [todayPages, setTodayPages] = useState(0);
+  const [totalPagesRead, setTotalPagesRead] = useState(0);
   const [weekProgress, setWeekProgress] = useState<DailyProgress[]>([]);
   const [isCreatingGoal, setIsCreatingGoal] = useState(false);
   const [newGoalType, setNewGoalType] = useState<'pages_per_day' | 'duration_days'>('pages_per_day');
@@ -74,6 +79,15 @@ export default function PlanificateurPage() {
     const pagesRead = todayData?.pages_read || 0;
     setTodayPages(pagesRead);
 
+    // Total pages read (all time)
+    const { data: allProgress } = await supabase
+      .from('quran_progress')
+      .select('pages_read')
+      .eq('user_id', user.id);
+    
+    const total = allProgress?.reduce((sum, p) => sum + p.pages_read, 0) || 0;
+    setTotalPagesRead(total);
+
     // Check if goal is met today
     if (activeGoal?.goal_type === 'pages_per_day' && pagesRead >= activeGoal.target_value) {
       setGoalMetToday(true);
@@ -100,7 +114,9 @@ export default function PlanificateurPage() {
     if (newGoalType === 'duration_days') {
       endDate.setDate(endDate.getDate() + newGoalValue);
     } else {
-      endDate.setDate(endDate.getDate() + 30); // Default 30 days for pages/day
+      // Calculate end date based on pages per day
+      const daysNeeded = Math.ceil(TOTAL_QURAN_PAGES / newGoalValue);
+      endDate.setDate(endDate.getDate() + daysNeeded);
     }
 
     const { error } = await supabase
@@ -123,7 +139,7 @@ export default function PlanificateurPage() {
   };
 
   const logReading = async (pages: number) => {
-    if (!user || goalMetToday) return;
+    if (!user) return;
     const today = new Date().toISOString().split('T')[0];
 
     const { data: existing } = await supabase
@@ -151,8 +167,8 @@ export default function PlanificateurPage() {
         });
     }
 
-    // Check if goal is now met
-    if (activeGoal?.goal_type === 'pages_per_day' && newTotal >= activeGoal.target_value) {
+    // Check if daily goal is now met
+    if (activeGoal?.goal_type === 'pages_per_day' && newTotal >= activeGoal.target_value && !goalMetToday) {
       setShowSparkles(true);
       setTimeout(() => {
         setShowSuccessModal(true);
@@ -162,7 +178,7 @@ export default function PlanificateurPage() {
       toast.success(`${pages} page(s) enregistrée(s)! Masha'Allah! 📖`);
     }
     
-    fetchProgress();
+    await fetchProgress();
   };
 
   const handleSparkleComplete = useCallback(() => {
@@ -170,30 +186,29 @@ export default function PlanificateurPage() {
   }, []);
 
   const totalPagesThisWeek = weekProgress.reduce((sum, day) => sum + day.pages_read, 0);
-  const goalProgress = activeGoal?.goal_type === 'pages_per_day' 
-    ? Math.min(100, (todayPages / activeGoal.target_value) * 100)
-    : 0;
 
   return (
     <AppLayout title="Planificateur">
-      <div className="section-spacing">
+      <div className="section-spacing space-y-6">
         {/* Header */}
         <div className="zen-header">
-          <h1>📖 Mon Objectif Coran</h1>
+          <h1>📖 Planificateur Tilawah</h1>
           <p className="text-muted-foreground">
             Planifie ta lecture avec l'aide d'Allah <span className="honorific">(عز وجل)</span>
           </p>
         </div>
 
+        {/* Total Progress Bar - Always visible */}
+        <TotalProgressBar totalPagesRead={totalPagesRead} />
+
+        {/* Calculator Section */}
+        <PlannerCalculator 
+          initialPagesPerDay={activeGoal?.goal_type === 'pages_per_day' ? activeGoal.target_value : undefined}
+          initialDays={activeGoal?.goal_type === 'duration_days' ? activeGoal.target_value : undefined}
+        />
+
         {/* Current Goal or Create New */}
-        {activeGoal ? (
-          <GoalCard
-            goalType={activeGoal.goal_type}
-            targetValue={activeGoal.target_value}
-            todayPages={todayPages}
-            goalProgress={goalProgress}
-          />
-        ) : (
+        {!activeGoal && !isCreatingGoal && (
           <Card className="pastel-card p-6 text-center shadow-[0_8px_30px_-12px_rgba(0,0,0,0.08)]">
             <BookOpen className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
             <p className="text-muted-foreground mb-4">Aucun objectif actif</p>
@@ -216,7 +231,7 @@ export default function PlanificateurPage() {
             <Card className="pastel-card p-6">
               <h3 className="font-display text-lg mb-4">Nouvel objectif</h3>
               
-              <Tabs value={newGoalType} onValueChange={(v) => setNewGoalType(v as any)}>
+              <Tabs value={newGoalType} onValueChange={(v) => setNewGoalType(v as typeof newGoalType)}>
                 <TabsList className="w-full mb-4">
                   <TabsTrigger value="pages_per_day" className="flex-1">Pages/jour</TabsTrigger>
                   <TabsTrigger value="duration_days" className="flex-1">Durée</TabsTrigger>
@@ -229,13 +244,16 @@ export default function PlanificateurPage() {
                       <Input
                         type="number"
                         min={1}
-                        max={20}
+                        max={604}
                         value={newGoalValue}
                         onChange={(e) => setNewGoalValue(parseInt(e.target.value) || 1)}
                         className="text-center text-2xl font-bold w-24"
                       />
                       <span className="text-muted-foreground">pages/jour</span>
                     </div>
+                    <p className="text-sm text-muted-foreground">
+                      ≈ {Math.ceil(TOTAL_QURAN_PAGES / newGoalValue)} jours pour finir
+                    </p>
                   </div>
                 </TabsContent>
                 
@@ -245,14 +263,17 @@ export default function PlanificateurPage() {
                     <div className="flex items-center gap-4">
                       <Input
                         type="number"
-                        min={7}
-                        max={365}
+                        min={1}
+                        max={1000}
                         value={newGoalValue}
                         onChange={(e) => setNewGoalValue(parseInt(e.target.value) || 30)}
                         className="text-center text-2xl font-bold w-24"
                       />
                       <span className="text-muted-foreground">jours</span>
                     </div>
+                    <p className="text-sm text-muted-foreground">
+                      ≈ {(TOTAL_QURAN_PAGES / newGoalValue).toFixed(1)} pages/jour
+                    </p>
                   </div>
                 </TabsContent>
               </Tabs>
@@ -276,36 +297,16 @@ export default function PlanificateurPage() {
           </motion.div>
         )}
 
-        {/* Quick Log */}
-        {activeGoal && (
-          <Card className="pastel-card p-6 relative overflow-hidden shadow-[0_8px_30px_-12px_rgba(0,0,0,0.08)]">
-            <SparkleEffect isActive={showSparkles} onComplete={handleSparkleComplete} />
-            <h3 className="font-display text-lg mb-4">Enregistrer ma lecture</h3>
-            
-            {goalMetToday ? (
-              <Button
-                disabled
-                className="w-full h-14 bg-gradient-mint text-primary-foreground cursor-not-allowed opacity-90"
-              >
-                ✨ Objectif atteint, Macha'Allah !
-              </Button>
-            ) : (
-              <div className="grid grid-cols-4 gap-2">
-                {[1, 2, 3, 5].map((pages) => (
-                  <Button
-                    key={pages}
-                    variant="outline"
-                    onClick={() => logReading(pages)}
-                    className="hover-lift h-16 flex flex-col shadow-[0_4px_15px_-5px_rgba(0,0,0,0.08)]"
-                  >
-                    <span className="text-xl font-bold">{pages}</span>
-                    <span className="text-xs text-muted-foreground">page{pages > 1 ? 's' : ''}</span>
-                  </Button>
-                ))}
-              </div>
-            )}
-          </Card>
-        )}
+        {/* Reading Input - Free form */}
+        <div className="relative overflow-hidden">
+          <SparkleEffect isActive={showSparkles} onComplete={handleSparkleComplete} />
+          <ReadingInput
+            onLogReading={logReading}
+            isDisabled={goalMetToday}
+            todayPages={todayPages}
+            targetPages={activeGoal?.target_value || 0}
+          />
+        </div>
 
         {/* Success Modal */}
         <SuccessModal 
