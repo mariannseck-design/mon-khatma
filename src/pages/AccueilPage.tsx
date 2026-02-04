@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, Easing } from 'framer-motion';
-import { BookOpen, Target, Users } from 'lucide-react';
+import { BookOpen, Target, Users, RotateCcw } from 'lucide-react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { DailyReminderBanner } from '@/components/notifications/DailyReminderBanner';
 import { useDailyNotification } from '@/hooks/useDailyNotification';
+import { toast } from 'sonner';
 
 export default function AccueilPage() {
   const { user } = useAuth();
@@ -55,6 +56,25 @@ export default function AccueilPage() {
       .gte('date', lastWeek.toISOString().split('T')[0]);
     
     setWeeklyStreak(weekData?.length || 0);
+  };
+
+  const resetProgress = async () => {
+    if (!user) return;
+    
+    const confirmed = window.confirm('Remettre ta lecture à zéro ? Cette action est irréversible.');
+    if (!confirmed) return;
+
+    const today = new Date().toISOString().split('T')[0];
+    
+    // Delete today's progress
+    await supabase
+      .from('quran_progress')
+      .delete()
+      .eq('user_id', user.id)
+      .eq('date', today);
+    
+    setTodayProgress(0);
+    toast.success('Lecture remise à zéro');
   };
 
   const greeting = () => {
@@ -132,8 +152,19 @@ export default function AccueilPage() {
                   </p>
                   <p className="text-primary-foreground/80 text-3xl font-medium mt-1">pages lues</p>
                 </div>
-                <div className="w-20 h-20 rounded-3xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                  <BookOpen className="h-10 w-10 text-primary-foreground" />
+                <div className="flex flex-col items-end gap-2">
+                  <div className="w-20 h-20 rounded-3xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                    <BookOpen className="h-10 w-10 text-primary-foreground" />
+                  </div>
+                  {todayProgress > 0 && (
+                    <button
+                      onClick={resetProgress}
+                      className="flex items-center gap-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-xl px-3 py-2 transition-colors"
+                    >
+                      <RotateCcw className="h-4 w-4 text-primary-foreground" />
+                      <span className="text-sm font-medium text-primary-foreground">Réinitialiser</span>
+                    </button>
+                  )}
                 </div>
               </div>
               
