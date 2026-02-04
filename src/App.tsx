@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import LandingPage from "./pages/LandingPage";
 import AuthPage from "./pages/AuthPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 import AccueilPage from "./pages/AccueilPage";
 import PlanificateurPage from "./pages/PlanificateurPage";
 import CerclePage from "./pages/CerclePage";
@@ -59,6 +60,7 @@ function AppRoutes() {
     <Routes>
       <Route path="/" element={<PublicRoute><LandingPage /></PublicRoute>} />
       <Route path="/auth" element={<PublicRoute><AuthPage /></PublicRoute>} />
+      <Route path="/reset-password" element={<ResetPasswordPage />} />
       
       {/* Protected Routes */}
       <Route path="/accueil" element={<ProtectedRoute><AccueilPage /></ProtectedRoute>} />
