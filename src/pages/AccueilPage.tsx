@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, Easing } from 'framer-motion';
-import { BookOpen, Target, Users, Sparkles } from 'lucide-react';
+import { BookOpen, Target, Users } from 'lucide-react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -115,26 +115,6 @@ export default function AccueilPage() {
           <h1 className="text-4xl font-display font-bold text-foreground">{displayName}</h1>
         </motion.div>
 
-        {/* Spiritual Anchor Card - Full Width */}
-        <motion.div variants={itemVariants}>
-          <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-accent via-primary/30 to-sky p-8 shadow-lg">
-            {/* Decorative geometric shapes */}
-            <div className="absolute top-4 right-4 w-24 h-24 rounded-full bg-white/10 blur-xl" />
-            <div className="absolute bottom-4 left-4 w-32 h-32 rounded-full bg-primary/20 blur-2xl" />
-            <div className="absolute top-1/2 right-8 w-16 h-16 rotate-45 bg-white/5 rounded-2xl" />
-            
-            <div className="relative z-10 text-center">
-              <Sparkles className="h-8 w-8 text-primary mx-auto mb-4 opacity-80" />
-              <p className="font-display text-2xl md:text-3xl text-foreground font-semibold italic leading-relaxed">
-                "Sois constant (Istaqim) comme il t'a été ordonné."
-              </p>
-              <p className="text-base text-muted-foreground mt-4 font-medium">
-                Sourate Hud, verset 112
-              </p>
-            </div>
-          </div>
-        </motion.div>
-
         {/* Daily Progress Card - Full Width */}
         <motion.div variants={itemVariants}>
           <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-primary via-primary/80 to-success p-8 shadow-lg">
@@ -239,6 +219,19 @@ export default function AccueilPage() {
               </motion.div>
             </Link>
           </div>
+        </motion.div>
+
+        {/* Spiritual Quote - Bottom */}
+        <motion.div 
+          variants={itemVariants}
+          className="text-center pt-4 pb-2"
+        >
+          <p className="font-display text-lg text-muted-foreground italic">
+            "Sois constant (Istaqim) comme il t'a été ordonné."
+          </p>
+          <p className="text-sm text-muted-foreground/70 mt-2">
+            — Sourate Hud, verset 112
+          </p>
         </motion.div>
       </motion.div>
     </AppLayout>
