@@ -7,7 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
-
+import { DailyReminderBanner } from '@/components/notifications/DailyReminderBanner';
+import { useDailyNotification } from '@/hooks/useDailyNotification';
 export default function AccueilPage() {
   const { user } = useAuth();
   const [profile, setProfile] = useState<{ display_name: string | null } | null>(null);
@@ -66,9 +67,17 @@ export default function AccueilPage() {
 
   const displayName = profile?.display_name || 'Sœur';
 
+  const { showNotification, dismissNotification } = useDailyNotification();
+
   return (
     <AppLayout title="Accueil">
       <div className="section-spacing stagger-children">
+        {/* Daily Reminder Banner */}
+        <DailyReminderBanner 
+          isVisible={showNotification} 
+          onDismiss={dismissNotification} 
+        />
+
         {/* Spiritual Anchor - Static Verse */}
         <motion.div
           initial={{ opacity: 0 }}
