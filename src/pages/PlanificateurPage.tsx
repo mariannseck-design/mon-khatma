@@ -11,7 +11,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { PlannerCalculator } from '@/components/planificateur/PlannerCalculator';
-import { ReadingInput } from '@/components/planificateur/ReadingInput';
+import { ReadingSlider } from '@/components/planificateur/ReadingSlider';
 import { TotalProgressBar } from '@/components/planificateur/TotalProgressBar';
 import { SparkleEffect } from '@/components/planificateur/SparkleEffect';
 import { SuccessModal } from '@/components/planificateur/SuccessModal';
@@ -297,14 +297,15 @@ export default function PlanificateurPage() {
           </motion.div>
         )}
 
-        {/* Reading Input - Free form */}
+        {/* Reading Slider */}
         <div className="relative overflow-hidden">
           <SparkleEffect isActive={showSparkles} onComplete={handleSparkleComplete} />
-          <ReadingInput
+          <ReadingSlider
             onLogReading={logReading}
             isDisabled={goalMetToday}
             todayPages={todayPages}
             targetPages={activeGoal?.target_value || 0}
+            totalPagesRead={totalPagesRead}
           />
         </div>
 

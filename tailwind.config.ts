@@ -73,6 +73,14 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        ramadan: {
+          gold: "hsl(var(--ramadan-gold))",
+          "gold-light": "hsl(var(--ramadan-gold-light))",
+          "gold-foreground": "hsl(var(--ramadan-gold-foreground))",
+          night: "hsl(var(--ramadan-night))",
+          "night-light": "hsl(var(--ramadan-night-light))",
+          "night-foreground": "hsl(var(--ramadan-night-foreground))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
