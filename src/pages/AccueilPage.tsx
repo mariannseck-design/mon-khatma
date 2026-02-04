@@ -14,6 +14,10 @@ export default function AccueilPage() {
   const [profile, setProfile] = useState<{ display_name: string | null } | null>(null);
   const [todayProgress, setTodayProgress] = useState(0);
   const [weeklyStreak, setWeeklyStreak] = useState(0);
+  const [lastReading, setLastReading] = useState<{ surahName: string | null; ayahNumber: number | null }>({
+    surahName: null,
+    ayahNumber: null,
+  });
 
   useEffect(() => {
     if (user) {
@@ -65,6 +69,23 @@ export default function AccueilPage() {
       .maybeSingle();
     
     setTodayProgress(data?.pages_read || 0);
+
+    // Get last reading with surah info
+    const { data: lastReadingData } = await supabase
+      .from('quran_progress')
+      .select('surah_name, ayah_number')
+      .eq('user_id', user.id)
+      .not('surah_name', 'is', null)
+      .order('date', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    
+    if (lastReadingData) {
+      setLastReading({
+        surahName: lastReadingData.surah_name,
+        ayahNumber: lastReadingData.ayah_number,
+      });
+    }
 
     // Calculate weekly streak
     const lastWeek = new Date();
@@ -191,6 +212,33 @@ export default function AccueilPage() {
             </div>
           </div>
         </motion.div>
+
+        {/* Last Reading Display */}
+        {lastReading.surahName && lastReading.ayahNumber && (
+          <motion.div variants={itemVariants}>
+            <Link to="/planificateur">
+              <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-lavender via-lavender/80 to-sky p-6 shadow-lg">
+                <div className="absolute -bottom-4 -right-4 w-32 h-32 rounded-full bg-white/15 blur-xl" />
+                <div className="absolute top-4 right-4 w-8 h-8 rounded-lg rotate-12 bg-white/10" />
+                
+                <div className="relative z-10">
+                  <p className="text-foreground/70 text-sm font-medium mb-2">
+                    📖 Dernière lecture
+                  </p>
+                  <p className="text-3xl font-display font-bold text-foreground leading-tight">
+                    Sourate {lastReading.surahName}
+                  </p>
+                  <p className="text-2xl font-display font-bold text-foreground/80 mt-1">
+                    Verset {lastReading.ayahNumber}
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-3 italic">
+                    Qu'Allah <span className="honorific">(عز وجل)</span> facilite ta lecture
+                  </p>
+                </div>
+              </div>
+            </Link>
+          </motion.div>
+        )}
 
         {/* Action Cards */}
         <motion.div variants={itemVariants}>
