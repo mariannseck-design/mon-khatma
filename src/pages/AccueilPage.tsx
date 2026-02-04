@@ -77,14 +77,6 @@ export default function AccueilPage() {
     toast.success('Lecture remise à zéro');
   };
 
-  const greeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return 'Sabah el-kheir';
-    if (hour < 18) return 'Bon après-midi';
-    return 'Bonsoir';
-  };
-
-  const displayName = profile?.display_name || 'Sœur';
 
   const { showNotification, dismissNotification } = useDailyNotification();
 
@@ -126,35 +118,27 @@ export default function AccueilPage() {
           onDismiss={dismissNotification} 
         />
 
-        {/* Greeting Header */}
-        <motion.div 
-          className="text-center pt-2 pb-4"
-          variants={itemVariants}
-        >
-          <p className="text-muted-foreground text-xl mb-1">{greeting()}</p>
-          <h1 className="text-6xl font-display font-bold text-foreground">{displayName}</h1>
-        </motion.div>
 
         {/* Daily Progress Card - Full Width */}
         <motion.div variants={itemVariants}>
-          <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-primary via-primary/80 to-success p-8 shadow-lg">
+          <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-primary via-primary/80 to-success p-6 shadow-lg">
             {/* Decorative elements */}
             <div className="absolute -top-8 -right-8 w-40 h-40 rounded-full bg-white/10 blur-xl" />
             <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-black/5 to-transparent" />
             <div className="absolute top-8 left-8 w-12 h-12 rounded-xl rotate-12 bg-white/10" />
             
             <div className="relative z-10">
-              <div className="flex items-start justify-between mb-6">
+              <div className="flex items-start justify-between mb-4">
                 <div>
-                  <p className="text-primary-foreground/70 text-2xl font-medium mb-1">Aujourd'hui</p>
-                  <p className="text-7xl font-display font-bold text-primary-foreground">
+                  <p className="text-primary-foreground/70 text-base font-medium mb-1">Aujourd'hui</p>
+                  <p className="text-5xl font-display font-bold text-primary-foreground">
                     {todayProgress}
                   </p>
-                  <p className="text-primary-foreground/80 text-3xl font-medium mt-1">pages lues</p>
+                  <p className="text-primary-foreground/80 text-xl font-medium mt-1">pages lues</p>
                 </div>
                 <div className="flex flex-col items-end gap-2">
-                  <div className="w-20 h-20 rounded-3xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                    <BookOpen className="h-10 w-10 text-primary-foreground" />
+                  <div className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                    <BookOpen className="h-8 w-8 text-primary-foreground" />
                   </div>
                   {todayProgress > 0 && (
                     <button
@@ -168,18 +152,18 @@ export default function AccueilPage() {
                 </div>
               </div>
               
-              <div className="flex items-center gap-3 bg-white/15 backdrop-blur-sm rounded-2xl px-5 py-4 w-fit">
+              <div className="flex items-center gap-2 bg-white/15 backdrop-blur-sm rounded-2xl px-4 py-3 w-fit">
                 <div className="flex -space-x-1">
                   {[...Array(7)].map((_, i) => (
                     <div 
                       key={i} 
-                      className={`w-5 h-5 rounded-full border-2 border-primary/50 ${
+                      className={`w-3 h-3 rounded-full border-2 border-primary/50 ${
                         i < weeklyStreak ? 'bg-white' : 'bg-white/30'
                       }`}
                     />
                   ))}
                 </div>
-                <span className="text-primary-foreground font-semibold text-xl ml-2">
+                <span className="text-primary-foreground font-semibold text-sm ml-2">
                   {weeklyStreak}/7 jours cette semaine
                 </span>
               </div>
@@ -189,32 +173,32 @@ export default function AccueilPage() {
 
         {/* Action Cards */}
         <motion.div variants={itemVariants}>
-          <h2 className="font-display text-3xl font-bold text-foreground mb-4 px-1">
+          <h2 className="font-display text-xl font-bold text-foreground mb-3 px-1">
             Actions rapides
           </h2>
           
-          <div className="space-y-4">
+          <div className="space-y-3">
             {/* Planificateur Card */}
             <Link to="/planificateur" className="block">
               <motion.div 
-                className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-peach via-secondary to-peach/60 p-7 shadow-lg group"
+                className="relative overflow-hidden rounded-[1.5rem] bg-gradient-to-br from-peach via-secondary to-peach/60 p-5 shadow-lg group"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 transition={{ duration: 0.2 }}
               >
                 {/* Decorative shapes */}
-                <div className="absolute -bottom-4 -right-4 w-32 h-32 rounded-full bg-white/20 blur-xl group-hover:bg-white/30 transition-colors" />
-                <div className="absolute top-4 right-8 w-8 h-8 rounded-lg rotate-12 bg-white/10" />
+                <div className="absolute -bottom-4 -right-4 w-24 h-24 rounded-full bg-white/20 blur-xl group-hover:bg-white/30 transition-colors" />
+                <div className="absolute top-4 right-8 w-6 h-6 rounded-lg rotate-12 bg-white/10" />
                 
-                <div className="relative z-10 flex items-center gap-5">
-                  <div className="w-20 h-20 rounded-2xl bg-white/30 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
-                    <Target className="h-12 w-12 text-peach-foreground" />
+                <div className="relative z-10 flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-xl bg-white/30 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
+                    <Target className="h-7 w-7 text-peach-foreground" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-display text-3xl font-bold text-foreground">
+                    <h3 className="font-display text-xl font-bold text-foreground">
                       Planificateur Coran
                     </h3>
-                    <p className="text-muted-foreground text-xl mt-1">
+                    <p className="text-muted-foreground text-sm mt-0.5">
                       Définir mon objectif de lecture
                     </p>
                   </div>
@@ -225,24 +209,24 @@ export default function AccueilPage() {
             {/* Cercle Card */}
             <Link to="/cercle" className="block">
               <motion.div 
-                className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-accent via-accent/70 to-sky/50 p-7 shadow-lg group"
+                className="relative overflow-hidden rounded-[1.5rem] bg-gradient-to-br from-accent via-accent/70 to-sky/50 p-5 shadow-lg group"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 transition={{ duration: 0.2 }}
               >
                 {/* Decorative shapes */}
-                <div className="absolute -top-4 -left-4 w-28 h-28 rounded-full bg-white/15 blur-xl group-hover:bg-white/25 transition-colors" />
-                <div className="absolute bottom-6 right-6 w-10 h-10 rounded-full bg-white/10" />
+                <div className="absolute -top-4 -left-4 w-20 h-20 rounded-full bg-white/15 blur-xl group-hover:bg-white/25 transition-colors" />
+                <div className="absolute bottom-4 right-4 w-8 h-8 rounded-full bg-white/10" />
                 
-                <div className="relative z-10 flex items-center gap-5">
-                  <div className="w-20 h-20 rounded-2xl bg-white/30 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
-                    <Users className="h-12 w-12 text-accent-foreground" />
+                <div className="relative z-10 flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-xl bg-white/30 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
+                    <Users className="h-7 w-7 text-accent-foreground" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-display text-3xl font-bold text-foreground">
+                    <h3 className="font-display text-xl font-bold text-foreground">
                       Cercle des Sœurs
                     </h3>
-                    <p className="text-muted-foreground text-xl mt-1">
+                    <p className="text-muted-foreground text-sm mt-0.5">
                       Rejoindre la communauté
                     </p>
                   </div>
@@ -255,12 +239,12 @@ export default function AccueilPage() {
         {/* Spiritual Quote - Bottom */}
         <motion.div 
           variants={itemVariants}
-          className="text-center pt-4 pb-2"
+          className="text-center pt-3 pb-2"
         >
-          <p className="font-display text-2xl text-muted-foreground italic">
+          <p className="font-display text-base text-muted-foreground italic">
             "Sois constant (Istaqim) comme il t'a été ordonné."
           </p>
-          <p className="text-lg text-muted-foreground/70 mt-2">
+          <p className="text-sm text-muted-foreground/70 mt-1">
             — Sourate Hud, verset 112
           </p>
         </motion.div>
