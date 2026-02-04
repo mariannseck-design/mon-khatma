@@ -160,6 +160,8 @@
   body {
     @apply bg-background text-foreground font-sans antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
+    font-size: 18px;
+    line-height: 1.6;
     min-height: 100vh;
     min-height: 100dvh;
     -webkit-font-smoothing: antialiased;
