@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BookMarked, Check } from 'lucide-react';
 import { Card } from '@/components/ui/card';
@@ -48,16 +48,16 @@ export function ReadingSlider({
 
   if (isDisabled) {
     return (
-      <Card className="p-6 bg-gradient-to-br from-ramadan-night to-ramadan-night-light border-none shadow-[0_8px_30px_-12px_rgba(0,0,0,0.3)]">
+      <Card className="p-6 bg-gradient-mint border-none shadow-[0_8px_30px_-12px_rgba(0,0,0,0.08)]">
         <div className="flex items-center justify-center gap-3">
           <span className="text-2xl">✨</span>
-          <p className="text-ramadan-gold font-medium">
+          <p className="text-primary-foreground font-medium">
             Objectif atteint, Macha'Allah !
           </p>
           <span className="text-2xl">✨</span>
         </div>
-        <p className="text-ramadan-night-foreground/70 text-sm text-center mt-2">
-          Qu'Allah <span className="text-ramadan-gold">(عز وجل)</span> accepte votre lecture
+        <p className="text-primary-foreground/70 text-sm text-center mt-2">
+          Qu'Allah <span className="honorific">(عز وجل)</span> accepte votre lecture
         </p>
       </Card>
     );
@@ -68,17 +68,17 @@ export function ReadingSlider({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
     >
-      <Card className="overflow-hidden border-none shadow-[0_8px_30px_-12px_rgba(0,0,0,0.2)]">
+      <Card className="pastel-card overflow-hidden border-none shadow-[0_8px_30px_-12px_rgba(0,0,0,0.08)]">
         {/* Header */}
-        <div className="bg-gradient-to-br from-ramadan-night to-ramadan-night-light p-6">
+        <div className="p-6">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-ramadan-gold/20 flex items-center justify-center">
-              <BookMarked className="h-5 w-5 text-ramadan-gold" />
+            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+              <BookMarked className="h-5 w-5 text-primary" />
             </div>
             <div>
-              <h3 className="font-display text-lg text-ramadan-night-foreground">Enregistrer ma lecture</h3>
+              <h3 className="font-display text-lg text-foreground">Enregistrer ma lecture</h3>
               {targetPages > 0 && (
-                <p className="text-sm text-ramadan-night-foreground/60">
+                <p className="text-sm text-muted-foreground">
                   {todayPages}/{targetPages} pages aujourd'hui
                 </p>
               )}
@@ -96,17 +96,17 @@ export function ReadingSlider({
                 transition={{ duration: 0.15 }}
                 className="inline-block"
               >
-                <span className="text-7xl font-display font-bold text-ramadan-gold drop-shadow-[0_2px_10px_rgba(212,175,55,0.3)]">
+                <span className="text-7xl font-display font-bold text-primary">
                   {sliderValue}
                 </span>
-                <p className="text-ramadan-night-foreground/60 text-sm mt-1">
+                <p className="text-muted-foreground text-sm mt-1">
                   {sliderValue === 1 ? 'page' : 'pages'}
                 </p>
               </motion.div>
             </AnimatePresence>
           </div>
 
-          {/* Custom Styled Slider */}
+          {/* Slider */}
           <div className="px-2 mb-6">
             <Slider
               value={[sliderValue]}
@@ -115,9 +115,9 @@ export function ReadingSlider({
               max={Math.min(100, remainingPages)}
               step={1}
               disabled={isLogging}
-              className="ramadan-slider"
+              className="[&_[data-radix-slider-track]]:h-3 [&_[data-radix-slider-track]]:bg-secondary [&_[data-radix-slider-range]]:bg-primary [&_[data-radix-slider-thumb]]:w-7 [&_[data-radix-slider-thumb]]:h-7 [&_[data-radix-slider-thumb]]:border-4 [&_[data-radix-slider-thumb]]:border-primary [&_[data-radix-slider-thumb]]:bg-background [&_[data-radix-slider-thumb]]:shadow-lg"
             />
-            <div className="flex justify-between text-xs text-ramadan-night-foreground/50 mt-2">
+            <div className="flex justify-between text-xs text-muted-foreground mt-2">
               <span>0</span>
               <span>{Math.min(100, remainingPages)} pages</span>
             </div>
@@ -131,10 +131,10 @@ export function ReadingSlider({
                 variant="outline"
                 size="sm"
                 onClick={() => setSliderValue(pages)}
-                className={`flex-1 text-xs border-ramadan-gold/30 hover:bg-ramadan-gold/10 hover:border-ramadan-gold/50 transition-all ${
+                className={`flex-1 text-xs transition-all ${
                   sliderValue === pages 
-                    ? 'bg-ramadan-gold/20 border-ramadan-gold text-ramadan-gold' 
-                    : 'text-ramadan-night-foreground/70'
+                    ? 'bg-primary/20 border-primary text-primary' 
+                    : 'hover:bg-primary/5 hover:border-primary/30'
                 }`}
               >
                 {pages}
@@ -151,9 +151,9 @@ export function ReadingSlider({
                 exit={{ opacity: 0, height: 0 }}
                 className="text-center mb-4"
               >
-                <p className="text-ramadan-gold-light text-sm italic">
-                  À ce rythme, avec l'aide d'Allah <span className="text-ramadan-gold">(عز وجل)</span>, vous finirez dans{' '}
-                  <span className="font-bold text-ramadan-gold">{daysRemaining} jour{daysRemaining > 1 ? 's' : ''}</span>
+                <p className="text-primary text-sm italic bg-primary/5 rounded-lg py-3 px-4">
+                  À ce rythme, avec l'aide d'Allah <span className="honorific">(عز وجل)</span>, vous finirez dans{' '}
+                  <span className="font-bold">{daysRemaining} jour{daysRemaining > 1 ? 's' : ''}</span>
                 </p>
               </motion.div>
             )}
@@ -163,7 +163,7 @@ export function ReadingSlider({
           <Button
             onClick={handleSubmit}
             disabled={sliderValue <= 0 || isLogging}
-            className="w-full h-14 bg-ramadan-gold hover:bg-ramadan-gold-light text-ramadan-gold-foreground font-semibold shadow-[0_4px_20px_-5px_rgba(212,175,55,0.4)] hover:shadow-[0_6px_25px_-5px_rgba(212,175,55,0.5)] transition-all disabled:opacity-50"
+            className="w-full h-14 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-[0_4px_15px_-5px_rgba(0,0,0,0.15)] hover-lift transition-all disabled:opacity-50"
           >
             <Check className="h-5 w-5 mr-2" />
             Valider ma lecture
