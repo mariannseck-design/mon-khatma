@@ -155,6 +155,15 @@
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
+    /* Base font size for mobile - minimum 16px */
+    font-size: 16px;
+  }
+
+  /* Increase base font size on larger screens */
+  @media (min-width: 640px) {
+    html {
+      font-size: 17px;
+    }
   }
 
   body {
@@ -165,10 +174,39 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     touch-action: manipulation;
+    /* Ensure minimum readable body text */
+    font-size: 1rem;
+    line-height: 1.6;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  /* Headings - minimum 24px on mobile */
+  h1 {
+    @apply font-display font-bold tracking-tight;
+    font-size: 1.75rem; /* 28px */
+    line-height: 1.2;
+  }
+
+  h2 {
     @apply font-display font-semibold tracking-tight;
+    font-size: 1.5rem; /* 24px */
+    line-height: 1.25;
+  }
+
+  h3 {
+    @apply font-display font-semibold tracking-tight;
+    font-size: 1.25rem; /* 20px */
+    line-height: 1.3;
+  }
+
+  h4, h5, h6 {
+    @apply font-display font-semibold tracking-tight;
+    font-size: 1.125rem; /* 18px */
+    line-height: 1.4;
+  }
+
+  /* Ensure paragraphs and text are readable */
+  p, span, div {
+    line-height: 1.6;
   }
 
   /* Prevent iOS zoom on input focus */
@@ -237,17 +275,17 @@
     @apply space-y-8;
   }
 
-  /* Zen header style */
+  /* Zen header style - with mobile-optimized sizes */
   .zen-header {
-    @apply text-center space-y-2 mb-8;
+    @apply text-center space-y-3 mb-8;
   }
 
   .zen-header h1 {
-    @apply text-2xl font-display text-foreground;
+    @apply text-2xl sm:text-3xl font-display font-bold text-foreground;
   }
 
   .zen-header p {
-    @apply text-sm text-muted-foreground;
+    @apply text-base text-muted-foreground;
   }
 
   /* Progress ring */
@@ -302,11 +340,45 @@
   .arabic-text {
     font-family: 'Scheherazade New', 'Traditional Arabic', serif;
     direction: rtl;
+    font-size: 1.125em; /* Slightly larger for Arabic legibility */
   }
 
-  /* Honorific styling (عز وجل) and (عليه السلام) */
+  /* Honorific styling (عز وجل) and (عليه السلام) - MUST be legible */
   .honorific {
-    @apply text-primary font-medium;
-    font-family: 'Scheherazade New', 'Traditional Arabic', serif;
+    @apply text-primary font-semibold;
+    font-family: 'Scheherazade New', 'Traditional Arabic', 'Amiri', serif;
+    font-size: 1.1em; /* Slightly larger than surrounding text */
+    display: inline-block;
+    vertical-align: baseline;
+    line-height: 1.2;
+  }
+
+  /* Font Arabic for surah names */
+  .font-arabic {
+    font-family: 'Scheherazade New', 'Traditional Arabic', 'Amiri', serif;
+    font-size: 1.15em;
+  }
+
+  /* Mobile-optimized text sizes */
+  .text-mobile-lg {
+    font-size: 1.125rem; /* 18px */
+  }
+
+  .text-mobile-xl {
+    font-size: 1.25rem; /* 20px */
+  }
+
+  .text-mobile-2xl {
+    font-size: 1.5rem; /* 24px */
+  }
+
+  .text-mobile-3xl {
+    font-size: 1.875rem; /* 30px */
+  }
+
+  /* Lavender gradient for last reading card */
+  .lavender {
+    --tw-bg-opacity: 1;
+    background-color: hsl(var(--accent) / var(--tw-bg-opacity));
   }
 }
