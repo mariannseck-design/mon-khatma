@@ -19,6 +19,27 @@ export default function AccueilPage() {
     if (user) {
       fetchProfile();
       fetchProgress();
+
+      // Subscribe to real-time changes
+      const channel = supabase
+        .channel('quran-progress-changes')
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'quran_progress',
+            filter: `user_id=eq.${user.id}`,
+          },
+          () => {
+            fetchProgress();
+          }
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
     }
   }, [user]);
 
