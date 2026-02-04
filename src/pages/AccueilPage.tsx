@@ -111,8 +111,8 @@ export default function AccueilPage() {
           className="text-center pt-2 pb-4"
           variants={itemVariants}
         >
-          <p className="text-muted-foreground text-lg mb-1">{greeting()}</p>
-          <h1 className="text-5xl font-display font-bold text-foreground">{displayName}</h1>
+          <p className="text-muted-foreground text-xl mb-1">{greeting()}</p>
+          <h1 className="text-6xl font-display font-bold text-foreground">{displayName}</h1>
         </motion.div>
 
         {/* Daily Progress Card - Full Width */}
@@ -126,29 +126,29 @@ export default function AccueilPage() {
             <div className="relative z-10">
               <div className="flex items-start justify-between mb-6">
                 <div>
-                  <p className="text-primary-foreground/70 text-xl font-medium mb-1">Aujourd'hui</p>
-                  <p className="text-6xl font-display font-bold text-primary-foreground">
+                  <p className="text-primary-foreground/70 text-2xl font-medium mb-1">Aujourd'hui</p>
+                  <p className="text-7xl font-display font-bold text-primary-foreground">
                     {todayProgress}
                   </p>
-                  <p className="text-primary-foreground/80 text-2xl font-medium mt-1">pages lues</p>
+                  <p className="text-primary-foreground/80 text-3xl font-medium mt-1">pages lues</p>
                 </div>
                 <div className="w-20 h-20 rounded-3xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
                   <BookOpen className="h-10 w-10 text-primary-foreground" />
                 </div>
               </div>
               
-              <div className="flex items-center gap-2 bg-white/15 backdrop-blur-sm rounded-2xl px-5 py-4 w-fit">
+              <div className="flex items-center gap-3 bg-white/15 backdrop-blur-sm rounded-2xl px-5 py-4 w-fit">
                 <div className="flex -space-x-1">
                   {[...Array(7)].map((_, i) => (
                     <div 
                       key={i} 
-                      className={`w-4 h-4 rounded-full border-2 border-primary/50 ${
+                      className={`w-5 h-5 rounded-full border-2 border-primary/50 ${
                         i < weeklyStreak ? 'bg-white' : 'bg-white/30'
                       }`}
                     />
                   ))}
                 </div>
-                <span className="text-primary-foreground font-semibold text-lg ml-2">
+                <span className="text-primary-foreground font-semibold text-xl ml-2">
                   {weeklyStreak}/7 jours cette semaine
                 </span>
               </div>
@@ -176,14 +176,14 @@ export default function AccueilPage() {
                 <div className="absolute top-4 right-8 w-8 h-8 rounded-lg rotate-12 bg-white/10" />
                 
                 <div className="relative z-10 flex items-center gap-5">
-                  <div className="w-18 h-18 rounded-2xl bg-white/30 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
-                    <Target className="h-10 w-10 text-peach-foreground" />
+                  <div className="w-20 h-20 rounded-2xl bg-white/30 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
+                    <Target className="h-12 w-12 text-peach-foreground" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-display text-2xl font-bold text-foreground">
+                    <h3 className="font-display text-3xl font-bold text-foreground">
                       Planificateur Coran
                     </h3>
-                    <p className="text-muted-foreground text-lg mt-1">
+                    <p className="text-muted-foreground text-xl mt-1">
                       Définir mon objectif de lecture
                     </p>
                   </div>
@@ -204,14 +204,14 @@ export default function AccueilPage() {
                 <div className="absolute bottom-6 right-6 w-10 h-10 rounded-full bg-white/10" />
                 
                 <div className="relative z-10 flex items-center gap-5">
-                  <div className="w-18 h-18 rounded-2xl bg-white/30 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
-                    <Users className="h-10 w-10 text-accent-foreground" />
+                  <div className="w-20 h-20 rounded-2xl bg-white/30 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
+                    <Users className="h-12 w-12 text-accent-foreground" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-display text-2xl font-bold text-foreground">
+                    <h3 className="font-display text-3xl font-bold text-foreground">
                       Cercle des Sœurs
                     </h3>
-                    <p className="text-muted-foreground text-lg mt-1">
+                    <p className="text-muted-foreground text-xl mt-1">
                       Rejoindre la communauté
                     </p>
                   </div>
@@ -226,10 +226,10 @@ export default function AccueilPage() {
           variants={itemVariants}
           className="text-center pt-4 pb-2"
         >
-          <p className="font-display text-xl text-muted-foreground italic">
+          <p className="font-display text-2xl text-muted-foreground italic">
             "Sois constant (Istaqim) comme il t'a été ordonné."
           </p>
-          <p className="text-base text-muted-foreground/70 mt-2">
+          <p className="text-lg text-muted-foreground/70 mt-2">
             — Sourate Hud, verset 112
           </p>
         </motion.div>
