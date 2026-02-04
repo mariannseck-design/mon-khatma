@@ -21,9 +21,9 @@ export function Navigation() {
   const location = useLocation();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-lg border-t border-border/50">
-      <div className="container max-w-lg mx-auto px-4">
-        <div className="flex items-center justify-around py-3">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card/98 backdrop-blur-xl border-t border-border/30 shadow-[0_-4px_20px_-4px_rgba(0,0,0,0.08)]">
+      <div className="container max-w-lg mx-auto px-2">
+        <div className="flex items-center justify-around py-2">
           {navItems.map((item) => {
             const isActive = location.pathname === item.path;
             const Icon = item.icon;
@@ -32,12 +32,12 @@ export function Navigation() {
               <NavLink
                 key={item.path}
                 to={item.path}
-                className="relative flex flex-col items-center py-1 px-3 group"
+                className="relative flex flex-col items-center py-2 px-3 group min-w-[64px]"
               >
                 <div className={cn(
-                  "relative p-2.5 rounded-2xl transition-all duration-300",
+                  "relative p-3.5 rounded-2xl transition-all duration-300",
                   isActive 
-                    ? "bg-primary text-primary-foreground" 
+                    ? "bg-primary shadow-lg shadow-primary/30" 
                     : "text-muted-foreground group-hover:text-foreground group-hover:bg-muted"
                 )}>
                   {isActive && (
@@ -48,13 +48,13 @@ export function Navigation() {
                     />
                   )}
                   <Icon className={cn(
-                    "h-5 w-5 relative z-10 transition-colors",
-                    isActive && "text-primary-foreground"
+                    "h-6 w-6 relative z-10 transition-colors",
+                    isActive ? "text-primary-foreground" : "text-muted-foreground group-hover:text-foreground"
                   )} />
                 </div>
                 <span className={cn(
-                  "text-[10px] mt-1 font-medium transition-colors",
-                  isActive ? "text-primary-foreground" : "text-muted-foreground"
+                  "text-xs mt-1.5 font-semibold transition-colors text-center",
+                  isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
                 )}>
                   {item.label}
                 </span>
