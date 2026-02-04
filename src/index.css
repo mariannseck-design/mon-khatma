@@ -69,6 +69,14 @@
     --shadow-medium: 0 8px 30px -6px hsl(220 20% 20% / 0.08);
     --shadow-card: 0 2px 12px -2px hsl(220 20% 20% / 0.05);
 
+    /* Ramadan Theme - Golden on Night Blue */
+    --ramadan-gold: 43 90% 55%;
+    --ramadan-gold-light: 43 85% 70%;
+    --ramadan-gold-foreground: 220 30% 12%;
+    --ramadan-night: 220 50% 15%;
+    --ramadan-night-light: 220 45% 22%;
+    --ramadan-night-foreground: 43 85% 70%;
+
     /* Sidebar */
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 220 20% 20%;
@@ -117,6 +125,14 @@
     --border: 220 15% 22%;
     --input: 220 15% 22%;
     --ring: 158 40% 55%;
+
+    /* Ramadan Theme - Dark mode */
+    --ramadan-gold: 43 85% 50%;
+    --ramadan-gold-light: 43 80% 60%;
+    --ramadan-gold-foreground: 220 30% 10%;
+    --ramadan-night: 220 50% 12%;
+    --ramadan-night-light: 220 45% 18%;
+    --ramadan-night-foreground: 43 85% 65%;
 
     --sidebar-background: 220 20% 12%;
     --sidebar-foreground: 0 0% 95%;
@@ -257,6 +273,36 @@
 
   .animate-celebrate {
     animation: celebrate 0.5s ease-in-out;
+  }
+
+  /* Ramadan Slider Custom Styles */
+  .ramadan-slider [data-radix-slider-track] {
+    @apply h-3 rounded-full;
+    background: linear-gradient(90deg, hsl(var(--ramadan-night-light)), hsl(var(--ramadan-night)));
+  }
+
+  .ramadan-slider [data-radix-slider-range] {
+    @apply rounded-full;
+    background: linear-gradient(90deg, hsl(var(--ramadan-gold)), hsl(var(--ramadan-gold-light)));
+    box-shadow: 0 0 15px hsl(var(--ramadan-gold) / 0.4);
+  }
+
+  .ramadan-slider [data-radix-slider-thumb] {
+    @apply w-7 h-7 rounded-full border-4 shadow-lg cursor-grab active:cursor-grabbing;
+    background: linear-gradient(135deg, hsl(var(--ramadan-gold-light)), hsl(var(--ramadan-gold)));
+    border-color: hsl(var(--ramadan-gold));
+    box-shadow: 0 0 20px hsl(var(--ramadan-gold) / 0.5), 0 4px 10px rgba(0,0,0,0.2);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .ramadan-slider [data-radix-slider-thumb]:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 25px hsl(var(--ramadan-gold) / 0.6), 0 6px 15px rgba(0,0,0,0.25);
+  }
+
+  .ramadan-slider [data-radix-slider-thumb]:focus-visible {
+    @apply outline-none ring-4;
+    ring-color: hsl(var(--ramadan-gold) / 0.3);
   }
 }
 
