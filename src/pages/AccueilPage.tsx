@@ -14,10 +14,6 @@ export default function AccueilPage() {
   const [profile, setProfile] = useState<{ display_name: string | null } | null>(null);
   const [todayProgress, setTodayProgress] = useState(0);
   const [weeklyStreak, setWeeklyStreak] = useState(0);
-  const [lastReading, setLastReading] = useState<{ surahName: string | null; ayahNumber: number | null }>({
-    surahName: null,
-    ayahNumber: null,
-  });
 
   useEffect(() => {
     if (user) {
@@ -70,22 +66,6 @@ export default function AccueilPage() {
     
     setTodayProgress(data?.pages_read || 0);
 
-    // Get last reading with surah info
-    const { data: lastReadingData } = await supabase
-      .from('quran_progress')
-      .select('surah_name, ayah_number')
-      .eq('user_id', user.id)
-      .not('surah_name', 'is', null)
-      .order('date', { ascending: false })
-      .limit(1)
-      .maybeSingle();
-    
-    if (lastReadingData) {
-      setLastReading({
-        surahName: lastReadingData.surah_name,
-        ayahNumber: lastReadingData.ayah_number,
-      });
-    }
 
     // Calculate weekly streak
     const lastWeek = new Date();
@@ -172,11 +152,13 @@ export default function AccueilPage() {
             <div className="relative z-10">
               <div className="flex items-start justify-between mb-4">
                 <div>
-                  <p className="text-primary-foreground/70 text-base font-medium mb-1">Aujourd'hui</p>
+                  <p className="text-primary-foreground/70 text-base font-medium mb-1">Ma Khatma</p>
                   <p className="text-5xl font-display font-bold text-primary-foreground">
                     {todayProgress}
                   </p>
-                  <p className="text-primary-foreground/80 text-xl font-medium mt-1">pages lues</p>
+                  <p className="text-primary-foreground/80 text-xl font-medium mt-1">
+                    page{todayProgress !== 1 ? 's' : ''} sur 604
+                  </p>
                 </div>
                 <div className="flex flex-col items-end gap-2">
                   <div className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
@@ -213,26 +195,26 @@ export default function AccueilPage() {
           </div>
         </motion.div>
 
-        {/* Last Reading Display */}
-        {lastReading.surahName && lastReading.ayahNumber && (
+        {/* Last Reading Display - Now shows page instead of Surah/Ayah */}
+        {todayProgress > 0 && (
           <motion.div variants={itemVariants}>
             <Link to="/planificateur">
-              <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-lavender via-lavender/80 to-sky p-6 shadow-lg">
-                <div className="absolute -bottom-4 -right-4 w-32 h-32 rounded-full bg-white/15 blur-xl" />
-                <div className="absolute top-4 right-4 w-8 h-8 rounded-lg rotate-12 bg-white/10" />
+              <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-cream via-sage/20 to-gold/20 p-6 shadow-lg border border-sage/10">
+                <div className="absolute -bottom-4 -right-4 w-32 h-32 rounded-full bg-gold/10 blur-xl" />
+                <div className="absolute top-4 right-4 w-8 h-8 rounded-lg rotate-12 bg-sage/10" />
                 
                 <div className="relative z-10">
                   <p className="text-foreground/70 text-sm font-medium mb-2">
-                    📖 Dernière lecture
+                    📖 Dernière page atteinte
                   </p>
-                  <p className="text-3xl font-display font-bold text-foreground leading-tight">
-                    Sourate {lastReading.surahName}
+                  <p className="text-4xl font-display font-bold text-foreground leading-tight">
+                    Page {todayProgress}
                   </p>
-                  <p className="text-2xl font-display font-bold text-foreground/80 mt-1">
-                    Verset {lastReading.ayahNumber}
+                  <p className="text-xl font-display font-bold text-primary mt-1">
+                    sur 604 pages
                   </p>
                   <p className="text-sm text-muted-foreground mt-3 italic">
-                    Qu'Allah <span className="honorific">(عز وجل)</span> facilite ta lecture
+                    Continue ta Khatma avec l'aide d'Allah <span className="honorific">(عز وجل)</span>
                   </p>
                 </div>
               </div>
