@@ -1,52 +1,68 @@
 import { useState, useEffect, useCallback } from 'react';
-import { motion, Easing } from 'framer-motion';
+import { motion } from 'framer-motion';
+import { Plus, Check, BookOpen } from 'lucide-react';
 import { AppLayout } from '@/components/layout/AppLayout';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { CircularProgress } from '@/components/planificateur/CircularProgress';
-import { PageGrid } from '@/components/planificateur/PageGrid';
-import { EveningCheckIn } from '@/components/planificateur/EveningCheckIn';
-import { CuriosityCorner } from '@/components/planificateur/CuriosityCorner';
-import { GoldenSparkles } from '@/components/planificateur/GoldenSparkles';
+import { PlannerCalculator } from '@/components/planificateur/PlannerCalculator';
+import { ReadingSlider } from '@/components/planificateur/ReadingSlider';
+import { TotalProgressBar } from '@/components/planificateur/TotalProgressBar';
+import { SparkleEffect } from '@/components/planificateur/SparkleEffect';
 import { SuccessModal } from '@/components/planificateur/SuccessModal';
 
 const TOTAL_QURAN_PAGES = 604;
 
+interface QuranGoal {
+  id: string;
+  goal_type: string;
+  target_value: number;
+  start_date: string;
+  end_date: string | null;
+  is_active: boolean;
+}
+
+interface DailyProgress {
+  date: string;
+  pages_read: number;
+}
+
 export default function PlanificateurPage() {
   const { user } = useAuth();
+  const [activeGoal, setActiveGoal] = useState<QuranGoal | null>(null);
+  const [todayPages, setTodayPages] = useState(0);
   const [totalPagesRead, setTotalPagesRead] = useState(0);
-  const [todayValidated, setTodayValidated] = useState(false);
+  const [weekProgress, setWeekProgress] = useState<DailyProgress[]>([]);
+  const [isCreatingGoal, setIsCreatingGoal] = useState(false);
+  const [newGoalType, setNewGoalType] = useState<'pages_per_day' | 'duration_days'>('pages_per_day');
+  const [newGoalValue, setNewGoalValue] = useState(5);
   const [showSparkles, setShowSparkles] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [todayPages, setTodayPages] = useState(0);
+  const [goalMetToday, setGoalMetToday] = useState(false);
 
   useEffect(() => {
     if (user) {
+      fetchGoal();
       fetchProgress();
-
-      // Subscribe to real-time changes
-      const channel = supabase
-        .channel('quran-progress-realtime')
-        .on(
-          'postgres_changes',
-          {
-            event: '*',
-            schema: 'public',
-            table: 'quran_progress',
-            filter: `user_id=eq.${user.id}`,
-          },
-          () => {
-            fetchProgress();
-          }
-        )
-        .subscribe();
-
-      return () => {
-        supabase.removeChannel(channel);
-      };
     }
   }, [user]);
+
+  const fetchGoal = async () => {
+    if (!user) return;
+    const { data } = await supabase
+      .from('quran_goals')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('is_active', true)
+      .maybeSingle();
+    
+    setActiveGoal(data);
+  };
 
   const fetchProgress = async () => {
     if (!user) return;
@@ -60,23 +76,69 @@ export default function PlanificateurPage() {
       .eq('date', today)
       .maybeSingle();
     
-    const pagesReadToday = todayData?.pages_read || 0;
-    setTodayPages(pagesReadToday);
-    setTodayValidated(pagesReadToday > 0);
+    const pagesRead = todayData?.pages_read || 0;
+    setTodayPages(pagesRead);
 
-    // Total pages read (all time) - use max page reached
+    // Total pages read (all time)
     const { data: allProgress } = await supabase
       .from('quran_progress')
       .select('pages_read')
-      .eq('user_id', user.id)
-      .order('pages_read', { ascending: false })
-      .limit(1)
-      .maybeSingle();
+      .eq('user_id', user.id);
     
-    setTotalPagesRead(allProgress?.pages_read || 0);
+    const total = allProgress?.reduce((sum, p) => sum + p.pages_read, 0) || 0;
+    setTotalPagesRead(total);
+
+    // Check if goal is met today
+    if (activeGoal?.goal_type === 'pages_per_day' && pagesRead >= activeGoal.target_value) {
+      setGoalMetToday(true);
+    }
+
+    // Week's progress
+    const lastWeek = new Date();
+    lastWeek.setDate(lastWeek.getDate() - 7);
+    
+    const { data: weekData } = await supabase
+      .from('quran_progress')
+      .select('date, pages_read')
+      .eq('user_id', user.id)
+      .gte('date', lastWeek.toISOString().split('T')[0])
+      .order('date', { ascending: true });
+    
+    setWeekProgress(weekData || []);
   };
 
-  const handleValidateReading = async (lastPage: number) => {
+  const createGoal = async () => {
+    if (!user) return;
+    
+    const endDate = new Date();
+    if (newGoalType === 'duration_days') {
+      endDate.setDate(endDate.getDate() + newGoalValue);
+    } else {
+      // Calculate end date based on pages per day
+      const daysNeeded = Math.ceil(TOTAL_QURAN_PAGES / newGoalValue);
+      endDate.setDate(endDate.getDate() + daysNeeded);
+    }
+
+    const { error } = await supabase
+      .from('quran_goals')
+      .insert({
+        user_id: user.id,
+        goal_type: newGoalType,
+        target_value: newGoalValue,
+        end_date: endDate.toISOString().split('T')[0]
+      });
+
+    if (error) {
+      toast.error('Erreur lors de la création de l\'objectif');
+      return;
+    }
+
+    toast.success('Objectif créé avec l\'aide d\'Allah (عز وجل)! 🌙');
+    setIsCreatingGoal(false);
+    fetchGoal();
+  };
+
+  const logReading = async (pages: number) => {
     if (!user) return;
     const today = new Date().toISOString().split('T')[0];
 
@@ -87,28 +149,35 @@ export default function PlanificateurPage() {
       .eq('date', today)
       .maybeSingle();
 
+    let newTotal = pages;
+
     if (existing) {
-      // Update with higher page if applicable
-      const newPage = Math.max(existing.pages_read, lastPage);
+      newTotal = existing.pages_read + pages;
       await supabase
         .from('quran_progress')
-        .update({ pages_read: newPage })
+        .update({ pages_read: newTotal })
         .eq('id', existing.id);
     } else {
       await supabase
         .from('quran_progress')
         .insert({
           user_id: user.id,
-          pages_read: lastPage,
+          goal_id: activeGoal?.id,
+          pages_read: pages
         });
     }
 
-    // Trigger celebration
-    setShowSparkles(true);
-    setTimeout(() => {
-      setShowSuccessModal(true);
-    }, 800);
-
+    // Check if daily goal is now met
+    if (activeGoal?.goal_type === 'pages_per_day' && newTotal >= activeGoal.target_value && !goalMetToday) {
+      setShowSparkles(true);
+      setTimeout(() => {
+        setShowSuccessModal(true);
+        setGoalMetToday(true);
+      }, 800);
+    } else {
+      toast.success(`${pages} page(s) enregistrée(s)! Masha'Allah! 📖`);
+    }
+    
     await fetchProgress();
   };
 
@@ -116,164 +185,167 @@ export default function PlanificateurPage() {
     setShowSparkles(false);
   }, []);
 
-  const handleCreateGoal = async (type: 'pages_per_day' | 'duration_days', value: number) => {
-    if (!user) return;
-
-    const endDate = new Date();
-    if (type === 'duration_days') {
-      endDate.setDate(endDate.getDate() + value);
-    } else {
-      const daysNeeded = Math.ceil(TOTAL_QURAN_PAGES / value);
-      endDate.setDate(endDate.getDate() + daysNeeded);
-    }
-
-    await supabase
-      .from('quran_goals')
-      .update({ is_active: false })
-      .eq('user_id', user.id)
-      .eq('is_active', true);
-
-    await supabase
-      .from('quran_goals')
-      .insert({
-        user_id: user.id,
-        goal_type: type,
-        target_value: value,
-        end_date: endDate.toISOString().split('T')[0],
-      });
-
-    toast.success('Objectif créé! Bismillah 🌙');
-  };
-
-  const easeOut: Easing = [0.0, 0.0, 0.2, 1];
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1 },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 15 },
-    visible: { 
-      opacity: 1, 
-      y: 0,
-      transition: { duration: 0.4, ease: easeOut },
-    },
-  };
-
-
-  const isComplete = totalPagesRead >= TOTAL_QURAN_PAGES;
+  const totalPagesThisWeek = weekProgress.reduce((sum, day) => sum + day.pages_read, 0);
 
   return (
-    <AppLayout title="Khatma">
-      <motion.div 
-        className="space-y-6 pb-8"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-      >
+    <AppLayout title="Planificateur">
+      <div className="section-spacing space-y-6">
         {/* Header */}
-        <motion.div variants={itemVariants} className="text-center">
-          <h1 className="font-display text-3xl sm:text-4xl font-bold text-foreground mb-2">
-            📖 Ma Khatma
-          </h1>
-          <p className="text-lg text-muted-foreground">
-            Avec l'aide d'Allah <span className="honorific">(عز وجل)</span>
+        <div className="zen-header">
+          <h1>📖 Planificateur Tilawah</h1>
+          <p className="text-muted-foreground">
+            Planifie ta lecture avec l'aide d'Allah <span className="honorific">(عز وجل)</span>
           </p>
-        </motion.div>
+        </div>
 
-        {/* Circular Progress - Center Stage */}
-        <motion.div 
-          variants={itemVariants}
-          className="flex flex-col items-center py-6"
-        >
-          <div className="relative">
-            <GoldenSparkles isActive={showSparkles} onComplete={handleSparkleComplete} />
-            <CircularProgress 
-              pagesRead={totalPagesRead} 
-              size={200}
-              strokeWidth={12}
-            />
-          </div>
-          
-          {/* Next Step Indicator */}
-          {!isComplete && totalPagesRead > 0 && (
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.3 }}
-              className="mt-4"
+        {/* Total Progress Bar - Always visible */}
+        <TotalProgressBar totalPagesRead={totalPagesRead} />
+
+        {/* Calculator Section */}
+        <PlannerCalculator 
+          initialPagesPerDay={activeGoal?.goal_type === 'pages_per_day' ? activeGoal.target_value : undefined}
+          initialDays={activeGoal?.goal_type === 'duration_days' ? activeGoal.target_value : undefined}
+        />
+
+        {/* Current Goal or Create New */}
+        {!activeGoal && !isCreatingGoal && (
+          <Card className="pastel-card p-6 text-center shadow-[0_8px_30px_-12px_rgba(0,0,0,0.08)]">
+            <BookOpen className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+            <p className="text-muted-foreground mb-4">Aucun objectif actif</p>
+            <Button 
+              onClick={() => setIsCreatingGoal(true)}
+              className="bg-primary text-primary-foreground hover-lift"
             >
-              <motion.p 
-                animate={{ scale: [1, 1.05, 1] }}
-                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                className="text-base text-muted-foreground"
-              >
-                Prochaine étape : <span className="font-semibold text-primary">Page {Math.min(totalPagesRead + 1, TOTAL_QURAN_PAGES)}</span>
-              </motion.p>
-            </motion.div>
-          )}
-        </motion.div>
+              <Plus className="h-4 w-4 mr-2" />
+              Créer un objectif
+            </Button>
+          </Card>
+        )}
 
-        {/* Completion Message */}
-        {isComplete && (
-          <motion.div 
-            variants={itemVariants}
-            className="text-center bg-gradient-to-r from-gold/20 via-cream to-gold/20 rounded-2xl p-6"
+        {/* Create Goal Modal */}
+        {isCreatingGoal && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
           >
-            <p className="text-2xl font-display font-bold text-foreground mb-2">
-              ✨ Khatma complète! ✨
-            </p>
-            <p className="text-lg text-muted-foreground italic">
-              Qu'Allah <span className="honorific">(عز وجل)</span> accepte ta lecture et te récompense.
-            </p>
+            <Card className="pastel-card p-6">
+              <h3 className="font-display text-lg mb-4">Nouvel objectif</h3>
+              
+              <Tabs value={newGoalType} onValueChange={(v) => setNewGoalType(v as typeof newGoalType)}>
+                <TabsList className="w-full mb-4">
+                  <TabsTrigger value="pages_per_day" className="flex-1">Pages/jour</TabsTrigger>
+                  <TabsTrigger value="duration_days" className="flex-1">Durée</TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="pages_per_day">
+                  <div className="space-y-4">
+                    <Label>Combien de pages par jour ?</Label>
+                    <div className="flex items-center gap-4">
+                      <Input
+                        type="number"
+                        min={1}
+                        max={604}
+                        value={newGoalValue}
+                        onChange={(e) => setNewGoalValue(parseInt(e.target.value) || 1)}
+                        className="text-center text-2xl font-bold w-24"
+                      />
+                      <span className="text-muted-foreground">pages/jour</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      ≈ {Math.ceil(TOTAL_QURAN_PAGES / newGoalValue)} jours pour finir
+                    </p>
+                  </div>
+                </TabsContent>
+                
+                <TabsContent value="duration_days">
+                  <div className="space-y-4">
+                    <Label>Terminer le Coran en combien de jours ?</Label>
+                    <div className="flex items-center gap-4">
+                      <Input
+                        type="number"
+                        min={1}
+                        max={1000}
+                        value={newGoalValue}
+                        onChange={(e) => setNewGoalValue(parseInt(e.target.value) || 30)}
+                        className="text-center text-2xl font-bold w-24"
+                      />
+                      <span className="text-muted-foreground">jours</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      ≈ {(TOTAL_QURAN_PAGES / newGoalValue).toFixed(1)} pages/jour
+                    </p>
+                  </div>
+                </TabsContent>
+              </Tabs>
+
+              <div className="flex gap-3 mt-6">
+                <Button 
+                  variant="outline" 
+                  onClick={() => setIsCreatingGoal(false)}
+                  className="flex-1"
+                >
+                  Annuler
+                </Button>
+                <Button 
+                  onClick={createGoal}
+                  className="flex-1 bg-primary text-primary-foreground"
+                >
+                  Bismillah, je commence!
+                </Button>
+              </div>
+            </Card>
           </motion.div>
         )}
 
-        {/* Evening Check-in Section */}
-        <motion.div variants={itemVariants}>
-          <EveningCheckIn
-            currentPage={todayPages}
-            onValidate={handleValidateReading}
-            isValidated={todayValidated}
+        {/* Reading Slider */}
+        <div className="relative overflow-hidden">
+          <SparkleEffect isActive={showSparkles} onComplete={handleSparkleComplete} />
+          <ReadingSlider
+            onLogReading={logReading}
+            isDisabled={goalMetToday}
+            todayPages={todayPages}
+            targetPages={activeGoal?.target_value || 0}
+            totalPagesRead={totalPagesRead}
           />
-        </motion.div>
-
-        {/* Page Grid - Juz Progress */}
-        <motion.div variants={itemVariants}>
-          <PageGrid pagesRead={totalPagesRead} />
-        </motion.div>
-
-        {/* Curiosity Corner - Calculators at bottom */}
-        <motion.div variants={itemVariants}>
-          <CuriosityCorner 
-            pagesRead={totalPagesRead}
-            onCreateGoal={handleCreateGoal}
-          />
-        </motion.div>
-
-        {/* Spiritual Quote */}
-        <motion.div 
-          variants={itemVariants}
-          className="text-center pt-4 pb-2"
-        >
-          <p className="font-display text-base text-muted-foreground italic">
-            "Lis! Au nom de ton Seigneur qui a créé."
-          </p>
-          <p className="text-sm text-muted-foreground/70 mt-1">
-            — Sourate Al-'Alaq, verset 1
-          </p>
-        </motion.div>
+        </div>
 
         {/* Success Modal */}
         <SuccessModal 
           isOpen={showSuccessModal} 
           onClose={() => setShowSuccessModal(false)} 
         />
-      </motion.div>
+
+        {/* Week Summary */}
+        <Card className="pastel-card p-6 shadow-[0_8px_30px_-12px_rgba(0,0,0,0.08)]">
+          <h3 className="font-display text-lg mb-4">Cette semaine</h3>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-3xl font-bold text-primary">{totalPagesThisWeek}</p>
+              <p className="text-sm text-muted-foreground">pages lues</p>
+            </div>
+            <div className="flex gap-1">
+              {[0, 1, 2, 3, 4, 5, 6].map((dayOffset) => {
+                const date = new Date();
+                date.setDate(date.getDate() - (6 - dayOffset));
+                const dateStr = date.toISOString().split('T')[0];
+                const dayProgress = weekProgress.find(p => p.date === dateStr);
+                const hasProgress = dayProgress && dayProgress.pages_read > 0;
+                
+                return (
+                  <div
+                    key={dayOffset}
+                    className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                      hasProgress ? 'bg-primary text-primary-foreground' : 'bg-muted'
+                    }`}
+                  >
+                    {hasProgress && <Check className="h-4 w-4" />}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </Card>
+      </div>
     </AppLayout>
   );
 }

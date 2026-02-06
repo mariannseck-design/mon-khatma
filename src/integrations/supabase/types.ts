@@ -46,33 +46,6 @@ export type Database = {
           },
         ]
       }
-      notification_preferences: {
-        Row: {
-          created_at: string
-          daily_reminder_enabled: boolean
-          id: string
-          reminder_time: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          daily_reminder_enabled?: boolean
-          id?: string
-          reminder_time?: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          daily_reminder_enabled?: boolean
-          id?: string
-          reminder_time?: string
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
       profiles: {
         Row: {
           created_at: string
@@ -95,36 +68,6 @@ export type Database = {
           display_name?: string | null
           id?: string
           onboarding_completed?: boolean | null
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      push_subscriptions: {
-        Row: {
-          auth: string
-          created_at: string
-          endpoint: string
-          id: string
-          p256dh: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          auth: string
-          created_at?: string
-          endpoint: string
-          id?: string
-          p256dh: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          auth?: string
-          created_at?: string
-          endpoint?: string
-          id?: string
-          p256dh?: string
           updated_at?: string
           user_id?: string
         }
@@ -168,7 +111,6 @@ export type Database = {
       }
       quran_progress: {
         Row: {
-          ayah_number: number | null
           created_at: string
           date: string
           goal_id: string | null
@@ -176,12 +118,10 @@ export type Database = {
           juz_completed: number | null
           notes: string | null
           pages_read: number
-          surah_name: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
-          ayah_number?: number | null
           created_at?: string
           date?: string
           goal_id?: string | null
@@ -189,12 +129,10 @@ export type Database = {
           juz_completed?: number | null
           notes?: string | null
           pages_read?: number
-          surah_name?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
-          ayah_number?: number | null
           created_at?: string
           date?: string
           goal_id?: string | null
@@ -202,7 +140,6 @@ export type Database = {
           juz_completed?: number | null
           notes?: string | null
           pages_read?: number
-          surah_name?: string | null
           updated_at?: string
           user_id?: string
         }

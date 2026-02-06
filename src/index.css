@@ -9,44 +9,31 @@
 
 @layer base {
   :root {
-    /* Core Palette - Khatma Theme: Sage Green, Cream, Gold */
-    --background: 40 30% 97%;
-    --foreground: 220 20% 18%;
+    /* Core Palette - Soft Pastels */
+    --background: 0 0% 99%;
+    --foreground: 220 20% 20%;
 
-    --card: 40 25% 99%;
-    --card-foreground: 220 20% 18%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 20% 20%;
 
-    --popover: 40 25% 99%;
-    --popover-foreground: 220 20% 18%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 20%;
 
-    /* Primary - Sage Green (spiritual, calming) */
-    --primary: 158 40% 55%;
-    --primary-foreground: 0 0% 100%;
+    /* Primary - Mint Green (soothing, spiritual) */
+    --primary: 158 45% 70%;
+    --primary-foreground: 220 20% 15%;
 
-    /* Secondary - Warm Cream */
-    --secondary: 38 40% 94%;
-    --secondary-foreground: 30 30% 25%;
+    /* Secondary - Peach */
+    --secondary: 20 70% 90%;
+    --secondary-foreground: 20 50% 25%;
 
-    /* Muted - Soft Warm Gray */
-    --muted: 40 20% 94%;
+    /* Muted - Soft Gray */
+    --muted: 220 15% 95%;
     --muted-foreground: 220 10% 45%;
 
-    /* Accent - Lavender (subtle highlight) */
-    --accent: 260 45% 88%;
+    /* Accent - Lavender */
+    --accent: 260 50% 85%;
     --accent-foreground: 260 40% 25%;
-
-    /* Sage - Main spiritual color */
-    --sage: 158 35% 60%;
-    --sage-foreground: 0 0% 100%;
-
-    /* Cream - Warm neutral */
-    --cream: 40 35% 95%;
-    --cream-foreground: 30 30% 20%;
-
-    /* Gold - Celebration and achievements */
-    --gold: 43 85% 55%;
-    --gold-foreground: 43 90% 15%;
-    --gold-light: 43 80% 70%;
 
     /* Sky - For highlights */
     --sky: 200 70% 85%;
@@ -57,37 +44,30 @@
     --peach-foreground: 20 60% 25%;
 
     /* Success - For completed items */
-    --success: 142 50% 65%;
-    --success-foreground: 0 0% 100%;
-
-    /* Lavender - Soft accent */
-    --lavender: 260 50% 85%;
+    --success: 142 50% 75%;
+    --success-foreground: 142 40% 20%;
 
     /* Destructive */
     --destructive: 0 60% 70%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 40 20% 88%;
-    --input: 40 20% 88%;
-    --ring: 158 40% 55%;
+    --border: 220 15% 90%;
+    --input: 220 15% 90%;
+    --ring: 158 45% 70%;
 
     --radius: 1rem;
 
-    /* Gradients - Khatma theme */
-    --gradient-sage: linear-gradient(135deg, hsl(158 40% 60%), hsl(158 35% 70%));
-    --gradient-cream: linear-gradient(135deg, hsl(40 35% 96%), hsl(38 40% 92%));
-    --gradient-gold: linear-gradient(135deg, hsl(43 85% 55%), hsl(38 90% 65%));
-    --gradient-mint: linear-gradient(135deg, hsl(158 40% 60%), hsl(158 45% 75%));
+    /* Gradients */
+    --gradient-mint: linear-gradient(135deg, hsl(158 45% 75%), hsl(158 50% 85%));
     --gradient-peach: linear-gradient(135deg, hsl(20 80% 88%), hsl(30 70% 92%));
     --gradient-lavender: linear-gradient(135deg, hsl(260 50% 85%), hsl(280 45% 90%));
     --gradient-sky: linear-gradient(135deg, hsl(200 70% 85%), hsl(210 60% 90%));
-    --gradient-warm: linear-gradient(180deg, hsl(40 35% 97%), hsl(40 30% 99%));
+    --gradient-warm: linear-gradient(180deg, hsl(20 70% 96%), hsl(0 0% 99%));
 
-    /* Shadows - Soft and warm */
-    --shadow-soft: 0 4px 20px -4px hsl(40 30% 30% / 0.08);
-    --shadow-medium: 0 8px 30px -6px hsl(40 30% 30% / 0.1);
-    --shadow-card: 0 2px 12px -2px hsl(40 30% 30% / 0.06);
-    --shadow-khatma: 0 4px 24px -8px hsl(158 40% 40% / 0.15);
+    /* Shadows - Soft and subtle */
+    --shadow-soft: 0 4px 20px -4px hsl(220 20% 20% / 0.06);
+    --shadow-medium: 0 8px 30px -6px hsl(220 20% 20% / 0.08);
+    --shadow-card: 0 2px 12px -2px hsl(220 20% 20% / 0.05);
 
     /* Ramadan Theme - Golden on Night Blue */
     --ramadan-gold: 43 90% 55%;
@@ -98,14 +78,14 @@
     --ramadan-night-foreground: 43 85% 70%;
 
     /* Sidebar */
-    --sidebar-background: 40 30% 98%;
-    --sidebar-foreground: 220 20% 18%;
-    --sidebar-primary: 158 40% 55%;
-    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 220 20% 20%;
+    --sidebar-primary: 158 45% 70%;
+    --sidebar-primary-foreground: 220 20% 15%;
     --sidebar-accent: 260 50% 92%;
     --sidebar-accent-foreground: 260 40% 25%;
-    --sidebar-border: 40 20% 90%;
-    --sidebar-ring: 158 40% 55%;
+    --sidebar-border: 220 15% 92%;
+    --sidebar-ring: 158 45% 70%;
   }
 
   .dark {
@@ -118,27 +98,17 @@
     --popover: 220 20% 14%;
     --popover-foreground: 0 0% 95%;
 
-    --primary: 158 35% 50%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 158 40% 55%;
+    --primary-foreground: 220 20% 10%;
 
-    --secondary: 30 25% 20%;
-    --secondary-foreground: 30 40% 90%;
+    --secondary: 20 50% 25%;
+    --secondary-foreground: 20 70% 90%;
 
     --muted: 220 15% 20%;
     --muted-foreground: 220 10% 60%;
 
     --accent: 260 40% 35%;
     --accent-foreground: 260 50% 90%;
-
-    --sage: 158 30% 45%;
-    --sage-foreground: 0 0% 100%;
-
-    --cream: 40 20% 18%;
-    --cream-foreground: 40 35% 90%;
-
-    --gold: 43 80% 50%;
-    --gold-foreground: 43 90% 10%;
-    --gold-light: 43 75% 60%;
 
     --sky: 200 50% 35%;
     --sky-foreground: 200 70% 90%;
@@ -149,14 +119,12 @@
     --success: 142 40% 40%;
     --success-foreground: 142 50% 90%;
 
-    --lavender: 260 40% 35%;
-
     --destructive: 0 50% 45%;
     --destructive-foreground: 0 0% 95%;
 
     --border: 220 15% 22%;
     --input: 220 15% 22%;
-    --ring: 158 35% 50%;
+    --ring: 158 40% 55%;
 
     /* Ramadan Theme - Dark mode */
     --ramadan-gold: 43 85% 50%;
@@ -168,12 +136,12 @@
 
     --sidebar-background: 220 20% 12%;
     --sidebar-foreground: 0 0% 95%;
-    --sidebar-primary: 158 35% 50%;
-    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-primary: 158 40% 55%;
+    --sidebar-primary-foreground: 220 20% 10%;
     --sidebar-accent: 260 40% 25%;
     --sidebar-accent-foreground: 260 50% 90%;
     --sidebar-border: 220 15% 20%;
-    --sidebar-ring: 158 35% 50%;
+    --sidebar-ring: 158 40% 55%;
   }
 }
 
@@ -187,58 +155,22 @@
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
-    /* Base font size for mobile - minimum 16px */
-    font-size: 16px;
-  }
-
-  /* Increase base font size on larger screens */
-  @media (min-width: 640px) {
-    html {
-      font-size: 17px;
-    }
   }
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
+    font-size: 20px;
+    line-height: 1.7;
     min-height: 100vh;
     min-height: 100dvh;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     touch-action: manipulation;
-    /* Ensure minimum readable body text */
-    font-size: 1rem;
-    line-height: 1.6;
   }
 
-  /* Headings - minimum 24px on mobile */
-  h1 {
-    @apply font-display font-bold tracking-tight;
-    font-size: 1.75rem; /* 28px */
-    line-height: 1.2;
-  }
-
-  h2 {
+  h1, h2, h3, h4, h5, h6 {
     @apply font-display font-semibold tracking-tight;
-    font-size: 1.5rem; /* 24px */
-    line-height: 1.25;
-  }
-
-  h3 {
-    @apply font-display font-semibold tracking-tight;
-    font-size: 1.25rem; /* 20px */
-    line-height: 1.3;
-  }
-
-  h4, h5, h6 {
-    @apply font-display font-semibold tracking-tight;
-    font-size: 1.125rem; /* 18px */
-    line-height: 1.4;
-  }
-
-  /* Ensure paragraphs and text are readable */
-  p, span, div {
-    line-height: 1.6;
   }
 
   /* Prevent iOS zoom on input focus */
@@ -254,11 +186,6 @@
     box-shadow: var(--shadow-card);
   }
 
-  /* Khatma themed shadow */
-  .shadow-khatma {
-    box-shadow: var(--shadow-khatma);
-  }
-
   /* Illustrated card style (Life With Allah inspired) */
   .illustrated-card {
     @apply bg-card rounded-3xl border-2 border-border/30 p-6;
@@ -267,23 +194,11 @@
 
   /* Spiritual anchor card - static verse */
   .spiritual-anchor {
-    box-shadow: 0 8px 32px -8px hsl(158 40% 50% / 0.15), 
-                0 4px 16px -4px hsl(43 85% 55% / 0.1);
+    box-shadow: 0 8px 32px -8px hsl(158 45% 60% / 0.15), 
+                0 4px 16px -4px hsl(20 60% 70% / 0.1);
   }
 
   /* Gradient backgrounds */
-  .bg-gradient-sage {
-    background: var(--gradient-sage);
-  }
-
-  .bg-gradient-cream {
-    background: var(--gradient-cream);
-  }
-
-  .bg-gradient-gold {
-    background: var(--gradient-gold);
-  }
-
   .bg-gradient-mint {
     background: var(--gradient-mint);
   }
@@ -314,39 +229,32 @@
     box-shadow: var(--shadow-medium);
   }
 
-  /* Page container with generous whitespace - mobile optimized */
+  /* Page container with generous whitespace */
   .page-container {
-    @apply min-h-screen pb-28 pt-6 px-4 sm:px-5;
-    max-width: 100vw;
-    overflow-x: hidden;
+    @apply min-h-screen pb-28 pt-6 px-5;
   }
 
   /* Section spacing */
   .section-spacing {
-    @apply space-y-6 sm:space-y-8;
+    @apply space-y-8;
   }
 
-  /* Zen header style - with mobile-optimized sizes */
+  /* Zen header style */
   .zen-header {
-    @apply text-center space-y-3 mb-6 sm:mb-8;
+    @apply text-center space-y-2 mb-8;
   }
 
   .zen-header h1 {
-    @apply text-2xl sm:text-3xl font-display font-bold text-foreground;
+    @apply text-2xl font-display text-foreground;
   }
 
   .zen-header p {
-    @apply text-base sm:text-lg text-muted-foreground;
+    @apply text-sm text-muted-foreground;
   }
 
-  /* Progress ring for circular progress */
+  /* Progress ring */
   .progress-ring {
     transform: rotate(-90deg);
-  }
-
-  /* Mobile touch targets - minimum 44px */
-  .touch-target {
-    @apply min-h-[44px] min-w-[44px];
   }
 
   /* Smooth fade in */
@@ -396,45 +304,11 @@
   .arabic-text {
     font-family: 'Scheherazade New', 'Traditional Arabic', serif;
     direction: rtl;
-    font-size: 1.125em; /* Slightly larger for Arabic legibility */
   }
 
-  /* Honorific styling (عز وجل) and (عليه السلام) - MUST be legible */
+  /* Honorific styling (عز وجل) and (عليه السلام) */
   .honorific {
-    @apply text-primary font-semibold;
-    font-family: 'Scheherazade New', 'Traditional Arabic', 'Amiri', serif;
-    font-size: 1.1em; /* Slightly larger than surrounding text */
-    display: inline-block;
-    vertical-align: baseline;
-    line-height: 1.2;
-  }
-
-  /* Font Arabic for surah names */
-  .font-arabic {
-    font-family: 'Scheherazade New', 'Traditional Arabic', 'Amiri', serif;
-    font-size: 1.15em;
-  }
-
-  /* Mobile-optimized text sizes */
-  .text-mobile-lg {
-    font-size: 1.125rem; /* 18px */
-  }
-
-  .text-mobile-xl {
-    font-size: 1.25rem; /* 20px */
-  }
-
-  .text-mobile-2xl {
-    font-size: 1.5rem; /* 24px */
-  }
-
-  .text-mobile-3xl {
-    font-size: 1.875rem; /* 30px */
-  }
-
-  /* Lavender gradient for last reading card */
-  .lavender {
-    --tw-bg-opacity: 1;
-    background-color: hsl(var(--accent) / var(--tw-bg-opacity));
+    @apply text-primary font-medium;
+    font-family: 'Scheherazade New', 'Traditional Arabic', serif;
   }
 }

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { LogOut, User, Settings, Shield, HelpCircle } from 'lucide-react';
+import { LogOut, User, Settings, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -74,12 +74,6 @@ export function Header({ title = "Istiqamah" }: HeaderProps) {
                 <Link to="/parametres" className="flex items-center gap-2">
                   <Settings className="h-4 w-4" />
                   Paramètres
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link to="/support" className="flex items-center gap-2">
-                  <HelpCircle className="h-4 w-4" />
-                  Support & Aide
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />

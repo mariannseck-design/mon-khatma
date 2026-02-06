@@ -30,7 +30,7 @@ export function ZoomControl() {
   };
 
   return (
-    <div className="fixed bottom-32 right-5 z-[9999]">
+    <div className="fixed bottom-24 right-4 z-50">
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -85,12 +85,12 @@ export function ZoomControl() {
       {/* Main toggle button */}
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-success shadow-xl flex items-center justify-center border-4 border-white"
+        className="w-14 h-14 rounded-full bg-gradient-to-br from-primary to-success shadow-lg flex items-center justify-center"
         whileTap={{ scale: 0.9 }}
         animate={{ rotate: isOpen ? 180 : 0 }}
         transition={{ duration: 0.2 }}
       >
-        <Type className="h-7 w-7 text-primary-foreground" />
+        <Type className="h-6 w-6 text-primary-foreground" />
       </motion.button>
     </div>
   );

@@ -35,17 +35,17 @@ export default function EmotionsPage() {
       <div className="section-spacing">
         {/* Header */}
         <div className="zen-header">
-          <h1 className="text-2xl sm:text-3xl">🌸 Comment te sens-tu?</h1>
-          <p className="text-base text-muted-foreground">
+          <h1>🌸 Comment te sens-tu?</h1>
+          <p className="text-muted-foreground">
             Prends un moment pour toi, avec l'aide d'Allah <span className="honorific">(عز وجل)</span>
           </p>
         </div>
 
         {/* Mood Selection */}
         <Card className="pastel-card p-6">
-          <h3 className="font-display text-xl mb-5 text-center">Mon humeur aujourd'hui</h3>
+          <h3 className="font-display text-lg mb-4 text-center">Mon humeur aujourd'hui</h3>
           
-          <div className="flex justify-center gap-3 flex-wrap">
+          <div className="flex justify-center gap-3">
             {moods.map((mood) => {
               const Icon = mood.icon;
               const isSelected = selectedMood === mood.value;
@@ -54,15 +54,15 @@ export default function EmotionsPage() {
                 <motion.button
                   key={mood.value}
                   onClick={() => setSelectedMood(mood.value)}
-                  className={`flex flex-col items-center gap-2 p-4 rounded-2xl transition-all min-w-[4.5rem] ${
+                  className={`flex flex-col items-center gap-2 p-3 rounded-2xl transition-all ${
                     isSelected 
                       ? `${mood.color} scale-110 shadow-lg` 
                       : 'bg-muted hover:bg-muted/80'
                   }`}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <Icon className={`h-9 w-9 ${isSelected ? 'text-foreground' : 'text-muted-foreground'}`} />
-                  <span className={`text-sm font-medium ${isSelected ? 'text-foreground' : 'text-muted-foreground'}`}>
+                  <Icon className={`h-8 w-8 ${isSelected ? 'text-foreground' : 'text-muted-foreground'}`} />
+                  <span className={`text-xs ${isSelected ? 'text-foreground font-medium' : 'text-muted-foreground'}`}>
                     {mood.label}
                   </span>
                 </motion.button>
@@ -79,11 +79,11 @@ export default function EmotionsPage() {
         >
           <Card className="pastel-card p-6">
             <div className="flex items-center gap-2 mb-4">
-              <Heart className="h-6 w-6 text-peach" />
-              <h3 className="font-display text-xl">Gratitude</h3>
+              <Heart className="h-5 w-5 text-peach" />
+              <h3 className="font-display text-lg">Gratitude</h3>
             </div>
             
-            <p className="text-base text-muted-foreground mb-4">
+            <p className="text-sm text-muted-foreground mb-3">
               Pour quoi es-tu reconnaissante aujourd'hui?
             </p>
             
@@ -91,7 +91,7 @@ export default function EmotionsPage() {
               placeholder="Alhamdulillah pour..."
               value={gratitude}
               onChange={(e) => setGratitude(e.target.value)}
-              className="min-h-[120px] rounded-xl resize-none text-base"
+              className="min-h-[100px] rounded-xl resize-none"
             />
           </Card>
         </motion.div>
@@ -100,9 +100,9 @@ export default function EmotionsPage() {
         {!saved && (
           <Button 
             onClick={handleSave}
-            className="w-full bg-primary text-primary-foreground hover-lift h-14 rounded-2xl text-lg font-semibold"
+            className="w-full bg-primary text-primary-foreground hover-lift h-12 rounded-xl"
           >
-            <Sparkles className="h-5 w-5 mr-2" />
+            <Sparkles className="h-4 w-4 mr-2" />
             Enregistrer mon moment
           </Button>
         )}
@@ -114,11 +114,11 @@ export default function EmotionsPage() {
             animate={{ opacity: 1, scale: 1 }}
           >
             <Card className="illustrated-card bg-gradient-mint text-center py-8">
-              <Sparkles className="h-14 w-14 text-primary-foreground mx-auto mb-4" />
-              <h3 className="font-display text-2xl text-primary-foreground mb-2">
+              <Sparkles className="h-12 w-12 text-primary-foreground mx-auto mb-4" />
+              <h3 className="font-display text-xl text-primary-foreground mb-2">
                 Moment enregistré!
               </h3>
-              <p className="text-base text-primary-foreground/70">
+              <p className="text-sm text-primary-foreground/70">
                 Qu'Allah <span className="honorific">(عز وجل)</span> t'accorde la paix intérieure.
               </p>
             </Card>
@@ -127,12 +127,12 @@ export default function EmotionsPage() {
 
         {/* Reflection Card */}
         <Card className="pastel-card p-6">
-          <h3 className="font-display text-xl mb-4">💭 Réflexion du jour</h3>
-          <p className="text-base text-foreground italic leading-relaxed">
+          <h3 className="font-display text-lg mb-3">💭 Réflexion du jour</h3>
+          <p className="text-foreground italic">
             "Le croyant qui se mélange aux gens et supporte leurs nuisances est meilleur que 
             celui qui ne se mélange pas aux gens et ne supporte pas leurs nuisances."
           </p>
-          <p className="text-base text-muted-foreground mt-3">
+          <p className="text-sm text-muted-foreground mt-2">
             — Hadith rapporté par At-Tirmidhi
           </p>
         </Card>
