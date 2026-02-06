@@ -201,13 +201,20 @@ export default function PlanificateurPage() {
           
           {/* Next Step Indicator */}
           {!isComplete && totalPagesRead > 0 && (
-            <motion.p 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="mt-4 text-base text-muted-foreground"
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.3 }}
+              className="mt-4"
             >
-              Prochaine étape : <span className="font-semibold text-primary">Page {Math.min(totalPagesRead + 1, TOTAL_QURAN_PAGES)}</span>
-            </motion.p>
+              <motion.p 
+                animate={{ scale: [1, 1.05, 1] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                className="text-base text-muted-foreground"
+              >
+                Prochaine étape : <span className="font-semibold text-primary">Page {Math.min(totalPagesRead + 1, TOTAL_QURAN_PAGES)}</span>
+              </motion.p>
+            </motion.div>
           )}
         </motion.div>
 
