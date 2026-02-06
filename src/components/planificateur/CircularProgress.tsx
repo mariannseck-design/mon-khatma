@@ -60,20 +60,20 @@ export function CircularProgress({
 
       {/* Center content */}
       <div className="relative z-10 text-center">
+        <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1">Page</p>
         <motion.p 
           key={pagesRead}
           initial={{ scale: 1.1, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          className="text-4xl sm:text-5xl font-display font-bold text-foreground"
+          className="text-4xl sm:text-5xl font-display font-bold text-foreground leading-none"
         >
           {pagesRead}
         </motion.p>
-        <p className="text-sm text-muted-foreground">sur {TOTAL_QURAN_PAGES} pages</p>
         <motion.p 
           key={percentage}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="text-lg font-semibold text-primary mt-1"
+          className="text-lg font-semibold text-primary mt-2"
         >
           {percentage.toFixed(1)}%
         </motion.p>

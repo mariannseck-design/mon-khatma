@@ -188,16 +188,27 @@ export default function PlanificateurPage() {
         {/* Circular Progress - Center Stage */}
         <motion.div 
           variants={itemVariants}
-          className="flex justify-center py-6"
+          className="flex flex-col items-center py-6"
         >
           <div className="relative">
             <GoldenSparkles isActive={showSparkles} onComplete={handleSparkleComplete} />
             <CircularProgress 
               pagesRead={totalPagesRead} 
-              size={220}
-              strokeWidth={14}
+              size={200}
+              strokeWidth={12}
             />
           </div>
+          
+          {/* Next Step Indicator */}
+          {!isComplete && totalPagesRead > 0 && (
+            <motion.p 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="mt-4 text-base text-muted-foreground"
+            >
+              Prochaine étape : <span className="font-semibold text-primary">Page {Math.min(totalPagesRead + 1, TOTAL_QURAN_PAGES)}</span>
+            </motion.p>
+          )}
         </motion.div>
 
         {/* Completion Message */}
