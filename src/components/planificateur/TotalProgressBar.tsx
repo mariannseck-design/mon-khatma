@@ -1,8 +1,17 @@
 import { motion } from 'framer-motion';
-import { BookOpen, Star } from 'lucide-react';
+import { BookOpen, Star, Moon } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 
 const TOTAL_QURAN_PAGES = 604;
+
+// Calculate days until Ramadan 2026 (approximately February 17, 2026)
+const getDaysUntilRamadan = () => {
+  const today = new Date();
+  const ramadan2026 = new Date(2026, 1, 17); // February 17, 2026
+  const diffTime = ramadan2026.getTime() - today.getTime();
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  return diffDays > 0 ? diffDays : 0;
+};
 
 interface TotalProgressBarProps {
   totalPagesRead: number;
@@ -11,6 +20,9 @@ interface TotalProgressBarProps {
 export function TotalProgressBar({ totalPagesRead }: TotalProgressBarProps) {
   const percentage = Math.min(100, (totalPagesRead / TOTAL_QURAN_PAGES) * 100);
   const isComplete = totalPagesRead >= TOTAL_QURAN_PAGES;
+  const daysUntilRamadan = getDaysUntilRamadan();
+  const remainingPages = TOTAL_QURAN_PAGES - totalPagesRead;
+  const pagesPerDayForRamadan = daysUntilRamadan > 0 ? Math.ceil(remainingPages / daysUntilRamadan) : 0;
 
   return (
     <motion.div
@@ -21,6 +33,16 @@ export function TotalProgressBar({ totalPagesRead }: TotalProgressBarProps) {
         isComplete ? 'bg-gradient-to-r from-accent/60 to-accent/40' : 'bg-gradient-mint'
       }`}>
         <div className="p-6">
+          {/* Ramadan Countdown - Static Label */}
+          {daysUntilRamadan > 0 && !isComplete && (
+            <div className="flex items-center justify-center gap-2 mb-4 bg-white/20 rounded-xl py-2 px-4">
+              <Moon className="h-4 w-4 text-primary-foreground" />
+              <span className="text-sm font-medium text-primary-foreground">
+                {daysUntilRamadan} jours avant Ramadan
+              </span>
+            </div>
+          )}
+
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-2xl bg-white/30 flex items-center justify-center">
@@ -51,10 +73,19 @@ export function TotalProgressBar({ totalPagesRead }: TotalProgressBarProps) {
           {/* Subtitle */}
           <p className="text-sm text-primary-foreground/80 mb-4 italic text-center">
             {isComplete 
-              ? "Félicitations ! Qu'Allah (عز وجل) accepte votre lecture et vous accorde Sa satisfaction."
+              ? "Félicitations ! Qu'Allah (عز وجل) accepte votre lecture."
               : <>Continue ta Khatma avec l'aide d'Allah <span className="honorific">(عز وجل)</span></>
             }
           </p>
+
+          {/* Static suggestion for Ramadan - Not interactive */}
+          {daysUntilRamadan > 0 && !isComplete && remainingPages > 0 && (
+            <div className="text-center bg-white/15 rounded-xl py-3 px-4 mb-2">
+              <p className="text-sm text-primary-foreground font-medium">
+                Pour finir avant Ramadan : <span className="font-bold">{pagesPerDayForRamadan} pages/jour</span>
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Progress bar at bottom */}
