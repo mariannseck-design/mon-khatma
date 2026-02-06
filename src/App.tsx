@@ -16,6 +16,7 @@ import EmotionsPage from "./pages/EmotionsPage";
 import RappelsPage from "./pages/RappelsPage";
 import AdminPage from "./pages/AdminPage";
 import SupportPage from "./pages/SupportPage";
+import ParametresPage from "./pages/ParametresPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -73,6 +74,7 @@ function AppRoutes() {
       <Route path="/rappels" element={<ProtectedRoute><RappelsPage /></ProtectedRoute>} />
       <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
       <Route path="/support" element={<ProtectedRoute><SupportPage /></ProtectedRoute>} />
+      <Route path="/parametres" element={<ProtectedRoute><ParametresPage /></ProtectedRoute>} />
       
       <Route path="*" element={<NotFound />} />
     </Routes>
