@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { PlannerCalculator } from '@/components/planificateur/PlannerCalculator';
+
 import { ReadingSlider } from '@/components/planificateur/ReadingSlider';
 import { TotalProgressBar } from '@/components/planificateur/TotalProgressBar';
 import { SparkleEffect } from '@/components/planificateur/SparkleEffect';
@@ -201,11 +201,6 @@ export default function PlanificateurPage() {
         {/* Total Progress Bar - Always visible */}
         <TotalProgressBar totalPagesRead={totalPagesRead} />
 
-        {/* Calculator Section */}
-        <PlannerCalculator 
-          initialPagesPerDay={activeGoal?.goal_type === 'pages_per_day' ? activeGoal.target_value : undefined}
-          initialDays={activeGoal?.goal_type === 'duration_days' ? activeGoal.target_value : undefined}
-        />
 
         {/* Current Goal or Create New */}
         {!activeGoal && !isCreatingGoal && (

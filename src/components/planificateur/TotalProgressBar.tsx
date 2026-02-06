@@ -34,9 +34,6 @@ export function TotalProgressBar({ totalPagesRead }: TotalProgressBarProps) {
                 <p className="font-medium text-primary-foreground">
                   {isComplete ? 'Khatma complète!' : 'Progression globale'}
                 </p>
-                <p className="text-sm text-primary-foreground/70">
-                  {TOTAL_QURAN_PAGES} pages
-                </p>
               </div>
             </div>
             <div className="text-right">
@@ -55,7 +52,7 @@ export function TotalProgressBar({ totalPagesRead }: TotalProgressBarProps) {
           <p className="text-sm text-primary-foreground/80 mb-4 italic text-center">
             {isComplete 
               ? "Félicitations ! Qu'Allah (عز وجل) accepte votre lecture et vous accorde Sa satisfaction."
-              : "Cheminez vers la constance à votre rythme, avec l'aide d'Allah (عز وجل)"
+              : <>Continue ta Khatma avec l'aide d'Allah <span className="honorific">(عز وجل)</span></>
             }
           </p>
         </div>
