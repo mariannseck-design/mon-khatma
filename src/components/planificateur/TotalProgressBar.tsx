@@ -35,7 +35,7 @@ export function TotalProgressBar({ totalPagesRead }: TotalProgressBarProps) {
                   {isComplete ? 'Khatma complète!' : 'Progression globale'}
                 </p>
                 <p className="text-sm text-primary-foreground/70">
-                  {totalPagesRead} / {TOTAL_QURAN_PAGES} pages
+                  {TOTAL_QURAN_PAGES} pages
                 </p>
               </div>
             </div>
