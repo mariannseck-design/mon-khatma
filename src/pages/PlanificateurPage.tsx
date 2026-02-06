@@ -193,14 +193,10 @@ export default function PlanificateurPage() {
         {/* Header */}
         <div className="zen-header">
           <h1>📖 Planificateur Tilawah</h1>
-          <p className="text-muted-foreground">
-            Planifie ta lecture avec l'aide d'Allah <span className="honorific">(عز وجل)</span>
-          </p>
         </div>
 
-        {/* Total Progress Bar - Always visible */}
+        {/* Total Progress Bar - Main Green Card with all info */}
         <TotalProgressBar totalPagesRead={totalPagesRead} />
-
 
         {/* Current Goal or Create New */}
         {!activeGoal && !isCreatingGoal && (
@@ -212,7 +208,7 @@ export default function PlanificateurPage() {
               className="bg-primary text-primary-foreground hover-lift"
             >
               <Plus className="h-4 w-4 mr-2" />
-              Créer un objectif
+              Définir un objectif
             </Button>
           </Card>
         )}
