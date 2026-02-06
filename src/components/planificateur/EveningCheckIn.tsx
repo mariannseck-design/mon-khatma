@@ -95,22 +95,16 @@ export function EveningCheckIn({ currentPage, onValidate, isValidated }: Evening
             <Label className="text-lg font-semibold text-foreground">
               Dernière page lue aujourd'hui
             </Label>
-            <div className="flex items-center gap-4">
-              <div className="relative flex-1">
-                <Input
-                  type="number"
-                  min={1}
-                  max={TOTAL_QURAN_PAGES}
-                  value={lastPageRead}
-                  onChange={(e) => handlePageChange(e.target.value)}
-                  placeholder="Ex: 42"
-                  className="text-center text-3xl font-bold h-20 bg-white border-2 border-sage/30 focus:border-primary rounded-2xl"
-                />
-              </div>
-              <div className="text-center">
-                <p className="text-sm text-muted-foreground">sur</p>
-                <p className="text-2xl font-bold text-foreground">{TOTAL_QURAN_PAGES}</p>
-              </div>
+            <div className="relative">
+              <Input
+                type="number"
+                min={1}
+                max={TOTAL_QURAN_PAGES}
+                value={lastPageRead}
+                onChange={(e) => handlePageChange(e.target.value)}
+                placeholder="Ex: 42"
+                className="text-center text-3xl font-bold h-20 bg-white border-2 border-sage/30 focus:border-primary rounded-2xl"
+              />
             </div>
 
             {/* Quick page indicator */}
