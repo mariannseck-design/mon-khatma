@@ -47,9 +47,9 @@ export default function AccueilPage() {
   };
   const greeting = () => {
     const hour = new Date().getHours();
-    if (hour < 12) return 'Sabah el-kheir';
-    if (hour < 18) return 'Bon après-midi';
-    return 'Assalamu aleykum wa rahmatulahi wa barakatuhu';
+    if (hour < 12) return '☀️ Sabah el-kheir !';
+    if (hour < 18) return '🌸 Bon après-midi !';
+    return '🌙 Assalamu aleykum wa rahmatulahi wa barakatuhu';
   };
   const displayName = profile?.display_name || 'Sœur';
   const {
