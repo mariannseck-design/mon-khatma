@@ -235,31 +235,21 @@ export default function PlanificateurPage() {
 
         {/* Juz Progress Grid */}
         <Card className="pastel-card p-6 shadow-[0_8px_30px_-12px_rgba(0,0,0,0.08)]">
-          <h3 className="font-display text-lg mb-4">Progression des Juz</h3>
+          <h3 className="font-display text-lg mb-4">Juz lues</h3>
           <div className="grid grid-cols-5 gap-2">
-            {Array.from({ length: 30 }, (_, i) => {
-              const juzNumber = i + 1;
-              const pagesPerJuz = TOTAL_QURAN_PAGES / 30;
-              const juzEndPage = Math.ceil(juzNumber * pagesPerJuz);
-              const isCompleted = totalPagesRead >= juzEndPage;
-              const isInProgress = totalPagesRead >= (juzNumber - 1) * pagesPerJuz && totalPagesRead < juzEndPage;
-              
-              return (
-                <div 
-                  key={juzNumber}
-                  className={`flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium transition-all ${
-                    isCompleted 
-                      ? 'bg-primary text-primary-foreground' 
-                      : isInProgress
-                        ? 'bg-primary/20 text-primary border-2 border-primary'
-                        : 'bg-muted text-muted-foreground'
-                  }`}
-                >
+            {Array.from({
+            length: 30
+          }, (_, i) => {
+            const juzNumber = i + 1;
+            const pagesPerJuz = TOTAL_QURAN_PAGES / 30;
+            const juzEndPage = Math.ceil(juzNumber * pagesPerJuz);
+            const isCompleted = totalPagesRead >= juzEndPage;
+            const isInProgress = totalPagesRead >= (juzNumber - 1) * pagesPerJuz && totalPagesRead < juzEndPage;
+            return <div key={juzNumber} className={`flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium transition-all ${isCompleted ? 'bg-primary text-primary-foreground' : isInProgress ? 'bg-primary/20 text-primary border-2 border-primary' : 'bg-muted text-muted-foreground'}`}>
                   <span>Juz {juzNumber}</span>
                   {isCompleted && <Check className="h-4 w-4" />}
-                </div>
-              );
-            })}
+                </div>;
+          })}
           </div>
         </Card>
       </div>
