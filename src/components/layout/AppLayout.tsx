@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import { Header } from './Header';
 import { Navigation } from './Navigation';
 import { ZoomControl } from '@/components/ui/ZoomControl';
+import { InstallPrompt } from '@/components/pwa/InstallPrompt';
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -18,6 +19,7 @@ export function AppLayout({ children, title, hideNav = false }: AppLayoutProps) 
       </main>
       {!hideNav && <Navigation />}
       <ZoomControl />
+      <InstallPrompt />
     </div>
   );
 }
