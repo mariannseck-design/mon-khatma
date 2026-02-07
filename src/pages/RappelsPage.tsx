@@ -1,11 +1,22 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Bell, Calendar, Clock, Moon, BookOpen, ExternalLink } from 'lucide-react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { Card } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
-import { Button } from '@/components/ui/button';
+import { ReminderConfigCard } from '@/components/rappels/ReminderConfigCard';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 
-const reminders = [
+interface Reminder {
+  id: string;
+  reminder_time: string;
+  message: string;
+  is_enabled: boolean;
+  days_of_week: number[];
+}
+
+const defaultReminders = [
   {
     id: 'monday',
     title: 'Motivation du Lundi',
@@ -21,14 +32,6 @@ const reminders = [
     schedule: 'Chaque vendredi à 7h',
     enabled: true,
     icon: BookOpen
-  },
-  {
-    id: 'daily',
-    title: 'Lecture quotidienne',
-    description: 'Rappel pour ta lecture du Coran',
-    schedule: 'Tous les jours à 21h',
-    enabled: false,
-    icon: Clock
   }
 ];
 
@@ -54,6 +57,27 @@ const externalTools = [
 ];
 
 export default function RappelsPage() {
+  const { user } = useAuth();
+  const [userReminders, setUserReminders] = useState<Reminder[]>([]);
+
+  const fetchReminders = async () => {
+    if (!user) return;
+
+    const { data } = await supabase
+      .from('reading_reminders')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('reminder_time', { ascending: true });
+
+    if (data) {
+      setUserReminders(data);
+    }
+  };
+
+  useEffect(() => {
+    fetchReminders();
+  }, [user]);
+
   return (
     <AppLayout title="Rappels">
       <div className="section-spacing">
@@ -65,11 +89,14 @@ export default function RappelsPage() {
           </p>
         </div>
 
-        {/* Reminders */}
-        <div className="space-y-3">
-          <h2 className="font-display text-lg text-foreground">Notifications</h2>
+        {/* Custom User Reminders */}
+        <ReminderConfigCard reminders={userReminders} onRefresh={fetchReminders} />
+
+        {/* Default System Reminders */}
+        <div className="space-y-3 mt-6">
+          <h2 className="font-display text-lg text-foreground">Notifications automatiques</h2>
           
-          {reminders.map((reminder, index) => {
+          {defaultReminders.map((reminder, index) => {
             const Icon = reminder.icon;
             
             return (
@@ -97,7 +124,7 @@ export default function RappelsPage() {
         </div>
 
         {/* Celebrations Info */}
-        <Card className="illustrated-card bg-gradient-sky">
+        <Card className="illustrated-card bg-gradient-sky mt-6">
           <div className="flex items-center gap-3 mb-3">
             <Moon className="h-6 w-6 text-sky-foreground" />
             <h3 className="font-display text-lg text-sky-foreground">Célébrations</h3>
@@ -109,7 +136,7 @@ export default function RappelsPage() {
         </Card>
 
         {/* External Tools */}
-        <div className="space-y-3">
+        <div className="space-y-3 mt-6">
           <h2 className="font-display text-lg text-foreground">Boîte à outils</h2>
           <p className="text-sm text-muted-foreground mb-4">
             Recommandations d'applications complémentaires
