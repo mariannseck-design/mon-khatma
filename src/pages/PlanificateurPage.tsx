@@ -235,7 +235,7 @@ export default function PlanificateurPage() {
 
         {/* Juz Progress Grid */}
         <Card className="pastel-card p-6 shadow-[0_8px_30px_-12px_rgba(0,0,0,0.08)]">
-          <h3 className="font-display text-lg mb-4">Juz lues</h3>
+          <h3 className="font-display text-lg mb-4">Juz lues </h3>
           <div className="grid grid-cols-5 gap-2">
             {Array.from({
             length: 30
