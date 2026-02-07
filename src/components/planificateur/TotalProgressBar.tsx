@@ -78,14 +78,35 @@ export function TotalProgressBar({ totalPagesRead }: TotalProgressBarProps) {
             }
           </p>
 
-          {/* Static suggestion for Ramadan - Not interactive */}
-          {daysUntilRamadan > 0 && !isComplete && remainingPages > 0 && (
-            <div className="text-center bg-white/15 rounded-xl py-3 px-4 mb-2">
-              <p className="text-sm text-primary-foreground font-medium">
-                Pour finir avant Ramadan : <span className="font-bold">{pagesPerDayForRamadan} pages/jour</span>
-              </p>
+          {/* Smart Calculator - Integrated Display */}
+          {!isComplete && (
+            <div className="bg-white/15 rounded-2xl p-4 mb-4">
+              <div className="grid grid-cols-2 gap-4 mb-3">
+                <div className="text-center">
+                  <p className="text-xs text-primary-foreground/70 mb-1">Pages par jour</p>
+                  <div className="bg-white/20 rounded-xl py-3 px-4">
+                    <span className="text-2xl font-bold text-primary-foreground">{pagesPerDayForRamadan || 5}</span>
+                  </div>
+                </div>
+                <div className="text-center">
+                  <p className="text-xs text-primary-foreground/70 mb-1">Objectif de jours</p>
+                  <div className="bg-white/20 rounded-xl py-3 px-4">
+                    <span className="text-2xl font-bold text-primary-foreground">{daysUntilRamadan || Math.ceil(remainingPages / 5)}</span>
+                  </div>
+                </div>
+              </div>
+              {daysUntilRamadan > 0 && remainingPages > 0 && (
+                <p className="text-sm text-primary-foreground font-medium text-center bg-white/10 rounded-xl py-2 px-3">
+                  ✨ Vous finirez en <span className="font-bold">{daysUntilRamadan} jours</span>
+                </p>
+              )}
             </div>
           )}
+
+          {/* Motivational Quote */}
+          <p className="text-xs text-primary-foreground/70 text-center italic">
+            "La meilleure des actions est celle qui est régulière, même si elle est modeste."
+          </p>
         </div>
 
         {/* Progress bar at bottom */}
