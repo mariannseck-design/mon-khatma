@@ -129,7 +129,7 @@ export default function AccueilPage() {
 
         {/* Action Cards */}
         <motion.div variants={itemVariants}>
-          <h2 className="font-display text-3xl font-bold text-foreground mb-4 px-1">Actions rapides</h2>
+          
           
           <div className="space-y-4">
             {/* Planificateur Card */}
@@ -179,9 +179,7 @@ export default function AccueilPage() {
                     <Users className="h-12 w-12 text-accent-foreground" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-display text-3xl font-bold text-foreground">
-                      Cercle des Sœurs
-                    </h3>
+                    <h3 className="font-display text-3xl font-bold text-foreground">Coin des Sœurs</h3>
                     <p className="text-muted-foreground text-xl mt-1">
                       Rejoindre la communauté
                     </p>
