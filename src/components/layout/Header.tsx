@@ -33,7 +33,8 @@ export function Header({
               <h1 className="font-display text-lg font-semibold text-foreground">
                 {title}
               </h1>
-              <p className="text-[10px] text-muted-foreground uppercase tracking-wider">PA</p>
+              <p className="text-[10px] text-muted-foreground uppercase tracking-wider">
+            </p>
             </div>
           </div>
 
