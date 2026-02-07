@@ -150,9 +150,7 @@ export default function AccueilPage() {
                     <Target className="h-12 w-12 text-peach-foreground" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-display text-3xl font-bold text-foreground">
-                      Planificateur Coran
-                    </h3>
+                    <h3 className="font-display text-3xl font-bold text-foreground">Mon planning de Tilawah </h3>
                     <p className="text-muted-foreground text-xl mt-1">
                       Définir mon objectif de lecture
                     </p>
