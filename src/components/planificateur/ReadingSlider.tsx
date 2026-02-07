@@ -25,12 +25,13 @@ export function ReadingSlider({
   const [sliderValue, setSliderValue] = useState(0);
   const [isLogging, setIsLogging] = useState(false);
 
-  // Calculate remaining pages
-  const remainingPages = TOTAL_QURAN_PAGES - totalPagesRead;
+  // Calculate remaining pages (never negative)
+  const remainingPages = Math.max(0, TOTAL_QURAN_PAGES - totalPagesRead);
+  const isKhatmaComplete = totalPagesRead >= TOTAL_QURAN_PAGES;
 
   // Calculate days remaining at current rate
   const getDaysRemaining = () => {
-    if (sliderValue <= 0) return null;
+    if (sliderValue <= 0 || remainingPages <= 0) return null;
     const days = Math.ceil(remainingPages / sliderValue);
     return days;
   };
@@ -46,13 +47,13 @@ export function ReadingSlider({
 
   const daysRemaining = getDaysRemaining();
 
-  if (isDisabled) {
+  if (isDisabled || isKhatmaComplete) {
     return (
       <Card className="p-6 bg-gradient-mint border-none shadow-[0_8px_30px_-12px_rgba(0,0,0,0.08)]">
         <div className="flex items-center justify-center gap-3">
           <span className="text-2xl">✨</span>
           <p className="text-primary-foreground font-medium">
-            Objectif atteint, Macha'Allah !
+            {isKhatmaComplete ? 'Khatma terminée, Macha\'Allah !' : 'Objectif atteint, Macha\'Allah !'}
           </p>
           <span className="text-2xl">✨</span>
         </div>
