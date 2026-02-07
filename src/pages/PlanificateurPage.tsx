@@ -233,36 +233,30 @@ export default function PlanificateurPage() {
         {/* Success Modal */}
         <SuccessModal isOpen={showSuccessModal} onClose={() => setShowSuccessModal(false)} />
 
-        {/* Week Summary */}
+        {/* Juz Progress Grid */}
         <Card className="pastel-card p-6 shadow-[0_8px_30px_-12px_rgba(0,0,0,0.08)]">
-          <h3 className="font-display text-lg mb-4">Cette semaine</h3>
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex gap-6">
-              <div>
-                <p className="text-3xl font-bold text-primary">{totalPagesThisWeek}</p>
-                <p className="text-sm text-muted-foreground">pages lues</p>
-              </div>
-              <div className="border-l border-border pl-6">
-                <p className="text-3xl font-bold text-primary">
-                  {(totalPagesThisWeek / 20.13).toFixed(1)}
-                </p>
-                <p className="text-sm text-muted-foreground">juz lus</p>
-              </div>
-            </div>
-          </div>
-          <div className="flex gap-1 justify-end">
-            {[0, 1, 2, 3, 4, 5, 6].map(dayOffset => {
-              const date = new Date();
-              date.setDate(date.getDate() - (6 - dayOffset));
-              const dateStr = date.toISOString().split('T')[0];
-              const dayProgress = weekProgress.find(p => p.date === dateStr);
-              const hasProgress = dayProgress && dayProgress.pages_read > 0;
+          <h3 className="font-display text-lg mb-4">Progression des Juz</h3>
+          <div className="grid grid-cols-5 gap-2">
+            {Array.from({ length: 30 }, (_, i) => {
+              const juzNumber = i + 1;
+              const pagesPerJuz = TOTAL_QURAN_PAGES / 30;
+              const juzEndPage = Math.ceil(juzNumber * pagesPerJuz);
+              const isCompleted = totalPagesRead >= juzEndPage;
+              const isInProgress = totalPagesRead >= (juzNumber - 1) * pagesPerJuz && totalPagesRead < juzEndPage;
+              
               return (
                 <div 
-                  key={dayOffset} 
-                  className={`w-8 h-8 rounded-lg flex items-center justify-center ${hasProgress ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}
+                  key={juzNumber}
+                  className={`flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium transition-all ${
+                    isCompleted 
+                      ? 'bg-primary text-primary-foreground' 
+                      : isInProgress
+                        ? 'bg-primary/20 text-primary border-2 border-primary'
+                        : 'bg-muted text-muted-foreground'
+                  }`}
                 >
-                  {hasProgress && <Check className="h-4 w-4" />}
+                  <span>Juz {juzNumber}</span>
+                  {isCompleted && <Check className="h-4 w-4" />}
                 </div>
               );
             })}
