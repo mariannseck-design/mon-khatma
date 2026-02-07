@@ -8,7 +8,7 @@ interface HeaderProps {
   title?: string;
 }
 export function Header({
-  title = "Istiqamah"
+  title = "Mon Khatma"
 }: HeaderProps) {
   const {
     user,
