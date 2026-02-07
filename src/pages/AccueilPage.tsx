@@ -7,7 +7,6 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { DailyReminderBanner } from '@/components/notifications/DailyReminderBanner';
 import { useDailyNotification } from '@/hooks/useDailyNotification';
-import quranWatermark from '@/assets/quran-watermark.png';
 export default function AccueilPage() {
   const {
     user
@@ -97,15 +96,6 @@ export default function AccueilPage() {
         {/* Daily Progress Card - Full Width */}
         <motion.div variants={itemVariants}>
           <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-primary via-primary/80 to-success p-8 shadow-lg">
-            {/* Quran watermark background */}
-            <div 
-              className="absolute inset-0 opacity-15 pointer-events-none"
-              style={{
-                backgroundImage: `url(${quranWatermark})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-              }}
-            />
             {/* Decorative elements */}
             <div className="absolute -top-8 -right-8 w-40 h-40 rounded-full bg-white/10 blur-xl" />
             <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-black/5 to-transparent" />
