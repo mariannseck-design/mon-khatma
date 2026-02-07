@@ -1,32 +1,27 @@
 import { Link } from 'react-router-dom';
 import { LogOut, User, Settings, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useAuth } from '@/contexts/AuthContext';
-
 interface HeaderProps {
   title?: string;
 }
-
-export function Header({ title = "Istiqamah" }: HeaderProps) {
-  const { user, signOut, isAdmin } = useAuth();
-
+export function Header({
+  title = "Istiqamah"
+}: HeaderProps) {
+  const {
+    user,
+    signOut,
+    isAdmin
+  } = useAuth();
   const getInitials = () => {
     if (user?.email) {
       return user.email.charAt(0).toUpperCase();
     }
     return 'U';
   };
-
-  return (
-    <header className="sticky top-0 z-40 bg-background/95 backdrop-blur-lg border-b border-border/30">
+  return <header className="sticky top-0 z-40 bg-background/95 backdrop-blur-lg border-b border-border/30">
       <div className="container max-w-lg mx-auto px-5">
         <div className="flex items-center justify-between h-16">
           {/* Logo & Title */}
@@ -38,9 +33,7 @@ export function Header({ title = "Istiqamah" }: HeaderProps) {
               <h1 className="font-display text-lg font-semibold text-foreground">
                 {title}
               </h1>
-              <p className="text-[10px] text-muted-foreground uppercase tracking-wider">
-                Par Marianne Seck
-              </p>
+              <p className="text-[10px] text-muted-foreground uppercase tracking-wider">PA</p>
             </div>
           </div>
 
@@ -62,14 +55,12 @@ export function Header({ title = "Istiqamah" }: HeaderProps) {
                   Profil
                 </Link>
               </DropdownMenuItem>
-              {isAdmin && (
-                <DropdownMenuItem asChild>
+              {isAdmin && <DropdownMenuItem asChild>
                   <Link to="/admin" className="flex items-center gap-2">
                     <Shield className="h-4 w-4" />
                     Admin Dashboard
                   </Link>
-                </DropdownMenuItem>
-              )}
+                </DropdownMenuItem>}
               <DropdownMenuItem asChild>
                 <Link to="/parametres" className="flex items-center gap-2">
                   <Settings className="h-4 w-4" />
@@ -77,10 +68,7 @@ export function Header({ title = "Istiqamah" }: HeaderProps) {
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem 
-                onClick={signOut}
-                className="text-destructive focus:text-destructive"
-              >
+              <DropdownMenuItem onClick={signOut} className="text-destructive focus:text-destructive">
                 <LogOut className="h-4 w-4 mr-2" />
                 Déconnexion
               </DropdownMenuItem>
@@ -88,6 +76,5 @@ export function Header({ title = "Istiqamah" }: HeaderProps) {
           </DropdownMenu>
         </div>
       </div>
-    </header>
-  );
+    </header>;
 }
