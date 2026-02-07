@@ -236,23 +236,36 @@ export default function PlanificateurPage() {
         {/* Week Summary */}
         <Card className="pastel-card p-6 shadow-[0_8px_30px_-12px_rgba(0,0,0,0.08)]">
           <h3 className="font-display text-lg mb-4">Cette semaine</h3>
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-3xl font-bold text-primary">{totalPagesThisWeek}</p>
-              <p className="text-sm text-muted-foreground">pages lues</p>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex gap-6">
+              <div>
+                <p className="text-3xl font-bold text-primary">{totalPagesThisWeek}</p>
+                <p className="text-sm text-muted-foreground">pages lues</p>
+              </div>
+              <div className="border-l border-border pl-6">
+                <p className="text-3xl font-bold text-primary">
+                  {(totalPagesThisWeek / 20.13).toFixed(1)}
+                </p>
+                <p className="text-sm text-muted-foreground">juz lus</p>
+              </div>
             </div>
-            <div className="flex gap-1">
-              {[0, 1, 2, 3, 4, 5, 6].map(dayOffset => {
+          </div>
+          <div className="flex gap-1 justify-end">
+            {[0, 1, 2, 3, 4, 5, 6].map(dayOffset => {
               const date = new Date();
               date.setDate(date.getDate() - (6 - dayOffset));
               const dateStr = date.toISOString().split('T')[0];
               const dayProgress = weekProgress.find(p => p.date === dateStr);
               const hasProgress = dayProgress && dayProgress.pages_read > 0;
-              return <div key={dayOffset} className={`w-8 h-8 rounded-lg flex items-center justify-center ${hasProgress ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>
-                    {hasProgress && <Check className="h-4 w-4" />}
-                  </div>;
+              return (
+                <div 
+                  key={dayOffset} 
+                  className={`w-8 h-8 rounded-lg flex items-center justify-center ${hasProgress ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}
+                >
+                  {hasProgress && <Check className="h-4 w-4" />}
+                </div>
+              );
             })}
-            </div>
           </div>
         </Card>
       </div>
