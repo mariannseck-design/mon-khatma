@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { BookOpen, Users, Target, Heart, ArrowRight, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import logo from '@/assets/logo.png';
 
 const features = [
   {
@@ -41,9 +42,7 @@ export default function LandingPage() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center"
         >
-          <div className="w-24 h-24 rounded-3xl bg-gradient-mint mx-auto flex items-center justify-center mb-6 shadow-xl">
-            <BookOpen className="h-12 w-12 text-primary-foreground" />
-          </div>
+          <img src={logo} alt="Mon Khatma" className="w-28 h-28 mx-auto mb-6 drop-shadow-xl" />
           
           <h1 className="font-display text-4xl text-foreground mb-3">
             Istiqamah

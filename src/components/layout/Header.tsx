@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useAuth } from '@/contexts/AuthContext';
+import logo from '@/assets/logo.png';
 interface HeaderProps {
   title?: string;
 }
@@ -26,9 +27,7 @@ export function Header({
         <div className="flex items-center justify-between h-16">
           {/* Logo & Title */}
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-mint flex items-center justify-center">
-              <span className="text-lg">📖</span>
-            </div>
+            <img src={logo} alt="Mon Khatma" className="w-10 h-10 rounded-xl object-contain" />
             <div>
               <h1 className="font-display text-lg font-semibold text-foreground">
                 {title}
