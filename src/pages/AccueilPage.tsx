@@ -105,7 +105,7 @@ export default function AccueilPage() {
               <div className="flex items-start justify-between mb-6">
                 <div>
                   <p className="text-primary-foreground/70 text-2xl font-medium mb-1">Aujourd'hui</p>
-                  <p className="text-7xl font-display font-bold text-primary-foreground">
+                  <p className="text-6xl font-display font-bold text-primary-foreground">
                     {todayProgress}
                   </p>
                   <p className="text-primary-foreground/80 text-3xl font-medium mt-1">pages lues</p>
