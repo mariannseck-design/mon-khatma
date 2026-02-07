@@ -95,11 +95,14 @@ export default function AccueilPage() {
 
         {/* Daily Progress Card - Full Width */}
         <motion.div variants={itemVariants}>
-          <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-primary via-primary/80 to-success p-8 shadow-lg">
-            {/* Decorative elements */}
-            <div className="absolute -top-8 -right-8 w-40 h-40 rounded-full bg-white/10 blur-xl" />
+          <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-mint via-mint/90 to-success/70 p-8 shadow-lg">
+            {/* Decorative geometric elements */}
+            <div className="absolute -top-8 -right-8 w-40 h-40 rounded-full bg-white/20 blur-xl" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full bg-white/10 blur-2xl" />
             <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-black/5 to-transparent" />
-            <div className="absolute top-8 left-8 w-12 h-12 rounded-xl rotate-12 bg-white/10" />
+            <div className="absolute top-8 left-8 w-12 h-12 rounded-xl rotate-12 bg-white/15" />
+            <div className="absolute bottom-12 right-12 w-8 h-8 rounded-lg rotate-45 bg-white/10" />
+            <div className="absolute top-20 right-24 w-6 h-6 rounded-full bg-white/10" />
             
             <div className="relative z-10">
               <div className="flex items-start justify-between mb-6">
