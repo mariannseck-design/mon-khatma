@@ -62,7 +62,7 @@ export function TotalProgressBar({ totalPagesRead }: TotalProgressBarProps) {
                     initial={{ scale: 1.2, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ duration: 0.3, ease: "easeOut" }}
-                    className="text-lg font-bold text-primary-foreground"
+                    className="text-3xl font-bold text-primary-foreground"
                   >
                     {totalPagesRead} pages
                   </motion.p>
