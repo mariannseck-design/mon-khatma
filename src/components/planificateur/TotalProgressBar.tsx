@@ -54,7 +54,7 @@ export function TotalProgressBar({ totalPagesRead }: TotalProgressBarProps) {
               </div>
               <div>
                 <p className="font-medium text-primary-foreground">
-                  {isComplete ? 'Khatma complète!' : 'Progression globale'}
+                  {isComplete ? 'Khatma complète!' : `Progression globale • ${totalPagesRead} pages`}
                 </p>
               </div>
             </div>
