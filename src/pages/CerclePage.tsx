@@ -264,7 +264,7 @@ export default function CerclePage() {
             {[
               { emoji: '📖', title: 'Lecture quotidienne', description: 'avec suivi personnalisé' },
               { emoji: '🤝', title: 'Motivation entre sœurs', description: 'Une difficulté aujourd\'hui ? Demandez conseil à vos sœurs ici' },
-              { emoji: '🌙', title: 'Rappels et encouragements', description: 'Des messages pour vous soutenir' },
+              { emoji: '🌙', title: 'Rappels et encouragements', description: 'Partagez ici votre verset du jour ou un petit mot pour motiver les sœurs. Chaque rappel, même modeste, est une graine de lumière.' },
               { emoji: '✨', title: 'Célébrations', description: 'des accomplissements ensemble' },
             ].map((benefit, index) => (
               <motion.div
