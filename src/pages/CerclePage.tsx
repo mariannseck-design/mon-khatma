@@ -263,7 +263,7 @@ export default function CerclePage() {
 
             {[
               { emoji: '📖', text: 'Lecture quotidienne avec suivi' },
-              { emoji: '🤝', text: 'Une difficulté aujourd\'hui ? Demandez conseil à vos sœurs ici' },
+              { emoji: '🤝', text: 'Motivation entre sœurs : Une difficulté aujourd\'hui ? Demandez conseil à vos sœurs ici' },
               { emoji: '🌙', text: 'Rappels et encouragements' },
               { emoji: '✨', text: 'Célébrations des accomplissements' },
             ].map((benefit, index) => (
