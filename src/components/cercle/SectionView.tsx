@@ -16,6 +16,8 @@ interface Message {
   user_id: string;
   likes_count: number;
   is_liked_by_user: boolean;
+  is_voice?: boolean;
+  voice_url?: string;
   author_name?: string;
 }
 
@@ -83,6 +85,8 @@ export function SectionView({ circleId, section, title, onBack }: SectionViewPro
         user_id: msg.user_id,
         likes_count: msgLikes.length,
         is_liked_by_user: msgLikes.some(l => l.user_id === user.id),
+        is_voice: msg.is_voice || false,
+        voice_url: msg.voice_url || undefined,
         author_name: profilesMap.get(msg.user_id) || undefined,
       };
     });
@@ -176,6 +180,8 @@ export function SectionView({ circleId, section, title, onBack }: SectionViewPro
                 authorName={message.author_name}
                 likesCount={message.likes_count}
                 isLikedByUser={message.is_liked_by_user}
+                isVoice={message.is_voice}
+                voiceUrl={message.voice_url}
                 variant={bubbleVariants[index % bubbleVariants.length]}
                 onLikeChange={fetchMessages}
               />
