@@ -100,10 +100,6 @@ export default function CerclePage() {
 
   const joinCircle = async () => {
     if (!user || !circle) return;
-    if (memberCount >= circle.max_members) {
-      toast.error('Le cercle est complet (30 sœurs maximum)');
-      return;
-    }
     setShowCharter(true);
   };
 
@@ -175,22 +171,14 @@ export default function CerclePage() {
                 <div>
                   <h2 className="font-display text-xl text-accent-foreground">{circle.name}</h2>
                   <p className="text-sm text-accent-foreground/70">
-                    {memberCount}/{circle.max_members} sœurs inscrites
+                    {memberCount} sœur{memberCount > 1 ? 's' : ''} inscrite{memberCount > 1 ? 's' : ''}
                   </p>
                 </div>
               </div>
 
               {circle.description && (
-                <p className="text-accent-foreground/80 mb-4">{circle.description}</p>
+                <p className="text-accent-foreground/80">{circle.description}</p>
               )}
-
-              <div className="bg-white/20 rounded-full h-2 overflow-hidden">
-                <motion.div
-                  className="bg-white h-full rounded-full"
-                  initial={{ width: 0 }}
-                  animate={{ width: `${(memberCount / circle.max_members) * 100}%` }}
-                />
-              </div>
             </Card>
           </motion.div>
         ) : (
@@ -223,9 +211,8 @@ export default function CerclePage() {
                 <Button
                   onClick={joinCircle}
                   className="bg-primary text-primary-foreground hover-lift"
-                  disabled={memberCount >= circle.max_members}
                 >
-                  {memberCount >= circle.max_members ? 'Cercle complet' : 'Rejoindre le Cercle'}
+                  Rejoindre le Cercle
                 </Button>
               </div>
             )}
