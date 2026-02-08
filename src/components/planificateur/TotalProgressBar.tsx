@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { BookOpen, Star, Moon } from 'lucide-react';
 import { Card } from '@/components/ui/card';
+import { getSurahByPage } from '@/lib/surahData';
 
 const TOTAL_QURAN_PAGES = 604;
 
@@ -23,6 +24,9 @@ export function TotalProgressBar({ totalPagesRead }: TotalProgressBarProps) {
   const daysUntilRamadan = getDaysUntilRamadan();
   const remainingPages = TOTAL_QURAN_PAGES - totalPagesRead;
   const pagesPerDayForRamadan = daysUntilRamadan > 0 ? Math.ceil(remainingPages / daysUntilRamadan) : 0;
+
+  // Get current surah based on pages read
+  const currentSurah = getSurahByPage(totalPagesRead);
 
   return (
     <motion.div
@@ -56,15 +60,15 @@ export function TotalProgressBar({ totalPagesRead }: TotalProgressBarProps) {
                 <p className="font-medium text-primary-foreground">
                   {isComplete ? 'Khatma complète!' : 'Progression globale'}
                 </p>
-                {!isComplete && (
+                {!isComplete && currentSurah && (
                   <motion.p
                     key={totalPagesRead}
                     initial={{ scale: 1.2, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ duration: 0.3, ease: "easeOut" }}
-                    className="text-3xl font-bold text-primary-foreground"
+                    className="text-xl font-bold text-primary-foreground"
                   >
-                    {totalPagesRead} pages
+                    Sourate {currentSurah.name} • Page {totalPagesRead}
                   </motion.p>
                 )}
               </div>
