@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Heart } from 'lucide-react';
-import { formatDistanceToNow } from 'date-fns';
+import { Heart, Play, Pause } from 'lucide-react';
+import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -14,6 +14,8 @@ interface MessageBubbleProps {
   authorName?: string;
   likesCount: number;
   isLikedByUser: boolean;
+  isVoice?: boolean;
+  voiceUrl?: string;
   variant?: 'beige' | 'rose' | 'mint';
   onLikeChange?: () => void;
 }
@@ -31,6 +33,8 @@ export function MessageBubble({
   authorName,
   likesCount,
   isLikedByUser,
+  isVoice,
+  voiceUrl,
   variant = 'beige',
   onLikeChange,
 }: MessageBubbleProps) {
@@ -38,6 +42,8 @@ export function MessageBubble({
   const [isLiked, setIsLiked] = useState(isLikedByUser);
   const [likes, setLikes] = useState(likesCount);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const toggleLike = async () => {
     if (!user) {
@@ -75,26 +81,68 @@ export function MessageBubble({
     onLikeChange?.();
   };
 
+  const toggleAudio = () => {
+    if (!audioRef.current || !voiceUrl) return;
+
+    if (isPlaying) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    } else {
+      audioRef.current.play();
+      setIsPlaying(true);
+    }
+  };
+
+  const handleAudioEnded = () => {
+    setIsPlaying(false);
+  };
+
+  const formattedTime = format(new Date(createdAt), 'HH:mm', { locale: fr });
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       className={`rounded-3xl border p-4 ${variantStyles[variant]} shadow-sm`}
     >
-      {/* Author and time */}
+      {/* Author and time - WhatsApp style */}
       <div className="flex items-center justify-between mb-2">
-        <span className="text-xs font-medium text-muted-foreground">
+        <span className="text-sm font-semibold text-foreground">
           {authorName || 'Une sœur'}
         </span>
-        <span className="text-xs text-muted-foreground/70">
-          {formatDistanceToNow(new Date(createdAt), { addSuffix: true, locale: fr })}
+        <span className="text-xs text-muted-foreground">
+          {formattedTime}
         </span>
       </div>
 
       {/* Content */}
-      <p className="text-foreground font-light leading-relaxed mb-3">
-        {content}
-      </p>
+      {isVoice && voiceUrl ? (
+        <div className="flex items-center gap-3 mb-3">
+          <button
+            onClick={toggleAudio}
+            className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center hover:bg-primary/30 transition-colors"
+          >
+            {isPlaying ? (
+              <Pause className="h-5 w-5 text-primary" />
+            ) : (
+              <Play className="h-5 w-5 text-primary ml-0.5" />
+            )}
+          </button>
+          <div className="flex-1 h-1.5 bg-primary/20 rounded-full overflow-hidden">
+            <div className="h-full bg-primary rounded-full w-0" />
+          </div>
+          <audio
+            ref={audioRef}
+            src={voiceUrl}
+            onEnded={handleAudioEnded}
+            className="hidden"
+          />
+        </div>
+      ) : (
+        <p className="text-foreground font-light leading-relaxed mb-3">
+          {content}
+        </p>
+      )}
 
       {/* Like button */}
       <div className="flex items-center justify-end gap-2">
