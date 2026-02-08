@@ -262,10 +262,10 @@ export default function CerclePage() {
             <h2 className="font-display text-lg text-foreground">Les bienfaits du Cercle</h2>
 
             {[
-              { emoji: '📖', text: 'Lecture quotidienne avec suivi' },
-              { emoji: '🤝', text: 'Motivation entre sœurs : Une difficulté aujourd\'hui ? Demandez conseil à vos sœurs ici' },
-              { emoji: '🌙', text: 'Rappels et encouragements' },
-              { emoji: '✨', text: 'Célébrations des accomplissements' },
+              { emoji: '📖', title: 'Lecture quotidienne', description: 'avec suivi personnalisé' },
+              { emoji: '🤝', title: 'Motivation entre sœurs', description: 'Une difficulté aujourd\'hui ? Demandez conseil à vos sœurs ici' },
+              { emoji: '🌙', title: 'Rappels et encouragements', description: 'Des messages pour vous soutenir' },
+              { emoji: '✨', title: 'Célébrations', description: 'des accomplissements ensemble' },
             ].map((benefit, index) => (
               <motion.div
                 key={index}
@@ -275,7 +275,10 @@ export default function CerclePage() {
               >
                 <Card className="pastel-card p-4 flex items-center gap-3">
                   <span className="text-2xl">{benefit.emoji}</span>
-                  <p className="text-foreground">{benefit.text}</p>
+                  <div>
+                    <p className="text-foreground font-semibold">{benefit.title}</p>
+                    <p className="text-muted-foreground text-sm">{benefit.description}</p>
+                  </div>
                 </Card>
               </motion.div>
             ))}
