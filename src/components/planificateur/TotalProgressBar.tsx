@@ -54,7 +54,21 @@ export function TotalProgressBar({ totalPagesRead }: TotalProgressBarProps) {
               </div>
               <div>
                 <p className="font-medium text-primary-foreground">
-                  {isComplete ? 'Khatma complète!' : `Progression globale • ${totalPagesRead} pages`}
+                  {isComplete ? 'Khatma complète!' : (
+                    <>
+                      Progression globale • 
+                      <motion.span
+                        key={totalPagesRead}
+                        initial={{ scale: 1.3, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ duration: 0.3, ease: "easeOut" }}
+                        className="inline-block ml-1"
+                      >
+                        {totalPagesRead}
+                      </motion.span>
+                      {' '}pages
+                    </>
+                  )}
                 </p>
               </div>
             </div>
