@@ -78,7 +78,7 @@ export function TotalProgressBar({ totalPagesRead }: TotalProgressBarProps) {
                 initial={{ scale: 1.2, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.3, ease: "easeOut" }}
-                className="text-xl font-bold text-primary-foreground ml-15 pl-15"
+                className="text-xl font-bold text-primary-foreground text-center"
               >
                 Sourate {currentSurah.name} Page {totalPagesRead}
               </motion.p>
