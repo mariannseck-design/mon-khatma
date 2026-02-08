@@ -32,7 +32,7 @@ const sectionCards = [
   {
     id: 'rappels' as const,
     title: 'Rappels & Encouragements',
-    description: 'Messages d\'encouragement et invocations',
+    description: 'Partagez ici votre verset du jour ou un petit mot pour motiver les sœurs. Chaque rappel, même modeste, est une graine de lumière',
     icon: Bell,
     gradient: 'bg-gradient-peach',
     iconBg: 'bg-peach/30',
