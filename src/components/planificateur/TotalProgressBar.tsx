@@ -47,8 +47,8 @@ export function TotalProgressBar({ totalPagesRead }: TotalProgressBarProps) {
             </div>
           )}
 
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
+          <div className="mb-4">
+            <div className="flex items-center gap-3 mb-2">
               <div className="w-12 h-12 rounded-2xl bg-white/30 flex items-center justify-center">
                 {isComplete ? (
                   <Star className="h-6 w-6 text-accent-foreground fill-accent" />
@@ -56,33 +56,33 @@ export function TotalProgressBar({ totalPagesRead }: TotalProgressBarProps) {
                   <BookOpen className="h-6 w-6 text-primary-foreground" />
                 )}
               </div>
-              <div>
+              <div className="flex items-center gap-2">
                 <p className="font-medium text-primary-foreground">
                   {isComplete ? 'Khatma complète!' : 'Progression globale'}
                 </p>
-                {!isComplete && currentSurah && (
-                  <motion.p
-                    key={totalPagesRead}
+                {!isComplete && (
+                  <motion.span 
+                    key={percentage}
                     initial={{ scale: 1.2, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    transition={{ duration: 0.3, ease: "easeOut" }}
-                    className="text-xl font-bold text-primary-foreground"
+                    className="text-2xl font-bold text-primary-foreground"
                   >
-                    Sourate {currentSurah.name} Page {totalPagesRead}
-                  </motion.p>
+                    {percentage.toFixed(1)}%
+                  </motion.span>
                 )}
               </div>
             </div>
-            <div className="text-right">
-              <motion.p 
-                key={percentage}
+            {!isComplete && currentSurah && (
+              <motion.p
+                key={totalPagesRead}
                 initial={{ scale: 1.2, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="text-3xl font-bold text-primary-foreground"
+                transition={{ duration: 0.3, ease: "easeOut" }}
+                className="text-xl font-bold text-primary-foreground ml-15 pl-15"
               >
-                {percentage.toFixed(1)}%
+                Sourate {currentSurah.name} Page {totalPagesRead}
               </motion.p>
-            </div>
+            )}
           </div>
 
           {/* Subtitle */}
