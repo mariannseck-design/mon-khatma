@@ -68,7 +68,7 @@ export function TotalProgressBar({ totalPagesRead }: TotalProgressBarProps) {
                     transition={{ duration: 0.3, ease: "easeOut" }}
                     className="text-xl font-bold text-primary-foreground"
                   >
-                    Sourate {currentSurah.name} • Page {totalPagesRead}
+                    Sourate {currentSurah.name} Page {totalPagesRead}
                   </motion.p>
                 )}
               </div>
