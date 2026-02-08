@@ -65,7 +65,7 @@ export function TotalProgressBar({ totalPagesRead }: TotalProgressBarProps) {
                     key={percentage}
                     initial={{ scale: 1.2, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    className="text-2xl font-bold text-primary-foreground"
+                    className="text-xl font-bold text-primary-foreground"
                   >
                     {percentage.toFixed(1)}%
                   </motion.span>
