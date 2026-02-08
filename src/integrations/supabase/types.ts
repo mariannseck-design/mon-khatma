@@ -46,6 +46,76 @@ export type Database = {
           },
         ]
       }
+      circle_message_likes: {
+        Row: {
+          created_at: string
+          id: string
+          message_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "circle_message_likes_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "circle_messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      circle_messages: {
+        Row: {
+          circle_id: string
+          content: string
+          created_at: string
+          id: string
+          is_voice: boolean | null
+          section: string
+          user_id: string
+          voice_url: string | null
+        }
+        Insert: {
+          circle_id: string
+          content: string
+          created_at?: string
+          id?: string
+          is_voice?: boolean | null
+          section: string
+          user_id: string
+          voice_url?: string | null
+        }
+        Update: {
+          circle_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          is_voice?: boolean | null
+          section?: string
+          user_id?: string
+          voice_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "circle_messages_circle_id_fkey"
+            columns: ["circle_id"]
+            isOneToOne: false
+            referencedRelation: "sisters_circles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mood_entries: {
         Row: {
           created_at: string
