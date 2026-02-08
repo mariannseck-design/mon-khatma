@@ -24,7 +24,7 @@ const sectionCards = [
   {
     id: 'entraide' as const,
     title: 'Entraide & Conseils',
-    description: 'Questions et échanges entre sœurs',
+    description: 'Une difficulté aujourd\'hui ? Demandez conseil à vos sœurs ici',
     icon: MessageCircle,
     gradient: 'bg-gradient-lavender',
     iconBg: 'bg-accent/30',
