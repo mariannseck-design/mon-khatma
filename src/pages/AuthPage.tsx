@@ -94,8 +94,7 @@ export default function AuthPage() {
           <div className="w-20 h-20 rounded-3xl bg-gradient-mint mx-auto flex items-center justify-center mb-4 shadow-lg">
             <BookOpen className="h-10 w-10 text-primary-foreground" />
           </div>
-          <h1 className="font-display text-2xl text-foreground">Istiqamah</h1>
-          <p className="text-sm text-muted-foreground mt-1">Par Marianne Seck</p>
+          <h1 className="font-display text-2xl text-foreground">Mon Khatma</h1>
         </div>
 
         {/* Form Card */}
@@ -250,7 +249,7 @@ export default function AuthPage() {
 
         {/* Quote */}
         <p className="text-center text-xs text-muted-foreground mt-6 px-4">
-          "La constance (Istiqamah) est la clé du succès dans ce monde et dans l'au-delà."
+          "La constance est la clé du succès dans ce monde et dans l'au-delà."
         </p>
       </motion.div>
     </div>
