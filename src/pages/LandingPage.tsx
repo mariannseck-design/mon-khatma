@@ -108,6 +108,36 @@ export default function LandingPage() {
         </motion.div>
       </div>
 
+      {/* Installation Instructions */}
+      <div className="container max-w-lg mx-auto px-6 pb-8">
+        <Card className="pastel-card p-6">
+          <h2 className="font-display text-xl text-foreground mb-4 text-center">
+            📲 Comment <strong>installer</strong> l'application ?
+          </h2>
+          
+          <div className="space-y-4 text-sm text-muted-foreground">
+            <div className="flex items-start gap-3">
+              <span className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-primary font-semibold shrink-0">1</span>
+              <p><strong>Sur iPhone (Safari) :</strong> Appuie sur le bouton de partage (carré avec flèche) en bas de l'écran, puis choisis "Sur l'écran d'accueil".</p>
+            </div>
+            
+            <div className="flex items-start gap-3">
+              <span className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-primary font-semibold shrink-0">2</span>
+              <p><strong>Sur Android (Chrome) :</strong> Appuie sur les trois points en haut à droite, puis choisis "<strong>Installer</strong> l'application" ou "Ajouter à l'écran d'accueil".</p>
+            </div>
+            
+            <div className="flex items-start gap-3">
+              <span className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-primary font-semibold shrink-0">3</span>
+              <p><strong>Sur ordinateur :</strong> Dans Chrome, clique sur l'icône d'<strong>installation</strong> dans la barre d'adresse (à droite).</p>
+            </div>
+          </div>
+          
+          <p className="text-center text-xs text-muted-foreground mt-4 pt-4 border-t border-border/50">
+            Une fois installée, l'application sera accessible directement depuis ton écran d'accueil, comme une vraie app ! 🎉
+          </p>
+        </Card>
+      </div>
+
       {/* Quote */}
       <div className="container max-w-lg mx-auto px-6 pb-12">
         <Card className="illustrated-card bg-gradient-mint text-center">
