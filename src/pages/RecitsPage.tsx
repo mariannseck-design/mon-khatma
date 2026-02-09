@@ -82,13 +82,6 @@ export default function RecitsPage() {
           ))}
         </div>
 
-        {/* Signature */}
-        <Card className="pastel-card p-6 text-center">
-          <p className="text-sm text-muted-foreground italic">
-            "Cette application est développée avec cœur par Marianne Seck. 
-            Vos contributions nous aident à ajouter de nouveaux récits."
-          </p>
-        </Card>
       </div>
     </AppLayout>
   );
