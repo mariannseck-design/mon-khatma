@@ -31,7 +31,7 @@ export function SuccessModal({ isOpen, onClose }: SuccessModalProps) {
           </DialogTitle>
           <DialogDescription className="text-base text-center leading-relaxed px-2">
             Qu'Allah <span className="honorific">(عز وجل)</span> accepte votre lecture et illumine votre cœur. 
-            Vous avez franchi une étape de plus vers l'Istiqamah.
+            Vous avez franchi une étape de plus vers la constance.
           </DialogDescription>
         </DialogHeader>
         <motion.div

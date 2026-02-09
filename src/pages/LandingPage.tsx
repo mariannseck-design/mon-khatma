@@ -45,7 +45,7 @@ export default function LandingPage() {
           <img src={logo} alt="Mon Khatma" className="w-28 h-28 mx-auto mb-6 drop-shadow-xl" />
           
           <h1 className="font-display text-4xl text-foreground mb-3">
-            Istiqamah
+            Mon Khatma
           </h1>
           <p className="text-muted-foreground max-w-xs mx-auto">
             Ton compagnon spirituel pour une lecture constante du Coran, 

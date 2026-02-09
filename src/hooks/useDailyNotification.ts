@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { getTodayMessage } from '@/lib/dailyMessages';
 
-const NOTIFICATION_STORAGE_KEY = 'istiqamah_last_notification_date';
+const NOTIFICATION_STORAGE_KEY = 'monkhatma_last_notification_date';
 const NOTIFICATION_HOUR = 8; // 08:00
 
 interface NotificationState {
@@ -62,7 +62,7 @@ export function useDailyNotification() {
     const message = getTodayMessage();
     
     if ('Notification' in window && Notification.permission === 'granted') {
-      new Notification('Istiqamah - Rappel Quotidien 📖', {
+      new Notification('Mon Khatma - Rappel Quotidien 📖', {
         body: message.message,
         icon: '/favicon.ico',
         tag: 'daily-reminder',
