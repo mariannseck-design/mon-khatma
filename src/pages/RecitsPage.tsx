@@ -36,7 +36,7 @@ export default function RecitsPage() {
               Contenu en préparation
             </h3>
             <p className="text-sm text-sky-foreground/70">
-              Les récits des Prophètes <span className="honorific">(عليه السلام)</span> seront bientôt disponibles, 
+              Les récits des Prophètes <span className="honorific">(عليهم السلام)</span> seront bientôt disponibles, 
               in sha Allah <span className="honorific">(عز وجل)</span>.
             </p>
           </Card>
