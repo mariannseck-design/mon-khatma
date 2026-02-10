@@ -15,6 +15,7 @@ import RecitsPage from "./pages/RecitsPage";
 import EmotionsPage from "./pages/EmotionsPage";
 import RappelsPage from "./pages/RappelsPage";
 import AdminPage from "./pages/AdminPage";
+import ProfilPage from "./pages/ProfilPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -70,6 +71,7 @@ function AppRoutes() {
       <Route path="/recits" element={<ProtectedRoute><RecitsPage /></ProtectedRoute>} />
       <Route path="/emotions" element={<ProtectedRoute><EmotionsPage /></ProtectedRoute>} />
       <Route path="/rappels" element={<ProtectedRoute><RappelsPage /></ProtectedRoute>} />
+      <Route path="/profil" element={<ProtectedRoute><ProfilPage /></ProtectedRoute>} />
       <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
       
       <Route path="*" element={<NotFound />} />
