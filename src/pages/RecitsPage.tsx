@@ -45,7 +45,7 @@ export default function RecitsPage() {
         {/* Prophet List */}
         <div className="space-y-3">
           <h2 className="font-display text-lg text-foreground">
-            Prophètes <span className="honorific">(عليه السلام)</span>
+          Prophètes <span className="honorific">(عليهم السلام)</span>
           </h2>
           
           {prophets.map((prophet, index) => (
