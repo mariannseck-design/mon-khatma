@@ -15,7 +15,7 @@ const features = [
   {
     icon: Users,
     title: 'Coins des Sœurs',
-    description: 'Lis en groupe avec 30 sœurs motivées',
+    description: 'Rejoins un espace d\'entraide entre sœurs',
     color: 'bg-gradient-lavender'
   },
   {
