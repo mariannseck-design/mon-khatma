@@ -206,7 +206,7 @@ export default function CerclePage() {
                 <Heart className="h-12 w-12 text-peach mx-auto mb-4" />
                 <h3 className="font-display text-lg text-foreground mb-2">Rejoins le Cercle</h3>
                 <p className="text-muted-foreground text-sm mb-4">
-                  Un groupe de 30 sœurs pour lire le Coran ensemble
+                  Un groupe d'entraide entre sœurs fillah
                 </p>
                 <Button
                   onClick={joinCircle}
