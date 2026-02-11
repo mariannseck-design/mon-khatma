@@ -5,14 +5,15 @@ import {
   Heart, 
   BookOpen, 
   Smile, 
-  Bell
+  Bell,
+  Moon
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navItems = [
   { path: '/accueil', icon: Home, label: 'Accueil' },
+  { path: '/ramadan', icon: Moon, label: 'Ramadan' },
   { path: '/favoris', icon: Heart, label: 'Favoris' },
-  { path: '/recits', icon: BookOpen, label: 'Récits' },
   { path: '/emotions', icon: Smile, label: 'Émotions' },
   { path: '/rappels', icon: Bell, label: 'Rappels' },
 ];
