@@ -319,6 +319,102 @@ export type Database = {
           },
         ]
       }
+      ramadan_daily_tasks: {
+        Row: {
+          created_at: string
+          fasting: boolean
+          id: string
+          prayer_asr: boolean
+          prayer_dhuhr: boolean
+          prayer_fajr: boolean
+          prayer_isha: boolean
+          prayer_maghrib: boolean
+          prayer_tarawih: boolean
+          reading_dhikr: boolean
+          reading_hadith: boolean
+          reading_quran: boolean
+          sadaqa: boolean
+          sunnah_duha: boolean
+          sunnah_rawatib: boolean
+          sunnah_witr: boolean
+          task_date: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          fasting?: boolean
+          id?: string
+          prayer_asr?: boolean
+          prayer_dhuhr?: boolean
+          prayer_fajr?: boolean
+          prayer_isha?: boolean
+          prayer_maghrib?: boolean
+          prayer_tarawih?: boolean
+          reading_dhikr?: boolean
+          reading_hadith?: boolean
+          reading_quran?: boolean
+          sadaqa?: boolean
+          sunnah_duha?: boolean
+          sunnah_rawatib?: boolean
+          sunnah_witr?: boolean
+          task_date?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          fasting?: boolean
+          id?: string
+          prayer_asr?: boolean
+          prayer_dhuhr?: boolean
+          prayer_fajr?: boolean
+          prayer_isha?: boolean
+          prayer_maghrib?: boolean
+          prayer_tarawih?: boolean
+          reading_dhikr?: boolean
+          reading_hadith?: boolean
+          reading_quran?: boolean
+          sadaqa?: boolean
+          sunnah_duha?: boolean
+          sunnah_rawatib?: boolean
+          sunnah_witr?: boolean
+          task_date?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      ramadan_reviews: {
+        Row: {
+          created_at: string
+          gratitude: string | null
+          id: string
+          intention: string | null
+          review_date: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          gratitude?: string | null
+          id?: string
+          intention?: string | null
+          review_date?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          gratitude?: string | null
+          id?: string
+          intention?: string | null
+          review_date?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       reading_reminders: {
         Row: {
           created_at: string
