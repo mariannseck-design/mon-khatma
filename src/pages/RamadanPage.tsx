@@ -1,16 +1,22 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Moon, Check, Sparkles, BookOpen, Heart, HandHeart, UtensilsCrossed } from 'lucide-react';
+import { Moon, Check, Sparkles, BookOpen, Heart, HandHeart, ChevronLeft, ChevronRight, Trash2, Pencil, Plus, X } from 'lucide-react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { Card } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { format, addDays, subDays } from 'date-fns';
+import { fr } from 'date-fns/locale';
+import RamadanTaskGroups from '@/components/ramadan/RamadanTaskGroups';
+import RamadanTaqwaReview from '@/components/ramadan/RamadanTaqwaReview';
+import RamadanProgress from '@/components/ramadan/RamadanProgress';
 
-interface DailyTasks {
+export interface DailyTasks {
   prayer_fajr: boolean;
   prayer_dhuhr: boolean;
   prayer_asr: boolean;
@@ -35,67 +41,28 @@ const defaultTasks: DailyTasks = {
   sadaqa: false, fasting: false,
 };
 
-const taskGroups = [
-  {
-    title: 'Prières',
-    icon: Sparkles,
-    color: 'from-primary/20 to-primary/5',
-    items: [
-      { key: 'prayer_fajr', label: 'Fajr' },
-      { key: 'prayer_dhuhr', label: 'Dhuhr' },
-      { key: 'prayer_asr', label: 'Asr' },
-      { key: 'prayer_maghrib', label: 'Maghrib' },
-      { key: 'prayer_isha', label: 'Isha' },
-      { key: 'prayer_tarawih', label: 'Tarawih' },
-    ],
-  },
-  {
-    title: 'Sunnah',
-    icon: Heart,
-    color: 'from-accent/30 to-accent/5',
-    items: [
-      { key: 'sunnah_duha', label: 'Prière Duha' },
-      { key: 'sunnah_rawatib', label: 'Rawatib' },
-      { key: 'sunnah_witr', label: 'Witr' },
-    ],
-  },
-  {
-    title: 'Lecture',
-    icon: BookOpen,
-    color: 'from-secondary/30 to-secondary/5',
-    items: [
-      { key: 'reading_quran', label: 'Coran' },
-      { key: 'reading_hadith', label: 'Hadith' },
-      { key: 'reading_dhikr', label: 'Dhikr' },
-    ],
-  },
-  {
-    title: 'Bonnes actions',
-    icon: HandHeart,
-    color: 'from-primary/15 to-accent/10',
-    items: [
-      { key: 'sadaqa', label: 'Sadaqa' },
-      { key: 'fasting', label: 'Jeûne' },
-    ],
-  },
-];
-
 export default function RamadanPage() {
   const { user } = useAuth();
   const [tasks, setTasks] = useState<DailyTasks>(defaultTasks);
   const [taskId, setTaskId] = useState<string | null>(null);
+  const [customGoodDeeds, setCustomGoodDeeds] = useState<string[]>([]);
+  const [newDeed, setNewDeed] = useState('');
   const [gratitude, setGratitude] = useState('');
   const [intention, setIntention] = useState('');
   const [reviewId, setReviewId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
-  const today = new Date().toISOString().split('T')[0];
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [isEditing, setIsEditing] = useState(false);
+
+  const dateStr = format(selectedDate, 'yyyy-MM-dd');
+  const isToday = dateStr === format(new Date(), 'yyyy-MM-dd');
 
   useEffect(() => {
     if (user) {
       fetchTasks();
       fetchReview();
     }
-  }, [user]);
+  }, [user, dateStr]);
 
   const fetchTasks = async () => {
     if (!user) return;
@@ -103,12 +70,17 @@ export default function RamadanPage() {
       .from('ramadan_daily_tasks')
       .select('*')
       .eq('user_id', user.id)
-      .eq('task_date', today)
+      .eq('task_date', dateStr)
       .maybeSingle();
     if (data) {
       setTaskId(data.id);
-      const { id, user_id, task_date, created_at, updated_at, ...taskData } = data;
+      const { id, user_id, task_date, created_at, updated_at, custom_good_deeds, ...taskData } = data;
       setTasks(taskData as DailyTasks);
+      setCustomGoodDeeds((custom_good_deeds as string[]) || []);
+    } else {
+      setTaskId(null);
+      setTasks(defaultTasks);
+      setCustomGoodDeeds([]);
     }
   };
 
@@ -118,12 +90,18 @@ export default function RamadanPage() {
       .from('ramadan_reviews')
       .select('*')
       .eq('user_id', user.id)
-      .eq('review_date', today)
+      .eq('review_date', dateStr)
       .maybeSingle();
     if (data) {
       setReviewId(data.id);
       setGratitude(data.gratitude || '');
       setIntention(data.intention || '');
+      setIsEditing(false);
+    } else {
+      setReviewId(null);
+      setGratitude('');
+      setIntention('');
+      setIsEditing(false);
     }
   };
 
@@ -137,11 +115,37 @@ export default function RamadanPage() {
     } else {
       const { data } = await supabase
         .from('ramadan_daily_tasks')
-        .insert({ user_id: user.id, task_date: today, ...newTasks })
+        .insert({ user_id: user.id, task_date: dateStr, ...newTasks, custom_good_deeds: customGoodDeeds })
         .select('id')
         .single();
       if (data) setTaskId(data.id);
     }
+  };
+
+  const addCustomDeed = async () => {
+    if (!user || !newDeed.trim()) return;
+    const updated = [...customGoodDeeds, newDeed.trim()];
+    setCustomGoodDeeds(updated);
+    setNewDeed('');
+
+    if (taskId) {
+      await supabase.from('ramadan_daily_tasks').update({ custom_good_deeds: updated }).eq('id', taskId);
+    } else {
+      const { data } = await supabase
+        .from('ramadan_daily_tasks')
+        .insert({ user_id: user.id, task_date: dateStr, ...tasks, custom_good_deeds: updated })
+        .select('id')
+        .single();
+      if (data) setTaskId(data.id);
+    }
+    toast.success('Bonne action ajoutée ✨');
+  };
+
+  const removeCustomDeed = async (index: number) => {
+    if (!user || !taskId) return;
+    const updated = customGoodDeeds.filter((_, i) => i !== index);
+    setCustomGoodDeeds(updated);
+    await supabase.from('ramadan_daily_tasks').update({ custom_good_deeds: updated }).eq('id', taskId);
   };
 
   const saveReview = async () => {
@@ -152,13 +156,23 @@ export default function RamadanPage() {
     } else {
       const { data } = await supabase
         .from('ramadan_reviews')
-        .insert({ user_id: user.id, review_date: today, gratitude, intention })
+        .insert({ user_id: user.id, review_date: dateStr, gratitude, intention })
         .select('id')
         .single();
       if (data) setReviewId(data.id);
     }
     toast.success('Réflexion enregistrée, Masha\'Allah 🤲');
     setSaving(false);
+    setIsEditing(false);
+  };
+
+  const deleteReview = async () => {
+    if (!user || !reviewId) return;
+    await supabase.from('ramadan_reviews').delete().eq('id', reviewId);
+    setReviewId(null);
+    setGratitude('');
+    setIntention('');
+    toast.success('Réflexion supprimée');
   };
 
   const completedCount = Object.values(tasks).filter(Boolean).length;
@@ -173,129 +187,49 @@ export default function RamadanPage() {
           <h1>🌙 Mon Ramadan</h1>
         </div>
 
-        {/* Progress Summary */}
-        <Card className="pastel-card p-6 bg-gradient-to-br from-primary/10 via-background to-accent/10 shadow-[0_8px_30px_-12px_rgba(0,0,0,0.08)]">
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="font-display text-lg">Ma Routine Baraka</h2>
-            <motion.span
-              key={completedCount}
-              initial={{ scale: 1.3 }}
-              animate={{ scale: 1 }}
-              className="text-xl font-bold text-primary"
-            >
-              {progressPercent}%
-            </motion.span>
+        {/* Date Navigation */}
+        <div className="flex items-center justify-between px-2">
+          <Button variant="ghost" size="icon" onClick={() => setSelectedDate(subDays(selectedDate, 1))}>
+            <ChevronLeft className="h-5 w-5" />
+          </Button>
+          <div className="text-center">
+            <p className="font-display text-base capitalize">
+              {format(selectedDate, 'EEEE d MMMM', { locale: fr })}
+            </p>
+            {isToday && <span className="text-xs text-primary font-semibold">Aujourd'hui</span>}
           </div>
-          <div className="w-full bg-muted rounded-full h-3 overflow-hidden">
-            <motion.div
-              className="h-full rounded-full bg-gradient-to-r from-primary to-primary/70"
-              initial={{ width: 0 }}
-              animate={{ width: `${progressPercent}%` }}
-              transition={{ duration: 0.6, ease: 'easeOut' }}
-            />
-          </div>
-          <p className="text-sm text-muted-foreground mt-2 text-center">
-            {completedCount}/{totalCount} actions accomplies aujourd'hui
-          </p>
-        </Card>
+          <Button variant="ghost" size="icon" onClick={() => setSelectedDate(addDays(selectedDate, 1))} disabled={isToday}>
+            <ChevronRight className="h-5 w-5" />
+          </Button>
+        </div>
+
+        {/* Progress */}
+        <RamadanProgress completedCount={completedCount} totalCount={totalCount} progressPercent={progressPercent} />
 
         {/* Task Groups */}
-        {taskGroups.map((group, gi) => (
-          <motion.div
-            key={group.title}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: gi * 0.1 }}
-          >
-            <Card className={`pastel-card p-5 bg-gradient-to-br ${group.color} shadow-[0_8px_30px_-12px_rgba(0,0,0,0.06)]`}>
-              <div className="flex items-center gap-2 mb-4">
-                <group.icon className="h-5 w-5 text-primary" />
-                <h3 className="font-display text-base">{group.title}</h3>
-              </div>
-              <div className="space-y-3">
-                {group.items.map((item) => {
-                  const checked = tasks[item.key as keyof DailyTasks];
-                  return (
-                    <label
-                      key={item.key}
-                      className="flex items-center gap-3 cursor-pointer group"
-                      onClick={() => toggleTask(item.key)}
-                    >
-                      <Checkbox
-                        checked={checked}
-                        onCheckedChange={() => {}}
-                        className="h-5 w-5 rounded-lg border-2 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
-                      />
-                      <span className={`text-sm font-medium transition-all ${checked ? 'line-through text-muted-foreground' : 'text-foreground'}`}>
-                        {item.label}
-                      </span>
-                      <AnimatePresence>
-                        {checked && (
-                          <motion.span
-                            initial={{ scale: 0, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0, opacity: 0 }}
-                            className="ml-auto text-primary"
-                          >
-                            <Check className="h-4 w-4" />
-                          </motion.span>
-                        )}
-                      </AnimatePresence>
-                    </label>
-                  );
-                })}
-              </div>
-            </Card>
-          </motion.div>
-        ))}
+        <RamadanTaskGroups
+          tasks={tasks}
+          toggleTask={toggleTask}
+          customGoodDeeds={customGoodDeeds}
+          newDeed={newDeed}
+          setNewDeed={setNewDeed}
+          addCustomDeed={addCustomDeed}
+          removeCustomDeed={removeCustomDeed}
+        />
 
         {/* Taqwa Review */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-        >
-          <Card className="pastel-card p-6 bg-gradient-to-br from-secondary/20 to-accent/10 shadow-[0_8px_30px_-12px_rgba(0,0,0,0.06)]">
-            <div className="flex items-center gap-2 mb-4">
-              <Moon className="h-5 w-5 text-primary" />
-              <h3 className="font-display text-lg">Mon Bilan Taqwa</h3>
-            </div>
-
-            <div className="space-y-4">
-              <div>
-                <label className="text-sm font-semibold text-foreground mb-2 block">
-                  🤲 Gratitude du jour
-                </label>
-                <Textarea
-                  placeholder="Al-Hamdulillah pour..."
-                  value={gratitude}
-                  onChange={(e) => setGratitude(e.target.value)}
-                  className="min-h-[80px] bg-background/60 border-border/40 rounded-2xl resize-none text-sm"
-                />
-              </div>
-
-              <div>
-                <label className="text-sm font-semibold text-foreground mb-2 block">
-                  🌟 Intention pour demain
-                </label>
-                <Textarea
-                  placeholder="Demain, in sha Allah, je souhaite..."
-                  value={intention}
-                  onChange={(e) => setIntention(e.target.value)}
-                  className="min-h-[80px] bg-background/60 border-border/40 rounded-2xl resize-none text-sm"
-                />
-              </div>
-
-              <Button
-                onClick={saveReview}
-                disabled={saving || (!gratitude && !intention)}
-                className="w-full bg-primary text-primary-foreground rounded-2xl hover-lift"
-              >
-                {saving ? 'Enregistrement...' : 'Enregistrer ma réflexion 🌙'}
-              </Button>
-            </div>
-          </Card>
-        </motion.div>
+        <RamadanTaqwaReview
+          gratitude={gratitude}
+          setGratitude={setGratitude}
+          intention={intention}
+          setIntention={setIntention}
+          reviewId={reviewId}
+          isEditing={isEditing}
+          setIsEditing={setIsEditing}
+          saving={saving}
+          saveReview={saveReview}
+          deleteReview={deleteReview}
+        />
       </div>
     </AppLayout>
   );
