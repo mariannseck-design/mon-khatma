@@ -1,16 +1,17 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, Easing } from 'framer-motion';
-import { BookOpen, Target, Users } from 'lucide-react';
+import { BookOpen, Target, Users, Download } from 'lucide-react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { useAuth } from '@/contexts/AuthContext';
+import { usePWAInstall } from '@/hooks/usePWAInstall';
+import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { DailyReminderBanner } from '@/components/notifications/DailyReminderBanner';
 import { useDailyNotification } from '@/hooks/useDailyNotification';
 export default function AccueilPage() {
-  const {
-    user
-  } = useAuth();
+  const { user } = useAuth();
+  const { isInstallable, isInstalled, isIOS, promptInstall } = usePWAInstall();
   const [profile, setProfile] = useState<{
     display_name: string | null;
   } | null>(null);
@@ -190,6 +191,24 @@ export default function AccueilPage() {
             </Link>
           </div>
         </motion.div>
+
+        {/* PWA Install Button */}
+        {!isInstalled && (isInstallable || isIOS) && (
+          <motion.div variants={itemVariants}>
+            <Button
+              onClick={isInstallable ? promptInstall : undefined}
+              className="w-full rounded-2xl h-14 bg-primary text-primary-foreground hover:bg-primary/90 shadow-md text-lg font-medium"
+            >
+              <Download className="h-5 w-5 mr-2" />
+              Installer l'application
+            </Button>
+            {isIOS && !isInstallable && (
+              <p className="text-sm text-muted-foreground text-center mt-2">
+                Appuie sur Partager puis "Sur l'écran d'accueil"
+              </p>
+            )}
+          </motion.div>
+        )}
 
         {/* Spiritual Quote - Bottom */}
         <motion.div variants={itemVariants} className="text-center pt-4 pb-2">
