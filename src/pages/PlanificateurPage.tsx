@@ -170,6 +170,23 @@ export default function PlanificateurPage() {
     setShowSparkles(false);
   }, []);
 
+  const resetKhatma = async () => {
+    if (!user) return;
+    const { error } = await supabase
+      .from('quran_progress')
+      .delete()
+      .eq('user_id', user.id);
+    if (error) {
+      toast.error('Erreur lors de la réinitialisation');
+      return;
+    }
+    setTotalPagesRead(0);
+    setTodayPages(0);
+    setWeekProgress([]);
+    setGoalMetToday(false);
+    toast.success('Nouvelle Khatma commencée, Bismillah! 🌙');
+  };
+
   const totalPagesThisWeek = weekProgress.reduce((sum, day) => sum + day.pages_read, 0);
 
   return (
@@ -181,7 +198,7 @@ export default function PlanificateurPage() {
         </div>
 
         {/* Total Progress Bar - Main Green Card with all info */}
-        <TotalProgressBar totalPagesRead={totalPagesRead} />
+        <TotalProgressBar totalPagesRead={totalPagesRead} onResetKhatma={resetKhatma} />
 
         {/* Current Goal or Create New */}
         {!activeGoal && !isCreatingGoal && (

@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
-import { BookOpen, Star, Moon } from 'lucide-react';
+import { BookOpen, Star, Moon, RotateCcw } from 'lucide-react';
 import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { getSurahByPage } from '@/lib/surahData';
 
 const TOTAL_QURAN_PAGES = 604;
@@ -16,9 +17,10 @@ const getDaysUntilRamadan = () => {
 
 interface TotalProgressBarProps {
   totalPagesRead: number;
+  onResetKhatma?: () => void;
 }
 
-export function TotalProgressBar({ totalPagesRead }: TotalProgressBarProps) {
+export function TotalProgressBar({ totalPagesRead, onResetKhatma }: TotalProgressBarProps) {
   const percentage = Math.min(100, (totalPagesRead / TOTAL_QURAN_PAGES) * 100);
   const isComplete = totalPagesRead >= TOTAL_QURAN_PAGES;
   const daysUntilRamadan = getDaysUntilRamadan();
@@ -92,6 +94,17 @@ export function TotalProgressBar({ totalPagesRead }: TotalProgressBarProps) {
               : <>Continue ta Khatma avec l'aide d'Allah <span className="honorific">(عز وجل)</span></>
             }
           </p>
+
+          {/* New Khatma Button */}
+          {isComplete && onResetKhatma && (
+            <Button
+              onClick={onResetKhatma}
+              className="w-full mb-4 rounded-xl bg-white/20 hover:bg-white/30 text-primary-foreground font-medium border-none"
+            >
+              <RotateCcw className="h-4 w-4 mr-2" />
+              Commencer une nouvelle Khatma
+            </Button>
+          )}
 
           {/* Smart Calculator - Integrated Display */}
           {!isComplete && (
