@@ -322,6 +322,7 @@ export type Database = {
       ramadan_daily_tasks: {
         Row: {
           created_at: string
+          custom_good_deeds: string[] | null
           fasting: boolean
           id: string
           prayer_asr: boolean
@@ -343,6 +344,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          custom_good_deeds?: string[] | null
           fasting?: boolean
           id?: string
           prayer_asr?: boolean
@@ -364,6 +366,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          custom_good_deeds?: string[] | null
           fasting?: boolean
           id?: string
           prayer_asr?: boolean
