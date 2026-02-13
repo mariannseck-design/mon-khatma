@@ -12,16 +12,26 @@ export function usePWAInstall() {
   const [isIOS, setIsIOS] = useState(false);
 
   useEffect(() => {
-    // Check if already installed
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+    // Check if already installed (standalone mode)
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches
+      || window.matchMedia('(display-mode: fullscreen)').matches
+      || window.matchMedia('(display-mode: minimal-ui)').matches;
     const isIOSStandalone = (navigator as any).standalone === true;
-    setIsInstalled(isStandalone || isIOSStandalone);
+    // Also check if launched from TWA (Android)
+    const isTWA = document.referrer.includes('android-app://');
+    setIsInstalled(isStandalone || isIOSStandalone || isTWA);
 
-    // Check if iOS
-    const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+    // Detect iOS Safari (not Chrome/Firefox on iOS)
+    const ua = navigator.userAgent;
+    const isIOSDevice = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
     setIsIOS(isIOSDevice);
 
-    // Listen for install prompt
+    // On iOS in a regular browser, always show as installable
+    if (isIOSDevice && !isIOSStandalone) {
+      setIsInstallable(true);
+    }
+
+    // Listen for install prompt (Chrome/Edge/Samsung Internet on Android & Desktop)
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
