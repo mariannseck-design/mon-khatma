@@ -14,7 +14,10 @@ export default function AccueilPage() {
   const { isInstallable, isInstalled, isIOS, promptInstall } = usePWAInstall();
   const [profile, setProfile] = useState<{
     display_name: string | null;
-  } | null>(null);
+  } | null>(() => {
+    const cached = localStorage.getItem('user_display_name');
+    return cached ? { display_name: cached } : null;
+  });
   const [todayProgress, setTodayProgress] = useState(0);
   const [weeklyStreak, setWeeklyStreak] = useState(0);
   useEffect(() => {
@@ -29,6 +32,9 @@ export default function AccueilPage() {
       data
     } = await supabase.from('profiles').select('display_name').eq('user_id', user.id).maybeSingle();
     setProfile(data);
+    if (data?.display_name) {
+      localStorage.setItem('user_display_name', data.display_name);
+    }
   };
   const fetchProgress = async () => {
     if (!user) return;
@@ -91,7 +97,9 @@ export default function AccueilPage() {
         {/* Greeting Header */}
         <motion.div className="text-center pt-2 pb-4" variants={itemVariants}>
           <p className="text-muted-foreground text-xl mb-1">{greeting()}</p>
-          
+          <h2 className="font-display text-2xl font-bold text-foreground">
+            Bienvenue, {displayName} 🤍
+          </h2>
         </motion.div>
 
         {/* Daily Progress Card - Full Width */}
