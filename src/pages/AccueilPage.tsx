@@ -200,25 +200,46 @@ export default function AccueilPage() {
           </div>
         </motion.div>
 
-        {/* PWA Install CTA */}
-        {!isInstalled && (isInstallable || isIOS) && (
+        {/* PWA Install CTA - Only in standard browser, never in standalone */}
+        {!isInstalled && isInstallable && (
           <motion.div variants={itemVariants}>
             <motion.button
-              onClick={isInstallable ? promptInstall : undefined}
-              className="w-full relative overflow-hidden rounded-[2rem] p-6 shadow-xl bg-gradient-to-r from-primary via-primary/90 to-success/80 group"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.97 }}
+              onClick={() => {
+                if (isIOS) {
+                  // On iOS, show a guide since we can't trigger install programmatically
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                  import('sonner').then(({ toast }) => {
+                    toast('📲 Pour installer l\'app', {
+                      description: 'Appuie sur le bouton Partager (⎙) puis "Sur l\'écran d\'accueil"',
+                      duration: 8000,
+                    });
+                  });
+                } else {
+                  promptInstall();
+                }
+              }}
+              className="w-full relative overflow-hidden rounded-[2rem] p-8 shadow-2xl bg-gradient-to-r from-[hsl(var(--destructive))] via-[hsl(20,80%,55%)] to-[hsl(40,90%,55%)] group border-2 border-white/20"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.96 }}
               transition={{ duration: 0.2 }}
+              animate={{ 
+                boxShadow: [
+                  '0 10px 40px -10px hsla(20, 80%, 55%, 0.4)',
+                  '0 10px 50px -10px hsla(20, 80%, 55%, 0.6)',
+                  '0 10px 40px -10px hsla(20, 80%, 55%, 0.4)',
+                ],
+              }}
             >
-              <div className="absolute -top-6 -right-6 w-32 h-32 rounded-full bg-white/15 blur-xl" />
-              <div className="absolute bottom-0 left-0 w-24 h-24 rounded-full bg-white/10 blur-lg" />
-              <div className="relative z-10 flex items-center justify-center gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-white/25 backdrop-blur-sm flex items-center justify-center">
-                  <Download className="h-7 w-7 text-primary-foreground" />
+              <div className="absolute -top-8 -right-8 w-40 h-40 rounded-full bg-white/20 blur-xl" />
+              <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full bg-white/15 blur-lg" />
+              <div className="absolute top-4 left-8 w-6 h-6 rounded-full bg-white/20 animate-pulse" />
+              <div className="relative z-10 flex items-center justify-center gap-5">
+                <div className="w-16 h-16 rounded-2xl bg-white/30 backdrop-blur-sm flex items-center justify-center">
+                  <Download className="h-9 w-9 text-white" />
                 </div>
                 <div className="text-left">
-                  <p className="text-2xl font-display font-bold text-primary-foreground">Télécharger l'app</p>
-                  <p className="text-primary-foreground/80 text-base">Accès rapide depuis ton écran d'accueil</p>
+                  <p className="text-3xl font-display font-bold text-white tracking-tight">📲 Télécharger</p>
+                  <p className="text-white/85 text-lg mt-0.5">Installe l'app sur ton téléphone</p>
                 </div>
               </div>
             </motion.button>
