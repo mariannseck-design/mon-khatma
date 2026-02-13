@@ -192,21 +192,28 @@ export default function AccueilPage() {
           </div>
         </motion.div>
 
-        {/* PWA Install Button */}
+        {/* PWA Install CTA */}
         {!isInstalled && (isInstallable || isIOS) && (
           <motion.div variants={itemVariants}>
-            <Button
+            <motion.button
               onClick={isInstallable ? promptInstall : undefined}
-              className="w-full rounded-2xl h-14 bg-primary text-primary-foreground hover:bg-primary/90 shadow-md text-lg font-medium"
+              className="w-full relative overflow-hidden rounded-[2rem] p-6 shadow-xl bg-gradient-to-r from-primary via-primary/90 to-success/80 group"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ duration: 0.2 }}
             >
-              <Download className="h-5 w-5 mr-2" />
-              Installer l'application
-            </Button>
-            {isIOS && !isInstallable && (
-              <p className="text-sm text-muted-foreground text-center mt-2">
-                Appuie sur Partager puis "Sur l'écran d'accueil"
-              </p>
-            )}
+              <div className="absolute -top-6 -right-6 w-32 h-32 rounded-full bg-white/15 blur-xl" />
+              <div className="absolute bottom-0 left-0 w-24 h-24 rounded-full bg-white/10 blur-lg" />
+              <div className="relative z-10 flex items-center justify-center gap-4">
+                <div className="w-14 h-14 rounded-2xl bg-white/25 backdrop-blur-sm flex items-center justify-center">
+                  <Download className="h-7 w-7 text-primary-foreground" />
+                </div>
+                <div className="text-left">
+                  <p className="text-2xl font-display font-bold text-primary-foreground">Télécharger l'app</p>
+                  <p className="text-primary-foreground/80 text-base">Accès rapide depuis ton écran d'accueil</p>
+                </div>
+              </div>
+            </motion.button>
           </motion.div>
         )}
 
