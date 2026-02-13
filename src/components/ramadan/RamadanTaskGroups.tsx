@@ -81,15 +81,14 @@ export default function RamadanTaskGroups({
               {group.items.map((item) => {
                 const checked = tasks[item.key as keyof DailyTasks];
                 return (
-                  <label
+                  <div
                     key={item.key}
                     className="flex items-center gap-3 cursor-pointer group"
                     onClick={() => toggleTask(item.key)}
                   >
                     <Checkbox
                       checked={checked}
-                      onCheckedChange={() => {}}
-                      className="h-5 w-5 rounded-lg border-2 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                      className="h-5 w-5 rounded-lg border-2 data-[state=checked]:bg-primary data-[state=checked]:border-primary pointer-events-none"
                     />
                     <span className={`text-sm font-medium transition-all ${checked ? 'line-through text-muted-foreground' : 'text-foreground'}`}>
                       {item.label}
@@ -106,7 +105,7 @@ export default function RamadanTaskGroups({
                         </motion.span>
                       )}
                     </AnimatePresence>
-                  </label>
+                  </div>
                 );
               })}
 
