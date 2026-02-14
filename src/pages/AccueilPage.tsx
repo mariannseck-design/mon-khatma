@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, Easing } from 'framer-motion';
-import { BookOpen, Target, Users, Download } from 'lucide-react';
+import { BookOpen, Target, Users, Download, Moon, Sun, Sunrise } from 'lucide-react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePWAInstall } from '@/hooks/usePWAInstall';
@@ -170,6 +170,44 @@ export default function AccueilPage() {
                 </div>
               </motion.div>
             </Link>
+
+            {/* Espace Dhikr Card - Inactive */}
+            <div className="block opacity-70 cursor-default">
+              <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-lavender via-lavender/80 to-secondary/50 p-7 shadow-lg">
+                <div className="absolute -top-6 -right-6 w-32 h-32 rounded-full bg-white/15 blur-xl" />
+                <div className="absolute bottom-4 left-6 w-8 h-8 rounded-lg rotate-12 bg-white/10" />
+                
+                <div className="relative z-10">
+                  <div className="flex items-center gap-5 mb-5">
+                    <div className="w-20 h-20 rounded-2xl bg-white/30 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
+                      <Moon className="h-12 w-12 text-foreground/60" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-display text-3xl font-bold text-foreground">Espace Dhikr</h3>
+                      <p className="text-muted-foreground text-lg mt-1">Bientôt disponible in shaa Allah</p>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <button disabled className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/20 backdrop-blur-sm text-muted-foreground cursor-not-allowed">
+                      <Sunrise className="h-5 w-5" />
+                      <span className="text-sm font-medium">Zikr du matin</span>
+                      <span className="ml-auto text-xs bg-white/30 px-2 py-0.5 rounded-full">Bientôt</span>
+                    </button>
+                    <button disabled className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/20 backdrop-blur-sm text-muted-foreground cursor-not-allowed">
+                      <Sun className="h-5 w-5" />
+                      <span className="text-sm font-medium">Zikr après chaque prière</span>
+                      <span className="ml-auto text-xs bg-white/30 px-2 py-0.5 rounded-full">Bientôt</span>
+                    </button>
+                    <button disabled className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/20 backdrop-blur-sm text-muted-foreground cursor-not-allowed">
+                      <Moon className="h-5 w-5" />
+                      <span className="text-sm font-medium">Zikr du soir</span>
+                      <span className="ml-auto text-xs bg-white/30 px-2 py-0.5 rounded-full">Bientôt</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
 
             {/* Cercle Card */}
             <Link to="/cercle" className="block">
