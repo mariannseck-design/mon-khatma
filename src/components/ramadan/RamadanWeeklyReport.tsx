@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CalendarCheck, Sparkles, Heart } from 'lucide-react';
+import { CalendarCheck, Sparkles, Heart, BookOpen } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
@@ -20,42 +20,75 @@ function getWeekStart(date: Date): string {
   return sunday.toISOString().split('T')[0];
 }
 
+function getWeekDates(weekStart: string): { start: string; end: string } {
+  const start = new Date(weekStart);
+  const end = new Date(start);
+  end.setDate(end.getDate() + 6);
+  return {
+    start: start.toISOString().split('T')[0],
+    end: end.toISOString().split('T')[0],
+  };
+}
+
 export default function RamadanWeeklyReport({ firstName, dailyPages }: RamadanWeeklyReportProps) {
   const { user } = useAuth();
   const [response, setResponse] = useState<boolean | null>(null);
   const [alreadyAnswered, setAlreadyAnswered] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [weeklyStats, setWeeklyStats] = useState<{ totalPages: number; daysRead: number } | null>(null);
 
   const isSunday = new Date().getDay() === 0;
   const weekStart = getWeekStart(new Date());
 
   useEffect(() => {
     if (!user) return;
-    const fetchReport = async () => {
-      const { data } = await supabase
+
+    const fetchData = async () => {
+      // Fetch existing report
+      const { data: reportData } = await supabase
         .from('ramadan_weekly_reports')
         .select('*')
         .eq('user_id', user.id)
         .eq('week_start', weekStart)
         .maybeSingle();
 
-      if (data) {
-        setResponse(data.goal_met);
+      if (reportData) {
+        setResponse(reportData.goal_met);
         setAlreadyAnswered(true);
       }
+
+      // Fetch actual reading data from quran_progress for this week
+      const { start, end } = getWeekDates(weekStart);
+      const { data: progressData } = await supabase
+        .from('quran_progress')
+        .select('pages_read, date')
+        .eq('user_id', user.id)
+        .gte('date', start)
+        .lte('date', end);
+
+      if (progressData) {
+        const totalPages = progressData.reduce((sum, d) => sum + (d.pages_read || 0), 0);
+        const daysRead = progressData.filter(d => (d.pages_read || 0) > 0).length;
+        setWeeklyStats({ totalPages, daysRead });
+      }
+
       setLoading(false);
     };
-    fetchReport();
+
+    fetchData();
   }, [user, weekStart]);
 
-  const handleResponse = async (goalMet: boolean) => {
+  const weeklyGoal = dailyPages * 7;
+  const goalMet = weeklyStats ? weeklyStats.totalPages >= weeklyGoal : false;
+
+  const handleResponse = async (met: boolean) => {
     if (!user) return;
-    setResponse(goalMet);
+    setResponse(met);
 
     const { error } = await supabase
       .from('ramadan_weekly_reports')
       .upsert(
-        { user_id: user.id, week_start: weekStart, goal_met: goalMet },
+        { user_id: user.id, week_start: weekStart, goal_met: met },
         { onConflict: 'user_id,week_start' }
       );
 
@@ -68,10 +101,8 @@ export default function RamadanWeeklyReport({ firstName, dailyPages }: RamadanWe
   };
 
   if (loading) return null;
-
-  // Show the report card on Sunday or if there's an unanswered report
   if (!isSunday && alreadyAnswered) return null;
-  if (!isSunday && !alreadyAnswered) return null;
+  if (!isSunday) return null;
 
   return (
     <motion.div
@@ -88,13 +119,36 @@ export default function RamadanWeeklyReport({ firstName, dailyPages }: RamadanWe
           </h3>
         </div>
 
+        {/* Real stats from Tilawah */}
+        {weeklyStats && (
+          <div className="flex items-center justify-center gap-6 mb-5">
+            <div className="text-center">
+              <p className="text-2xl font-bold text-primary">{weeklyStats.totalPages}</p>
+              <p className="text-xs text-muted-foreground">pages lues</p>
+            </div>
+            <div className="w-px h-10 bg-border" />
+            <div className="text-center">
+              <p className="text-2xl font-bold text-primary">{weeklyStats.daysRead}/7</p>
+              <p className="text-xs text-muted-foreground">jours actifs</p>
+            </div>
+            <div className="w-px h-10 bg-border" />
+            <div className="text-center">
+              <p className="text-2xl font-bold text-primary">{weeklyGoal}</p>
+              <p className="text-xs text-muted-foreground">objectif</p>
+            </div>
+          </div>
+        )}
+
         <AnimatePresence mode="wait">
           {response === null ? (
             <motion.div key="question" exit={{ opacity: 0, y: -10 }} className="space-y-4">
               <p className="text-sm text-foreground text-center leading-relaxed">
-                Assalamou aleykoum <strong>{firstName}</strong> ! Comment s'est passée ta lecture cette
-                semaine ? As-tu maintenu ton rythme de <strong>{dailyPages} page{dailyPages > 1 ? 's' : ''}</strong> par
-                jour ?
+                Assalamou aleykoum <strong>{firstName}</strong> ! Cette semaine, tu as lu{' '}
+                <strong>{weeklyStats?.totalPages ?? 0} page{(weeklyStats?.totalPages ?? 0) > 1 ? 's' : ''}</strong> sur{' '}
+                <strong>{weeklyGoal}</strong> prévues.
+                {goalMet
+                  ? ' Masha Allah, objectif atteint ! 🌟'
+                  : ' Continue tes efforts, chaque lettre compte !'}
               </p>
 
               <div className="flex gap-3">
@@ -103,7 +157,7 @@ export default function RamadanWeeklyReport({ firstName, dailyPages }: RamadanWe
                   className="flex-1 bg-primary text-primary-foreground"
                 >
                   <Sparkles className="h-4 w-4 mr-1" />
-                  Oui, Alhamdoulillah !
+                  Alhamdoulillah !
                 </Button>
                 <Button
                   onClick={() => handleResponse(false)}
