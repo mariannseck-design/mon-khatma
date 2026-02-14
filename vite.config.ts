@@ -20,8 +20,8 @@ export default defineConfig(({ mode }) => ({
       registerType: "autoUpdate",
       includeAssets: ["favicon.png", "apple-touch-icon.png", "pwa-192x192.png", "pwa-512x512.png"],
       manifest: {
-        name: "Mon Khatma",
-        short_name: "Mon Khatma",
+        name: "Ma Khatma",
+        short_name: "Ma Khatma",
         description: "Ton compagnon spirituel pour une lecture constante du Coran",
         theme_color: "#8FD3C4",
         background_color: "#FDF8F3",

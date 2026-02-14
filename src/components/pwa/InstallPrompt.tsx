@@ -34,9 +34,9 @@ export function InstallPrompt() {
               </button>
               
               <div className="flex items-center gap-3 mb-4">
-                <img src={logo} alt="Mon Khatma" className="w-12 h-12 rounded-xl" />
+                <img src={logo} alt="Ma Khatma" className="w-12 h-12 rounded-xl" />
                 <div>
-                  <h3 className="font-semibold text-foreground">Installer Mon Khatma</h3>
+                  <h3 className="font-semibold text-foreground">Installer Ma Khatma</h3>
                   <p className="text-sm text-muted-foreground">Ajoute l'app à ton écran d'accueil</p>
                 </div>
               </div>
@@ -97,9 +97,9 @@ export function InstallPrompt() {
           </button>
           
           <div className="flex items-center gap-3 mb-4">
-            <img src={logo} alt="Mon Khatma" className="w-12 h-12 rounded-xl" />
+            <img src={logo} alt="Ma Khatma" className="w-12 h-12 rounded-xl" />
             <div>
-              <h3 className="font-semibold text-foreground">Installer Mon Khatma</h3>
+              <h3 className="font-semibold text-foreground">Installer Ma Khatma</h3>
               <p className="text-sm text-muted-foreground">Accède rapidement à ton suivi</p>
             </div>
           </div>

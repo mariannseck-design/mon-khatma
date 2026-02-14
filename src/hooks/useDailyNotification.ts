@@ -62,7 +62,7 @@ export function useDailyNotification() {
     const message = getTodayMessage();
     
     if ('Notification' in window && Notification.permission === 'granted') {
-      new Notification('Mon Khatma - Rappel Quotidien 📖', {
+      new Notification('Ma Khatma - Rappel Quotidien 📖', {
         body: message.message,
         icon: '/favicon.ico',
         tag: 'daily-reminder',
