@@ -102,9 +102,6 @@ export default function LandingPage() {
             </Button>
           </Link>
           
-          <p className="text-center text-xs text-muted-foreground">
-            Fait avec amour 💚
-          </p>
         </motion.div>
       </div>
 
