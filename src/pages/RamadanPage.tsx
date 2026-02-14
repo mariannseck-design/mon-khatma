@@ -203,29 +203,12 @@ export default function RamadanPage() {
           <h1>🌙 Mon Ramadan</h1>
         </div>
 
-        {/* Reading Goal Setup or Weekly Report */}
-        {!loadingGoal && !readingGoal && (
-          <RamadanReadingSetup
-            onSetupComplete={(firstName, dailyPages) =>
-              setReadingGoal({ first_name: firstName, daily_pages: dailyPages })
-            }
-          />
-        )}
-
+        {/* Weekly Report (linked to Tilawah data) */}
         {readingGoal && (
           <RamadanWeeklyReport
             firstName={readingGoal.first_name}
             dailyPages={readingGoal.daily_pages}
           />
-        )}
-
-        {readingGoal && (
-          <Card className="pastel-card p-4 bg-gradient-to-r from-primary/10 to-accent/10">
-            <p className="text-sm text-center text-foreground">
-              📖 Objectif Ramadan : <strong>{readingGoal.daily_pages} page{readingGoal.daily_pages > 1 ? 's' : ''}/jour</strong> — 
-              Qu'Allah <span className="honorific font-bold" style={{ fontSize: '1.1em' }}>(عز وجل)</span> t'accorde la constance, <strong>{readingGoal.first_name}</strong> !
-            </p>
-          </Card>
         )}
 
         {/* Date Navigation */}

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Check, BookOpen } from 'lucide-react';
+import { Plus, Check, BookOpen, Sparkles } from 'lucide-react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -43,13 +43,69 @@ export default function PlanificateurPage() {
   const [showSparkles, setShowSparkles] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [goalMetToday, setGoalMetToday] = useState(false);
+  // Spiritual setup state
+  const [setupFirstName, setSetupFirstName] = useState('');
+  const [setupPages, setSetupPages] = useState(5);
+  const [setupSubmitting, setSetupSubmitting] = useState(false);
+  const [setupSuccess, setSetupSuccess] = useState(false);
+  const [savedSetup, setSavedSetup] = useState<{ first_name: string; daily_pages: number } | null>(null);
 
   useEffect(() => {
     if (user) {
       fetchGoal();
       fetchProgress();
+      fetchSetup();
     }
   }, [user]);
+
+  const fetchSetup = async () => {
+    if (!user) return;
+    const { data } = await supabase
+      .from('ramadan_reading_goals')
+      .select('first_name, daily_pages')
+      .eq('user_id', user.id)
+      .maybeSingle();
+    if (data) setSavedSetup(data);
+  };
+
+  const handleSpiritualSetup = async () => {
+    if (!user || !setupFirstName.trim() || setupPages < 1) return;
+    setSetupSubmitting(true);
+
+    // Save to ramadan_reading_goals
+    const { error: goalError } = await supabase
+      .from('ramadan_reading_goals')
+      .upsert(
+        { user_id: user.id, first_name: setupFirstName.trim(), daily_pages: setupPages },
+        { onConflict: 'user_id' }
+      );
+
+    if (goalError) {
+      toast.error("Erreur lors de l'enregistrement");
+      setSetupSubmitting(false);
+      return;
+    }
+
+    // Also create quran_goals entry
+    const daysNeeded = Math.ceil(TOTAL_QURAN_PAGES / setupPages);
+    const endDate = new Date();
+    endDate.setDate(endDate.getDate() + daysNeeded);
+
+    await supabase.from('quran_goals').insert({
+      user_id: user.id,
+      goal_type: 'pages_per_day',
+      target_value: setupPages,
+      end_date: endDate.toISOString().split('T')[0]
+    });
+
+    setSavedSetup({ first_name: setupFirstName.trim(), daily_pages: setupPages });
+    setSetupSuccess(true);
+    setTimeout(() => {
+      setSetupSuccess(false);
+      fetchGoal();
+    }, 3000);
+    setSetupSubmitting(false);
+  };
 
   const fetchGoal = async () => {
     if (!user) return;
@@ -197,19 +253,88 @@ export default function PlanificateurPage() {
           <h1>📖 Ma Khatma</h1>
         </div>
 
-        {/* Total Progress Bar - Main Green Card with all info */}
+        {/* Total Progress Bar */}
         <TotalProgressBar totalPagesRead={totalPagesRead} onResetKhatma={resetKhatma} />
 
-        {/* Current Goal or Create New */}
-        {!activeGoal && !isCreatingGoal && (
-          <Card className="pastel-card p-6 text-center shadow-[0_8px_30px_-12px_rgba(0,0,0,0.08)]">
-            <BookOpen className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <p className="text-muted-foreground mb-4">Aucun objectif actif</p>
-            <Button onClick={() => setIsCreatingGoal(true)} className="bg-primary text-primary-foreground hover-lift">
-              <Plus className="h-4 w-4 mr-2" />
-              Définir un objectif
-            </Button>
+        {/* Personalized greeting if setup exists */}
+        {savedSetup && activeGoal && (
+          <Card className="pastel-card p-4 bg-gradient-to-r from-primary/10 to-accent/10">
+            <p className="text-sm text-center text-foreground">
+              📖 Objectif : <strong>{savedSetup.daily_pages} page{savedSetup.daily_pages > 1 ? 's' : ''}/jour</strong> — 
+              Qu'Allah <span className="honorific font-bold" style={{ fontSize: '1.1em' }}>(عز وجل)</span> t'accorde la constance, <strong>{savedSetup.first_name}</strong> !
+            </p>
           </Card>
+        )}
+
+        {/* Spiritual Setup (no goal yet) */}
+        {!activeGoal && !isCreatingGoal && (
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+            <Card className="pastel-card p-6 bg-gradient-to-br from-primary/10 via-accent/10 to-secondary/10 border-2 border-primary/20">
+              <div className="text-center mb-6">
+                <div className="w-16 h-16 rounded-2xl bg-primary/20 flex items-center justify-center mx-auto mb-4">
+                  <BookOpen className="h-8 w-8 text-primary" />
+                </div>
+                <h2 className="font-display text-xl text-foreground mb-2">
+                  Bismillah ! 🌟
+                </h2>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Quel est ton objectif de lecture quotidien pour rester constante 
+                  avec le Livre d'Allah <span className="honorific font-bold" style={{ fontSize: '1.1em' }}>(عز وجل)</span> ?
+                </p>
+              </div>
+
+              {!setupSuccess ? (
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="setupName">Ton prénom</Label>
+                    <Input
+                      id="setupName"
+                      value={setupFirstName}
+                      onChange={(e) => setSetupFirstName(e.target.value)}
+                      placeholder="Ex: Fatima"
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="setupPages">Nombre de pages par jour</Label>
+                    <Input
+                      id="setupPages"
+                      type="number"
+                      min={1}
+                      max={50}
+                      value={setupPages}
+                      onChange={(e) => setSetupPages(parseInt(e.target.value) || 1)}
+                      className="mt-1"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      ≈ {Math.ceil(TOTAL_QURAN_PAGES / setupPages)} jours pour terminer le Coran
+                    </p>
+                  </div>
+                  <Button
+                    onClick={handleSpiritualSetup}
+                    disabled={setupSubmitting || !setupFirstName.trim() || setupPages < 1}
+                    className="w-full bg-primary text-primary-foreground"
+                  >
+                    {setupSubmitting ? 'Enregistrement...' : 'Bismillah, je commence ! ✨'}
+                  </Button>
+                </div>
+              ) : (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="text-center py-4"
+                >
+                  <Sparkles className="h-10 w-10 text-primary mx-auto mb-3" />
+                  <p className="text-foreground leading-relaxed">
+                    Qu'Allah <span className="honorific font-bold" style={{ fontSize: '1.1em' }}>(عز وجل)</span> accepte
+                    ta dévotion, <strong>{setupFirstName}</strong> ! Ton objectif de{' '}
+                    <strong>{setupPages} page{setupPages > 1 ? 's' : ''}</strong> par jour est un
+                    magnifique engagement. 🤲
+                  </p>
+                </motion.div>
+              )}
+            </Card>
+          </motion.div>
         )}
 
         {/* Create Goal Modal */}
