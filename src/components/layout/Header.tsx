@@ -11,7 +11,7 @@ interface HeaderProps {
   title?: string;
 }
 export function Header({
-  title = "Mon Khatma"
+  title = "Ma Khatma"
 }: HeaderProps) {
   const {
     user,
@@ -29,7 +29,7 @@ export function Header({
         <div className="flex items-center justify-between h-16">
           {/* Logo & Title */}
           <div className="flex items-center gap-3">
-            <img src={logo} alt="Mon Khatma" className="w-10 h-10 rounded-xl object-contain" />
+            <img src={logo} alt="Ma Khatma" className="w-10 h-10 rounded-xl object-contain" />
             <div>
               <h1 className="font-display text-lg font-semibold text-foreground">
                 {title}
