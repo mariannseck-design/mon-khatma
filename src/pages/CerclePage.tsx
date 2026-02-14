@@ -55,7 +55,7 @@ interface Membership {
 type SectionType = 'inspirations' | 'entraide' | 'rappels';
 
 export default function CerclePage() {
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   const [circle, setCircle] = useState<Circle | null>(null);
   const [membership, setMembership] = useState<Membership | null>(null);
   const [memberCount, setMemberCount] = useState(0);
@@ -170,9 +170,11 @@ export default function CerclePage() {
                 </div>
                 <div>
                   <h2 className="font-display text-xl text-accent-foreground">{circle.name}</h2>
-                  <p className="text-sm text-accent-foreground/70">
-                    {memberCount} sœur{memberCount > 1 ? 's' : ''} inscrite{memberCount > 1 ? 's' : ''}
-                  </p>
+                  {isAdmin && (
+                    <p className="text-sm text-accent-foreground/70">
+                      {memberCount} sœur{memberCount > 1 ? 's' : ''} inscrite{memberCount > 1 ? 's' : ''}
+                    </p>
+                  )}
                 </div>
               </div>
 

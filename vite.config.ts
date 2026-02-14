@@ -29,6 +29,9 @@ export default defineConfig(({ mode }) => ({
         orientation: "portrait",
         scope: "/",
         start_url: "/",
+        id: "/",
+        categories: ["education", "lifestyle"],
+        prefer_related_applications: false,
         icons: [
           {
             src: "/pwa-192x192.png",
