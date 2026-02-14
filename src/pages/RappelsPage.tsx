@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Bell, Calendar, Clock, Moon, BookOpen, ExternalLink } from 'lucide-react';
+import { Bell, Calendar, Clock, Moon, BookOpen, ExternalLink, Settings } from 'lucide-react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 import { Switch } from '@/components/ui/switch';
 import { ReminderConfigCard } from '@/components/rappels/ReminderConfigCard';
 import { supabase } from '@/integrations/supabase/client';
@@ -82,11 +84,18 @@ export default function RappelsPage() {
     <AppLayout title="Rappels">
       <div className="section-spacing">
         {/* Header */}
-        <div className="zen-header">
-          <h1>🔔 Rappels & Outils</h1>
-          <p className="text-muted-foreground">
-            Ne manque jamais ta lecture, in sha Allah <span className="honorific">(عز وجل)</span>
-          </p>
+        <div className="zen-header flex items-start justify-between">
+          <div>
+            <h1>🔔 Rappels & Outils</h1>
+            <p className="text-muted-foreground">
+              Ne manque jamais ta lecture, in sha Allah <span className="honorific">(عز وجل)</span>
+            </p>
+          </div>
+          <Link to="/parametres">
+            <Button variant="ghost" size="icon" className="rounded-full">
+              <Settings className="h-5 w-5 text-muted-foreground" />
+            </Button>
+          </Link>
         </div>
 
         {/* Custom User Reminders */}
