@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Bell, Calendar, Clock, Moon, BookOpen, ExternalLink, Settings } from 'lucide-react';
+import { Bell, BellOff, Calendar, Clock, Moon, BookOpen, ExternalLink, Settings } from 'lucide-react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,6 +9,7 @@ import { Switch } from '@/components/ui/switch';
 import { ReminderConfigCard } from '@/components/rappels/ReminderConfigCard';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { useDailyNotification } from '@/hooks/useDailyNotification';
 
 interface Reminder {
   id: string;
@@ -60,6 +61,7 @@ const externalTools = [
 
 export default function RappelsPage() {
   const { user } = useAuth();
+  const { hasPermission, isSupported, requestPermission } = useDailyNotification();
   const [userReminders, setUserReminders] = useState<Reminder[]>([]);
 
   const fetchReminders = async () => {
@@ -97,6 +99,49 @@ export default function RappelsPage() {
             </Button>
           </Link>
         </div>
+
+        {/* Notification Status Banner */}
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <Card className={`p-4 flex items-center justify-between rounded-2xl border-2 ${
+            hasPermission
+              ? 'bg-primary/5 border-primary/20'
+              : 'bg-destructive/5 border-destructive/20'
+          }`}>
+            <div className="flex items-center gap-3">
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                hasPermission ? 'bg-primary/15' : 'bg-destructive/15'
+              }`}>
+                {hasPermission
+                  ? <Bell className="h-5 w-5 text-primary" />
+                  : <BellOff className="h-5 w-5 text-destructive" />
+                }
+              </div>
+              <div>
+                <p className="font-medium text-foreground text-sm">
+                  {hasPermission ? 'Notifications activées ✅' : 'Notifications désactivées'}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {hasPermission
+                    ? 'Tu recevras tes rappels à l\'heure prévue'
+                    : 'Active-les pour ne rien manquer'
+                  }
+                </p>
+              </div>
+            </div>
+            {isSupported && !hasPermission && (
+              <Button
+                size="sm"
+                onClick={requestPermission}
+                className="bg-primary text-primary-foreground text-xs"
+              >
+                Activer
+              </Button>
+            )}
+          </Card>
+        </motion.div>
 
         {/* Custom User Reminders */}
         <ReminderConfigCard reminders={userReminders} onRefresh={fetchReminders} />
