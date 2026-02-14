@@ -388,6 +388,33 @@ export type Database = {
         }
         Relationships: []
       }
+      ramadan_reading_goals: {
+        Row: {
+          created_at: string
+          daily_pages: number
+          first_name: string
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          daily_pages?: number
+          first_name: string
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          daily_pages?: number
+          first_name?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       ramadan_reviews: {
         Row: {
           created_at: string
@@ -415,6 +442,30 @@ export type Database = {
           review_date?: string
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      ramadan_weekly_reports: {
+        Row: {
+          created_at: string
+          goal_met: boolean | null
+          id: string
+          user_id: string
+          week_start: string
+        }
+        Insert: {
+          created_at?: string
+          goal_met?: boolean | null
+          id?: string
+          user_id: string
+          week_start: string
+        }
+        Update: {
+          created_at?: string
+          goal_met?: boolean | null
+          id?: string
+          user_id?: string
+          week_start?: string
         }
         Relationships: []
       }

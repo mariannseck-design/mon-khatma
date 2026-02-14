@@ -15,6 +15,8 @@ import { fr } from 'date-fns/locale';
 import RamadanTaskGroups from '@/components/ramadan/RamadanTaskGroups';
 import RamadanTaqwaReview from '@/components/ramadan/RamadanTaqwaReview';
 import RamadanProgress from '@/components/ramadan/RamadanProgress';
+import RamadanReadingSetup from '@/components/ramadan/RamadanReadingSetup';
+import RamadanWeeklyReport from '@/components/ramadan/RamadanWeeklyReport';
 
 export interface DailyTasks {
   prayer_fajr: boolean;
@@ -53,6 +55,8 @@ export default function RamadanPage() {
   const [saving, setSaving] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isEditing, setIsEditing] = useState(false);
+  const [readingGoal, setReadingGoal] = useState<{ first_name: string; daily_pages: number } | null>(null);
+  const [loadingGoal, setLoadingGoal] = useState(true);
 
   const dateStr = format(selectedDate, 'yyyy-MM-dd');
   const isToday = dateStr === format(new Date(), 'yyyy-MM-dd');
@@ -61,8 +65,20 @@ export default function RamadanPage() {
     if (user) {
       fetchTasks();
       fetchReview();
+      fetchReadingGoal();
     }
   }, [user, dateStr]);
+
+  const fetchReadingGoal = async () => {
+    if (!user) return;
+    const { data } = await supabase
+      .from('ramadan_reading_goals')
+      .select('first_name, daily_pages')
+      .eq('user_id', user.id)
+      .maybeSingle();
+    if (data) setReadingGoal(data);
+    setLoadingGoal(false);
+  };
 
   const fetchTasks = async () => {
     if (!user) return;
@@ -186,6 +202,31 @@ export default function RamadanPage() {
         <div className="zen-header">
           <h1>🌙 Mon Ramadan</h1>
         </div>
+
+        {/* Reading Goal Setup or Weekly Report */}
+        {!loadingGoal && !readingGoal && (
+          <RamadanReadingSetup
+            onSetupComplete={(firstName, dailyPages) =>
+              setReadingGoal({ first_name: firstName, daily_pages: dailyPages })
+            }
+          />
+        )}
+
+        {readingGoal && (
+          <RamadanWeeklyReport
+            firstName={readingGoal.first_name}
+            dailyPages={readingGoal.daily_pages}
+          />
+        )}
+
+        {readingGoal && (
+          <Card className="pastel-card p-4 bg-gradient-to-r from-primary/10 to-accent/10">
+            <p className="text-sm text-center text-foreground">
+              📖 Objectif Ramadan : <strong>{readingGoal.daily_pages} page{readingGoal.daily_pages > 1 ? 's' : ''}/jour</strong> — 
+              Qu'Allah <span className="honorific font-bold" style={{ fontSize: '1.1em' }}>(عز وجل)</span> t'accorde la constance, <strong>{readingGoal.first_name}</strong> !
+            </p>
+          </Card>
+        )}
 
         {/* Date Navigation */}
         <div className="flex items-center justify-between px-2">
