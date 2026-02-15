@@ -2,15 +2,61 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import { getTodayMessage } from '@/lib/dailyMessages';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { toast } from 'sonner';
 
 const NOTIFICATION_STORAGE_KEY = 'makhatma_last_notification_date';
 const REMINDER_STORAGE_PREFIX = 'makhatma_reminder_shown_';
+
+const FALLBACK_TITLE = '🌙 Rappel Makhatma';
+const FALLBACK_MESSAGE = 'Assalamou aleykoum ! C\'est le moment de ta lecture pour rester régulière avec le Livre d\'Allah (عز وجل). Prête pour tes pages du jour ?';
 
 interface NotificationState {
   hasPermission: boolean;
   isSupported: boolean;
   todayMessage: string;
   showNotification: boolean;
+}
+
+/**
+ * Check if currentTime (HH:MM) is within ±windowMin of targetTime (HH:MM).
+ */
+function isWithinWindow(currentTime: string, targetTime: string, windowMin = 2): boolean {
+  const [cH, cM] = currentTime.split(':').map(Number);
+  const [tH, tM] = targetTime.split(':').map(Number);
+  const currentMinutes = cH * 60 + cM;
+  const targetMinutes = tH * 60 + tM;
+  return Math.abs(currentMinutes - targetMinutes) <= windowMin;
+}
+
+/**
+ * Check if targetTime (HH:MM) has already passed today.
+ */
+function hasTimePassed(targetTime: string): boolean {
+  const now = new Date();
+  const [tH, tM] = targetTime.split(':').map(Number);
+  const currentMinutes = now.getHours() * 60 + now.getMinutes();
+  const targetMinutes = tH * 60 + tM;
+  return currentMinutes > targetMinutes + 2; // past the window
+}
+
+/**
+ * Fire a browser notification or fall back to a toast.
+ */
+function fireNotification(title: string, body: string) {
+  if ('Notification' in window && Notification.permission === 'granted') {
+    new Notification(title, {
+      body,
+      icon: '/favicon.ico',
+      tag: `reminder-${Date.now()}`,
+      requireInteraction: false,
+    });
+  } else {
+    // Fallback: toast visuel
+    toast(title, {
+      description: body,
+      duration: 15000,
+    });
+  }
 }
 
 export function useDailyNotification() {
@@ -39,20 +85,21 @@ export function useDailyNotification() {
 
     if (now.getHours() >= 8 && lastDate !== todayStr) {
       setState(prev => ({ ...prev, showNotification: true }));
-      if (state.hasPermission) {
-        sendBrowserNotification();
-      }
+      fireNotification(
+        'Ma Khatma - Rappel Quotidien 📖',
+        getTodayMessage().message
+      );
       localStorage.setItem(NOTIFICATION_STORAGE_KEY, todayStr);
     }
   }, [state.hasPermission]);
 
-  // Check custom reminders every minute
+  // Check custom reminders every 30s + missed reminders on mount
   useEffect(() => {
     if (!user) return;
 
     const checkReminders = async () => {
       const now = new Date();
-      const currentDay = now.getDay(); // 0=Sun
+      const currentDay = now.getDay();
       const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
       const todayStr = now.toISOString().split('T')[0];
 
@@ -65,34 +112,29 @@ export function useDailyNotification() {
       if (!reminders) return;
 
       for (const reminder of reminders) {
-        // Check if today's day is in the reminder's days_of_week
         if (!reminder.days_of_week.includes(currentDay)) continue;
 
-        // Compare HH:MM (reminder_time is "HH:MM:SS")
         const reminderHHMM = reminder.reminder_time.slice(0, 5);
-        if (reminderHHMM !== currentTime) continue;
-
-        // Check if already shown today for this reminder
         const storageKey = `${REMINDER_STORAGE_PREFIX}${reminder.id}_${todayStr}`;
+
+        // Already shown today
         if (localStorage.getItem(storageKey)) continue;
 
-        // Fire notification
-        if ('Notification' in window && Notification.permission === 'granted') {
-          new Notification('Ma Khatma 📖', {
-            body: reminder.message,
-            icon: '/favicon.ico',
-            tag: `reminder-${reminder.id}`,
-            requireInteraction: false,
-          });
-        }
+        // Check ±2 min window OR missed (time already passed today)
+        const inWindow = isWithinWindow(currentTime, reminderHHMM, 2);
+        const missed = hasTimePassed(reminderHHMM);
 
-        localStorage.setItem(storageKey, '1');
+        if (inWindow || missed) {
+          fireNotification(FALLBACK_TITLE, reminder.message);
+          localStorage.setItem(storageKey, '1');
+        }
       }
     };
 
-    // Check immediately then every 60s
+    // Check immediately (catches missed reminders on app launch)
     checkReminders();
-    intervalRef.current = setInterval(checkReminders, 60_000);
+    // Then every 30 seconds for better accuracy
+    intervalRef.current = setInterval(checkReminders, 30_000);
 
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
@@ -101,14 +143,7 @@ export function useDailyNotification() {
 
   const sendBrowserNotification = useCallback(() => {
     const message = getTodayMessage();
-    if ('Notification' in window && Notification.permission === 'granted') {
-      new Notification('Ma Khatma - Rappel Quotidien 📖', {
-        body: message.message,
-        icon: '/favicon.ico',
-        tag: 'daily-reminder',
-        requireInteraction: false
-      });
-    }
+    fireNotification('Ma Khatma - Rappel Quotidien 📖', message.message);
   }, []);
 
   const requestPermission = useCallback(async () => {
