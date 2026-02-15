@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, Easing } from 'framer-motion';
+import { motion } from 'framer-motion';
+import type { Easing } from 'framer-motion';
 import { BookOpen, Target, Users, Download, Moon, Sun, Sunrise } from 'lucide-react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { useAuth } from '@/contexts/AuthContext';
