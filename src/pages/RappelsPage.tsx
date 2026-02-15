@@ -176,32 +176,7 @@ export default function RappelsPage() {
           </p>
         </div>
 
-        {/* Mobile Badge */}
-        {isMobile && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-          >
-            <Card className="p-5 rounded-2xl border-2 border-primary/20 bg-gradient-to-br from-primary/5 via-background to-accent/5">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center">
-                  <Monitor className="h-5 w-5 text-primary" />
-                </div>
-                <div>
-                  <p className="font-display text-sm font-semibold text-foreground">Notifications sur ordinateur</p>
-                </div>
-              </div>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Les notifications sont actives sur ordinateur. Bientôt disponibles sur mobile <span className="honorific">inshaa'Allah</span> 🤲
-              </p>
-            </Card>
-          </motion.div>
-        )}
-
-        {/* Desktop: Full notification controls */}
-        {!isMobile && (
-          <>
-            {/* Notification Status Banner */}
+        {/* Notification Status Banner */}
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -336,8 +311,6 @@ export default function RappelsPage() {
                 🔔 Tester les notifications
               </Button>
             </div>
-          </>
-        )}
 
         {/* Célébrations - visible on all devices */}
         <Card className="illustrated-card bg-gradient-sky">
