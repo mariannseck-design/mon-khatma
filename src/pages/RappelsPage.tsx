@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Bell, BellOff, Calendar, Clock, Moon, BookOpen, ExternalLink, Smartphone } from 'lucide-react';
+import { Bell, BellOff, Moon, BookOpen, ExternalLink, Calendar, Clock } from 'lucide-react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
 import { ReminderConfigCard } from '@/components/rappels/ReminderConfigCard';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -71,16 +71,12 @@ export default function RappelsPage() {
 
   const fetchReminders = async () => {
     if (!user) return;
-
     const { data } = await supabase
       .from('reading_reminders')
       .select('*')
       .eq('user_id', user.id)
       .order('reminder_time', { ascending: true });
-
-    if (data) {
-      setUserReminders(data);
-    }
+    if (data) setUserReminders(data);
   };
 
   const fetchPrefs = async () => {
@@ -90,7 +86,6 @@ export default function RappelsPage() {
       .select('*')
       .eq('user_id', user.id)
       .maybeSingle();
-
     if (data) {
       setDailyEnabled(data.daily_reminder_enabled);
       setReminderTime(data.reminder_time);
@@ -120,27 +115,62 @@ export default function RappelsPage() {
     }
   };
 
-  const handleToggleNotifications = async () => {
+  const handleActivateNotifications = async () => {
+    if (!isSupported) {
+      toast.error('Les notifications ne sont pas supportées par ton navigateur.');
+      return;
+    }
+    const granted = await requestPermission();
+    if (granted) {
+      toast.success('Notifications activées ! 🔔');
+    } else {
+      toast.error('Permission refusée. Active les notifications dans les paramètres de ton navigateur.');
+    }
+  };
+
+  const handleToggleDaily = () => {
     if (!hasPermission && isSupported) {
-      const granted = await requestPermission();
-      if (!granted) {
-        toast.error('Permission refusée. Active les notifications dans les paramètres de ton navigateur.');
-        return;
-      }
+      handleActivateNotifications();
+      return;
     }
     setDailyEnabled(!dailyEnabled);
   };
 
-  const timeOptions = Array.from({ length: 24 }, (_, h) => `${h.toString().padStart(2, '0')}:00`);
+  const handleTestNotification = async () => {
+    if ('serviceWorker' in navigator && 'PushManager' in window) {
+      try {
+        const reg = await navigator.serviceWorker.getRegistration('/');
+        const sub = reg ? await (reg as any).pushManager.getSubscription() : null;
+        if (sub) {
+          const { error } = await supabase.functions.invoke('send-push-notifications', {
+            body: { test: true },
+          });
+          if (!error) {
+            toast.success('Notification push envoyée ! Vérifie ton appareil 📱');
+            return;
+          }
+        }
+      } catch (_) { /* fallback below */ }
+    }
+    if ('Notification' in window && Notification.permission === 'granted') {
+      new Notification('Ma Khatma 📖', {
+        body: 'Ceci est un test. Qu\'Allah (عز وجل) t\'accorde la constance dans ta lecture.',
+        icon: '/favicon.png',
+      });
+      toast.success('Notification locale envoyée ✅');
+    } else {
+      toast.error('Aucune souscription push active. Autorise les notifications d\'abord.');
+    }
+  };
 
   return (
     <AppLayout title="Rappels">
       <div className="section-spacing">
         {/* Header */}
         <div className="zen-header">
-          <h1>🔔 Rappels & Outils</h1>
+          <h1>🔔 Rappels & Notifications</h1>
           <p className="text-muted-foreground">
-            Ne manque jamais ta lecture, in sha Allah <span className="honorific">(عز وجل)</span>
+            Gère tous tes rappels au même endroit
           </p>
         </div>
 
@@ -175,10 +205,10 @@ export default function RappelsPage() {
                 </p>
               </div>
             </div>
-            {isSupported && !hasPermission && (
+            {!hasPermission && (
               <Button
                 size="sm"
-                onClick={requestPermission}
+                onClick={handleActivateNotifications}
                 className="bg-primary text-primary-foreground text-xs"
               >
                 Activer
@@ -187,24 +217,18 @@ export default function RappelsPage() {
           </Card>
         </motion.div>
 
-        {/* Global Notification Preferences */}
+        {/* Rappel quotidien global - intégré */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
         >
-          <Card className="pastel-card p-5 space-y-5">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center">
-                <Bell className="h-5 w-5 text-primary" />
-              </div>
-              <h2 className="font-display text-lg text-foreground">Préférences globales</h2>
-            </div>
-
-            {/* Daily reminder toggle */}
+          <Card className="pastel-card p-4 space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <Smartphone className="h-4 w-4 text-muted-foreground" />
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                  <Bell className="h-5 w-5 text-primary" />
+                </div>
                 <div>
                   <p className="font-medium text-foreground text-sm">Rappel quotidien</p>
                   <p className="text-xs text-muted-foreground">Reçois un message chaque jour</p>
@@ -212,91 +236,45 @@ export default function RappelsPage() {
               </div>
               <Switch
                 checked={dailyEnabled}
-                onCheckedChange={handleToggleNotifications}
+                onCheckedChange={handleToggleDaily}
               />
             </div>
 
-            {/* Time selector */}
             {dailyEnabled && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="flex items-center justify-between"
+                className="flex items-center justify-between pt-2 border-t border-border/50"
               >
                 <div className="flex items-center gap-3">
                   <Clock className="h-4 w-4 text-muted-foreground" />
-                  <div>
-                    <p className="font-medium text-foreground text-sm">Heure du rappel</p>
-                    <p className="text-xs text-muted-foreground">Choisis l'heure idéale</p>
-                  </div>
+                  <p className="text-sm text-foreground">Heure du rappel</p>
                 </div>
-                <Select value={reminderTime} onValueChange={setReminderTime}>
-                  <SelectTrigger className="w-24 h-9">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {timeOptions.map((t) => (
-                      <SelectItem key={t} value={t}>{t}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <Input
+                  type="time"
+                  value={reminderTime}
+                  onChange={(e) => setReminderTime(e.target.value)}
+                  className="w-28 h-9 text-center"
+                />
               </motion.div>
             )}
 
-            {/* Save button */}
             {prefsLoaded && (
-              <Button onClick={savePreferences} disabled={saving} className="w-full">
-                {saving ? 'Enregistrement...' : 'Enregistrer mes préférences'}
+              <Button onClick={savePreferences} disabled={saving} className="w-full" size="sm">
+                {saving ? 'Enregistrement...' : 'Enregistrer'}
               </Button>
             )}
-
-            {/* Test push notification button */}
-            <Button
-              variant="outline"
-              className="w-full"
-              onClick={async () => {
-                if ('serviceWorker' in navigator && 'PushManager' in window) {
-                  try {
-                    const reg = await navigator.serviceWorker.getRegistration('/');
-                    const sub = reg ? await (reg as any).pushManager.getSubscription() : null;
-                    if (sub) {
-                      const { error } = await supabase.functions.invoke('send-push-notifications', {
-                        body: { test: true },
-                      });
-                      if (!error) {
-                        toast.success('Notification push envoyée ! Vérifie ton appareil 📱');
-                        return;
-                      }
-                    }
-                  } catch (_) { /* fallback below */ }
-                }
-                if ('Notification' in window && Notification.permission === 'granted') {
-                  new Notification('Ma Khatma 📖', {
-                    body: 'Ceci est un test. Qu\'Allah (عز وجل) t\'accorde la constance dans ta lecture.',
-                    icon: '/favicon.png',
-                  });
-                  toast.success('Notification locale envoyée ✅');
-                } else {
-                  toast.error('Aucune souscription push active. Autorise les notifications d\'abord.');
-                }
-              }}
-            >
-              🔔 Tester les notifications
-            </Button>
           </Card>
         </motion.div>
 
         {/* Custom User Reminders */}
         <ReminderConfigCard reminders={userReminders} onRefresh={fetchReminders} />
 
-        {/* Default System Reminders */}
-        <div className="space-y-3 mt-6">
+        {/* Notifications automatiques */}
+        <div className="space-y-3">
           <h2 className="font-display text-lg text-foreground">Notifications automatiques</h2>
-          
           {defaultReminders.map((reminder, index) => {
             const Icon = reminder.icon;
-            
             return (
               <motion.div
                 key={reminder.id}
@@ -321,25 +299,34 @@ export default function RappelsPage() {
           })}
         </div>
 
-        {/* Celebrations Info */}
-        <Card className="illustrated-card bg-gradient-sky mt-6">
-          <div className="flex items-center gap-3 mb-3">
-            <Moon className="h-6 w-6 text-sky-foreground" />
-            <h3 className="font-display text-lg text-sky-foreground">Célébrations</h3>
-          </div>
-          <p className="text-sm text-sky-foreground/80">
-            Tu recevras des messages de félicitations lorsque tu termines un Juz' 
-            ou une semaine complète de lecture! 🎉
-          </p>
-        </Card>
+        {/* Test + Célébrations */}
+        <div className="space-y-3">
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={handleTestNotification}
+          >
+            🔔 Tester les notifications
+          </Button>
+
+          <Card className="illustrated-card bg-gradient-sky">
+            <div className="flex items-center gap-3 mb-3">
+              <Moon className="h-6 w-6 text-sky-foreground" />
+              <h3 className="font-display text-lg text-sky-foreground">Célébrations</h3>
+            </div>
+            <p className="text-sm text-sky-foreground/80">
+              Tu recevras des messages de félicitations lorsque tu termines un Juz' 
+              ou une semaine complète de lecture! 🎉
+            </p>
+          </Card>
+        </div>
 
         {/* External Tools */}
-        <div className="space-y-3 mt-6">
+        <div className="space-y-3">
           <h2 className="font-display text-lg text-foreground">Boîte à outils</h2>
           <p className="text-sm text-muted-foreground mb-4">
             Recommandations d'applications complémentaires
           </p>
-          
           {externalTools.map((tool, index) => (
             <motion.div
               key={tool.name}
