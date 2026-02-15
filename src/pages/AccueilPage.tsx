@@ -13,7 +13,14 @@ import { usePushSubscription } from '@/hooks/usePushSubscription';
 export default function AccueilPage() {
   const { user } = useAuth();
   const { isInstallable, isInstalled, isIOS, promptInstall } = usePWAInstall();
-  usePushSubscription();
+  const { subscriptionError } = usePushSubscription();
+  
+  // Fallback: if push subscription failed, ensure local notifications work
+  useEffect(() => {
+    if (subscriptionError && 'Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+  }, [subscriptionError]);
   const [profile, setProfile] = useState<{
     display_name: string | null;
   } | null>(() => {

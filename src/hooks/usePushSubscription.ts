@@ -17,32 +17,49 @@ export function usePushSubscription() {
   const { user } = useAuth();
   const registeredRef = useRef(false);
   const [vapidKey, setVapidKey] = useState<string>('');
+  const [subscriptionError, setSubscriptionError] = useState<string | null>(null);
 
   // Fetch VAPID public key from edge function
   useEffect(() => {
     const fetchKey = async () => {
       try {
         const { data, error } = await supabase.functions.invoke('get-vapid-key');
-        if (data?.vapidPublicKey) {
+        if (error) {
+          console.error('Error fetching VAPID key:', error);
+          setSubscriptionError('vapid_fetch_failed');
+          return;
+        }
+        if (data?.vapidPublicKey && data.vapidPublicKey.length > 20) {
           setVapidKey(data.vapidPublicKey);
+          console.log('VAPID key fetched successfully, length:', data.vapidPublicKey.length);
+        } else {
+          console.error('VAPID key is missing or too short:', data?.vapidPublicKey?.length);
+          setSubscriptionError('vapid_invalid');
         }
       } catch (err) {
         console.error('Failed to fetch VAPID key:', err);
+        setSubscriptionError('vapid_fetch_failed');
       }
     };
     fetchKey();
   }, []);
 
   const registerServiceWorker = useCallback(async () => {
-    if (!('serviceWorker' in navigator) || !('PushManager' in window)) return null;
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+      console.log('Push not supported in this browser');
+      setSubscriptionError('push_not_supported');
+      return null;
+    }
 
     try {
       const registration = await navigator.serviceWorker.register('/sw-push.js', {
         scope: '/',
       });
+      console.log('Service Worker registered successfully');
       return registration;
     } catch (err) {
       console.error('SW registration failed:', err);
+      setSubscriptionError('sw_registration_failed');
       return null;
     }
   }, []);
@@ -60,16 +77,31 @@ export function usePushSubscription() {
 
       if (!subscription) {
         const permission = await Notification.requestPermission();
-        if (permission !== 'granted') return;
+        if (permission !== 'granted') {
+          console.log('Notification permission denied');
+          setSubscriptionError('permission_denied');
+          return;
+        }
 
-        subscription = await (registration as any).pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: urlBase64ToUint8Array(vapidKey),
-        });
+        try {
+          subscription = await (registration as any).pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(vapidKey),
+          });
+          console.log('Push subscription created successfully');
+        } catch (subErr) {
+          console.error('Push subscribe failed:', subErr);
+          setSubscriptionError('subscribe_failed');
+          return;
+        }
       }
 
       const subJson = subscription.toJSON();
-      if (!subJson.endpoint || !subJson.keys) return;
+      if (!subJson.endpoint || !subJson.keys) {
+        console.error('Invalid subscription JSON:', subJson);
+        setSubscriptionError('invalid_subscription');
+        return;
+      }
 
       // Save to database
       const { error } = await supabase
@@ -85,11 +117,15 @@ export function usePushSubscription() {
 
       if (error) {
         console.error('Error saving push subscription:', error);
+        setSubscriptionError('db_save_failed');
       } else {
         registeredRef.current = true;
+        setSubscriptionError(null);
+        console.log('Push subscription saved to database');
       }
     } catch (err) {
       console.error('Push subscription failed:', err);
+      setSubscriptionError('unknown_error');
     }
   }, [user, vapidKey, registerServiceWorker]);
 
@@ -99,5 +135,5 @@ export function usePushSubscription() {
     }
   }, [subscribeToPush, vapidKey]);
 
-  return { subscribeToPush };
+  return { subscribeToPush, subscriptionError };
 }
