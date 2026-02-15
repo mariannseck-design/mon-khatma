@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Users, Heart, Check, AlertCircle, Sparkles, MessageCircle, Bell } from 'lucide-react';
+import { Users, Heart, Check, AlertCircle, Sparkles, MessageCircle, Bell, Mail } from 'lucide-react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -24,7 +24,7 @@ const sectionCards = [
   {
     id: 'entraide' as const,
     title: 'Entraide & Conseils',
-    description: 'Une difficulté aujourd\'hui ? Demandez conseil à vos sœurs ici',
+    description: 'Une difficulté ? Demandez conseil ici',
     icon: MessageCircle,
     gradient: 'bg-gradient-lavender',
     iconBg: 'bg-accent/30',
@@ -32,7 +32,7 @@ const sectionCards = [
   {
     id: 'rappels' as const,
     title: 'Rappels & Encouragements',
-    description: 'Partagez ici votre verset du jour ou un petit mot pour motiver les sœurs. Chaque rappel, même modeste, est une graine de lumière',
+    description: 'Partagez votre verset du jour ou un mot motivant. Chaque rappel est une graine de lumière',
     icon: Bell,
     gradient: 'bg-gradient-peach',
     iconBg: 'bg-peach/30',
@@ -117,7 +117,7 @@ export default function CerclePage() {
       return;
     }
 
-    toast.success('Bienvenue dans le Cercle des Sœurs! 🌙');
+    toast.success('Bienvenue dans l\'Espace Communauté ! 🌙');
     setShowCharter(false);
     fetchCircleData();
   };
@@ -136,7 +136,7 @@ export default function CerclePage() {
   if (activeSection && circle && membership) {
     const sectionInfo = sectionCards.find(s => s.id === activeSection);
     return (
-      <AppLayout title="Cercle des Sœurs">
+      <AppLayout title="Espace Communauté">
         <div className="section-spacing">
           <SectionView
             circleId={circle.id}
@@ -150,11 +150,11 @@ export default function CerclePage() {
   }
 
   return (
-    <AppLayout title="Cercle des Sœurs">
+    <AppLayout title="Espace Communauté">
       <div className="section-spacing">
         {/* Header */}
         <div className="zen-header">
-          <h1>👭 Cercle des Sœurs</h1>
+          <h1>🤝 Espace Communauté</h1>
           <p className="text-muted-foreground">
             Un espace d'entraide avec l'aide d'Allah <span className="honorific">(عز وجل)</span>
           </p>
@@ -198,7 +198,7 @@ export default function CerclePage() {
                 <div className="w-16 h-16 rounded-full bg-success/20 flex items-center justify-center mx-auto mb-4">
                   <Check className="h-8 w-8 text-success" />
                 </div>
-                <h3 className="font-display text-lg text-foreground mb-2">Tu fais partie du Cercle!</h3>
+                <h3 className="font-display text-lg text-foreground mb-2">Tu fais partie de la communauté !</h3>
                 <p className="text-muted-foreground text-sm">
                   Qu'Allah <span className="honorific">(عز وجل)</span> t'accorde la constance dans ta lecture.
                 </p>
@@ -206,15 +206,15 @@ export default function CerclePage() {
             ) : (
               <div className="text-center">
                 <Heart className="h-12 w-12 text-peach mx-auto mb-4" />
-                <h3 className="font-display text-lg text-foreground mb-2">Rejoins le Cercle</h3>
+                <h3 className="font-display text-lg text-foreground mb-2">Rejoins la communauté</h3>
                 <p className="text-muted-foreground text-sm mb-4">
-                  Un groupe d'entraide entre sœurs fillah
+                  Un espace d'entraide et de partage fillah
                 </p>
                 <Button
                   onClick={joinCircle}
                   className="bg-primary text-primary-foreground hover-lift"
                 >
-                  Rejoindre le Cercle
+                  Rejoindre la communauté
                 </Button>
               </div>
             )}
@@ -242,6 +242,27 @@ export default function CerclePage() {
               <h2 className="font-display text-lg text-foreground mb-4">Célébrations</h2>
               <CollectiveCounter />
             </div>
+
+            {/* Support Section */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-6"
+            >
+              <Card className="pastel-card p-6 bg-gradient-to-br from-peach/30 to-secondary/20 text-center">
+                <Mail className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
+                <p className="text-foreground font-medium mb-1">
+                  Vous rencontrez un problème avec l'application ?
+                </p>
+                <p className="text-muted-foreground text-sm mb-4">Écrivez-nous ici</p>
+                <a href="mailto:contact@makhatma.app">
+                  <Button className="bg-primary text-primary-foreground rounded-2xl px-6">
+                    <Mail className="h-4 w-4 mr-2" />
+                    Contacter le support
+                  </Button>
+                </a>
+              </Card>
+            </motion.div>
           </div>
         )}
 
@@ -252,8 +273,8 @@ export default function CerclePage() {
 
             {[
               { emoji: '📖', title: 'Lecture quotidienne', description: 'avec suivi personnalisé' },
-              { emoji: '🤝', title: 'Motivation entre sœurs', description: 'Une difficulté aujourd\'hui ? Demandez conseil à vos sœurs ici' },
-              { emoji: '🌙', title: 'Rappels et encouragements', description: 'Partagez ici votre verset du jour ou un petit mot pour motiver les sœurs. Chaque rappel, même modeste, est une graine de lumière.' },
+              { emoji: '🤝', title: 'Motivation mutuelle', description: 'Une difficulté aujourd\'hui ? Demandez conseil ici' },
+              { emoji: '🌙', title: 'Rappels et encouragements', description: 'Partagez votre verset du jour ou un petit mot motivant. Chaque rappel est une graine de lumière.' },
               { emoji: '✨', title: 'Célébrations', description: 'des accomplissements ensemble' },
             ].map((benefit, index) => (
               <motion.div
@@ -280,13 +301,13 @@ export default function CerclePage() {
         <DialogContent className="max-w-sm mx-4 rounded-3xl">
           <DialogHeader>
             <DialogTitle className="font-display text-xl text-center">
-              Charte du Cercle des Sœurs
+              Charte de l'Espace Communauté
             </DialogTitle>
           </DialogHeader>
           <DialogDescription asChild>
             <div className="space-y-4 text-foreground">
               <p className="text-center text-muted-foreground">
-                Bienvenue, chère sœur! En rejoignant ce cercle, tu t'engages à:
+                Bienvenue ! En rejoignant cet espace, tu t'engages à :
               </p>
 
               <ul className="space-y-2 text-sm">
@@ -296,7 +317,7 @@ export default function CerclePage() {
                 </li>
                 <li className="flex gap-2">
                   <Check className="h-4 w-4 text-success shrink-0 mt-0.5" />
-                  <span>Encourager tes sœurs avec bienveillance</span>
+                  <span>Encourager les autres avec bienveillance</span>
                 </li>
                 <li className="flex gap-2">
                   <Check className="h-4 w-4 text-success shrink-0 mt-0.5" />
@@ -312,7 +333,7 @@ export default function CerclePage() {
                 onClick={acceptCharter}
                 className="w-full bg-primary text-primary-foreground mt-4"
               >
-                Je rejoins le Cercle avec l'aide d'Allah <span className="honorific ml-1">(عز وجل)</span>
+                Je rejoins la communauté avec l'aide d'Allah <span className="honorific ml-1">(عز وجل)</span>
               </Button>
             </div>
           </DialogDescription>
