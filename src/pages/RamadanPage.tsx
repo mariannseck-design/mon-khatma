@@ -7,6 +7,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -17,6 +18,7 @@ import RamadanTaqwaReview from '@/components/ramadan/RamadanTaqwaReview';
 import RamadanProgress from '@/components/ramadan/RamadanProgress';
 import RamadanReadingSetup from '@/components/ramadan/RamadanReadingSetup';
 import RamadanWeeklyReport from '@/components/ramadan/RamadanWeeklyReport';
+import RamadanDhikrSection from '@/components/ramadan/RamadanDhikrSection';
 
 export interface DailyTasks {
   prayer_fajr: boolean;
@@ -25,6 +27,7 @@ export interface DailyTasks {
   prayer_maghrib: boolean;
   prayer_isha: boolean;
   prayer_tarawih: boolean;
+  prayer_tahajjud: boolean;
   sunnah_duha: boolean;
   sunnah_rawatib: boolean;
   sunnah_witr: boolean;
@@ -38,10 +41,26 @@ export interface DailyTasks {
 const defaultTasks: DailyTasks = {
   prayer_fajr: false, prayer_dhuhr: false, prayer_asr: false,
   prayer_maghrib: false, prayer_isha: false, prayer_tarawih: false,
+  prayer_tahajjud: false,
   sunnah_duha: false, sunnah_rawatib: false, sunnah_witr: false,
   reading_quran: false, reading_hadith: false, reading_dhikr: false,
   sadaqa: false, fasting: false,
 };
+
+// Ramadan 2026 starts Feb 17 and lasts 31 days
+const RAMADAN_START = new Date(2026, 1, 17); // Feb 17, 2026
+const RAMADAN_DAYS = 31;
+const RAMADAN_END = addDays(RAMADAN_START, RAMADAN_DAYS - 1);
+
+function getRamadanDay(date: Date): number | null {
+  const start = new Date(RAMADAN_START);
+  start.setHours(0, 0, 0, 0);
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+  const diff = Math.floor((d.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+  if (diff < 0 || diff >= RAMADAN_DAYS) return null;
+  return diff + 1;
+}
 
 export default function RamadanPage() {
   const { user } = useAuth();
@@ -53,13 +72,23 @@ export default function RamadanPage() {
   const [intention, setIntention] = useState('');
   const [reviewId, setReviewId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(() => {
+    const today = new Date();
+    if (today < RAMADAN_START) return RAMADAN_START;
+    if (today > RAMADAN_END) return RAMADAN_END;
+    return today;
+  });
   const [isEditing, setIsEditing] = useState(false);
   const [readingGoal, setReadingGoal] = useState<{ first_name: string; daily_pages: number } | null>(null);
   const [loadingGoal, setLoadingGoal] = useState(true);
+  const [activeTab, setActiveTab] = useState('routine');
 
   const dateStr = format(selectedDate, 'yyyy-MM-dd');
   const isToday = dateStr === format(new Date(), 'yyyy-MM-dd');
+  const ramadanDay = getRamadanDay(selectedDate);
+
+  const canGoBack = selectedDate > RAMADAN_START;
+  const canGoForward = selectedDate < RAMADAN_END && !isToday;
 
   useEffect(() => {
     if (user) {
@@ -91,7 +120,7 @@ export default function RamadanPage() {
     if (data) {
       setTaskId(data.id);
       const { id, user_id, task_date, created_at, updated_at, custom_good_deeds, ...taskData } = data;
-      setTasks(taskData as DailyTasks);
+      setTasks(taskData as unknown as DailyTasks);
       setCustomGoodDeeds((custom_good_deeds as string[]) || []);
     } else {
       setTaskId(null);
@@ -213,16 +242,23 @@ export default function RamadanPage() {
 
         {/* Date Navigation */}
         <div className="flex items-center justify-between px-2">
-          <Button variant="ghost" size="icon" onClick={() => setSelectedDate(subDays(selectedDate, 1))}>
+          <Button variant="ghost" size="icon" onClick={() => setSelectedDate(subDays(selectedDate, 1))} disabled={!canGoBack}>
             <ChevronLeft className="h-5 w-5" />
           </Button>
           <div className="text-center">
             <p className="font-display text-base capitalize">
               {format(selectedDate, 'EEEE d MMMM', { locale: fr })}
             </p>
-            {isToday && <span className="text-xs text-primary font-semibold">Aujourd'hui</span>}
+            <div className="flex items-center justify-center gap-2">
+              {isToday && <span className="text-xs text-primary font-semibold">Aujourd'hui</span>}
+              {ramadanDay && (
+                <span className="text-xs text-muted-foreground font-medium">
+                  Jour {ramadanDay}/{RAMADAN_DAYS}
+                </span>
+              )}
+            </div>
           </div>
-          <Button variant="ghost" size="icon" onClick={() => setSelectedDate(addDays(selectedDate, 1))} disabled={isToday}>
+          <Button variant="ghost" size="icon" onClick={() => setSelectedDate(addDays(selectedDate, 1))} disabled={!canGoForward}>
             <ChevronRight className="h-5 w-5" />
           </Button>
         </div>
@@ -230,16 +266,34 @@ export default function RamadanPage() {
         {/* Progress */}
         <RamadanProgress completedCount={completedCount} totalCount={totalCount} progressPercent={progressPercent} />
 
-        {/* Task Groups */}
-        <RamadanTaskGroups
-          tasks={tasks}
-          toggleTask={toggleTask}
-          customGoodDeeds={customGoodDeeds}
-          newDeed={newDeed}
-          setNewDeed={setNewDeed}
-          addCustomDeed={addCustomDeed}
-          removeCustomDeed={removeCustomDeed}
-        />
+        {/* Tabs: Routine / Dhikr */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="w-full grid grid-cols-2 rounded-2xl h-11">
+            <TabsTrigger value="routine" className="rounded-xl text-sm font-medium">
+              📋 Routine
+            </TabsTrigger>
+            <TabsTrigger value="dhikr" className="rounded-xl text-sm font-medium">
+              📿 Dhikr
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="routine" className="space-y-6 mt-4">
+            {/* Task Groups */}
+            <RamadanTaskGroups
+              tasks={tasks}
+              toggleTask={toggleTask}
+              customGoodDeeds={customGoodDeeds}
+              newDeed={newDeed}
+              setNewDeed={setNewDeed}
+              addCustomDeed={addCustomDeed}
+              removeCustomDeed={removeCustomDeed}
+            />
+          </TabsContent>
+
+          <TabsContent value="dhikr" className="space-y-6 mt-4">
+            <RamadanDhikrSection dateStr={dateStr} />
+          </TabsContent>
+        </Tabs>
 
         {/* Taqwa Review */}
         <RamadanTaqwaReview
