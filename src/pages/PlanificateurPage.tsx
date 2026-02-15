@@ -14,6 +14,8 @@ import { ReadingSlider } from '@/components/planificateur/ReadingSlider';
 import { TotalProgressBar } from '@/components/planificateur/TotalProgressBar';
 import { SparkleEffect } from '@/components/planificateur/SparkleEffect';
 import { SuccessModal } from '@/components/planificateur/SuccessModal';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { RotateCcw } from 'lucide-react';
 
 const TOTAL_QURAN_PAGES = 604;
 
@@ -43,6 +45,7 @@ export default function PlanificateurPage() {
   const [showSparkles, setShowSparkles] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [goalMetToday, setGoalMetToday] = useState(false);
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
   // Spiritual setup state
   const [setupFirstName, setSetupFirstName] = useState('');
   const [setupPages, setSetupPages] = useState(5);
@@ -447,8 +450,52 @@ export default function PlanificateurPage() {
           />
         </div>
 
+        {/* Reset Button */}
+        {totalPagesRead > 0 && (
+          <div className="flex justify-center pt-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowResetConfirm(true)}
+              className="text-muted-foreground hover:text-destructive text-xs gap-1.5 opacity-60 hover:opacity-100 transition-opacity"
+            >
+              <RotateCcw className="h-3.5 w-3.5" />
+              Réinitialiser ma lecture
+            </Button>
+          </div>
+        )}
+
         {/* Success Modal */}
         <SuccessModal isOpen={showSuccessModal} onClose={() => setShowSuccessModal(false)} />
+
+        {/* Reset Confirmation Dialog */}
+        <Dialog open={showResetConfirm} onOpenChange={setShowResetConfirm}>
+          <DialogContent className="max-w-sm mx-4 rounded-3xl">
+            <DialogHeader>
+              <DialogTitle className="font-display text-xl text-center">
+                Réinitialiser la lecture
+              </DialogTitle>
+            </DialogHeader>
+            <DialogDescription className="text-center text-muted-foreground">
+              Voulez-vous vraiment recommencer à zéro ? Toute votre progression sera effacée.
+            </DialogDescription>
+            <div className="flex gap-3 mt-4">
+              <Button variant="outline" onClick={() => setShowResetConfirm(false)} className="flex-1 rounded-2xl">
+                Annuler
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={() => {
+                  resetKhatma();
+                  setShowResetConfirm(false);
+                }}
+                className="flex-1 rounded-2xl"
+              >
+                Oui, réinitialiser
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </AppLayout>
   );

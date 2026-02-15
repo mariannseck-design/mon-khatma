@@ -6,14 +6,33 @@ import { AppLayout } from '@/components/layout/AppLayout';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePWAInstall } from '@/hooks/usePWAInstall';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
 import { DailyReminderBanner } from '@/components/notifications/DailyReminderBanner';
 import { useDailyNotification } from '@/hooks/useDailyNotification';
 import { usePushSubscription } from '@/hooks/usePushSubscription';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 export default function AccueilPage() {
   const { user } = useAuth();
   const { isInstallable, isInstalled, isIOS, promptInstall } = usePWAInstall();
   const { subscriptionError } = usePushSubscription();
+  const [showNamePrompt, setShowNamePrompt] = useState(false);
+  const [guestName, setGuestName] = useState('');
+
+  // Check if first visit (no name stored)
+  useEffect(() => {
+    const hasName = localStorage.getItem('guest_first_name') || localStorage.getItem('user_display_name');
+    if (!hasName && !user) {
+      setShowNamePrompt(true);
+    }
+  }, [user]);
+
+  const handleSaveName = () => {
+    if (guestName.trim()) {
+      localStorage.setItem('guest_first_name', guestName.trim());
+      setShowNamePrompt(false);
+    }
+  };
   
   // Fallback: if push subscription failed, ensure local notifications work
   useEffect(() => {
@@ -67,7 +86,7 @@ export default function AccueilPage() {
     if (hour < 18) return '🌸 Bon après-midi !';
     return '🌙 Que ta journée soit bénie';
   };
-  const displayName = profile?.display_name || 'Sœur';
+  const displayName = profile?.display_name || localStorage.getItem('guest_first_name') || '';
   const {
     showNotification,
     dismissNotification
@@ -107,7 +126,7 @@ export default function AccueilPage() {
         <motion.div className="text-center pt-2 pb-4" variants={itemVariants}>
           <p className="text-muted-foreground text-xl mb-1">{greeting()}</p>
           <h2 className="font-display text-2xl font-bold text-foreground">
-            Bienvenue, {displayName} 🤍
+            {displayName ? `Bienvenue, ${displayName} 🤍` : 'Bienvenue 🤍'}
           </h2>
         </motion.div>
 
@@ -236,7 +255,7 @@ export default function AccueilPage() {
                     <Users className="h-12 w-12 text-accent-foreground" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-display text-3xl font-bold text-foreground">Coin des Sœurs</h3>
+                    <h3 className="font-display text-3xl font-bold text-foreground">Espace Communauté</h3>
                     <p className="text-muted-foreground text-xl mt-1">
                       Rejoindre la communauté
                     </p>
@@ -303,5 +322,34 @@ export default function AccueilPage() {
           </p>
         </motion.div>
       </motion.div>
+      {/* Name Prompt Dialog */}
+      <Dialog open={showNamePrompt} onOpenChange={setShowNamePrompt}>
+        <DialogContent className="max-w-sm mx-4 rounded-3xl">
+          <DialogHeader>
+            <DialogTitle className="font-display text-xl text-center">
+              Salam Aleykoum 🌙
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 pt-2">
+            <p className="text-center text-muted-foreground">
+              Comment vous appelez-vous ?
+            </p>
+            <Input
+              value={guestName}
+              onChange={(e) => setGuestName(e.target.value)}
+              placeholder="Votre prénom"
+              className="text-center text-lg"
+              onKeyDown={(e) => e.key === 'Enter' && handleSaveName()}
+            />
+            <Button
+              onClick={handleSaveName}
+              disabled={!guestName.trim()}
+              className="w-full bg-primary text-primary-foreground rounded-2xl"
+            >
+              Bismillah ✨
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </AppLayout>;
 }
