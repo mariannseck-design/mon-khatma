@@ -17,9 +17,6 @@ export default defineConfig(({ mode }) => ({
     react(),
     mode === "development" && componentTagger(),
     VitePWA({
-      strategies: "injectManifest",
-      srcDir: "src",
-      filename: "sw.ts",
       registerType: "autoUpdate",
       includeAssets: ["favicon.png", "apple-touch-icon.png", "pwa-192x192.png", "pwa-512x512.png"],
       manifest: {
@@ -37,22 +34,66 @@ export default defineConfig(({ mode }) => ({
         prefer_related_applications: false,
         icons: [
           {
-            src: "/pwa-192x192.png",
+            src: "/pwa-192x192.png?v=2",
             sizes: "192x192",
             type: "image/png",
-            purpose: "any maskable"
+            purpose: "any"
           },
           {
-            src: "/pwa-512x512.png",
+            src: "/pwa-192x192.png?v=2",
+            sizes: "192x192",
+            type: "image/png",
+            purpose: "maskable"
+          },
+          {
+            src: "/pwa-512x512.png?v=2",
             sizes: "512x512",
             type: "image/png",
-            purpose: "any maskable"
+            purpose: "any"
+          },
+          {
+            src: "/pwa-512x512.png?v=2",
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "maskable"
           }
         ]
       },
-      injectManifest: {
-        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5 MB
+      workbox: {
+        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
         globPatterns: ["**/*.{js,css,html,ico,png,svg,woff,woff2}"],
+        importScripts: ["/sw-push.js"],
+        navigateFallbackDenylist: [/^\/~oauth/],
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+            handler: "CacheFirst",
+            options: {
+              cacheName: "google-fonts-cache",
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 60 * 60 * 24 * 365
+              },
+              cacheableResponse: {
+                statuses: [0, 200]
+              }
+            }
+          },
+          {
+            urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
+            handler: "CacheFirst",
+            options: {
+              cacheName: "gstatic-fonts-cache",
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 60 * 60 * 24 * 365
+              },
+              cacheableResponse: {
+                statuses: [0, 200]
+              }
+            }
+          }
+        ]
       }
     })
   ].filter(Boolean),
