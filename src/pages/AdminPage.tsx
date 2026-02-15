@@ -84,7 +84,7 @@ export default function AdminPage() {
 
       return {
         user_id: member.user_id,
-        display_name: profile?.display_name || 'Sœur anonyme',
+        display_name: profile?.display_name || 'Membre anonyme',
         joined_at: member.joined_at,
         total_pages: totalPages,
         last_read_date: lastReadDate,
@@ -127,7 +127,7 @@ export default function AdminPage() {
         {/* Header */}
         <div className="zen-header">
           <h1>🛡️ Tableau de Bord</h1>
-          <p className="text-muted-foreground">Gestion du Cercle des Sœurs</p>
+          <p className="text-muted-foreground">Gestion de la Communauté</p>
         </div>
 
         {/* Stats Grid */}

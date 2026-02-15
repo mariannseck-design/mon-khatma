@@ -108,7 +108,7 @@ export function MessageBubble({
       {/* Author and time - WhatsApp style */}
       <div className="flex items-center justify-between mb-2">
         <span className="text-sm font-semibold text-foreground">
-          {authorName || 'Une sœur'}
+          {authorName || 'Un membre'}
         </span>
         <span className="text-xs text-muted-foreground">
           {formattedTime}

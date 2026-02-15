@@ -33,7 +33,7 @@ export const dailyMessages: DailyMessage[] = [
   {
     day: 4, // Jeudi
     dayName: 'Jeudi',
-    message: "Un pas de plus vers Allah (عز وجل). Belle lecture, chère sœur."
+    message: "Un pas de plus vers Allah (عز وجل). Belle lecture aujourd'hui."
   },
   {
     day: 5, // Vendredi
