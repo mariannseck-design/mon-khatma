@@ -191,7 +191,7 @@ export default function AdminPage() {
             </div>
           ) : members.length === 0 ? (
             <Card className="pastel-card p-6 text-center">
-              <p className="text-muted-foreground">Aucune membre inscrite</p>
+              <p className="text-muted-foreground">Aucun membre inscrit</p>
             </Card>
           ) : (
             members.map((member, index) => (

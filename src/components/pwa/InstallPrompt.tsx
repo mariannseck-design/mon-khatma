@@ -41,18 +41,25 @@ export function InstallPrompt() {
                 </div>
               </div>
 
+              <div className="p-3 rounded-xl bg-destructive/10 border border-destructive/20 mb-4">
+                <p className="text-sm font-semibold text-destructive mb-1">⚠️ IMPORTANT</p>
+                <p className="text-xs text-foreground leading-relaxed">
+                  Pour installer l'application sur iPhone et recevoir les rappels, vous devez impérativement utiliser le navigateur <strong>Safari</strong> (l'icône boussole bleue) et non Google Chrome.
+                </p>
+              </div>
+
               <div className="space-y-3 text-sm text-muted-foreground">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                     <Share className="h-4 w-4 text-primary" />
                   </div>
-                  <p>Appuie sur le bouton <strong>Partager</strong> en bas de Safari</p>
+                  <p>Touche l'icône <strong>Partager</strong> (le carré avec la flèche) en bas de l'écran</p>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                     <Plus className="h-4 w-4 text-primary" />
                   </div>
-                  <p>Choisis <strong>"Sur l'écran d'accueil"</strong></p>
+                  <p>Choisis <strong>« Sur l'écran d'accueil »</strong></p>
                 </div>
               </div>
             </Card>
