@@ -97,6 +97,80 @@ Deno.serve(async (req) => {
 
     const supabase = createClient(supabaseUrl, supabaseKey);
 
+    // Check if this is a test request
+    let body: Record<string, unknown> = {};
+    try { body = await req.json(); } catch (_) { /* no body */ }
+
+    if (body.test === true) {
+      // Get the calling user from auth header
+      const authHeader = req.headers.get('Authorization');
+      let userId: string | null = null;
+      if (authHeader) {
+        const anonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+        const userClient = createClient(supabaseUrl, anonKey, {
+          global: { headers: { Authorization: authHeader } },
+        });
+        const { data: { user } } = await userClient.auth.getUser();
+        userId = user?.id ?? null;
+      }
+
+      if (!userId) {
+        return new Response(JSON.stringify({ error: 'Not authenticated' }), {
+          status: 401,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      // Get all push subscriptions for this user
+      const { data: subs } = await supabase
+        .from('push_subscriptions')
+        .select('*')
+        .eq('user_id', userId);
+
+      if (!subs || subs.length === 0) {
+        return new Response(JSON.stringify({ error: 'No push subscriptions found' }), {
+          status: 404,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      let sentCount = 0;
+      const errors: string[] = [];
+
+      for (const sub of subs) {
+        try {
+          const endpointUrl = new URL(sub.endpoint);
+          const audience = `${endpointUrl.protocol}//${endpointUrl.host}`;
+
+          const jwt = await createVapidJWT(audience, 'mailto:contact@makhatma.app', vapidPrivateKey, vapidPublicKey);
+
+          const pushRes = await fetch(sub.endpoint, {
+            method: 'POST',
+            headers: {
+              'Authorization': `vapid t=${jwt}, k=${vapidPublicKey}`,
+              'TTL': '86400',
+              'Content-Length': '0',
+            },
+          });
+
+          if (pushRes.status === 201 || pushRes.status === 200) {
+            sentCount++;
+          } else if (pushRes.status === 410 || pushRes.status === 404) {
+            await supabase.from('push_subscriptions').delete().eq('id', sub.id);
+          } else {
+            const respBody = await pushRes.text();
+            errors.push(`${pushRes.status}: ${respBody}`);
+          }
+        } catch (err) {
+          errors.push(String(err));
+        }
+      }
+
+      return new Response(JSON.stringify({ message: 'Test push sent', sent: sentCount, errors: errors.length > 0 ? errors : undefined }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
     const now = new Date();
     const currentDay = now.getDay();
     const currentMinutes = now.getHours() * 60 + now.getMinutes();

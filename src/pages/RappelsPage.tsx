@@ -139,21 +139,31 @@ export default function RappelsPage() {
   };
 
   const handleTestNotification = async () => {
-    if ('serviceWorker' in navigator && 'PushManager' in window) {
-      try {
-        const reg = await navigator.serviceWorker.getRegistration('/');
-        const sub = reg ? await (reg as any).pushManager.getSubscription() : null;
-        if (sub) {
-          const { error } = await supabase.functions.invoke('send-push-notifications', {
-            body: { test: true },
-          });
-          if (!error) {
-            toast.success('Notification push envoyée ! Vérifie ton appareil 📱');
-            return;
-          }
-        }
-      } catch (_) { /* fallback below */ }
+    // First ensure we have push permission
+    if ('Notification' in window && Notification.permission !== 'granted') {
+      const permission = await Notification.requestPermission();
+      if (permission !== 'granted') {
+        toast.error('Permission de notification refusée. Active-la dans les paramètres de ton navigateur.');
+        return;
+      }
     }
+
+    // Try server-side push notification
+    try {
+      const { data, error } = await supabase.functions.invoke('send-push-notifications', {
+        body: { test: true },
+      });
+      if (!error && data?.sent > 0) {
+        toast.success('Notification push envoyée ! Vérifie ton appareil 📱');
+        return;
+      }
+      if (data?.error === 'No push subscriptions found') {
+        toast.info('Aucune souscription push trouvée. Recharge la page et réessaie.');
+        return;
+      }
+    } catch (_) { /* fallback below */ }
+
+    // Fallback: local notification
     if ('Notification' in window && Notification.permission === 'granted') {
       new Notification('Ma Khatma 📖', {
         body: 'Ceci est un test. Qu\'Allah (عز وجل) t\'accorde la constance dans ta lecture.',
@@ -161,7 +171,7 @@ export default function RappelsPage() {
       });
       toast.success('Notification locale envoyée ✅');
     } else {
-      toast.error('Aucune souscription push active. Autorise les notifications d\'abord.');
+      toast.error('Impossible d\'envoyer la notification. Vérifie tes permissions.');
     }
   };
 
