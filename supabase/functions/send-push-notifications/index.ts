@@ -5,7 +5,6 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// Base64url encode/decode helpers for Web Push
 function base64urlToUint8Array(base64url: string): Uint8Array {
   const base64 = base64url.replace(/-/g, '+').replace(/_/g, '/');
   const pad = base64.length % 4 === 0 ? '' : '='.repeat(4 - (base64.length % 4));
@@ -21,118 +20,60 @@ function uint8ArrayToBase64url(arr: Uint8Array): string {
   return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 
-async function importVapidKey(pem: string): Promise<CryptoKey> {
-  // VAPID private key is a raw 32-byte key in base64url
-  const keyData = base64urlToUint8Array(pem);
-  return await crypto.subtle.importKey(
-    'pkcs8',
-    await pemToArrayBuffer(pem),
+/**
+ * Create a VAPID JWT using JWK import (Web Crypto compatible).
+ * The VAPID public key is an uncompressed EC P-256 point (65 bytes: 0x04 || x[32] || y[32]).
+ * The private key is a raw 32-byte scalar.
+ */
+async function createVapidJWT(
+  audience: string,
+  subject: string,
+  vapidPrivateKeyB64: string,
+  vapidPublicKeyB64: string
+): Promise<string> {
+  const pubBytes = base64urlToUint8Array(vapidPublicKeyB64);
+  // Uncompressed point: first byte is 0x04, then 32 bytes x, 32 bytes y
+  if (pubBytes.length !== 65 || pubBytes[0] !== 0x04) {
+    throw new Error(`Invalid VAPID public key length: ${pubBytes.length}`);
+  }
+  const x = uint8ArrayToBase64url(pubBytes.slice(1, 33));
+  const y = uint8ArrayToBase64url(pubBytes.slice(33, 65));
+
+  const jwk = {
+    kty: 'EC',
+    crv: 'P-256',
+    d: vapidPrivateKeyB64,
+    x,
+    y,
+  };
+
+  const key = await crypto.subtle.importKey(
+    'jwk',
+    jwk,
     { name: 'ECDSA', namedCurve: 'P-256' },
     false,
     ['sign']
   );
-}
 
-// For raw base64url VAPID keys (standard web-push format)
-async function importRawVapidPrivateKey(base64urlKey: string): Promise<CryptoKey> {
-  const rawKey = base64urlToUint8Array(base64urlKey);
-  
-  // Build PKCS8 from raw 32-byte private key for P-256
-  // PKCS8 header for P-256 EC key
-  const pkcs8Header = new Uint8Array([
-    0x30, 0x81, 0x87, 0x02, 0x01, 0x00, 0x30, 0x13,
-    0x06, 0x07, 0x2a, 0x86, 0x48, 0xce, 0x3d, 0x02,
-    0x01, 0x06, 0x08, 0x2a, 0x86, 0x48, 0xce, 0x3d,
-    0x03, 0x01, 0x07, 0x04, 0x6d, 0x30, 0x6b, 0x02,
-    0x01, 0x01, 0x04, 0x20
-  ]);
-  const pkcs8Footer = new Uint8Array([
-    0xa1, 0x44, 0x03, 0x42, 0x00
-  ]);
-  
-  // We only need the private key portion for signing
-  const pkcs8 = new Uint8Array(pkcs8Header.length + rawKey.length);
-  pkcs8.set(pkcs8Header);
-  pkcs8.set(rawKey, pkcs8Header.length);
-
-  return await crypto.subtle.importKey(
-    'raw',
-    rawKey,
-    { name: 'ECDSA', namedCurve: 'P-256' },
-    false,
-    ['sign']
-  ).catch(async () => {
-    // Fallback: try JWK import
-    const jwk = {
-      kty: 'EC',
-      crv: 'P-256',
-      d: base64urlKey,
-      x: '', // Will be derived
-      y: '',
-    };
-    // If raw import fails, we'll use a simpler approach
-    throw new Error('Raw key import not supported, using JWT-based auth');
-  });
-}
-
-async function pemToArrayBuffer(pem: string): Promise<ArrayBuffer> {
-  const raw = base64urlToUint8Array(pem);
-  return raw.buffer;
-}
-
-// Simple JWT creation for VAPID
-async function createVapidJWT(audience: string, subject: string, vapidPrivateKey: string, vapidPublicKey: string): Promise<string> {
   const header = { typ: 'JWT', alg: 'ES256' };
   const now = Math.floor(Date.now() / 1000);
-  const payload = {
-    aud: audience,
-    exp: now + 12 * 3600,
-    sub: subject,
-  };
+  const payload = { aud: audience, exp: now + 12 * 3600, sub: subject };
 
   const encoder = new TextEncoder();
   const headerB64 = uint8ArrayToBase64url(encoder.encode(JSON.stringify(header)));
   const payloadB64 = uint8ArrayToBase64url(encoder.encode(JSON.stringify(payload)));
   const unsignedToken = `${headerB64}.${payloadB64}`;
 
-  // Import private key for signing
-  const rawKey = base64urlToUint8Array(vapidPrivateKey);
-  
-  // Build PKCS8 wrapper for the raw key
-  const pkcs8Header = new Uint8Array([
-    0x30, 0x81, 0x87, 0x02, 0x01, 0x00, 0x30, 0x13,
-    0x06, 0x07, 0x2a, 0x86, 0x48, 0xce, 0x3d, 0x02,
-    0x01, 0x06, 0x08, 0x2a, 0x86, 0x48, 0xce, 0x3d,
-    0x03, 0x01, 0x07, 0x04, 0x6d, 0x30, 0x6b, 0x02,
-    0x01, 0x01, 0x04, 0x20
-  ]);
-
-  const pkcs8 = new Uint8Array(pkcs8Header.length + rawKey.length);
-  pkcs8.set(pkcs8Header);
-  pkcs8.set(rawKey, pkcs8Header.length);
-
-  try {
-    const key = await crypto.subtle.importKey(
-      'pkcs8',
-      pkcs8.buffer,
-      { name: 'ECDSA', namedCurve: 'P-256' },
-      false,
-      ['sign']
-    );
-
-    const signature = await crypto.subtle.sign(
+  const signature = new Uint8Array(
+    await crypto.subtle.sign(
       { name: 'ECDSA', hash: 'SHA-256' },
       key,
       encoder.encode(unsignedToken)
-    );
+    )
+  );
 
-    const sigB64 = uint8ArrayToBase64url(new Uint8Array(signature));
-    return `${unsignedToken}.${sigB64}`;
-  } catch {
-    // If PKCS8 fails, skip VAPID JWT signing - notifications will use basic auth
-    console.error('VAPID JWT signing failed, using basic push');
-    throw new Error('VAPID signing not available');
-  }
+  // ECDSA signature from Web Crypto is in IEEE P1363 format (r || s, 64 bytes) — perfect for JWT ES256
+  return `${unsignedToken}.${uint8ArrayToBase64url(signature)}`;
 }
 
 Deno.serve(async (req) => {
@@ -146,15 +87,21 @@ Deno.serve(async (req) => {
     const vapidPublicKey = Deno.env.get('VAPID_PUBLIC_KEY');
     const vapidPrivateKey = Deno.env.get('VAPID_PRIVATE_KEY');
 
+    if (!vapidPublicKey || !vapidPrivateKey) {
+      console.error('VAPID keys not configured');
+      return new Response(JSON.stringify({ error: 'VAPID keys missing' }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     const now = new Date();
     const currentDay = now.getDay();
-    const currentHH = String(now.getHours()).padStart(2, '0');
-    const currentMM = String(now.getMinutes()).padStart(2, '0');
     const currentMinutes = now.getHours() * 60 + now.getMinutes();
 
-    // Fetch enabled reminders for today's day of week
+    // Fetch enabled reminders for today
     const { data: reminders, error: remErr } = await supabase
       .from('reading_reminders')
       .select('*')
@@ -176,6 +123,7 @@ Deno.serve(async (req) => {
     }
 
     let sentCount = 0;
+    const errors: string[] = [];
 
     for (const reminder of reminders) {
       const [tH, tM] = reminder.reminder_time.slice(0, 5).split(':').map(Number);
@@ -190,57 +138,60 @@ Deno.serve(async (req) => {
         .select('*')
         .eq('user_id', reminder.user_id);
 
-      if (!subs || subs.length === 0) continue;
-
-      const payload = JSON.stringify({
-        title: '🌙 Rappel Makhatma',
-        body: reminder.message || "Assalamou aleykoum ! C'est le moment de ta lecture pour rester régulière avec le Livre d'Allah (عز وجل). Prête pour tes pages du jour ?",
-        icon: '/favicon.png',
-        url: '/accueil',
-      });
+      if (!subs || subs.length === 0) {
+        console.log(`No subscriptions for user ${reminder.user_id}`);
+        continue;
+      }
 
       for (const sub of subs) {
         try {
-          // Simple push without VAPID JWT if keys not available
           const pushEndpoint = sub.endpoint;
-          
-          const headers: Record<string, string> = {
-            'Content-Type': 'application/json',
-            'TTL': '86400',
-          };
+          const endpointUrl = new URL(pushEndpoint);
+          const audience = `${endpointUrl.protocol}//${endpointUrl.host}`;
 
-          if (vapidPublicKey && vapidPrivateKey) {
-            try {
-              const endpointUrl = new URL(pushEndpoint);
-              const audience = `${endpointUrl.protocol}//${endpointUrl.host}`;
-              const jwt = await createVapidJWT(audience, 'mailto:contact@makhatma.app', vapidPrivateKey, vapidPublicKey);
-              headers['Authorization'] = `vapid t=${jwt}, k=${vapidPublicKey}`;
-            } catch {
-              console.log('VAPID auth skipped, using basic push');
-            }
-          }
+          const jwt = await createVapidJWT(
+            audience,
+            'mailto:contact@makhatma.app',
+            vapidPrivateKey,
+            vapidPublicKey
+          );
 
+          // Send push WITHOUT payload to avoid encryption complexity.
+          // The Service Worker will show a default spiritual message.
           const pushRes = await fetch(pushEndpoint, {
             method: 'POST',
-            headers,
-            body: payload,
+            headers: {
+              'Authorization': `vapid t=${jwt}, k=${vapidPublicKey}`,
+              'TTL': '86400',
+              'Content-Length': '0',
+            },
           });
 
           if (pushRes.status === 201 || pushRes.status === 200) {
             sentCount++;
+            console.log(`Push sent to ${sub.id}`);
           } else if (pushRes.status === 410 || pushRes.status === 404) {
-            // Subscription expired, remove it
             await supabase.from('push_subscriptions').delete().eq('id', sub.id);
+            console.log(`Removed expired subscription ${sub.id}`);
           } else {
-            console.error(`Push failed for ${sub.id}: ${pushRes.status}`);
+            const body = await pushRes.text();
+            const msg = `Push failed for ${sub.id}: ${pushRes.status} - ${body}`;
+            console.error(msg);
+            errors.push(msg);
           }
         } catch (err) {
-          console.error(`Error sending push to ${sub.id}:`, err);
+          const msg = `Error sending push to ${sub.id}: ${err}`;
+          console.error(msg);
+          errors.push(msg);
         }
       }
     }
 
-    return new Response(JSON.stringify({ message: 'Push notifications processed', sent: sentCount }), {
+    return new Response(JSON.stringify({
+      message: 'Push notifications processed',
+      sent: sentCount,
+      errors: errors.length > 0 ? errors : undefined,
+    }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (err) {
