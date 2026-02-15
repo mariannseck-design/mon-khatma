@@ -44,36 +44,20 @@ export function usePushSubscription() {
     fetchKey();
   }, []);
 
-  const registerServiceWorker = useCallback(async () => {
+  const subscribeToPush = useCallback(async () => {
+    if (!user || registeredRef.current || !vapidKey) return;
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
       console.log('Push not supported in this browser');
       setSubscriptionError('push_not_supported');
-      return null;
+      return;
     }
 
     try {
-      const registration = await navigator.serviceWorker.register('/sw-push.js', {
-        scope: '/',
-      });
-      console.log('Service Worker registered successfully');
-      return registration;
-    } catch (err) {
-      console.error('SW registration failed:', err);
-      setSubscriptionError('sw_registration_failed');
-      return null;
-    }
-  }, []);
+      // Wait for the VitePWA-registered service worker to be ready
+      const registration = await navigator.serviceWorker.ready;
+      console.log('Using PWA service worker for push subscription');
 
-  const subscribeToPush = useCallback(async () => {
-    if (!user || registeredRef.current || !vapidKey) return;
-
-    const registration = await registerServiceWorker();
-    if (!registration) return;
-
-    try {
-      await navigator.serviceWorker.ready;
-
-      let subscription = await (registration as any).pushManager.getSubscription();
+      let subscription = await registration.pushManager.getSubscription();
 
       if (!subscription) {
         const permission = await Notification.requestPermission();
@@ -84,9 +68,10 @@ export function usePushSubscription() {
         }
 
         try {
-          subscription = await (registration as any).pushManager.subscribe({
+          const appServerKey = urlBase64ToUint8Array(vapidKey);
+          subscription = await registration.pushManager.subscribe({
             userVisibleOnly: true,
-            applicationServerKey: urlBase64ToUint8Array(vapidKey),
+            applicationServerKey: appServerKey.buffer as ArrayBuffer,
           });
           console.log('Push subscription created successfully');
         } catch (subErr) {
@@ -127,7 +112,7 @@ export function usePushSubscription() {
       console.error('Push subscription failed:', err);
       setSubscriptionError('unknown_error');
     }
-  }, [user, vapidKey, registerServiceWorker]);
+  }, [user, vapidKey]);
 
   useEffect(() => {
     if (vapidKey) {
