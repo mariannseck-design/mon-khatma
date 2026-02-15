@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import type { Easing } from 'framer-motion';
-import { BookOpen, Target, Users, Download, Moon, Sun, Sunrise } from 'lucide-react';
+import { BookOpen, Target, Users, Download, Moon, Sun, Sunrise, Share2 } from 'lucide-react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePWAInstall } from '@/hooks/usePWAInstall';
@@ -312,6 +312,33 @@ export default function AccueilPage() {
             </motion.button>
           </motion.div>
         )}
+
+        {/* Share App Button */}
+        <motion.div variants={itemVariants}>
+          <motion.button
+            onClick={() => {
+              const shareData = {
+                title: 'Ma Khatma',
+                text: "Salam ! Je t'invite à découvrir Ma Khatma, l'application qui m'aide à rester constante dans ma lecture du Coran et mes adorations. Rejoins-nous ici :",
+                url: 'https://makhatma.lovable.app',
+              };
+              if (navigator.share) {
+                navigator.share(shareData).catch(() => {});
+              } else {
+                navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
+                import('sonner').then(({ toast }) => {
+                  toast.success('Lien copié dans le presse-papiers !');
+                });
+              }
+            }}
+            className="w-full flex items-center justify-center gap-3 py-5 rounded-[2rem] bg-primary/10 hover:bg-primary/15 transition-colors"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.97 }}
+          >
+            <Share2 className="h-6 w-6 text-primary" />
+            <span className="font-display text-xl font-semibold text-primary">Partager l'application</span>
+          </motion.button>
+        </motion.div>
 
         {/* Spiritual Quote - Bottom */}
         <motion.div variants={itemVariants} className="text-center pt-4 pb-2">
