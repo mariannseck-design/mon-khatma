@@ -24,7 +24,7 @@ const sectionCards = [
 {
   id: 'entraide' as const,
   title: 'Entraide & Conseils',
-  description: 'Une difficulté aujourd\'hui ? Demandez conseil à vos sœurs ici',
+  description: 'Une difficulté aujourd\'hui ? Demandez conseil à la communauté',
   icon: MessageCircle,
   gradient: 'bg-gradient-lavender',
   iconBg: 'bg-accent/30'
@@ -32,7 +32,7 @@ const sectionCards = [
 {
   id: 'rappels' as const,
   title: 'Rappels & Encouragements',
-  description: 'Partagez ici votre verset du jour ou un petit mot pour motiver les sœurs. Chaque rappel, même modeste, est une graine de lumière',
+  description: 'Partagez ici votre verset du jour ou un petit mot pour motiver la communauté. Chaque rappel, même modeste, est une graine de lumière',
   icon: Bell,
   gradient: 'bg-gradient-peach',
   iconBg: 'bg-peach/30'
@@ -117,7 +117,7 @@ export default function CerclePage() {
       return;
     }
 
-    toast.success('Bienvenue dans le Cercle des Sœurs! 🌙');
+    toast.success('Bienvenue dans la Communauté! 🌙');
     setShowCharter(false);
     fetchCircleData();
   };
@@ -136,7 +136,7 @@ export default function CerclePage() {
   if (activeSection && circle && membership) {
     const sectionInfo = sectionCards.find((s) => s.id === activeSection);
     return (
-      <AppLayout title="Cercle des Sœurs">
+      <AppLayout title="Espace Communauté">
         <div className="section-spacing">
           <SectionView
             circleId={circle.id}
@@ -150,7 +150,7 @@ export default function CerclePage() {
   }
 
   return (
-    <AppLayout title="Cercle des Sœurs">
+    <AppLayout title="Espace Communauté">
       <div className="section-spacing">
         {/* Header */}
         <div className="zen-header">
@@ -208,7 +208,7 @@ export default function CerclePage() {
                 <Heart className="h-12 w-12 text-peach mx-auto mb-4" />
                 <h3 className="font-display text-lg text-foreground mb-2">Rejoins le Cercle</h3>
                 <p className="text-muted-foreground text-sm mb-4">
-                  Un groupe d'entraide entre sœurs fillah
+                  Un groupe d'entraide pour avancer ensemble
                 </p>
                 <Button
               onClick={joinCircle}
@@ -252,8 +252,8 @@ export default function CerclePage() {
 
             {[
           { emoji: '📖', title: 'Lecture quotidienne', description: 'avec suivi personnalisé' },
-          { emoji: '🤝', title: 'Motivation entre sœurs', description: 'Une difficulté aujourd\'hui ? Demandez conseil à vos sœurs ici' },
-          { emoji: '🌙', title: 'Rappels et encouragements', description: 'Partagez ici votre verset du jour ou un petit mot pour motiver les sœurs. Chaque rappel, même modeste, est une graine de lumière.' },
+          { emoji: '🤝', title: 'Motivation collective', description: 'Une difficulté aujourd\'hui ? Demandez conseil à la communauté' },
+          { emoji: '🌙', title: 'Rappels et encouragements', description: 'Partagez ici votre verset du jour ou un petit mot pour motiver la communauté. Chaque rappel, même modeste, est une graine de lumière.' },
           { emoji: '✨', title: 'Célébrations', description: 'des accomplissements ensemble' }].
           map((benefit, index) =>
           <motion.div
@@ -280,13 +280,13 @@ export default function CerclePage() {
         <DialogContent className="max-w-sm mx-4 rounded-3xl">
           <DialogHeader>
             <DialogTitle className="font-display text-xl text-center">
-              Charte du Cercle des Sœurs
+              Charte de la Communauté
             </DialogTitle>
           </DialogHeader>
           <DialogDescription asChild>
             <div className="space-y-4 text-foreground">
               <p className="text-center text-muted-foreground">
-                Bienvenue, chère sœur! En rejoignant ce cercle, tu t'engages à:
+                Bienvenue ! En rejoignant cette communauté, tu t'engages à:
               </p>
 
               <ul className="space-y-2 text-sm">
@@ -296,7 +296,7 @@ export default function CerclePage() {
                 </li>
                 <li className="flex gap-2">
                   <Check className="h-4 w-4 text-success shrink-0 mt-0.5" />
-                  <span>Encourager tes sœurs avec bienveillance</span>
+                  <span>Encourager la communauté avec bienveillance</span>
                 </li>
                 <li className="flex gap-2">
                   <Check className="h-4 w-4 text-success shrink-0 mt-0.5" />

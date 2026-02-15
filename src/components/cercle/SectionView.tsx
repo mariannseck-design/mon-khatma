@@ -30,7 +30,7 @@ interface SectionViewProps {
 
 const sectionDescriptions = {
   inspirations: 'Partage de versets et réflexions spirituelles',
-  entraide: 'Questions et échanges entre sœurs',
+  entraide: 'Questions et échanges entre membres',
   rappels: 'Messages d\'encouragement et invocations',
 };
 
