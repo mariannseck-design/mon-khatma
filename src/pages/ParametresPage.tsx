@@ -182,6 +182,43 @@ export default function ParametresPage() {
                 {saving ? 'Enregistrement...' : 'Enregistrer mes préférences'}
               </Button>
             )}
+
+            {/* Test push notification button */}
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={async () => {
+                // Try push notification first
+                if ('serviceWorker' in navigator && 'PushManager' in window) {
+                  try {
+                    const reg = await navigator.serviceWorker.getRegistration('/');
+                    const sub = reg ? await (reg as any).pushManager.getSubscription() : null;
+                    if (sub) {
+                      // Trigger the edge function for this user
+                      const { error } = await supabase.functions.invoke('send-push-notifications', {
+                        body: { test: true },
+                      });
+                      if (!error) {
+                        toast.success('Notification push envoyée ! Vérifie ton appareil 📱');
+                        return;
+                      }
+                    }
+                  } catch (_) { /* fallback below */ }
+                }
+                // Fallback: local browser notification
+                if ('Notification' in window && Notification.permission === 'granted') {
+                  new Notification('Ma Khatma 📖', {
+                    body: 'Ceci est un test. Qu\'Allah (عز وجل) t\'accorde la constance dans ta lecture.',
+                    icon: '/favicon.png',
+                  });
+                  toast.success('Notification locale envoyée ✅');
+                } else {
+                  toast.error('Aucune souscription push active. Autorise les notifications d\'abord.');
+                }
+              }}
+            >
+              🔔 Tester les notifications
+            </Button>
           </Card>
         </motion.div>
 
