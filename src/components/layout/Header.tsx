@@ -5,7 +5,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useAuth } from '@/contexts/AuthContext';
 import { OnlineCounter } from '@/components/layout/OnlineCounter';
-import logo from '@/assets/logo.png';
+import logo from '@/assets/ma-khatma-logo.png';
 
 interface HeaderProps {
   title?: string;

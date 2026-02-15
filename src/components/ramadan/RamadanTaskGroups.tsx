@@ -18,6 +18,7 @@ const taskGroups = [
       { key: 'prayer_maghrib', label: 'Maghrib' },
       { key: 'prayer_isha', label: 'Isha' },
       { key: 'prayer_tarawih', label: 'Tarawih' },
+      { key: 'prayer_tahajjud', label: 'Tahajjud' },
     ],
   },
   {
@@ -37,7 +38,6 @@ const taskGroups = [
     items: [
       { key: 'reading_quran', label: 'Coran' },
       { key: 'reading_hadith', label: 'Hadith' },
-      { key: 'reading_dhikr', label: 'Dhikr' },
     ],
   },
   {

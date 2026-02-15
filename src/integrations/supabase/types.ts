@@ -330,6 +330,7 @@ export type Database = {
           prayer_fajr: boolean
           prayer_isha: boolean
           prayer_maghrib: boolean
+          prayer_tahajjud: boolean
           prayer_tarawih: boolean
           reading_dhikr: boolean
           reading_hadith: boolean
@@ -352,6 +353,7 @@ export type Database = {
           prayer_fajr?: boolean
           prayer_isha?: boolean
           prayer_maghrib?: boolean
+          prayer_tahajjud?: boolean
           prayer_tarawih?: boolean
           reading_dhikr?: boolean
           reading_hadith?: boolean
@@ -374,6 +376,7 @@ export type Database = {
           prayer_fajr?: boolean
           prayer_isha?: boolean
           prayer_maghrib?: boolean
+          prayer_tahajjud?: boolean
           prayer_tarawih?: boolean
           reading_dhikr?: boolean
           reading_hadith?: boolean
@@ -383,6 +386,36 @@ export type Database = {
           sunnah_rawatib?: boolean
           sunnah_witr?: boolean
           task_date?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      ramadan_dhikr_entries: {
+        Row: {
+          count: number
+          created_at: string
+          dhikr_name: string
+          entry_date: string
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          count?: number
+          created_at?: string
+          dhikr_name: string
+          entry_date?: string
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          count?: number
+          created_at?: string
+          dhikr_name?: string
+          entry_date?: string
+          id?: string
           updated_at?: string
           user_id?: string
         }
