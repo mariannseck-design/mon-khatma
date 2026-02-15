@@ -9,9 +9,11 @@ import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { DailyReminderBanner } from '@/components/notifications/DailyReminderBanner';
 import { useDailyNotification } from '@/hooks/useDailyNotification';
+import { usePushSubscription } from '@/hooks/usePushSubscription';
 export default function AccueilPage() {
   const { user } = useAuth();
   const { isInstallable, isInstalled, isIOS, promptInstall } = usePWAInstall();
+  usePushSubscription();
   const [profile, setProfile] = useState<{
     display_name: string | null;
   } | null>(() => {
