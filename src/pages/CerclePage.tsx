@@ -154,7 +154,7 @@ export default function CerclePage() {
       <div className="section-spacing">
         {/* Header */}
         <div className="zen-header">
-          <h1>👭 Cercle des Sœurs</h1>
+          <h1>Espace Communauté</h1>
           <p className="text-muted-foreground">
             Un espace d'entraide avec l'aide d'Allah <span className="honorific">(عز وجل)</span>
           </p>
