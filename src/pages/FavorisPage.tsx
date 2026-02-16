@@ -43,7 +43,7 @@ export default function FavorisPage() {
             <div>
               <p className="font-medium text-foreground">365 Récits Prophétiques</p>
               <p className="text-sm text-muted-foreground">
-                D'Adam <span className="honorific">(عليه السلام)</span> à Ibrahim <span className="honorific">(عليه السلام)</span>
+                D'Adam <span className="honorific">(عليه السلام)</span> à Mouhamed <span className="honorific">(ﷺ)</span>
               </p>
             </div>
           </Card>

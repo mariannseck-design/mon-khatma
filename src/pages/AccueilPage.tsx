@@ -85,7 +85,7 @@ export default function AccueilPage() {
     const hour = new Date().getHours();
     if (hour < 12) return '☀️ Sabah el-kheir !';
     if (hour < 18) return '🌸 Bon après-midi !';
-    if (hour < 22) return '🌙 Passe une excellente soirée sous la protection divine.';
+    if (hour < 22) return '🌙 N\'oublie pas de lire la sourate Al Moulk';
     return '🌙 Qu\'Allah t\'accorde une nuit paisible.';
   };
   const displayName = profile?.display_name || localStorage.getItem('guest_first_name') || '';
