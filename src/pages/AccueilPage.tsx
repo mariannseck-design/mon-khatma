@@ -321,7 +321,7 @@ export default function AccueilPage() {
               const shareData = {
                 title: 'Ma Khatma',
                 text: "Salam ! Je t'invite à découvrir Ma Khatma, l'application qui m'aide à rester constante dans ma lecture du Coran et mes adorations. Rejoins-nous ici :",
-                url: 'https://makhatma.lovable.app',
+                url: 'https://www.makhatma.com',
               };
               if (navigator.share) {
                 navigator.share(shareData).catch(() => {});
