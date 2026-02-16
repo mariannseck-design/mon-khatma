@@ -10,6 +10,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { MoodDuaCard } from '@/components/emotions/MoodDuaCard';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -197,6 +198,9 @@ export default function EmotionsPage() {
             })}
           </div>
         </Card>
+
+        {/* Dua based on mood */}
+        {selectedMood && <MoodDuaCard moodValue={selectedMood} />}
 
         {/* Gratitude */}
         <motion.div

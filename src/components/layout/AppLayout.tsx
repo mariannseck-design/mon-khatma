@@ -3,6 +3,7 @@ import { Header } from './Header';
 import { Navigation } from './Navigation';
 import { ZoomControl } from '@/components/ui/ZoomControl';
 import { InstallPrompt } from '@/components/pwa/InstallPrompt';
+import { useSwipeNavigation } from '@/hooks/useSwipeNavigation';
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -11,10 +12,15 @@ interface AppLayoutProps {
 }
 
 export function AppLayout({ children, title, hideNav = false }: AppLayoutProps) {
+  const { onTouchStart, onTouchEnd, isSwipeable } = useSwipeNavigation();
+
   return (
     <div className="min-h-screen bg-gradient-warm">
       <Header title={title} />
-      <main className="container max-w-lg mx-auto page-container">
+      <main
+        className="container max-w-lg mx-auto page-container"
+        {...(isSwipeable ? { onTouchStart, onTouchEnd } : {})}
+      >
         {children}
       </main>
       {!hideNav && <Navigation />}
