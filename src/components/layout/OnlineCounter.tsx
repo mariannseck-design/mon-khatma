@@ -1,9 +1,13 @@
 import { motion } from 'framer-motion';
 import { Users } from 'lucide-react';
 import { useOnlinePresence } from '@/hooks/useOnlinePresence';
+import { useAuth } from '@/contexts/AuthContext';
 
 export function OnlineCounter() {
   const { onlineCount } = useOnlinePresence();
+  const { isAdmin } = useAuth();
+
+  if (!isAdmin) return null;
 
   return (
     <motion.div
