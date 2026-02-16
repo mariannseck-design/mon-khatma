@@ -238,6 +238,7 @@ export default function PlanificateurPage() {
 
   const resetKhatma = async () => {
     if (!user) return;
+    // Delete progress
     const { error } = await supabase
       .from('quran_progress')
       .delete()
@@ -246,10 +247,19 @@ export default function PlanificateurPage() {
       toast.error('Erreur lors de la réinitialisation');
       return;
     }
+    // Delete active goal so setup reappears
+    if (activeGoal) {
+      await supabase.from('quran_goals').delete().eq('id', activeGoal.id);
+    }
+    // Delete saved setup
+    await supabase.from('ramadan_reading_goals').delete().eq('user_id', user.id);
+    setActiveGoal(null);
+    setSavedSetup(null);
     setTotalPagesRead(0);
     setTodayPages(0);
     setWeekProgress([]);
     setGoalMetToday(false);
+    setLastReadingDate(null);
     toast.success('Nouvelle Khatma commencée, Bismillah! 🌙');
   };
 

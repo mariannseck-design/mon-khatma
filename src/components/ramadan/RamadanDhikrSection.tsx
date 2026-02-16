@@ -154,7 +154,7 @@ export default function RamadanDhikrSection({ dateStr }: RamadanDhikrSectionProp
       <Card className="pastel-card p-5 bg-gradient-to-br from-accent/20 to-accent/5 shadow-[0_8px_30px_-12px_rgba(0,0,0,0.06)]">
         <div className="flex items-center gap-2 mb-4">
           <span className="text-lg">🔢</span>
-          <h3 className="font-display text-base">Mon compteur personnalisé</h3>
+          <h3 className="font-display text-base">Saisis tes autres Dhikr ici...</h3>
         </div>
 
         <div className="space-y-3">
