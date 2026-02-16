@@ -58,6 +58,11 @@ export default function AuthPage() {
           toast.success('Assalamu alaykum! Bienvenue 🌙');
         }
       } else {
+        if (!displayName.trim()) {
+          toast.error('Merci d\'entrer ton prénom');
+          setLoading(false);
+          return;
+        }
         if (password.length < 6) {
           toast.error('Le mot de passe doit contenir au moins 6 caractères');
           setLoading(false);
@@ -166,6 +171,7 @@ export default function AuthPage() {
                         placeholder="Ton prénom"
                         value={displayName}
                         onChange={(e) => setDisplayName(e.target.value)}
+                        required
                         className="pl-10 rounded-xl"
                       />
                     </div>
