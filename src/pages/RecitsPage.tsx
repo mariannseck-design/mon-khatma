@@ -10,7 +10,7 @@ const prophets = [
   { name: 'Nuh', arabic: 'نوح', status: 'soon', stories: 15 },
   { name: 'Hud', arabic: 'هود', status: 'locked', stories: 8 },
   { name: 'Salih', arabic: 'صالح', status: 'locked', stories: 6 },
-  { name: 'Ibrahim', arabic: 'إبراهيم', status: 'locked', stories: 25 },
+  { name: 'Mouhamed', arabic: 'محمد', status: 'locked', stories: 25 },
 ];
 
 export default function RecitsPage() {
