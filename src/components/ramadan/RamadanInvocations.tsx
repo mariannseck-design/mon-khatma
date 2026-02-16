@@ -3,22 +3,39 @@ import { Card } from '@/components/ui/card';
 
 const invocations = [
   {
-    title: 'En voyant le croissant (Hilal)',
+    title: "Apparition du croissant (Al-hilâl)",
     emoji: '🌙',
-    arabic: 'اللَّهُ أَكْبَرُ اللّهُمَّ أَهِلَّهُ عَلَيْنَا بِالأَمْنِ وَالإِيمَانِ وَالسَّلامَةِ وَالإِسْلامِ، وَالتَّوْفِيقِ لِمَا تُحِبُّ رَبَّنَا وَتَرْضَى رَبُّنَا وَرَبُّكَ اللَّه',
-    phonetic: null,
+    arabic: 'الله أَكْـبَر اللّهُمَّ أَهِلَّـهُ عَلَيْـنا بِالأمْـنِ وَالإيمـان والسَّلامَـةِ والإسْلام، وَالتَّـوْفيـقِ لِما تُحِـبُّ رَبَّنـا وَتَـرْضـى رَبُّنـا وَرَبُّكَ الله',
+    phonetic: "Allahu Akbar, Allahumma ahillu 'aleynâ bî-l-amni wâ-l-Îmân, wâ-s-salâmati wâ-l-Islâm wa-t-Tawfîq limâ tuhibbu Rabbana wa tarDa Rabbunâ wa Rabbuka-l-lah.",
+    translation: "Allah (عز وجل) est le Plus Grand ! Ô Seigneur ! Apporte-nous avec cette nouvelle lune la sécurité et la foi, le salut et l'Islam ainsi que la réussite dans tout ce que Tu aimes et que Tu agrées.",
   },
   {
-    title: 'À la rupture du jeûne (Iftar)',
-    emoji: '🍽️',
-    arabic: null,
-    phonetic: "Thahaba th-thama'u, wabtallati l-'uruqu, wa thabata l-ajru in sha' Allah.",
+    title: "Rupture du jeûne (Al-Iftar)",
+    emoji: '📅',
+    arabic: 'ذَهَبَ الظَّمَأُ وَابْتَلَّتِ الْعُرُوقُ، وَثَبَتَ الأَجْرُ إِنْ شَاءَ الله',
+    phonetic: "Thahabadh-dhama'u wabtallatil-'urooqu, wa thabatal-'ajru 'inshaa'Allaah.",
+    translation: "La soif est dissipée, les veines sont abreuvées et la récompense est assurée si Allah (عز وجل) le veut.",
   },
   {
-    title: 'Nuit du Destin (Laylatul Qadr)',
-    emoji: '✨',
+    title: "Nuit du Destin (Laylatul-Qadr)",
+    emoji: '⭐',
     arabic: 'اللَّهُمَّ إِنَّكَ عَفُوٌّ تُحِبُّ الْعَفْوَ فَاعْفُ عَنِّي',
-    phonetic: null,
+    phonetic: "Allahumma innaka 'Afuwwun tuhibbu-l-'afwa, fâ'fu 'annî.",
+    translation: "Ô Allah (عز وجل), Tu es certes Pardonneur, Tu aimes le pardon, alors pardonne-moi.",
+  },
+  {
+    title: "En route vers la prière de l'Aïd",
+    emoji: '🕌',
+    arabic: null,
+    phonetic: "Allahu akbar, Allahu akbar, lâ ilaha illa Allah, wâ-l-ahu akbar, Allahu akbar wa lillahi-l-hamd.",
+    translation: "Allah est grand, Allah est grand, il n'y a de divinité qu'Allah, et Allah est grand, Allah est grand et à Lui sont les louanges.",
+  },
+  {
+    title: "Félicitations de l'Aïd",
+    emoji: '❤️',
+    arabic: 'تقبل الله منا ومنكم',
+    phonetic: "Taqabala-l-lahu minâ wa minkum.",
+    translation: "Qu'Allah (عز وجل) agrée nos bonnes actions et les vôtres.",
   },
 ];
 
@@ -26,7 +43,7 @@ export default function RamadanInvocations() {
   return (
     <div className="space-y-4">
       <h2 className="font-display text-lg text-foreground flex items-center gap-2">
-        🤲 Invocations du Ramadan
+        🤲 Invocations du Ramadan & de l'Aïd
       </h2>
 
       {invocations.map((inv, index) => (
@@ -53,6 +70,10 @@ export default function RamadanInvocations() {
                 {inv.phonetic}
               </p>
             )}
+
+            <p className="text-center text-sm text-foreground/80">
+              {inv.translation}
+            </p>
           </Card>
         </motion.div>
       ))}
