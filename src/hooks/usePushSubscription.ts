@@ -57,7 +57,7 @@ export function usePushSubscription() {
       const registration = await navigator.serviceWorker.ready;
       console.log('Using PWA service worker for push subscription');
 
-      let subscription = await registration.pushManager.getSubscription();
+      let subscription = await (registration as any).pushManager.getSubscription();
 
       if (!subscription) {
         const permission = await Notification.requestPermission();
@@ -69,7 +69,7 @@ export function usePushSubscription() {
 
         try {
           const appServerKey = urlBase64ToUint8Array(vapidKey);
-          subscription = await registration.pushManager.subscribe({
+          subscription = await (registration as any).pushManager.subscribe({
             userVisibleOnly: true,
             applicationServerKey: appServerKey.buffer as ArrayBuffer,
           });
