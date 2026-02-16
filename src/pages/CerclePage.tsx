@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Users, Heart, Check, AlertCircle, Sparkles, MessageCircle, Bell } from 'lucide-react';
+import { Users, Heart, Check, AlertCircle, Sparkles, MessageCircle, Bell, Mail } from 'lucide-react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -241,6 +241,29 @@ export default function CerclePage() {
             <div className="mt-6">
               <h2 className="font-display text-lg text-foreground mb-4">Célébrations</h2>
               <CollectiveCounter />
+            </div>
+
+            {/* AVIS Section */}
+            <div className="mt-6">
+              <h2 className="font-display text-lg text-foreground mb-4">📬 Avis</h2>
+              <Card className="pastel-card p-5 bg-gradient-to-br from-primary/10 to-accent/10">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center shrink-0">
+                    <Mail className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-foreground leading-relaxed">
+                      Une suggestion ou une question ? Écrivez-nous{' '}
+                      <a
+                        href="mailto:lisonslenoblecoran@gmail.com"
+                        className="text-primary font-semibold underline underline-offset-2 hover:text-primary/80 transition-colors"
+                      >
+                        ici
+                      </a>.
+                    </p>
+                  </div>
+                </div>
+              </Card>
             </div>
           </div>
         }
