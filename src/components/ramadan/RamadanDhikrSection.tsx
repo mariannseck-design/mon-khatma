@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, X } from 'lucide-react';
 import { Card } from '@/components/ui/card';
@@ -26,8 +26,8 @@ const DEFAULT_DHIKRS = [
   { arabic: 'سُبْحَانَ الله', phonetic: 'SubhanAllah', french: 'Gloire à Allah' },
   { arabic: 'الْحَمْدُ لِله', phonetic: 'Alhamdulillah', french: 'Louange à Allah' },
   { arabic: 'لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ', phonetic: 'La ilaha illallahu wahdahu la sharika lahu...', french: "Il n'y a pas de divinité en dehors d'Allah, seul, sans associé..." },
-  { arabic: 'اللهم صلِ على محمد وعلى آل محمد', phonetic: 'Allahumma salli \'ala Muhammad...', french: 'Ô Allah ! Couvre d\'éloges et honore Muhammad ainsi que sa famille...' },
-  { arabic: 'اللّهُـمَّ إِنِّـي أَسْأَلُـكَ الجَـنَّةَ وأََعوذُ بِـكَ مِـنَ الـنّار', phonetic: 'Allâhumma innî as\'aluka-l-jannata wa a\'ûdhu bika mina n-nâr', french: 'Ô Seigneur ! Je Te demande le Paradis et je me mets sous Ta protection contre l\'Enfer.' },
+  { arabic: 'اللهم صلِ على محمد وعلى آل محمد', phonetic: "Allahumma salli 'ala Muhammad...", french: "Ô Allah ! Couvre d'éloges et honore Muhammad ainsi que sa famille..." },
+  { arabic: 'اللّهُـمَّ إِنِّـي أَسْأَلُـكَ الجَـنَّةَ وأََعوذُ بِـكَ مِـنَ الـنّار', phonetic: "Allâhumma innî as'aluka-l-jannata wa a'ûdhu bika mina n-nâr", french: "Ô Seigneur ! Je Te demande le Paradis et je me mets sous Ta protection contre l'Enfer." },
 ];
 
 function getTimeGreeting(): string | null {
@@ -42,6 +42,22 @@ export default function RamadanDhikrSection({ dateStr }: RamadanDhikrSectionProp
   const [entries, setEntries] = useState<DhikrEntry[]>([]);
   const [newName, setNewName] = useState('');
   const [newCount, setNewCount] = useState(100);
+  // Independent counters for each predefined dhikr (local state, keyed by index)
+  const [predefinedCounts, setPredefinedCounts] = useState<Record<number, number>>(() => {
+    const saved = localStorage.getItem(`dhikr_counts_${dateStr}`);
+    return saved ? JSON.parse(saved) : {};
+  });
+
+  // Persist predefined counts to localStorage
+  useEffect(() => {
+    localStorage.setItem(`dhikr_counts_${dateStr}`, JSON.stringify(predefinedCounts));
+  }, [predefinedCounts, dateStr]);
+
+  // Reset when date changes
+  useEffect(() => {
+    const saved = localStorage.getItem(`dhikr_counts_${dateStr}`);
+    setPredefinedCounts(saved ? JSON.parse(saved) : {});
+  }, [dateStr]);
 
   useEffect(() => {
     fetchEntries();
@@ -57,6 +73,11 @@ export default function RamadanDhikrSection({ dateStr }: RamadanDhikrSectionProp
       .order('created_at', { ascending: true });
     if (data) setEntries(data);
   };
+
+  const updatePredefinedCount = useCallback((index: number, value: number) => {
+    const val = Math.max(0, value);
+    setPredefinedCounts(prev => ({ ...prev, [index]: val }));
+  }, []);
 
   const addEntry = async () => {
     if (!user || !newName.trim()) return;
@@ -91,7 +112,7 @@ export default function RamadanDhikrSection({ dateStr }: RamadanDhikrSectionProp
       {/* Introductory Reminder */}
       <Card className="pastel-card p-5 bg-gradient-to-br from-accent/20 to-accent/5">
         <p className="text-sm text-foreground/80 leading-relaxed">
-          Le Prophète <span className="honorific font-bold">(عليه السلام)</span> a dit : <em>« Celui qui mentionne son Seigneur et celui qui ne Le mentionne pas sont semblables au vivant et au mort. »</em> Le zikr apaise le cœur, efface les péchés et rapproche de la satisfaction d'Allah <span className="honorific font-bold">(عز وجل)</span>.
+          Le Prophète <span className="honorific font-bold" style={{ fontSize: '1.1em' }}>(عليه السلام)</span> a dit : <em>« Celui qui mentionne son Seigneur et celui qui ne Le mentionne pas sont semblables au vivant et au mort. »</em> Le zikr apaise le cœur, efface les péchés et rapproche de la satisfaction d'<span className="font-semibold">Allah</span> <span className="honorific font-bold" style={{ fontSize: '1.1em' }}>(عز وجل)</span>.
         </p>
       </Card>
 
@@ -102,17 +123,28 @@ export default function RamadanDhikrSection({ dateStr }: RamadanDhikrSectionProp
         </motion.div>
       )}
 
-      {/* Predefined Zikr Reference List */}
+      {/* Predefined Zikr List with Independent Counters */}
       <Card className="pastel-card p-5 space-y-3">
         <h3 className="font-display text-base flex items-center gap-2">📿 Adhkâr</h3>
         <div className="space-y-4">
           {DEFAULT_DHIKRS.map((d, i) => (
-            <div key={i} className="border-b border-border/30 pb-3 last:border-0 last:pb-0">
+            <div key={i} className="border-b border-border/30 pb-4 last:border-0 last:pb-0 space-y-2">
               <p className="arabic-text text-center text-lg leading-loose font-bold" style={{ fontSize: 'var(--arabic-font-size, 110%)' }}>
                 {d.arabic}
               </p>
-              <p className="text-center text-xs text-muted-foreground italic mt-1">({d.phonetic})</p>
-              <p className="text-center text-sm text-foreground/70 mt-1">{d.french}</p>
+              <p className="text-center text-xs text-muted-foreground italic">({d.phonetic})</p>
+              <p className="text-center text-sm text-foreground/70">{d.french}</p>
+              <div className="flex items-center justify-center gap-2 pt-1">
+                <Input
+                  type="number"
+                  value={predefinedCounts[i] || 0}
+                  onChange={(e) => updatePredefinedCount(i, parseInt(e.target.value) || 0)}
+                  className="text-sm h-9 rounded-xl bg-background/60 border-border/40 w-24 text-center font-bold text-primary"
+                  min={0}
+                  placeholder="0"
+                />
+                <span className="text-xs text-muted-foreground">fois</span>
+              </div>
             </div>
           ))}
         </div>
@@ -122,7 +154,7 @@ export default function RamadanDhikrSection({ dateStr }: RamadanDhikrSectionProp
       <Card className="pastel-card p-5 bg-gradient-to-br from-accent/20 to-accent/5 shadow-[0_8px_30px_-12px_rgba(0,0,0,0.06)]">
         <div className="flex items-center gap-2 mb-4">
           <span className="text-lg">🔢</span>
-          <h3 className="font-display text-base">Mon compteur</h3>
+          <h3 className="font-display text-base">Mon compteur personnalisé</h3>
         </div>
 
         <div className="space-y-3">
@@ -156,7 +188,7 @@ export default function RamadanDhikrSection({ dateStr }: RamadanDhikrSectionProp
               <Input
                 value={newName}
                 onChange={(e) => setNewName(e.target.value)}
-                placeholder="Ex: SubhanAllah, Alhamdulillah..."
+                placeholder="Ex: SubhanAllah..."
                 className="text-sm h-9 rounded-xl bg-background/60 border-border/40 flex-1"
                 onKeyDown={(e) => e.key === 'Enter' && addEntry()}
               />
