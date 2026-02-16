@@ -315,13 +315,12 @@ export default function EmotionsPage() {
 
         {/* Reflection Card */}
         <Card className="pastel-card p-6">
-          <h3 className="font-display text-lg mb-3">💭 Réflexion du jour</h3>
-          <p className="text-foreground italic">
-            "Le croyant qui se mélange aux gens et supporte leurs nuisances est meilleur que 
-            celui qui ne se mélange pas aux gens et ne supporte pas leurs nuisances."
+          <h3 className="font-display text-lg mb-3">💭 Réflexion du mois</h3>
+          <p className="text-foreground italic mb-3">
+            « La graine ne devient pas un arbre en un jour, mais en recevant un peu d'eau chaque matin. »
           </p>
-          <p className="text-sm text-muted-foreground mt-2">
-            — Hadith rapporté par At-Tirmidhi
+          <p className="text-sm text-foreground/80 leading-relaxed">
+            On pense souvent que pour être un « bon croyant », il faut accomplir des exploits extraordinaires. Pourtant, le Prophète <span className="honorific font-bold">(عليه السلام)</span> nous a enseigné que : <em>« Les œuvres les plus aimées d'Allah <span className="honorific font-bold">(عز وجل)</span> sont les plus régulières, même si elles sont petites. »</em>
           </p>
         </Card>
       </div>
