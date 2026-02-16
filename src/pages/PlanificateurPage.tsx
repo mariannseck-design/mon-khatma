@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Check, BookOpen, Sparkles } from 'lucide-react';
+import { Plus, Check, BookOpen, Sparkles, RefreshCw } from 'lucide-react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -46,6 +46,7 @@ export default function PlanificateurPage() {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [goalMetToday, setGoalMetToday] = useState(false);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [lastReadingDate, setLastReadingDate] = useState<string | null>(null);
   // Spiritual setup state
   const [setupFirstName, setSetupFirstName] = useState('');
   const [setupPages, setSetupPages] = useState(5);
@@ -138,10 +139,16 @@ export default function PlanificateurPage() {
     // Total pages read (all time)
     const { data: allProgress } = await supabase
       .from('quran_progress')
-      .select('pages_read')
+      .select('pages_read, date')
       .eq('user_id', user.id);
     const total = allProgress?.reduce((sum, p) => sum + p.pages_read, 0) || 0;
     setTotalPagesRead(total);
+
+    // Find last reading date
+    if (allProgress && allProgress.length > 0) {
+      const dates = allProgress.map(p => p.date).sort();
+      setLastReadingDate(dates[dates.length - 1]);
+    }
 
     // Check if goal is met today
     if (activeGoal?.goal_type === 'pages_per_day' && pagesRead >= activeGoal.target_value) {
@@ -248,6 +255,48 @@ export default function PlanificateurPage() {
 
   const totalPagesThisWeek = weekProgress.reduce((sum, day) => sum + day.pages_read, 0);
 
+  // Calculate inactivity days
+  const daysSinceLastReading = lastReadingDate
+    ? Math.floor((Date.now() - new Date(lastReadingDate).getTime()) / (1000 * 60 * 60 * 24))
+    : null;
+
+  // Precision message: if goal doesn't divide evenly into 604
+  const getPrecisionMessage = () => {
+    if (!activeGoal || activeGoal.goal_type !== 'pages_per_day') return null;
+    const target = activeGoal.target_value;
+    const fullDays = Math.floor(TOTAL_QURAN_PAGES / target);
+    const remainder = TOTAL_QURAN_PAGES - (fullDays * target);
+    if (remainder > 0) {
+      const lastDayPages = target + remainder;
+      return `À ce rythme, tu finiras en ${fullDays} jours en lisant simplement ${remainder} page${remainder > 1 ? 's' : ''} de plus (${lastDayPages} pages) lors de ta dernière séance. Bismillah !`;
+    }
+    return null;
+  };
+
+  const handleRecalculateGoal = async () => {
+    if (!user || !activeGoal) return;
+    const remainingPages = TOTAL_QURAN_PAGES - totalPagesRead;
+    if (remainingPages <= 0) return;
+    // Recalculate over 30 days
+    const newTarget = Math.ceil(remainingPages / 30);
+    const endDate = new Date();
+    endDate.setDate(endDate.getDate() + 30);
+
+    await supabase.from('quran_goals').update({
+      target_value: newTarget,
+      end_date: endDate.toISOString().split('T')[0]
+    }).eq('id', activeGoal.id);
+
+    if (savedSetup) {
+      await supabase.from('ramadan_reading_goals').update({ daily_pages: newTarget }).eq('user_id', user.id);
+      setSavedSetup({ ...savedSetup, daily_pages: newTarget });
+    }
+
+    toast.success(`Nouvel objectif : ${newTarget} pages/jour. Bismillah ! 🌙`);
+    fetchGoal();
+    fetchProgress();
+  };
+
   return (
     <AppLayout title="Planificateur">
       <div className="section-spacing space-y-6">
@@ -267,6 +316,34 @@ export default function PlanificateurPage() {
               Qu'Allah <span className="honorific font-bold" style={{ fontSize: '1.1em' }}>(عز وجل)</span> t'accorde la constance, <strong>{savedSetup.first_name}</strong> !
             </p>
           </Card>
+        )}
+
+        {/* Precision message */}
+        {activeGoal && getPrecisionMessage() && (
+          <Card className="pastel-card p-4 bg-gradient-to-r from-accent/10 to-primary/10">
+            <p className="text-sm text-center text-foreground">
+              🌟 {getPrecisionMessage()}
+            </p>
+          </Card>
+        )}
+
+        {/* 7-day inactivity prompt */}
+        {activeGoal && daysSinceLastReading !== null && daysSinceLastReading >= 7 && totalPagesRead < TOTAL_QURAN_PAGES && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+            <Card className="pastel-card p-5 border-2 border-primary/30 bg-gradient-to-r from-primary/5 to-accent/5">
+              <p className="text-sm text-center text-foreground mb-4 leading-relaxed">
+                Bismillah, <strong>{savedSetup?.first_name || 'chère sœur'}</strong>. Une semaine s'est écoulée depuis ta dernière lecture. Reprends aujourd'hui, même pour une seule page. Veux-tu réajuster ton objectif ? 🌙
+              </p>
+              <Button
+                onClick={handleRecalculateGoal}
+                className="w-full bg-primary text-primary-foreground rounded-xl"
+                size="sm"
+              >
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Recalculer mon objectif
+              </Button>
+            </Card>
+          </motion.div>
         )}
 
         {/* Spiritual Setup (no goal yet) */}
