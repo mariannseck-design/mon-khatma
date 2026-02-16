@@ -22,7 +22,7 @@ export default function RamadanDhikrSection({ dateStr }: RamadanDhikrSectionProp
   const { user } = useAuth();
   const [entries, setEntries] = useState<DhikrEntry[]>([]);
   const [newName, setNewName] = useState('');
-  const [newCount, setNewCount] = useState(33);
+  const [newCount, setNewCount] = useState(100);
 
   useEffect(() => {
     fetchEntries();
@@ -49,7 +49,7 @@ export default function RamadanDhikrSection({ dateStr }: RamadanDhikrSectionProp
     if (data) {
       setEntries([...entries, data]);
       setNewName('');
-      setNewCount(33);
+      setNewCount(100);
       toast.success('Dhikr ajouté ✨');
     }
   };

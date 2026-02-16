@@ -19,6 +19,7 @@ import RamadanProgress from '@/components/ramadan/RamadanProgress';
 import RamadanReadingSetup from '@/components/ramadan/RamadanReadingSetup';
 import RamadanWeeklyReport from '@/components/ramadan/RamadanWeeklyReport';
 import RamadanDhikrSection from '@/components/ramadan/RamadanDhikrSection';
+import RamadanInvocations from '@/components/ramadan/RamadanInvocations';
 
 export interface DailyTasks {
   prayer_fajr: boolean;
@@ -268,12 +269,15 @@ export default function RamadanPage() {
 
         {/* Tabs: Routine / Dhikr */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="w-full grid grid-cols-2 rounded-2xl h-11">
+          <TabsList className="w-full grid grid-cols-3 rounded-2xl h-11">
             <TabsTrigger value="routine" className="rounded-xl text-sm font-medium">
               📋 Routine
             </TabsTrigger>
             <TabsTrigger value="dhikr" className="rounded-xl text-sm font-medium">
               📿 Dhikr
+            </TabsTrigger>
+            <TabsTrigger value="invocations" className="rounded-xl text-sm font-medium">
+              🤲 Du'as
             </TabsTrigger>
           </TabsList>
 
@@ -292,6 +296,10 @@ export default function RamadanPage() {
 
           <TabsContent value="dhikr" className="space-y-6 mt-4">
             <RamadanDhikrSection dateStr={dateStr} />
+          </TabsContent>
+
+          <TabsContent value="invocations" className="space-y-6 mt-4">
+            <RamadanInvocations />
           </TabsContent>
         </Tabs>
 

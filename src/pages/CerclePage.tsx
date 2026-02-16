@@ -251,10 +251,8 @@ export default function CerclePage() {
             <h2 className="font-display text-lg text-foreground">Les bienfaits du Cercle</h2>
 
             {[
-          { emoji: '📖', title: 'Lecture quotidienne', description: 'avec suivi personnalisé' },
           { emoji: '🤝', title: 'Motivation collective', description: 'Une difficulté aujourd\'hui ? Demandez conseil à la communauté' },
-          { emoji: '🌙', title: 'Rappels et encouragements', description: 'Partagez ici votre verset du jour ou un petit mot pour motiver la communauté. Chaque rappel, même modeste, est une graine de lumière.' },
-          { emoji: '✨', title: 'Célébrations', description: 'des accomplissements ensemble' }].
+          { emoji: '🌙', title: 'Rappels et encouragements', description: 'Partagez ici votre verset du jour ou un petit mot pour motiver la communauté. Chaque rappel, même modeste, est une graine de lumière.' }].
           map((benefit, index) =>
           <motion.div
             key={index}
