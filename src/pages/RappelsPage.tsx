@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Bell, BellOff, Moon, BookOpen, ExternalLink, Calendar, Clock, Monitor, Smartphone } from 'lucide-react';
+import { Bell, BellOff, BookOpen, Calendar, Clock } from 'lucide-react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -40,26 +40,8 @@ const defaultReminders = [
   }
 ];
 
-const externalTools = [
-  {
-    name: 'Life With Allah',
-    description: 'Dhikr & Dua quotidiens',
-    icon: '🤲',
-    color: 'bg-gradient-mint'
-  },
-  {
-    name: 'Tarteel',
-    description: 'Mémorisation IA du Coran',
-    icon: '🎙️',
-    color: 'bg-gradient-lavender'
-  },
-  {
-    name: 'Mon app de lecture',
-    description: 'Ouvre ton app préférée',
-    icon: '📖',
-    color: 'bg-gradient-peach'
-  }
-];
+
+
 
 export default function RappelsPage() {
   const { user } = useAuth();
@@ -322,46 +304,12 @@ export default function RappelsPage() {
               </Button>
             </div>
 
-        {/* Célébrations - visible on all devices */}
-        <Card className="illustrated-card bg-gradient-sky">
-          <div className="flex items-center gap-3 mb-3">
-            <Moon className="h-6 w-6 text-sky-foreground" />
-            <h3 className="font-display text-lg text-sky-foreground">Célébrations</h3>
-          </div>
-          <p className="text-sm text-sky-foreground/80">
-            Tu recevras des messages de félicitations lorsque tu termines un Juz' 
-            ou une semaine complète de lecture! 🎉
+        {/* Android note */}
+        <Card className="pastel-card p-4 bg-peach/10 border-peach/30">
+          <p className="text-sm text-muted-foreground">
+            📱 <strong>Note :</strong> Les notifications fonctionnent sur iPhone et ordinateur, mais ne sont pas encore disponibles sur Android pour le moment.
           </p>
         </Card>
-
-        {/* External Tools */}
-        <div className="space-y-3">
-          <h2 className="font-display text-lg text-foreground">Boîte à outils</h2>
-          <p className="text-sm text-muted-foreground mb-4">
-            Recommandations d'applications complémentaires
-          </p>
-          {externalTools.map((tool, index) => (
-            <motion.div
-              key={tool.name}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-            >
-              <Card className="pastel-card p-4 flex items-center justify-between hover-lift cursor-pointer">
-                <div className="flex items-center gap-4">
-                  <div className={`w-12 h-12 rounded-2xl ${tool.color} flex items-center justify-center`}>
-                    <span className="text-2xl">{tool.icon}</span>
-                  </div>
-                  <div>
-                    <p className="font-medium text-foreground">{tool.name}</p>
-                    <p className="text-sm text-muted-foreground">{tool.description}</p>
-                  </div>
-                </div>
-                <ExternalLink className="h-5 w-5 text-muted-foreground" />
-              </Card>
-            </motion.div>
-          ))}
-        </div>
       </div>
     </AppLayout>
   );
