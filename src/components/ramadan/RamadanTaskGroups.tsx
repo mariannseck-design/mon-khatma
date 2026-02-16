@@ -90,7 +90,7 @@ export default function RamadanTaskGroups({
                       checked={checked}
                       className="h-5 w-5 rounded-lg border-2 data-[state=checked]:bg-primary data-[state=checked]:border-primary pointer-events-none"
                     />
-                    <span className={`text-sm font-medium transition-all ${checked ? 'line-through text-muted-foreground' : 'text-foreground'}`}>
+                    <span className={`text-sm font-medium transition-all ${checked ? 'text-emerald-600 dark:text-emerald-400' : 'text-foreground'}`}>
                       {item.label}
                     </span>
                     <AnimatePresence>
