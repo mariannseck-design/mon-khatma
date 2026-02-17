@@ -22,6 +22,7 @@ export default function AdminPage() {
   const { isAdmin, loading } = useAuth();
   const [members, setMembers] = useState<MemberProgress[]>([]);
   const [stats, setStats] = useState({
+    totalSubscribers: 0,
     totalMembers: 0,
     activeToday: 0,
     totalPagesThisWeek: 0,
@@ -37,6 +38,11 @@ export default function AdminPage() {
 
   const fetchDashboardData = async () => {
     setLoadingData(true);
+
+    // Get total registered users
+    const { count: totalSubscribers } = await supabase
+      .from('profiles')
+      .select('*', { count: 'exact', head: true });
 
     // Get all circle members with their profiles
     const { data: circleMembers } = await supabase
@@ -99,6 +105,7 @@ export default function AdminPage() {
 
     setMembers(memberProgressList.sort((a, b) => b.total_pages - a.total_pages));
     setStats({
+      totalSubscribers: totalSubscribers || 0,
       totalMembers: circleMembers.length,
       activeToday,
       totalPagesThisWeek,
@@ -132,6 +139,19 @@ export default function AdminPage() {
 
         {/* Stats Grid */}
         <div className="grid grid-cols-2 gap-3">
+          {/* Total abonnés */}
+          <Card className="pastel-card p-4 col-span-2">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-gradient-lavender flex items-center justify-center">
+                <Users className="h-5 w-5 text-accent-foreground" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-foreground">{stats.totalSubscribers}</p>
+                <p className="text-xs text-muted-foreground">Abonnées inscrites</p>
+              </div>
+            </div>
+          </Card>
+
           <Card className="pastel-card p-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-gradient-lavender flex items-center justify-center">
@@ -139,7 +159,7 @@ export default function AdminPage() {
               </div>
               <div>
                 <p className="text-2xl font-bold text-foreground">{stats.totalMembers}</p>
-                <p className="text-xs text-muted-foreground">Membres</p>
+                <p className="text-xs text-muted-foreground">Membres cercle</p>
               </div>
             </div>
           </Card>
