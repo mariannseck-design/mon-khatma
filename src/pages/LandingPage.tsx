@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { SamsungBanner } from '@/components/layout/SamsungBanner';
 import { motion } from 'framer-motion';
 import { BookOpen, Users, Target, Heart, ArrowRight, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -35,6 +36,7 @@ const features = [
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-gradient-warm">
+      <SamsungBanner />
       {/* Hero */}
       <div className="container max-w-lg mx-auto px-6 pt-16 pb-12">
         <motion.div
