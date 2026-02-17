@@ -135,14 +135,15 @@ export default function RamadanDhikrSection({ dateStr }: RamadanDhikrSectionProp
               <p className="text-center text-xs text-muted-foreground italic">({d.phonetic})</p>
               <p className="text-center text-sm text-foreground/70">{d.french}</p>
               <div className="flex items-center justify-center gap-2 pt-1">
-                <Input
-                  type="number"
-                  value={predefinedCounts[i] || 0}
-                  onChange={(e) => updatePredefinedCount(i, parseInt(e.target.value) || 0)}
-                  className="text-sm h-9 rounded-xl bg-background/60 border-border/40 w-24 text-center font-bold text-primary"
-                  min={0}
-                  placeholder="0"
-                />
+                  <Input
+                    type="number"
+                    value={predefinedCounts[i] === undefined || predefinedCounts[i] === 0 ? '' : predefinedCounts[i]}
+                    onChange={(e) => updatePredefinedCount(i, parseInt(e.target.value) || 0)}
+                    onFocus={(e) => { if (e.target.value === '0') e.target.value = ''; }}
+                    className="text-sm h-9 rounded-xl bg-background/60 border-border/40 w-24 text-center font-bold text-primary"
+                    min={0}
+                    placeholder="0"
+                  />
                 <span className="text-xs text-muted-foreground">fois</span>
               </div>
             </div>
@@ -170,8 +171,9 @@ export default function RamadanDhikrSection({ dateStr }: RamadanDhikrSectionProp
                 <span className="text-sm font-medium text-foreground flex-1 truncate">{entry.dhikr_name}</span>
                 <Input
                   type="number"
-                  value={entry.count}
+                  value={entry.count === 0 ? '' : entry.count}
                   onChange={(e) => updateCount(entry.id, parseInt(e.target.value) || 0)}
+                  onFocus={(e) => { if (e.target.value === '0') e.target.value = ''; }}
                   className="text-sm h-8 rounded-lg bg-background/80 border-border/40 w-20 text-center font-bold text-primary"
                   min={0}
                 />
