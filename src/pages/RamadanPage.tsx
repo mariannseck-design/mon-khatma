@@ -48,8 +48,8 @@ const defaultTasks: DailyTasks = {
   sadaqa: false, fasting: false,
 };
 
-// Ramadan 2026 starts March 19 and lasts 30 days
-const RAMADAN_START = new Date(2026, 2, 19); // March 19, 2026
+// Ramadan 2026 starts February 19 and lasts 30 days
+const RAMADAN_START = new Date(2026, 1, 19); // February 19, 2026
 const RAMADAN_DAYS = 30;
 const RAMADAN_END = addDays(RAMADAN_START, RAMADAN_DAYS - 1);
 
