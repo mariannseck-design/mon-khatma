@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Moon, Check, Sparkles, BookOpen, Heart, HandHeart, ChevronLeft, ChevronRight, Trash2, Pencil, Plus, X } from 'lucide-react';
 import { AppLayout } from '@/components/layout/AppLayout';
@@ -48,23 +48,36 @@ const defaultTasks: DailyTasks = {
   sadaqa: false, fasting: false,
 };
 
-// Ramadan 2026 starts February 19 and lasts 30 days
-const RAMADAN_START = new Date(2026, 1, 19); // February 19, 2026
+// Ramadan 2026 constants
 const RAMADAN_DAYS = 30;
-const RAMADAN_END = addDays(RAMADAN_START, RAMADAN_DAYS - 1);
-
-function getRamadanDay(date: Date): number | null {
-  const start = new Date(RAMADAN_START);
-  start.setHours(0, 0, 0, 0);
-  const d = new Date(date);
-  d.setHours(0, 0, 0, 0);
-  const diff = Math.floor((d.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
-  if (diff < 0 || diff >= RAMADAN_DAYS) return null;
-  return diff + 1;
-}
 
 export default function RamadanPage() {
   const { user } = useAuth();
+
+  // Dynamic Ramadan start date from localStorage
+  const [startDay, setStartDay] = useState<'18' | '19'>(() => {
+    const saved = localStorage.getItem('ramadan-start-date');
+    return saved === '18' ? '18' : '19';
+  });
+
+  const ramadanStart = useMemo(() => new Date(2026, 1, parseInt(startDay)), [startDay]);
+  const ramadanEnd = useMemo(() => addDays(ramadanStart, RAMADAN_DAYS - 1), [ramadanStart]);
+
+  const getRamadanDay = useCallback((date: Date): number | null => {
+    const start = new Date(ramadanStart);
+    start.setHours(0, 0, 0, 0);
+    const d = new Date(date);
+    d.setHours(0, 0, 0, 0);
+    const diff = Math.floor((d.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+    if (diff < 0 || diff >= RAMADAN_DAYS) return null;
+    return diff + 1;
+  }, [ramadanStart]);
+
+  const handleStartDayChange = (day: '18' | '19') => {
+    setStartDay(day);
+    localStorage.setItem('ramadan-start-date', day);
+  };
+
   const [tasks, setTasks] = useState<DailyTasks>(defaultTasks);
   const [taskId, setTaskId] = useState<string | null>(null);
   const [customGoodDeeds, setCustomGoodDeeds] = useState<string[]>([]);
@@ -75,8 +88,8 @@ export default function RamadanPage() {
   const [saving, setSaving] = useState(false);
   const [selectedDate, setSelectedDate] = useState(() => {
     const today = new Date();
-    if (today < RAMADAN_START) return RAMADAN_START;
-    if (today > RAMADAN_END) return RAMADAN_END;
+    if (today < ramadanStart) return ramadanStart;
+    if (today > addDays(ramadanStart, RAMADAN_DAYS - 1)) return addDays(ramadanStart, RAMADAN_DAYS - 1);
     return today;
   });
   const [isEditing, setIsEditing] = useState(false);
@@ -88,8 +101,8 @@ export default function RamadanPage() {
   const isToday = dateStr === format(new Date(), 'yyyy-MM-dd');
   const ramadanDay = getRamadanDay(selectedDate);
 
-  const canGoBack = selectedDate > RAMADAN_START;
-  const canGoForward = selectedDate < RAMADAN_END && !isToday;
+  const canGoBack = selectedDate > ramadanStart;
+  const canGoForward = selectedDate < ramadanEnd && !isToday;
 
   useEffect(() => {
     if (user) {
@@ -240,8 +253,33 @@ export default function RamadanPage() {
             dailyPages={readingGoal.daily_pages}
           />
         )}
+        {/* Ramadan Start Date Selector */}
+        <Card className="p-4 space-y-3">
+          <p className="text-sm font-semibold text-foreground">Début du Ramadan</p>
+          <div className="flex gap-2">
+            <Button
+              variant={startDay === '18' ? 'default' : 'outline'}
+              size="sm"
+              className="flex-1 text-xs"
+              onClick={() => handleStartDayChange('18')}
+            >
+              Mercredi 18 fév.
+            </Button>
+            <Button
+              variant={startDay === '19' ? 'default' : 'outline'}
+              size="sm"
+              className="flex-1 text-xs"
+              onClick={() => handleStartDayChange('19')}
+            >
+              Jeudi 19 fév.
+            </Button>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Choisissez la date de début de votre mois béni selon l'observation lunaire de votre zone.
+          </p>
+        </Card>
 
-        {/* Date Navigation */}
+
         <div className="flex items-center justify-between px-2">
           <Button variant="ghost" size="icon" onClick={() => setSelectedDate(subDays(selectedDate, 1))} disabled={!canGoBack}>
             <ChevronLeft className="h-5 w-5" />
