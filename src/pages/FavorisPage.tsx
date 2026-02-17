@@ -26,7 +26,7 @@ export default function FavorisPage() {
               Aucun favori pour l'instant
             </h3>
             <p className="text-sm text-peach-foreground/70 max-w-xs mx-auto">
-              Lorsque tu liras les récits des Prophètes <span className="honorific">(عليه السلام)</span>, 
+              Lorsque tu liras les récits des Prophètes <span className="honorific">(عليهم السلام)</span>, 
               tu pourras sauvegarder tes passages préférés ici.
             </p>
           </Card>
