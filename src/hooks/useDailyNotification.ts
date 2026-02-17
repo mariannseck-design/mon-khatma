@@ -43,19 +43,20 @@ function hasTimePassed(targetTime: string): boolean {
  * Fire a browser notification or fall back to a toast.
  */
 function fireNotification(title: string, body: string) {
-  if ('Notification' in window && Notification.permission === 'granted') {
-    new Notification(title, {
-      body,
-      icon: '/favicon.ico',
-      tag: `reminder-${Date.now()}`,
-      requireInteraction: false,
-    });
-  } else {
-    // Fallback: toast visuel
-    toast(title, {
-      description: body,
-      duration: 15000,
-    });
+  try {
+    if ('Notification' in window && Notification.permission === 'granted') {
+      new Notification(title, {
+        body,
+        icon: '/favicon.ico',
+        tag: `reminder-${Date.now()}`,
+        requireInteraction: false,
+      });
+    } else {
+      toast(title, { description: body, duration: 15000 });
+    }
+  } catch (_e) {
+    // Fallback for Samsung Internet or restricted contexts
+    toast(title, { description: body, duration: 15000 });
   }
 }
 
@@ -72,9 +73,14 @@ export function useDailyNotification() {
 
   // Check if notifications are supported and get permission status
   useEffect(() => {
-    const isSupported = 'Notification' in window;
-    const hasPermission = isSupported && Notification.permission === 'granted';
-    setState(prev => ({ ...prev, isSupported, hasPermission }));
+    try {
+      const isSupported = typeof window !== 'undefined' && 'Notification' in window;
+      const hasPermission = isSupported && Notification.permission === 'granted';
+      setState(prev => ({ ...prev, isSupported, hasPermission }));
+    } catch (_e) {
+      // Samsung Internet may throw on Notification access
+      setState(prev => ({ ...prev, isSupported: false, hasPermission: false }));
+    }
   }, []);
 
   // Daily banner notification (8AM)
@@ -149,7 +155,15 @@ export function useDailyNotification() {
   const requestPermission = useCallback(async () => {
     if (!('Notification' in window)) return false;
     try {
-      const permission = await Notification.requestPermission();
+      // Polyfill: old Samsung Internet uses callback-based API
+      const permission = await new Promise<NotificationPermission>((resolve) => {
+        try {
+          Notification.requestPermission().then(resolve).catch(() => resolve('default'));
+        } catch (_e) {
+          // Fallback for callback-based API (Samsung Internet < 15)
+          Notification.requestPermission((p) => resolve(p));
+        }
+      });
       const granted = permission === 'granted';
       setState(prev => ({ ...prev, hasPermission: granted }));
       return granted;
