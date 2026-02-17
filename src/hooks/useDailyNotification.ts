@@ -154,7 +154,7 @@ export function useDailyNotification() {
       setState(prev => ({ ...prev, hasPermission: granted }));
       return granted;
     } catch (error) {
-      console.error('Erreur lors de la demande de permission:', error);
+      if (import.meta.env.DEV) console.error('Erreur lors de la demande de permission:', error);
       return false;
     }
   }, []);
