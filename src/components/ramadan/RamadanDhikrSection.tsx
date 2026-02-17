@@ -19,13 +19,13 @@ interface RamadanDhikrSectionProps {
 }
 
 const DEFAULT_DHIKRS = [
-  { arabic: 'لَا إِلٰهَ إِلَّا الله', phonetic: 'La ilaha illa Allah', french: "Il n'y a de divinité en dehors d'Allah" },
-  { arabic: 'اللهُ أَكْبَر', phonetic: 'Allahu Akbar', french: 'Allah est Grand' },
+  { arabic: 'لَا إِلٰهَ إِلَّا الله', phonetic: 'La ilaha illa Allah', french: "Il n'y a pas de divinité à part Allah" },
+  { arabic: 'اللهُ أَكْبَر', phonetic: 'Allahu Akbar', french: 'Allah est Plus Grand' },
   { arabic: 'أَسْتَغْفِرُ اللهَ وَأَتُوبُ إِلَيْه', phonetic: 'Astaghfirullah wa Atoubou ilaih', french: 'Je demande pardon à Allah et me repens envers Lui' },
-  { arabic: 'لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِالله', phonetic: 'La hawla wala quwwata illa billah', french: "Il n'y a de puissance ni de force qu'en Allah" },
+  { arabic: 'لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِالله', phonetic: 'La hawla wala quwwata illa billah', french: "Il n'y a de pouvoir (pour éviter le mal) ou de force (pour atteindre le bien) que par Allah" },
   { arabic: 'سُبْحَانَ الله', phonetic: 'SubhanAllah', french: 'Gloire à Allah' },
   { arabic: 'الْحَمْدُ لِله', phonetic: 'Alhamdulillah', french: 'Louange à Allah' },
-  { arabic: 'لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ', phonetic: 'La ilaha illallahu wahdahu la sharika lahu...', french: "Il n'y a pas de divinité en dehors d'Allah, seul, sans associé..." },
+  { arabic: 'لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ', phonetic: 'La ilaha illallahu wahdahu la sharika lahu...', french: "Il n'y a de Dieu qu'Allah, Seul, Il n'a pas d'associé. À lui la Royauté et à Lui toutes les louanges, et il a certes pouvoir sur toute chose." },
   { arabic: 'اللهم صلِ على محمد وعلى آل محمد', phonetic: "Allahumma salli 'ala Muhammad...", french: "Ô Allah ! Couvre d'éloges et honore Muhammad ainsi que sa famille..." },
   { arabic: 'اللّهُـمَّ إِنِّـي أَسْأَلُـكَ الجَـنَّةَ وأََعوذُ بِـكَ مِـنَ الـنّار', phonetic: "Allâhumma innî as'aluka-l-jannata wa a'ûdhu bika mina n-nâr", french: "Ô Seigneur ! Je Te demande le Paradis et je me mets sous Ta protection contre l'Enfer." },
 ];

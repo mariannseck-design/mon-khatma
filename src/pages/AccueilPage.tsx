@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import type { Easing } from 'framer-motion';
 import { BookOpen, Target, Users, Download, Moon, Sun, Sunrise, Share2 } from 'lucide-react';
 import { AppLayout } from '@/components/layout/AppLayout';
+import { SamsungBanner } from '@/components/layout/SamsungBanner';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePWAInstall } from '@/hooks/usePWAInstall';
 import { Button } from '@/components/ui/button';
@@ -13,6 +14,7 @@ import { DailyReminderBanner } from '@/components/notifications/DailyReminderBan
 import { useDailyNotification } from '@/hooks/useDailyNotification';
 import { usePushSubscription } from '@/hooks/usePushSubscription';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { toast } from 'sonner';
 export default function AccueilPage() {
   const { user } = useAuth();
   const { isInstallable, isInstalled, isIOS, promptInstall } = usePWAInstall();
@@ -121,6 +123,9 @@ export default function AccueilPage() {
   };
   return <AppLayout title="Accueil">
       <motion.div className="space-y-5 pb-6" variants={containerVariants} initial="hidden" animate="visible">
+        {/* Samsung Internet Banner */}
+        <SamsungBanner />
+        
         {/* Daily Reminder Banner */}
         <DailyReminderBanner isVisible={showNotification} onDismiss={dismissNotification} />
 
@@ -276,11 +281,9 @@ export default function AccueilPage() {
                 if (isIOS) {
                   // On iOS, show a guide since we can't trigger install programmatically
                   window.scrollTo({ top: 0, behavior: 'smooth' });
-                  import('sonner').then(({ toast }) => {
-                    toast('📲 Pour installer l\'app', {
-                      description: 'Appuie sur le bouton Partager (⎙) puis "Sur l\'écran d\'accueil"',
-                      duration: 8000,
-                    });
+                  toast('📲 Pour installer l\'app', {
+                    description: 'Appuie sur le bouton Partager (⎙) puis "Sur l\'écran d\'accueil"',
+                    duration: 8000,
                   });
                 } else {
                   promptInstall();
@@ -326,10 +329,8 @@ export default function AccueilPage() {
               if (navigator.share) {
                 navigator.share(shareData).catch(() => {});
               } else {
-                navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
-                import('sonner').then(({ toast }) => {
-                  toast.success('Lien copié dans le presse-papiers !');
-                });
+                navigator.clipboard.writeText(shareData.text + ' ' + shareData.url);
+                toast.success('Lien copié dans le presse-papiers !');
               }
             }}
             className="w-full flex items-center justify-center gap-3 py-5 rounded-[2rem] bg-primary/10 hover:bg-primary/15 transition-colors"
