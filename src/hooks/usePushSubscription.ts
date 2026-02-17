@@ -46,21 +46,43 @@ export function usePushSubscription() {
 
   const subscribeToPush = useCallback(async () => {
     if (!user || registeredRef.current || !vapidKey) return;
-    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-      console.log('Push not supported in this browser');
-      setSubscriptionError('push_not_supported');
-      return;
-    }
 
     try {
+      if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+        console.log('Push not supported in this browser');
+        setSubscriptionError('push_not_supported');
+        return;
+      }
+
       // Wait for the VitePWA-registered service worker to be ready
       const registration = await navigator.serviceWorker.ready;
       console.log('Using PWA service worker for push subscription');
 
-      let subscription = await (registration as any).pushManager.getSubscription();
+      let subscription: PushSubscription | null = null;
+      try {
+        subscription = await (registration as any).pushManager.getSubscription();
+      } catch (_e) {
+        console.log('getSubscription not supported');
+        setSubscriptionError('push_not_supported');
+        return;
+      }
 
       if (!subscription) {
-        const permission = await Notification.requestPermission();
+        // Polyfill: old Samsung Internet uses callback-based API
+        let permission: NotificationPermission = 'default';
+        try {
+          permission = await new Promise<NotificationPermission>((resolve) => {
+            try {
+              Notification.requestPermission().then(resolve).catch(() => resolve('default'));
+            } catch (_e) {
+              Notification.requestPermission((p) => resolve(p));
+            }
+          });
+        } catch (_e) {
+          setSubscriptionError('permission_denied');
+          return;
+        }
+
         if (permission !== 'granted') {
           console.log('Notification permission denied');
           setSubscriptionError('permission_denied');
