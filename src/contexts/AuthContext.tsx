@@ -66,7 +66,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       setIsAdmin(!!data);
     } catch (error) {
-      console.error('Error checking admin role:', error);
+      if (import.meta.env.DEV) console.error('Error checking admin role:', error);
       setIsAdmin(false);
     }
   };
@@ -85,7 +85,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           .insert({ user_id: userId });
       }
     } catch (error) {
-      console.error('Error ensuring profile:', error);
+      if (import.meta.env.DEV) console.error('Error ensuring profile:', error);
     }
   };
 
