@@ -22,7 +22,7 @@ const features = [
   {
     icon: BookOpen,
     title: 'Récits Prophétiques',
-    description: '365 histoires des Prophètes (عليه السلام)',
+    description: '365 histoires des Prophètes (عليهم السلام)',
     color: 'bg-gradient-peach'
   },
   {
