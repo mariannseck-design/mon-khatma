@@ -1,38 +1,39 @@
 
-# Correction : le "1" qui apparait quand on supprime le "5"
+# Correction : l'objectif revient "non enregistre" apres validation
 
-## Probleme
+## Probleme identifie
 
-Le `onChange` du champ contient `parseInt(e.target.value) || 1`. Quand on efface le "5", le champ est vide, donc `parseInt("")` donne `NaN`, et `|| 1` remet immediatement un "1". Ce "1" est impossible a supprimer pour la meme raison.
+La base de donnees contient **10 objectifs actifs en double** pour le meme utilisateur. Le code utilise `.maybeSingle()` pour recuperer l'objectif actif, ce qui retourne `null` quand il y a plusieurs resultats. Du coup, apres l'enregistrement et le message de felicitation, `fetchGoal()` ne trouve pas l'objectif (car il y en a plusieurs) et reaffiche le formulaire de setup.
+
+De plus, `handleSpiritualSetup` utilise `.insert()` au lieu de `.upsert()`, ce qui cree un doublon a chaque tentative.
 
 ## Solution
 
-Autoriser le champ a etre temporairement vide pendant la saisie, et ne forcer la valeur minimale de 1 qu'a la soumission ou au blur (quand on quitte le champ).
+### Etape 1 : Nettoyer les doublons en base
+
+Migration SQL pour :
+- Supprimer tous les doublons de `quran_goals` en ne gardant que le plus recent par utilisateur
+- Ajouter une contrainte unique sur `(user_id, is_active)` pour empecher les futurs doublons (ou utiliser `upsert`)
+
+### Etape 2 : Corriger `handleSpiritualSetup` dans `PlanificateurPage.tsx`
+
+- **Avant l'insert** : desactiver les anciens objectifs (`is_active = false`) pour eviter les doublons
+- Ou mieux : utiliser `upsert` au lieu de `insert` pour `quran_goals`
+- S'assurer que `fetchGoal()` retrouvera bien un seul objectif actif
+
+### Etape 3 : Securiser `fetchGoal`
+
+- Ajouter `.order('created_at', { ascending: false }).limit(1)` au lieu de `.maybeSingle()` pour toujours recuperer le plus recent meme en cas de doublons residuels
 
 ## Fichiers concernes
 
-### `src/components/ramadan/RamadanReadingSetup.tsx`
-
-- Changer le state `dailyPages` pour accepter `number | string` (ou gerer via une string intermediaire)
-- Modifier le `onChange` pour permettre un champ vide :
-  ```
-  onChange={(e) => setDailyPages(e.target.value === '' ? '' : parseInt(e.target.value) || '')}
-  ```
-- Ajouter un `onBlur` qui remet la valeur a 1 si le champ est vide quand l'utilisateur quitte :
-  ```
-  onBlur={(e) => { if (!e.target.value || parseInt(e.target.value) < 1) setDailyPages(1); }}
-  ```
-- Garder le `onFocus={(e) => e.target.select()}` deja en place
-
-### `src/pages/PlanificateurPage.tsx`
-
-- Meme correction sur l'input `setupPages` dans le setup initial (meme probleme avec `parseInt(e.target.value) || 1`)
-- Permettre un champ vide pendant la saisie
-- Remettre la valeur par defaut au `onBlur`
+- **Migration SQL** : nettoyage des doublons + contrainte
+- **`src/pages/PlanificateurPage.tsx`** :
+  - `handleSpiritualSetup` : desactiver les anciens objectifs avant d'inserer le nouveau
+  - `fetchGoal` : utiliser `.order('created_at', { ascending: false }).limit(1).maybeSingle()` pour robustesse
 
 ## Resultat attendu
 
-- L'utilisateur peut supprimer le "5" sans qu'un "1" apparaisse
-- Le champ reste vide tant que l'utilisateur tape
-- Si l'utilisateur quitte le champ sans rien ecrire, la valeur revient a 1 automatiquement
-- Le bouton de soumission reste desactive si le champ est vide (securite existante)
+- L'objectif s'enregistre une seule fois
+- Apres le message de felicitation, l'utilisateur voit bien son objectif actif (pas le formulaire de setup)
+- Plus de doublons en base
