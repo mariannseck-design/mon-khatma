@@ -108,6 +108,7 @@ export function PlannerCalculator({
               onChange={(e) => handlePagesChange(e.target.value)}
               placeholder="Ex: 20"
               className="text-lg font-semibold text-center h-14 border-2 focus:border-primary/50 transition-colors"
+              onFocus={(e) => e.target.select()}
             />
             {parsedDays > 0 && lastEdited === 'pages' && (
               <motion.p
@@ -136,6 +137,7 @@ export function PlannerCalculator({
               onChange={(e) => handleDaysChange(e.target.value)}
               placeholder="Ex: 30"
               className="text-lg font-semibold text-center h-14 border-2 focus:border-primary/50 transition-colors"
+              onFocus={(e) => e.target.select()}
             />
             {parsedPages > 0 && lastEdited === 'days' && (
               <motion.p
