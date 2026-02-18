@@ -343,7 +343,7 @@ export default function AccueilPage() {
         </motion.div>
 
         {/* Spiritual Quote - Bottom */}
-        <motion.div variants={itemVariants} className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-lavender/40 via-secondary/30 to-mint/20 p-8 shadow-inner border border-primary/10">
+        <motion.div variants={itemVariants} className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-lavender/40 via-secondary/30 to-mint/20 p-8 shadow-inner border border-primary/10" initial={{ opacity: 0, y: 30, scale: 0.97 }} whileInView={{ opacity: 1, y: 0, scale: 1 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }}>
           <div className="absolute -top-10 -right-10 w-36 h-36 rounded-full bg-primary/5 blur-2xl" />
           <div className="absolute bottom-0 left-0 w-24 h-24 rounded-full bg-mint/10 blur-xl" />
           <p className="relative z-10 font-display text-xl leading-relaxed text-foreground/90 italic text-center">
