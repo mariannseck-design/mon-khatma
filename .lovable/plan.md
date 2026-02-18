@@ -1,34 +1,27 @@
 
 
-# Correction : Cohérence entre la carte de progression et l'objectif
+# Correction : Selection automatique du texte au focus des champs numeriques
 
-## Probleme identifie
+## Probleme
 
-La carte verte (TotalProgressBar) calcule ses propres valeurs "Pages par jour" et "Objectif de jours" en se basant sur un compte a rebours vers le Ramadan. Elle ignore completement l'objectif reel de l'utilisateur (20 pages/jour).
-
-Resultat : la carte affiche "5 pages/jour, 120 jours" alors que l'objectif est "20 pages/jour, 30 jours".
+Quand vous touchez un champ pour ecrire "20", le curseur se place a cote du "1" existant. Vous tapez "2" et ca donne "12" ou "21" au lieu de remplacer. Il faut manuellement selectionner et supprimer l'ancien texte, ce qui est penible.
 
 ## Solution
 
-Passer l'objectif actif de l'utilisateur en prop a la carte verte, et afficher ses vraies valeurs au lieu de calculs independants.
+Ajouter un `onFocus` qui selectionne automatiquement tout le texte du champ quand on le touche. Ainsi, des que vous tapez "20", ca remplace directement l'ancienne valeur.
 
-## Details techniques
+## Fichiers concernes
 
-### Fichier modifie : `src/components/planificateur/TotalProgressBar.tsx`
+### 1. `src/components/planificateur/PlannerCalculator.tsx`
+- Ajouter `onFocus={(e) => e.target.select()}` sur les deux inputs (Pages par jour, Objectif de jours)
 
-- Ajouter une prop optionnelle `targetPagesPerDay` (nombre de pages/jour de l'objectif actif)
-- Remplacer le calcul `pagesPerDayForRamadan` par la vraie valeur de l'objectif
-- Calculer "Objectif de jours" a partir de `Math.ceil(remainingPages / targetPagesPerDay)` au lieu du compte a rebours Ramadan
-- Supprimer la logique du compte a rebours Ramadan (la date du Ramadan etant passee dans l'interface, les references au "jours avant Ramadan" n'ont plus de sens dans cette carte)
+### 2. `src/components/planificateur/ReadingInput.tsx`
+- Ajouter `onFocus={(e) => e.target.select()}` sur l'input "Nombre de pages lues"
 
-### Fichier modifie : `src/pages/PlanificateurPage.tsx`
+### 3. `src/components/ramadan/RamadanDhikrSection.tsx`
+- Ajouter `onFocus={(e) => e.target.select()}` sur tous les inputs de compteur (predefined dhikrs, custom entries, new count)
 
-- Passer `activeGoal?.target_value` comme prop `targetPagesPerDay` au composant `TotalProgressBar`
+## Resultat attendu
 
-### Resultat attendu
-
-Avec un objectif de 20 pages/jour et 604 pages restantes :
-- "Pages par jour" affichera **20**
-- "Objectif de jours" affichera **31** (ceil(604/20) = 31, soit 30 jours + 4 pages le dernier jour)
-- Le message de precision en dessous restera inchange et correct
+Quand l'utilisateur touche un champ, tout le contenu est selectionne. Il suffit de taper le nouveau nombre directement, sans avoir a supprimer l'ancien.
 
