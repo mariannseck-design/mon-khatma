@@ -11,6 +11,19 @@ export function CollectiveCounter() {
 
   useEffect(() => {
     fetchTodayStats();
+
+    const channel = supabase
+      .channel('collective-counter')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'quran_progress' },
+        () => fetchTodayStats()
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const fetchTodayStats = async () => {
