@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { useServiceWorkerUpdate } from "@/hooks/useServiceWorkerUpdate";
 import LandingPage from "./pages/LandingPage";
 import AuthPage from "./pages/AuthPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
@@ -83,6 +84,11 @@ function AppRoutes() {
   );
 }
 
+function AppWithSWUpdate() {
+  useServiceWorkerUpdate();
+  return <AppRoutes />;
+}
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -90,7 +96,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
-          <AppRoutes />
+          <AppWithSWUpdate />
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
