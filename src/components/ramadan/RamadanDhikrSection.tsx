@@ -139,7 +139,7 @@ export default function RamadanDhikrSection({ dateStr }: RamadanDhikrSectionProp
                     type="number"
                     value={predefinedCounts[i] === undefined || predefinedCounts[i] === 0 ? '' : predefinedCounts[i]}
                     onChange={(e) => updatePredefinedCount(i, parseInt(e.target.value) || 0)}
-                    onFocus={(e) => { if (e.target.value === '0') e.target.value = ''; }}
+                    onFocus={(e) => e.target.select()}
                     className="text-sm h-9 rounded-xl bg-background/60 border-border/40 w-24 text-center font-bold text-primary"
                     min={0}
                     placeholder="0"
@@ -173,7 +173,7 @@ export default function RamadanDhikrSection({ dateStr }: RamadanDhikrSectionProp
                   type="number"
                   value={entry.count === 0 ? '' : entry.count}
                   onChange={(e) => updateCount(entry.id, parseInt(e.target.value) || 0)}
-                  onFocus={(e) => { if (e.target.value === '0') e.target.value = ''; }}
+                  onFocus={(e) => e.target.select()}
                   className="text-sm h-8 rounded-lg bg-background/80 border-border/40 w-20 text-center font-bold text-primary"
                   min={0}
                 />

@@ -95,6 +95,7 @@ export function ReadingInput({
               onKeyDown={handleKeyDown}
               placeholder="Nombre de pages lues..."
               className="h-14 text-lg font-semibold text-center pr-16 border-2 focus:border-primary/50 transition-colors"
+              onFocus={(e) => e.target.select()}
               disabled={isLogging}
             />
             <span className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">
