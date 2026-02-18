@@ -14,20 +14,12 @@ export function CollectiveCounter() {
   }, []);
 
   const fetchTodayStats = async () => {
-    const today = new Date().toISOString().split('T')[0];
-
-    // Get today's total pages from all users in circles
-    const { data, error } = await supabase
-      .from('quran_progress')
-      .select('pages_read, user_id')
-      .eq('date', today);
+    const { data, error } = await supabase.rpc('get_today_collective_stats');
 
     if (!error && data) {
-      const totalPages = data.reduce((sum, entry) => sum + (entry.pages_read || 0), 0);
-      const uniqueReaders = new Set(data.map(entry => entry.user_id)).size;
-      
-      setTodayPages(totalPages);
-      setReadersCount(uniqueReaders);
+      const stats = data as { total_pages: number; readers_count: number };
+      setTodayPages(stats.total_pages || 0);
+      setReadersCount(stats.readers_count || 0);
     }
 
     setLoading(false);
