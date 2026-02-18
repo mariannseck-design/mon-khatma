@@ -16,20 +16,20 @@ interface RamadanReadingSetupProps {
 export default function RamadanReadingSetup({ onSetupComplete }: RamadanReadingSetupProps) {
   const { user } = useAuth();
   const [firstName, setFirstName] = useState('');
-  const [dailyPages, setDailyPages] = useState<number>(5);
+  const [dailyPages, setDailyPages] = useState<number | string>(5);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [savedName, setSavedName] = useState('');
   const [savedPages, setSavedPages] = useState(0);
 
   const handleSubmit = async () => {
-    if (!user || !firstName.trim() || dailyPages < 1) return;
+    if (!user || !firstName.trim() || !dailyPages || Number(dailyPages) < 1) return;
     setSubmitting(true);
 
     const { error } = await supabase
       .from('ramadan_reading_goals')
       .upsert(
-        { user_id: user.id, first_name: firstName.trim(), daily_pages: dailyPages },
+        { user_id: user.id, first_name: firstName.trim(), daily_pages: Number(dailyPages) },
         { onConflict: 'user_id' }
       );
 
@@ -38,10 +38,10 @@ export default function RamadanReadingSetup({ onSetupComplete }: RamadanReadingS
       console.error(error);
     } else {
       setSavedName(firstName.trim());
-      setSavedPages(dailyPages);
+      setSavedPages(Number(dailyPages));
       setSuccess(true);
       setTimeout(() => {
-        onSetupComplete(firstName.trim(), dailyPages);
+        onSetupComplete(firstName.trim(), Number(dailyPages));
       }, 3000);
     }
     setSubmitting(false);
@@ -93,15 +93,16 @@ export default function RamadanReadingSetup({ onSetupComplete }: RamadanReadingS
                   min={1}
                   max={50}
                   value={dailyPages}
-                  onChange={(e) => setDailyPages(parseInt(e.target.value) || 1)}
+                  onChange={(e) => setDailyPages(e.target.value === '' ? '' : parseInt(e.target.value) || '')}
                   onFocus={(e) => e.target.select()}
+                  onBlur={(e) => { if (!e.target.value || parseInt(e.target.value) < 1) setDailyPages(1); }}
                   className="mt-1"
                 />
               </div>
 
               <Button
                 onClick={handleSubmit}
-                disabled={submitting || !firstName.trim() || dailyPages < 1}
+                disabled={submitting || !firstName.trim() || !dailyPages || Number(dailyPages) < 1}
                 className="w-full bg-primary text-primary-foreground"
               >
                 {submitting ? 'Enregistrement...' : 'Valider mon engagement ✨'}
