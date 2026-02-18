@@ -131,42 +131,38 @@ export default function AccueilPage() {
 
         {/* Greeting Header */}
         <motion.div className="text-center pt-2 pb-4" variants={itemVariants}>
-          <p className="text-muted-foreground text-xl mb-1">{greeting()}</p>
-          <h2 className="font-display text-2xl font-bold text-foreground">
-            {displayName ? `Bienvenue, ${displayName} 🤍` : 'Bienvenue 🤍'}
+          <h2 className="font-display text-2xl font-bold text-foreground mb-1">
+            {displayName ? `Bienvenue, ${displayName} 🌸` : 'Bienvenue 🌸'}
           </h2>
+          <p className="text-muted-foreground text-lg">{greeting()}</p>
         </motion.div>
 
         {/* Daily Progress Card - Full Width */}
         <motion.div variants={itemVariants}>
-          <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-mint via-mint/90 to-success/70 p-8 shadow-lg">
+          <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-mint via-mint/90 to-success/70 p-5 shadow-lg">
             {/* Decorative geometric elements */}
-            <div className="absolute -top-8 -right-8 w-40 h-40 rounded-full bg-white/20 blur-xl" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full bg-white/10 blur-2xl" />
+            <div className="absolute -top-6 -right-6 w-28 h-28 rounded-full bg-white/20 blur-xl" />
             <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-black/5 to-transparent" />
-            <div className="absolute top-8 left-8 w-12 h-12 rounded-xl rotate-12 bg-white/15" />
-            <div className="absolute bottom-12 right-12 w-8 h-8 rounded-lg rotate-45 bg-white/10" />
-            <div className="absolute top-20 right-24 w-6 h-6 rounded-full bg-white/10" />
             
             <div className="relative z-10">
-              <div className="flex items-start justify-between mb-6">
+              <div className="flex items-center justify-between mb-3">
                 <div>
-                  <p className="text-primary-foreground/70 text-2xl font-medium mb-1">Aujourd'hui</p>
-                  <p className="text-6xl font-display font-bold text-primary-foreground">
+                  <p className="text-primary-foreground/70 text-base font-medium mb-0.5">Aujourd'hui</p>
+                  <p className="text-4xl font-display font-bold text-primary-foreground">
                     {todayProgress}
                   </p>
-                  <p className="text-primary-foreground/80 text-3xl font-medium mt-1">pages lues</p>
+                  <p className="text-primary-foreground/80 text-lg font-medium">pages lues</p>
                 </div>
-                <div className="w-20 h-20 rounded-3xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                  <BookOpen className="h-10 w-10 text-primary-foreground" />
+                <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                  <BookOpen className="h-7 w-7 text-primary-foreground" />
                 </div>
               </div>
               
-              <div className="flex items-center gap-3 bg-white/15 backdrop-blur-sm rounded-2xl px-5 py-4 w-fit">
+              <div className="flex items-center gap-2 bg-white/15 backdrop-blur-sm rounded-xl px-3 py-2.5 w-fit">
                 <div className="flex -space-x-1">
-                  {[...Array(7)].map((_, i) => <div key={i} className={`w-5 h-5 rounded-full border-2 border-primary/50 ${i < weeklyStreak ? 'bg-white' : 'bg-white/30'}`} />)}
+                  {[...Array(7)].map((_, i) => <div key={i} className={`w-4 h-4 rounded-full border-2 border-primary/50 ${i < weeklyStreak ? 'bg-white' : 'bg-white/30'}`} />)}
                 </div>
-                <span className="text-primary-foreground font-semibold text-xl ml-2">
+                <span className="text-primary-foreground font-semibold text-sm ml-1">
                   {weeklyStreak}/7 jours cette semaine
                 </span>
               </div>

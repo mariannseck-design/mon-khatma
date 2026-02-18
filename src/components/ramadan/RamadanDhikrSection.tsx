@@ -19,12 +19,12 @@ interface RamadanDhikrSectionProps {
 }
 
 const DEFAULT_DHIKRS = [
-  { arabic: 'لَا إِلٰهَ إِلَّا الله', phonetic: 'La ilaha illa Allah', french: "Il n'y a pas de divinité à part Allah" },
-  { arabic: 'اللهُ أَكْبَر', phonetic: 'Allahu Akbar', french: 'Allah est Plus Grand' },
+  { arabic: 'سُبْحَانَ اللهِ', phonetic: 'SubhanAllah', french: 'Gloire à Allah' },
+  { arabic: 'وَالْحَمْدُ لِلَّهِ', phonetic: 'Walhamdulillah', french: 'Et louange à Allah' },
+  { arabic: 'وَلَا إِلَهَ إِلَّا اللهُ', phonetic: 'Wala ilaha illallah', french: "Et il n'y a de divinité (digne d'adoration) qu'Allah" },
+  { arabic: 'وَاللهُ أَكْبَرُ', phonetic: 'Wallahu Akbar', french: 'Et Allah est le plus Grand' },
   { arabic: 'أَسْتَغْفِرُ اللهَ وَأَتُوبُ إِلَيْه', phonetic: 'Astaghfirullah wa Atoubou ilaih', french: 'Je demande pardon à Allah et me repens envers Lui' },
   { arabic: 'لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِالله', phonetic: 'La hawla wala quwwata illa billah', french: "Il n'y a de pouvoir (pour éviter le mal) ou de force (pour atteindre le bien) que par Allah" },
-  { arabic: 'سُبْحَانَ الله', phonetic: 'SubhanAllah', french: 'Gloire à Allah' },
-  { arabic: 'الْحَمْدُ لِله', phonetic: 'Alhamdulillah', french: 'Louange à Allah' },
   { arabic: 'لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ', phonetic: 'La ilaha illallahu wahdahu la sharika lahu...', french: "Il n'y a de Dieu qu'Allah, Seul, Il n'a pas d'associé. À lui la Royauté et à Lui toutes les louanges, et il a certes pouvoir sur toute chose." },
   { arabic: 'اللهم صلِ على محمد وعلى آل محمد', phonetic: "Allahumma salli 'ala Muhammad...", french: "Ô Allah ! Couvre d'éloges et honore Muhammad ainsi que sa famille..." },
   { arabic: 'اللّهُـمَّ إِنِّـي أَسْأَلُـكَ الجَـنَّةَ وأََعوذُ بِـكَ مِـنَ الـنّار', phonetic: "Allâhumma innî as'aluka-l-jannata wa a'ûdhu bika mina n-nâr", french: "Ô Seigneur ! Je Te demande le Paradis et je me mets sous Ta protection contre l'Enfer." },
@@ -112,7 +112,7 @@ export default function RamadanDhikrSection({ dateStr }: RamadanDhikrSectionProp
       {/* Introductory Reminder */}
       <Card className="pastel-card p-5 bg-gradient-to-br from-accent/20 to-accent/5">
         <p className="text-sm text-foreground/80 leading-relaxed">
-          Le Prophète <span className="honorific font-bold" style={{ fontSize: '1.1em' }}>(عليه السلام)</span> a dit : <em>« Celui qui mentionne son Seigneur et celui qui ne Le mentionne pas sont semblables au vivant et au mort. »</em> Le zikr apaise le cœur, efface les péchés et rapproche de la satisfaction d'<span className="font-semibold">Allah</span> <span className="honorific font-bold" style={{ fontSize: '1.1em' }}>(عز وجل)</span>.
+          Le Prophète Mouhamed <span className="honorific font-bold" style={{ fontSize: '1.1em' }}>(ﷺ)</span> a dit : <em>« Celui qui mentionne son Seigneur et celui qui ne Le mentionne pas sont semblables au vivant et au mort. »</em> Le zikr apaise le cœur, efface les péchés et rapproche de la satisfaction d'<span className="font-semibold">Allah</span> <span className="honorific font-bold" style={{ fontSize: '1.1em' }}>(عز وجل)</span>.
         </p>
       </Card>
 
