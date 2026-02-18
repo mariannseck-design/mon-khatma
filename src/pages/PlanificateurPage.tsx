@@ -393,8 +393,9 @@ export default function PlanificateurPage() {
                       min={1}
                       max={50}
                       value={setupPages}
-                      onChange={(e) => setSetupPages(parseInt(e.target.value) || 1)}
-                      onFocus={(e) => { if (e.target.value === '1') e.target.value = ''; }}
+                      onChange={(e) => setSetupPages(e.target.value === '' ? '' as any : parseInt(e.target.value) || ('' as any))}
+                      onFocus={(e) => e.target.select()}
+                      onBlur={(e) => { if (!e.target.value || parseInt(e.target.value) < 1) setSetupPages(1); }}
                       className="mt-1"
                     />
                     <p className="text-xs text-muted-foreground mt-1">
