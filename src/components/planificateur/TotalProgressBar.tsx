@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { BookOpen, Star, RotateCcw } from 'lucide-react';
+import { BookOpen, Star, RotateCcw, Calendar } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { getSurahByPage } from '@/lib/surahData';
@@ -10,9 +10,10 @@ interface TotalProgressBarProps {
   totalPagesRead: number;
   onResetKhatma?: () => void;
   targetPagesPerDay?: number;
+  startDate?: string;
 }
 
-export function TotalProgressBar({ totalPagesRead, onResetKhatma, targetPagesPerDay }: TotalProgressBarProps) {
+export function TotalProgressBar({ totalPagesRead, onResetKhatma, targetPagesPerDay, startDate }: TotalProgressBarProps) {
   const percentage = Math.min(100, (totalPagesRead / TOTAL_QURAN_PAGES) * 100);
   const isComplete = totalPagesRead >= TOTAL_QURAN_PAGES;
   const remainingPages = TOTAL_QURAN_PAGES - totalPagesRead;
@@ -22,6 +23,11 @@ export function TotalProgressBar({ totalPagesRead, onResetKhatma, targetPagesPer
   // Get current surah based on pages read
   const currentSurah = getSurahByPage(totalPagesRead);
 
+  // Format start date
+  const formattedStartDate = startDate
+    ? new Date(startDate).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
+    : null;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -30,48 +36,61 @@ export function TotalProgressBar({ totalPagesRead, onResetKhatma, targetPagesPer
       <Card className={`relative overflow-hidden border-none shadow-[0_8px_30px_-12px_rgba(0,0,0,0.1)] ${
         isComplete ? 'bg-gradient-to-r from-accent/60 to-accent/40' : 'bg-gradient-mint'
       }`}>
-        <div className="p-6">
-
-          <div className="mb-4">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-12 h-12 rounded-2xl bg-white/30 flex items-center justify-center">
+        {/* Top section with icon + percentage */}
+        <div className="px-6 pt-6 pb-3">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-3">
+              <div className="w-11 h-11 rounded-xl bg-white/25 backdrop-blur-sm flex items-center justify-center">
                 {isComplete ? (
-                  <Star className="h-6 w-6 text-accent-foreground fill-accent" />
+                  <Star className="h-5 w-5 text-accent-foreground fill-accent" />
                 ) : (
-                  <BookOpen className="h-6 w-6 text-primary-foreground" />
+                  <BookOpen className="h-5 w-5 text-primary-foreground" />
                 )}
               </div>
-              <div className="flex items-center gap-2">
-                <p className="font-medium text-primary-foreground">
-                  {isComplete ? 'Khatma complète!' : 'Progression globale'}
+              <div>
+                <p className="text-sm font-medium text-primary-foreground/80">
+                  {isComplete ? 'Khatma complète !' : 'Ma Khatma'}
                 </p>
-                {!isComplete && (
-                  <motion.span 
-                    key={percentage}
-                    initial={{ scale: 1.2, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    className="text-xl font-bold text-primary-foreground"
-                  >
-                    {percentage.toFixed(1)}%
-                  </motion.span>
+                {formattedStartDate && !isComplete && (
+                  <p className="text-xs text-primary-foreground/60 flex items-center gap-1">
+                    <Calendar className="h-3 w-3" />
+                    Depuis le {formattedStartDate}
+                  </p>
                 )}
               </div>
             </div>
-            {!isComplete && currentSurah && (
-              <motion.p
-                key={totalPagesRead}
+            {!isComplete && (
+              <motion.div
+                key={percentage}
                 initial={{ scale: 1.2, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.3, ease: "easeOut" }}
-                className="text-xl font-bold text-primary-foreground text-center"
+                className="bg-white/20 backdrop-blur-sm rounded-xl px-3 py-1.5"
               >
-                Sourate {currentSurah.name} Page {totalPagesRead}
-              </motion.p>
+                <span className="text-lg font-bold text-primary-foreground">{percentage.toFixed(1)}%</span>
+              </motion.div>
             )}
           </div>
 
+          {/* Current position */}
+          {!isComplete && currentSurah && (
+            <motion.div
+              key={totalPagesRead}
+              initial={{ scale: 1.05, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className="bg-white/15 backdrop-blur-sm rounded-xl py-2.5 px-4 text-center mb-3"
+            >
+              <p className="text-lg font-bold text-primary-foreground">
+                Sourate {currentSurah.name}
+              </p>
+              <p className="text-xs text-primary-foreground/70">
+                Page {totalPagesRead} / {TOTAL_QURAN_PAGES}
+              </p>
+            </motion.div>
+          )}
+
           {/* Subtitle */}
-          <p className="text-sm text-primary-foreground/80 mb-4 italic text-center">
+          <p className="text-xs text-primary-foreground/70 text-center italic">
             {isComplete 
               ? "Félicitations ! Qu'Allah (عز وجل) accepte votre lecture."
               : <>Continue ta Khatma avec l'aide d'Allah <span className="honorific">(عز وجل)</span></>
@@ -82,22 +101,21 @@ export function TotalProgressBar({ totalPagesRead, onResetKhatma, targetPagesPer
           {isComplete && onResetKhatma && (
             <Button
               onClick={onResetKhatma}
-              className="w-full mb-4 rounded-xl bg-white/20 hover:bg-white/30 text-primary-foreground font-medium border-none"
+              className="w-full mt-3 rounded-xl bg-white/20 hover:bg-white/30 text-primary-foreground font-medium border-none"
             >
               <RotateCcw className="h-4 w-4 mr-2" />
               Commencer une nouvelle Khatma
             </Button>
           )}
-
         </div>
 
         {/* Progress bar at bottom */}
-        <div className="h-3 bg-white/20 relative overflow-hidden">
+        <div className="h-2.5 bg-white/20 relative overflow-hidden">
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: `${percentage}%` }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className={`h-full ${
+            className={`h-full rounded-r-full ${
               isComplete 
                 ? 'bg-gradient-to-r from-accent to-accent/80' 
                 : 'bg-white/60'
