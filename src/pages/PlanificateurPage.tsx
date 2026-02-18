@@ -322,7 +322,7 @@ export default function PlanificateurPage() {
         </div>
 
         {/* Total Progress Bar */}
-        <TotalProgressBar totalPagesRead={totalPagesRead} onResetKhatma={resetKhatma} targetPagesPerDay={activeGoal?.target_value} />
+        <TotalProgressBar totalPagesRead={totalPagesRead} onResetKhatma={resetKhatma} targetPagesPerDay={activeGoal?.target_value} startDate={activeGoal?.start_date} />
 
         {/* Personalized greeting if setup exists */}
         {savedSetup && activeGoal && (
