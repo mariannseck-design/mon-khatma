@@ -1,27 +1,23 @@
 
+# Corrections des champs numeriques
 
-# Correction : Selection automatique du texte au focus des champs numeriques
+## 1. Compteur Dhikr : revenir a l'ancien comportement
 
-## Probleme
+Le compteur de dhikr fonctionnait bien avant avec la logique qui vidait le champ quand la valeur etait "0" au focus. Il faut restaurer ce comportement :
 
-Quand vous touchez un champ pour ecrire "20", le curseur se place a cote du "1" existant. Vous tapez "2" et ca donne "12" ou "21" au lieu de remplacer. Il faut manuellement selectionner et supprimer l'ancien texte, ce qui est penible.
+**Fichier : `src/components/ramadan/RamadanDhikrSection.tsx`**
+- Remettre `onFocus={(e) => { if (e.target.value === '0') e.target.value = ''; }}` sur les deux inputs (predefined et custom dhikr counters)
+- Supprimer le `e.target.select()` qui a ete ajoute
 
-## Solution
+## 2. Champ "Nombre de pages par jour" du setup : appliquer le meme concept
 
-Ajouter un `onFocus` qui selectionne automatiquement tout le texte du champ quand on le touche. Ainsi, des que vous tapez "20", ca remplace directement l'ancienne valeur.
+L'input du setup initial (sur `src/pages/PlanificateurPage.tsx`, ligne 390-398) affiche "1" par defaut et c'est difficile a remplacer. On applique le meme concept que l'ancien dhikr : vider le champ au focus pour que l'utilisateur puisse taper directement.
 
-## Fichiers concernes
+**Fichier : `src/pages/PlanificateurPage.tsx`**
+- Ajouter `onFocus={(e) => e.target.select()}` sur l'input `setupPages` (ligne 390)
+- Cela selectionnera le "1" automatiquement et il sera remplace des la premiere frappe
 
-### 1. `src/components/planificateur/PlannerCalculator.tsx`
-- Ajouter `onFocus={(e) => e.target.select()}` sur les deux inputs (Pages par jour, Objectif de jours)
+## Resultat
 
-### 2. `src/components/planificateur/ReadingInput.tsx`
-- Ajouter `onFocus={(e) => e.target.select()}` sur l'input "Nombre de pages lues"
-
-### 3. `src/components/ramadan/RamadanDhikrSection.tsx`
-- Ajouter `onFocus={(e) => e.target.select()}` sur tous les inputs de compteur (predefined dhikrs, custom entries, new count)
-
-## Resultat attendu
-
-Quand l'utilisateur touche un champ, tout le contenu est selectionne. Il suffit de taper le nouveau nombre directement, sans avoir a supprimer l'ancien.
-
+- Dhikr : retour au comportement d'avant (vide le "0" au focus)
+- Setup planificateur : le "1" est selectionne au focus, on peut taper directement "20" sans devoir supprimer
