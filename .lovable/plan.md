@@ -1,34 +1,35 @@
 
 
-# Correction : Celebraciones visibles pour toutes les lectrices
+# Suppression de la répétition dans le Planificateur
 
-## Probleme
+## Le problème
 
-La table `quran_progress` a des politiques RLS qui limitent chaque utilisatrice a voir uniquement ses propres donnees. Seule l'administratrice peut voir toutes les lignes. Le composant `CollectiveCounter` fait un `SELECT` sur toutes les lignes, donc les utilisatrices normales ne voient que leurs propres statistiques (1 lectrice, leurs propres pages).
+La carte verte (TotalProgressBar) affiche actuellement :
+- "Pages par jour : 20" et "Objectif de jours : 29"
+- "Vous finirez en 29 jours"
+- La citation motivationnelle
 
-## Solution
+Or ces memes infos sont deja dans les 2 cartes en dessous (que tu veux garder) :
+- "Objectif : 20 pages/jour -- Qu'Allah t'accorde la constance, Marianne !"
+- "A ce rythme, tu finiras en 30 jours..."
 
-Creer une **fonction base de donnees** avec `SECURITY DEFINER` qui retourne les statistiques agregees du jour (total de pages lues et nombre de lectrices actives) sans exposer les donnees individuelles. Cela respecte la confidentialite tout en permettant a chaque lectrice de voir les statistiques collectives.
+## La solution
 
-### Etape 1 : Migration SQL
+Simplifier la carte verte en retirant les elements redondants :
 
-Creer une fonction `get_today_collective_stats()` :
-- Calcule le total des pages lues aujourd'hui par toutes les utilisatrices
-- Compte le nombre de lectrices uniques actives aujourd'hui
-- Utilise `SECURITY DEFINER` pour contourner les politiques RLS
-- Retourne uniquement des donnees agregees (pas de donnees individuelles)
+1. **Retirer le bloc "Pages par jour / Objectif de jours"** (les 2 cases blanches avec 20 et 29)
+2. **Retirer le message "Vous finirez en 29 jours"**
+3. **Retirer la citation** (deja implicite dans le ton des cartes en dessous)
 
-### Etape 2 : Modifier `CollectiveCounter.tsx`
+La carte verte gardera uniquement :
+- L'icone et le pourcentage de progression (7.1%)
+- "Sourate Al-Baqara Page 43"
+- "Continue ta Khatma avec l'aide d'Allah"
+- La barre de progression en bas
 
-Remplacer la requete directe sur `quran_progress` par un appel a la fonction RPC `get_today_collective_stats()`. Cela retournera les vrais totaux pour toutes les utilisatrices, pas seulement les donnees de l'utilisatrice connectee.
+Resultat : une carte verte epuree qui montre la progression, et les 2 cartes en dessous qui donnent les details de l'objectif sans repetition.
 
-## Fichiers concernes
+## Fichier modifie
 
-- **Migration SQL** : nouvelle fonction `get_today_collective_stats()`
-- **`src/components/cercle/CollectiveCounter.tsx`** : remplacer le `SELECT` par un appel RPC
+`src/components/planificateur/TotalProgressBar.tsx` -- suppression des lignes 92-120 (le bloc calculateur integre et la citation).
 
-## Securite
-
-- Les donnees individuelles restent protegees par RLS
-- Seules les statistiques agregees (totaux) sont accessibles
-- Aucune donnee personnelle n'est exposee
