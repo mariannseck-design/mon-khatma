@@ -89,35 +89,6 @@ export function TotalProgressBar({ totalPagesRead, onResetKhatma, targetPagesPer
             </Button>
           )}
 
-          {/* Smart Calculator - Integrated Display */}
-          {!isComplete && (
-            <div className="bg-white/15 rounded-2xl p-4 mb-4">
-              <div className="grid grid-cols-2 gap-4 mb-3">
-                <div className="text-center">
-                  <p className="text-xs text-primary-foreground/70 mb-1">Pages par jour</p>
-                  <div className="bg-white/20 rounded-xl py-3 px-4">
-                    <span className="text-2xl font-bold text-primary-foreground">{effectivePagesPerDay}</span>
-                  </div>
-                </div>
-                <div className="text-center">
-                  <p className="text-xs text-primary-foreground/70 mb-1">Objectif de jours</p>
-                  <div className="bg-white/20 rounded-xl py-3 px-4">
-                    <span className="text-2xl font-bold text-primary-foreground">{estimatedDays}</span>
-                  </div>
-                </div>
-              </div>
-              {remainingPages > 0 && (
-                <p className="text-sm text-primary-foreground font-medium text-center bg-white/10 rounded-xl py-2 px-3">
-                  ✨ Vous finirez en <span className="font-bold">{estimatedDays} jours</span>
-                </p>
-              )}
-            </div>
-          )}
-
-          {/* Motivational Quote */}
-          <p className="text-xs text-primary-foreground/70 text-center italic">
-            "La meilleure des actions est celle qui est régulière, même si elle est modeste."
-          </p>
         </div>
 
         {/* Progress bar at bottom */}
