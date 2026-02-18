@@ -343,12 +343,14 @@ export default function AccueilPage() {
         </motion.div>
 
         {/* Spiritual Quote - Bottom */}
-        <motion.div variants={itemVariants} className="text-center pt-4 pb-2">
-          <p className="font-display text-2xl text-muted-foreground italic">
-            "Sois constant (Istaqim) comme il t'a été ordonné."
+        <motion.div variants={itemVariants} className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-lavender/40 via-secondary/30 to-mint/20 p-8 shadow-inner border border-primary/10">
+          <div className="absolute -top-10 -right-10 w-36 h-36 rounded-full bg-primary/5 blur-2xl" />
+          <div className="absolute bottom-0 left-0 w-24 h-24 rounded-full bg-mint/10 blur-xl" />
+          <p className="relative z-10 font-display text-xl leading-relaxed text-foreground/90 italic text-center">
+            « Ô les croyants ! On vous a prescrit le jeûne comme on l'a prescrit à ceux d'avant vous, ainsi atteindrez-vous la piété »
           </p>
-          <p className="text-lg text-muted-foreground/70 mt-2">
-            — Sourate Hud, verset 112
+          <p className="relative z-10 text-base text-muted-foreground mt-3 text-center font-medium">
+            — Sourate Al-Baqara, verset 183
           </p>
         </motion.div>
       </motion.div>
