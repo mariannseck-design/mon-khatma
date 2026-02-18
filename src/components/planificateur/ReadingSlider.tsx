@@ -58,13 +58,13 @@ export function ReadingSlider({
     }
   };
 
-  if (isDisabled || isKhatmaComplete) {
+  if (isKhatmaComplete) {
     return (
       <Card className="p-6 bg-gradient-mint border-none rounded-[2rem]">
         <div className="flex items-center justify-center gap-3">
           <span className="text-2xl">✨</span>
           <p className="text-primary-foreground font-medium">
-            {isKhatmaComplete ? 'Khatma terminée, Macha\'Allah !' : 'Objectif atteint, Macha\'Allah !'}
+            Khatma terminée, Macha'Allah !
           </p>
           <span className="text-2xl">✨</span>
         </div>
@@ -72,11 +72,26 @@ export function ReadingSlider({
     );
   }
 
+  const goalMet = targetPages > 0 && todayPages >= targetPages;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
     >
+      {/* Congrats banner when goal is met */}
+      {goalMet && (
+        <Card className="p-4 bg-gradient-mint border-none rounded-[2rem] mb-3">
+          <div className="flex items-center justify-center gap-2">
+            <span className="text-lg">✨</span>
+            <p className="text-primary-foreground font-medium text-sm">
+              Objectif atteint, Macha'Allah ! Tu peux continuer ta lecture.
+            </p>
+            <span className="text-lg">✨</span>
+          </div>
+        </Card>
+      )}
+
       <Card className="p-6 border-none rounded-[2rem] bg-card shadow-sm">
         {/* Header */}
         <div className="flex items-center justify-between mb-5">

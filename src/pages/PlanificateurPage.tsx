@@ -538,7 +538,6 @@ export default function PlanificateurPage() {
           <SparkleEffect isActive={showSparkles} onComplete={handleSparkleComplete} />
           <ReadingSlider
             onLogReading={logReading}
-            isDisabled={goalMetToday}
             todayPages={todayPages}
             targetPages={activeGoal?.target_value || 0}
             totalPagesRead={totalPagesRead}
