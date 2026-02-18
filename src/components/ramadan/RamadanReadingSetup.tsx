@@ -94,6 +94,7 @@ export default function RamadanReadingSetup({ onSetupComplete }: RamadanReadingS
                   max={50}
                   value={dailyPages}
                   onChange={(e) => setDailyPages(parseInt(e.target.value) || 1)}
+                  onFocus={(e) => e.target.select()}
                   className="mt-1"
                 />
               </div>

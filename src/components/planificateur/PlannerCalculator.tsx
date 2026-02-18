@@ -109,6 +109,7 @@ export function PlannerCalculator({
               placeholder="Ex: 20"
               className="text-lg font-semibold text-center h-14 border-2 focus:border-primary/50 transition-colors"
               onFocus={(e) => e.target.select()}
+              onTouchStart={(e) => (e.target as HTMLInputElement).select()}
             />
             {parsedDays > 0 && lastEdited === 'pages' && (
               <motion.p
