@@ -1,31 +1,23 @@
 import { motion } from 'framer-motion';
-import { BookOpen, Star, Moon, RotateCcw } from 'lucide-react';
+import { BookOpen, Star, RotateCcw } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { getSurahByPage } from '@/lib/surahData';
 
 const TOTAL_QURAN_PAGES = 604;
 
-// Calculate days until Ramadan 2026 (approximately February 17, 2026)
-const getDaysUntilRamadan = () => {
-  const today = new Date();
-  const ramadan2026 = new Date(2026, 1, 17); // February 17, 2026
-  const diffTime = ramadan2026.getTime() - today.getTime();
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  return diffDays > 0 ? diffDays : 0;
-};
-
 interface TotalProgressBarProps {
   totalPagesRead: number;
   onResetKhatma?: () => void;
+  targetPagesPerDay?: number;
 }
 
-export function TotalProgressBar({ totalPagesRead, onResetKhatma }: TotalProgressBarProps) {
+export function TotalProgressBar({ totalPagesRead, onResetKhatma, targetPagesPerDay }: TotalProgressBarProps) {
   const percentage = Math.min(100, (totalPagesRead / TOTAL_QURAN_PAGES) * 100);
   const isComplete = totalPagesRead >= TOTAL_QURAN_PAGES;
-  const daysUntilRamadan = getDaysUntilRamadan();
   const remainingPages = TOTAL_QURAN_PAGES - totalPagesRead;
-  const pagesPerDayForRamadan = daysUntilRamadan > 0 ? Math.ceil(remainingPages / daysUntilRamadan) : 0;
+  const effectivePagesPerDay = targetPagesPerDay || 5;
+  const estimatedDays = Math.ceil(remainingPages / effectivePagesPerDay);
 
   // Get current surah based on pages read
   const currentSurah = getSurahByPage(totalPagesRead);
@@ -39,15 +31,6 @@ export function TotalProgressBar({ totalPagesRead, onResetKhatma }: TotalProgres
         isComplete ? 'bg-gradient-to-r from-accent/60 to-accent/40' : 'bg-gradient-mint'
       }`}>
         <div className="p-6">
-          {/* Ramadan Countdown - Static Label */}
-          {daysUntilRamadan > 0 && !isComplete && (
-            <div className="flex items-center justify-center gap-2 mb-4 bg-white/20 rounded-xl py-2 px-4">
-              <Moon className="h-4 w-4 text-primary-foreground" />
-              <span className="text-sm font-medium text-primary-foreground">
-                {daysUntilRamadan} jours avant Ramadan
-              </span>
-            </div>
-          )}
 
           <div className="mb-4">
             <div className="flex items-center gap-3 mb-2">
@@ -113,19 +96,19 @@ export function TotalProgressBar({ totalPagesRead, onResetKhatma }: TotalProgres
                 <div className="text-center">
                   <p className="text-xs text-primary-foreground/70 mb-1">Pages par jour</p>
                   <div className="bg-white/20 rounded-xl py-3 px-4">
-                    <span className="text-2xl font-bold text-primary-foreground">{pagesPerDayForRamadan || 5}</span>
+                    <span className="text-2xl font-bold text-primary-foreground">{effectivePagesPerDay}</span>
                   </div>
                 </div>
                 <div className="text-center">
                   <p className="text-xs text-primary-foreground/70 mb-1">Objectif de jours</p>
                   <div className="bg-white/20 rounded-xl py-3 px-4">
-                    <span className="text-2xl font-bold text-primary-foreground">{daysUntilRamadan || Math.ceil(remainingPages / 5)}</span>
+                    <span className="text-2xl font-bold text-primary-foreground">{estimatedDays}</span>
                   </div>
                 </div>
               </div>
-              {daysUntilRamadan > 0 && remainingPages > 0 && (
+              {remainingPages > 0 && (
                 <p className="text-sm text-primary-foreground font-medium text-center bg-white/10 rounded-xl py-2 px-3">
-                  ✨ Vous finirez en <span className="font-bold">{daysUntilRamadan} jours</span>
+                  ✨ Vous finirez en <span className="font-bold">{estimatedDays} jours</span>
                 </p>
               )}
             </div>
