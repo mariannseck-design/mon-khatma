@@ -1,50 +1,34 @@
 
 
-# 4 corrections a appliquer
+# Correction : Celebraciones visibles pour toutes les lectrices
 
-## 1. Permettre de lire au-dela de l'objectif quotidien
+## Probleme
 
-**Probleme** : Quand `todayPages >= targetPages`, le composant `ReadingSlider` affiche "Objectif atteint" et bloque toute saisie supplementaire via `isDisabled`.
+La table `quran_progress` a des politiques RLS qui limitent chaque utilisatrice a voir uniquement ses propres donnees. Seule l'administratrice peut voir toutes les lignes. Le composant `CollectiveCounter` fait un `SELECT` sur toutes les lignes, donc les utilisatrices normales ne voient que leurs propres statistiques (1 lectrice, leurs propres pages).
 
-**Solution** : Dans `ReadingSlider.tsx`, supprimer le blocage quand l'objectif est atteint. Garder le message de felicitation comme un bandeau informatif au-dessus du formulaire (au lieu de remplacer le formulaire). L'utilisateur pourra continuer a enregistrer ses pages. Dans `PlanificateurPage.tsx`, ne plus passer `goalMetToday` comme `isDisabled`.
+## Solution
 
----
+Creer une **fonction base de donnees** avec `SECURITY DEFINER` qui retourne les statistiques agregees du jour (total de pages lues et nombre de lectrices actives) sans exposer les donnees individuelles. Cela respecte la confidentialite tout en permettant a chaque lectrice de voir les statistiques collectives.
 
-## 2. Reordonner les dhikr dans RamadanDhikrSection
+### Etape 1 : Migration SQL
 
-**Probleme** : L'ordre actuel des dhikr ne correspond pas a l'ordre souhaite.
+Creer une fonction `get_today_collective_stats()` :
+- Calcule le total des pages lues aujourd'hui par toutes les utilisatrices
+- Compte le nombre de lectrices uniques actives aujourd'hui
+- Utilise `SECURITY DEFINER` pour contourner les politiques RLS
+- Retourne uniquement des donnees agregees (pas de donnees individuelles)
 
-**Solution** : Reorganiser le tableau `DEFAULT_DHIKRS` dans `RamadanDhikrSection.tsx` pour mettre dans cet ordre :
-1. SubhanAllah (Gloire a Allah)
-2. Walhamdulillah (Louange a Allah)
-3. Wala ilaha illallah (Il n'y a de divinite qu'Allah)
-4. Wallahu Akbar (Allah est le plus Grand)
-5. Puis les autres dhikr existants
+### Etape 2 : Modifier `CollectiveCounter.tsx`
 
-Aussi corriger l'honorifique du Prophete Mouhamed : remplacer (عليه السلام) par (ﷺ) dans le texte introductif.
-
----
-
-## 3. Reduire la taille du cadre de progression quotidienne
-
-**Probleme** : Le cadre vert "Aujourd'hui / pages lues" sur la page d'accueil est trop grand.
-
-**Solution** : Dans `AccueilPage.tsx`, reduire le padding, la taille des textes et des elements decoratifs du cadre de progression pour un rendu plus compact.
-
----
-
-## 4. Mettre "Bienvenue, [Prenom]" avant la salutation
-
-**Probleme** : Actuellement l'ordre est : salutation (Sabah el-kheir) puis "Bienvenue, [Prenom]". L'utilisateur veut l'inverse.
-
-**Solution** : Dans `AccueilPage.tsx`, inverser l'ordre dans le bloc "Greeting Header" : afficher d'abord "Bienvenue, [Prenom]" (avec emoji coeur ou fleur) puis en dessous la salutation contextuelle.
-
----
+Remplacer la requete directe sur `quran_progress` par un appel a la fonction RPC `get_today_collective_stats()`. Cela retournera les vrais totaux pour toutes les utilisatrices, pas seulement les donnees de l'utilisatrice connectee.
 
 ## Fichiers concernes
 
-- `src/components/planificateur/ReadingSlider.tsx` : supprimer le blocage apres objectif atteint, afficher un bandeau felicitation au-dessus du formulaire
-- `src/pages/PlanificateurPage.tsx` : ne plus passer `isDisabled={goalMetToday}`
-- `src/components/ramadan/RamadanDhikrSection.tsx` : reordonner les dhikr, corriger honorifique (ﷺ)
-- `src/pages/AccueilPage.tsx` : reduire taille du cadre, inverser ordre salutation/bienvenue
+- **Migration SQL** : nouvelle fonction `get_today_collective_stats()`
+- **`src/components/cercle/CollectiveCounter.tsx`** : remplacer le `SELECT` par un appel RPC
 
+## Securite
+
+- Les donnees individuelles restent protegees par RLS
+- Seules les statistiques agregees (totaux) sont accessibles
+- Aucune donnee personnelle n'est exposee
