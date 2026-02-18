@@ -12,18 +12,11 @@ export function CollectiveCounter() {
   useEffect(() => {
     fetchTodayStats();
 
-    const channel = supabase
-      .channel('collective-counter')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'quran_progress' },
-        () => fetchTodayStats()
-      )
-      .subscribe();
+    // Polling toutes les 30s — fonctionne sur tous les navigateurs
+    // et contourne les restrictions RLS sur le Realtime
+    const interval = setInterval(fetchTodayStats, 30_000);
 
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    return () => clearInterval(interval);
   }, []);
 
   const fetchTodayStats = async () => {
