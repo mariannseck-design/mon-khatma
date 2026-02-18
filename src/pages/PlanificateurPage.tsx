@@ -545,17 +545,17 @@ export default function PlanificateurPage() {
           />
         </div>
 
-        {/* Reset Button */}
-        {totalPagesRead > 0 && (
-          <div className="flex justify-center pt-2">
+        {/* Reset Button - always visible when goal or progress exists */}
+        {(totalPagesRead > 0 || activeGoal || savedSetup) && (
+          <div className="flex justify-center pt-4 pb-2">
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setShowResetConfirm(true)}
-              className="text-muted-foreground hover:text-destructive text-xs gap-1.5 opacity-60 hover:opacity-100 transition-opacity"
+              className="text-muted-foreground hover:text-destructive text-xs gap-1.5 opacity-50 hover:opacity-100 transition-opacity"
             >
-              <RotateCcw className="h-3.5 w-3.5" />
-              Réinitialiser ma lecture
+              <RotateCcw className="h-3 w-3" />
+              Réinitialiser ma lecture et mon objectif
             </Button>
           </div>
         )}
