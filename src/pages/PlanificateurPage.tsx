@@ -552,7 +552,7 @@ export default function PlanificateurPage() {
               variant="ghost"
               size="sm"
               onClick={() => setShowResetConfirm(true)}
-              className="text-muted-foreground hover:text-destructive text-xs gap-1.5 opacity-50 hover:opacity-100 transition-opacity"
+              className="text-muted-foreground hover:text-destructive text-xs gap-1.5 opacity-70 hover:opacity-100 transition-opacity"
             >
               <RotateCcw className="h-3 w-3" />
               Réinitialiser ma lecture et mon objectif
