@@ -1,52 +1,34 @@
 
-# Plan : Sélecteur de date de début du Ramadan
 
-## Contexte
+# Correction : Cohérence entre la carte de progression et l'objectif
 
-Actuellement, la date de début du Ramadan est codée en dur (`new Date(2026, 1, 19)` = 19 février). Il faut permettre a l'utilisateur de choisir entre le 18 et le 19 fevrier 2026, et ajuster automatiquement tout le calendrier.
+## Probleme identifie
 
-## Risque de bugs : AUCUN
+La carte verte (TotalProgressBar) calcule ses propres valeurs "Pages par jour" et "Objectif de jours" en se basant sur un compte a rebours vers le Ramadan. Elle ignore completement l'objectif reel de l'utilisateur (20 pages/jour).
 
-- La date `RAMADAN_START` est utilisee a un seul endroit (`RamadanPage.tsx`)
-- Tous les calculs (fin, jour courant, navigation) en decoulent automatiquement
-- Les donnees en base sont indexees par date reelle, pas par numero de jour
-- Aucune migration de donnees necessaire
+Resultat : la carte affiche "5 pages/jour, 120 jours" alors que l'objectif est "20 pages/jour, 30 jours".
 
-## Changements
+## Solution
 
-### Fichier modifie : `src/pages/RamadanPage.tsx`
+Passer l'objectif actif de l'utilisateur en prop a la carte verte, et afficher ses vraies valeurs au lieu de calculs independants.
 
-1. **Remplacer la constante** `RAMADAN_START` par un state dynamique :
-   - Lire le choix depuis `localStorage` (cle `ramadan-start-date`)
-   - Valeur par defaut : 19 fevrier 2026
+## Details techniques
 
-2. **Ajouter un selecteur** au-dessus de la navigation de date :
-   - Deux boutons radio ou un composant `Select` : "Mercredi 18 fevrier" / "Jeudi 19 fevrier"
-   - Legende en dessous : *"Choisissez la date de debut de votre mois beni selon l'observation lunaire de votre zone."*
-   - Sauvegarder le choix dans `localStorage`
+### Fichier modifie : `src/components/planificateur/TotalProgressBar.tsx`
 
-3. **Rendre dynamiques** `RAMADAN_END` et `getRamadanDay` pour utiliser le state au lieu de la constante
+- Ajouter une prop optionnelle `targetPagesPerDay` (nombre de pages/jour de l'objectif actif)
+- Remplacer le calcul `pagesPerDayForRamadan` par la vraie valeur de l'objectif
+- Calculer "Objectif de jours" a partir de `Math.ceil(remainingPages / targetPagesPerDay)` au lieu du compte a rebours Ramadan
+- Supprimer la logique du compte a rebours Ramadan (la date du Ramadan etant passee dans l'interface, les references au "jours avant Ramadan" n'ont plus de sens dans cette carte)
 
-### Details techniques
+### Fichier modifie : `src/pages/PlanificateurPage.tsx`
 
-- `RAMADAN_START` passe de constante globale a valeur calculee depuis le state `ramadanStartDate`
-- `RAMADAN_END` et `getRamadanDay` recalcules via `useMemo` a chaque changement
-- Le selecteur utilise les composants UI existants (`Select` ou boutons `Button` avec variante outline/default)
-- Persistence via `localStorage` avec cle `ramadan-start-date`, valeurs `"18"` ou `"19"`
-- Aucune modification des autres composants (RamadanTaskGroups, RamadanDhikrSection, etc.) car ils recoivent deja `dateStr` comme prop
+- Passer `activeGoal?.target_value` comme prop `targetPagesPerDay` au composant `TotalProgressBar`
 
-### Design du selecteur
+### Resultat attendu
 
-```text
-+-------------------------------------------+
-|  Debut du Ramadan                         |
-|  [Mercredi 18 fev.]  [Jeudi 19 fev.]     |
-|  (bouton actif en surbrillance)           |
-|                                           |
-|  Choisissez la date de debut de votre     |
-|  mois beni selon l'observation lunaire    |
-|  de votre zone.                           |
-+-------------------------------------------+
-```
+Avec un objectif de 20 pages/jour et 604 pages restantes :
+- "Pages par jour" affichera **20**
+- "Objectif de jours" affichera **31** (ceil(604/20) = 31, soit 30 jours + 4 pages le dernier jour)
+- Le message de precision en dessous restera inchange et correct
 
-Placement : juste au-dessus de la navigation de date existante, avec un style discret (Card ou simple section).
