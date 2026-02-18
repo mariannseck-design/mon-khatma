@@ -90,15 +90,19 @@ export default function PlanificateurPage() {
       return;
     }
 
-    // Also create quran_goals entry
-    const daysNeeded = Math.ceil(TOTAL_QURAN_PAGES / setupPages);
+    // Deactivate any existing active goals first
+    await supabase.from('quran_goals').update({ is_active: false }).eq('user_id', user.id).eq('is_active', true);
+
+    // Create new quran_goals entry
+    const pagesVal = Number(setupPages);
+    const daysNeeded = Math.ceil(TOTAL_QURAN_PAGES / pagesVal);
     const endDate = new Date();
     endDate.setDate(endDate.getDate() + daysNeeded);
 
     await supabase.from('quran_goals').insert({
       user_id: user.id,
       goal_type: 'pages_per_day',
-      target_value: setupPages,
+      target_value: pagesVal,
       end_date: endDate.toISOString().split('T')[0]
     });
 
@@ -118,6 +122,8 @@ export default function PlanificateurPage() {
       .select('*')
       .eq('user_id', user.id)
       .eq('is_active', true)
+      .order('created_at', { ascending: false })
+      .limit(1)
       .maybeSingle();
     setActiveGoal(data);
   };
