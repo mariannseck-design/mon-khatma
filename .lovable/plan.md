@@ -1,48 +1,20 @@
 
-# Ajouter les videos tutoriels et le bouton de telechargement sur la Landing Page
+# Changer le logo de l'application
 
 ## Ce qui sera fait
 
-1. **Deplacer la section video tutoriel et le bouton de telechargement** depuis `AccueilPage.tsx` vers `LandingPage.tsx` (la page visible avant inscription/connexion)
-2. **Ajouter un texte** sous chaque video : "Clique sur le bouton play pour agrandir la video"
-3. La section sur `AccueilPage.tsx` restera aussi pour les utilisateurs connectes qui n'ont pas encore installe l'app
+Remplacer le logo actuel par la nouvelle image du Coran dore dans tous les endroits ou il est utilise.
 
-## Emplacement sur la Landing Page
+## Fichiers concernes
 
-La section sera placee juste apres le logo et le texte d'introduction, avant les cartes de fonctionnalites :
+L'image sera copiee dans `src/assets/logo.png` (ecrasant l'ancien logo) et les fichiers suivants l'utilisent deja via import :
 
-```
-Logo Ma Khatma
-Texte d'introduction
----
-Section video tutoriel iPhone (NOUVEAU)
-  - Titre : "Comment installer l'app sur iPhone"
-  - Sous-titre : "Ouvre Safari et non Google Chrome"
-  - Video 1 + texte "Clique sur le bouton play pour agrandir la video"
-  - Video 2 + texte "Clique sur le bouton play pour agrandir la video"
----
-Bouton Telecharger (NOUVEAU)
----
-Cartes de fonctionnalites
-Bouton "Commencer mon parcours"
-Citation
-```
+1. **`src/pages/LandingPage.tsx`** - Logo sur la page d'accueil avant connexion
+2. **`src/components/pwa/InstallPrompt.tsx`** - Logo dans le prompt d'installation PWA
+3. **`src/components/layout/Header.tsx`** - Logo dans le header (utilise `ma-khatma-logo.png`, sera aussi mis a jour)
 
-## Details techniques
+## Etapes techniques
 
-### Etape 1 : Modifier `LandingPage.tsx`
-
-- Importer `Smartphone`, `Download` depuis `lucide-react`
-- Importer `usePWAInstall` depuis `@/hooks/usePWAInstall`
-- Ajouter la section video tutoriel avec le meme style que sur `AccueilPage` (carte arrondie, gradient doux)
-- Ajouter un texte indicatif sous chaque video : *"Clique sur le bouton play pour agrandir la video"*
-- Ajouter le bouton de telechargement (CTA orange) conditionnel (`!isInstalled && isInstallable`)
-- La section video sera visible uniquement si l'app n'est pas installee (`!isInstalled`)
-
-### Etape 2 : Mettre a jour le texte sur `AccueilPage.tsx`
-
-- Ajouter le meme texte indicatif sous chaque video : *"Clique sur le bouton play pour agrandir la video"*
-
-## Estimation
-
-1 credit.
+1. Copier l'image uploadee vers `src/assets/logo.png` (remplace l'ancien)
+2. Copier la meme image vers `src/assets/ma-khatma-logo.png` (utilise par le Header)
+3. Aucun changement de code necessaire car les imports pointent deja vers ces fichiers
