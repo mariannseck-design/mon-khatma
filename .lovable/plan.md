@@ -1,51 +1,27 @@
 
 
-# Ajouter une video tutoriel "Comment telecharger l'app sur iPhone" sur la page d'accueil
+# Reduire la taille verticale des videos tutoriels
 
 ## Ce qui sera fait
 
-Une section video sera ajoutee sur la page d'accueil, juste au-dessus du bouton "Telecharger l'application". Elle contiendra :
-
-- Un titre : **"Comment installer l'app sur iPhone"**
-- Un sous-titre : *"Utilise Safari (et non Google Chrome) pour installer l'application"*
-- Les deux videos que tu as partagees, affichees l'une apres l'autre dans une carte arrondie avec le meme style visuel que le reste de la page
-- Les videos seront jouables directement sur la page (avec controles natifs : play, pause, plein ecran)
-
-## Emplacement
-
-La section sera placee juste avant le bouton "Telecharger" (CTA orange) sur la page d'accueil, pour que les utilisatrices voient d'abord le tutoriel puis puissent telecharger.
+Les videos tutoriels sur la page d'accueil seront affichees dans un format plus compact verticalement, en utilisant un ratio d'aspect fixe et en limitant leur hauteur maximale. Cela evitera que les videos prennent trop de place sur l'ecran.
 
 ## Details techniques
 
-### Etape 1 : Copier les videos dans le projet
+### Modification de `src/pages/AccueilPage.tsx`
 
-Les deux fichiers video seront copies dans `public/videos/` :
-- `public/videos/install-iphone-1.mp4`
-- `public/videos/install-iphone-2.mp4`
-
-On utilise le dossier `public/` car les videos sont volumineuses et ne beneficient pas du bundling Vite.
-
-### Etape 2 : Modifier AccueilPage.tsx
-
-Ajouter une nouvelle section animee (avec `motion.div` et `itemVariants` comme le reste de la page) contenant :
+Chaque element `<video>` sera enveloppe dans un conteneur avec une hauteur maximale limitee (`max-h-[200px]`) et un `object-fit: cover` pour que la video reste bien cadree sans deformer l'image :
 
 ```
-Titre : "Comment installer l'app sur iPhone"
-Sous-titre : "Ouvre Safari (l'icone boussole bleue) et non Google Chrome"
-Video 1 : lecture avec controles natifs, coins arrondis
-Video 2 : lecture avec controles natifs, coins arrondis
+<video> avec les classes supplementaires :
+- max-h-[200px] : limite la hauteur a 200px
+- object-cover : garde le cadrage proportionnel
+- w-full : reste en pleine largeur
 ```
 
-La section sera conditionnellement visible uniquement pour les utilisateurs qui n'ont **pas encore installe** l'application (meme condition que le bouton Telecharger : `!isInstalled`).
-
-### Style visuel
-
-- Carte arrondie (`rounded-[2rem]`) avec fond doux (`bg-gradient-to-br from-sky/20 via-accent/10 to-lavender/20`)
-- Videos avec coins arrondis (`rounded-2xl`) et ombre legere
-- Icone Smartphone a cote du titre
-- Coherent avec le design existant de la page
+Cela reduira significativement l'espace vertical occupe par les deux videos tout en gardant leur lisibilite.
 
 ## Estimation
 
-1 credit pour l'implementation.
+1 credit.
 
