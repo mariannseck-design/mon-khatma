@@ -137,6 +137,46 @@ export default function AccueilPage() {
           <p className="text-muted-foreground text-lg">{greeting()}</p>
         </motion.div>
 
+        {/* iPhone Install Tutorial - Only when not installed */}
+        {!isInstalled && (
+          <motion.div variants={itemVariants}>
+            <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-sky/20 via-accent/10 to-lavender/20 p-6 shadow-lg border border-primary/10">
+              <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full bg-primary/5 blur-2xl" />
+              
+              <div className="relative z-10">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <Smartphone className="h-5 w-5 text-primary" />
+                  </div>
+                  <h3 className="font-display text-xl font-bold text-foreground">
+                    Comment installer l'app sur iPhone
+                  </h3>
+                </div>
+                <p className="text-muted-foreground text-sm mb-4 ml-13">
+                  Ouvre <strong>Safari</strong> (l'icône boussole bleue) et non Google Chrome
+                </p>
+                
+                <div className="space-y-3">
+                  <video
+                    src="/videos/install-iphone-1.mp4"
+                    controls
+                    playsInline
+                    preload="metadata"
+                    className="w-full rounded-2xl shadow-md"
+                  />
+                  <video
+                    src="/videos/install-iphone-2.mp4"
+                    controls
+                    playsInline
+                    preload="metadata"
+                    className="w-full rounded-2xl shadow-md"
+                  />
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
         {/* Daily Progress Card - Full Width */}
         <motion.div variants={itemVariants}>
           <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-mint via-mint/90 to-success/70 p-5 shadow-lg">
@@ -269,45 +309,7 @@ export default function AccueilPage() {
           </div>
         </motion.div>
 
-        {/* iPhone Install Tutorial - Only when not installed */}
-        {!isInstalled && (
-          <motion.div variants={itemVariants}>
-            <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-sky/20 via-accent/10 to-lavender/20 p-6 shadow-lg border border-primary/10">
-              <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full bg-primary/5 blur-2xl" />
-              
-              <div className="relative z-10">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                    <Smartphone className="h-5 w-5 text-primary" />
-                  </div>
-                  <h3 className="font-display text-xl font-bold text-foreground">
-                    Comment installer l'app sur iPhone
-                  </h3>
-                </div>
-                <p className="text-muted-foreground text-sm mb-4 ml-13">
-                  Ouvre <strong>Safari</strong> (l'icône boussole bleue) et non Google Chrome
-                </p>
-                
-                <div className="space-y-3">
-                  <video
-                    src="/videos/install-iphone-1.mp4"
-                    controls
-                    playsInline
-                    preload="metadata"
-                    className="w-full rounded-2xl shadow-md"
-                  />
-                  <video
-                    src="/videos/install-iphone-2.mp4"
-                    controls
-                    playsInline
-                    preload="metadata"
-                    className="w-full rounded-2xl shadow-md"
-                  />
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        )}
+
 
         {/* PWA Install CTA - Only in standard browser, never in standalone */}
         {!isInstalled && isInstallable && (
