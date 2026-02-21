@@ -1,20 +1,35 @@
 
-# Changer le logo de l'application
+
+# Remplacer le logo sur la page de connexion (AuthPage)
+
+## Probleme
+
+La page de connexion (`AuthPage.tsx`) n'utilise pas l'image du logo. Elle affiche une icone vectorielle `BookOpen` dans un carre vert menthe. Il faut la remplacer par le nouveau logo (image du Coran dore).
+
+La landing page utilise deja le fichier `src/assets/logo.png` qui a ete mis a jour -- le probleme est probablement du au cache du navigateur.
 
 ## Ce qui sera fait
 
-Remplacer le logo actuel par la nouvelle image du Coran dore dans tous les endroits ou il est utilise.
+### 1. AuthPage - Remplacer l'icone par l'image du logo
 
-## Fichiers concernes
+Dans `src/pages/AuthPage.tsx` :
+- Ajouter l'import de l'image : `import logo from '@/assets/logo.png'`
+- Remplacer le bloc avec l'icone `BookOpen` par une balise `<img>` affichant le nouveau logo
+- Supprimer l'import inutile de `BookOpen` si plus utilise ailleurs
 
-L'image sera copiee dans `src/assets/logo.png` (ecrasant l'ancien logo) et les fichiers suivants l'utilisent deja via import :
+### Avant (code actuel)
+```tsx
+<div className="w-20 h-20 rounded-3xl bg-gradient-mint mx-auto flex items-center justify-center mb-4 shadow-lg">
+  <BookOpen className="h-10 w-10 text-primary-foreground" />
+</div>
+```
 
-1. **`src/pages/LandingPage.tsx`** - Logo sur la page d'accueil avant connexion
-2. **`src/components/pwa/InstallPrompt.tsx`** - Logo dans le prompt d'installation PWA
-3. **`src/components/layout/Header.tsx`** - Logo dans le header (utilise `ma-khatma-logo.png`, sera aussi mis a jour)
+### Apres (nouveau code)
+```tsx
+<img src={logo} alt="Ma Khatma" className="w-20 h-20 rounded-3xl mx-auto mb-4 shadow-lg object-contain" />
+```
 
-## Etapes techniques
+## Fichiers modifies
 
-1. Copier l'image uploadee vers `src/assets/logo.png` (remplace l'ancien)
-2. Copier la meme image vers `src/assets/ma-khatma-logo.png` (utilise par le Header)
-3. Aucun changement de code necessaire car les imports pointent deja vers ces fichiers
+- `src/pages/AuthPage.tsx` : remplacement de l'icone par l'image du logo
+
