@@ -93,7 +93,7 @@ export default function LandingPage() {
                       preload="metadata"
                       className="w-full max-h-[200px] object-cover rounded-2xl shadow-md"
                     />
-                    <p className="text-xs text-muted-foreground text-center mt-1.5">Clique sur le bouton play pour agrandir la vidéo</p>
+                    <p className="text-xs text-muted-foreground text-center mt-1.5">Cliquez sur les 3 points en bas ➜ « Écran d'accueil » ➜ « Ajouter » (voir vidéo)</p>
                   </div>
                   <div>
                     <video
@@ -103,7 +103,7 @@ export default function LandingPage() {
                       preload="metadata"
                       className="w-full max-h-[200px] object-cover rounded-2xl shadow-md"
                     />
-                    <p className="text-xs text-muted-foreground text-center mt-1.5">Clique sur le bouton play pour agrandir la vidéo</p>
+                    <p className="text-xs text-muted-foreground text-center mt-1.5">Cliquez sur le bouton « Partager » en bas ➜ « Sur l'écran d'accueil » ➜ « Ajouter » (voir vidéo)</p>
                   </div>
                 </div>
               </div>
