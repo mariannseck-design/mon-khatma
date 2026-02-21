@@ -1,35 +1,18 @@
 
 
-# Remplacer le logo sur la page de connexion (AuthPage)
-
-## Probleme
-
-La page de connexion (`AuthPage.tsx`) n'utilise pas l'image du logo. Elle affiche une icone vectorielle `BookOpen` dans un carre vert menthe. Il faut la remplacer par le nouveau logo (image du Coran dore).
-
-La landing page utilise deja le fichier `src/assets/logo.png` qui a ete mis a jour -- le probleme est probablement du au cache du navigateur.
+# Remplacer le logo dans les 2 pages (connexion + landing)
 
 ## Ce qui sera fait
 
-### 1. AuthPage - Remplacer l'icone par l'image du logo
+Copier la nouvelle image uploadee vers les deux fichiers logo existants :
 
-Dans `src/pages/AuthPage.tsx` :
-- Ajouter l'import de l'image : `import logo from '@/assets/logo.png'`
-- Remplacer le bloc avec l'icone `BookOpen` par une balise `<img>` affichant le nouveau logo
-- Supprimer l'import inutile de `BookOpen` si plus utilise ailleurs
+1. `src/assets/logo.png` -- utilise par **AuthPage** (page de connexion) et **LandingPage**
+2. `src/assets/ma-khatma-logo.png` -- utilise par le **Header**
 
-### Avant (code actuel)
-```tsx
-<div className="w-20 h-20 rounded-3xl bg-gradient-mint mx-auto flex items-center justify-center mb-4 shadow-lg">
-  <BookOpen className="h-10 w-10 text-primary-foreground" />
-</div>
-```
+## Etapes
 
-### Apres (nouveau code)
-```tsx
-<img src={logo} alt="Ma Khatma" className="w-20 h-20 rounded-3xl mx-auto mb-4 shadow-lg object-contain" />
-```
+1. Copier `user-uploads://image-23.png` vers `src/assets/logo.png`
+2. Copier `user-uploads://image-23.png` vers `src/assets/ma-khatma-logo.png`
 
-## Fichiers modifies
-
-- `src/pages/AuthPage.tsx` : remplacement de l'icone par l'image du logo
+Aucune modification de code necessaire, les imports pointent deja vers ces fichiers.
 
