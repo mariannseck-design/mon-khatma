@@ -1,35 +1,46 @@
 
 
-# Suppression de la répétition dans le Planificateur
+# Correction de l'icone iPhone avec le nouveau logo
 
-## Le problème
+## Contexte
 
-La carte verte (TotalProgressBar) affiche actuellement :
-- "Pages par jour : 20" et "Objectif de jours : 29"
-- "Vous finirez en 29 jours"
-- La citation motivationnelle
+Tu as partagé l'image haute résolution du Coran doré. Elle va servir à générer les icônes Apple Touch aux tailles requises pour résoudre le problème intermittent du "fond vert avec la lettre M" sur iPhone.
 
-Or ces memes infos sont deja dans les 2 cartes en dessous (que tu veux garder) :
-- "Objectif : 20 pages/jour -- Qu'Allah t'accorde la constance, Marianne !"
-- "A ce rythme, tu finiras en 30 jours..."
+## Plan d'implémentation
 
-## La solution
+### Etape 1 : Copier l'image source dans le projet
 
-Simplifier la carte verte en retirant les elements redondants :
+Copier l'image uploadée dans `public/` comme base pour les icônes.
 
-1. **Retirer le bloc "Pages par jour / Objectif de jours"** (les 2 cases blanches avec 20 et 29)
-2. **Retirer le message "Vous finirez en 29 jours"**
-3. **Retirer la citation** (deja implicite dans le ton des cartes en dessous)
+### Etape 2 : Mettre à jour les icônes PWA et Apple Touch
 
-La carte verte gardera uniquement :
-- L'icone et le pourcentage de progression (7.1%)
-- "Sourate Al-Baqara Page 43"
-- "Continue ta Khatma avec l'aide d'Allah"
-- La barre de progression en bas
+- Copier cette image comme nouveau `apple-touch-icon.png` (elle sera utilisée par iOS)
+- Mettre à jour les icônes PWA (`pwa-192x192.png`, `pwa-512x512.png`) avec cette nouvelle image
+- Le favicon restera inchangé (sauf si tu le souhaites aussi)
 
-Resultat : une carte verte epuree qui montre la progression, et les 2 cartes en dessous qui donnent les details de l'objectif sans repetition.
+### Etape 3 : Ajouter les balises Apple Touch Icon avec tailles multiples
 
-## Fichier modifie
+Dans `index.html`, ajouter des déclarations explicites avec l'attribut `sizes` :
 
-`src/components/planificateur/TotalProgressBar.tsx` -- suppression des lignes 92-120 (le bloc calculateur integre et la citation).
+```html
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=3" />
+<link rel="apple-touch-icon" sizes="152x152" href="/apple-touch-icon.png?v=3" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=3" />
+```
+
+### Etape 4 : Incrémenter la version du cache
+
+Passer de `?v=2` à `?v=3` sur toutes les références d'icônes dans :
+- `index.html` (favicon + apple-touch-icon)
+- `vite.config.ts` (manifest PWA)
+
+Cela forcera tous les appareils à recharger les nouvelles icônes.
+
+## Limitation importante
+
+L'image fournie est rectangulaire (pas carrée). Sur iOS, les icônes doivent être **carrées** (idéalement 512x512 ou 1024x1024). L'image sera recadrée ou redimensionnée pour s'adapter au format carré -- le Coran sera centré dans l'icône.
+
+## Estimation
+
+1 credit pour l'implémentation complète.
 
