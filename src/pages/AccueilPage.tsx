@@ -157,20 +157,26 @@ export default function AccueilPage() {
                 </p>
                 
                 <div className="space-y-3">
-                  <video
-                    src="/videos/install-iphone-1.mp4"
-                    controls
-                    playsInline
-                    preload="metadata"
-                    className="w-full max-h-[200px] object-cover rounded-2xl shadow-md"
-                  />
-                  <video
-                    src="/videos/install-iphone-2.mp4"
-                    controls
-                    playsInline
-                    preload="metadata"
-                    className="w-full max-h-[200px] object-cover rounded-2xl shadow-md"
-                  />
+                  <div>
+                    <video
+                      src="/videos/install-iphone-1.mp4"
+                      controls
+                      playsInline
+                      preload="metadata"
+                      className="w-full max-h-[200px] object-cover rounded-2xl shadow-md"
+                    />
+                    <p className="text-xs text-muted-foreground text-center mt-1.5">Clique sur le bouton play pour agrandir la vidéo</p>
+                  </div>
+                  <div>
+                    <video
+                      src="/videos/install-iphone-2.mp4"
+                      controls
+                      playsInline
+                      preload="metadata"
+                      className="w-full max-h-[200px] object-cover rounded-2xl shadow-md"
+                    />
+                    <p className="text-xs text-muted-foreground text-center mt-1.5">Clique sur le bouton play pour agrandir la vidéo</p>
+                  </div>
                 </div>
               </div>
             </div>
