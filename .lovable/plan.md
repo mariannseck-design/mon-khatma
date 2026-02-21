@@ -1,46 +1,51 @@
 
 
-# Correction de l'icone iPhone avec le nouveau logo
+# Ajouter une video tutoriel "Comment telecharger l'app sur iPhone" sur la page d'accueil
 
-## Contexte
+## Ce qui sera fait
 
-Tu as partagé l'image haute résolution du Coran doré. Elle va servir à générer les icônes Apple Touch aux tailles requises pour résoudre le problème intermittent du "fond vert avec la lettre M" sur iPhone.
+Une section video sera ajoutee sur la page d'accueil, juste au-dessus du bouton "Telecharger l'application". Elle contiendra :
 
-## Plan d'implémentation
+- Un titre : **"Comment installer l'app sur iPhone"**
+- Un sous-titre : *"Utilise Safari (et non Google Chrome) pour installer l'application"*
+- Les deux videos que tu as partagees, affichees l'une apres l'autre dans une carte arrondie avec le meme style visuel que le reste de la page
+- Les videos seront jouables directement sur la page (avec controles natifs : play, pause, plein ecran)
 
-### Etape 1 : Copier l'image source dans le projet
+## Emplacement
 
-Copier l'image uploadée dans `public/` comme base pour les icônes.
+La section sera placee juste avant le bouton "Telecharger" (CTA orange) sur la page d'accueil, pour que les utilisatrices voient d'abord le tutoriel puis puissent telecharger.
 
-### Etape 2 : Mettre à jour les icônes PWA et Apple Touch
+## Details techniques
 
-- Copier cette image comme nouveau `apple-touch-icon.png` (elle sera utilisée par iOS)
-- Mettre à jour les icônes PWA (`pwa-192x192.png`, `pwa-512x512.png`) avec cette nouvelle image
-- Le favicon restera inchangé (sauf si tu le souhaites aussi)
+### Etape 1 : Copier les videos dans le projet
 
-### Etape 3 : Ajouter les balises Apple Touch Icon avec tailles multiples
+Les deux fichiers video seront copies dans `public/videos/` :
+- `public/videos/install-iphone-1.mp4`
+- `public/videos/install-iphone-2.mp4`
 
-Dans `index.html`, ajouter des déclarations explicites avec l'attribut `sizes` :
+On utilise le dossier `public/` car les videos sont volumineuses et ne beneficient pas du bundling Vite.
 
-```html
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=3" />
-<link rel="apple-touch-icon" sizes="152x152" href="/apple-touch-icon.png?v=3" />
-<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=3" />
+### Etape 2 : Modifier AccueilPage.tsx
+
+Ajouter une nouvelle section animee (avec `motion.div` et `itemVariants` comme le reste de la page) contenant :
+
+```
+Titre : "Comment installer l'app sur iPhone"
+Sous-titre : "Ouvre Safari (l'icone boussole bleue) et non Google Chrome"
+Video 1 : lecture avec controles natifs, coins arrondis
+Video 2 : lecture avec controles natifs, coins arrondis
 ```
 
-### Etape 4 : Incrémenter la version du cache
+La section sera conditionnellement visible uniquement pour les utilisateurs qui n'ont **pas encore installe** l'application (meme condition que le bouton Telecharger : `!isInstalled`).
 
-Passer de `?v=2` à `?v=3` sur toutes les références d'icônes dans :
-- `index.html` (favicon + apple-touch-icon)
-- `vite.config.ts` (manifest PWA)
+### Style visuel
 
-Cela forcera tous les appareils à recharger les nouvelles icônes.
-
-## Limitation importante
-
-L'image fournie est rectangulaire (pas carrée). Sur iOS, les icônes doivent être **carrées** (idéalement 512x512 ou 1024x1024). L'image sera recadrée ou redimensionnée pour s'adapter au format carré -- le Coran sera centré dans l'icône.
+- Carte arrondie (`rounded-[2rem]`) avec fond doux (`bg-gradient-to-br from-sky/20 via-accent/10 to-lavender/20`)
+- Videos avec coins arrondis (`rounded-2xl`) et ombre legere
+- Icone Smartphone a cote du titre
+- Coherent avec le design existant de la page
 
 ## Estimation
 
-1 credit pour l'implémentation complète.
+1 credit pour l'implementation.
 
