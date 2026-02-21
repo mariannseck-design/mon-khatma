@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Lock, User, BookOpen, ArrowRight, ArrowLeft } from 'lucide-react';
+import { Mail, Lock, User, ArrowRight, ArrowLeft } from 'lucide-react';
+import logo from '@/assets/logo.png';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -96,9 +97,7 @@ export default function AuthPage() {
       >
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="w-20 h-20 rounded-3xl bg-gradient-mint mx-auto flex items-center justify-center mb-4 shadow-lg">
-            <BookOpen className="h-10 w-10 text-primary-foreground" />
-          </div>
+          <img src={logo} alt="Ma Khatma" className="w-20 h-20 rounded-3xl mx-auto mb-4 shadow-lg object-contain" />
           <h1 className="font-display text-2xl text-foreground">Ma Khatma</h1>
         </div>
 
