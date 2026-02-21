@@ -162,14 +162,14 @@ export default function AccueilPage() {
                     controls
                     playsInline
                     preload="metadata"
-                    className="w-full rounded-2xl shadow-md"
+                    className="w-full max-h-[200px] object-cover rounded-2xl shadow-md"
                   />
                   <video
                     src="/videos/install-iphone-2.mp4"
                     controls
                     playsInline
                     preload="metadata"
-                    className="w-full rounded-2xl shadow-md"
+                    className="w-full max-h-[200px] object-cover rounded-2xl shadow-md"
                   />
                 </div>
               </div>
