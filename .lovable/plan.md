@@ -1,18 +1,36 @@
 
 
-# Remplacer le logo dans les 2 pages (connexion + landing)
+# Corrections du Rapport Hebdomadaire et de la Landing Page
 
-## Ce qui sera fait
+## 3 problemes identifies
 
-Copier la nouvelle image uploadee vers les deux fichiers logo existants :
+### 1. Le rapport hebdomadaire s'affiche le mauvais jour avec le mauvais texte
 
-1. `src/assets/logo.png` -- utilise par **AuthPage** (page de connexion) et **LandingPage**
-2. `src/assets/ma-khatma-logo.png` -- utilise par le **Header**
+**Actuellement** : Le rapport s'affiche le dimanche et dit "Cette semaine".
+**Correction** : Le rapport doit s'afficher le **lundi** (premier jour de la nouvelle semaine) et dire **"la semaine derniere"** en faisant reference aux donnees de la semaine precedente (lundi a dimanche).
 
-## Etapes
+### 2. Les donnees de la semaine sont mal calculees
 
-1. Copier `user-uploads://image-23.png` vers `src/assets/logo.png`
-2. Copier `user-uploads://image-23.png` vers `src/assets/ma-khatma-logo.png`
+**Actuellement** : La fonction `getWeekStart` utilise le dimanche comme debut de semaine. Le rapport montre les pages lues depuis dimanche (donc seulement aujourd'hui = 45 pages).
+**Correction** : Utiliser **lundi** comme debut de semaine. Le lundi, le rapport regardera les donnees de lundi dernier a dimanche (hier), soit une semaine complete.
 
-Aucune modification de code necessaire, les imports pointent deja vers ces fichiers.
+### 3. Les videos d'installation sont trop hautes sur la landing page
+
+**Actuellement** : Les videos sont placees juste apres le logo/hero, avant les fonctionnalites.
+**Correction** : Deplacer le bloc video **en bas de la page**, apres la citation et avant le footer.
+
+---
+
+## Details techniques
+
+### Fichier `src/components/ramadan/RamadanWeeklyReport.tsx`
+
+- Changer `getWeekStart` pour calculer le lundi comme debut de semaine au lieu du dimanche
+- Changer la condition `isSunday` en `isMonday` (jour = 1)
+- Quand c'est lundi, chercher les donnees de la **semaine precedente** (lundi dernier a dimanche)
+- Changer le texte "Cette semaine" en "La semaine derniere"
+
+### Fichier `src/pages/LandingPage.tsx`
+
+- Deplacer le bloc video d'installation iPhone (lignes 64-113) apres la citation (ligne 215), juste avant la fermeture du composant
 
