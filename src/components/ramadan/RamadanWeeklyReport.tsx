@@ -12,12 +12,17 @@ interface RamadanWeeklyReportProps {
   dailyPages: number;
 }
 
-function getWeekStart(date: Date): string {
+function getPreviousWeekStart(date: Date): string {
   const d = new Date(date);
   const day = d.getDay();
-  const diff = d.getDate() - day;
-  const sunday = new Date(d.setDate(diff));
-  return sunday.toISOString().split('T')[0];
+  // Calculate Monday of the previous week
+  const diffToMonday = day === 0 ? 6 : day - 1; // days since last Monday
+  const thisMonday = new Date(d);
+  thisMonday.setDate(d.getDate() - diffToMonday);
+  // Go back one more week to get previous Monday
+  const prevMonday = new Date(thisMonday);
+  prevMonday.setDate(thisMonday.getDate() - 7);
+  return prevMonday.toISOString().split('T')[0];
 }
 
 function getWeekDates(weekStart: string): { start: string; end: string } {
@@ -37,8 +42,8 @@ export default function RamadanWeeklyReport({ firstName, dailyPages }: RamadanWe
   const [loading, setLoading] = useState(true);
   const [weeklyStats, setWeeklyStats] = useState<{ totalPages: number; daysRead: number } | null>(null);
 
-  const isSunday = new Date().getDay() === 0;
-  const weekStart = getWeekStart(new Date());
+  const isMonday = new Date().getDay() === 1;
+  const weekStart = getPreviousWeekStart(new Date());
 
   useEffect(() => {
     if (!user) return;
@@ -101,8 +106,8 @@ export default function RamadanWeeklyReport({ firstName, dailyPages }: RamadanWe
   };
 
   if (loading) return null;
-  if (!isSunday && alreadyAnswered) return null;
-  if (!isSunday) return null;
+  if (!isMonday && alreadyAnswered) return null;
+  if (!isMonday) return null;
 
   return (
     <motion.div
@@ -115,7 +120,7 @@ export default function RamadanWeeklyReport({ firstName, dailyPages }: RamadanWe
             <CalendarCheck className="h-7 w-7 text-accent-foreground" />
           </div>
           <h3 className="font-display text-lg text-foreground mb-2">
-            Rapport Hebdomadaire 📊
+            Rapport de la semaine dernière 📊
           </h3>
         </div>
 
@@ -143,7 +148,7 @@ export default function RamadanWeeklyReport({ firstName, dailyPages }: RamadanWe
           {response === null ? (
             <motion.div key="question" exit={{ opacity: 0, y: -10 }} className="space-y-4">
               <p className="text-sm text-foreground text-center leading-relaxed">
-                Assalamou aleykoum <strong>{firstName}</strong> ! Cette semaine, tu as lu{' '}
+                Assalamou aleykoum <strong>{firstName}</strong> ! La semaine dernière, tu as lu{' '}
                 <strong>{weeklyStats?.totalPages ?? 0} page{(weeklyStats?.totalPages ?? 0) > 1 ? 's' : ''}</strong> sur{' '}
                 <strong>{weeklyGoal}</strong> prévues.
                 {goalMet

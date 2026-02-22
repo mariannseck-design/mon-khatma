@@ -60,58 +60,6 @@ export default function LandingPage() {
         </motion.div>
       </div>
 
-      {/* iPhone Install Tutorial - Only when not installed */}
-      {!isInstalled && (
-        <div className="container max-w-lg mx-auto px-6 pb-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.15 }}
-          >
-            <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-sky/20 via-accent/10 to-lavender/20 p-6 shadow-lg border border-primary/10">
-              <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full bg-primary/5 blur-2xl" />
-              
-              <div className="relative z-10">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                    <Smartphone className="h-5 w-5 text-primary" />
-                  </div>
-                  <h3 className="font-display text-xl font-bold text-foreground">
-                    Comment installer l'app sur iPhone
-                  </h3>
-                </div>
-                <p className="text-muted-foreground text-sm mb-4 ml-13">
-                  Ouvre <strong>Safari</strong> (l'icône boussole bleue) et non Google Chrome
-                </p>
-                
-                <div className="space-y-3">
-                  <div>
-                    <video
-                      src="/videos/install-iphone-1.mp4"
-                      controls
-                      playsInline
-                      preload="metadata"
-                      className="w-full max-h-[200px] object-cover rounded-2xl shadow-md"
-                    />
-                    <p className="text-xs text-muted-foreground text-center mt-1.5">Cliquez sur les 3 points en bas ➜ « Écran d'accueil » ➜ « Ajouter » (voir vidéo)</p>
-                  </div>
-                  <div>
-                    <video
-                      src="/videos/install-iphone-2.mp4"
-                      controls
-                      playsInline
-                      preload="metadata"
-                      className="w-full max-h-[200px] object-cover rounded-2xl shadow-md"
-                    />
-                    <p className="text-xs text-muted-foreground text-center mt-1.5">Cliquez sur le bouton « Partager » en bas ➜ « Sur l'écran d'accueil » ➜ « Ajouter » (voir vidéo)</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      )}
-
       {/* Download CTA - Only when not installed and installable */}
       {!isInstalled && isInstallable && (
         <div className="container max-w-lg mx-auto px-6 pb-8">
@@ -213,6 +161,58 @@ export default function LandingPage() {
           </p>
         </Card>
       </div>
+
+      {/* iPhone Install Tutorial - Only when not installed */}
+      {!isInstalled && (
+        <div className="container max-w-lg mx-auto px-6 pb-12">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+          >
+            <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-sky/20 via-accent/10 to-lavender/20 p-6 shadow-lg border border-primary/10">
+              <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full bg-primary/5 blur-2xl" />
+              
+              <div className="relative z-10">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <Smartphone className="h-5 w-5 text-primary" />
+                  </div>
+                  <h3 className="font-display text-xl font-bold text-foreground">
+                    Comment installer l'app sur iPhone
+                  </h3>
+                </div>
+                <p className="text-muted-foreground text-sm mb-4 ml-13">
+                  Ouvre <strong>Safari</strong> (l'icône boussole bleue) et non Google Chrome
+                </p>
+                
+                <div className="space-y-3">
+                  <div>
+                    <video
+                      src="/videos/install-iphone-1.mp4"
+                      controls
+                      playsInline
+                      preload="metadata"
+                      className="w-full max-h-[200px] object-cover rounded-2xl shadow-md"
+                    />
+                    <p className="text-xs text-muted-foreground text-center mt-1.5">Cliquez sur les 3 points en bas ➜ « Écran d'accueil » ➜ « Ajouter » (voir vidéo)</p>
+                  </div>
+                  <div>
+                    <video
+                      src="/videos/install-iphone-2.mp4"
+                      controls
+                      playsInline
+                      preload="metadata"
+                      className="w-full max-h-[200px] object-cover rounded-2xl shadow-md"
+                    />
+                    <p className="text-xs text-muted-foreground text-center mt-1.5">Cliquez sur le bouton « Partager » en bas ➜ « Sur l'écran d'accueil » ➜ « Ajouter » (voir vidéo)</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 }
