@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
 import { DailyReminderBanner } from '@/components/notifications/DailyReminderBanner';
+import RamadanWeeklyReport from '@/components/ramadan/RamadanWeeklyReport';
 import { useDailyNotification } from '@/hooks/useDailyNotification';
 import { usePushSubscription } from '@/hooks/usePushSubscription';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -51,12 +52,23 @@ export default function AccueilPage() {
   });
   const [todayProgress, setTodayProgress] = useState(0);
   const [weeklyStreak, setWeeklyStreak] = useState(0);
+  const [readingGoal, setReadingGoal] = useState<{ first_name: string; daily_pages: number } | null>(null);
   useEffect(() => {
     if (user) {
       fetchProfile();
       fetchProgress();
+      fetchReadingGoal();
     }
   }, [user]);
+  const fetchReadingGoal = async () => {
+    if (!user) return;
+    const { data } = await supabase
+      .from('ramadan_reading_goals')
+      .select('first_name, daily_pages')
+      .eq('user_id', user.id)
+      .maybeSingle();
+    if (data) setReadingGoal(data);
+  };
   const fetchProfile = async () => {
     if (!user) return;
     const {
@@ -170,6 +182,13 @@ export default function AccueilPage() {
             </div>
           </div>
         </motion.div>
+
+        {/* Weekly Report */}
+        {user && readingGoal && (
+          <motion.div variants={itemVariants}>
+            <RamadanWeeklyReport firstName={readingGoal.first_name} dailyPages={readingGoal.daily_pages} />
+          </motion.div>
+        )}
 
         {/* Action Cards */}
         <motion.div variants={itemVariants}>

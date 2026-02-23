@@ -42,7 +42,7 @@ export default function RamadanWeeklyReport({ firstName, dailyPages }: RamadanWe
   const [loading, setLoading] = useState(true);
   const [weeklyStats, setWeeklyStats] = useState<{ totalPages: number; daysRead: number } | null>(null);
 
-  const isMonday = new Date().getDay() === 1;
+  const isMondayOrTuesday = [1, 2].includes(new Date().getDay());
   const weekStart = getPreviousWeekStart(new Date());
 
   useEffect(() => {
@@ -106,8 +106,8 @@ export default function RamadanWeeklyReport({ firstName, dailyPages }: RamadanWe
   };
 
   if (loading) return null;
-  if (!isMonday && alreadyAnswered) return null;
-  if (!isMonday) return null;
+  if (!isMondayOrTuesday && alreadyAnswered) return null;
+  if (!isMondayOrTuesday) return null;
 
   return (
     <motion.div
