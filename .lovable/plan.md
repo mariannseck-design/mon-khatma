@@ -1,36 +1,21 @@
 
+# Ajouter le rapport hebdomadaire sur l'accueil et l'etendre a 48h
 
-# Corrections du Rapport Hebdomadaire et de la Landing Page
+## Ce qui sera fait
 
-## 3 problemes identifies
-
-### 1. Le rapport hebdomadaire s'affiche le mauvais jour avec le mauvais texte
-
-**Actuellement** : Le rapport s'affiche le dimanche et dit "Cette semaine".
-**Correction** : Le rapport doit s'afficher le **lundi** (premier jour de la nouvelle semaine) et dire **"la semaine derniere"** en faisant reference aux donnees de la semaine precedente (lundi a dimanche).
-
-### 2. Les donnees de la semaine sont mal calculees
-
-**Actuellement** : La fonction `getWeekStart` utilise le dimanche comme debut de semaine. Le rapport montre les pages lues depuis dimanche (donc seulement aujourd'hui = 45 pages).
-**Correction** : Utiliser **lundi** comme debut de semaine. Le lundi, le rapport regardera les donnees de lundi dernier a dimanche (hier), soit une semaine complete.
-
-### 3. Les videos d'installation sont trop hautes sur la landing page
-
-**Actuellement** : Les videos sont placees juste apres le logo/hero, avant les fonctionnalites.
-**Correction** : Deplacer le bloc video **en bas de la page**, apres la citation et avant le footer.
-
----
+1. **Ajouter le rapport hebdomadaire sur la page Accueil** entre la carte "pages lues aujourd'hui" et la carte "Ma Tillawah"
+2. **Le garder aussi sur la page Ramadan** (aucun changement la-bas)
+3. **Etendre la visibilite a 48h** : le rapport s'affichera le **lundi ET le mardi** au lieu du lundi uniquement
 
 ## Details techniques
 
 ### Fichier `src/components/ramadan/RamadanWeeklyReport.tsx`
 
-- Changer `getWeekStart` pour calculer le lundi comme debut de semaine au lieu du dimanche
-- Changer la condition `isSunday` en `isMonday` (jour = 1)
-- Quand c'est lundi, chercher les donnees de la **semaine precedente** (lundi dernier a dimanche)
-- Changer le texte "Cette semaine" en "La semaine derniere"
+- Remplacer la condition `isMonday` par `isMondayOrTuesday` : verifier si `getDay() === 1` (lundi) OU `getDay() === 2` (mardi)
+- Mettre a jour les conditions de rendu (lignes 109-110) pour utiliser cette nouvelle variable
 
-### Fichier `src/pages/LandingPage.tsx`
+### Fichier `src/pages/AccueilPage.tsx`
 
-- Deplacer le bloc video d'installation iPhone (lignes 64-113) apres la citation (ligne 215), juste avant la fermeture du composant
-
+- Importer `RamadanWeeklyReport` depuis `@/components/ramadan/RamadanWeeklyReport`
+- Ajouter un state `readingGoal` et une fonction `fetchReadingGoal` (comme dans RamadanPage) pour recuperer `first_name` et `daily_pages` depuis la table `ramadan_reading_goals`
+- Inserer le composant `RamadanWeeklyReport` entre la carte de progression quotidienne (ligne 172) et la section "Ma Tillawah" (ligne 174), conditionne a l'existence du readingGoal
