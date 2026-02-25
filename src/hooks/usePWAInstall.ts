@@ -73,6 +73,7 @@ export function usePWAInstall() {
     isInstallable,
     isInstalled,
     isIOS,
-    promptInstall
+    promptInstall,
+    deferredPrompt
   };
 }

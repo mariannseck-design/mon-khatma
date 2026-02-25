@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { SamsungBanner } from '@/components/layout/SamsungBanner';
+import { InstallBanner } from '@/components/pwa/InstallBanner';
 import { motion } from 'framer-motion';
 import { BookOpen, Users, Target, Heart, ArrowRight, Sparkles, Smartphone, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -40,8 +41,8 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-gradient-warm">
+      <InstallBanner />
       <SamsungBanner />
-      {/* Hero */}
       <div className="container max-w-lg mx-auto px-6 pt-16 pb-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

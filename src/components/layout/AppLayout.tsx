@@ -3,6 +3,7 @@ import { Header } from './Header';
 import { Navigation } from './Navigation';
 import { ZoomControl } from '@/components/ui/ZoomControl';
 import { InstallPrompt } from '@/components/pwa/InstallPrompt';
+import { InstallBanner } from '@/components/pwa/InstallBanner';
 import { useSwipeNavigation } from '@/hooks/useSwipeNavigation';
 
 interface AppLayoutProps {
@@ -16,6 +17,7 @@ export function AppLayout({ children, title, hideNav = false }: AppLayoutProps) 
 
   return (
     <div className="min-h-screen bg-gradient-warm">
+      <InstallBanner />
       <Header title={title} />
       <main
         className="container max-w-lg mx-auto page-container"
