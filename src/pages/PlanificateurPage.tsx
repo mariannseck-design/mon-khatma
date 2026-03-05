@@ -227,8 +227,30 @@ export default function PlanificateurPage() {
       });
     }
 
-    // Check if daily goal is now met
-    if (activeGoal?.goal_type === 'pages_per_day' && newTotal >= activeGoal.target_value && !goalMetToday) {
+    // Check if Khatma is now complete
+    const updatedTotal = totalPagesRead + pages;
+    if (updatedTotal >= TOTAL_QURAN_PAGES) {
+      // Show success modal first, then transition to celebration after delay
+      setShowSparkles(true);
+      setGoalMetToday(true);
+      toast.success('Allahou Akbar ! Tu as terminé ta Khatma ! 🎊', { duration: 4000 });
+      
+      // Record khatma completion for community announcement
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('display_name')
+        .eq('user_id', user.id)
+        .maybeSingle();
+      await supabase.from('khatma_completions').insert({
+        user_id: user.id,
+        display_name: profile?.display_name || null
+      });
+      
+      setTimeout(() => {
+        setShowKhatmaCelebration(true);
+      }, 3000);
+    } else if (activeGoal?.goal_type === 'pages_per_day' && newTotal >= activeGoal.target_value && !goalMetToday) {
+      // Daily goal met (but not khatma)
       setShowSparkles(true);
       setTimeout(() => {
         setShowSuccessModal(true);
@@ -238,12 +260,6 @@ export default function PlanificateurPage() {
       toast.success(`${pages} page(s) enregistrée(s)! Masha'Allah! 📖`);
     }
     await fetchProgress();
-    
-    // Check if Khatma is now complete
-    const updatedTotal = totalPagesRead + pages;
-    if (updatedTotal >= TOTAL_QURAN_PAGES) {
-      setShowKhatmaCelebration(true);
-    }
   };
 
   const handleSparkleComplete = useCallback(() => {
