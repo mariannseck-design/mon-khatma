@@ -1,52 +1,20 @@
+# Modifications de la celebration Khatma
 
-
-# Page de celebration de fin de Khatma avec Doua en 4 etapes
-
-## Objectif
-
-Quand l'utilisatrice atteint 604 pages, au lieu du simple message "Khatma terminee", afficher une page speciale de celebration avec la Doua complete en 4 etapes (stepper), fond parchemin, et un bouton dore final pour recommencer.
-
-## Fichiers a creer
+## Changements a effectuer
 
 ### 1. `src/components/planificateur/KhatmaCelebration.tsx`
 
-Composant principal avec un stepper en 4 etapes :
+**Supprimer l'etape 1** ("Benediction des lettres" — le texte Alif a Ya). Passer de 4 etapes a 3.
 
-- **State** : `currentStep` (0-3), transitions animees avec `framer-motion`
-- **Design** : Fond parchemin (bg gradient chaud beige/or), texte bien espace, police elegante
-- **Navigation** : Boutons "Suivant" / "Precedent" entre les etapes, indicateur de progression (4 cercles)
+**Supprimer les titres** des etapes : retirer le `h2` avec `step.title` et le texte "Etape X sur Y". Garder uniquement l'icone et le contenu textuel dans la carte.
 
-**Etape 1 — "Benediction des lettres"** : La partie de la Doua sur les 28 lettres arabes (Alif a Ya), chaque lettre et sa benediction
+**Ajouter a la derniere etape** : apres le texte actuel des salutations, ajouter un paragraphe "Fais tes duas 🤲" suivi de "Qu'Allah accepte".
 
-**Etape 2 — "Demande de pardon"** : La partie sur l'indulgence pour les erreurs de prononciation, lecture, hesitations, etc.
+### 2. `src/pages/PlanificateurPage.tsx`
 
-**Etape 3 — "Lumiere et Protection"** : La partie sur la lumiere du coeur, la protection contre l'enfer, l'entree au Paradis
+**Corriger le timing** : actuellement quand l'utilisatrice atteint 604 pages, le success modal (objectif quotidien atteint) s'affiche pendant 800ms puis est immediatement ecrase par `setShowKhatmaCelebration(true)`. Solution : tu peux afficher le success modal quand la Khatma est complete  ensuite  a la celebration, mais avec un delai de ~2-3 secondes et un toast visible avant la transition pour que l'utilisatrice ait le temps de lire le message de felicitations. "Mets à jour l’annonce de 48 heures dans le tableau de bord de groupe de **Ma Khatma** :
 
-**Etape 4 — "Conclusion et Salutations"** : La conclusion avec les salutations sur le Prophete (saw) + bouton dore final "Qu'Allah exauce nos prieres - Recommencer une Khatma"
-
-- **Props** : `onResetKhatma: () => void` (appele au clic du bouton final)
-
-### 2. Modifications dans `src/pages/PlanificateurPage.tsx`
-
-- Importer `KhatmaCelebration`
-- Ajouter un state `showKhatmaCelebration` (boolean)
-- Dans `logReading()` : apres l'upsert, si `totalPagesRead + pages >= 604`, activer `showKhatmaCelebration`
-- Quand `showKhatmaCelebration` est true, afficher `KhatmaCelebration` a la place du contenu normal
-- Le bouton final de `KhatmaCelebration` appelle `resetKhatma()` puis ferme la celebration
-
-### 3. Modifications dans `src/components/planificateur/ReadingSlider.tsx`
-
-- Supprimer le bloc `isKhatmaComplete` qui retourne un simple message "Khatma terminee" — la celebration prend le relais
-
-### 4. Modifications dans `src/components/planificateur/TotalProgressBar.tsx`
-
-- Quand `isComplete`, le bouton "Commencer une nouvelle Khatma" declenchera la celebration au lieu du reset direct
-
-## Details du design
-
-- **Fond** : Gradient chaud `from-amber-50 via-orange-50/30 to-yellow-50` avec texture subtile
-- **Typographie** : `font-display` pour les titres, texte arabe en taille plus grande avec espacement genereux
-- **Stepper** : 4 cercles en haut, le cercle actif est dore, les passes sont verts, les futurs sont gris
-- **Bouton final** : `bg-gradient-to-r from-amber-500 to-yellow-500 text-white` avec effet brillant
-- **Transitions** : `AnimatePresence` de framer-motion pour des transitions douces entre etapes
-
+- **Titre :** « Félicitations à notre sœur qui vient de boucler sa Khatma ! 🎊 »
+- **Verset :** « En vérité, c’est Nous qui avons fait descendre le Rappel (Al-Zikr), et c’est Nous qui en sommes les gardiens. » (Sourate Al-Hijr, verset 9)
+- **Message de clôture :** « Continuez vos efforts, car le Coran est le meilleur des Zikr. **Chaque lettre lue vous rapproche de la Paix intérieure et de la satisfaction d’Allah.** »
+- **Conception :** Utilise un encadré avec une bordure fine dorée et un fond très clair pour que le texte soit apaisant à lire."
