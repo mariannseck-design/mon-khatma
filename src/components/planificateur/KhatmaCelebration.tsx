@@ -9,17 +9,10 @@ interface KhatmaCelebrationProps {
 
 const STEPS = [
   {
-    title: 'Bénédiction des lettres',
-    icon: '✨',
-    content: `Ô Allah, accorde-nous l'amitié bénéfique (oulfatan) par chaque Alif ; l'abondance (barakat) par chaque bâ ; la récompense (çawàb) par chaque çâ ; la beauté (djamàl) par chaque djîm ; la sagesse (hikmat) par chaque hâ ; le bien (khayr) par chaque khâ ; la preuve (dalil) par chaque dal ; l'intelligence (zakâ'a) par chaque zâl ; la bénédiction (rahmat) par chaque râ ; la purification (zakàtan) par chaque zâ ; le bonheur (sa'àdatan) par chaque sîn ; le rétablissement (shifâ) par chaque shîne ; la vérité (sidq) par chaque swàd ; l'éclaircissement (zyâ'an) par chaque zwàd ; la fraîcheur (twàrawat) par chaque twà ; la prédominance (zafran) par chaque zwà ; le savoir ('ilm) par chaque 'ayn ; la satisfaction (ghéna) par chaque ghayn ; la réussite (falàh) par chaque fâ ; la proximité d'Allah (qourbat) par chaque qâf ; la générosité (karàmat) par chaque kâf ; la bonté (loutf) par chaque lâm ; le conseil (maw'iza) par chaque mîm ; la lumière (noûr) par chaque noûn ; la relation parentale (woulfat) par chaque wâw ; l'éducation (hydayat) par chaque hâ ; la certitude (yaqîne) par chaque yâ.`,
-  },
-  {
-    title: 'Demande de pardon',
     icon: '🤲',
     content: `Ô Allah, donne-nous le bénéfice de ce très élevé Coran, élève-nous grâce à ses versets et à ses récitations sages, et accepte nos récitations, et sois indulgent sur cette lecture du Coran dans nos erreurs ou les oublis, ou les substitutions des mots, ou les inversions, ou les retards de prononciation, ou les manquants, ou les rajouts, ou les mauvaises compréhensions, ou les doutes, ou les hésitations, ou les imperfections, ou les mauvaises intonations, ou les précipitations, ou les paresses, ou les rapidités, ou les bégaiements, ou les erreurs d'arrêt, ou les liaisons, ou les expressions incorrectes, ou les « maddâ », ou les « tashdîd », ou les « hamzâ », ou les « djazam », ou les accords verbaux, ou les récitations sans passion, ou par peur à cause des signes de Ta bénédiction ou Ton courroux.`,
   },
   {
-    title: 'Lumière et Protection',
     icon: '🌟',
     content: `Ô Allah, apporte la lumière dans nos cœurs par le Coran, et sauve-nous du feu de l'enfer par le Coran, et fais-nous entrer dans le paradis par le Coran.
 
@@ -28,9 +21,12 @@ const STEPS = [
 Par conséquent, ô Allah, écris-nous comme accomplis et fais que nous accomplissions le devoir par la langue et par le cœur, accorde-nous l'amour du bien et le bonheur, et la bonne nouvelle de fermeté dans la croyance.`,
   },
   {
-    title: 'Conclusion et Salutations',
     icon: '🕌',
-    content: `Que la bénédiction d'Allah soit sur la meilleure des créatures Mohammad ﷺ, la preuve de générosité d'Allah et la lumière de Son trône, notre Maître Mohammad et sa pure descendance et ses compagnons choisis, ainsi que les nombreuses, nombreuses salutations.`,
+    content: `Que la bénédiction d'Allah soit sur la meilleure des créatures Mohammad ﷺ, la preuve de générosité d'Allah et la lumière de Son trône, notre Maître Mohammad et sa pure descendance et ses compagnons choisis, ainsi que les nombreuses, nombreuses salutations.
+
+Fais tes duas 🤲
+
+Qu'Allah accepte.`,
   },
 ];
 
@@ -75,7 +71,7 @@ export function KhatmaCelebration({ onResetKhatma }: KhatmaCelebrationProps) {
           transition={{ duration: 0.35, ease: 'easeInOut' }}
           className="w-full max-w-lg"
         >
-          {/* Header */}
+          {/* Icon */}
           <div className="text-center mb-6">
             <motion.span
               initial={{ scale: 0 }}
@@ -85,12 +81,6 @@ export function KhatmaCelebration({ onResetKhatma }: KhatmaCelebrationProps) {
             >
               {step.icon}
             </motion.span>
-            <h2 className="font-display text-2xl text-amber-900">
-              {step.title}
-            </h2>
-            <p className="text-xs text-amber-700/60 mt-1">
-              Étape {currentStep + 1} sur {STEPS.length}
-            </p>
           </div>
 
           {/* Card */}

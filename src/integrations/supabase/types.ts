@@ -116,6 +116,27 @@ export type Database = {
           },
         ]
       }
+      khatma_completions: {
+        Row: {
+          completed_at: string
+          display_name: string | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string
+          display_name?: string | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string
+          display_name?: string | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       mood_entries: {
         Row: {
           created_at: string

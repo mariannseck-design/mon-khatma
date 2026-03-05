@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { SectionCard } from '@/components/cercle/SectionCard';
 import { SectionView } from '@/components/cercle/SectionView';
 import { CollectiveCounter } from '@/components/cercle/CollectiveCounter';
+import { KhatmaAnnouncement } from '@/components/cercle/KhatmaAnnouncement';
 
 const sectionCards = [
 {
@@ -236,6 +237,9 @@ export default function CerclePage() {
 
             )}
             </div>
+
+            {/* Khatma Announcement */}
+            <KhatmaAnnouncement />
 
             {/* Collective Counter */}
             <div className="mt-6">
