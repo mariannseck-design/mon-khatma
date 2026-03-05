@@ -14,6 +14,7 @@ import { ReadingSlider } from '@/components/planificateur/ReadingSlider';
 import { TotalProgressBar } from '@/components/planificateur/TotalProgressBar';
 import { SparkleEffect } from '@/components/planificateur/SparkleEffect';
 import { SuccessModal } from '@/components/planificateur/SuccessModal';
+import { KhatmaCelebration } from '@/components/planificateur/KhatmaCelebration';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { RotateCcw } from 'lucide-react';
 
@@ -46,6 +47,7 @@ export default function PlanificateurPage() {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [goalMetToday, setGoalMetToday] = useState(false);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [showKhatmaCelebration, setShowKhatmaCelebration] = useState(false);
   const [lastReadingDate, setLastReadingDate] = useState<string | null>(null);
   // Spiritual setup state
   const [setupFirstName, setSetupFirstName] = useState('');
@@ -236,6 +238,12 @@ export default function PlanificateurPage() {
       toast.success(`${pages} page(s) enregistrée(s)! Masha'Allah! 📖`);
     }
     await fetchProgress();
+    
+    // Check if Khatma is now complete
+    const updatedTotal = totalPagesRead + pages;
+    if (updatedTotal >= TOTAL_QURAN_PAGES) {
+      setShowKhatmaCelebration(true);
+    }
   };
 
   const handleSparkleComplete = useCallback(() => {
@@ -313,6 +321,17 @@ export default function PlanificateurPage() {
     fetchProgress();
   };
 
+  if (showKhatmaCelebration) {
+    return (
+      <AppLayout title="Planificateur">
+        <KhatmaCelebration onResetKhatma={() => {
+          resetKhatma();
+          setShowKhatmaCelebration(false);
+        }} />
+      </AppLayout>
+    );
+  }
+
   return (
     <AppLayout title="Planificateur">
       <div className="section-spacing space-y-6">
@@ -322,7 +341,7 @@ export default function PlanificateurPage() {
         </div>
 
         {/* Total Progress Bar */}
-        <TotalProgressBar totalPagesRead={totalPagesRead} onResetKhatma={resetKhatma} targetPagesPerDay={activeGoal?.target_value} startDate={activeGoal?.start_date} />
+        <TotalProgressBar totalPagesRead={totalPagesRead} onResetKhatma={resetKhatma} onShowCelebration={() => setShowKhatmaCelebration(true)} targetPagesPerDay={activeGoal?.target_value} startDate={activeGoal?.start_date} />
 
         {/* Personalized greeting if setup exists */}
         {savedSetup && activeGoal && (

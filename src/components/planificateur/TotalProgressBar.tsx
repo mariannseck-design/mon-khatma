@@ -9,11 +9,12 @@ const TOTAL_QURAN_PAGES = 604;
 interface TotalProgressBarProps {
   totalPagesRead: number;
   onResetKhatma?: () => void;
+  onShowCelebration?: () => void;
   targetPagesPerDay?: number;
   startDate?: string;
 }
 
-export function TotalProgressBar({ totalPagesRead, onResetKhatma, targetPagesPerDay, startDate }: TotalProgressBarProps) {
+export function TotalProgressBar({ totalPagesRead, onResetKhatma, onShowCelebration, targetPagesPerDay, startDate }: TotalProgressBarProps) {
   const percentage = Math.min(100, (totalPagesRead / TOTAL_QURAN_PAGES) * 100);
   const isComplete = totalPagesRead >= TOTAL_QURAN_PAGES;
   const remainingPages = TOTAL_QURAN_PAGES - totalPagesRead;
@@ -98,13 +99,13 @@ export function TotalProgressBar({ totalPagesRead, onResetKhatma, targetPagesPer
           </p>
 
           {/* New Khatma Button */}
-          {isComplete && onResetKhatma && (
+          {isComplete && onShowCelebration && (
             <Button
-              onClick={onResetKhatma}
-              className="w-full mt-3 rounded-xl bg-white/20 hover:bg-white/30 text-primary-foreground font-medium border-none"
+              onClick={onShowCelebration}
+              className="w-full mt-3 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white font-medium border-none"
             >
               <RotateCcw className="h-4 w-4 mr-2" />
-              Commencer une nouvelle Khatma
+              Voir la Doua de fin de Khatma
             </Button>
           )}
         </div>
