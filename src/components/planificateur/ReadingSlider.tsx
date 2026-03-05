@@ -59,17 +59,7 @@ export function ReadingSlider({
   };
 
   if (isKhatmaComplete) {
-    return (
-      <Card className="p-6 bg-gradient-mint border-none rounded-[2rem]">
-        <div className="flex items-center justify-center gap-3">
-          <span className="text-2xl">✨</span>
-          <p className="text-primary-foreground font-medium">
-            Khatma terminée, Macha'Allah !
-          </p>
-          <span className="text-2xl">✨</span>
-        </div>
-      </Card>
-    );
+    return null;
   }
 
   const goalMet = targetPages > 0 && todayPages >= targetPages;
