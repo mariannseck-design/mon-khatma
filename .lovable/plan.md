@@ -1,21 +1,52 @@
 
-# Ajouter le rapport hebdomadaire sur l'accueil et l'etendre a 48h
 
-## Ce qui sera fait
+# Page de celebration de fin de Khatma avec Doua en 4 etapes
 
-1. **Ajouter le rapport hebdomadaire sur la page Accueil** entre la carte "pages lues aujourd'hui" et la carte "Ma Tillawah"
-2. **Le garder aussi sur la page Ramadan** (aucun changement la-bas)
-3. **Etendre la visibilite a 48h** : le rapport s'affichera le **lundi ET le mardi** au lieu du lundi uniquement
+## Objectif
 
-## Details techniques
+Quand l'utilisatrice atteint 604 pages, au lieu du simple message "Khatma terminee", afficher une page speciale de celebration avec la Doua complete en 4 etapes (stepper), fond parchemin, et un bouton dore final pour recommencer.
 
-### Fichier `src/components/ramadan/RamadanWeeklyReport.tsx`
+## Fichiers a creer
 
-- Remplacer la condition `isMonday` par `isMondayOrTuesday` : verifier si `getDay() === 1` (lundi) OU `getDay() === 2` (mardi)
-- Mettre a jour les conditions de rendu (lignes 109-110) pour utiliser cette nouvelle variable
+### 1. `src/components/planificateur/KhatmaCelebration.tsx`
 
-### Fichier `src/pages/AccueilPage.tsx`
+Composant principal avec un stepper en 4 etapes :
 
-- Importer `RamadanWeeklyReport` depuis `@/components/ramadan/RamadanWeeklyReport`
-- Ajouter un state `readingGoal` et une fonction `fetchReadingGoal` (comme dans RamadanPage) pour recuperer `first_name` et `daily_pages` depuis la table `ramadan_reading_goals`
-- Inserer le composant `RamadanWeeklyReport` entre la carte de progression quotidienne (ligne 172) et la section "Ma Tillawah" (ligne 174), conditionne a l'existence du readingGoal
+- **State** : `currentStep` (0-3), transitions animees avec `framer-motion`
+- **Design** : Fond parchemin (bg gradient chaud beige/or), texte bien espace, police elegante
+- **Navigation** : Boutons "Suivant" / "Precedent" entre les etapes, indicateur de progression (4 cercles)
+
+**Etape 1 — "Benediction des lettres"** : La partie de la Doua sur les 28 lettres arabes (Alif a Ya), chaque lettre et sa benediction
+
+**Etape 2 — "Demande de pardon"** : La partie sur l'indulgence pour les erreurs de prononciation, lecture, hesitations, etc.
+
+**Etape 3 — "Lumiere et Protection"** : La partie sur la lumiere du coeur, la protection contre l'enfer, l'entree au Paradis
+
+**Etape 4 — "Conclusion et Salutations"** : La conclusion avec les salutations sur le Prophete (saw) + bouton dore final "Qu'Allah exauce nos prieres - Recommencer une Khatma"
+
+- **Props** : `onResetKhatma: () => void` (appele au clic du bouton final)
+
+### 2. Modifications dans `src/pages/PlanificateurPage.tsx`
+
+- Importer `KhatmaCelebration`
+- Ajouter un state `showKhatmaCelebration` (boolean)
+- Dans `logReading()` : apres l'upsert, si `totalPagesRead + pages >= 604`, activer `showKhatmaCelebration`
+- Quand `showKhatmaCelebration` est true, afficher `KhatmaCelebration` a la place du contenu normal
+- Le bouton final de `KhatmaCelebration` appelle `resetKhatma()` puis ferme la celebration
+
+### 3. Modifications dans `src/components/planificateur/ReadingSlider.tsx`
+
+- Supprimer le bloc `isKhatmaComplete` qui retourne un simple message "Khatma terminee" — la celebration prend le relais
+
+### 4. Modifications dans `src/components/planificateur/TotalProgressBar.tsx`
+
+- Quand `isComplete`, le bouton "Commencer une nouvelle Khatma" declenchera la celebration au lieu du reset direct
+
+## Details du design
+
+- **Fond** : Gradient chaud `from-amber-50 via-orange-50/30 to-yellow-50` avec texture subtile
+- **Typographie** : `font-display` pour les titres, texte arabe en taille plus grande avec espacement genereux
+- **Stepper** : 4 cercles en haut, le cercle actif est dore, les passes sont verts, les futurs sont gris
+- **Bouton final** : `bg-gradient-to-r from-amber-500 to-yellow-500 text-white` avec effet brillant
+- **Transitions** : `AnimatePresence` de framer-motion pour des transitions douces entre etapes
+
