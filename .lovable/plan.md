@@ -1,28 +1,27 @@
 
 
-# Correction de la transition de page du Mushaf
+# Correction de 5 bugs dans le lecteur Mushaf
 
-## Problème
-La transition actuelle utilise une animation de glissement horizontal (`x: '100%'` → `x: 0`) avec `AnimatePresence` et `drag="x"`, ce qui donne un effet de mouvement perturbant — la page "bouge" visuellement pendant la navigation.
+## Bugs identifiés
 
-## Solution
-Remplacer l'animation de glissement horizontal par un simple fondu enchaîné (fade), sans mouvement latéral. Cela donne une transition douce et stable, comme si on tournait une page sans que rien ne glisse.
+1. **Navigation par swipe ne fonctionne pas en mode texte** -- Le gestionnaire de swipe (`drag`/`onDragEnd`) est uniquement attaché au `motion.div` du mode image. En mode texte, `QuranTextView` n'a aucun support swipe.
 
-## Modifications dans `src/pages/QuranReaderPage.tsx`
+2. **Ecran non zoomable** -- Le conteneur texte a `overflow-hidden` et aucun support pinch-to-zoom.
 
-1. **`slideVariants`** : remplacer le déplacement `x` par un simple changement d'opacité :
-   - `enter` → `{ opacity: 0 }` (pas de `x`)
-   - `center` → `{ opacity: 1 }`
-   - `exit` → `{ opacity: 0 }`
+3. **Sélecteur de récitateur disparaît trop vite** -- Le timer auto-hide (4s) masque la barre de contrôle entière, y compris le menu de sélection du récitateur ouvert.
 
-2. **Supprimer le drag horizontal** sur les deux `motion.div` (mode texte et mode image) :
-   - Retirer `drag="x"`, `dragConstraints`, `dragElastic`, `onDragEnd`
-   - Garder le swipe via `useSwipeNavigation` ou ajouter un gestionnaire touch simple pour détecter les swipes sans déplacer visuellement le contenu
+4. **Basmala manquante** -- L'API `quran-tajweed` n'inclut pas la Basmala dans le texte des versets (sauf Al-Fatiha). Il faut l'ajouter manuellement quand `numberInSurah === 1` et que la sourate n'est ni Al-Fatiha (1) ni At-Tawbah (9).
 
-3. **Gestion du swipe sans drag visuel** : remplacer le `drag` de framer-motion par un détecteur tactile (`onTouchStart`/`onTouchEnd`) qui déclenche `goNext`/`goPrev` sans bouger la page.
+## Fichiers à modifier
 
-4. **Transition** : réduire la durée à `0.2s` pour un fondu rapide et naturel.
+### `src/pages/QuranReaderPage.tsx`
+- Envelopper le `QuranTextView` dans un `motion.div` avec `drag="x"` et `onDragEnd` pour supporter le swipe en mode texte (même logique que le mode image)
+- Quand `showReciterSelect` est `true`, annuler le timer auto-hide pour laisser le temps de choisir
+- Réactiver le timer quand le sélecteur se ferme
 
-## Fichier impacté
-- `src/pages/QuranReaderPage.tsx`
+### `src/components/quran/QuranTextView.tsx`
+- Ajouter la Basmala (`بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ`) au-dessus du texte quand la première ayah du groupe a `numberInSurah === 1`, sauf pour les sourates 1 et 9
+- Permettre le zoom tactile en changeant le style du conteneur (retirer les contraintes qui bloquent le pinch-zoom)
+
+## Estimation : 1 crédit
 
