@@ -18,23 +18,23 @@ const FONT_FAMILY = "'KFGQPC Uthmanic Script HAFS', 'Amiri Quran', 'Amiri', 'Sch
 
 // Tajweed color map based on Al-Quran.cloud tajweed codes
 const TAJWEED_COLORS: Record<string, string> = {
-  h: '#AAAAAA',   // Hamzat ul Wasl
-  s: '#AAAAAA',   // Silent
-  l: '#AAAAAA',   // Lam Shamsiyyah
-  n: '#537FFF',   // Madd Normal (2 vowels)
-  p: '#4050FF',   // Madd Permissible (2,4,6 vowels)
-  m: '#000EBC',   // Madd Necessary (6 vowels)
-  o: '#2144C1',   // Madd Obligatory (4-5 vowels)
-  q: '#DD0008',   // Qalqalah
-  c: '#D500B7',   // Ikhfa Shafawi
-  f: '#9400A8',   // Ikhfa
-  w: '#58B800',   // Idgham Shafawi
-  i: '#26BFFD',   // Iqlab
-  a: '#169777',   // Idgham with Ghunnah
-  u: '#169200',   // Idgham without Ghunnah
-  d: '#A1A1A1',   // Idgham Mutajanisayn
-  b: '#A1A1A1',   // Idgham Mutaqaribayn
-  g: '#FF7E1E',   // Ghunnah (2 vowels)
+  h: '#AAAAAA',   // Hamzat ul Wasl (gris)
+  s: '#AAAAAA',   // Silent (gris)
+  l: '#AAAAAA',   // Lam Shamsiyyah (gris)
+  n: '#D50000',   // Madd Normal - ROUGE
+  p: '#E53935',   // Madd Permissible - ROUGE
+  m: '#B71C1C',   // Madd Necessary - ROUGE FONCÉ
+  o: '#C62828',   // Madd Obligatory - ROUGE
+  q: '#1565C0',   // Qalqalah - BLEU
+  c: '#2E7D32',   // Ikhfa Shafawi - VERT
+  f: '#388E3C',   // Ikhfa - VERT
+  w: '#2E7D32',   // Idgham Shafawi - VERT
+  i: '#2E7D32',   // Iqlab - VERT
+  a: '#1B5E20',   // Idgham avec Ghunnah - VERT FONCÉ
+  u: '#1B5E20',   // Idgham sans Ghunnah - VERT FONCÉ
+  d: '#A1A1A1',   // Idgham Mutajanisayn (gris)
+  b: '#A1A1A1',   // Idgham Mutaqaribayn (gris)
+  g: '#2E7D32',   // Ghunnah - VERT
 };
 
 function renderTajweed(text: string, darkMode: boolean): React.ReactNode[] {
