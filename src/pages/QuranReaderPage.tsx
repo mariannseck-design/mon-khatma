@@ -151,18 +151,71 @@ export default function QuranReaderPage() {
 
   const touchStartRef = useRef<{ x: number; y: number } | null>(null);
 
+  const getDistance = (t1: React.Touch, t2: React.Touch) =>
+    Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
+
   const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    if (e.touches.length === 2) {
+      // Pinch start
+      pinchRef.current = { dist: getDistance(e.touches[0], e.touches[1]), scale };
+      panRef.current = null;
+      touchStartRef.current = null;
+    } else if (e.touches.length === 1 && scale > 1) {
+      // Pan start when zoomed
+      panRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY, tx: translate.x, ty: translate.y };
+      touchStartRef.current = null;
+    } else if (e.touches.length === 1) {
+      touchStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (e.touches.length === 2 && pinchRef.current) {
+      e.preventDefault();
+      const newDist = getDistance(e.touches[0], e.touches[1]);
+      const newScale = Math.min(Math.max(pinchRef.current.scale * (newDist / pinchRef.current.dist), 1), 4);
+      setScale(newScale);
+      if (newScale === 1) setTranslate({ x: 0, y: 0 });
+    } else if (e.touches.length === 1 && panRef.current && scale > 1) {
+      const dx = e.touches[0].clientX - panRef.current.x;
+      const dy = e.touches[0].clientY - panRef.current.y;
+      setTranslate({ x: panRef.current.tx + dx, y: panRef.current.ty + dy });
+    }
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
+    if (pinchRef.current) {
+      pinchRef.current = null;
+      return;
+    }
+    if (panRef.current) {
+      panRef.current = null;
+      return;
+    }
     if (!touchStartRef.current) return;
     const dx = e.changedTouches[0].clientX - touchStartRef.current.x;
     const dy = e.changedTouches[0].clientY - touchStartRef.current.y;
     touchStartRef.current = null;
+    if (scale > 1) return; // No swipe nav when zoomed
     if (Math.abs(dx) < 50 || Math.abs(dy) > Math.abs(dx)) return;
     if (dx > 0) goNext();
     else goPrev();
+  };
+
+  // Double-tap to zoom
+  const lastTapRef = useRef(0);
+  const handleDoubleTap = (e: React.MouseEvent) => {
+    const now = Date.now();
+    if (now - lastTapRef.current < 300) {
+      e.stopPropagation();
+      if (scale > 1) {
+        setScale(1);
+        setTranslate({ x: 0, y: 0 });
+      } else {
+        setScale(2.5);
+      }
+    }
+    lastTapRef.current = now;
   };
 
   const goToPage = (p: number) => {
