@@ -10,27 +10,27 @@ interface Ayah {
 interface QuranTextViewProps {
   page: number;
   highlightAyah?: number | null;
+  fontSize?: number;
 }
 
 // Tajweed color map
 const TAJWEED_COLORS: Record<string, string> = {
-  h: '#AAAAAA', // Hamzat ul Wasl
-  s: '#AAAAAA', // Silent
-  l: '#AAAAAA', // Lam Shamsiyyah
-  n: '#537FFF', // Madd Normal
-  p: '#4050FF', // Madd Permissible
-  m: '#000EBC', // Madd Obligatoire
-  q: '#DD0008', // Qalqalah
-  i: '#9400A8', // Ikhfa
-  o: '#9400A8', // Ikhfa Meem Saakin
-  g: '#FF7E1E', // Ghunnah
-  f: '#169200', // Idgham avec Ghunnah
-  d: '#169777', // Idgham sans Ghunnah
-  b: '#26BFFD', // Iqlab
+  h: '#AAAAAA',
+  s: '#AAAAAA',
+  l: '#AAAAAA',
+  n: '#537FFF',
+  p: '#4050FF',
+  m: '#000EBC',
+  q: '#DD0008',
+  i: '#9400A8',
+  o: '#9400A8',
+  g: '#FF7E1E',
+  f: '#169200',
+  d: '#169777',
+  b: '#26BFFD',
 };
 
 function parseTajweed(text: string): string {
-  // Pattern: [x[content] or [x:n[content]
   return text.replace(/\[([a-z])(?::\d+)?\[([^\]]*)\]/g, (_, code, content) => {
     const color = TAJWEED_COLORS[code];
     if (color) {
@@ -40,10 +40,14 @@ function parseTajweed(text: string): string {
   });
 }
 
-export default function QuranTextView({ page, highlightAyah }: QuranTextViewProps) {
+const FONT_FAMILY = "'Scheherazade New', 'Traditional Arabic', serif";
+
+export default function QuranTextView({ page, highlightAyah, fontSize = 24 }: QuranTextViewProps) {
   const [ayahs, setAyahs] = useState<Ayah[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+
+  const lineHeight = `${Math.round(fontSize * 2.2)}px`;
 
   useEffect(() => {
     setLoading(true);
@@ -61,7 +65,6 @@ export default function QuranTextView({ page, highlightAyah }: QuranTextViewProp
       .finally(() => setLoading(false));
   }, [page]);
 
-  // Group ayahs by surah
   const grouped = useMemo(() => {
     const groups: { surahName: string; surahNumber: number; ayahs: Ayah[] }[] = [];
     for (const ayah of ayahs) {
@@ -95,35 +98,37 @@ export default function QuranTextView({ page, highlightAyah }: QuranTextViewProp
     );
   }
 
+  const ayahNumberSize = Math.max(fontSize * 0.7, 14);
+
   return (
     <div
       className="h-full flex flex-col items-center justify-start px-5 py-6 select-text overflow-auto"
       dir="rtl"
-      style={{ fontFamily: "'Amiri', 'Traditional Arabic', serif", touchAction: 'pan-y pinch-zoom' }}
+      style={{ fontFamily: FONT_FAMILY, touchAction: 'pan-y', background: '#fefdfb' }}
     >
       {grouped.map((group) => (
         <div key={`${group.surahNumber}-${page}`} className="w-full mb-4 last:mb-0">
           {group.ayahs[0].numberInSurah === 1 && (
             <>
-              <h3 className="text-center text-2xl font-bold mb-3" style={{ color: '#b8952e', fontFamily: "'Playfair Display', serif" }}>
+              <h3 className="text-center text-2xl font-bold mb-3" style={{ color: '#8a6d1b', fontFamily: FONT_FAMILY }}>
                 {group.surahName}
               </h3>
               {group.surahNumber !== 1 && group.surahNumber !== 9 && (
-                <p className="text-center text-2xl sm:text-3xl mb-4" style={{ fontFamily: "'Amiri', 'Traditional Arabic', serif", color: '#8a6d1b' }}>
+                <p className="text-center mb-4" style={{ fontFamily: FONT_FAMILY, color: '#8a6d1b', fontSize: `${fontSize}px`, lineHeight }}>
                   بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
                 </p>
               )}
             </>
           )}
-          <p className="text-2xl sm:text-3xl leading-[2.8rem] sm:leading-[3.2rem] text-foreground text-justify">
+          <p className="text-foreground text-justify" style={{ fontSize: `${fontSize}px`, lineHeight }}>
             {group.ayahs.map((ayah) => (
               <span
                 key={ayah.number}
                 className={highlightAyah === ayah.number ? 'rounded px-0.5 transition-colors duration-300' : 'transition-colors duration-300'}
-                style={highlightAyah === ayah.number ? { background: 'rgba(184, 149, 46, 0.15)' } : undefined}
+                style={highlightAyah === ayah.number ? { background: 'rgba(138, 109, 27, 0.12)' } : undefined}
               >
                 <span dangerouslySetInnerHTML={{ __html: parseTajweed(ayah.text) }} />{' '}
-                <span className="text-lg sm:text-xl font-bold" style={{ color: '#b8952e' }}>
+                <span className="font-bold" style={{ color: '#8a6d1b', fontSize: `${ayahNumberSize}px` }}>
                   ﴿{ayah.numberInSurah.toLocaleString('ar-EG')}﴾
                 </span>{' '}
               </span>
