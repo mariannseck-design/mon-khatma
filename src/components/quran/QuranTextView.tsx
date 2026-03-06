@@ -100,12 +100,16 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 24, dark
   }
 
   const ayahNumberSize = Math.max(fontSize * 0.7, 14);
+  const textColor = darkMode ? '#d4af37' : undefined;
+  const bgColor = darkMode ? '#1a2e1a' : '#fefdfb';
+  const surahNameColor = darkMode ? '#d4af37' : '#8a6d1b';
+  const highlightBg = darkMode ? 'rgba(212, 175, 55, 0.15)' : 'rgba(138, 109, 27, 0.12)';
 
   return (
     <div
       className="h-full flex flex-col items-center justify-start px-5 py-6 select-text overflow-auto"
       dir="rtl"
-      style={{ fontFamily: FONT_FAMILY, touchAction: 'pan-y', background: '#fefdfb' }}
+      style={{ fontFamily: FONT_FAMILY, touchAction: 'pan-y', background: bgColor, color: textColor }}
     >
       {grouped.map((group) => (
         <div key={`${group.surahNumber}-${page}`} className="w-full mb-4 last:mb-0">
