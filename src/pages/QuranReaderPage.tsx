@@ -208,7 +208,7 @@ export default function QuranReaderPage() {
       </AnimatePresence>
 
       {/* Main Content */}
-      <div className="flex-1 relative overflow-hidden">
+      <div className="flex-1 relative overflow-hidden" style={{ touchAction: 'pan-y pinch-zoom' }}>
         {textMode ? (
           <motion.div
             key={`text-${page}`}
@@ -323,18 +323,25 @@ export default function QuranReaderPage() {
                   <List className="h-5 w-5" style={{ color: '#f5edd6' }} />
                 </button>
 
-                <div className="flex-1 flex items-center gap-3" dir="ltr">
-                  <span className="text-xs font-mono w-7 text-right" style={{ color: 'rgba(245, 237, 214, 0.8)' }}>1</span>
-                  <Slider
-                    value={[page]}
-                    min={1}
-                    max={TOTAL_PAGES}
-                    step={1}
-                    onValueChange={([v]) => goToPage(v)}
-                    onClick={(e) => e.stopPropagation()}
-                    className="flex-1"
-                  />
-                  <span className="text-xs font-mono w-10" style={{ color: 'rgba(245, 237, 214, 0.8)' }}>604</span>
+                <div className="flex-1 flex flex-col gap-1">
+                  <div className="text-center">
+                    <span className="text-xs font-semibold" style={{ color: '#d4af37', fontFamily: "'Playfair Display', serif" }}>
+                      Page {page} / {TOTAL_PAGES}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-3" dir="ltr">
+                    <span className="text-xs font-mono w-7 text-right" style={{ color: 'rgba(245, 237, 214, 0.8)' }}>1</span>
+                    <Slider
+                      value={[page]}
+                      min={1}
+                      max={TOTAL_PAGES}
+                      step={1}
+                      onValueChange={([v]) => goToPage(v)}
+                      onClick={(e) => e.stopPropagation()}
+                      className="flex-1"
+                    />
+                    <span className="text-xs font-mono w-10" style={{ color: 'rgba(245, 237, 214, 0.8)' }}>604</span>
+                  </div>
                 </div>
 
                 {/* Auto-play toggle */}
