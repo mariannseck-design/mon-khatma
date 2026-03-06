@@ -422,7 +422,19 @@ export default function QuranReaderPage() {
                   <List className="h-5 w-5" style={{ color: theme.iconColor }} />
                 </button>
 
-                <div className="flex-1 flex flex-col gap-1">
+                <button
+                  onClick={handleBookmark}
+                  onContextMenu={(e) => { e.preventDefault(); handleBookmarkLongPress(e); }}
+                  className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+                  style={{ background: bookmark !== null ? theme.btnBgActive : theme.btnBg, backdropFilter: 'blur(8px)' }}
+                  title={bookmark !== null ? `Marque-page : page ${bookmark}` : 'Ajouter un marque-page'}
+                >
+                  {bookmark !== null ? (
+                    <BookmarkCheck className="h-5 w-5" style={{ color: theme.pageCounter }} />
+                  ) : (
+                    <Bookmark className="h-5 w-5" style={{ color: theme.iconColor }} />
+                  )}
+                </button>
                   <div className="text-center">
                     <span className="text-xs font-semibold" style={{ color: theme.pageCounter, fontFamily: "'Playfair Display', serif" }}>
                       Page {page} / {TOTAL_PAGES}
