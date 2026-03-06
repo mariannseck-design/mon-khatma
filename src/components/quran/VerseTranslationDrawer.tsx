@@ -189,6 +189,9 @@ export default function VerseTranslationDrawer({ verseKey, allVerses, onClose, o
                 <X className="h-4 w-4" />
               </button>
             </div>
+          </div>
+
+          {/* Content */}
           <div className="px-4 pb-6 overflow-y-auto" style={{ maxHeight: 'calc(55vh - 70px)' }}>
             {loading && (
               <div className="flex justify-center py-8">
