@@ -1,49 +1,21 @@
 
-Objectif validé : corriger le lecteur Mushaf qui reste bloqué sur “téléchargement” (mobile + preview), sans revenir au texte numérique.
 
-1) Diagnostic confirmé (cause racine)
-- Le composant actuel charge une seule source : `https://cdn.qurancdn.com/...`.
-- Les requêtes image échouent (erreur réseau observée : `ERR_TUNNEL_CONNECTION_FAILED`).
-- Comme `onError` remet juste `imageLoaded=false` sans source alternative, le spinner reste infini.
+# Diagnostic : 404 sur /quran-reader
 
-2) Correctif à implémenter dans `src/pages/QuranReaderPage.tsx`
-- Remplacer la source unique par une stratégie multi-CDN (images Tajweed, pages 1→604), ex. :
-  - `https://cdn.jsdelivr.net/gh/QuranHub/quran-pages-images@main/easyquran.com/hafs-tajweed/{page}.jpg`
-  - `https://raw.githubusercontent.com/QuranHub/quran-pages-images/main/easyquran.com/hafs-tajweed/{page}.jpg`
-  - `https://cdn.statically.io/gh/QuranHub/quran-pages-images/main/easyquran.com/hafs-tajweed/{page}.jpg`
-- Garder 100% image-only (aucun fallback texte), conformément à ta consigne.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-3) Logique anti-blocage (spinner infini)
-- Ajouter un index de source actif + une source préférée (la dernière qui a fonctionné).
-- Au changement de page :
-  - démarrer sur la source préférée,
-  - afficher spinner.
-- Si `onLoad` :
-  - cacher spinner,
-  - mémoriser la source gagnante pour les pages suivantes.
-- Si `onError` :
-  - basculer automatiquement vers la source suivante.
-- Ajouter un timeout de chargement (ex. 8–10s) :
-  - si pas de `onLoad`, passer à la source suivante (cas réseau “pendu” sans erreur explicite).
-- Si toutes les sources échouent :
-  - relancer silencieusement un cycle de tentative (spinner uniquement, aucun message d’erreur affiché).
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-4) Ajustements techniques utiles
-- Forcer remount de l’image avec une clé `page+sourceIndex` pour garantir le retrigger des événements.
-- Ajouter `referrerPolicy="no-referrer"` sur `<img>` pour réduire les blocages anti-hotlink.
-- Conserver preload des pages adjacentes mais via la source préférée actuelle.
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-5) Ce qui ne change pas
-- Design “Olive du Levant” (crème/sauge/blanc pur) inchangé.
-- Interface épurée inchangée.
-- Navigation swipe, slider, tiroir sourates, marque-page inchangés.
-- Aucun changement backend requis.
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-6) Vérification prévue après implémentation
-- Test direct sur `/quran-reader` :
-  - page 1 s’affiche (plus de spinner infini),
-  - navigation page 2/3 fonctionne.
-- Vérification réseau :
-  - au moins une source image répond 200.
-- Test mobile (viewport iPhone) :
-  - rendu image-only stable, sans texte numérique ni message d’erreur.
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+

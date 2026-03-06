@@ -9,9 +9,11 @@ import SurahDrawer from '@/components/quran/SurahDrawer';
 
 const TOTAL_PAGES = 604;
 
-function getPageUrl(page: number) {
-  return `https://cdn.qurancdn.com/images/pages/page${String(page).padStart(3, '0')}.png`;
-}
+const IMAGE_SOURCES = [
+  (p: number) => `https://cdn.jsdelivr.net/gh/QuranHub/quran-pages-images@main/easyquran.com/hafs-tajweed/${p}.jpg`,
+  (p: number) => `https://raw.githubusercontent.com/QuranHub/quran-pages-images/main/easyquran.com/hafs-tajweed/${p}.jpg`,
+  (p: number) => `https://cdn.statically.io/gh/QuranHub/quran-pages-images/main/easyquran.com/hafs-tajweed/${p}.jpg`,
+];
 
 export default function QuranReaderPage() {
   const navigate = useNavigate();
@@ -23,13 +25,62 @@ export default function QuranReaderPage() {
   const [showControls, setShowControls] = useState(true);
   const [showSurahDrawer, setShowSurahDrawer] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [sourceIndex, setSourceIndex] = useState(0);
+  const preferredSourceRef = useRef(0);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
   const controlsTimer = useRef<ReturnType<typeof setTimeout>>();
   const containerRef = useRef<HTMLDivElement>(null);
+  const retriesRef = useRef(0);
 
   const [bookmark, setBookmark] = useState<number | null>(() => {
     const saved = localStorage.getItem('quran_bookmark');
     return saved ? parseInt(saved) : null;
   });
+
+  const getPageUrl = useCallback((p: number, srcIdx?: number) => {
+    const idx = srcIdx ?? preferredSourceRef.current;
+    return IMAGE_SOURCES[idx](p);
+  }, []);
+
+  // Reset source index when page changes
+  useEffect(() => {
+    setImageLoaded(false);
+    setSourceIndex(preferredSourceRef.current);
+    retriesRef.current = 0;
+  }, [page]);
+
+  // Timeout: if image hangs, try next source
+  useEffect(() => {
+    if (imageLoaded) {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      return;
+    }
+    timeoutRef.current = setTimeout(() => {
+      tryNextSource();
+    }, 8000);
+    return () => { if (timeoutRef.current) clearTimeout(timeoutRef.current); };
+  }, [imageLoaded, sourceIndex, page]);
+
+  const tryNextSource = useCallback(() => {
+    retriesRef.current += 1;
+    if (retriesRef.current >= IMAGE_SOURCES.length * 2) {
+      // Silent retry loop — restart from preferred
+      retriesRef.current = 0;
+      setSourceIndex(preferredSourceRef.current);
+      return;
+    }
+    setSourceIndex(prev => (prev + 1) % IMAGE_SOURCES.length);
+  }, []);
+
+  const handleImageLoad = useCallback(() => {
+    setImageLoaded(true);
+    preferredSourceRef.current = sourceIndex;
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+  }, [sourceIndex]);
+
+  const handleImageError = useCallback(() => {
+    tryNextSource();
+  }, [tryNextSource]);
 
   const handleBookmark = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -69,7 +120,7 @@ export default function QuranReaderPage() {
         img.src = getPageUrl(p);
       }
     });
-  }, [page]);
+  }, [page, getPageUrl]);
 
   // Auto-hide controls
   const resetControlsTimer = useCallback(() => {
@@ -85,11 +136,11 @@ export default function QuranReaderPage() {
 
   // Navigation
   const goNext = useCallback(() => {
-    if (page < TOTAL_PAGES) { setDirection(1); setImageLoaded(false); setPage(p => Math.min(p + 1, TOTAL_PAGES)); }
+    if (page < TOTAL_PAGES) { setDirection(1); setPage(p => Math.min(p + 1, TOTAL_PAGES)); }
   }, [page]);
 
   const goPrev = useCallback(() => {
-    if (page > 1) { setDirection(-1); setImageLoaded(false); setPage(p => Math.max(p - 1, 1)); }
+    if (page > 1) { setDirection(-1); setPage(p => Math.max(p - 1, 1)); }
   }, [page]);
 
   const touchStartRef = useRef<{ x: number; y: number } | null>(null);
@@ -110,7 +161,6 @@ export default function QuranReaderPage() {
 
   const goToPage = (p: number) => {
     setDirection(p > page ? 1 : -1);
-    setImageLoaded(false);
     setPage(Math.min(Math.max(p, 1), TOTAL_PAGES));
   };
 
@@ -165,7 +215,7 @@ export default function QuranReaderPage() {
         )}
       </AnimatePresence>
 
-      {/* Main Content — Image only */}
+      {/* Main Content */}
       <div
         className="flex-1 relative overflow-hidden flex items-center justify-center"
         onTouchStart={handleTouchStart}
@@ -187,12 +237,14 @@ export default function QuranReaderPage() {
               </div>
             )}
             <img
-              src={getPageUrl(page)}
+              key={`${page}-${sourceIndex}`}
+              src={getPageUrl(page, sourceIndex)}
               alt={`Page ${page} du Mushaf`}
               className="max-h-full max-w-full object-contain select-none"
               draggable={false}
-              onLoad={() => setImageLoaded(true)}
-              onError={() => setImageLoaded(false)}
+              referrerPolicy="no-referrer"
+              onLoad={handleImageLoad}
+              onError={handleImageError}
               style={{ opacity: imageLoaded ? 1 : 0, transition: 'opacity 0.2s' }}
             />
           </motion.div>
