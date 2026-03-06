@@ -72,9 +72,9 @@ export default function ReaderSettingsPanel({
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
               className="w-full max-w-md rounded-t-3xl p-5 pb-8"
               style={{
-                background: nightMode ? '#1a2e1a' : '#f7f3eb',
-                color: nightMode ? '#d4c9a8' : '#2d3a25',
-                border: `1px solid ${nightMode ? 'rgba(90,180,180,0.15)' : 'rgba(180,150,60,0.2)'}`,
+                background: nightMode ? '#1a2e1a' : 'linear-gradient(135deg, #8ed1c4, #a0d9ce)',
+                color: nightMode ? '#d4c9a8' : '#1a3a3a',
+                border: `1px solid ${nightMode ? 'rgba(90,180,180,0.15)' : 'rgba(212,175,55,0.4)'}`,
                 borderBottom: 'none',
                 boxShadow: '0 -8px 40px rgba(0,0,0,0.15)',
               }}
@@ -85,7 +85,7 @@ export default function ReaderSettingsPanel({
                 <h3 className="text-lg font-semibold" style={{ fontFamily: "'Playfair Display', serif", color: nightMode ? '#d4c9a8' : '#6b5417' }}>
                   Paramètres
                 </h3>
-                <button onClick={() => setOpen(false)} className="p-1 rounded-full" style={{ background: 'rgba(122,139,111,0.15)' }}>
+                <button onClick={() => setOpen(false)} className="p-1 rounded-full" style={{ background: nightMode ? 'rgba(122,139,111,0.15)' : 'rgba(255,255,255,0.2)' }}>
                   <X className="h-5 w-5" />
                 </button>
               </div>
@@ -96,7 +96,7 @@ export default function ReaderSettingsPanel({
                   <button
                     onClick={() => { onShowSurahDrawer(); setOpen(false); }}
                     className="w-full flex items-center justify-between py-3 px-4 rounded-xl text-sm font-medium transition-all"
-                    style={{ background: nightMode ? 'rgba(90,180,180,0.08)' : 'rgba(180,150,60,0.08)', border: `1px solid ${nightMode ? 'rgba(90,180,180,0.12)' : 'rgba(180,150,60,0.12)'}` }}
+                    style={{ background: nightMode ? 'rgba(90,180,180,0.08)' : 'rgba(255,255,255,0.15)', border: `1px solid ${nightMode ? 'rgba(90,180,180,0.12)' : 'rgba(212,175,55,0.3)'}` }}
                   >
                     <span className="flex items-center gap-2">
                       <BookOpen className="h-4 w-4" style={{ color: '#4a9a9a' }} />
@@ -115,8 +115,8 @@ export default function ReaderSettingsPanel({
                     onClick={() => onViewModeChange('image')}
                     className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium transition-all"
                     style={{
-                      background: viewMode === 'image' ? (nightMode ? 'rgba(90,180,180,0.2)' : 'rgba(180,150,60,0.15)') : (nightMode ? 'rgba(90,180,180,0.05)' : 'rgba(180,150,60,0.05)'),
-                      border: viewMode === 'image' ? `1.5px solid ${nightMode ? 'rgba(90,180,180,0.4)' : 'rgba(180,150,60,0.3)'}` : '1.5px solid transparent',
+                      background: viewMode === 'image' ? (nightMode ? 'rgba(90,180,180,0.2)' : 'rgba(255,255,255,0.35)') : (nightMode ? 'rgba(90,180,180,0.05)' : 'rgba(255,255,255,0.15)'),
+                      border: viewMode === 'image' ? `1.5px solid ${nightMode ? 'rgba(90,180,180,0.4)' : 'rgba(180,150,60,0.5)'}` : '1.5px solid transparent',
                     }}
                   >
                     <Image className="h-4 w-4" /> Mushaf
@@ -125,8 +125,8 @@ export default function ReaderSettingsPanel({
                     onClick={() => onViewModeChange('text')}
                     className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium transition-all"
                     style={{
-                      background: viewMode === 'text' ? (nightMode ? 'rgba(90,180,180,0.2)' : 'rgba(180,150,60,0.15)') : (nightMode ? 'rgba(90,180,180,0.05)' : 'rgba(180,150,60,0.05)'),
-                      border: viewMode === 'text' ? `1.5px solid ${nightMode ? 'rgba(90,180,180,0.4)' : 'rgba(180,150,60,0.3)'}` : '1.5px solid transparent',
+                      background: viewMode === 'text' ? (nightMode ? 'rgba(90,180,180,0.2)' : 'rgba(255,255,255,0.35)') : (nightMode ? 'rgba(90,180,180,0.05)' : 'rgba(255,255,255,0.15)'),
+                      border: viewMode === 'text' ? `1.5px solid ${nightMode ? 'rgba(90,180,180,0.4)' : 'rgba(180,150,60,0.5)'}` : '1.5px solid transparent',
                     }}
                   >
                     <Type className="h-4 w-4" /> Texte
@@ -146,10 +146,10 @@ export default function ReaderSettingsPanel({
                         className="py-2 rounded-xl text-xs font-medium transition-all text-center"
                         style={{
                           background: (activeIndex === idx)
-                            ? (nightMode ? 'rgba(90,180,180,0.2)' : 'rgba(180,150,60,0.15)')
-                            : (nightMode ? 'rgba(90,180,180,0.05)' : 'rgba(180,150,60,0.05)'),
+                            ? (nightMode ? 'rgba(90,180,180,0.2)' : 'rgba(255,255,255,0.35)')
+                            : (nightMode ? 'rgba(90,180,180,0.05)' : 'rgba(255,255,255,0.15)'),
                           border: (activeIndex === idx)
-                            ? `1.5px solid ${nightMode ? 'rgba(90,180,180,0.4)' : 'rgba(180,150,60,0.3)'}`
+                            ? `1.5px solid ${nightMode ? 'rgba(90,180,180,0.4)' : 'rgba(180,150,60,0.5)'}`
                             : '1.5px solid transparent',
                         }}
                       >
@@ -166,7 +166,7 @@ export default function ReaderSettingsPanel({
                 <button
                   onClick={() => onNightModeChange(!nightMode)}
                   className="w-full flex items-center justify-between py-2.5 px-4 rounded-xl text-sm font-medium transition-all"
-                  style={{ background: nightMode ? 'rgba(90,180,180,0.08)' : 'rgba(180,150,60,0.05)' }}
+                  style={{ background: nightMode ? 'rgba(90,180,180,0.08)' : 'rgba(255,255,255,0.15)' }}
                 >
                   <span className="flex items-center gap-2">
                     {nightMode ? <Moon className="h-4 w-4" style={{ color: '#4a9a9a' }} /> : <Sun className="h-4 w-4" style={{ color: '#8a6d1b' }} />}
@@ -174,12 +174,12 @@ export default function ReaderSettingsPanel({
                   </span>
                   <div
                     className="w-10 h-6 rounded-full relative transition-colors"
-                    style={{ background: nightMode ? '#4a9a9a' : 'rgba(180,150,60,0.25)' }}
+                    style={{ background: nightMode ? '#4a9a9a' : 'rgba(255,255,255,0.3)' }}
                   >
                     <div
                       className="w-4 h-4 rounded-full absolute top-1 transition-all"
                       style={{
-                        background: nightMode ? '#f7f3eb' : '#8a6d1b',
+                        background: nightMode ? '#f7f3eb' : '#6b5417',
                         left: nightMode ? '22px' : '4px',
                       }}
                     />
@@ -194,7 +194,7 @@ export default function ReaderSettingsPanel({
                   <button
                     onClick={(e) => { e.stopPropagation(); onTogglePlay(); }}
                     className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0"
-                    style={{ background: isPlaying ? '#4a9a9a' : (nightMode ? 'rgba(90,180,180,0.15)' : 'rgba(180,150,60,0.12)') }}
+                    style={{ background: isPlaying ? '#4a9a9a' : (nightMode ? 'rgba(90,180,180,0.15)' : 'rgba(255,255,255,0.25)') }}
                   >
                     {audioLoading ? (
                       <Loader2 className="h-5 w-5 animate-spin" style={{ color: '#f0ead9' }} />
@@ -210,7 +210,7 @@ export default function ReaderSettingsPanel({
                     onClick={(e) => e.stopPropagation()}
                     className="flex-1 py-2 px-3 rounded-xl text-sm border-0 outline-none"
                     style={{
-                      background: nightMode ? 'rgba(90,180,180,0.08)' : 'rgba(180,150,60,0.08)',
+                      background: nightMode ? 'rgba(90,180,180,0.08)' : 'rgba(255,255,255,0.2)',
                       color: 'inherit',
                     }}
                   >
