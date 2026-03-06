@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import type { Easing } from 'framer-motion';
-import { BookOpen, Target, Users, Download, Moon, Sun, Sunrise, Share2, Smartphone, BookOpenCheck, RefreshCw, BarChart3 } from 'lucide-react';
+import { BookOpen, Target, Users, Download, Moon, Sun, Sunrise, Share2, BookOpenCheck, RefreshCw, BarChart3 } from 'lucide-react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { SamsungBanner } from '@/components/layout/SamsungBanner';
 import { useAuth } from '@/contexts/AuthContext';
@@ -16,14 +16,28 @@ import { useDailyNotification } from '@/hooks/useDailyNotification';
 import { usePushSubscription } from '@/hooks/usePushSubscription';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { toast } from 'sonner';
+
+// Emerald/Sage/Gold palette
+const COLORS = {
+  emerald: '#2d6a4f',
+  emeraldLight: '#40916c',
+  sage: '#52796f',
+  sageLight: '#74a892',
+  gold: '#b5942e',
+  goldAccent: '#d4af37',
+  beige: '#faf8f5',
+  beigeWarm: '#f5f0e8',
+  greenMist: '#dde5d4',
+};
+
 export default function AccueilPage() {
   const { user, isAdmin } = useAuth();
   const { isInstallable, isInstalled, isIOS, promptInstall } = usePWAInstall();
   const { subscriptionError } = usePushSubscription();
   const [showNamePrompt, setShowNamePrompt] = useState(false);
   const [guestName, setGuestName] = useState('');
+  const [activeTab, setActiveTab] = useState<'principal' | 'univers'>('principal');
 
-  // Check if first visit (no name stored)
   useEffect(() => {
     const hasName = localStorage.getItem('guest_first_name') || localStorage.getItem('user_display_name');
     if (!hasName && !user) {
@@ -37,22 +51,21 @@ export default function AccueilPage() {
       setShowNamePrompt(false);
     }
   };
-  
-  // Fallback: if push subscription failed, ensure local notifications work
+
   useEffect(() => {
     if (subscriptionError && 'Notification' in window && Notification.permission === 'default') {
       Notification.requestPermission();
     }
   }, [subscriptionError]);
-  const [profile, setProfile] = useState<{
-    display_name: string | null;
-  } | null>(() => {
+
+  const [profile, setProfile] = useState<{ display_name: string | null } | null>(() => {
     const cached = localStorage.getItem('user_display_name');
     return cached ? { display_name: cached } : null;
   });
   const [todayProgress, setTodayProgress] = useState(0);
   const [weeklyStreak, setWeeklyStreak] = useState(0);
   const [readingGoal, setReadingGoal] = useState<{ first_name: string; daily_pages: number } | null>(null);
+
   useEffect(() => {
     if (user) {
       fetchProfile();
@@ -60,6 +73,7 @@ export default function AccueilPage() {
       fetchReadingGoal();
     }
   }, [user]);
+
   const fetchReadingGoal = async () => {
     if (!user) return;
     const { data } = await supabase
@@ -69,484 +83,517 @@ export default function AccueilPage() {
       .maybeSingle();
     if (data) setReadingGoal(data);
   };
+
   const fetchProfile = async () => {
     if (!user) return;
-    const {
-      data
-    } = await supabase.from('profiles').select('display_name').eq('user_id', user.id).maybeSingle();
+    const { data } = await supabase.from('profiles').select('display_name').eq('user_id', user.id).maybeSingle();
     setProfile(data);
     if (data?.display_name) {
       localStorage.setItem('user_display_name', data.display_name);
     }
   };
+
   const fetchProgress = async () => {
     if (!user) return;
     const today = new Date().toISOString().split('T')[0];
-    const {
-      data
-    } = await supabase.from('quran_progress').select('pages_read').eq('user_id', user.id).eq('date', today).maybeSingle();
+    const { data } = await supabase.from('quran_progress').select('pages_read').eq('user_id', user.id).eq('date', today).maybeSingle();
     setTodayProgress(data?.pages_read || 0);
-
-    // Calculate weekly streak
     const lastWeek = new Date();
     lastWeek.setDate(lastWeek.getDate() - 7);
-    const {
-      data: weekData
-    } = await supabase.from('quran_progress').select('date').eq('user_id', user.id).gte('date', lastWeek.toISOString().split('T')[0]);
+    const { data: weekData } = await supabase.from('quran_progress').select('date').eq('user_id', user.id).gte('date', lastWeek.toISOString().split('T')[0]);
     setWeeklyStreak(weekData?.length || 0);
   };
+
   const greeting = () => {
     const hour = new Date().getHours();
     if (hour < 12) return '☀️ Sabah el-kheir !';
     if (hour < 18) return '🌸 Bon après-midi !';
-    if (hour < 22) return '🌙 N\'oublie pas de lire la sourate Al Moulk';
-    return '🌙 Qu\'Allah t\'accorde une nuit paisible.';
+    if (hour < 22) return "🌙 N'oublie pas de lire la sourate Al Moulk";
+    return "🌙 Qu'Allah t'accorde une nuit paisible.";
   };
+
   const displayName = profile?.display_name || localStorage.getItem('guest_first_name') || '';
-  const {
-    showNotification,
-    dismissNotification
-  } = useDailyNotification();
+  const { showNotification, dismissNotification } = useDailyNotification();
+
   const containerVariants = {
-    hidden: {
-      opacity: 0
-    },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.12
-      }
-    }
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { staggerChildren: 0.12 } },
   };
   const easeOut: Easing = [0.0, 0.0, 0.2, 1];
   const itemVariants = {
-    hidden: {
-      opacity: 0,
-      y: 20
-    },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.5,
-        ease: easeOut
-      }
-    }
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: easeOut } },
   };
-  return <AppLayout title="Accueil">
+
+  return (
+    <AppLayout title="Accueil">
       <motion.div className="space-y-5 pb-6" variants={containerVariants} initial="hidden" animate="visible">
-        {/* Samsung Internet Banner */}
         <SamsungBanner />
-        
-        {/* Daily Reminder Banner */}
         <DailyReminderBanner isVisible={showNotification} onDismiss={dismissNotification} />
 
-        {/* Greeting Header */}
-        <motion.div className="text-center pt-2 pb-4" variants={itemVariants}>
-          <h2 className="font-display text-2xl font-bold text-foreground mb-1">
-            {displayName ? `Bienvenue, ${displayName} 🌸` : 'Bienvenue 🌸'}
+        {/* Greeting */}
+        <motion.div className="text-center pt-2 pb-2" variants={itemVariants}>
+          <h2 className="text-2xl font-bold tracking-tight" style={{ fontFamily: "'Inter', sans-serif", color: COLORS.emerald }}>
+            {displayName ? `Bienvenue, ${displayName} 🌿` : 'Bienvenue 🌿'}
           </h2>
-          <p className="text-muted-foreground text-lg">{greeting()}</p>
+          <p className="text-muted-foreground text-base mt-1">{greeting()}</p>
         </motion.div>
 
-
-        {/* Daily Progress Card - Full Width */}
+        {/* EN-TÊTE FONDATEUR — Pages lues + Ma Tillawah fusionnées */}
         <motion.div variants={itemVariants}>
-          <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-mint via-mint/90 to-success/70 p-5 shadow-lg">
-            {/* Decorative geometric elements */}
-            <div className="absolute -top-6 -right-6 w-28 h-28 rounded-full bg-white/20 blur-xl" />
-            <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-black/5 to-transparent" />
-            
-            <div className="relative z-10">
-              <div className="flex items-center justify-between mb-3">
-                <div>
-                  <p className="text-primary-foreground/70 text-base font-medium mb-0.5">Aujourd'hui</p>
-                  <p className="text-4xl font-display font-bold text-primary-foreground">
-                    {todayProgress}
-                  </p>
-                  <p className="text-primary-foreground/80 text-lg font-medium">pages lues</p>
-                </div>
-                <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                  <BookOpen className="h-7 w-7 text-primary-foreground" />
-                </div>
+          <div
+            className="relative overflow-hidden rounded-[2rem] p-5"
+            style={{
+              background: COLORS.beige,
+              border: `2px solid ${COLORS.emerald}30`,
+              boxShadow: `0 4px 24px -6px ${COLORS.emerald}15`,
+            }}
+          >
+            {/* Community link — top right */}
+            <Link
+              to="/cercle"
+              className="absolute top-4 right-4 w-10 h-10 rounded-xl flex items-center justify-center transition-colors"
+              style={{ background: `${COLORS.emerald}12` }}
+            >
+              <Users className="h-5 w-5" style={{ color: COLORS.emerald }} />
+            </Link>
+
+            <div className="flex items-center gap-4">
+              <div
+                className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0"
+                style={{ background: `${COLORS.gold}18`, border: `1px solid ${COLORS.gold}30` }}
+              >
+                <BookOpen className="h-7 w-7" style={{ color: COLORS.goldAccent }} />
               </div>
-              
-              <div className="flex items-center gap-2 bg-white/15 backdrop-blur-sm rounded-xl px-3 py-2.5 w-fit">
-                <div className="flex -space-x-1">
-                  {[...Array(7)].map((_, i) => <div key={i} className={`w-4 h-4 rounded-full border-2 border-primary/50 ${i < weeklyStreak ? 'bg-white' : 'bg-white/30'}`} />)}
-                </div>
-                <span className="text-primary-foreground font-semibold text-sm ml-1">
-                  {weeklyStreak}/7 jours cette semaine
-                </span>
+              <div>
+                <p className="text-sm font-medium" style={{ color: COLORS.sage }}>Aujourd'hui</p>
+                <p className="text-3xl font-bold" style={{ color: COLORS.emerald }}>{todayProgress}</p>
+                <p className="text-sm font-medium" style={{ color: COLORS.sage }}>pages lues</p>
               </div>
             </div>
+
+            {/* Weekly streak dots */}
+            <div className="flex items-center gap-2 mt-4 px-1">
+              <div className="flex -space-x-0.5">
+                {[...Array(7)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="w-4 h-4 rounded-full border-2"
+                    style={{
+                      borderColor: COLORS.emerald + '50',
+                      background: i < weeklyStreak ? COLORS.emerald : COLORS.greenMist,
+                    }}
+                  />
+                ))}
+              </div>
+              <span className="text-xs font-semibold ml-1" style={{ color: COLORS.sage }}>
+                {weeklyStreak}/7 jours
+              </span>
+            </div>
+
+            {/* Ma Tillawah sub-link */}
+            <Link to="/planificateur" className="block mt-4">
+              <div
+                className="flex items-center gap-3 rounded-xl px-4 py-3 transition-colors"
+                style={{ background: `${COLORS.emerald}08`, border: `1px solid ${COLORS.emerald}15` }}
+              >
+                <Target className="h-5 w-5" style={{ color: COLORS.goldAccent }} />
+                <span className="text-sm font-semibold" style={{ color: COLORS.emerald }}>Ma Tillawah — Définir mon objectif</span>
+              </div>
+            </Link>
           </div>
         </motion.div>
 
-        {/* Weekly Report */}
-        {user && readingGoal && (
-          <motion.div variants={itemVariants}>
-            <RamadanWeeklyReport firstName={readingGoal.first_name} dailyPages={readingGoal.daily_pages} />
-          </motion.div>
-        )}
+        {/* Toggle Tabs */}
+        <motion.div variants={itemVariants} className="flex rounded-2xl p-1" style={{ background: COLORS.greenMist }}>
+          <button
+            onClick={() => setActiveTab('principal')}
+            className="flex-1 py-3 rounded-xl text-sm font-bold tracking-wide uppercase transition-all"
+            style={{
+              fontFamily: "'Inter', sans-serif",
+              background: activeTab === 'principal' ? COLORS.emerald : 'transparent',
+              color: activeTab === 'principal' ? '#fff' : COLORS.emerald,
+              letterSpacing: '0.06em',
+            }}
+          >
+            Principal
+          </button>
+          <button
+            onClick={() => setActiveTab('univers')}
+            className="flex-1 py-3 rounded-xl text-sm font-bold tracking-wide uppercase transition-all"
+            style={{
+              fontFamily: "'Inter', sans-serif",
+              background: activeTab === 'univers' ? COLORS.emerald : 'transparent',
+              color: activeTab === 'univers' ? '#fff' : COLORS.emerald,
+              letterSpacing: '0.06em',
+            }}
+          >
+            Mon Univers
+          </button>
+        </motion.div>
 
-        {/* Action Cards */}
-        <motion.div variants={itemVariants}>
-          <div className="space-y-4">
-            {/* Mushaf Reader Card - Admin only for now */}
-            {isAdmin ? (
-              <Link to="/quran-reader" className="block">
-                <motion.div
-                  className="relative overflow-hidden rounded-[2rem] p-8 group"
+        {/* ═══════ ONGLET PRINCIPAL ═══════ */}
+        {activeTab === 'principal' && (
+          <motion.div className="space-y-4" variants={containerVariants} initial="hidden" animate="visible">
+
+            {/* LE NOBLE CORAN */}
+            <motion.div variants={itemVariants}>
+              {isAdmin ? (
+                <Link to="/quran-reader" className="block">
+                  <motion.div
+                    className="relative overflow-hidden rounded-[2rem] p-8 group"
+                    style={{
+                      background: COLORS.beige,
+                      border: `2px solid ${COLORS.emerald}35`,
+                      boxShadow: `0 6px 24px -8px ${COLORS.emerald}15`,
+                    }}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <div className="absolute -bottom-6 -right-6 w-32 h-32 rounded-full blur-2xl" style={{ background: `${COLORS.gold}08` }} />
+                    <div className="relative z-10 flex items-center justify-center gap-5">
+                      <div
+                        className="w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0"
+                        style={{ background: `${COLORS.gold}18`, border: `1px solid ${COLORS.gold}30` }}
+                      >
+                        <BookOpenCheck className="h-9 w-9" style={{ color: COLORS.goldAccent }} />
+                      </div>
+                      <div className="flex-1 text-center">
+                        <h3
+                          className="text-xl font-bold tracking-[0.1em] uppercase"
+                          style={{ fontFamily: "'Inter', sans-serif", color: COLORS.goldAccent }}
+                        >
+                          Le Noble Coran
+                        </h3>
+                      </div>
+                    </div>
+                  </motion.div>
+                </Link>
+              ) : (
+                <div
+                  className="relative overflow-hidden rounded-[2rem] p-8 opacity-75"
                   style={{
-                    background: 'linear-gradient(135deg, #8ed1c4 0%, #a0d9ce 50%, #8ed1c4 100%)',
-                    border: '2px solid rgba(180,150,60,0.4)',
-                    boxShadow: '0 8px 32px -8px rgba(142,209,196,0.4), inset 0 0 30px rgba(180,150,60,0.06), 0 0 0 1px rgba(180,150,60,0.15)',
+                    background: COLORS.beige,
+                    border: `2px solid ${COLORS.emerald}25`,
                   }}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  transition={{ duration: 0.2 }}
                 >
-                  {/* Gold filigree overlay */}
-                  <div className="absolute inset-0 pointer-events-none" style={{
-                    background: 'radial-gradient(ellipse at 20% 80%, rgba(212,175,55,0.08) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(212,175,55,0.06) 0%, transparent 60%)',
-                  }} />
-                  <div className="absolute -bottom-4 -right-4 w-32 h-32 rounded-full blur-xl group-hover:opacity-70 transition-opacity" style={{ background: 'rgba(212,175,55,0.08)' }} />
-                  <div className="absolute top-4 right-8 w-8 h-8 rounded-lg rotate-12" style={{ background: 'rgba(212,175,55,0.06)' }} />
                   <div className="relative z-10 flex items-center justify-center gap-5">
                     <div
                       className="w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0"
-                      style={{
-                        background: 'linear-gradient(135deg, rgba(212,175,55,0.25), rgba(212,175,55,0.1))',
-                        boxShadow: '0 4px 16px rgba(212,175,55,0.15), inset 0 1px 0 rgba(255,255,255,0.15)',
-                        border: '1px solid rgba(212,175,55,0.3)',
-                      }}
+                      style={{ background: `${COLORS.gold}12`, border: `1px solid ${COLORS.gold}20` }}
                     >
-                      <BookOpenCheck className="h-9 w-9" style={{ color: '#d4af37' }} />
+                      <BookOpenCheck className="h-9 w-9" style={{ color: COLORS.goldAccent }} />
                     </div>
                     <div className="flex-1 text-center">
-                      <h3 className="text-2xl font-semibold tracking-[0.15em] uppercase" style={{ fontFamily: "'Playfair Display', 'Georgia', serif", color: '#6b5417' }}>Le Noble Coran</h3>
+                      <h3
+                        className="text-xl font-bold tracking-[0.1em] uppercase"
+                        style={{ fontFamily: "'Inter', sans-serif", color: COLORS.goldAccent }}
+                      >
+                        Le Noble Coran
+                      </h3>
+                      <p className="text-sm mt-1" style={{ color: `${COLORS.sage}90` }}>Bientôt disponible in shaa Allah</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </motion.div>
+
+            {/* ESPACE HIFZ */}
+            <motion.div variants={itemVariants}>
+              <Link to="/hifz" className="block">
+                <motion.div
+                  className="relative overflow-hidden rounded-[2rem] p-7 group"
+                  style={{
+                    background: `linear-gradient(135deg, ${COLORS.emerald} 0%, ${COLORS.emeraldLight} 100%)`,
+                    border: `2px solid ${COLORS.gold}40`,
+                    boxShadow: `0 8px 32px -8px ${COLORS.emerald}50`,
+                  }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <div className="absolute -bottom-4 -right-4 w-32 h-32 rounded-full blur-xl" style={{ background: `${COLORS.gold}10` }} />
+                  <div className="relative z-10 flex items-center gap-5">
+                    <div
+                      className="w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0"
+                      style={{ background: `${COLORS.gold}22`, border: `1px solid ${COLORS.gold}35` }}
+                    >
+                      <BookOpen className="h-8 w-8" style={{ color: COLORS.goldAccent }} />
+                    </div>
+                    <div className="flex-1">
+                      <h3
+                        className="text-xl font-bold tracking-[0.08em] uppercase"
+                        style={{ fontFamily: "'Inter', sans-serif", color: COLORS.goldAccent }}
+                      >
+                        Espace Hifz
+                      </h3>
+                      <p className="text-white/70 text-sm mt-1">Mémoriser le Noble Coran</p>
                     </div>
                   </div>
                 </motion.div>
               </Link>
-            ) : (
-              <div className="block cursor-default">
-                <div
-                  className="relative overflow-hidden rounded-[2rem] p-8"
+            </motion.div>
+
+            {/* MURAJA'A */}
+            <motion.div variants={itemVariants}>
+              <Link to="/muraja" className="block">
+                <motion.div
+                  className="relative overflow-hidden rounded-[2rem] p-7 group"
                   style={{
-                    background: 'linear-gradient(135deg, #8ed1c4 0%, #a0d9ce 50%, #8ed1c4 100%)',
-                    border: '2px solid rgba(180,150,60,0.3)',
-                    boxShadow: '0 4px 20px -6px rgba(142,209,196,0.3), inset 0 0 20px rgba(180,150,60,0.04)',
-                    opacity: 0.75,
+                    background: `linear-gradient(135deg, ${COLORS.sage} 0%, ${COLORS.sageLight} 100%)`,
+                    border: `2px solid ${COLORS.gold}40`,
+                    boxShadow: `0 8px 32px -8px ${COLORS.sage}50`,
                   }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                 >
-                  <div className="absolute inset-0 pointer-events-none" style={{
-                    background: 'radial-gradient(ellipse at 20% 80%, rgba(212,175,55,0.06) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(212,175,55,0.04) 0%, transparent 60%)',
-                  }} />
-                  <div className="relative z-10 flex items-center justify-center gap-5">
+                  <div className="absolute -bottom-4 -right-4 w-32 h-32 rounded-full blur-xl" style={{ background: `${COLORS.gold}10` }} />
+                  <div className="relative z-10 flex items-center gap-5">
                     <div
                       className="w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0"
-                      style={{
-                        background: 'linear-gradient(135deg, rgba(212,175,55,0.2), rgba(212,175,55,0.08))',
-                        border: '1px solid rgba(212,175,55,0.2)',
-                      }}
+                      style={{ background: `${COLORS.gold}22`, border: `1px solid ${COLORS.gold}35` }}
                     >
-                      <BookOpenCheck className="h-9 w-9" style={{ color: '#d4af37' }} />
-                    </div>
-                    <div className="flex-1 text-center">
-                      <h3 className="text-2xl font-semibold tracking-[0.15em] uppercase" style={{ fontFamily: "'Playfair Display', 'Georgia', serif", color: '#6b5417' }}>Le Noble Coran</h3>
-                      <p className="text-sm mt-1" style={{ color: 'rgba(107,84,23,0.5)' }}>Bientôt disponible in shaa Allah</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Espace Hifz Card */}
-            <Link to="/hifz" className="block">
-              <motion.div
-                className="relative overflow-hidden rounded-[2rem] p-7 group"
-                style={{
-                  background: 'linear-gradient(135deg, #0d7377 0%, #14919b 50%, #0d7377 100%)',
-                  border: '2px solid rgba(212,175,55,0.4)',
-                  boxShadow: '0 8px 32px -8px rgba(13,115,119,0.4), inset 0 0 30px rgba(212,175,55,0.06), 0 0 0 1px rgba(212,175,55,0.15)',
-                }}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                transition={{ duration: 0.2 }}
-              >
-                <div className="absolute -bottom-4 -right-4 w-32 h-32 rounded-full blur-xl group-hover:opacity-70 transition-opacity" style={{ background: 'rgba(212,175,55,0.08)' }} />
-                <div className="relative z-10 flex items-center gap-5">
-                  <div
-                    className="w-20 h-20 rounded-2xl flex items-center justify-center flex-shrink-0"
-                    style={{
-                      background: 'linear-gradient(135deg, rgba(212,175,55,0.25), rgba(212,175,55,0.1))',
-                      border: '1px solid rgba(212,175,55,0.3)',
-                    }}
-                  >
-                    <BookOpen className="h-12 w-12" style={{ color: '#d4af37' }} />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-2xl font-bold tracking-[0.1em] uppercase" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#d4af37' }}>Espace Hifz</h3>
-                    <p className="text-white/70 text-base mt-1">Mémoriser le Noble Coran</p>
-                  </div>
-                </div>
-              </motion.div>
-            </Link>
-
-            {/* Muraja'a Card */}
-            <Link to="/muraja" className="block">
-              <motion.div
-                className="relative overflow-hidden rounded-[2rem] p-7 group"
-                style={{
-                  background: 'linear-gradient(135deg, #0d7377 0%, #14919b 50%, #0d7377 100%)',
-                  border: '2px solid rgba(212,175,55,0.4)',
-                  boxShadow: '0 8px 32px -8px rgba(13,115,119,0.4), inset 0 0 30px rgba(212,175,55,0.06), 0 0 0 1px rgba(212,175,55,0.15)',
-                }}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                transition={{ duration: 0.2 }}
-              >
-                <div className="absolute -bottom-4 -right-4 w-32 h-32 rounded-full blur-xl group-hover:opacity-70 transition-opacity" style={{ background: 'rgba(212,175,55,0.08)' }} />
-                <div className="relative z-10 flex items-center gap-5">
-                  <div
-                    className="w-20 h-20 rounded-2xl flex items-center justify-center flex-shrink-0"
-                    style={{
-                      background: 'linear-gradient(135deg, rgba(212,175,55,0.25), rgba(212,175,55,0.1))',
-                      border: '1px solid rgba(212,175,55,0.3)',
-                    }}
-                  >
-                    <RefreshCw className="h-12 w-12" style={{ color: '#d4af37' }} />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-2xl font-bold tracking-[0.1em] uppercase" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#d4af37' }}>Muraja'a</h3>
-                    <p className="text-white/70 text-base mt-1">Réviser et consolider</p>
-                  </div>
-                </div>
-              </motion.div>
-            </Link>
-
-            {/* Mon Suivi Card */}
-            <Link to="/hifz-suivi" className="block">
-              <motion.div
-                className="relative overflow-hidden rounded-[2rem] p-7 group"
-                style={{
-                  background: 'linear-gradient(135deg, #0d7377 0%, #14919b 50%, #0d7377 100%)',
-                  border: '2px solid rgba(212,175,55,0.4)',
-                  boxShadow: '0 8px 32px -8px rgba(13,115,119,0.4), inset 0 0 30px rgba(212,175,55,0.06), 0 0 0 1px rgba(212,175,55,0.15)',
-                }}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                transition={{ duration: 0.2 }}
-              >
-                <div className="absolute -bottom-4 -right-4 w-32 h-32 rounded-full blur-xl group-hover:opacity-70 transition-opacity" style={{ background: 'rgba(212,175,55,0.08)' }} />
-                <div className="relative z-10 flex items-center gap-5">
-                  <div
-                    className="w-20 h-20 rounded-2xl flex items-center justify-center flex-shrink-0"
-                    style={{
-                      background: 'linear-gradient(135deg, rgba(212,175,55,0.25), rgba(212,175,55,0.1))',
-                      border: '1px solid rgba(212,175,55,0.3)',
-                    }}
-                  >
-                    <BarChart3 className="h-12 w-12" style={{ color: '#d4af37' }} />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-2xl font-bold tracking-[0.1em] uppercase" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#d4af37' }}>Mon Suivi</h3>
-                    <p className="text-white/70 text-base mt-1">Statistiques et progression</p>
-                  </div>
-                </div>
-              </motion.div>
-            </Link>
-
-            <Link to="/planificateur" className="block">
-              <motion.div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-peach via-secondary to-peach/60 p-7 shadow-lg group" whileHover={{
-              scale: 1.02
-            }} whileTap={{
-              scale: 0.98
-            }} transition={{
-              duration: 0.2
-            }}>
-                {/* Decorative shapes */}
-                <div className="absolute -bottom-4 -right-4 w-32 h-32 rounded-full bg-white/20 blur-xl group-hover:bg-white/30 transition-colors" />
-                <div className="absolute top-4 right-8 w-8 h-8 rounded-lg rotate-12 bg-white/10" />
-                
-                <div className="relative z-10 flex items-center gap-5">
-                  <div className="w-20 h-20 rounded-2xl bg-white/30 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
-                    <Target className="h-12 w-12 text-peach-foreground" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-display text-3xl font-bold text-foreground">Ma Tillawah </h3>
-                    <p className="text-muted-foreground text-xl mt-1">
-                      Définir mon objectif de lecture
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-            </Link>
-
-            {/* Espace Dhikr Card - Inactive */}
-            <div className="block opacity-70 cursor-default">
-              <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-lavender via-lavender/80 to-secondary/50 p-7 shadow-lg">
-                <div className="absolute -top-6 -right-6 w-32 h-32 rounded-full bg-white/15 blur-xl" />
-                <div className="absolute bottom-4 left-6 w-8 h-8 rounded-lg rotate-12 bg-white/10" />
-                
-                <div className="relative z-10">
-                  <div className="flex items-center gap-5 mb-5">
-                    <div className="w-20 h-20 rounded-2xl bg-white/30 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
-                      <Moon className="h-12 w-12 text-foreground/60" />
+                      <RefreshCw className="h-8 w-8" style={{ color: COLORS.goldAccent }} />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-display text-3xl font-bold text-foreground">Espace Dhikr</h3>
-                      <p className="text-muted-foreground text-lg mt-1">Bientôt disponible in shaa Allah</p>
+                      <h3
+                        className="text-xl font-bold tracking-[0.08em] uppercase"
+                        style={{ fontFamily: "'Inter', sans-serif", color: COLORS.goldAccent }}
+                      >
+                        Muraja'a
+                      </h3>
+                      <p className="text-white/70 text-sm mt-1">Réviser et consolider</p>
                     </div>
                   </div>
-                  
-                  <div className="space-y-2">
-                    <button disabled className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/20 backdrop-blur-sm text-muted-foreground cursor-not-allowed">
-                      <Sunrise className="h-5 w-5" />
-                      <span className="text-sm font-medium">Zikr du matin</span>
-                      <span className="ml-auto text-xs bg-white/30 px-2 py-0.5 rounded-full">Bientôt</span>
-                    </button>
-                    <button disabled className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/20 backdrop-blur-sm text-muted-foreground cursor-not-allowed">
-                      <Sun className="h-5 w-5" />
-                      <span className="text-sm font-medium">Zikr après chaque prière</span>
-                      <span className="ml-auto text-xs bg-white/30 px-2 py-0.5 rounded-full">Bientôt</span>
-                    </button>
-                    <button disabled className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/20 backdrop-blur-sm text-muted-foreground cursor-not-allowed">
-                      <Moon className="h-5 w-5" />
-                      <span className="text-sm font-medium">Zikr du soir</span>
-                      <span className="ml-auto text-xs bg-white/30 px-2 py-0.5 rounded-full">Bientôt</span>
-                    </button>
+                </motion.div>
+              </Link>
+            </motion.div>
+
+            {/* GRILLE SECONDAIRE — Mon Suivi + Espace Dhikr */}
+            <motion.div variants={itemVariants} className="grid grid-cols-2 gap-3">
+              {/* Mon Suivi */}
+              <Link to="/hifz-suivi" className="block">
+                <motion.div
+                  className="relative overflow-hidden rounded-2xl p-5 aspect-square flex flex-col items-center justify-center text-center group"
+                  style={{
+                    background: COLORS.greenMist,
+                    border: `1.5px solid ${COLORS.emerald}20`,
+                  }}
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                >
+                  <div
+                    className="w-12 h-12 rounded-xl flex items-center justify-center mb-3"
+                    style={{ background: `${COLORS.gold}18`, border: `1px solid ${COLORS.gold}25` }}
+                  >
+                    <BarChart3 className="h-6 w-6" style={{ color: COLORS.goldAccent }} />
                   </div>
+                  <h4
+                    className="text-sm font-bold tracking-[0.06em] uppercase"
+                    style={{ fontFamily: "'Inter', sans-serif", color: COLORS.emerald }}
+                  >
+                    Mon Suivi
+                  </h4>
+                  <p className="text-xs mt-1" style={{ color: COLORS.sage }}>Statistiques</p>
+                </motion.div>
+              </Link>
+
+              {/* Espace Dhikr — Bientôt */}
+              <div className="block opacity-65 cursor-default">
+                <div
+                  className="relative overflow-hidden rounded-2xl p-5 aspect-square flex flex-col items-center justify-center text-center"
+                  style={{
+                    background: COLORS.greenMist,
+                    border: `1.5px solid ${COLORS.emerald}15`,
+                  }}
+                >
+                  <div
+                    className="w-12 h-12 rounded-xl flex items-center justify-center mb-3"
+                    style={{ background: `${COLORS.gold}12`, border: `1px solid ${COLORS.gold}18` }}
+                  >
+                    <Moon className="h-6 w-6" style={{ color: COLORS.goldAccent }} />
+                  </div>
+                  <h4
+                    className="text-sm font-bold tracking-[0.06em] uppercase"
+                    style={{ fontFamily: "'Inter', sans-serif", color: COLORS.emerald }}
+                  >
+                    Espace Dhikr
+                  </h4>
+                  <p className="text-xs mt-1" style={{ color: COLORS.sage }}>Bientôt in shaa Allah</p>
                 </div>
               </div>
-            </div>
-
-            {/* Cercle Card */}
-            <Link to="/cercle" className="block">
-              <motion.div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-accent via-accent/70 to-sky/50 p-7 shadow-lg group" whileHover={{
-              scale: 1.02
-            }} whileTap={{
-              scale: 0.98
-            }} transition={{
-              duration: 0.2
-            }}>
-                {/* Decorative shapes */}
-                <div className="absolute -top-4 -left-4 w-28 h-28 rounded-full bg-white/15 blur-xl group-hover:bg-white/25 transition-colors" />
-                <div className="absolute bottom-6 right-6 w-10 h-10 rounded-full bg-white/10" />
-                
-                <div className="relative z-10 flex items-center gap-5">
-                  <div className="w-20 h-20 rounded-2xl bg-white/30 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
-                    <Users className="h-12 w-12 text-accent-foreground" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-display text-3xl font-bold text-foreground">Espace Communauté</h3>
-                    <p className="text-muted-foreground text-xl mt-1">
-                      Rejoindre la communauté
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-            </Link>
-          </div>
-        </motion.div>
-
-
-
-        {/* PWA Install CTA - Only in standard browser, never in standalone */}
-        {!isInstalled && isInstallable && (
-          <motion.div variants={itemVariants}>
-            <motion.button
-              onClick={() => {
-                if (isIOS) {
-                  // On iOS, show a guide since we can't trigger install programmatically
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                  toast('📲 Pour installer l\'app', {
-                    description: 'Appuie sur le bouton Partager (⎙) puis "Sur l\'écran d\'accueil"',
-                    duration: 8000,
-                  });
-                } else {
-                  promptInstall();
-                }
-              }}
-              className="w-full relative overflow-hidden rounded-[2rem] p-8 shadow-2xl bg-gradient-to-r from-[hsl(var(--destructive))] via-[hsl(20,80%,55%)] to-[hsl(40,90%,55%)] group border-2 border-white/20"
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.96 }}
-              transition={{ duration: 0.2 }}
-              animate={{ 
-                boxShadow: [
-                  '0 10px 40px -10px hsla(20, 80%, 55%, 0.4)',
-                  '0 10px 50px -10px hsla(20, 80%, 55%, 0.6)',
-                  '0 10px 40px -10px hsla(20, 80%, 55%, 0.4)',
-                ],
-              }}
-            >
-              <div className="absolute -top-8 -right-8 w-40 h-40 rounded-full bg-white/20 blur-xl" />
-              <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full bg-white/15 blur-lg" />
-              <div className="absolute top-4 left-8 w-6 h-6 rounded-full bg-white/20 animate-pulse" />
-              <div className="relative z-10 flex items-center justify-center gap-5">
-                <div className="w-16 h-16 rounded-2xl bg-white/30 backdrop-blur-sm flex items-center justify-center">
-                  <Download className="h-9 w-9 text-white" />
-                </div>
-                <div className="text-left">
-                  <p className="text-3xl font-display font-bold text-white tracking-tight">📲 Télécharger</p>
-                  <p className="text-white/85 text-lg mt-0.5">Installe l'app sur ton téléphone</p>
-                </div>
-              </div>
-            </motion.button>
+            </motion.div>
           </motion.div>
         )}
 
-        {/* Share App Button */}
-        <motion.div variants={itemVariants}>
-          <motion.button
-            onClick={() => {
-              const shareData = {
-                title: 'Ma Khatma',
-                text: "Salam ! Je t'invite à découvrir Ma Khatma, l'application qui m'aide à rester constante dans ma lecture du Coran et mes adorations. Rejoins-nous ici :",
-                url: 'https://www.makhatma.com',
-              };
-              if (navigator.share) {
-                navigator.share(shareData).catch(() => {});
-              } else {
-                navigator.clipboard.writeText(shareData.text + ' ' + shareData.url);
-                toast.success('Lien copié dans le presse-papiers !');
-              }
-            }}
-            className="w-full flex items-center justify-center gap-3 py-5 rounded-[2rem] bg-primary/10 hover:bg-primary/15 transition-colors"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.97 }}
-          >
-            <Share2 className="h-6 w-6 text-primary" />
-            <span className="font-display text-xl font-semibold text-primary">Partager l'application</span>
-          </motion.button>
-        </motion.div>
+        {/* ═══════ ONGLET MON UNIVERS ═══════ */}
+        {activeTab === 'univers' && (
+          <motion.div className="space-y-4" variants={containerVariants} initial="hidden" animate="visible">
 
-        {/* Spiritual Quote - Bottom */}
-        <motion.div variants={itemVariants} className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-lavender/40 via-secondary/30 to-mint/20 p-8 shadow-inner border border-primary/10" initial={{ opacity: 0, y: 30, scale: 0.97 }} whileInView={{ opacity: 1, y: 0, scale: 1 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }}>
-          <div className="absolute -top-10 -right-10 w-36 h-36 rounded-full bg-primary/5 blur-2xl" />
-          <div className="absolute bottom-0 left-0 w-24 h-24 rounded-full bg-mint/10 blur-xl" />
-          <p className="relative z-10 font-display text-xl leading-relaxed text-foreground/90 italic text-center">
-            « Ô les croyants ! On vous a prescrit le jeûne comme on l'a prescrit à ceux d'avant vous, ainsi atteindrez-vous la piété »
-          </p>
-          <p className="relative z-10 text-base text-muted-foreground mt-3 text-center font-medium">
-            — Sourate Al-Baqara, verset 183
-          </p>
-        </motion.div>
+            {/* Ma Tillawah */}
+            <motion.div variants={itemVariants}>
+              <Link to="/planificateur" className="block">
+                <motion.div
+                  className="relative overflow-hidden rounded-[2rem] p-7 group"
+                  style={{
+                    background: COLORS.beige,
+                    border: `2px solid ${COLORS.emerald}30`,
+                    boxShadow: `0 4px 20px -6px ${COLORS.emerald}12`,
+                  }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <div className="relative z-10 flex items-center gap-5">
+                    <div
+                      className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0"
+                      style={{ background: `${COLORS.gold}18`, border: `1px solid ${COLORS.gold}28` }}
+                    >
+                      <Target className="h-7 w-7" style={{ color: COLORS.goldAccent }} />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-lg font-bold tracking-[0.06em] uppercase" style={{ fontFamily: "'Inter', sans-serif", color: COLORS.emerald }}>
+                        Ma Tillawah
+                      </h3>
+                      <p className="text-sm mt-1" style={{ color: COLORS.sage }}>Définir mon objectif de lecture</p>
+                    </div>
+                  </div>
+                </motion.div>
+              </Link>
+            </motion.div>
+
+            {/* Espace Communauté */}
+            <motion.div variants={itemVariants}>
+              <Link to="/cercle" className="block">
+                <motion.div
+                  className="relative overflow-hidden rounded-[2rem] p-7 group"
+                  style={{
+                    background: `linear-gradient(135deg, ${COLORS.emerald} 0%, ${COLORS.emeraldLight} 100%)`,
+                    border: `2px solid ${COLORS.gold}35`,
+                    boxShadow: `0 8px 28px -8px ${COLORS.emerald}40`,
+                  }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <div className="relative z-10 flex items-center gap-5">
+                    <div
+                      className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0"
+                      style={{ background: `${COLORS.gold}22`, border: `1px solid ${COLORS.gold}35` }}
+                    >
+                      <Users className="h-7 w-7" style={{ color: COLORS.goldAccent }} />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-lg font-bold tracking-[0.06em] uppercase" style={{ fontFamily: "'Inter', sans-serif", color: COLORS.goldAccent }}>
+                        Espace Communauté
+                      </h3>
+                      <p className="text-white/70 text-sm mt-1">Rejoindre la communauté</p>
+                    </div>
+                  </div>
+                </motion.div>
+              </Link>
+            </motion.div>
+
+            {/* Weekly Report */}
+            {user && readingGoal && (
+              <motion.div variants={itemVariants}>
+                <RamadanWeeklyReport firstName={readingGoal.first_name} dailyPages={readingGoal.daily_pages} />
+              </motion.div>
+            )}
+
+            {/* Spiritual Quote */}
+            <motion.div
+              variants={itemVariants}
+              className="relative overflow-hidden rounded-[2rem] p-8 border"
+              style={{
+                background: `linear-gradient(135deg, ${COLORS.greenMist}80, ${COLORS.beige})`,
+                borderColor: `${COLORS.emerald}15`,
+              }}
+            >
+              <div className="absolute -top-10 -right-10 w-36 h-36 rounded-full blur-2xl" style={{ background: `${COLORS.emerald}06` }} />
+              <p className="relative z-10 text-lg leading-relaxed italic text-center" style={{ color: COLORS.emerald, fontFamily: "'Inter', sans-serif" }}>
+                « Ô les croyants ! On vous a prescrit le jeûne comme on l'a prescrit à ceux d'avant vous, ainsi atteindrez-vous la piété »
+              </p>
+              <p className="relative z-10 text-sm mt-3 text-center font-medium" style={{ color: COLORS.sage }}>
+                — Sourate Al-Baqara, verset 183
+              </p>
+            </motion.div>
+
+            {/* PWA Install */}
+            {!isInstalled && isInstallable && (
+              <motion.div variants={itemVariants}>
+                <motion.button
+                  onClick={() => {
+                    if (isIOS) {
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                      toast('📲 Pour installer l\'app', {
+                        description: 'Appuie sur le bouton Partager (⎙) puis "Sur l\'écran d\'accueil"',
+                        duration: 8000,
+                      });
+                    } else {
+                      promptInstall();
+                    }
+                  }}
+                  className="w-full relative overflow-hidden rounded-[2rem] p-7 group border-2"
+                  style={{
+                    background: `linear-gradient(135deg, ${COLORS.emerald}, ${COLORS.emeraldLight})`,
+                    borderColor: `${COLORS.gold}40`,
+                    boxShadow: `0 8px 32px -8px ${COLORS.emerald}40`,
+                  }}
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.96 }}
+                >
+                  <div className="relative z-10 flex items-center justify-center gap-4">
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: `${COLORS.gold}22` }}>
+                      <Download className="h-6 w-6" style={{ color: COLORS.goldAccent }} />
+                    </div>
+                    <div className="text-left">
+                      <p className="text-lg font-bold text-white">📲 Télécharger</p>
+                      <p className="text-white/70 text-sm">Installe l'app sur ton téléphone</p>
+                    </div>
+                  </div>
+                </motion.button>
+              </motion.div>
+            )}
+
+            {/* Share Button */}
+            <motion.div variants={itemVariants}>
+              <motion.button
+                onClick={() => {
+                  const shareData = {
+                    title: 'Ma Khatma',
+                    text: "Salam ! Je t'invite à découvrir Ma Khatma, l'application qui m'aide à rester constante dans ma lecture du Coran et mes adorations. Rejoins-nous ici :",
+                    url: 'https://www.makhatma.com',
+                  };
+                  if (navigator.share) {
+                    navigator.share(shareData).catch(() => {});
+                  } else {
+                    navigator.clipboard.writeText(shareData.text + ' ' + shareData.url);
+                    toast.success('Lien copié dans le presse-papiers !');
+                  }
+                }}
+                className="w-full flex items-center justify-center gap-3 py-4 rounded-2xl transition-colors"
+                style={{ background: `${COLORS.emerald}10` }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.97 }}
+              >
+                <Share2 className="h-5 w-5" style={{ color: COLORS.emerald }} />
+                <span className="text-base font-bold" style={{ color: COLORS.emerald, fontFamily: "'Inter', sans-serif" }}>
+                  Partager l'application
+                </span>
+              </motion.button>
+            </motion.div>
+          </motion.div>
+        )}
       </motion.div>
+
       {/* Name Prompt Dialog */}
       <Dialog open={showNamePrompt} onOpenChange={setShowNamePrompt}>
         <DialogContent className="max-w-sm mx-4 rounded-3xl">
           <DialogHeader>
-            <DialogTitle className="font-display text-xl text-center">
-              Salam Aleykoum 🌙
+            <DialogTitle className="text-xl text-center" style={{ fontFamily: "'Inter', sans-serif", color: COLORS.emerald }}>
+              Salam Aleykoum 🌿
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4 pt-2">
-            <p className="text-center text-muted-foreground">
-              Comment vous appelez-vous ?
-            </p>
+            <p className="text-center text-muted-foreground">Comment vous appelez-vous ?</p>
             <Input
               value={guestName}
               onChange={(e) => setGuestName(e.target.value)}
@@ -557,12 +604,14 @@ export default function AccueilPage() {
             <Button
               onClick={handleSaveName}
               disabled={!guestName.trim()}
-              className="w-full bg-primary text-primary-foreground rounded-2xl"
+              className="w-full rounded-2xl"
+              style={{ background: COLORS.emerald, color: '#fff' }}
             >
               Bismillah ✨
             </Button>
           </div>
         </DialogContent>
       </Dialog>
-    </AppLayout>;
+    </AppLayout>
+  );
 }
