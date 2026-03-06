@@ -5,6 +5,9 @@ import { ArrowLeft, List, Bookmark, BookmarkCheck } from 'lucide-react';
 import { toast } from 'sonner';
 import { getSurahByPage } from '@/lib/surahData';
 import SurahDrawer from '@/components/quran/SurahDrawer';
+import QuranTextView from '@/components/quran/QuranTextView';
+import ReaderSettingsPanel from '@/components/quran/ReaderSettingsPanel';
+import { useQuranAudio } from '@/hooks/useQuranAudio';
 
 const TOTAL_PAGES = 604;
 
@@ -35,11 +38,34 @@ export default function QuranReaderPage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const retriesRef = useRef(0);
 
+  // Settings state
+  const [viewMode, setViewMode] = useState<'image' | 'text'>(() => {
+    return (localStorage.getItem('quran_view_mode') as 'image' | 'text') || 'image';
+  });
+  const [nightMode, setNightMode] = useState(() => {
+    return localStorage.getItem('quran_night_mode') === 'true';
+  });
+  const [fontSize, setFontSize] = useState(() => {
+    const saved = localStorage.getItem('quran_font_size');
+    return saved ? parseInt(saved) : 28;
+  });
+
+  // Persist settings
+  useEffect(() => { localStorage.setItem('quran_view_mode', viewMode); }, [viewMode]);
+  useEffect(() => { localStorage.setItem('quran_night_mode', String(nightMode)); }, [nightMode]);
+  useEffect(() => { localStorage.setItem('quran_font_size', String(fontSize)); }, [fontSize]);
+
   const [bookmark, setBookmark] = useState<number | null>(() => {
     const saved = localStorage.getItem('quran_bookmark');
     return saved ? parseInt(saved) : null;
   });
   const [pageInput, setPageInput] = useState(page.toString());
+
+  // Audio
+  const goNextAuto = useCallback(() => {
+    if (page < TOTAL_PAGES) { setDirection(1); setPage(p => Math.min(p + 1, TOTAL_PAGES)); }
+  }, [page]);
+  const { isPlaying, currentAyahNumber, loading: audioLoading, reciter, setReciter, togglePlay } = useQuranAudio(page, goNextAuto);
 
   const getPageUrl = useCallback((p: number, srcIdx?: number) => {
     const idx = srcIdx ?? preferredSourceRef.current;
@@ -57,20 +83,18 @@ export default function QuranReaderPage() {
 
   // Timeout: if image hangs, try next source
   useEffect(() => {
+    if (viewMode === 'text') return;
     if (imageLoaded) {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
       return;
     }
-    timeoutRef.current = setTimeout(() => {
-      tryNextSource();
-    }, 8000);
+    timeoutRef.current = setTimeout(() => { tryNextSource(); }, 8000);
     return () => { if (timeoutRef.current) clearTimeout(timeoutRef.current); };
-  }, [imageLoaded, sourceIndex, page]);
+  }, [imageLoaded, sourceIndex, page, viewMode]);
 
   const tryNextSource = useCallback(() => {
     retriesRef.current += 1;
     if (retriesRef.current >= IMAGE_SOURCES.length * 2) {
-      // Silent retry loop — restart from preferred
       retriesRef.current = 0;
       setSourceIndex(preferredSourceRef.current);
       return;
@@ -84,9 +108,7 @@ export default function QuranReaderPage() {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
   }, [sourceIndex]);
 
-  const handleImageError = useCallback(() => {
-    tryNextSource();
-  }, [tryNextSource]);
+  const handleImageError = useCallback(() => { tryNextSource(); }, [tryNextSource]);
 
   const handleBookmark = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -118,15 +140,16 @@ export default function QuranReaderPage() {
 
   useEffect(() => { localStorage.setItem('quran_reader_page', page.toString()); setPageInput(page.toString()); }, [page]);
 
-  // Preload adjacent pages
+  // Preload adjacent pages (image mode only)
   useEffect(() => {
+    if (viewMode !== 'image') return;
     [page - 1, page + 1, page - 2, page + 2].forEach(p => {
       if (p >= 1 && p <= TOTAL_PAGES) {
         const img = new window.Image();
         img.src = getPageUrl(p);
       }
     });
-  }, [page, getPageUrl]);
+  }, [page, getPageUrl, viewMode]);
 
   // Auto-hide controls
   const resetControlsTimer = useCallback(() => {
@@ -155,13 +178,12 @@ export default function QuranReaderPage() {
     Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
 
   const handleTouchStart = (e: React.TouchEvent) => {
+    if (viewMode === 'text') return; // Let text mode scroll naturally
     if (e.touches.length === 2) {
-      // Pinch start
       pinchRef.current = { dist: getDistance(e.touches[0], e.touches[1]), scale };
       panRef.current = null;
       touchStartRef.current = null;
     } else if (e.touches.length === 1 && scale > 1) {
-      // Pan start when zoomed
       panRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY, tx: translate.x, ty: translate.y };
       touchStartRef.current = null;
     } else if (e.touches.length === 1) {
@@ -170,6 +192,7 @@ export default function QuranReaderPage() {
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
+    if (viewMode === 'text') return;
     if (e.touches.length === 2 && pinchRef.current) {
       e.preventDefault();
       const newDist = getDistance(e.touches[0], e.touches[1]);
@@ -184,36 +207,27 @@ export default function QuranReaderPage() {
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
-    if (pinchRef.current) {
-      pinchRef.current = null;
-      return;
-    }
-    if (panRef.current) {
-      panRef.current = null;
-      return;
-    }
+    if (viewMode === 'text') return;
+    if (pinchRef.current) { pinchRef.current = null; return; }
+    if (panRef.current) { panRef.current = null; return; }
     if (!touchStartRef.current) return;
     const dx = e.changedTouches[0].clientX - touchStartRef.current.x;
     const dy = e.changedTouches[0].clientY - touchStartRef.current.y;
     touchStartRef.current = null;
-    if (scale > 1) return; // No swipe nav when zoomed
+    if (scale > 1) return;
     if (Math.abs(dx) < 50 || Math.abs(dy) > Math.abs(dx)) return;
     if (dx > 0) goNext();
     else goPrev();
   };
 
-  // Double-tap to zoom
+  // Double-tap to zoom (image mode only)
   const lastTapRef = useRef(0);
   const handleDoubleTap = (e: React.MouseEvent) => {
+    if (viewMode === 'text') return;
     const now = Date.now();
     if (now - lastTapRef.current < 300) {
       e.stopPropagation();
-      if (scale > 1) {
-        setScale(1);
-        setTranslate({ x: 0, y: 0 });
-      } else {
-        setScale(2.5);
-      }
+      if (scale > 1) { setScale(1); setTranslate({ x: 0, y: 0 }); } else { setScale(2.5); }
     }
     lastTapRef.current = now;
   };
@@ -232,13 +246,27 @@ export default function QuranReaderPage() {
     return () => window.removeEventListener('keydown', handler);
   }, [goNext, goPrev]);
 
+  const bgColor = nightMode ? '#0f1a0f' : '#f7f3eb';
+  const contentBg = nightMode ? '#1a2e1a' : '#ffffff';
+  const barBg = nightMode
+    ? 'linear-gradient(to bottom, rgba(15, 26, 15, 0.85), transparent)'
+    : 'linear-gradient(to bottom, rgba(42, 58, 37, 0.6), transparent)';
+  const barBgBottom = nightMode
+    ? 'linear-gradient(to top, rgba(15, 26, 15, 0.85), transparent)'
+    : 'linear-gradient(to top, rgba(42, 58, 37, 0.6), transparent)';
+
   return (
     <div
       ref={containerRef}
       className="fixed inset-0 flex flex-col z-50"
       onClick={() => resetControlsTimer()}
-      style={{ background: '#f7f3eb' }}
+      style={{ background: bgColor }}
     >
+      {/* Night mode filter for image mode */}
+      {nightMode && viewMode === 'image' && (
+        <div className="absolute inset-0 z-10 pointer-events-none" style={{ background: 'rgba(10, 20, 10, 0.35)', mixBlendMode: 'multiply' }} />
+      )}
+
       {/* Top Bar */}
       <AnimatePresence>
         {showControls && (
@@ -248,7 +276,7 @@ export default function QuranReaderPage() {
             exit={{ y: -60, opacity: 0 }}
             transition={{ duration: 0.25 }}
             className="absolute top-0 left-0 right-0 z-30 px-4 pt-3 pb-10"
-            style={{ background: 'linear-gradient(to bottom, rgba(42, 58, 37, 0.6), transparent)' }}
+            style={{ background: barBg }}
           >
             <div className="flex items-center justify-between">
               <button
@@ -276,44 +304,53 @@ export default function QuranReaderPage() {
 
       {/* Main Content */}
       <div
-        className="flex-1 relative overflow-hidden flex items-center justify-center touch-none"
+        className={`flex-1 relative overflow-hidden flex items-center justify-center ${viewMode === 'image' ? 'touch-none' : 'overflow-y-auto'}`}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
         onClick={handleDoubleTap}
-        style={{ background: '#ffffff' }}
+        style={{ background: contentBg }}
       >
-        <AnimatePresence initial={false} mode="popLayout">
-          <motion.div
-            key={page}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="absolute inset-0 flex items-center justify-center"
-          >
-            {!imageLoaded && (
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-8 h-8 border-4 rounded-full animate-spin" style={{ borderColor: '#7a8b6f', borderTopColor: 'transparent' }} />
-              </div>
-            )}
-            <img
-              key={`${page}-${sourceIndex}`}
-              src={getPageUrl(page, sourceIndex)}
-              alt={`Page ${page} du Mushaf`}
-              className="max-h-full max-w-full object-contain select-none"
-              draggable={false}
-              referrerPolicy="no-referrer"
-              onLoad={handleImageLoad}
-              onError={handleImageError}
-              style={{
-                opacity: imageLoaded ? 1 : 0,
-                transform: `scale(${scale}) translate(${translate.x / scale}px, ${translate.y / scale}px)`,
-                transition: pinchRef.current || panRef.current ? 'none' : 'opacity 0.2s, transform 0.2s',
-              }}
-            />
-          </motion.div>
-        </AnimatePresence>
+        {viewMode === 'image' ? (
+          <AnimatePresence initial={false} mode="popLayout">
+            <motion.div
+              key={page}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="absolute inset-0 flex items-center justify-center"
+            >
+              {!imageLoaded && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-8 h-8 border-4 rounded-full animate-spin" style={{ borderColor: '#7a8b6f', borderTopColor: 'transparent' }} />
+                </div>
+              )}
+              <img
+                key={`${page}-${sourceIndex}`}
+                src={getPageUrl(page, sourceIndex)}
+                alt={`Page ${page} du Mushaf`}
+                className="max-h-full max-w-full object-contain select-none"
+                draggable={false}
+                referrerPolicy="no-referrer"
+                onLoad={handleImageLoad}
+                onError={handleImageError}
+                style={{
+                  opacity: imageLoaded ? 1 : 0,
+                  transform: `scale(${scale}) translate(${translate.x / scale}px, ${translate.y / scale}px)`,
+                  transition: pinchRef.current || panRef.current ? 'none' : 'opacity 0.2s, transform 0.2s',
+                }}
+              />
+            </motion.div>
+          </AnimatePresence>
+        ) : (
+          <QuranTextView
+            page={page}
+            highlightAyah={currentAyahNumber}
+            fontSize={fontSize}
+            darkMode={nightMode}
+          />
+        )}
       </div>
 
       {/* Bottom Bar */}
@@ -325,7 +362,7 @@ export default function QuranReaderPage() {
             exit={{ y: 60, opacity: 0 }}
             transition={{ duration: 0.25 }}
             className="absolute bottom-0 left-0 right-0 z-30 px-4 pb-6 pt-10"
-            style={{ background: 'linear-gradient(to top, rgba(42, 58, 37, 0.6), transparent)' }}
+            style={{ background: barBgBottom }}
           >
             <div className="flex items-center gap-3">
               <button
@@ -349,6 +386,20 @@ export default function QuranReaderPage() {
                   <Bookmark className="h-5 w-5" style={{ color: '#e8e2d0' }} />
                 )}
               </button>
+
+              <ReaderSettingsPanel
+                viewMode={viewMode}
+                onViewModeChange={setViewMode}
+                nightMode={nightMode}
+                onNightModeChange={setNightMode}
+                fontSize={fontSize}
+                onFontSizeChange={setFontSize}
+                isPlaying={isPlaying}
+                audioLoading={audioLoading}
+                onTogglePlay={togglePlay}
+                reciter={reciter}
+                onReciterChange={setReciter}
+              />
 
               <div className="flex-1 flex items-center justify-center gap-2">
                 <span className="text-xs" style={{ color: 'rgba(240, 234, 217, 0.7)' }}>Page</span>
