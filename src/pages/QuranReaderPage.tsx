@@ -50,6 +50,39 @@ export default function QuranReaderPage() {
     return localStorage.getItem('quran_dark_mode') === 'true';
   });
 
+  const [bookmark, setBookmark] = useState<number | null>(() => {
+    const saved = localStorage.getItem('quran_bookmark');
+    return saved ? parseInt(saved) : null;
+  });
+
+  const handleBookmark = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (bookmark === page) {
+      // Remove bookmark
+      setBookmark(null);
+      localStorage.removeItem('quran_bookmark');
+      toast('Marque-page retiré');
+    } else if (bookmark !== null && bookmark !== page) {
+      // Navigate to bookmarked page
+      goToPage(bookmark);
+      toast(`Retour au marque-page · Page ${bookmark}`);
+    } else {
+      // Set bookmark
+      setBookmark(page);
+      localStorage.setItem('quran_bookmark', page.toString());
+      const s = getSurahByPage(page);
+      toast(`Marque-page enregistré · Page ${page}${s ? ` · ${s.name}` : ''}`);
+    }
+  };
+
+  const handleBookmarkLongPress = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setBookmark(page);
+    localStorage.setItem('quran_bookmark', page.toString());
+    const s = getSurahByPage(page);
+    toast(`Marque-page enregistré · Page ${page}${s ? ` · ${s.name}` : ''}`);
+  };
+
   const surah = getSurahByPage(page);
   const juz = Math.ceil(page / 20);
   const [showReciterSelect, setShowReciterSelect] = useState(false);
