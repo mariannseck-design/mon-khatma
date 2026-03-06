@@ -435,6 +435,8 @@ export default function QuranReaderPage() {
                     <Bookmark className="h-5 w-5" style={{ color: theme.iconColor }} />
                   )}
                 </button>
+
+                <div className="flex-1 flex flex-col gap-1">
                   <div className="text-center">
                     <span className="text-xs font-semibold" style={{ color: theme.pageCounter, fontFamily: "'Playfair Display', serif" }}>
                       Page {page} / {TOTAL_PAGES}
