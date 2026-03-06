@@ -358,13 +358,18 @@ export default function QuranReaderPage() {
                   min={1}
                   max={TOTAL_PAGES}
                   value={pageInput}
-                  onChange={(e) => setPageInput(e.target.value)}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setPageInput(val);
+                    const v = parseInt(val);
+                    if (!isNaN(v) && v >= 1 && v <= TOTAL_PAGES) {
+                      goToPage(v);
+                    }
+                  }}
                   onFocus={(e) => e.target.select()}
                   onBlur={() => {
                     const v = parseInt(pageInput);
-                    if (!isNaN(v) && v >= 1 && v <= TOTAL_PAGES) {
-                      goToPage(v);
-                    } else {
+                    if (isNaN(v) || v < 1 || v > TOTAL_PAGES) {
                       setPageInput(page.toString());
                     }
                   }}
