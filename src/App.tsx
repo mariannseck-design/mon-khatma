@@ -20,6 +20,9 @@ import RamadanPage from "./pages/RamadanPage";
 import AdminPage from "./pages/AdminPage";
 import ProfilPage from "./pages/ProfilPage";
 import ParametresPage from "./pages/ParametresPage";
+import HifzPage from "./pages/HifzPage";
+import MurjaPage from "./pages/MurjaPage";
+import HifzSuiviPage from "./pages/HifzSuiviPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -80,6 +83,9 @@ function AppRoutes() {
       <Route path="/profil" element={<ProtectedRoute><ProfilPage /></ProtectedRoute>} />
       <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
       <Route path="/parametres" element={<ProtectedRoute><ParametresPage /></ProtectedRoute>} />
+      <Route path="/hifz" element={<ProtectedRoute><HifzPage /></ProtectedRoute>} />
+      <Route path="/muraja" element={<ProtectedRoute><MurjaPage /></ProtectedRoute>} />
+      <Route path="/hifz-suivi" element={<ProtectedRoute><HifzSuiviPage /></ProtectedRoute>} />
       
       <Route path="*" element={<NotFound />} />
     </Routes>

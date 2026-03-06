@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import type { Easing } from 'framer-motion';
-import { BookOpen, Target, Users, Download, Moon, Sun, Sunrise, Share2, Smartphone, BookOpenCheck } from 'lucide-react';
+import { BookOpen, Target, Users, Download, Moon, Sun, Sunrise, Share2, Smartphone, BookOpenCheck, RefreshCw, BarChart3 } from 'lucide-react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { SamsungBanner } from '@/components/layout/SamsungBanner';
 import { useAuth } from '@/contexts/AuthContext';
@@ -263,7 +263,102 @@ export default function AccueilPage() {
               </div>
             )}
 
-            {/* Planificateur Card */}
+            {/* Espace Hifz Card */}
+            <Link to="/hifz" className="block">
+              <motion.div
+                className="relative overflow-hidden rounded-[2rem] p-7 group"
+                style={{
+                  background: 'linear-gradient(135deg, #0d7377 0%, #14919b 50%, #0d7377 100%)',
+                  border: '2px solid rgba(212,175,55,0.4)',
+                  boxShadow: '0 8px 32px -8px rgba(13,115,119,0.4), inset 0 0 30px rgba(212,175,55,0.06), 0 0 0 1px rgba(212,175,55,0.15)',
+                }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.2 }}
+              >
+                <div className="absolute -bottom-4 -right-4 w-32 h-32 rounded-full blur-xl group-hover:opacity-70 transition-opacity" style={{ background: 'rgba(212,175,55,0.08)' }} />
+                <div className="relative z-10 flex items-center gap-5">
+                  <div
+                    className="w-20 h-20 rounded-2xl flex items-center justify-center flex-shrink-0"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(212,175,55,0.25), rgba(212,175,55,0.1))',
+                      border: '1px solid rgba(212,175,55,0.3)',
+                    }}
+                  >
+                    <BookOpen className="h-12 w-12" style={{ color: '#d4af37' }} />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-2xl font-bold tracking-[0.1em] uppercase" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#d4af37' }}>Espace Hifz</h3>
+                    <p className="text-white/70 text-base mt-1">Mémoriser le Noble Coran</p>
+                  </div>
+                </div>
+              </motion.div>
+            </Link>
+
+            {/* Muraja'a Card */}
+            <Link to="/muraja" className="block">
+              <motion.div
+                className="relative overflow-hidden rounded-[2rem] p-7 group"
+                style={{
+                  background: 'linear-gradient(135deg, #0d7377 0%, #14919b 50%, #0d7377 100%)',
+                  border: '2px solid rgba(212,175,55,0.4)',
+                  boxShadow: '0 8px 32px -8px rgba(13,115,119,0.4), inset 0 0 30px rgba(212,175,55,0.06), 0 0 0 1px rgba(212,175,55,0.15)',
+                }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.2 }}
+              >
+                <div className="absolute -bottom-4 -right-4 w-32 h-32 rounded-full blur-xl group-hover:opacity-70 transition-opacity" style={{ background: 'rgba(212,175,55,0.08)' }} />
+                <div className="relative z-10 flex items-center gap-5">
+                  <div
+                    className="w-20 h-20 rounded-2xl flex items-center justify-center flex-shrink-0"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(212,175,55,0.25), rgba(212,175,55,0.1))',
+                      border: '1px solid rgba(212,175,55,0.3)',
+                    }}
+                  >
+                    <RefreshCw className="h-12 w-12" style={{ color: '#d4af37' }} />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-2xl font-bold tracking-[0.1em] uppercase" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#d4af37' }}>Muraja'a</h3>
+                    <p className="text-white/70 text-base mt-1">Réviser et consolider</p>
+                  </div>
+                </div>
+              </motion.div>
+            </Link>
+
+            {/* Mon Suivi Card */}
+            <Link to="/hifz-suivi" className="block">
+              <motion.div
+                className="relative overflow-hidden rounded-[2rem] p-7 group"
+                style={{
+                  background: 'linear-gradient(135deg, #0d7377 0%, #14919b 50%, #0d7377 100%)',
+                  border: '2px solid rgba(212,175,55,0.4)',
+                  boxShadow: '0 8px 32px -8px rgba(13,115,119,0.4), inset 0 0 30px rgba(212,175,55,0.06), 0 0 0 1px rgba(212,175,55,0.15)',
+                }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.2 }}
+              >
+                <div className="absolute -bottom-4 -right-4 w-32 h-32 rounded-full blur-xl group-hover:opacity-70 transition-opacity" style={{ background: 'rgba(212,175,55,0.08)' }} />
+                <div className="relative z-10 flex items-center gap-5">
+                  <div
+                    className="w-20 h-20 rounded-2xl flex items-center justify-center flex-shrink-0"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(212,175,55,0.25), rgba(212,175,55,0.1))',
+                      border: '1px solid rgba(212,175,55,0.3)',
+                    }}
+                  >
+                    <BarChart3 className="h-12 w-12" style={{ color: '#d4af37' }} />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-2xl font-bold tracking-[0.1em] uppercase" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#d4af37' }}>Mon Suivi</h3>
+                    <p className="text-white/70 text-base mt-1">Statistiques et progression</p>
+                  </div>
+                </div>
+              </motion.div>
+            </Link>
+
             <Link to="/planificateur" className="block">
               <motion.div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-peach via-secondary to-peach/60 p-7 shadow-lg group" whileHover={{
               scale: 1.02
