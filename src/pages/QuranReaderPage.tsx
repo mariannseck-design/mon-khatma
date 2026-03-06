@@ -200,15 +200,24 @@ export default function QuranReaderPage() {
               </button>
 
               <div className="text-center">
-                <p className="font-semibold text-sm" style={{ fontFamily: "'Playfair Display', serif", color: '#f5edd6' }}>
+                <p className="font-semibold text-sm" style={{ fontFamily: "'Playfair Display', serif", color: theme.titleColor }}>
                   {surah ? `${surah.number}. ${surah.name}` : ''}
                 </p>
-                <p className="text-xs" style={{ color: 'rgba(245, 237, 214, 0.7)' }}>
+                <p className="text-xs" style={{ color: theme.subtitleColor }}>
                   Page {page} · Juz {juz}
                 </p>
               </div>
 
               <div className="flex items-center gap-2">
+                {/* Dark mode toggle */}
+                <button
+                  onClick={(e) => { e.stopPropagation(); setDarkMode(d => !d); }}
+                  className="w-10 h-10 rounded-full flex items-center justify-center"
+                  style={{ background: theme.btnBg, backdropFilter: 'blur(8px)' }}
+                >
+                  {darkMode ? <Sun className="h-5 w-5" style={{ color: theme.iconColor }} /> : <Moon className="h-5 w-5" style={{ color: theme.iconColor }} />}
+                </button>
+
                 {/* Text size selector */}
                 {textMode && (
                   <Popover>
@@ -216,7 +225,7 @@ export default function QuranReaderPage() {
                       <button
                         onClick={(e) => e.stopPropagation()}
                         className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold"
-                        style={{ background: 'rgba(184, 149, 46, 0.25)', backdropFilter: 'blur(8px)', color: '#f5edd6' }}
+                        style={{ background: theme.btnBg, backdropFilter: 'blur(8px)', color: theme.iconColor }}
                       >
                         Aa
                       </button>
@@ -263,9 +272,9 @@ export default function QuranReaderPage() {
                     });
                   }}
                   className="w-10 h-10 rounded-full flex items-center justify-center"
-                  style={{ background: 'rgba(184, 149, 46, 0.25)', backdropFilter: 'blur(8px)' }}
+                  style={{ background: theme.btnBg, backdropFilter: 'blur(8px)' }}
                 >
-                  {textMode ? <ImageIcon className="h-5 w-5" style={{ color: '#f5edd6' }} /> : <Type className="h-5 w-5" style={{ color: '#f5edd6' }} />}
+                  {textMode ? <ImageIcon className="h-5 w-5" style={{ color: theme.iconColor }} /> : <Type className="h-5 w-5" style={{ color: theme.iconColor }} />}
                 </button>
               </div>
             </div>
