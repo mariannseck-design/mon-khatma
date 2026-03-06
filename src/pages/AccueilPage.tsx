@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import type { Easing } from 'framer-motion';
-import { BookOpen, Target, Users, Download, Moon, Sun, Sunrise, Share2, Smartphone } from 'lucide-react';
+import { BookOpen, Target, Users, Download, Moon, Sun, Sunrise, Share2, Smartphone, BookOpenCheck } from 'lucide-react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { SamsungBanner } from '@/components/layout/SamsungBanner';
 import { useAuth } from '@/contexts/AuthContext';
@@ -192,9 +192,24 @@ export default function AccueilPage() {
 
         {/* Action Cards */}
         <motion.div variants={itemVariants}>
-          
-          
           <div className="space-y-4">
+            {/* Mushaf Reader Card */}
+            <Link to="/quran-reader" className="block">
+              <motion.div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-[hsl(45,60%,90%)] via-[hsl(35,50%,85%)] to-[hsl(25,40%,80%)] p-7 shadow-lg group" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} transition={{ duration: 0.2 }}>
+                <div className="absolute -bottom-4 -right-4 w-32 h-32 rounded-full bg-white/20 blur-xl group-hover:bg-white/30 transition-colors" />
+                <div className="absolute top-4 right-8 w-8 h-8 rounded-lg rotate-12 bg-white/10" />
+                <div className="relative z-10 flex items-center gap-5">
+                  <div className="w-20 h-20 rounded-2xl bg-white/30 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
+                    <BookOpenCheck className="h-12 w-12 text-foreground/80" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-display text-3xl font-bold text-foreground">Lire le Mushaf</h3>
+                    <p className="text-muted-foreground text-xl mt-1">604 pages HD · Swipe & Zoom</p>
+                  </div>
+                </div>
+              </motion.div>
+            </Link>
+
             {/* Planificateur Card */}
             <Link to="/planificateur" className="block">
               <motion.div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-peach via-secondary to-peach/60 p-7 shadow-lg group" whileHover={{
