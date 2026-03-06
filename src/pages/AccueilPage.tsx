@@ -203,8 +203,8 @@ export default function AccueilPage() {
                     <BookOpenCheck className="h-12 w-12 text-foreground/80" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-display text-3xl font-bold text-foreground">Lire le Mushaf</h3>
-                    <p className="text-muted-foreground text-xl mt-1">604 pages HD · Swipe & Zoom</p>
+                    <h3 className="text-2xl font-semibold tracking-[0.1em] uppercase" style={{ fontFamily: "'Playfair Display', 'Georgia', serif", color: '#8a6d1b' }}>Lis le Noble Coran</h3>
+                    <p className="text-muted-foreground text-lg mt-1">604 pages · Tajweed · Audio</p>
                   </div>
                 </div>
               </motion.div>
