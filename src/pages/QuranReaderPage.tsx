@@ -46,8 +46,10 @@ export default function QuranReaderPage() {
   });
 
   const TEXT_SIZES = [
-    { label: 'Petit', value: 22 },
-    { label: 'Moyen', value: 28 },
+    { label: 'Petit', value: 16 },
+    { label: 'Moyen', value: 22 },
+    { label: 'Grand', value: 28 },
+    { label: 'Très Grand', value: 36 },
     { label: 'Grand', value: 34 },
   ] as const;
   const [textSizeIndex, setTextSizeIndex] = useState(() => {
