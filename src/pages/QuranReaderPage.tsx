@@ -1,13 +1,14 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, List, Bookmark, BookmarkCheck, Play, Pause, Loader2, Image, Type, AArrowUp } from 'lucide-react';
+import { ArrowLeft, Bookmark, BookmarkCheck, Play, Pause, Loader2, Settings } from 'lucide-react';
 import { toast } from 'sonner';
 import { getSurahByPage } from '@/lib/surahData';
 import SurahDrawer from '@/components/quran/SurahDrawer';
 import QuranTextView from '@/components/quran/QuranTextView';
 import ImageVerseOverlay from '@/components/quran/ImageVerseOverlay';
 import VerseTranslationDrawer from '@/components/quran/VerseTranslationDrawer';
+import ReaderSettingsPanel from '@/components/quran/ReaderSettingsPanel';
 import type { VerseLineInfo } from '@/components/quran/ImageVerseOverlay';
 import { useQuranAudio, RECITERS } from '@/hooks/useQuranAudio';
 
@@ -312,13 +313,15 @@ export default function QuranReaderPage() {
         )}
       </div>
 
-      {/* Thin discrete bottom bar — always visible, never overlaps text */}
+      {/* Simplified bottom bar */}
       <div
-        className="relative z-30 flex items-center gap-1 px-2"
+        className="relative z-30 flex items-center gap-2 px-3"
         style={{
           height: `${BOTTOM_BAR_H}px`,
-          background: nightMode ? '#0f1a0f' : '#f0ead9',
-          borderTop: `1px solid ${nightMode ? 'rgba(122,139,111,0.15)' : 'rgba(122,139,111,0.12)'}`,
+          background: nightMode
+            ? 'linear-gradient(135deg, rgba(15,26,15,0.95), rgba(90,180,180,0.12))'
+            : 'linear-gradient(135deg, #f0ead9, rgba(90,180,180,0.08))',
+          borderTop: `1px solid ${nightMode ? 'rgba(90,180,180,0.15)' : 'rgba(180,150,60,0.15)'}`,
         }}
       >
         {/* Back */}
@@ -330,119 +333,12 @@ export default function QuranReaderPage() {
           <ArrowLeft className="h-4 w-4" />
         </button>
 
-        {/* Surah list */}
-        <button
-          onClick={() => setShowSurahDrawer(true)}
-          className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
-          style={{ color: nightMode ? '#8a9a7a' : '#5e6e54' }}
-        >
-          <List className="h-4 w-4" />
-        </button>
-
-        {/* Bookmark */}
-        <button
-          onClick={handleBookmark}
-          className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
-          style={{ color: bookmark !== null ? '#7a8b6f' : (nightMode ? '#8a9a7a' : '#5e6e54') }}
-        >
-          {bookmark !== null ? <BookmarkCheck className="h-4 w-4" /> : <Bookmark className="h-4 w-4" />}
-        </button>
-
-        {/* Separator */}
-        <div className="w-px h-5 mx-0.5" style={{ background: nightMode ? 'rgba(122,139,111,0.2)' : 'rgba(122,139,111,0.15)' }} />
-
-        {/* Audio play/pause */}
-        <button
-          onClick={(e) => { e.stopPropagation(); togglePlay(); }}
-          className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
-          style={{
-            background: isPlaying ? '#7a8b6f' : 'transparent',
-            color: isPlaying ? '#f0ead9' : (nightMode ? '#8a9a7a' : '#5e6e54'),
-          }}
-        >
-          {audioLoading ? (
-            <Loader2 className="h-3.5 w-3.5 animate-spin" />
-          ) : isPlaying ? (
-            <Pause className="h-3.5 w-3.5" />
-          ) : (
-            <Play className="h-3.5 w-3.5 ml-0.5" />
-          )}
-        </button>
-
-        {/* Reciter selector (small) */}
-        <div className="relative flex-shrink-0">
-          <button
-            onClick={() => setShowReciterMenu(!showReciterMenu)}
-            className="text-xs px-1.5 py-0.5 rounded max-w-[70px] truncate"
-            style={{
-              color: nightMode ? '#8a9a7a' : '#5e6e54',
-              background: nightMode ? 'rgba(122,139,111,0.1)' : 'rgba(122,139,111,0.08)',
-            }}
-          >
-            {RECITERS.find(r => r.id === reciter)?.name.split(' ').pop()}
-          </button>
-          <AnimatePresence>
-            {showReciterMenu && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 10 }}
-                className="absolute bottom-full left-0 mb-1 rounded-lg shadow-lg py-1 min-w-[160px]"
-                style={{ background: nightMode ? '#1a2e1a' : '#ffffff', border: '1px solid rgba(122,139,111,0.15)' }}
-              >
-                {RECITERS.map(r => (
-                  <button
-                    key={r.id}
-                    onClick={() => { setReciter(r.id); setShowReciterMenu(false); }}
-                    className="w-full text-left text-xs px-3 py-1.5 hover:bg-black/5"
-                    style={{
-                      color: r.id === reciter ? '#7a8b6f' : (nightMode ? '#d4c9a8' : '#2d3a25'),
-                      fontWeight: r.id === reciter ? 600 : 400,
-                    }}
-                  >
-                    {r.name}
-                  </button>
-                ))}
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-
-        {/* Separator */}
-        <div className="w-px h-5 mx-0.5" style={{ background: nightMode ? 'rgba(122,139,111,0.2)' : 'rgba(122,139,111,0.15)' }} />
-
-        {/* View mode toggle */}
-        <button
-          onClick={() => setViewMode(viewMode === 'image' ? 'text' : 'image')}
-          className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
-          style={{ color: nightMode ? '#8a9a7a' : '#5e6e54' }}
-        >
-          {viewMode === 'image' ? <Type className="h-3.5 w-3.5" /> : <Image className="h-3.5 w-3.5" />}
-        </button>
-
-        {/* Text size toggle (only in text mode) */}
-        {viewMode === 'text' && (
-          <button
-            onClick={() => setTextSizeIndex(prev => (prev + 1) % TEXT_SIZES.length)}
-            className="h-7 px-1.5 rounded flex items-center gap-0.5 flex-shrink-0"
-            style={{
-              color: nightMode ? '#8a9a7a' : '#5e6e54',
-              background: nightMode ? 'rgba(122,139,111,0.1)' : 'rgba(122,139,111,0.08)',
-            }}
-          >
-            <AArrowUp className="h-3.5 w-3.5" />
-            <span className="text-[10px] font-medium">{TEXT_SIZES[textSizeIndex].label}</span>
-          </button>
-        )}
-
-        {/* Spacer */}
-        <div className="flex-1" />
-
-        {/* Page info & input */}
-        <div className="flex items-center gap-1">
-          <span className="text-[10px]" style={{ color: nightMode ? '#6a7a5a' : '#8a9a7a' }}>
-            {surah ? surah.name : ''} · Juz {juz}
+        {/* Center: Surah name + page (clickable for page input) */}
+        <div className="flex-1 flex items-center justify-center gap-2">
+          <span className="text-xs font-medium truncate" style={{ color: nightMode ? '#d4c9a8' : '#6b5417', fontFamily: "'Playfair Display', serif" }}>
+            {surah ? surah.name : ''}
           </span>
+          <span className="text-[10px] opacity-60" style={{ color: nightMode ? '#8a9a7a' : '#8a7a5a' }}>·</span>
           <input
             type="number"
             inputMode="numeric"
@@ -470,18 +366,65 @@ export default function QuranReaderPage() {
             onClick={(e) => e.stopPropagation()}
             className="w-10 text-center text-xs font-semibold rounded border-0 outline-none"
             style={{
-              background: nightMode ? 'rgba(122,139,111,0.15)' : 'rgba(122,139,111,0.1)',
-              color: nightMode ? '#d4c9a8' : '#2d3a25',
+              background: nightMode ? 'rgba(90,180,180,0.1)' : 'rgba(180,150,60,0.1)',
+              color: nightMode ? '#d4c9a8' : '#6b5417',
               padding: '2px 0',
             }}
           />
         </div>
-      </div>
 
-      {/* Click-away for reciter menu */}
-      {showReciterMenu && (
-        <div className="fixed inset-0 z-20" onClick={() => setShowReciterMenu(false)} />
-      )}
+        {/* Right: Play, Bookmark, Settings */}
+        <div className="flex items-center gap-1">
+          {/* Audio play/pause */}
+          <button
+            onClick={(e) => { e.stopPropagation(); togglePlay(); }}
+            className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+            style={{
+              background: isPlaying ? '#4a9a9a' : 'transparent',
+              color: isPlaying ? '#f0ead9' : (nightMode ? '#4a9a9a' : '#4a9a9a'),
+            }}
+          >
+            {audioLoading ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : isPlaying ? (
+              <Pause className="h-3.5 w-3.5" />
+            ) : (
+              <Play className="h-3.5 w-3.5 ml-0.5" />
+            )}
+          </button>
+
+          {/* Bookmark */}
+          <button
+            onClick={handleBookmark}
+            className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+            style={{ color: bookmark !== null ? '#4a9a9a' : (nightMode ? '#8a9a7a' : '#5e6e54') }}
+          >
+            {bookmark !== null ? <BookmarkCheck className="h-4 w-4" /> : <Bookmark className="h-4 w-4" />}
+          </button>
+
+          {/* Settings */}
+          <ReaderSettingsPanel
+            viewMode={viewMode}
+            onViewModeChange={setViewMode}
+            nightMode={nightMode}
+            onNightModeChange={() => {}}
+            fontSize={TEXT_SIZES[textSizeIndex].value}
+            onFontSizeChange={(size) => {
+              const idx = TEXT_SIZES.findIndex(t => t.value === size);
+              if (idx >= 0) setTextSizeIndex(idx);
+            }}
+            isPlaying={isPlaying}
+            audioLoading={audioLoading}
+            onTogglePlay={togglePlay}
+            reciter={reciter}
+            onReciterChange={setReciter}
+            onShowSurahDrawer={() => setShowSurahDrawer(true)}
+            textSizeIndex={textSizeIndex}
+            textSizes={TEXT_SIZES as unknown as Array<{label: string; value: number}>}
+            onTextSizeIndexChange={setTextSizeIndex}
+          />
+        </div>
+      </div>
 
       <SurahDrawer
         open={showSurahDrawer}

@@ -196,32 +196,70 @@ export default function AccueilPage() {
             {/* Mushaf Reader Card - Admin only for now */}
             {isAdmin ? (
               <Link to="/quran-reader" className="block">
-                <motion.div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-[hsl(45,60%,90%)] via-[hsl(35,50%,85%)] to-[hsl(25,40%,80%)] p-7 shadow-lg group" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} transition={{ duration: 0.2 }}>
-                  <div className="absolute -bottom-4 -right-4 w-32 h-32 rounded-full bg-white/20 blur-xl group-hover:bg-white/30 transition-colors" />
-                  <div className="absolute top-4 right-8 w-8 h-8 rounded-lg rotate-12 bg-white/10" />
+                <motion.div
+                  className="relative overflow-hidden rounded-[2rem] p-7 group"
+                  style={{
+                    background: 'linear-gradient(135deg, #f5eed6 0%, #f0e8c8 50%, #f5eed6 100%)',
+                    border: '2px solid rgba(180,150,60,0.35)',
+                    boxShadow: '0 8px 32px -8px rgba(139,109,27,0.15), inset 0 0 20px rgba(180,150,60,0.08), inset 0 0 60px rgba(90,180,180,0.04)',
+                  }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  {/* Filigrane doré overlay */}
+                  <div className="absolute inset-0 pointer-events-none" style={{
+                    background: 'radial-gradient(ellipse at 20% 80%, rgba(180,150,60,0.06) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(90,180,180,0.05) 0%, transparent 60%)',
+                  }} />
+                  <div className="absolute -bottom-4 -right-4 w-32 h-32 rounded-full blur-xl group-hover:opacity-60 transition-opacity" style={{ background: 'rgba(180,150,60,0.1)' }} />
+                  <div className="absolute top-4 right-8 w-8 h-8 rounded-lg rotate-12" style={{ background: 'rgba(180,150,60,0.08)' }} />
                   <div className="relative z-10 flex items-center gap-5">
-                    <div className="w-20 h-20 rounded-2xl bg-white/30 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
-                      <BookOpenCheck className="h-12 w-12 text-foreground/80" />
+                    <div
+                      className="w-20 h-20 rounded-2xl flex items-center justify-center flex-shrink-0"
+                      style={{
+                        background: 'linear-gradient(135deg, rgba(180,150,60,0.25), rgba(139,109,27,0.15))',
+                        boxShadow: '0 4px 16px rgba(90,180,180,0.12), inset 0 1px 0 rgba(255,255,255,0.3)',
+                        border: '1px solid rgba(180,150,60,0.2)',
+                      }}
+                    >
+                      <BookOpenCheck className="h-12 w-12" style={{ color: '#8a6d1b' }} />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-2xl font-semibold tracking-[0.1em] uppercase" style={{ fontFamily: "'Playfair Display', 'Georgia', serif", color: '#8a6d1b' }}>Lis le Noble Coran</h3>
-                      <p className="text-muted-foreground text-lg mt-1">604 pages · Tajweed · Audio</p>
+                      <h3 className="text-2xl font-semibold tracking-[0.1em] uppercase" style={{ fontFamily: "'Playfair Display', 'Georgia', serif", color: '#6b5417' }}>Lis le Noble Coran</h3>
+                      <p className="text-lg mt-1" style={{ color: '#8a7a5a' }}>604 pages · Tajweed · Audio</p>
                     </div>
                   </div>
                 </motion.div>
               </Link>
             ) : (
-              <div className="block opacity-60 cursor-default">
-                <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-[hsl(45,60%,90%)] via-[hsl(35,50%,85%)] to-[hsl(25,40%,80%)] p-7 shadow-lg">
-                  <div className="absolute -bottom-4 -right-4 w-32 h-32 rounded-full bg-white/20 blur-xl" />
-                  <div className="absolute top-4 right-8 w-8 h-8 rounded-lg rotate-12 bg-white/10" />
+              <div className="block cursor-default">
+                <div
+                  className="relative overflow-hidden rounded-[2rem] p-7"
+                  style={{
+                    background: 'linear-gradient(135deg, #f5eed6 0%, #f0e8c8 50%, #f5eed6 100%)',
+                    border: '2px solid rgba(180,150,60,0.25)',
+                    boxShadow: '0 4px 20px -6px rgba(139,109,27,0.1), inset 0 0 20px rgba(180,150,60,0.06), inset 0 0 60px rgba(90,180,180,0.03)',
+                    opacity: 0.75,
+                  }}
+                >
+                  <div className="absolute inset-0 pointer-events-none" style={{
+                    background: 'radial-gradient(ellipse at 20% 80%, rgba(180,150,60,0.06) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(90,180,180,0.05) 0%, transparent 60%)',
+                  }} />
+                  <div className="absolute -bottom-4 -right-4 w-32 h-32 rounded-full blur-xl" style={{ background: 'rgba(180,150,60,0.08)' }} />
+                  <div className="absolute top-4 right-8 w-8 h-8 rounded-lg rotate-12" style={{ background: 'rgba(180,150,60,0.06)' }} />
                   <div className="relative z-10 flex items-center gap-5">
-                    <div className="w-20 h-20 rounded-2xl bg-white/30 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
-                      <BookOpenCheck className="h-12 w-12 text-foreground/60" />
+                    <div
+                      className="w-20 h-20 rounded-2xl flex items-center justify-center flex-shrink-0"
+                      style={{
+                        background: 'linear-gradient(135deg, rgba(180,150,60,0.2), rgba(139,109,27,0.1))',
+                        border: '1px solid rgba(180,150,60,0.15)',
+                      }}
+                    >
+                      <BookOpenCheck className="h-12 w-12" style={{ color: '#8a6d1b' }} />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-2xl font-semibold tracking-[0.1em] uppercase" style={{ fontFamily: "'Playfair Display', 'Georgia', serif", color: '#8a6d1b' }}>Lis le Noble Coran</h3>
-                      <p className="text-muted-foreground text-lg mt-1">Bientôt disponible in shaa Allah</p>
+                      <h3 className="text-2xl font-semibold tracking-[0.1em] uppercase" style={{ fontFamily: "'Playfair Display', 'Georgia', serif", color: '#6b5417' }}>Lis le Noble Coran</h3>
+                      <p className="text-lg mt-1" style={{ color: '#8a7a5a' }}>Bientôt disponible in shaa Allah</p>
                     </div>
                   </div>
                 </div>
