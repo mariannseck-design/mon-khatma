@@ -1,32 +1,20 @@
+# Modifications de la celebration Khatma
 
+## Changements a effectuer
 
-# Restaurer les donnees de lecture de Marianne et enregistrer la Khatma
+### 1. `src/components/planificateur/KhatmaCelebration.tsx`
 
-## Constat
+**Supprimer l'etape 1** ("Benediction des lettres" — le texte Alif a Ya). Passer de 4 etapes a 3.
 
-- `quran_progress` est vide pour Marianne (user `f3f97b3a...`) -- les donnees precedentes ont ete supprimees.
-- `khatma_completions` est vide -- aucune annonce ne s'affichera dans l'Espace Communaute.
-- Tous les objectifs sont inactifs.
+**Supprimer les titres** des etapes : retirer le `h2` avec `step.title` et le texte "Etape X sur Y". Garder uniquement l'icone et le contenu textuel dans la carte.
 
-## Actions a effectuer (donnees uniquement, pas de code)
+**Ajouter a la derniere etape** : apres le texte actuel des salutations, ajouter un paragraphe "Fais tes duas 🤲" suivi de "Qu'Allah accepte".
 
-### 1. Inserer des enregistrements de lecture dans `quran_progress`
+### 2. `src/pages/PlanificateurPage.tsx`
 
-Repartir ~584 pages sur plusieurs jours (du 6 fevrier au 4 mars) + 20 pages aujourd'hui = 604 total.
+**Corriger le timing** : actuellement quand l'utilisatrice atteint 604 pages, le success modal (objectif quotidien atteint) s'affiche pendant 800ms puis est immediatement ecrase par `setShowKhatmaCelebration(true)`. Solution : tu peux afficher le success modal quand la Khatma est complete  ensuite  a la celebration, mais avec un delai de ~2-3 secondes et un toast visible avant la transition pour que l'utilisatrice ait le temps de lire le message de felicitations. "Mets à jour l’annonce de 48 heures dans le tableau de bord de groupe de **Ma Khatma** :
 
-Exemple de repartition (~20-25 pages/jour sur ~25 jours) :
-- Du 6 fev au 4 mars : ~584 pages reparties
-- 5 mars (aujourd'hui) : 20 pages
-
-### 2. Inserer un enregistrement dans `khatma_completions`
-
-Pour declencher l'annonce doree dans l'Espace Communaute :
-```sql
-INSERT INTO khatma_completions (user_id, display_name)
-VALUES ('f3f97b3a-09f7-4dab-834d-4c049ac35d23', 'NDEYE MARIANNE SECK');
-```
-
-### 3. Creer un objectif actif
-
-Reactiver un objectif de 20 pages/jour pour que le planificateur fonctionne correctement.
-
+- **Titre :** « Félicitations à notre sœur qui vient de boucler sa Khatma ! 🎊 »
+- **Verset :** « En vérité, c’est Nous qui avons fait descendre le Rappel (Al-Zikr), et c’est Nous qui en sommes les gardiens. » (Sourate Al-Hijr, verset 9)
+- **Message de clôture :** « Continuez vos efforts, car le Coran est le meilleur des Zikr. **Chaque lettre lue vous rapproche de la Paix intérieure et de la satisfaction d’Allah.** »
+- **Conception :** Utilise un encadré avec une bordure fine dorée et un fond très clair pour que le texte soit apaisant à lire."
