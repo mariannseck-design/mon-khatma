@@ -115,17 +115,17 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 24, dark
         <div key={`${group.surahNumber}-${page}`} className="w-full mb-4 last:mb-0">
           {group.ayahs[0].numberInSurah === 1 && (
             <>
-              <h3 className="text-center text-2xl font-bold mb-3" style={{ color: '#8a6d1b', fontFamily: FONT_FAMILY }}>
+              <h3 className="text-center text-2xl font-bold mb-3" style={{ color: surahNameColor, fontFamily: FONT_FAMILY }}>
                 {group.surahName}
               </h3>
               {group.surahNumber !== 1 && group.surahNumber !== 9 && (
-                <p className="text-center mb-4" style={{ fontFamily: FONT_FAMILY, color: '#8a6d1b', fontSize: `${fontSize}px`, lineHeight }}>
+                <p className="text-center mb-4" style={{ fontFamily: FONT_FAMILY, color: surahNameColor, fontSize: `${fontSize}px`, lineHeight }}>
                   بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
                 </p>
               )}
             </>
           )}
-          <p className="text-foreground text-justify" style={{ fontSize: `${fontSize}px`, lineHeight }}>
+          <p className="text-justify" style={{ fontSize: `${fontSize}px`, lineHeight }}>
             {group.ayahs.map((ayah) => (
               <span
                 key={ayah.number}
