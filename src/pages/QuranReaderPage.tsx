@@ -6,6 +6,9 @@ import { toast } from 'sonner';
 import { getSurahByPage } from '@/lib/surahData';
 import SurahDrawer from '@/components/quran/SurahDrawer';
 import QuranTextView from '@/components/quran/QuranTextView';
+import ImageVerseOverlay from '@/components/quran/ImageVerseOverlay';
+import VerseTranslationDrawer from '@/components/quran/VerseTranslationDrawer';
+import type { VerseLineInfo } from '@/components/quran/ImageVerseOverlay';
 import { useQuranAudio, RECITERS } from '@/hooks/useQuranAudio';
 
 const TOTAL_PAGES = 604;
@@ -61,6 +64,8 @@ export default function QuranReaderPage() {
   });
   const [pageInput, setPageInput] = useState(page.toString());
   const [showReciterMenu, setShowReciterMenu] = useState(false);
+  const [selectedVerse, setSelectedVerse] = useState<string | null>(null);
+  const [pageVerses, setPageVerses] = useState<VerseLineInfo[]>([]);
 
   // Audio
   const goNextAuto = useCallback(() => {
@@ -79,6 +84,8 @@ export default function QuranReaderPage() {
     retriesRef.current = 0;
     setScale(1);
     setTranslate({ x: 0, y: 0 });
+    setSelectedVerse(null);
+    setPageVerses([]);
   }, [page]);
 
   useEffect(() => {
