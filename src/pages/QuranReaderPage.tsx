@@ -300,7 +300,7 @@ export default function QuranReaderPage() {
             className="h-full"
             style={{ touchAction: 'pan-y' }}
           >
-            <QuranTextView page={page} highlightAyah={currentAyahNumber} fontSize={textSize} />
+            <QuranTextView page={page} highlightAyah={currentAyahNumber} fontSize={textSize} darkMode={darkMode} />
           </motion.div>
         ) : (
           <AnimatePresence initial={false} custom={direction} mode="popLayout">
