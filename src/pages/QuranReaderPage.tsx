@@ -45,6 +45,10 @@ export default function QuranReaderPage() {
     return saved ? parseInt(saved) : 24;
   });
 
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem('quran_dark_mode') === 'true';
+  });
+
   const surah = getSurahByPage(page);
   const juz = Math.ceil(page / 20);
   const [showReciterSelect, setShowReciterSelect] = useState(false);
