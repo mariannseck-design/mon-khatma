@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence, type PanInfo } from 'framer-motion';
-import { ArrowLeft, List, Type, Image as ImageIcon, Play, Pause, Loader2, Mic, Repeat } from 'lucide-react';
+import { ArrowLeft, List, Type, Image as ImageIcon, Play, Pause, Loader2, Mic, Repeat, Moon, Sun } from 'lucide-react';
 import { getSurahByPage } from '@/lib/surahData';
 import { Slider } from '@/components/ui/slider';
 import SurahDrawer from '@/components/quran/SurahDrawer';
