@@ -97,16 +97,23 @@ export default function QuranTextView({ page, highlightAyah }: QuranTextViewProp
 
   return (
     <div
-      className="h-full flex flex-col items-center justify-center px-5 py-6 select-text overflow-hidden"
+      className="h-full flex flex-col items-center justify-start px-5 py-6 select-text overflow-auto"
       dir="rtl"
-      style={{ fontFamily: "'Amiri', 'Traditional Arabic', serif" }}
+      style={{ fontFamily: "'Amiri', 'Traditional Arabic', serif", touchAction: 'manipulation' }}
     >
       {grouped.map((group) => (
         <div key={`${group.surahNumber}-${page}`} className="w-full mb-4 last:mb-0">
           {group.ayahs[0].numberInSurah === 1 && (
-            <h3 className="text-center text-2xl font-bold text-primary mb-3">
-              {group.surahName}
-            </h3>
+            <>
+              <h3 className="text-center text-2xl font-bold text-primary mb-3">
+                {group.surahName}
+              </h3>
+              {group.surahNumber !== 1 && group.surahNumber !== 9 && (
+                <p className="text-center text-2xl sm:text-3xl text-foreground mb-4" style={{ fontFamily: "'Amiri', 'Traditional Arabic', serif" }}>
+                  بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
+                </p>
+              )}
+            </>
           )}
           <p className="text-2xl sm:text-3xl leading-[2.8rem] sm:leading-[3.2rem] text-foreground text-justify">
             {group.ayahs.map((ayah) => (
