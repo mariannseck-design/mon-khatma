@@ -1,32 +1,21 @@
 
 
-## Amélioration du mode texte du Mushaf
+# Diagnostic : 404 sur /quran-reader
 
-### Modifications dans `src/components/quran/QuranTextView.tsx`
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-1. **Défilement vertical** — Supprimer `maxHeight: '100%'` du conteneur interne qui bloque le scroll. Le conteneur externe a déjà `overflow-y-auto`.
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-2. **Centrage pages spéciales (pages 1 & 2)** — Quand `page <= 2`, appliquer `justify-center items-center` et centrer le texte au lieu de `text-justify`.
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-3. **Basmala distincte** — Augmenter la taille de la Basmala de 20% (`computedFontSize * 1.2`) et appliquer `fontWeight: 'bold'`.
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-4. **Équilibrage dernière ligne** — Ajouter `textAlignLast: 'center'` sur le paragraphe des ayahs pour centrer les lignes orphelines.
-
-### Modifications dans `src/pages/QuranReaderPage.tsx`
-
-5. **4 niveaux de taille** — Remplacer `TEXT_SIZES` (3 niveaux) par 4 niveaux :
-   - Petite (16px), Moyenne (22px, défaut), Grande (28px), Très Grande (36px)
-   - Défaut = index 1 (Moyenne, 22px)
-
-6. **Conserver** le bouton cyclique `AArrowUp` existant qui affiche le label de la taille courante.
-
-### Résumé des changements
-
-| Fichier | Lignes | Changement |
-|---------|--------|------------|
-| `QuranTextView.tsx` | 149-154 | Supprimer `maxHeight:'100%'`, ajouter padding bottom |
-| `QuranTextView.tsx` | 136-146 | Ajouter centrage conditionnel pages 1-2 |
-| `QuranTextView.tsx` | 172-184 | Basmala +20% taille, bold |
-| `QuranTextView.tsx` | 189-196 | Ajouter `textAlignLast: 'center'` |
-| `QuranReaderPage.tsx` | 48-56 | 4 niveaux de taille, défaut Moyenne (22px) |
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

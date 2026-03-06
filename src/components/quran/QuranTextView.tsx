@@ -147,10 +147,9 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 28, dark
     >
       {/* Fixed 15-line page container */}
       <div
-        className="flex-1 flex flex-col justify-between px-5 py-3"
+        className={`flex-1 flex flex-col px-5 py-3 pb-16 ${page <= 2 ? 'justify-center items-center' : 'justify-between'}`}
         style={{
           minHeight: 0,
-          maxHeight: '100%',
         }}
       >
         {grouped.map((group) => (
@@ -175,8 +174,9 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 28, dark
                     style={{
                       fontFamily: FONT_FAMILY,
                       color: darkMode ? '#8a9a7a' : '#5e6e54',
-                      fontSize: `${computedFontSize * 0.8}px`,
+                      fontSize: `${Math.round(computedFontSize * 1.2)}px`,
                       lineHeight: `${lineHeight}px`,
+                      fontWeight: 'bold',
                     }}
                   >
                     بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
@@ -187,12 +187,13 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 28, dark
 
             {/* Ayahs as flowing text with tajweed */}
             <p
-              className="text-justify"
+              className={page <= 2 ? 'text-center' : 'text-justify'}
               style={{
                 fontSize: `${computedFontSize}px`,
                 lineHeight: `${lineHeight}px`,
                 color: textColor,
                 wordSpacing: '3px',
+                textAlignLast: page <= 2 ? 'center' : 'center',
               }}
             >
               {group.ayahs.map((ayah) => {
