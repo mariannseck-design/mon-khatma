@@ -315,7 +315,7 @@ export default function QuranReaderPage() {
               {showReciterSelect && (
                 <div className="flex justify-center" onClick={(e) => e.stopPropagation()}>
                   <Select value={reciter} onValueChange={(v) => { setReciter(v); setShowReciterSelect(false); }}>
-                    <SelectTrigger className="w-56 bg-white/20 backdrop-blur-sm border-white/30 text-white text-xs h-8">
+                    <SelectTrigger className="w-56 backdrop-blur-sm text-xs h-8" style={{ background: 'rgba(184, 149, 46, 0.3)', borderColor: 'rgba(184, 149, 46, 0.4)', color: '#f5edd6' }}>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -332,13 +332,14 @@ export default function QuranReaderPage() {
               <div className="flex items-center gap-3">
                 <button
                   onClick={(e) => { e.stopPropagation(); setShowSurahDrawer(true); }}
-                  className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0"
+                  className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+                  style={{ background: 'rgba(184, 149, 46, 0.25)', backdropFilter: 'blur(8px)' }}
                 >
-                  <List className="h-5 w-5 text-white" />
+                  <List className="h-5 w-5" style={{ color: '#f5edd6' }} />
                 </button>
 
                 <div className="flex-1 flex items-center gap-3" dir="ltr">
-                  <span className="text-white/80 text-xs font-mono w-7 text-right">1</span>
+                  <span className="text-xs font-mono w-7 text-right" style={{ color: 'rgba(245, 237, 214, 0.8)' }}>1</span>
                   <Slider
                     value={[page]}
                     min={1}
@@ -348,22 +349,24 @@ export default function QuranReaderPage() {
                     onClick={(e) => e.stopPropagation()}
                     className="flex-1"
                   />
-                  <span className="text-white/80 text-xs font-mono w-10">604</span>
+                  <span className="text-xs font-mono w-10" style={{ color: 'rgba(245, 237, 214, 0.8)' }}>604</span>
                 </div>
 
                 {/* Auto-play toggle */}
                 <button
                   onClick={(e) => { e.stopPropagation(); setAutoPlay(a => !a); }}
-                  className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${autoPlay ? 'bg-white/40 backdrop-blur-sm' : 'bg-white/20 backdrop-blur-sm'}`}
+                  className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+                  style={{ background: autoPlay ? 'rgba(184, 149, 46, 0.45)' : 'rgba(184, 149, 46, 0.25)', backdropFilter: 'blur(8px)' }}
                   title={autoPlay ? 'Lecture auto activée' : 'Lecture auto désactivée'}
                 >
-                  <Repeat className={`h-5 w-5 ${autoPlay ? 'text-green-300' : 'text-white'}`} />
+                  <Repeat className="h-5 w-5" style={{ color: autoPlay ? '#d4af37' : '#f5edd6' }} />
                 </button>
 
                 {/* Reciter button */}
                 <button
                   onClick={(e) => { e.stopPropagation(); setShowReciterSelect(s => !s); }}
-                  className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0"
+                  className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+                  style={{ background: 'rgba(184, 149, 46, 0.25)', backdropFilter: 'blur(8px)' }}
                 >
                   <Mic className="h-5 w-5 text-white" />
                 </button>
