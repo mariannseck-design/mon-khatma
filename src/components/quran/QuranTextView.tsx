@@ -14,41 +14,20 @@ interface QuranTextViewProps {
   darkMode?: boolean;
 }
 
-// Tajweed color map
-const TAJWEED_COLORS: Record<string, string> = {
-  h: '#AAAAAA',
-  s: '#AAAAAA',
-  l: '#AAAAAA',
-  n: '#537FFF',
-  p: '#4050FF',
-  m: '#000EBC',
-  q: '#DD0008',
-  i: '#9400A8',
-  o: '#9400A8',
-  g: '#FF7E1E',
-  f: '#169200',
-  d: '#169777',
-  b: '#26BFFD',
-};
+const FONT_FAMILY = "'KFGQPC Uthmanic Script HAFS', 'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
 
-function parseTajweed(text: string): string {
-  return text.replace(/\[([a-z])(?::\d+)?\[([^\]]*)\]/g, (_, code, content) => {
-    const color = TAJWEED_COLORS[code];
-    if (color) {
-      return `<span style="color:${color}">${content}</span>`;
-    }
-    return content;
-  });
+// Strip tajweed markup to get clean text
+function stripTajweed(text: string): string {
+  return text.replace(/\[([a-z])(?::\d+)?\[([^\]]*)\]/g, (_, _code, content) => content);
 }
 
-const FONT_FAMILY = "'Scheherazade New', 'Traditional Arabic', serif";
-
-export default function QuranTextView({ page, highlightAyah, fontSize = 24, darkMode = false }: QuranTextViewProps) {
+export default function QuranTextView({ page, highlightAyah, fontSize = 28, darkMode = false }: QuranTextViewProps) {
   const [ayahs, setAyahs] = useState<Ayah[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [selectedAyah, setSelectedAyah] = useState<number | null>(null);
 
-  const lineHeight = `${Math.round(fontSize * 2.2)}px`;
+  const lineHeight = Math.round(fontSize * 2.4);
 
   useEffect(() => {
     setLoading(true);
@@ -66,6 +45,9 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 24, dark
       .finally(() => setLoading(false));
   }, [page]);
 
+  // Reset selection on page change
+  useEffect(() => { setSelectedAyah(null); }, [page]);
+
   const grouped = useMemo(() => {
     const groups: { surahName: string; surahNumber: number; ayahs: Ayah[] }[] = [];
     for (const ayah of ayahs) {
@@ -73,11 +55,7 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 24, dark
       if (last && last.surahNumber === ayah.surah.number) {
         last.ayahs.push(ayah);
       } else {
-        groups.push({
-          surahName: ayah.surah.name,
-          surahNumber: ayah.surah.number,
-          ayahs: [ayah],
-        });
+        groups.push({ surahName: ayah.surah.name, surahNumber: ayah.surah.number, ayahs: [ayah] });
       }
     }
     return groups;
@@ -85,62 +63,118 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 24, dark
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+      <div className="flex items-center justify-center h-full w-full">
+        <div className="w-8 h-8 border-4 rounded-full animate-spin" style={{ borderColor: '#7a8b6f', borderTopColor: 'transparent' }} />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-full text-muted-foreground">
-        <p>Impossible de charger le texte</p>
+      <div className="flex items-center justify-center h-full w-full">
+        <p style={{ color: '#7a8b6f', fontSize: '14px' }}>Impossible de charger le texte</p>
       </div>
     );
   }
 
-  const ayahNumberSize = Math.max(fontSize * 0.7, 14);
-  const textColor = darkMode ? '#d4af37' : undefined;
-  const bgColor = darkMode ? '#1a2e1a' : '#ffffff';
-  const surahNameColor = darkMode ? '#d4af37' : '#5e6e54';
-  const highlightBg = darkMode ? 'rgba(212, 175, 55, 0.15)' : 'rgba(122, 139, 111, 0.12)';
+  const activeAyah = selectedAyah ?? highlightAyah ?? null;
+
+  const ayahNumberSize = Math.max(fontSize * 0.55, 13);
 
   return (
     <div
-      className="h-full flex flex-col items-center justify-start px-5 py-6 select-text overflow-auto"
+      className="h-full w-full overflow-y-auto px-5 py-8 select-text"
       dir="rtl"
-      style={{ fontFamily: FONT_FAMILY, touchAction: 'pan-y', background: bgColor, color: textColor }}
+      style={{
+        fontFamily: FONT_FAMILY,
+        touchAction: 'pan-y',
+        background: '#ffffff',
+        WebkitOverflowScrolling: 'touch',
+      }}
     >
       {grouped.map((group) => (
-        <div key={`${group.surahNumber}-${page}`} className="w-full mb-4 last:mb-0">
+        <div key={`${group.surahNumber}-${page}`} className="mb-6 last:mb-0">
+          {/* Surah header */}
           {group.ayahs[0].numberInSurah === 1 && (
-            <>
-              <h3 className="text-center text-2xl font-bold mb-3" style={{ color: surahNameColor, fontFamily: FONT_FAMILY }}>
-                {group.surahName}
-              </h3>
+            <div className="mb-5 text-center">
+              <div
+                className="inline-block px-8 py-3 rounded-2xl mx-auto"
+                style={{ background: '#f7f3eb', border: '1px solid rgba(122,139,111,0.15)' }}
+              >
+                <h3
+                  className="text-xl font-bold"
+                  style={{ fontFamily: FONT_FAMILY, color: '#2d3a25', letterSpacing: '0.02em' }}
+                >
+                  {group.surahName}
+                </h3>
+              </div>
               {group.surahNumber !== 1 && group.surahNumber !== 9 && (
-                <p className="text-center mb-4" style={{ fontFamily: FONT_FAMILY, color: surahNameColor, fontSize: `${fontSize}px`, lineHeight }}>
+                <p
+                  className="mt-4 mb-2"
+                  style={{
+                    fontFamily: FONT_FAMILY,
+                    color: '#5e6e54',
+                    fontSize: `${fontSize * 0.85}px`,
+                    lineHeight: `${lineHeight}px`,
+                  }}
+                >
                   بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
                 </p>
               )}
-            </>
+            </div>
           )}
-          <p className="text-justify" style={{ fontSize: `${fontSize}px`, lineHeight }}>
-            {group.ayahs.map((ayah) => (
-              <span
-                key={ayah.number}
-                className={highlightAyah === ayah.number ? 'rounded px-0.5 transition-colors duration-300' : 'transition-colors duration-300'}
-                style={highlightAyah === ayah.number ? { background: highlightBg } : undefined}
-              >
-                <span dangerouslySetInnerHTML={{ __html: parseTajweed(ayah.text) }} />{' '}
-                <span className="font-bold" style={{ color: surahNameColor, fontSize: `${ayahNumberSize}px` }}>
-                  ﴿{ayah.numberInSurah.toLocaleString('ar-EG')}﴾
-                </span>{' '}
-              </span>
-            ))}
+
+          {/* Ayahs as flowing text */}
+          <p
+            className="text-justify leading-loose"
+            style={{
+              fontSize: `${fontSize}px`,
+              lineHeight: `${lineHeight}px`,
+              color: '#1a1a1a',
+              wordSpacing: '4px',
+            }}
+          >
+            {group.ayahs.map((ayah) => {
+              const isActive = activeAyah === ayah.number;
+              const cleanText = stripTajweed(ayah.text);
+
+              return (
+                <span
+                  key={ayah.number}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedAyah(prev => prev === ayah.number ? null : ayah.number);
+                  }}
+                  className="cursor-pointer transition-colors duration-200 rounded-sm"
+                  style={{
+                    background: isActive ? 'rgba(122, 139, 111, 0.15)' : 'transparent',
+                    padding: isActive ? '2px 1px' : '0',
+                    borderBottom: isActive ? '2px solid rgba(122, 139, 111, 0.4)' : '2px solid transparent',
+                  }}
+                >
+                  {cleanText}
+                  {' '}
+                  <span
+                    style={{
+                      fontFamily: FONT_FAMILY,
+                      color: '#7a8b6f',
+                      fontSize: `${ayahNumberSize}px`,
+                      fontWeight: 'bold',
+                      userSelect: 'none',
+                    }}
+                  >
+                    ﴿{ayah.numberInSurah.toLocaleString('ar-EG')}﴾
+                  </span>
+                  {' '}
+                </span>
+              );
+            })}
           </p>
         </div>
       ))}
+
+      {/* Bottom padding for controls */}
+      <div className="h-24" />
     </div>
   );
 }
