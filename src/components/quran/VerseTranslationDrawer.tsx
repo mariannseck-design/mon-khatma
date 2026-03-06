@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronRight, ChevronLeft, Loader2 } from 'lucide-react';
+import { X, ChevronRight, ChevronLeft, Loader2, Play, Pause, RotateCcw } from 'lucide-react';
 import type { VerseLineInfo } from './ImageVerseOverlay';
 
 interface TranslationData {
