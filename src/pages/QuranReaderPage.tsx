@@ -1,11 +1,13 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence, type PanInfo } from 'framer-motion';
-import { ArrowLeft, BookOpen, List, Type, Image as ImageIcon } from 'lucide-react';
+import { ArrowLeft, BookOpen, List, Type, Image as ImageIcon, Play, Pause, Loader2, Mic } from 'lucide-react';
 import { getSurahByPage } from '@/lib/surahData';
 import { Slider } from '@/components/ui/slider';
 import SurahDrawer from '@/components/quran/SurahDrawer';
 import QuranTextView from '@/components/quran/QuranTextView';
+import { useQuranAudio, RECITERS } from '@/hooks/useQuranAudio';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const TOTAL_PAGES = 604;
 const IMAGE_BASE = 'https://cdn.islamic.network/quran/images/page';
@@ -32,6 +34,17 @@ export default function QuranReaderPage() {
 
   const surah = getSurahByPage(page);
   const juz = Math.ceil(page / 20);
+  const [showReciterSelect, setShowReciterSelect] = useState(false);
+
+  const {
+    isPlaying,
+    currentAyahNumber,
+    loading: audioLoading,
+    reciter,
+    setReciter,
+    togglePlay,
+    stop: stopAudio,
+  } = useQuranAudio(page);
 
   // Save page to localStorage
   useEffect(() => {
@@ -176,7 +189,7 @@ export default function QuranReaderPage() {
       {/* Main Content */}
       <div className="flex-1 relative overflow-hidden">
         {textMode ? (
-          <QuranTextView page={page} />
+          <QuranTextView page={page} highlightAyah={currentAyahNumber} />
         ) : (
           <AnimatePresence initial={false} custom={direction} mode="popLayout">
             <motion.div
@@ -244,30 +257,68 @@ export default function QuranReaderPage() {
             transition={{ duration: 0.25 }}
             className="absolute bottom-0 left-0 right-0 z-30 bg-gradient-to-t from-black/50 to-transparent px-4 pb-6 pt-10"
           >
-            <div className="flex items-center gap-3">
-              <button
-                onClick={(e) => { e.stopPropagation(); setShowSurahDrawer(true); }}
-                className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0"
-              >
-                <List className="h-5 w-5 text-white" />
-              </button>
+            <div className="flex flex-col gap-3">
+              {/* Reciter selector - shown when toggled */}
+              {showReciterSelect && (
+                <div className="flex justify-center" onClick={(e) => e.stopPropagation()}>
+                  <Select value={reciter} onValueChange={(v) => { setReciter(v); setShowReciterSelect(false); }}>
+                    <SelectTrigger className="w-56 bg-white/20 backdrop-blur-sm border-white/30 text-white text-xs h-8">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {RECITERS.map((r) => (
+                        <SelectItem key={r.id} value={r.id} className="text-sm">
+                          {r.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
 
-              <div className="flex-1 flex items-center gap-3" dir="ltr">
-                <span className="text-white/80 text-xs font-mono w-7 text-right">1</span>
-                <Slider
-                  value={[page]}
-                  min={1}
-                  max={TOTAL_PAGES}
-                  step={1}
-                  onValueChange={([v]) => goToPage(v)}
-                  onClick={(e) => e.stopPropagation()}
-                  className="flex-1"
-                />
-                <span className="text-white/80 text-xs font-mono w-10">604</span>
-              </div>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={(e) => { e.stopPropagation(); setShowSurahDrawer(true); }}
+                  className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0"
+                >
+                  <List className="h-5 w-5 text-white" />
+                </button>
 
-              <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
-                <BookOpen className="h-5 w-5 text-white" />
+                <div className="flex-1 flex items-center gap-3" dir="ltr">
+                  <span className="text-white/80 text-xs font-mono w-7 text-right">1</span>
+                  <Slider
+                    value={[page]}
+                    min={1}
+                    max={TOTAL_PAGES}
+                    step={1}
+                    onValueChange={([v]) => goToPage(v)}
+                    onClick={(e) => e.stopPropagation()}
+                    className="flex-1"
+                  />
+                  <span className="text-white/80 text-xs font-mono w-10">604</span>
+                </div>
+
+                {/* Reciter button */}
+                <button
+                  onClick={(e) => { e.stopPropagation(); setShowReciterSelect(s => !s); }}
+                  className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0"
+                >
+                  <Mic className="h-5 w-5 text-white" />
+                </button>
+
+                {/* Play/Pause button */}
+                <button
+                  onClick={(e) => { e.stopPropagation(); togglePlay(); }}
+                  className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0"
+                >
+                  {audioLoading ? (
+                    <Loader2 className="h-5 w-5 text-white animate-spin" />
+                  ) : isPlaying ? (
+                    <Pause className="h-5 w-5 text-white" />
+                  ) : (
+                    <Play className="h-5 w-5 text-white" />
+                  )}
+                </button>
               </div>
             </div>
           </motion.div>

@@ -9,6 +9,7 @@ interface Ayah {
 
 interface QuranTextViewProps {
   page: number;
+  highlightAyah?: number | null;
 }
 
 // Tajweed color map
@@ -39,7 +40,7 @@ function parseTajweed(text: string): string {
   });
 }
 
-export default function QuranTextView({ page }: QuranTextViewProps) {
+export default function QuranTextView({ page, highlightAyah }: QuranTextViewProps) {
   const [ayahs, setAyahs] = useState<Ayah[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -109,7 +110,10 @@ export default function QuranTextView({ page }: QuranTextViewProps) {
           )}
           <p className="text-2xl sm:text-3xl leading-[2.8rem] sm:leading-[3.2rem] text-foreground text-justify">
             {group.ayahs.map((ayah) => (
-              <span key={ayah.number}>
+              <span
+                key={ayah.number}
+                className={highlightAyah === ayah.number ? 'bg-amber-200/40 dark:bg-amber-500/20 rounded px-0.5 transition-colors duration-300' : 'transition-colors duration-300'}
+              >
                 <span dangerouslySetInnerHTML={{ __html: parseTajweed(ayah.text) }} />{' '}
                 <span className="text-primary text-lg sm:text-xl font-bold">
                   ﴿{ayah.numberInSurah.toLocaleString('ar-EG')}﴾
