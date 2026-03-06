@@ -105,11 +105,11 @@ export default function QuranTextView({ page, highlightAyah }: QuranTextViewProp
         <div key={`${group.surahNumber}-${page}`} className="w-full mb-4 last:mb-0">
           {group.ayahs[0].numberInSurah === 1 && (
             <>
-              <h3 className="text-center text-2xl font-bold text-primary mb-3">
+              <h3 className="text-center text-2xl font-bold mb-3" style={{ color: '#b8952e', fontFamily: "'Playfair Display', serif" }}>
                 {group.surahName}
               </h3>
               {group.surahNumber !== 1 && group.surahNumber !== 9 && (
-                <p className="text-center text-2xl sm:text-3xl text-foreground mb-4" style={{ fontFamily: "'Amiri', 'Traditional Arabic', serif" }}>
+                <p className="text-center text-2xl sm:text-3xl mb-4" style={{ fontFamily: "'Amiri', 'Traditional Arabic', serif", color: '#8a6d1b' }}>
                   بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
                 </p>
               )}
@@ -119,10 +119,11 @@ export default function QuranTextView({ page, highlightAyah }: QuranTextViewProp
             {group.ayahs.map((ayah) => (
               <span
                 key={ayah.number}
-                className={highlightAyah === ayah.number ? 'bg-amber-200/40 dark:bg-amber-500/20 rounded px-0.5 transition-colors duration-300' : 'transition-colors duration-300'}
+                className={highlightAyah === ayah.number ? 'rounded px-0.5 transition-colors duration-300' : 'transition-colors duration-300'}
+                style={highlightAyah === ayah.number ? { background: 'rgba(184, 149, 46, 0.15)' } : undefined}
               >
                 <span dangerouslySetInnerHTML={{ __html: parseTajweed(ayah.text) }} />{' '}
-                <span className="text-primary text-lg sm:text-xl font-bold">
+                <span className="text-lg sm:text-xl font-bold" style={{ color: '#b8952e' }}>
                   ﴿{ayah.numberInSurah.toLocaleString('ar-EG')}﴾
                 </span>{' '}
               </span>
