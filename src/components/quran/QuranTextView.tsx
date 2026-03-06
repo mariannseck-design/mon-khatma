@@ -70,31 +70,14 @@ function renderTajweed(text: string, darkMode: boolean): React.ReactNode[] {
 
 const LINES_PER_PAGE = 15;
 
-export default function QuranTextView({ page, highlightAyah, darkMode = false }: QuranTextViewProps) {
+export default function QuranTextView({ page, highlightAyah, fontSize = 28, darkMode = false }: QuranTextViewProps) {
   const [ayahs, setAyahs] = useState<Ayah[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [selectedAyah, setSelectedAyah] = useState<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [computedFontSize, setComputedFontSize] = useState(26);
 
-  // Compute font size to fit 15 lines in available height
-  useEffect(() => {
-    const computeSize = () => {
-      if (!containerRef.current) return;
-      const containerHeight = containerRef.current.clientHeight;
-      // Reserve space for surah headers (~60px) and padding (~40px)
-      const availableHeight = containerHeight - 40;
-      // line-height = fontSize * 2.3, and we want 15 lines
-      // 15 * fontSize * 2.3 = availableHeight
-      const idealSize = Math.floor(availableHeight / (LINES_PER_PAGE * 2.3));
-      // Clamp between 18 and 34
-      setComputedFontSize(Math.min(34, Math.max(18, idealSize)));
-    };
-    computeSize();
-    window.addEventListener('resize', computeSize);
-    return () => window.removeEventListener('resize', computeSize);
-  }, []);
+  const computedFontSize = fontSize;
 
   const lineHeight = Math.round(computedFontSize * 2.3);
 
@@ -154,7 +137,7 @@ export default function QuranTextView({ page, highlightAyah, darkMode = false }:
     <div
       ref={containerRef}
       data-text-scroll
-      className="h-full w-full overflow-hidden flex flex-col select-text"
+      className="h-full w-full overflow-y-auto flex flex-col select-text"
       dir="rtl"
       style={{
         fontFamily: FONT_FAMILY,

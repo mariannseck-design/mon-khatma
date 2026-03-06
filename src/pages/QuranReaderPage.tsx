@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, List, Bookmark, BookmarkCheck, Play, Pause, Loader2, Image, Type } from 'lucide-react';
+import { ArrowLeft, List, Bookmark, BookmarkCheck, Play, Pause, Loader2, Image, Type, AArrowUp } from 'lucide-react';
 import { toast } from 'sonner';
 import { getSurahByPage } from '@/lib/surahData';
 import SurahDrawer from '@/components/quran/SurahDrawer';
@@ -41,6 +41,17 @@ export default function QuranReaderPage() {
   const [nightMode] = useState(() => {
     return localStorage.getItem('quran_night_mode') === 'true';
   });
+
+  const TEXT_SIZES = [
+    { label: 'Petit', value: 22 },
+    { label: 'Moyen', value: 28 },
+    { label: 'Grand', value: 34 },
+  ] as const;
+  const [textSizeIndex, setTextSizeIndex] = useState(() => {
+    const saved = localStorage.getItem('quran_text_size_index');
+    return saved ? parseInt(saved) : 1; // default: Moyen
+  });
+  useEffect(() => { localStorage.setItem('quran_text_size_index', textSizeIndex.toString()); }, [textSizeIndex]);
 
   useEffect(() => { localStorage.setItem('quran_view_mode', viewMode); }, [viewMode]);
 
@@ -146,12 +157,11 @@ export default function QuranReaderPage() {
     Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    if (viewMode === 'text') return;
-    if (e.touches.length === 2) {
+    if (e.touches.length === 2 && viewMode === 'image') {
       pinchRef.current = { dist: getDistance(e.touches[0], e.touches[1]), scale };
       panRef.current = null;
       touchStartRef.current = null;
-    } else if (e.touches.length === 1 && scale > 1) {
+    } else if (e.touches.length === 1 && scale > 1 && viewMode === 'image') {
       panRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY, tx: translate.x, ty: translate.y };
       touchStartRef.current = null;
     } else if (e.touches.length === 1) {
@@ -160,7 +170,6 @@ export default function QuranReaderPage() {
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (viewMode === 'text') return;
     if (e.touches.length === 2 && pinchRef.current) {
       e.preventDefault();
       const newDist = getDistance(e.touches[0], e.touches[1]);
@@ -175,7 +184,6 @@ export default function QuranReaderPage() {
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
-    if (viewMode === 'text') return;
     if (pinchRef.current) { pinchRef.current = null; return; }
     if (panRef.current) { panRef.current = null; return; }
     if (!touchStartRef.current) return;
@@ -191,7 +199,7 @@ export default function QuranReaderPage() {
   // Double-tap to zoom (image mode)
   const lastTapRef = useRef(0);
   const handleDoubleTap = (e: React.MouseEvent) => {
-    if (viewMode === 'text') return;
+    if (viewMode === 'text') return; // no zoom in text mode
     const now = Date.now();
     if (now - lastTapRef.current < 300) {
       e.stopPropagation();
@@ -276,6 +284,7 @@ export default function QuranReaderPage() {
           <QuranTextView
             page={page}
             highlightAyah={currentAyahNumber}
+            fontSize={TEXT_SIZES[textSizeIndex].value}
             darkMode={nightMode}
           />
         )}
@@ -388,6 +397,21 @@ export default function QuranReaderPage() {
         >
           {viewMode === 'image' ? <Type className="h-3.5 w-3.5" /> : <Image className="h-3.5 w-3.5" />}
         </button>
+
+        {/* Text size toggle (only in text mode) */}
+        {viewMode === 'text' && (
+          <button
+            onClick={() => setTextSizeIndex(prev => (prev + 1) % TEXT_SIZES.length)}
+            className="h-7 px-1.5 rounded flex items-center gap-0.5 flex-shrink-0"
+            style={{
+              color: nightMode ? '#8a9a7a' : '#5e6e54',
+              background: nightMode ? 'rgba(122,139,111,0.1)' : 'rgba(122,139,111,0.08)',
+            }}
+          >
+            <AArrowUp className="h-3.5 w-3.5" />
+            <span className="text-[10px] font-medium">{TEXT_SIZES[textSizeIndex].label}</span>
+          </button>
+        )}
 
         {/* Spacer */}
         <div className="flex-1" />
