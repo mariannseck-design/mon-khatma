@@ -26,6 +26,10 @@ export default function QuranReaderPage() {
   const [showSurahDrawer, setShowSurahDrawer] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [sourceIndex, setSourceIndex] = useState(0);
+  const [scale, setScale] = useState(1);
+  const [translate, setTranslate] = useState({ x: 0, y: 0 });
+  const pinchRef = useRef<{ dist: number; scale: number } | null>(null);
+  const panRef = useRef<{ x: number; y: number; tx: number; ty: number } | null>(null);
   const preferredSourceRef = useRef(0);
   const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
   const controlsTimer = useRef<ReturnType<typeof setTimeout>>();
@@ -42,11 +46,13 @@ export default function QuranReaderPage() {
     return IMAGE_SOURCES[idx](p);
   }, []);
 
-  // Reset source index when page changes
+  // Reset source index and zoom when page changes
   useEffect(() => {
     setImageLoaded(false);
     setSourceIndex(preferredSourceRef.current);
     retriesRef.current = 0;
+    setScale(1);
+    setTranslate({ x: 0, y: 0 });
   }, [page]);
 
   // Timeout: if image hangs, try next source
@@ -145,18 +151,71 @@ export default function QuranReaderPage() {
 
   const touchStartRef = useRef<{ x: number; y: number } | null>(null);
 
+  const getDistance = (t1: React.Touch, t2: React.Touch) =>
+    Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
+
   const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    if (e.touches.length === 2) {
+      // Pinch start
+      pinchRef.current = { dist: getDistance(e.touches[0], e.touches[1]), scale };
+      panRef.current = null;
+      touchStartRef.current = null;
+    } else if (e.touches.length === 1 && scale > 1) {
+      // Pan start when zoomed
+      panRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY, tx: translate.x, ty: translate.y };
+      touchStartRef.current = null;
+    } else if (e.touches.length === 1) {
+      touchStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (e.touches.length === 2 && pinchRef.current) {
+      e.preventDefault();
+      const newDist = getDistance(e.touches[0], e.touches[1]);
+      const newScale = Math.min(Math.max(pinchRef.current.scale * (newDist / pinchRef.current.dist), 1), 4);
+      setScale(newScale);
+      if (newScale === 1) setTranslate({ x: 0, y: 0 });
+    } else if (e.touches.length === 1 && panRef.current && scale > 1) {
+      const dx = e.touches[0].clientX - panRef.current.x;
+      const dy = e.touches[0].clientY - panRef.current.y;
+      setTranslate({ x: panRef.current.tx + dx, y: panRef.current.ty + dy });
+    }
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
+    if (pinchRef.current) {
+      pinchRef.current = null;
+      return;
+    }
+    if (panRef.current) {
+      panRef.current = null;
+      return;
+    }
     if (!touchStartRef.current) return;
     const dx = e.changedTouches[0].clientX - touchStartRef.current.x;
     const dy = e.changedTouches[0].clientY - touchStartRef.current.y;
     touchStartRef.current = null;
+    if (scale > 1) return; // No swipe nav when zoomed
     if (Math.abs(dx) < 50 || Math.abs(dy) > Math.abs(dx)) return;
     if (dx > 0) goNext();
     else goPrev();
+  };
+
+  // Double-tap to zoom
+  const lastTapRef = useRef(0);
+  const handleDoubleTap = (e: React.MouseEvent) => {
+    const now = Date.now();
+    if (now - lastTapRef.current < 300) {
+      e.stopPropagation();
+      if (scale > 1) {
+        setScale(1);
+        setTranslate({ x: 0, y: 0 });
+      } else {
+        setScale(2.5);
+      }
+    }
+    lastTapRef.current = now;
   };
 
   const goToPage = (p: number) => {
@@ -217,9 +276,11 @@ export default function QuranReaderPage() {
 
       {/* Main Content */}
       <div
-        className="flex-1 relative overflow-hidden flex items-center justify-center"
+        className="flex-1 relative overflow-hidden flex items-center justify-center touch-none"
         onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
+        onClick={handleDoubleTap}
         style={{ background: '#ffffff' }}
       >
         <AnimatePresence initial={false} mode="popLayout">
@@ -245,7 +306,11 @@ export default function QuranReaderPage() {
               referrerPolicy="no-referrer"
               onLoad={handleImageLoad}
               onError={handleImageError}
-              style={{ opacity: imageLoaded ? 1 : 0, transition: 'opacity 0.2s' }}
+              style={{
+                opacity: imageLoaded ? 1 : 0,
+                transform: `scale(${scale}) translate(${translate.x / scale}px, ${translate.y / scale}px)`,
+                transition: pinchRef.current || panRef.current ? 'none' : 'opacity 0.2s, transform 0.2s',
+              }}
             />
           </motion.div>
         </AnimatePresence>
