@@ -1,27 +1,41 @@
 
 
-# Correction de 5 bugs dans le lecteur Mushaf
+# Refonte typographique et sélecteur de taille pour le Mushaf
 
-## Bugs identifiés
+## Problemes identifies
 
-1. **Navigation par swipe ne fonctionne pas en mode texte** -- Le gestionnaire de swipe (`drag`/`onDragEnd`) est uniquement attaché au `motion.div` du mode image. En mode texte, `QuranTextView` n'a aucun support swipe.
+1. **Police Amiri = italique/inclinee** -- La police Amiri a un style calligraphique penche. Il faut passer a une police Uthmani droite et stable.
+2. **Fond trop stylise** -- Le gradient beige sable actuel manque de contraste. Passer a un blanc net / blanc casse.
+3. **Pinch-to-zoom inutilisable** -- Le zoom natif est peu pratique sur mobile. Remplacer par un selecteur de taille predefinies.
 
-2. **Ecran non zoomable** -- Le conteneur texte a `overflow-hidden` et aucun support pinch-to-zoom.
+## Modifications
 
-3. **Sélecteur de récitateur disparaît trop vite** -- Le timer auto-hide (4s) masque la barre de contrôle entière, y compris le menu de sélection du récitateur ouvert.
+### 1. `index.html` -- Charger la police KFGQPC Uthmani
+Ajouter un lien Google Fonts pour "Scheherazade New" (police Uthmani academique, droite, stable, disponible sur Google Fonts) en remplacement d'Amiri.
 
-4. **Basmala manquante** -- L'API `quran-tajweed` n'inclut pas la Basmala dans le texte des versets (sauf Al-Fatiha). Il faut l'ajouter manuellement quand `numberInSurah === 1` et que la sourate n'est ni Al-Fatiha (1) ni At-Tawbah (9).
+### 2. `src/components/quran/QuranTextView.tsx`
+- Remplacer `fontFamily: "'Amiri'"` par `"'Scheherazade New', 'Traditional Arabic', serif"` partout
+- Accepter une nouvelle prop `fontSize` (number en px) pour controler dynamiquement la taille du texte et du line-height
+- Fond du conteneur : blanc casse `#fefdfb` au lieu du fond transparent actuel
+- Ajuster le line-height proportionnellement au fontSize
 
-## Fichiers à modifier
+### 3. `src/pages/QuranReaderPage.tsx`
+- **Fond** : changer le gradient vers un blanc casse leger (`#fefdfb` -> `#f9f6f0`)
+- **Sélecteur de taille "AA"** : ajouter un bouton icone "AA" dans la barre du haut (a cote du bouton texte/image), qui ouvre un petit panneau avec 4 niveaux prédéfinis :
+  - Petit (20px)
+  - Moyen (24px) -- defaut
+  - Grand (30px)
+  - Tres Grand (36px)
+- Stocker le choix dans `localStorage` (`quran_text_size`)
+- Passer la valeur a `QuranTextView` via la prop `fontSize`
+- Le panneau se ferme au tap exterieur
+- Barres de controle : adapter les couleurs de texte pour le nouveau fond clair (texte sombre au lieu de creme)
 
-### `src/pages/QuranReaderPage.tsx`
-- Envelopper le `QuranTextView` dans un `motion.div` avec `drag="x"` et `onDragEnd` pour supporter le swipe en mode texte (même logique que le mode image)
-- Quand `showReciterSelect` est `true`, annuler le timer auto-hide pour laisser le temps de choisir
-- Réactiver le timer quand le sélecteur se ferme
+### 4. Adaptation des barres de controle
+Les barres haut/bas utilisent actuellement du texte creme (`#f5edd6`) sur fond sombre semi-transparent. Avec le fond blanc, garder les barres semi-transparentes sombres -- le contraste reste bon, pas de changement necessaire sur les barres.
 
-### `src/components/quran/QuranTextView.tsx`
-- Ajouter la Basmala (`بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ`) au-dessus du texte quand la première ayah du groupe a `numberInSurah === 1`, sauf pour les sourates 1 et 9
-- Permettre le zoom tactile en changeant le style du conteneur (retirer les contraintes qui bloquent le pinch-zoom)
-
-## Estimation : 1 crédit
+## Fichiers impactes
+- `index.html` (1 ligne)
+- `src/components/quran/QuranTextView.tsx`
+- `src/pages/QuranReaderPage.tsx`
 
