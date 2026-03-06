@@ -1,22 +1,27 @@
 
 
-# Correction des couleurs dans QuranTextView
+# Correction de 5 bugs dans le lecteur Mushaf
 
-## Diagnostic
+## Bugs identifiés
 
-Le fichier `QuranReaderPage.tsx` a bien les couleurs olive (barres vertes, fond crème). Mais le composant `QuranTextView.tsx` utilise encore les anciennes couleurs dorées en mode clair :
+1. **Navigation par swipe ne fonctionne pas en mode texte** -- Le gestionnaire de swipe (`drag`/`onDragEnd`) est uniquement attaché au `motion.div` du mode image. En mode texte, `QuranTextView` n'a aucun support swipe.
 
-- `surahNameColor` en mode clair = `#8a6d1b` (or/brun) → devrait être olive
-- `bgColor` en mode clair = `#fefdfb` (blanc cassé) → c'est correct, mais peut-être pas assez blanc/visible
+2. **Ecran non zoomable** -- Le conteneur texte a `overflow-hidden` et aucun support pinch-to-zoom.
 
-## Changements dans `src/components/quran/QuranTextView.tsx`
+3. **Sélecteur de récitateur disparaît trop vite** -- Le timer auto-hide (4s) masque la barre de contrôle entière, y compris le menu de sélection du récitateur ouvert.
 
-### Mode clair — passer à la palette olive :
-- `textColor` (mode clair) : rester `undefined` (texte noir par défaut) — OK
-- `bgColor` (mode clair) : `#ffffff` (blanc pur pour mieux se détacher du fond crème)
-- `surahNameColor` (mode clair) : `#5e6e54` (vert olive foncé) au lieu de `#8a6d1b`
-- `highlightBg` (mode clair) : `rgba(122, 139, 111, 0.12)` au lieu de `rgba(138, 109, 27, 0.12)`
+4. **Basmala manquante** -- L'API `quran-tajweed` n'inclut pas la Basmala dans le texte des versets (sauf Al-Fatiha). Il faut l'ajouter manuellement quand `numberInSurah === 1` et que la sourate n'est ni Al-Fatiha (1) ni At-Tawbah (9).
 
-### Mode sombre — inchangé :
-Les couleurs dorées sur fond vert forêt restent telles quelles (c'est le design voulu pour le mode sombre).
+## Fichiers à modifier
+
+### `src/pages/QuranReaderPage.tsx`
+- Envelopper le `QuranTextView` dans un `motion.div` avec `drag="x"` et `onDragEnd` pour supporter le swipe en mode texte (même logique que le mode image)
+- Quand `showReciterSelect` est `true`, annuler le timer auto-hide pour laisser le temps de choisir
+- Réactiver le timer quand le sélecteur se ferme
+
+### `src/components/quran/QuranTextView.tsx`
+- Ajouter la Basmala (`بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ`) au-dessus du texte quand la première ayah du groupe a `numberInSurah === 1`, sauf pour les sourates 1 et 9
+- Permettre le zoom tactile en changeant le style du conteneur (retirer les contraintes qui bloquent le pinch-zoom)
+
+## Estimation : 1 crédit
 
