@@ -1,13 +1,12 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, List, Bookmark, BookmarkCheck, ChevronUp } from 'lucide-react';
+import { ArrowLeft, List, Bookmark, BookmarkCheck, Play, Pause, Loader2, Image, Type } from 'lucide-react';
 import { toast } from 'sonner';
 import { getSurahByPage } from '@/lib/surahData';
 import SurahDrawer from '@/components/quran/SurahDrawer';
 import QuranTextView from '@/components/quran/QuranTextView';
-import ReaderSettingsPanel from '@/components/quran/ReaderSettingsPanel';
-import { useQuranAudio } from '@/hooks/useQuranAudio';
+import { useQuranAudio, RECITERS } from '@/hooks/useQuranAudio';
 
 const TOTAL_PAGES = 604;
 
@@ -24,7 +23,6 @@ export default function QuranReaderPage() {
     return saved ? Math.min(Math.max(parseInt(saved), 1), TOTAL_PAGES) : 1;
   });
   const [direction, setDirection] = useState(0);
-  const [showControls, setShowControls] = useState(true);
   const [showSurahDrawer, setShowSurahDrawer] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [sourceIndex, setSourceIndex] = useState(0);
@@ -34,32 +32,24 @@ export default function QuranReaderPage() {
   const panRef = useRef<{ x: number; y: number; tx: number; ty: number } | null>(null);
   const preferredSourceRef = useRef(0);
   const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
-  const controlsTimer = useRef<ReturnType<typeof setTimeout>>();
   const containerRef = useRef<HTMLDivElement>(null);
   const retriesRef = useRef(0);
 
-  // Settings state
   const [viewMode, setViewMode] = useState<'image' | 'text'>(() => {
     return (localStorage.getItem('quran_view_mode') as 'image' | 'text') || 'image';
   });
-  const [nightMode, setNightMode] = useState(() => {
+  const [nightMode] = useState(() => {
     return localStorage.getItem('quran_night_mode') === 'true';
   });
-  const [fontSize, setFontSize] = useState(() => {
-    const saved = localStorage.getItem('quran_font_size');
-    return saved ? parseInt(saved) : 28;
-  });
 
-  // Persist settings
   useEffect(() => { localStorage.setItem('quran_view_mode', viewMode); }, [viewMode]);
-  useEffect(() => { localStorage.setItem('quran_night_mode', String(nightMode)); }, [nightMode]);
-  useEffect(() => { localStorage.setItem('quran_font_size', String(fontSize)); }, [fontSize]);
 
   const [bookmark, setBookmark] = useState<number | null>(() => {
     const saved = localStorage.getItem('quran_bookmark');
     return saved ? parseInt(saved) : null;
   });
   const [pageInput, setPageInput] = useState(page.toString());
+  const [showReciterMenu, setShowReciterMenu] = useState(false);
 
   // Audio
   const goNextAuto = useCallback(() => {
@@ -72,7 +62,6 @@ export default function QuranReaderPage() {
     return IMAGE_SOURCES[idx](p);
   }, []);
 
-  // Reset source index and zoom when page changes
   useEffect(() => {
     setImageLoaded(false);
     setSourceIndex(preferredSourceRef.current);
@@ -81,7 +70,6 @@ export default function QuranReaderPage() {
     setTranslate({ x: 0, y: 0 });
   }, [page]);
 
-  // Timeout: if image hangs, try next source
   useEffect(() => {
     if (viewMode === 'text') return;
     if (imageLoaded) {
@@ -127,67 +115,21 @@ export default function QuranReaderPage() {
     }
   };
 
-  const handleBookmarkLongPress = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setBookmark(page);
-    localStorage.setItem('quran_bookmark', page.toString());
-    const s = getSurahByPage(page);
-    toast(`Marque-page enregistré · Page ${page}${s ? ` · ${s.name}` : ''}`);
-  };
-
   const surah = getSurahByPage(page);
   const juz = Math.ceil(page / 20);
 
   useEffect(() => { localStorage.setItem('quran_reader_page', page.toString()); setPageInput(page.toString()); }, [page]);
 
-  // Preload adjacent pages (image mode only)
+  // Preload adjacent pages (image mode)
   useEffect(() => {
     if (viewMode !== 'image') return;
-    [page - 1, page + 1, page - 2, page + 2].forEach(p => {
+    [page - 1, page + 1].forEach(p => {
       if (p >= 1 && p <= TOTAL_PAGES) {
         const img = new window.Image();
         img.src = getPageUrl(p);
       }
     });
   }, [page, getPageUrl, viewMode]);
-
-  // Auto-hide controls — scroll-aware for text mode
-  const lastScrollY = useRef(0);
-  const resetControlsTimer = useCallback(() => {
-    setShowControls(true);
-    if (controlsTimer.current) clearTimeout(controlsTimer.current);
-    controlsTimer.current = setTimeout(() => setShowControls(false), 4000);
-  }, []);
-
-  // In text mode, show controls on scroll up, hide on scroll down
-  useEffect(() => {
-    if (viewMode !== 'text') return;
-    const container = containerRef.current;
-    if (!container) return;
-    const scrollEl = container.querySelector('[data-text-scroll]') as HTMLElement | null;
-    if (!scrollEl) return;
-
-    const handleScroll = () => {
-      const currentY = scrollEl.scrollTop;
-      if (currentY < lastScrollY.current - 10) {
-        // Scrolling UP → show controls
-        resetControlsTimer();
-      } else if (currentY > lastScrollY.current + 10) {
-        // Scrolling DOWN → hide controls
-        setShowControls(false);
-        if (controlsTimer.current) clearTimeout(controlsTimer.current);
-      }
-      lastScrollY.current = currentY;
-    };
-
-    scrollEl.addEventListener('scroll', handleScroll, { passive: true });
-    return () => scrollEl.removeEventListener('scroll', handleScroll);
-  }, [viewMode, resetControlsTimer]);
-
-  useEffect(() => {
-    resetControlsTimer();
-    return () => { if (controlsTimer.current) clearTimeout(controlsTimer.current); };
-  }, [page, resetControlsTimer]);
 
   // Navigation
   const goNext = useCallback(() => {
@@ -204,7 +146,7 @@ export default function QuranReaderPage() {
     Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    if (viewMode === 'text') return; // Let text mode scroll naturally
+    if (viewMode === 'text') return;
     if (e.touches.length === 2) {
       pinchRef.current = { dist: getDistance(e.touches[0], e.touches[1]), scale };
       panRef.current = null;
@@ -246,7 +188,7 @@ export default function QuranReaderPage() {
     else goPrev();
   };
 
-  // Double-tap to zoom (image mode only)
+  // Double-tap to zoom (image mode)
   const lastTapRef = useRef(0);
   const handleDoubleTap = (e: React.MouseEvent) => {
     if (viewMode === 'text') return;
@@ -274,18 +216,14 @@ export default function QuranReaderPage() {
 
   const bgColor = nightMode ? '#0f1a0f' : '#f7f3eb';
   const contentBg = nightMode ? '#1a2e1a' : '#ffffff';
-  const barBg = nightMode
-    ? 'linear-gradient(to bottom, rgba(15, 26, 15, 0.85), transparent)'
-    : 'linear-gradient(to bottom, rgba(42, 58, 37, 0.6), transparent)';
-  const barBgBottom = nightMode
-    ? 'linear-gradient(to top, rgba(15, 26, 15, 0.85), transparent)'
-    : 'linear-gradient(to top, rgba(42, 58, 37, 0.6), transparent)';
+
+  // Bottom bar height
+  const BOTTOM_BAR_H = 44;
 
   return (
     <div
       ref={containerRef}
       className="fixed inset-0 flex flex-col z-50"
-      onClick={() => resetControlsTimer()}
       style={{ background: bgColor }}
     >
       {/* Night mode filter for image mode */}
@@ -293,49 +231,14 @@ export default function QuranReaderPage() {
         <div className="absolute inset-0 z-10 pointer-events-none" style={{ background: 'rgba(10, 20, 10, 0.35)', mixBlendMode: 'multiply' }} />
       )}
 
-      {/* Top Bar */}
-      <AnimatePresence>
-        {showControls && (
-          <motion.div
-            initial={{ y: -60, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -60, opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="absolute top-0 left-0 right-0 z-30 px-4 pt-3 pb-10"
-            style={{ background: barBg }}
-          >
-            <div className="flex items-center justify-between">
-              <button
-                onClick={(e) => { e.stopPropagation(); navigate(-1); }}
-                className="w-10 h-10 rounded-full flex items-center justify-center"
-                style={{ background: 'rgba(122, 139, 111, 0.35)', backdropFilter: 'blur(8px)' }}
-              >
-                <ArrowLeft className="h-5 w-5" style={{ color: '#e8e2d0' }} />
-              </button>
-
-              <div className="text-center">
-                <p className="font-semibold text-sm" style={{ fontFamily: "'Playfair Display', serif", color: '#f0ead9' }}>
-                  {surah ? `${surah.number}. ${surah.name}` : ''}
-                </p>
-                <p className="text-xs" style={{ color: 'rgba(240, 234, 217, 0.7)' }}>
-                  Page {page} · Juz {juz}
-                </p>
-              </div>
-
-              <div className="w-10" />
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Main Content */}
+      {/* Main Content — full screen minus thin bottom bar */}
       <div
-        className={`flex-1 relative overflow-hidden flex items-center justify-center ${viewMode === 'image' ? 'touch-none' : 'overflow-y-auto'}`}
+        className={`flex-1 relative overflow-hidden flex items-center justify-center ${viewMode === 'image' ? 'touch-none' : ''}`}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
         onClick={handleDoubleTap}
-        style={{ background: contentBg }}
+        style={{ background: contentBg, paddingBottom: 0 }}
       >
         {viewMode === 'image' ? (
           <AnimatePresence initial={false} mode="popLayout">
@@ -373,120 +276,166 @@ export default function QuranReaderPage() {
           <QuranTextView
             page={page}
             highlightAyah={currentAyahNumber}
-            fontSize={fontSize}
             darkMode={nightMode}
           />
         )}
       </div>
 
-      {/* Bottom Bar */}
-      <AnimatePresence>
-        {showControls && (
-          <motion.div
-            initial={{ y: 60, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 60, opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="absolute bottom-0 left-0 right-0 z-30 px-4 pb-6 pt-10"
-            style={{ background: barBgBottom }}
+      {/* Thin discrete bottom bar — always visible, never overlaps text */}
+      <div
+        className="relative z-30 flex items-center gap-1 px-2"
+        style={{
+          height: `${BOTTOM_BAR_H}px`,
+          background: nightMode ? '#0f1a0f' : '#f0ead9',
+          borderTop: `1px solid ${nightMode ? 'rgba(122,139,111,0.15)' : 'rgba(122,139,111,0.12)'}`,
+        }}
+      >
+        {/* Back */}
+        <button
+          onClick={() => navigate(-1)}
+          className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+          style={{ color: nightMode ? '#8a9a7a' : '#5e6e54' }}
+        >
+          <ArrowLeft className="h-4 w-4" />
+        </button>
+
+        {/* Surah list */}
+        <button
+          onClick={() => setShowSurahDrawer(true)}
+          className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+          style={{ color: nightMode ? '#8a9a7a' : '#5e6e54' }}
+        >
+          <List className="h-4 w-4" />
+        </button>
+
+        {/* Bookmark */}
+        <button
+          onClick={handleBookmark}
+          className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+          style={{ color: bookmark !== null ? '#7a8b6f' : (nightMode ? '#8a9a7a' : '#5e6e54') }}
+        >
+          {bookmark !== null ? <BookmarkCheck className="h-4 w-4" /> : <Bookmark className="h-4 w-4" />}
+        </button>
+
+        {/* Separator */}
+        <div className="w-px h-5 mx-0.5" style={{ background: nightMode ? 'rgba(122,139,111,0.2)' : 'rgba(122,139,111,0.15)' }} />
+
+        {/* Audio play/pause */}
+        <button
+          onClick={(e) => { e.stopPropagation(); togglePlay(); }}
+          className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+          style={{
+            background: isPlaying ? '#7a8b6f' : 'transparent',
+            color: isPlaying ? '#f0ead9' : (nightMode ? '#8a9a7a' : '#5e6e54'),
+          }}
+        >
+          {audioLoading ? (
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+          ) : isPlaying ? (
+            <Pause className="h-3.5 w-3.5" />
+          ) : (
+            <Play className="h-3.5 w-3.5 ml-0.5" />
+          )}
+        </button>
+
+        {/* Reciter selector (small) */}
+        <div className="relative flex-shrink-0">
+          <button
+            onClick={() => setShowReciterMenu(!showReciterMenu)}
+            className="text-xs px-1.5 py-0.5 rounded max-w-[70px] truncate"
+            style={{
+              color: nightMode ? '#8a9a7a' : '#5e6e54',
+              background: nightMode ? 'rgba(122,139,111,0.1)' : 'rgba(122,139,111,0.08)',
+            }}
           >
-            <div className="flex items-center gap-3">
-              <button
-                onClick={(e) => { e.stopPropagation(); setShowSurahDrawer(true); }}
-                className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
-                style={{ background: 'rgba(122, 139, 111, 0.35)', backdropFilter: 'blur(8px)' }}
+            {RECITERS.find(r => r.id === reciter)?.name.split(' ').pop()}
+          </button>
+          <AnimatePresence>
+            {showReciterMenu && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                className="absolute bottom-full left-0 mb-1 rounded-lg shadow-lg py-1 min-w-[160px]"
+                style={{ background: nightMode ? '#1a2e1a' : '#ffffff', border: '1px solid rgba(122,139,111,0.15)' }}
               >
-                <List className="h-5 w-5" style={{ color: '#e8e2d0' }} />
-              </button>
+                {RECITERS.map(r => (
+                  <button
+                    key={r.id}
+                    onClick={() => { setReciter(r.id); setShowReciterMenu(false); }}
+                    className="w-full text-left text-xs px-3 py-1.5 hover:bg-black/5"
+                    style={{
+                      color: r.id === reciter ? '#7a8b6f' : (nightMode ? '#d4c9a8' : '#2d3a25'),
+                      fontWeight: r.id === reciter ? 600 : 400,
+                    }}
+                  >
+                    {r.name}
+                  </button>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
 
-              <button
-                onClick={handleBookmark}
-                onContextMenu={(e) => { e.preventDefault(); handleBookmarkLongPress(e); }}
-                className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
-                style={{ background: bookmark !== null ? 'rgba(122, 139, 111, 0.55)' : 'rgba(122, 139, 111, 0.35)', backdropFilter: 'blur(8px)' }}
-                title={bookmark !== null ? `Marque-page : page ${bookmark}` : 'Ajouter un marque-page'}
-              >
-                {bookmark !== null ? (
-                  <BookmarkCheck className="h-5 w-5" style={{ color: '#8fa07e' }} />
-                ) : (
-                  <Bookmark className="h-5 w-5" style={{ color: '#e8e2d0' }} />
-                )}
-              </button>
+        {/* Separator */}
+        <div className="w-px h-5 mx-0.5" style={{ background: nightMode ? 'rgba(122,139,111,0.2)' : 'rgba(122,139,111,0.15)' }} />
 
-              <ReaderSettingsPanel
-                viewMode={viewMode}
-                onViewModeChange={setViewMode}
-                nightMode={nightMode}
-                onNightModeChange={setNightMode}
-                fontSize={fontSize}
-                onFontSizeChange={setFontSize}
-                isPlaying={isPlaying}
-                audioLoading={audioLoading}
-                onTogglePlay={togglePlay}
-                reciter={reciter}
-                onReciterChange={setReciter}
-              />
+        {/* View mode toggle */}
+        <button
+          onClick={() => setViewMode(viewMode === 'image' ? 'text' : 'image')}
+          className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+          style={{ color: nightMode ? '#8a9a7a' : '#5e6e54' }}
+        >
+          {viewMode === 'image' ? <Type className="h-3.5 w-3.5" /> : <Image className="h-3.5 w-3.5" />}
+        </button>
 
-              <div className="flex-1 flex items-center justify-center gap-2">
-                <span className="text-xs" style={{ color: 'rgba(240, 234, 217, 0.7)' }}>Page</span>
-                <input
-                  type="number"
-                  inputMode="numeric"
-                  min={1}
-                  max={TOTAL_PAGES}
-                  value={pageInput}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    setPageInput(val);
-                    const v = parseInt(val);
-                    if (!isNaN(v) && v >= 1 && v <= TOTAL_PAGES) {
-                      goToPage(v);
-                    }
-                  }}
-                  onFocus={(e) => e.target.select()}
-                  onBlur={() => {
-                    const v = parseInt(pageInput);
-                    if (isNaN(v) || v < 1 || v > TOTAL_PAGES) {
-                      setPageInput(page.toString());
-                    }
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      (e.target as HTMLInputElement).blur();
-                    }
-                  }}
-                  onClick={(e) => e.stopPropagation()}
-                  className="w-14 text-center text-sm font-semibold rounded-lg border-0 outline-none"
-                  style={{
-                    background: 'rgba(255,255,255,0.15)',
-                    color: '#f0ead9',
-                    backdropFilter: 'blur(4px)',
-                    padding: '4px 2px',
-                  }}
-                />
-                <span className="text-xs" style={{ color: 'rgba(240, 234, 217, 0.7)' }}>/ {TOTAL_PAGES}</span>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+        {/* Spacer */}
+        <div className="flex-1" />
 
-      {/* Floating button to show controls */}
-      <AnimatePresence>
-        {!showControls && (
-          <motion.button
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            transition={{ duration: 0.2 }}
-            onClick={(e) => { e.stopPropagation(); resetControlsTimer(); }}
-            className="fixed bottom-6 right-4 z-30 w-10 h-10 rounded-full flex items-center justify-center"
-            style={{ background: 'rgba(122, 139, 111, 0.4)', backdropFilter: 'blur(8px)' }}
-          >
-            <ChevronUp className="h-5 w-5" style={{ color: '#e8e2d0' }} />
-          </motion.button>
-        )}
-      </AnimatePresence>
+        {/* Page info & input */}
+        <div className="flex items-center gap-1">
+          <span className="text-[10px]" style={{ color: nightMode ? '#6a7a5a' : '#8a9a7a' }}>
+            {surah ? surah.name : ''} · Juz {juz}
+          </span>
+          <input
+            type="number"
+            inputMode="numeric"
+            min={1}
+            max={TOTAL_PAGES}
+            value={pageInput}
+            onChange={(e) => {
+              const val = e.target.value;
+              setPageInput(val);
+              const v = parseInt(val);
+              if (!isNaN(v) && v >= 1 && v <= TOTAL_PAGES) {
+                goToPage(v);
+              }
+            }}
+            onFocus={(e) => e.target.select()}
+            onBlur={() => {
+              const v = parseInt(pageInput);
+              if (isNaN(v) || v < 1 || v > TOTAL_PAGES) {
+                setPageInput(page.toString());
+              }
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') (e.target as HTMLInputElement).blur();
+            }}
+            onClick={(e) => e.stopPropagation()}
+            className="w-10 text-center text-xs font-semibold rounded border-0 outline-none"
+            style={{
+              background: nightMode ? 'rgba(122,139,111,0.15)' : 'rgba(122,139,111,0.1)',
+              color: nightMode ? '#d4c9a8' : '#2d3a25',
+              padding: '2px 0',
+            }}
+          />
+        </div>
+      </div>
+
+      {/* Click-away for reciter menu */}
+      {showReciterMenu && (
+        <div className="fixed inset-0 z-20" onClick={() => setShowReciterMenu(false)} />
+      )}
 
       <SurahDrawer
         open={showSurahDrawer}
