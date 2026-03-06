@@ -111,10 +111,10 @@ export default function QuranReaderPage() {
 
   const handleDragEnd = (_: unknown, info: PanInfo) => {
     const threshold = 50;
-    // RTL: swipe left (negative offset) = go to next page
-    if (info.offset.x < -threshold) {
+    // RTL: swipe right (positive offset) = next page, swipe left = previous
+    if (info.offset.x > threshold) {
       goNext();
-    } else if (info.offset.x > threshold) {
+    } else if (info.offset.x < -threshold) {
       goPrev();
     }
   };
@@ -140,9 +140,9 @@ export default function QuranReaderPage() {
   }, [goNext, goPrev]);
 
   const slideVariants = {
-    enter: (dir: number) => ({ x: dir > 0 ? '-100%' : '100%', opacity: 0 }),
+    enter: (dir: number) => ({ x: dir > 0 ? '100%' : '-100%', opacity: 0 }),
     center: { x: 0, opacity: 1 },
-    exit: (dir: number) => ({ x: dir > 0 ? '100%' : '-100%', opacity: 0 }),
+    exit: (dir: number) => ({ x: dir > 0 ? '-100%' : '100%', opacity: 0 }),
   };
 
   return (
