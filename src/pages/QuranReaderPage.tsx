@@ -487,6 +487,13 @@ export default function QuranReaderPage() {
         onSelectPage={goToPage}
         currentPage={page}
       />
+
+      <VerseTranslationDrawer
+        verseKey={selectedVerse}
+        allVerses={pageVerses}
+        onClose={() => setSelectedVerse(null)}
+        onNavigate={(vk) => setSelectedVerse(vk)}
+      />
     </div>
   );
 }
