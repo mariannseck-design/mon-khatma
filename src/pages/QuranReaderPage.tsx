@@ -78,17 +78,19 @@ export default function QuranReaderPage() {
     });
   }, [page, textMode]);
 
-  // Auto-hide controls
+  // Auto-hide controls (pause when reciter select is open)
   const resetControlsTimer = useCallback(() => {
     setShowControls(true);
     if (controlsTimer.current) clearTimeout(controlsTimer.current);
-    controlsTimer.current = setTimeout(() => setShowControls(false), 4000);
-  }, []);
+    if (!showReciterSelect) {
+      controlsTimer.current = setTimeout(() => setShowControls(false), 4000);
+    }
+  }, [showReciterSelect]);
 
   useEffect(() => {
     resetControlsTimer();
     return () => { if (controlsTimer.current) clearTimeout(controlsTimer.current); };
-  }, [page, resetControlsTimer]);
+  }, [page, resetControlsTimer, showReciterSelect]);
 
   // RTL navigation: swipe left = next page (higher number), swipe right = previous
   const goNext = useCallback(() => {
@@ -205,7 +207,23 @@ export default function QuranReaderPage() {
       {/* Main Content */}
       <div className="flex-1 relative overflow-hidden">
         {textMode ? (
-          <QuranTextView page={page} highlightAyah={currentAyahNumber} />
+          <motion.div
+            key={`text-${page}`}
+            custom={direction}
+            variants={slideVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={0.15}
+            onDragEnd={handleDragEnd}
+            className="h-full"
+            style={{ touchAction: 'pan-y pinch-zoom' }}
+          >
+            <QuranTextView page={page} highlightAyah={currentAyahNumber} />
+          </motion.div>
         ) : (
           <AnimatePresence initial={false} custom={direction} mode="popLayout">
             <motion.div
