@@ -11,6 +11,7 @@ interface QuranTextViewProps {
   page: number;
   highlightAyah?: number | null;
   fontSize?: number;
+  darkMode?: boolean;
 }
 
 // Tajweed color map
