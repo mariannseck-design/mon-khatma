@@ -1,25 +1,32 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Settings, X, Type, Moon, Sun, Play, Pause, Loader2, Minus, Plus, BookOpen, Image } from 'lucide-react';
+import { Settings, X, Moon, Sun, Play, Pause, Loader2, BookOpen, Image, Type, ChevronRight } from 'lucide-react';
 import { RECITERS } from '@/hooks/useQuranAudio';
 
 interface ReaderSettingsPanelProps {
-  // View mode
   viewMode: 'image' | 'text';
   onViewModeChange: (mode: 'image' | 'text') => void;
-  // Night mode
   nightMode: boolean;
   onNightModeChange: (on: boolean) => void;
-  // Font size (text mode)
   fontSize: number;
   onFontSizeChange: (size: number) => void;
-  // Audio
   isPlaying: boolean;
   audioLoading: boolean;
   onTogglePlay: () => void;
   reciter: string;
   onReciterChange: (id: string) => void;
+  onShowSurahDrawer?: () => void;
+  textSizeIndex?: number;
+  textSizes?: Array<{ label: string; value: number }>;
+  onTextSizeIndexChange?: (index: number) => void;
 }
+
+const FONT_SIZE_PRESETS = [
+  { label: 'Petit', value: 16 },
+  { label: 'Moyen', value: 22 },
+  { label: 'Grand', value: 28 },
+  { label: 'Très Grand', value: 36 },
+];
 
 export default function ReaderSettingsPanel({
   viewMode, onViewModeChange,
@@ -27,18 +34,25 @@ export default function ReaderSettingsPanel({
   fontSize, onFontSizeChange,
   isPlaying, audioLoading, onTogglePlay,
   reciter, onReciterChange,
+  onShowSurahDrawer,
+  textSizeIndex,
+  textSizes,
+  onTextSizeIndexChange,
 }: ReaderSettingsPanelProps) {
   const [open, setOpen] = useState(false);
 
+  const activeSizes = textSizes || FONT_SIZE_PRESETS;
+  const activeIndex = textSizeIndex ?? activeSizes.findIndex(s => s.value === fontSize);
+
   return (
     <>
-      {/* Floating settings button */}
+      {/* Settings gear button */}
       <button
         onClick={(e) => { e.stopPropagation(); setOpen(true); }}
-        className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
-        style={{ background: 'rgba(122, 139, 111, 0.35)', backdropFilter: 'blur(8px)' }}
+        className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+        style={{ color: '#4a9a9a' }}
       >
-        <Settings className="h-5 w-5" style={{ color: '#e8e2d0' }} />
+        <Settings className="h-4 w-4" />
       </button>
 
       {/* Settings panel overlay */}
@@ -60,18 +74,38 @@ export default function ReaderSettingsPanel({
               style={{
                 background: nightMode ? '#1a2e1a' : '#f7f3eb',
                 color: nightMode ? '#d4c9a8' : '#2d3a25',
+                border: `1px solid ${nightMode ? 'rgba(90,180,180,0.15)' : 'rgba(180,150,60,0.2)'}`,
+                borderBottom: 'none',
+                boxShadow: '0 -8px 40px rgba(0,0,0,0.15)',
               }}
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
               <div className="flex items-center justify-between mb-5">
-                <h3 className="text-lg font-semibold" style={{ fontFamily: "'Playfair Display', serif" }}>
+                <h3 className="text-lg font-semibold" style={{ fontFamily: "'Playfair Display', serif", color: nightMode ? '#d4c9a8' : '#6b5417' }}>
                   Paramètres
                 </h3>
                 <button onClick={() => setOpen(false)} className="p-1 rounded-full" style={{ background: 'rgba(122,139,111,0.15)' }}>
                   <X className="h-5 w-5" />
                 </button>
               </div>
+
+              {/* Surah Selector */}
+              {onShowSurahDrawer && (
+                <div className="mb-4">
+                  <button
+                    onClick={() => { onShowSurahDrawer(); setOpen(false); }}
+                    className="w-full flex items-center justify-between py-3 px-4 rounded-xl text-sm font-medium transition-all"
+                    style={{ background: nightMode ? 'rgba(90,180,180,0.08)' : 'rgba(180,150,60,0.08)', border: `1px solid ${nightMode ? 'rgba(90,180,180,0.12)' : 'rgba(180,150,60,0.12)'}` }}
+                  >
+                    <span className="flex items-center gap-2">
+                      <BookOpen className="h-4 w-4" style={{ color: '#4a9a9a' }} />
+                      Choisir une sourate
+                    </span>
+                    <ChevronRight className="h-4 w-4 opacity-50" />
+                  </button>
+                </div>
+              )}
 
               {/* View Mode Toggle */}
               <div className="mb-4">
@@ -81,8 +115,8 @@ export default function ReaderSettingsPanel({
                     onClick={() => onViewModeChange('image')}
                     className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium transition-all"
                     style={{
-                      background: viewMode === 'image' ? 'rgba(122,139,111,0.3)' : 'rgba(122,139,111,0.08)',
-                      border: viewMode === 'image' ? '1.5px solid rgba(122,139,111,0.5)' : '1.5px solid transparent',
+                      background: viewMode === 'image' ? (nightMode ? 'rgba(90,180,180,0.2)' : 'rgba(180,150,60,0.15)') : (nightMode ? 'rgba(90,180,180,0.05)' : 'rgba(180,150,60,0.05)'),
+                      border: viewMode === 'image' ? `1.5px solid ${nightMode ? 'rgba(90,180,180,0.4)' : 'rgba(180,150,60,0.3)'}` : '1.5px solid transparent',
                     }}
                   >
                     <Image className="h-4 w-4" /> Mushaf
@@ -91,8 +125,8 @@ export default function ReaderSettingsPanel({
                     onClick={() => onViewModeChange('text')}
                     className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium transition-all"
                     style={{
-                      background: viewMode === 'text' ? 'rgba(122,139,111,0.3)' : 'rgba(122,139,111,0.08)',
-                      border: viewMode === 'text' ? '1.5px solid rgba(122,139,111,0.5)' : '1.5px solid transparent',
+                      background: viewMode === 'text' ? (nightMode ? 'rgba(90,180,180,0.2)' : 'rgba(180,150,60,0.15)') : (nightMode ? 'rgba(90,180,180,0.05)' : 'rgba(180,150,60,0.05)'),
+                      border: viewMode === 'text' ? `1.5px solid ${nightMode ? 'rgba(90,180,180,0.4)' : 'rgba(180,150,60,0.3)'}` : '1.5px solid transparent',
                     }}
                   >
                     <Type className="h-4 w-4" /> Texte
@@ -100,59 +134,58 @@ export default function ReaderSettingsPanel({
                 </div>
               </div>
 
+              {/* Text Size (4 levels) */}
+              {viewMode === 'text' && (
+                <div className="mb-4">
+                  <p className="text-xs font-medium mb-2 opacity-70">Taille du texte</p>
+                  <div className="grid grid-cols-4 gap-1.5">
+                    {activeSizes.map((size, idx) => (
+                      <button
+                        key={size.label}
+                        onClick={() => onTextSizeIndexChange ? onTextSizeIndexChange(idx) : onFontSizeChange(size.value)}
+                        className="py-2 rounded-xl text-xs font-medium transition-all text-center"
+                        style={{
+                          background: (activeIndex === idx)
+                            ? (nightMode ? 'rgba(90,180,180,0.2)' : 'rgba(180,150,60,0.15)')
+                            : (nightMode ? 'rgba(90,180,180,0.05)' : 'rgba(180,150,60,0.05)'),
+                          border: (activeIndex === idx)
+                            ? `1.5px solid ${nightMode ? 'rgba(90,180,180,0.4)' : 'rgba(180,150,60,0.3)'}`
+                            : '1.5px solid transparent',
+                        }}
+                      >
+                        {size.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Night Mode */}
               <div className="mb-4">
                 <p className="text-xs font-medium mb-2 opacity-70">Luminosité</p>
                 <button
                   onClick={() => onNightModeChange(!nightMode)}
                   className="w-full flex items-center justify-between py-2.5 px-4 rounded-xl text-sm font-medium transition-all"
-                  style={{ background: 'rgba(122,139,111,0.08)' }}
+                  style={{ background: nightMode ? 'rgba(90,180,180,0.08)' : 'rgba(180,150,60,0.05)' }}
                 >
                   <span className="flex items-center gap-2">
-                    {nightMode ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+                    {nightMode ? <Moon className="h-4 w-4" style={{ color: '#4a9a9a' }} /> : <Sun className="h-4 w-4" style={{ color: '#8a6d1b' }} />}
                     {nightMode ? 'Mode nuit activé' : 'Mode jour'}
                   </span>
                   <div
                     className="w-10 h-6 rounded-full relative transition-colors"
-                    style={{ background: nightMode ? '#7a8b6f' : 'rgba(122,139,111,0.25)' }}
+                    style={{ background: nightMode ? '#4a9a9a' : 'rgba(180,150,60,0.25)' }}
                   >
                     <div
                       className="w-4 h-4 rounded-full absolute top-1 transition-all"
                       style={{
-                        background: nightMode ? '#f7f3eb' : '#7a8b6f',
+                        background: nightMode ? '#f7f3eb' : '#8a6d1b',
                         left: nightMode ? '22px' : '4px',
                       }}
                     />
                   </div>
                 </button>
               </div>
-
-              {/* Font Size (text mode) */}
-              {viewMode === 'text' && (
-                <div className="mb-4">
-                  <p className="text-xs font-medium mb-2 opacity-70">Taille du texte</p>
-                  <div className="flex items-center gap-3 px-4 py-2 rounded-xl" style={{ background: 'rgba(122,139,111,0.08)' }}>
-                    <button
-                      onClick={() => onFontSizeChange(Math.max(16, fontSize - 2))}
-                      className="p-1.5 rounded-lg" style={{ background: 'rgba(122,139,111,0.2)' }}
-                    >
-                      <Minus className="h-4 w-4" />
-                    </button>
-                    <div className="flex-1 text-center">
-                      <span className="text-2xl font-bold" style={{ fontFamily: "'Scheherazade New', serif" }}>
-                        بسم
-                      </span>
-                      <p className="text-xs opacity-50 mt-0.5">{fontSize}px</p>
-                    </div>
-                    <button
-                      onClick={() => onFontSizeChange(Math.min(48, fontSize + 2))}
-                      className="p-1.5 rounded-lg" style={{ background: 'rgba(122,139,111,0.2)' }}
-                    >
-                      <Plus className="h-4 w-4" />
-                    </button>
-                  </div>
-                </div>
-              )}
 
               {/* Audio */}
               <div>
@@ -161,14 +194,14 @@ export default function ReaderSettingsPanel({
                   <button
                     onClick={(e) => { e.stopPropagation(); onTogglePlay(); }}
                     className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0"
-                    style={{ background: isPlaying ? '#7a8b6f' : 'rgba(122,139,111,0.2)' }}
+                    style={{ background: isPlaying ? '#4a9a9a' : (nightMode ? 'rgba(90,180,180,0.15)' : 'rgba(180,150,60,0.12)') }}
                   >
                     {audioLoading ? (
                       <Loader2 className="h-5 w-5 animate-spin" style={{ color: '#f0ead9' }} />
                     ) : isPlaying ? (
                       <Pause className="h-5 w-5" style={{ color: '#f0ead9' }} />
                     ) : (
-                      <Play className="h-5 w-5 ml-0.5" style={{ color: nightMode ? '#d4c9a8' : '#2d3a25' }} />
+                      <Play className="h-5 w-5 ml-0.5" style={{ color: nightMode ? '#4a9a9a' : '#6b5417' }} />
                     )}
                   </button>
                   <select
@@ -177,7 +210,7 @@ export default function ReaderSettingsPanel({
                     onClick={(e) => e.stopPropagation()}
                     className="flex-1 py-2 px-3 rounded-xl text-sm border-0 outline-none"
                     style={{
-                      background: 'rgba(122,139,111,0.08)',
+                      background: nightMode ? 'rgba(90,180,180,0.08)' : 'rgba(180,150,60,0.08)',
                       color: 'inherit',
                     }}
                   >
