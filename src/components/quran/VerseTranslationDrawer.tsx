@@ -163,16 +163,32 @@ export default function VerseTranslationDrawer({ verseKey, allVerses, onClose, o
                 <ChevronLeft className="h-4 w-4" />
               </button>
             </div>
-            <button
-              onClick={onClose}
-              className="w-7 h-7 rounded-full flex items-center justify-center"
-              style={{ color: '#5e6e54' }}
-            >
-              <X className="h-4 w-4" />
-            </button>
-          </div>
-
-          {/* Content */}
+            <div className="flex items-center gap-1">
+              {/* Play button */}
+              <button
+                onClick={playVerse}
+                className="w-8 h-8 rounded-full flex items-center justify-center transition-colors"
+                style={{
+                  background: audioPlaying ? '#7a8b6f' : 'rgba(122,139,111,0.15)',
+                  color: audioPlaying ? '#faf8f2' : '#5e6e54',
+                }}
+              >
+                {audioLoading ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                ) : audioPlaying ? (
+                  <Pause className="h-3.5 w-3.5" />
+                ) : (
+                  <Play className="h-3.5 w-3.5 ml-0.5" />
+                )}
+              </button>
+              <button
+                onClick={onClose}
+                className="w-7 h-7 rounded-full flex items-center justify-center"
+                style={{ color: '#5e6e54' }}
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
           <div className="px-4 pb-6 overflow-y-auto" style={{ maxHeight: 'calc(55vh - 70px)' }}>
             {loading && (
               <div className="flex justify-center py-8">
