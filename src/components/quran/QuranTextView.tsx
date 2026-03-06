@@ -101,9 +101,9 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 24, dark
 
   const ayahNumberSize = Math.max(fontSize * 0.7, 14);
   const textColor = darkMode ? '#d4af37' : undefined;
-  const bgColor = darkMode ? '#1a2e1a' : '#fefdfb';
-  const surahNameColor = darkMode ? '#d4af37' : '#8a6d1b';
-  const highlightBg = darkMode ? 'rgba(212, 175, 55, 0.15)' : 'rgba(138, 109, 27, 0.12)';
+  const bgColor = darkMode ? '#1a2e1a' : '#ffffff';
+  const surahNameColor = darkMode ? '#d4af37' : '#5e6e54';
+  const highlightBg = darkMode ? 'rgba(212, 175, 55, 0.15)' : 'rgba(122, 139, 111, 0.12)';
 
   return (
     <div
