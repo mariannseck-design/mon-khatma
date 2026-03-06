@@ -26,6 +26,10 @@ export default function QuranReaderPage() {
   const [showSurahDrawer, setShowSurahDrawer] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [sourceIndex, setSourceIndex] = useState(0);
+  const [scale, setScale] = useState(1);
+  const [translate, setTranslate] = useState({ x: 0, y: 0 });
+  const pinchRef = useRef<{ dist: number; scale: number } | null>(null);
+  const panRef = useRef<{ x: number; y: number; tx: number; ty: number } | null>(null);
   const preferredSourceRef = useRef(0);
   const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
   const controlsTimer = useRef<ReturnType<typeof setTimeout>>();
