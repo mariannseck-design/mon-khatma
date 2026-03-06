@@ -78,6 +78,36 @@ export default function QuranReaderPage() {
   useEffect(() => { localStorage.setItem('quran_autoplay', autoPlay.toString()); }, [autoPlay]);
   useEffect(() => { localStorage.setItem('quran_reader_page', page.toString()); }, [page]);
   useEffect(() => { localStorage.setItem('quran_text_size', textSize.toString()); }, [textSize]);
+  useEffect(() => { localStorage.setItem('quran_dark_mode', darkMode.toString()); }, [darkMode]);
+
+  // Theme colors
+  const theme = darkMode ? {
+    bg: 'linear-gradient(180deg, #1a2e1a 0%, #0f1f0f 100%)',
+    barGradientTop: 'linear-gradient(to bottom, rgba(10, 20, 10, 0.85), transparent)',
+    barGradientBottom: 'linear-gradient(to top, rgba(10, 20, 10, 0.85), transparent)',
+    btnBg: 'rgba(180, 160, 80, 0.2)',
+    btnBgActive: 'rgba(180, 160, 80, 0.4)',
+    iconColor: '#c9a94e',
+    titleColor: '#d4af37',
+    subtitleColor: 'rgba(212, 175, 55, 0.7)',
+    pageCounter: '#d4af37',
+    sliderLabel: 'rgba(212, 175, 55, 0.8)',
+    selectBg: 'rgba(180, 160, 80, 0.25)',
+    selectBorder: 'rgba(180, 160, 80, 0.4)',
+  } : {
+    bg: 'linear-gradient(180deg, #f7f3eb 0%, #ede8dc 100%)',
+    barGradientTop: 'linear-gradient(to bottom, rgba(42, 58, 37, 0.6), transparent)',
+    barGradientBottom: 'linear-gradient(to top, rgba(42, 58, 37, 0.6), transparent)',
+    btnBg: 'rgba(122, 139, 111, 0.35)',
+    btnBgActive: 'rgba(122, 139, 111, 0.55)',
+    iconColor: '#e8e2d0',
+    titleColor: '#f0ead9',
+    subtitleColor: 'rgba(240, 234, 217, 0.7)',
+    pageCounter: '#8fa07e',
+    sliderLabel: 'rgba(240, 234, 217, 0.8)',
+    selectBg: 'rgba(122, 139, 111, 0.35)',
+    selectBorder: 'rgba(122, 139, 111, 0.5)',
+  };
 
   // Preload adjacent pages (image mode)
   useEffect(() => {
