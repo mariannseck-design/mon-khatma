@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, List, Bookmark, BookmarkCheck } from 'lucide-react';
 import { toast } from 'sonner';
 import { getSurahByPage } from '@/lib/surahData';
-import { Slider } from '@/components/ui/slider';
 import SurahDrawer from '@/components/quran/SurahDrawer';
 
 const TOTAL_PAGES = 604;
@@ -40,6 +39,7 @@ export default function QuranReaderPage() {
     const saved = localStorage.getItem('quran_bookmark');
     return saved ? parseInt(saved) : null;
   });
+  const [pageInput, setPageInput] = useState(page.toString());
 
   const getPageUrl = useCallback((p: number, srcIdx?: number) => {
     const idx = srcIdx ?? preferredSourceRef.current;
