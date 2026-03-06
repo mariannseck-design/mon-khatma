@@ -137,7 +137,7 @@ export default function HifzSuiviPage() {
   }, [user]);
 
   return (
-    <AppLayout title="Mon Suivi">
+    <AppLayout title="Mon Suivi Hifz">
       <div className="max-w-md mx-auto px-4 py-6 space-y-6">
         {/* Dynamic greeting */}
         <motion.div
