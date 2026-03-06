@@ -1,49 +1,32 @@
 
 
-# Lecteur Mushaf complet — 604 pages HD avec mode texte
+# Diagnostic et Correction du Lecteur Mushaf
 
-## Objectif
-Creer un lecteur de Coran immersif plein ecran avec les 604 pages du Mushaf de Medine en images HD, navigation par swipe horizontal, zoom tactile, et une option de bascule vers un mode texte (police Uthmani). Pas de modules de memorisation ni de revision dans cette phase.
+## Probleme identifie
 
-## Fichiers a creer
+Le CDN d'images `cdn.islamic.network` retourne une erreur **AccessDenied** sur toutes les URLs. Ce service a bloque l'acces public a ses images de Mushaf. C'est la raison pour laquelle le lecteur reste en chargement infini -- l'image ne se charge jamais.
 
-### 1. `src/pages/QuranReaderPage.tsx` — Page principale du lecteur
+## Solution proposee
 
-- **Plein ecran** : pas de `AppLayout`, navigation propre (bouton retour, nom de sourate via `getSurahByPage()`, numero de page)
-- **Mode Image (defaut)** : Affiche l'image depuis `https://cdn.islamic.network/quran/images/page/{pageNumber}.png`
-- **Swipe horizontal** : `framer-motion` drag gestures avec `AnimatePresence` pour transitions fluides entre pages
-- **Zoom tactile** : CSS `touch-action: pinch-zoom` sur le conteneur d'image
-- **Prechargement** : preload des 2 pages adjacentes (page-1 et page+1) via `new Image()`
-- **Barre inferieure** : slider rapide pour sauter a une page, bouton tiroir sourates
-- **Bouton bascule** : icone pour switcher entre mode image et mode texte
-- **Lecture RTL** : navigation inversee (swipe gauche = page suivante en sens arabe, page 604 → 1)
+Puisque l'API texte `api.alquran.cloud` fonctionne parfaitement (verifie et confirme), la correction consiste a :
 
-### 2. `src/components/quran/QuranTextView.tsx` — Mode texte (Uthmani)
+### 1. Basculer le mode par defaut sur le mode texte
+- Le mode texte (police Amiri / Uthmani) devient le mode par defaut au lieu du mode image
+- Le rendu est beau et calligraphique, avec un texte arabe authentique
 
-- Utilise l'API gratuite `https://api.alquran.cloud/v1/page/{page}/quran-uthmani` pour recuperer le texte arabe Uthmani
-- Affichage du texte arabe avec `font-family: 'Amiri'` ou police Uthmani (Google Fonts)
-- Taille de texte genereuse, direction RTL, espacement genereux
-- Permet copier-coller et selection de texte
+### 2. Ajouter un fallback intelligent pour le mode image
+- Ajouter un `onError` sur l'image qui affiche un message clair ("Images indisponibles, basculez en mode texte")
+- Ajouter un timeout de 10 secondes : si l'image ne charge pas, bascule automatique vers le mode texte avec un toast d'information
 
-### 3. `src/components/quran/SurahDrawer.tsx` — Tiroir de navigation par sourate
+### 3. Preparer un CDN de secours
+- Configurer une liste de CDN en fallback (pour le jour ou un CDN fonctionnel sera trouve)
+- Pour l'instant, le mode texte est la solution fiable et fonctionnelle
 
-- Liste des 114 sourates (depuis `surahData.ts` existant)
-- Au clic, navigue directement a la page de debut de la sourate
-- Recherche/filtre rapide par nom
+### Fichier a modifier
+- `src/pages/QuranReaderPage.tsx` : changer `textMode` par defaut a `true`, ajouter gestion d'erreur image avec fallback automatique
 
-## Fichiers a modifier
-
-### 4. `src/App.tsx`
-- Ajouter la route `/quran-reader` protegee
-
-### 5. `src/pages/AccueilPage.tsx`
-- Ajouter un bouton/carte "Lire le Mushaf" qui navigue vers `/quran-reader`
-
-## Source des images
-- CDN : `https://cdn.islamic.network/quran/images/page/{1-604}.png`
-- Mushaf de Medine, haute definition, gratuit, pas de cle API
-
-## Source du texte (mode bascule)
-- API : `https://api.alquran.cloud/v1/page/{page}/quran-uthmani` — gratuite, sans cle
-- Police : Amiri (Google Fonts) pour un rendu calligraphique authentique
+### Impact
+- Le lecteur s'affiche immediatement avec le texte Uthmani
+- L'utilisatrice peut toujours tenter de basculer en mode image (le bouton reste present)
+- Si le CDN redevient accessible, le mode image fonctionnera sans changement de code
 
