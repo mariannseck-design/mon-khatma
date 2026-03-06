@@ -148,9 +148,25 @@ export default function QuranReaderPage() {
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 bg-[#f5f0e8] dark:bg-[#1a1612] flex flex-col z-50"
+      className="fixed inset-0 flex flex-col z-50"
       onClick={handleTap}
+      style={{ background: 'linear-gradient(180deg, #f5edd6 0%, #efe6d0 40%, #e8dcc4 100%)' }}
     >
+      {/* Persistent Title */}
+      <div className="relative z-20 pt-safe text-center py-3">
+        <h1
+          className="text-lg tracking-[0.15em] uppercase"
+          style={{
+            fontFamily: "'Playfair Display', 'Georgia', serif",
+            color: '#b8952e',
+            fontWeight: 600,
+            textShadow: '0 1px 2px rgba(184, 149, 46, 0.15)',
+          }}
+        >
+          Lis le Noble Coran
+        </h1>
+      </div>
+
       {/* Top Bar */}
       <AnimatePresence>
         {showControls && (
@@ -159,21 +175,23 @@ export default function QuranReaderPage() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -60, opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="absolute top-0 left-0 right-0 z-30 bg-gradient-to-b from-black/50 to-transparent px-4 pt-3 pb-10"
+            className="absolute top-10 left-0 right-0 z-30 px-4 pt-2 pb-8"
+            style={{ background: 'linear-gradient(to bottom, rgba(62, 50, 28, 0.55), transparent)' }}
           >
             <div className="flex items-center justify-between">
               <button
                 onClick={(e) => { e.stopPropagation(); navigate(-1); }}
-                className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center"
+                className="w-10 h-10 rounded-full flex items-center justify-center"
+                style={{ background: 'rgba(184, 149, 46, 0.25)', backdropFilter: 'blur(8px)' }}
               >
-                <ArrowLeft className="h-5 w-5 text-white" />
+                <ArrowLeft className="h-5 w-5" style={{ color: '#f5edd6' }} />
               </button>
 
               <div className="text-center">
-                <p className="text-white font-display text-sm font-semibold">
+                <p className="font-semibold text-sm" style={{ fontFamily: "'Playfair Display', serif", color: '#f5edd6' }}>
                   {surah ? `${surah.number}. ${surah.name}` : ''}
                 </p>
-                <p className="text-white/70 text-xs">
+                <p className="text-xs" style={{ color: 'rgba(245, 237, 214, 0.7)' }}>
                   Page {page} · Juz {juz}
                 </p>
               </div>
@@ -183,7 +201,6 @@ export default function QuranReaderPage() {
                   e.stopPropagation();
                   setTextMode(m => {
                     if (m) {
-                      // Switching to image mode — start timeout
                       setImageError(false);
                       setImageLoaded(false);
                       if (imageTimeoutRef.current) clearTimeout(imageTimeoutRef.current);
@@ -195,9 +212,10 @@ export default function QuranReaderPage() {
                     return !m;
                   });
                 }}
-                className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center"
+                className="w-10 h-10 rounded-full flex items-center justify-center"
+                style={{ background: 'rgba(184, 149, 46, 0.25)', backdropFilter: 'blur(8px)' }}
               >
-                {textMode ? <ImageIcon className="h-5 w-5 text-white" /> : <Type className="h-5 w-5 text-white" />}
+                {textMode ? <ImageIcon className="h-5 w-5" style={{ color: '#f5edd6' }} /> : <Type className="h-5 w-5" style={{ color: '#f5edd6' }} />}
               </button>
             </div>
           </motion.div>
@@ -289,7 +307,8 @@ export default function QuranReaderPage() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 60, opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="absolute bottom-0 left-0 right-0 z-30 bg-gradient-to-t from-black/50 to-transparent px-4 pb-6 pt-10"
+            className="absolute bottom-0 left-0 right-0 z-30 px-4 pb-6 pt-10"
+            style={{ background: 'linear-gradient(to top, rgba(62, 50, 28, 0.55), transparent)' }}
           >
             <div className="flex flex-col gap-3">
               {/* Reciter selector - shown when toggled */}
