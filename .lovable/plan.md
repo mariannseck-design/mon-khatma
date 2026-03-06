@@ -1,21 +1,22 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Suppression du fond gris et des ombres dans le mode texte
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Probleme
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+Dans `QuranTextView.tsx` ligne 180, le bandeau du nom de sourate utilise un fond crème `#f7f3eb` avec une bordure semi-transparente, ce qui crée un bloc grisâtre visible derrière le texte.
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+### Modification : `src/components/quran/QuranTextView.tsx`
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+**Ligne 180** — Supprimer le fond et la bordure du bandeau sourate :
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+```typescript
+// Avant
+style={{ background: darkMode ? 'rgba(122,139,111,0.2)' : '#f7f3eb', border: '1px solid rgba(122,139,111,0.15)' }}
+
+// Après
+style={{ background: darkMode ? 'rgba(122,139,111,0.2)' : 'transparent', border: 'none' }}
+```
+
+Le fond du conteneur principal est déjà blanc pur (`#ffffff`). Seul ce bandeau de titre de sourate ajoute un bloc coloré parasite. En le rendant transparent, tout le texte apparaîtra sur fond blanc uniforme sans aucune ombre ni zone grisée.
 
