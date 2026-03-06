@@ -398,7 +398,7 @@ export default function QuranReaderPage() {
           <button
             onClick={handleBookmark}
             className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
-            style={{ color: bookmark !== null ? '#d4af37' : '#f0e6c8' }}
+            style={{ color: bookmark !== null ? '#d4af37' : (nightMode ? '#f0e6c8' : '#1a3a3a') }}
           >
             {bookmark !== null ? <BookmarkCheck className="h-4 w-4" /> : <Bookmark className="h-4 w-4" />}
           </button>
