@@ -1,21 +1,14 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Bouton flottant pour afficher les contrôles
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+Ajouter un petit bouton circulaire semi-transparent en bas à droite du lecteur Coran, visible uniquement quand les contrôles sont masqués. Un tap dessus affiche les barres de contrôle (top + bottom).
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Modification : `src/pages/QuranReaderPage.tsx`
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
-
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
-
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+- Ajouter un bouton flottant avec `AnimatePresence` qui apparaît quand `showControls === false`
+- Position : `fixed bottom-6 right-4 z-30`
+- Style : cercle discret avec icône `Settings2` ou `ChevronUp`, fond `rgba(122, 139, 111, 0.4)` avec `backdrop-blur`
+- Au clic : appeler `resetControlsTimer()` pour afficher les contrôles
+- Animation : fade in/out inverse des barres de contrôle
 
