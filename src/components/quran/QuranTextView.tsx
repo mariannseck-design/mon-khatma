@@ -11,6 +11,7 @@ interface QuranTextViewProps {
   page: number;
   highlightAyah?: number | null;
   fontSize?: number;
+  darkMode?: boolean;
 }
 
 // Tajweed color map
@@ -42,7 +43,7 @@ function parseTajweed(text: string): string {
 
 const FONT_FAMILY = "'Scheherazade New', 'Traditional Arabic', serif";
 
-export default function QuranTextView({ page, highlightAyah, fontSize = 24 }: QuranTextViewProps) {
+export default function QuranTextView({ page, highlightAyah, fontSize = 24, darkMode = false }: QuranTextViewProps) {
   const [ayahs, setAyahs] = useState<Ayah[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -99,36 +100,40 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 24 }: Qu
   }
 
   const ayahNumberSize = Math.max(fontSize * 0.7, 14);
+  const textColor = darkMode ? '#d4af37' : undefined;
+  const bgColor = darkMode ? '#1a2e1a' : '#fefdfb';
+  const surahNameColor = darkMode ? '#d4af37' : '#8a6d1b';
+  const highlightBg = darkMode ? 'rgba(212, 175, 55, 0.15)' : 'rgba(138, 109, 27, 0.12)';
 
   return (
     <div
       className="h-full flex flex-col items-center justify-start px-5 py-6 select-text overflow-auto"
       dir="rtl"
-      style={{ fontFamily: FONT_FAMILY, touchAction: 'pan-y', background: '#fefdfb' }}
+      style={{ fontFamily: FONT_FAMILY, touchAction: 'pan-y', background: bgColor, color: textColor }}
     >
       {grouped.map((group) => (
         <div key={`${group.surahNumber}-${page}`} className="w-full mb-4 last:mb-0">
           {group.ayahs[0].numberInSurah === 1 && (
             <>
-              <h3 className="text-center text-2xl font-bold mb-3" style={{ color: '#8a6d1b', fontFamily: FONT_FAMILY }}>
+              <h3 className="text-center text-2xl font-bold mb-3" style={{ color: surahNameColor, fontFamily: FONT_FAMILY }}>
                 {group.surahName}
               </h3>
               {group.surahNumber !== 1 && group.surahNumber !== 9 && (
-                <p className="text-center mb-4" style={{ fontFamily: FONT_FAMILY, color: '#8a6d1b', fontSize: `${fontSize}px`, lineHeight }}>
+                <p className="text-center mb-4" style={{ fontFamily: FONT_FAMILY, color: surahNameColor, fontSize: `${fontSize}px`, lineHeight }}>
                   بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
                 </p>
               )}
             </>
           )}
-          <p className="text-foreground text-justify" style={{ fontSize: `${fontSize}px`, lineHeight }}>
+          <p className="text-justify" style={{ fontSize: `${fontSize}px`, lineHeight }}>
             {group.ayahs.map((ayah) => (
               <span
                 key={ayah.number}
                 className={highlightAyah === ayah.number ? 'rounded px-0.5 transition-colors duration-300' : 'transition-colors duration-300'}
-                style={highlightAyah === ayah.number ? { background: 'rgba(138, 109, 27, 0.12)' } : undefined}
+                style={highlightAyah === ayah.number ? { background: highlightBg } : undefined}
               >
                 <span dangerouslySetInnerHTML={{ __html: parseTajweed(ayah.text) }} />{' '}
-                <span className="font-bold" style={{ color: '#8a6d1b', fontSize: `${ayahNumberSize}px` }}>
+                <span className="font-bold" style={{ color: surahNameColor, fontSize: `${ayahNumberSize}px` }}>
                   ﴿{ayah.numberInSurah.toLocaleString('ar-EG')}﴾
                 </span>{' '}
               </span>
