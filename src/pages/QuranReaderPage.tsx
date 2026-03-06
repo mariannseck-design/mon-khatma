@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence, type PanInfo } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, List, Type, Image as ImageIcon, Play, Pause, Loader2, Mic, Repeat, Moon, Sun, Bookmark, BookmarkCheck } from 'lucide-react';
 import { toast } from 'sonner';
 import { getSurahByPage } from '@/lib/surahData';
@@ -327,41 +327,29 @@ export default function QuranReaderPage() {
       </AnimatePresence>
 
       {/* Main Content */}
-      <div className="flex-1 relative overflow-hidden" style={{ touchAction: 'pan-y' }}>
+      <div className="flex-1 relative overflow-hidden" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
         {textMode ? (
           <motion.div
             key={`text-${page}`}
-            custom={direction}
-            variants={slideVariants}
+            variants={fadeVariants}
             initial="enter"
             animate="center"
             exit="exit"
-            transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-            drag="x"
-            dragConstraints={{ left: 0, right: 0 }}
-            dragElastic={0.15}
-            onDragEnd={handleDragEnd}
+            transition={{ duration: 0.2 }}
             className="h-full"
-            style={{ touchAction: 'pan-y' }}
           >
             <QuranTextView page={page} highlightAyah={currentAyahNumber} fontSize={textSize} darkMode={darkMode} />
           </motion.div>
         ) : (
-          <AnimatePresence initial={false} custom={direction} mode="popLayout">
+          <AnimatePresence initial={false} mode="popLayout">
             <motion.div
               key={page}
-              custom={direction}
-              variants={slideVariants}
+              variants={fadeVariants}
               initial="enter"
               animate="center"
               exit="exit"
-              transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-              drag="x"
-              dragConstraints={{ left: 0, right: 0 }}
-              dragElastic={0.15}
-              onDragEnd={handleDragEnd}
+              transition={{ duration: 0.2 }}
               className="absolute inset-0 flex items-center justify-center"
-              style={{ touchAction: 'pan-y' }}
             >
               {imageError ? (
                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 px-8 text-center">
