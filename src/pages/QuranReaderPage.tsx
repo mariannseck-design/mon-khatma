@@ -1,28 +1,16 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, List, Type, Image as ImageIcon, Play, Pause, Loader2, Mic, Repeat, Moon, Sun, Bookmark, BookmarkCheck } from 'lucide-react';
+import { ArrowLeft, List, Bookmark, BookmarkCheck } from 'lucide-react';
 import { toast } from 'sonner';
 import { getSurahByPage } from '@/lib/surahData';
 import { Slider } from '@/components/ui/slider';
 import SurahDrawer from '@/components/quran/SurahDrawer';
-import QuranTextView from '@/components/quran/QuranTextView';
-import { useQuranAudio, RECITERS } from '@/hooks/useQuranAudio';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 const TOTAL_PAGES = 604;
-const IMAGE_BASE = 'https://cdn.islamic.network/quran/images/page';
-
-const TEXT_SIZES = [
-  { label: 'Petit', value: 20 },
-  { label: 'Moyen', value: 24 },
-  { label: 'Grand', value: 30 },
-  { label: 'Très Grand', value: 36 },
-];
 
 function getPageUrl(page: number) {
-  return `${IMAGE_BASE}/${page}.png`;
+  return `https://cdn.qurancdn.com/images/pages/page${String(page).padStart(3, '0')}.png`;
 }
 
 export default function QuranReaderPage() {
@@ -34,21 +22,9 @@ export default function QuranReaderPage() {
   const [direction, setDirection] = useState(0);
   const [showControls, setShowControls] = useState(true);
   const [showSurahDrawer, setShowSurahDrawer] = useState(false);
-  const [textMode, setTextMode] = useState(true);
   const [imageLoaded, setImageLoaded] = useState(false);
-  const [imageError, setImageError] = useState(false);
-  const imageTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
   const controlsTimer = useRef<ReturnType<typeof setTimeout>>();
   const containerRef = useRef<HTMLDivElement>(null);
-
-  const [textSize, setTextSize] = useState(() => {
-    const saved = localStorage.getItem('quran_text_size');
-    return saved ? parseInt(saved) : 24;
-  });
-
-  const [darkMode, setDarkMode] = useState(() => {
-    return localStorage.getItem('quran_dark_mode') === 'true';
-  });
 
   const [bookmark, setBookmark] = useState<number | null>(() => {
     const saved = localStorage.getItem('quran_bookmark');
@@ -58,16 +34,13 @@ export default function QuranReaderPage() {
   const handleBookmark = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (bookmark === page) {
-      // Remove bookmark
       setBookmark(null);
       localStorage.removeItem('quran_bookmark');
       toast('Marque-page retiré');
     } else if (bookmark !== null && bookmark !== page) {
-      // Navigate to bookmarked page
       goToPage(bookmark);
       toast(`Retour au marque-page · Page ${bookmark}`);
     } else {
-      // Set bookmark
       setBookmark(page);
       localStorage.setItem('quran_bookmark', page.toString());
       const s = getSurahByPage(page);
@@ -85,90 +58,32 @@ export default function QuranReaderPage() {
 
   const surah = getSurahByPage(page);
   const juz = Math.ceil(page / 20);
-  const [showReciterSelect, setShowReciterSelect] = useState(false);
-  const [autoPlay, setAutoPlay] = useState(() => {
-    return localStorage.getItem('quran_autoplay') === 'true';
-  });
 
-  const handlePageFinished = useCallback(() => {
-    if (autoPlay && page < TOTAL_PAGES) {
-      setDirection(1);
-      setImageLoaded(false);
-      setPage(p => Math.min(p + 1, TOTAL_PAGES));
-    }
-  }, [autoPlay, page]);
-
-  const {
-    isPlaying,
-    currentAyahNumber,
-    loading: audioLoading,
-    reciter,
-    setReciter,
-    togglePlay,
-    stop: stopAudio,
-  } = useQuranAudio(page, handlePageFinished);
-
-  // Save preferences
-  useEffect(() => { localStorage.setItem('quran_autoplay', autoPlay.toString()); }, [autoPlay]);
   useEffect(() => { localStorage.setItem('quran_reader_page', page.toString()); }, [page]);
-  useEffect(() => { localStorage.setItem('quran_text_size', textSize.toString()); }, [textSize]);
-  useEffect(() => { localStorage.setItem('quran_dark_mode', darkMode.toString()); }, [darkMode]);
 
-  // Theme colors
-  const theme = darkMode ? {
-    bg: 'linear-gradient(180deg, #1a2e1a 0%, #0f1f0f 100%)',
-    barGradientTop: 'linear-gradient(to bottom, rgba(10, 20, 10, 0.85), transparent)',
-    barGradientBottom: 'linear-gradient(to top, rgba(10, 20, 10, 0.85), transparent)',
-    btnBg: 'rgba(180, 160, 80, 0.2)',
-    btnBgActive: 'rgba(180, 160, 80, 0.4)',
-    iconColor: '#c9a94e',
-    titleColor: '#d4af37',
-    subtitleColor: 'rgba(212, 175, 55, 0.7)',
-    pageCounter: '#d4af37',
-    sliderLabel: 'rgba(212, 175, 55, 0.8)',
-    selectBg: 'rgba(180, 160, 80, 0.25)',
-    selectBorder: 'rgba(180, 160, 80, 0.4)',
-  } : {
-    bg: 'linear-gradient(180deg, #f7f3eb 0%, #ede8dc 100%)',
-    barGradientTop: 'linear-gradient(to bottom, rgba(42, 58, 37, 0.6), transparent)',
-    barGradientBottom: 'linear-gradient(to top, rgba(42, 58, 37, 0.6), transparent)',
-    btnBg: 'rgba(122, 139, 111, 0.35)',
-    btnBgActive: 'rgba(122, 139, 111, 0.55)',
-    iconColor: '#e8e2d0',
-    titleColor: '#f0ead9',
-    subtitleColor: 'rgba(240, 234, 217, 0.7)',
-    pageCounter: '#8fa07e',
-    sliderLabel: 'rgba(240, 234, 217, 0.8)',
-    selectBg: 'rgba(122, 139, 111, 0.35)',
-    selectBorder: 'rgba(122, 139, 111, 0.5)',
-  };
-
-  // Preload adjacent pages (image mode)
+  // Preload adjacent pages
   useEffect(() => {
-    if (textMode) return;
     [page - 1, page + 1, page - 2, page + 2].forEach(p => {
       if (p >= 1 && p <= TOTAL_PAGES) {
         const img = new window.Image();
         img.src = getPageUrl(p);
       }
     });
-  }, [page, textMode]);
+  }, [page]);
 
   // Auto-hide controls
   const resetControlsTimer = useCallback(() => {
     setShowControls(true);
     if (controlsTimer.current) clearTimeout(controlsTimer.current);
-    if (!showReciterSelect) {
-      controlsTimer.current = setTimeout(() => setShowControls(false), 4000);
-    }
-  }, [showReciterSelect]);
+    controlsTimer.current = setTimeout(() => setShowControls(false), 4000);
+  }, []);
 
   useEffect(() => {
     resetControlsTimer();
     return () => { if (controlsTimer.current) clearTimeout(controlsTimer.current); };
-  }, [page, resetControlsTimer, showReciterSelect]);
+  }, [page, resetControlsTimer]);
 
-  // RTL navigation
+  // Navigation
   const goNext = useCallback(() => {
     if (page < TOTAL_PAGES) { setDirection(1); setImageLoaded(false); setPage(p => Math.min(p + 1, TOTAL_PAGES)); }
   }, [page]);
@@ -189,11 +104,9 @@ export default function QuranReaderPage() {
     const dy = e.changedTouches[0].clientY - touchStartRef.current.y;
     touchStartRef.current = null;
     if (Math.abs(dx) < 50 || Math.abs(dy) > Math.abs(dx)) return;
-    if (dx > 0) goNext(); // RTL: swipe right = next
+    if (dx > 0) goNext();
     else goPrev();
   };
-
-  const handleTap = () => resetControlsTimer();
 
   const goToPage = (p: number) => {
     setDirection(p > page ? 1 : -1);
@@ -210,18 +123,12 @@ export default function QuranReaderPage() {
     return () => window.removeEventListener('keydown', handler);
   }, [goNext, goPrev]);
 
-  const fadeVariants = {
-    enter: { opacity: 0 },
-    center: { opacity: 1 },
-    exit: { opacity: 0 },
-  };
-
   return (
     <div
       ref={containerRef}
       className="fixed inset-0 flex flex-col z-50"
-      onClick={handleTap}
-      style={{ background: theme.bg }}
+      onClick={() => resetControlsTimer()}
+      style={{ background: '#f7f3eb' }}
     >
       {/* Top Bar */}
       <AnimatePresence>
@@ -232,156 +139,64 @@ export default function QuranReaderPage() {
             exit={{ y: -60, opacity: 0 }}
             transition={{ duration: 0.25 }}
             className="absolute top-0 left-0 right-0 z-30 px-4 pt-3 pb-10"
-            style={{ background: theme.barGradientTop }}
+            style={{ background: 'linear-gradient(to bottom, rgba(42, 58, 37, 0.6), transparent)' }}
           >
             <div className="flex items-center justify-between">
               <button
                 onClick={(e) => { e.stopPropagation(); navigate(-1); }}
                 className="w-10 h-10 rounded-full flex items-center justify-center"
-                style={{ background: theme.btnBg, backdropFilter: 'blur(8px)' }}
+                style={{ background: 'rgba(122, 139, 111, 0.35)', backdropFilter: 'blur(8px)' }}
               >
-                <ArrowLeft className="h-5 w-5" style={{ color: theme.iconColor }} />
+                <ArrowLeft className="h-5 w-5" style={{ color: '#e8e2d0' }} />
               </button>
 
               <div className="text-center">
-                <p className="font-semibold text-sm" style={{ fontFamily: "'Playfair Display', serif", color: theme.titleColor }}>
+                <p className="font-semibold text-sm" style={{ fontFamily: "'Playfair Display', serif", color: '#f0ead9' }}>
                   {surah ? `${surah.number}. ${surah.name}` : ''}
                 </p>
-                <p className="text-xs" style={{ color: theme.subtitleColor }}>
+                <p className="text-xs" style={{ color: 'rgba(240, 234, 217, 0.7)' }}>
                   Page {page} · Juz {juz}
                 </p>
               </div>
 
-              <div className="flex items-center gap-2">
-                {/* Dark mode toggle */}
-                <button
-                  onClick={(e) => { e.stopPropagation(); setDarkMode(d => !d); }}
-                  className="w-10 h-10 rounded-full flex items-center justify-center"
-                  style={{ background: theme.btnBg, backdropFilter: 'blur(8px)' }}
-                >
-                  {darkMode ? <Sun className="h-5 w-5" style={{ color: theme.iconColor }} /> : <Moon className="h-5 w-5" style={{ color: theme.iconColor }} />}
-                </button>
-
-                {/* Text size selector */}
-                {textMode && (
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <button
-                        onClick={(e) => e.stopPropagation()}
-                        className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold"
-                        style={{ background: theme.btnBg, backdropFilter: 'blur(8px)', color: theme.iconColor }}
-                      >
-                        Aa
-                      </button>
-                    </PopoverTrigger>
-                    <PopoverContent
-                      className="w-40 p-2"
-                      align="end"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <div className="flex flex-col gap-1">
-                        {TEXT_SIZES.map((s) => (
-                          <button
-                            key={s.value}
-                            onClick={() => setTextSize(s.value)}
-                            className={`text-sm px-3 py-2 rounded-md text-left transition-colors ${
-                              textSize === s.value
-                                ? 'bg-primary text-primary-foreground font-semibold'
-                                : 'hover:bg-muted'
-                            }`}
-                          >
-                            {s.label} ({s.value}px)
-                          </button>
-                        ))}
-                      </div>
-                    </PopoverContent>
-                  </Popover>
-                )}
-
-                {/* Text/Image toggle */}
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setTextMode(m => {
-                      if (m) {
-                        setImageError(false);
-                        setImageLoaded(false);
-                        if (imageTimeoutRef.current) clearTimeout(imageTimeoutRef.current);
-                        imageTimeoutRef.current = setTimeout(() => {
-                          setTextMode(true);
-                          setImageError(true);
-                        }, 10000);
-                      }
-                      return !m;
-                    });
-                  }}
-                  className="w-10 h-10 rounded-full flex items-center justify-center"
-                  style={{ background: theme.btnBg, backdropFilter: 'blur(8px)' }}
-                >
-                  {textMode ? <ImageIcon className="h-5 w-5" style={{ color: theme.iconColor }} /> : <Type className="h-5 w-5" style={{ color: theme.iconColor }} />}
-                </button>
-              </div>
+              <div className="w-10" />
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Main Content */}
-      <div className="flex-1 relative overflow-hidden" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
-        {textMode ? (
+      {/* Main Content — Image only */}
+      <div
+        className="flex-1 relative overflow-hidden flex items-center justify-center"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        style={{ background: '#ffffff' }}
+      >
+        <AnimatePresence initial={false} mode="popLayout">
           <motion.div
-            key={`text-${page}`}
-            variants={fadeVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
+            key={page}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="h-full"
+            className="absolute inset-0 flex items-center justify-center"
           >
-            <QuranTextView page={page} highlightAyah={currentAyahNumber} fontSize={textSize} darkMode={darkMode} />
+            {!imageLoaded && (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-8 h-8 border-4 rounded-full animate-spin" style={{ borderColor: '#7a8b6f', borderTopColor: 'transparent' }} />
+              </div>
+            )}
+            <img
+              src={getPageUrl(page)}
+              alt={`Page ${page} du Mushaf`}
+              className="max-h-full max-w-full object-contain select-none"
+              draggable={false}
+              onLoad={() => setImageLoaded(true)}
+              onError={() => setImageLoaded(false)}
+              style={{ opacity: imageLoaded ? 1 : 0, transition: 'opacity 0.2s' }}
+            />
           </motion.div>
-        ) : (
-          <AnimatePresence initial={false} mode="popLayout">
-            <motion.div
-              key={page}
-              variants={fadeVariants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              transition={{ duration: 0.2 }}
-              className="absolute inset-0 flex items-center justify-center"
-            >
-              {imageError ? (
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 px-8 text-center">
-                  <p className="text-muted-foreground text-lg">Images indisponibles</p>
-                  <button
-                    onClick={(e) => { e.stopPropagation(); setTextMode(true); }}
-                    className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium"
-                  >
-                    Basculer en mode texte
-                  </button>
-                </div>
-              ) : (
-                <>
-                  {!imageLoaded && (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-                    </div>
-                  )}
-                  <img
-                    src={getPageUrl(page)}
-                    alt={`Page ${page} du Mushaf`}
-                    className="max-h-full max-w-full object-contain select-none"
-                    draggable={false}
-                    onLoad={() => { setImageLoaded(true); if (imageTimeoutRef.current) clearTimeout(imageTimeoutRef.current); }}
-                    onError={() => { setImageError(true); if (imageTimeoutRef.current) clearTimeout(imageTimeoutRef.current); setTimeout(() => setTextMode(true), 2000); }}
-                    style={{ opacity: imageLoaded ? 1 : 0, transition: 'opacity 0.2s' }}
-                  />
-                </>
-              )}
-            </motion.div>
-          </AnimatePresence>
-        )}
+        </AnimatePresence>
       </div>
 
       {/* Bottom Bar */}
@@ -393,98 +208,50 @@ export default function QuranReaderPage() {
             exit={{ y: 60, opacity: 0 }}
             transition={{ duration: 0.25 }}
             className="absolute bottom-0 left-0 right-0 z-30 px-4 pb-6 pt-10"
-            style={{ background: theme.barGradientBottom }}
+            style={{ background: 'linear-gradient(to top, rgba(42, 58, 37, 0.6), transparent)' }}
           >
-            <div className="flex flex-col gap-3">
-              {showReciterSelect && (
-                <div className="flex justify-center" onClick={(e) => e.stopPropagation()}>
-                  <Select value={reciter} onValueChange={(v) => { setReciter(v); setShowReciterSelect(false); }}>
-                    <SelectTrigger className="w-56 backdrop-blur-sm text-xs h-8" style={{ background: theme.selectBg, borderColor: theme.selectBorder, color: theme.iconColor }}>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {RECITERS.map((r) => (
-                        <SelectItem key={r.id} value={r.id} className="text-sm">{r.name}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={(e) => { e.stopPropagation(); setShowSurahDrawer(true); }}
+                className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+                style={{ background: 'rgba(122, 139, 111, 0.35)', backdropFilter: 'blur(8px)' }}
+              >
+                <List className="h-5 w-5" style={{ color: '#e8e2d0' }} />
+              </button>
+
+              <button
+                onClick={handleBookmark}
+                onContextMenu={(e) => { e.preventDefault(); handleBookmarkLongPress(e); }}
+                className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+                style={{ background: bookmark !== null ? 'rgba(122, 139, 111, 0.55)' : 'rgba(122, 139, 111, 0.35)', backdropFilter: 'blur(8px)' }}
+                title={bookmark !== null ? `Marque-page : page ${bookmark}` : 'Ajouter un marque-page'}
+              >
+                {bookmark !== null ? (
+                  <BookmarkCheck className="h-5 w-5" style={{ color: '#8fa07e' }} />
+                ) : (
+                  <Bookmark className="h-5 w-5" style={{ color: '#e8e2d0' }} />
+                )}
+              </button>
+
+              <div className="flex-1 flex flex-col gap-1">
+                <div className="text-center">
+                  <span className="text-xs font-semibold" style={{ color: '#e8e2d0', fontFamily: "'Playfair Display', serif" }}>
+                    Page {page} / {TOTAL_PAGES}
+                  </span>
                 </div>
-              )}
-
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={(e) => { e.stopPropagation(); setShowSurahDrawer(true); }}
-                  className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
-                  style={{ background: theme.btnBg, backdropFilter: 'blur(8px)' }}
-                >
-                  <List className="h-5 w-5" style={{ color: theme.iconColor }} />
-                </button>
-
-                <button
-                  onClick={handleBookmark}
-                  onContextMenu={(e) => { e.preventDefault(); handleBookmarkLongPress(e); }}
-                  className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
-                  style={{ background: bookmark !== null ? theme.btnBgActive : theme.btnBg, backdropFilter: 'blur(8px)' }}
-                  title={bookmark !== null ? `Marque-page : page ${bookmark}` : 'Ajouter un marque-page'}
-                >
-                  {bookmark !== null ? (
-                    <BookmarkCheck className="h-5 w-5" style={{ color: theme.pageCounter }} />
-                  ) : (
-                    <Bookmark className="h-5 w-5" style={{ color: theme.iconColor }} />
-                  )}
-                </button>
-
-                <div className="flex-1 flex flex-col gap-1">
-                  <div className="text-center">
-                    <span className="text-xs font-semibold" style={{ color: theme.pageCounter, fontFamily: "'Playfair Display', serif" }}>
-                      Page {page} / {TOTAL_PAGES}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-3" dir="ltr">
-                    <span className="text-xs font-mono w-7 text-right" style={{ color: theme.sliderLabel }}>1</span>
-                    <Slider
-                      value={[page]}
-                      min={1}
-                      max={TOTAL_PAGES}
-                      step={1}
-                      onValueChange={([v]) => goToPage(v)}
-                      onClick={(e) => e.stopPropagation()}
-                      className="flex-1"
-                    />
-                    <span className="text-xs font-mono w-10" style={{ color: theme.sliderLabel }}>604</span>
-                  </div>
+                <div className="flex items-center gap-3" dir="ltr">
+                  <span className="text-xs font-mono w-7 text-right" style={{ color: 'rgba(240, 234, 217, 0.8)' }}>1</span>
+                  <Slider
+                    value={[page]}
+                    min={1}
+                    max={TOTAL_PAGES}
+                    step={1}
+                    onValueChange={([v]) => goToPage(v)}
+                    onClick={(e) => e.stopPropagation()}
+                    className="flex-1"
+                  />
+                  <span className="text-xs font-mono w-10" style={{ color: 'rgba(240, 234, 217, 0.8)' }}>604</span>
                 </div>
-
-                <button
-                  onClick={(e) => { e.stopPropagation(); setAutoPlay(a => !a); }}
-                  className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
-                  style={{ background: autoPlay ? theme.btnBgActive : theme.btnBg, backdropFilter: 'blur(8px)' }}
-                  title={autoPlay ? 'Lecture auto activée' : 'Lecture auto désactivée'}
-                >
-                  <Repeat className="h-5 w-5" style={{ color: autoPlay ? theme.pageCounter : theme.iconColor }} />
-                </button>
-
-                <button
-                  onClick={(e) => { e.stopPropagation(); setShowReciterSelect(s => !s); }}
-                  className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
-                  style={{ background: theme.btnBg, backdropFilter: 'blur(8px)' }}
-                >
-                  <Mic className="h-5 w-5" style={{ color: theme.iconColor }} />
-                </button>
-
-                <button
-                  onClick={(e) => { e.stopPropagation(); togglePlay(); }}
-                  className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
-                  style={{ background: theme.btnBg, backdropFilter: 'blur(8px)' }}
-                >
-                  {audioLoading ? (
-                    <Loader2 className="h-5 w-5 animate-spin" style={{ color: theme.iconColor }} />
-                  ) : isPlaying ? (
-                    <Pause className="h-5 w-5" style={{ color: theme.iconColor }} />
-                  ) : (
-                    <Play className="h-5 w-5" style={{ color: theme.iconColor }} />
-                  )}
-                </button>
               </div>
             </div>
           </motion.div>
