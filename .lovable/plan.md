@@ -1,27 +1,50 @@
 
 
-# Correction de 5 bugs dans le lecteur Mushaf
+# Refonte du lecteur Mushaf : images HD uniquement
 
-## Bugs identifiés
+## Probleme
+Le lecteur affiche actuellement du texte numerique avec une police systeme, ce qui deforme le rendu sur iPhone. L'interface est surchargee d'icones inutiles (lune, Aa, bascule texte/image, etc.).
 
-1. **Navigation par swipe ne fonctionne pas en mode texte** -- Le gestionnaire de swipe (`drag`/`onDragEnd`) est uniquement attaché au `motion.div` du mode image. En mode texte, `QuranTextView` n'a aucun support swipe.
+## Solution
 
-2. **Ecran non zoomable** -- Le conteneur texte a `overflow-hidden` et aucun support pinch-to-zoom.
+### 1. Supprimer le mode texte — Images HD uniquement
+- Retirer `textMode`, `textSize`, `QuranTextView`, le composant `Popover` de taille de texte, et le bouton bascule texte/image
+- Utiliser uniquement des images du Mushaf. Source d'images : `https://cdn.qurancdn.com/images/pages/page{page_number_padded}.png` (Mushaf de Medine, haute resolution). Le CDN actuel (`cdn.islamic.network`) sera remplace car ses images sont de basse qualite.
+- Si l'image ne charge pas : afficher uniquement un spinner, jamais de message d'erreur ni de fallback texte
 
-3. **Sélecteur de récitateur disparaît trop vite** -- Le timer auto-hide (4s) masque la barre de contrôle entière, y compris le menu de sélection du récitateur ouvert.
+### 2. Interface epuree — Suppression des icones superflues
+Supprimer de la barre du haut :
+- Bouton lune/soleil (dark mode)
+- Bouton "Aa" (taille du texte)
+- Bouton bascule texte/image
 
-4. **Basmala manquante** -- L'API `quran-tajweed` n'inclut pas la Basmala dans le texte des versets (sauf Al-Fatiha). Il faut l'ajouter manuellement quand `numberInSurah === 1` et que la sourate n'est ni Al-Fatiha (1) ni At-Tawbah (9).
+Supprimer de la barre du bas :
+- Bouton "Repeat" (autoplay)
+- Bouton "Mic" (recitateur)
+- Bouton Play/Pause (audio)
+- Selecteur de recitateur
 
-## Fichiers à modifier
+Conserver uniquement :
+- **Haut** : bouton retour, titre sourate + page/juz
+- **Bas** : bouton liste sourates, bouton marque-page, slider de navigation, compteur de page
 
-### `src/pages/QuranReaderPage.tsx`
-- Envelopper le `QuranTextView` dans un `motion.div` avec `drag="x"` et `onDragEnd` pour supporter le swipe en mode texte (même logique que le mode image)
-- Quand `showReciterSelect` est `true`, annuler le timer auto-hide pour laisser le temps de choisir
-- Réactiver le timer quand le sélecteur se ferme
+### 3. Design "Olive du Levant"
+- Fond general : creme chaud `#f7f3eb`
+- Barres : overlay vert foret semi-transparent `rgba(42, 58, 37, 0.6)`
+- Boutons : vert sauge `rgba(122, 139, 111, 0.35)`
+- Icones/textes des barres : ivoire `#e8e2d0`
+- Zone d'affichage de la page : fond blanc pur `#ffffff` pour simuler un livre ouvert
+- Supprimer le mode sombre (plus de toggle)
 
-### `src/components/quran/QuranTextView.tsx`
-- Ajouter la Basmala (`بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ`) au-dessus du texte quand la première ayah du groupe a `numberInSurah === 1`, sauf pour les sourates 1 et 9
-- Permettre le zoom tactile en changeant le style du conteneur (retirer les contraintes qui bloquent le pinch-zoom)
+### 4. Fichiers impactes
+- `src/pages/QuranReaderPage.tsx` : refonte majeure (suppression texte, simplification UI)
+- `src/components/quran/QuranTextView.tsx` : plus utilise, peut etre ignore (pas supprime pour eviter des erreurs dans d'autres imports eventuels)
 
-## Estimation : 1 crédit
+### Details techniques
+- URL des images : `https://cdn.qurancdn.com/images/pages/page${String(page).padStart(3, '0')}.png`
+- Preload des pages adjacentes conserve
+- Swipe tactile conserve
+- Marque-page conserve
+- Navigation par slider conservee
+- Tout le code audio et ses hooks retires du composant
 
