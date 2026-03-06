@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 
 interface Ayah {
   number: number;
@@ -11,6 +11,34 @@ interface QuranTextViewProps {
   page: number;
 }
 
+// Tajweed color map
+const TAJWEED_COLORS: Record<string, string> = {
+  h: '#AAAAAA', // Hamzat ul Wasl
+  s: '#AAAAAA', // Silent
+  l: '#AAAAAA', // Lam Shamsiyyah
+  n: '#537FFF', // Madd Normal
+  p: '#4050FF', // Madd Permissible
+  m: '#000EBC', // Madd Obligatoire
+  q: '#DD0008', // Qalqalah
+  i: '#9400A8', // Ikhfa
+  o: '#9400A8', // Ikhfa Meem Saakin
+  g: '#FF7E1E', // Ghunnah
+  f: '#169200', // Idgham avec Ghunnah
+  d: '#169777', // Idgham sans Ghunnah
+  b: '#26BFFD', // Iqlab
+};
+
+function parseTajweed(text: string): string {
+  // Pattern: [x[content] or [x:n[content]
+  return text.replace(/\[([a-z])(?::\d+)?\[([^\]]*)\]/g, (_, code, content) => {
+    const color = TAJWEED_COLORS[code];
+    if (color) {
+      return `<span style="color:${color}">${content}</span>`;
+    }
+    return content;
+  });
+}
+
 export default function QuranTextView({ page }: QuranTextViewProps) {
   const [ayahs, setAyahs] = useState<Ayah[]>([]);
   const [loading, setLoading] = useState(true);
@@ -19,7 +47,7 @@ export default function QuranTextView({ page }: QuranTextViewProps) {
   useEffect(() => {
     setLoading(true);
     setError(false);
-    fetch(`https://api.alquran.cloud/v1/page/${page}/quran-uthmani`)
+    fetch(`https://api.alquran.cloud/v1/page/${page}/quran-tajweed`)
       .then(res => res.json())
       .then(data => {
         if (data.code === 200) {
@@ -31,6 +59,24 @@ export default function QuranTextView({ page }: QuranTextViewProps) {
       .catch(() => setError(true))
       .finally(() => setLoading(false));
   }, [page]);
+
+  // Group ayahs by surah
+  const grouped = useMemo(() => {
+    const groups: { surahName: string; surahNumber: number; ayahs: Ayah[] }[] = [];
+    for (const ayah of ayahs) {
+      const last = groups[groups.length - 1];
+      if (last && last.surahNumber === ayah.surah.number) {
+        last.ayahs.push(ayah);
+      } else {
+        groups.push({
+          surahName: ayah.surah.name,
+          surahNumber: ayah.surah.number,
+          ayahs: [ayah],
+        });
+      }
+    }
+    return groups;
+  }, [ayahs]);
 
   if (loading) {
     return (
@@ -48,39 +94,24 @@ export default function QuranTextView({ page }: QuranTextViewProps) {
     );
   }
 
-  // Group ayahs by surah
-  const grouped: { surahName: string; surahNumber: number; ayahs: Ayah[] }[] = [];
-  for (const ayah of ayahs) {
-    const last = grouped[grouped.length - 1];
-    if (last && last.surahNumber === ayah.surah.number) {
-      last.ayahs.push(ayah);
-    } else {
-      grouped.push({
-        surahName: ayah.surah.name,
-        surahNumber: ayah.surah.number,
-        ayahs: [ayah],
-      });
-    }
-  }
-
   return (
     <div
-      className="h-full overflow-y-auto px-6 py-8 select-text"
+      className="h-full flex flex-col items-center justify-center px-5 py-6 select-text overflow-hidden"
       dir="rtl"
       style={{ fontFamily: "'Amiri', 'Traditional Arabic', serif" }}
     >
       {grouped.map((group) => (
-        <div key={group.surahNumber} className="mb-8">
+        <div key={`${group.surahNumber}-${page}`} className="w-full mb-4 last:mb-0">
           {group.ayahs[0].numberInSurah === 1 && (
-            <h3 className="text-center text-2xl font-bold text-primary mb-4">
+            <h3 className="text-center text-2xl font-bold text-primary mb-3">
               {group.surahName}
             </h3>
           )}
-          <p className="text-3xl leading-[3rem] text-foreground text-justify">
+          <p className="text-2xl sm:text-3xl leading-[2.8rem] sm:leading-[3.2rem] text-foreground text-justify">
             {group.ayahs.map((ayah) => (
               <span key={ayah.number}>
-                {ayah.text}{' '}
-                <span className="text-primary text-xl font-bold">
+                <span dangerouslySetInnerHTML={{ __html: parseTajweed(ayah.text) }} />{' '}
+                <span className="text-primary text-lg sm:text-xl font-bold">
                   ﴿{ayah.numberInSurah.toLocaleString('ar-EG')}﴾
                 </span>{' '}
               </span>
