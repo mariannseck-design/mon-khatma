@@ -46,11 +46,13 @@ export default function QuranReaderPage() {
     return IMAGE_SOURCES[idx](p);
   }, []);
 
-  // Reset source index when page changes
+  // Reset source index and zoom when page changes
   useEffect(() => {
     setImageLoaded(false);
     setSourceIndex(preferredSourceRef.current);
     retriesRef.current = 0;
+    setScale(1);
+    setTranslate({ x: 0, y: 0 });
   }, [page]);
 
   // Timeout: if image hangs, try next source
