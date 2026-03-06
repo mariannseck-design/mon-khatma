@@ -319,8 +319,8 @@ export default function QuranReaderPage() {
         style={{
           height: `${BOTTOM_BAR_H}px`,
           background: nightMode
-            ? 'linear-gradient(135deg, #072e32, #0a4045)'
-            : 'linear-gradient(135deg, #0d5c63, #0a4f55)',
+            ? 'linear-gradient(135deg, #3a8a80, #4a9a90)'
+            : 'linear-gradient(135deg, #8ed1c4, #a0d9ce)',
           borderTop: `1px solid rgba(212,175,55,0.25)`,
           borderBottom: `1px solid rgba(212,175,55,0.15)`,
         }}
@@ -329,17 +329,17 @@ export default function QuranReaderPage() {
         <button
           onClick={() => navigate(-1)}
           className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
-          style={{ color: '#f0e6c8' }}
+          style={{ color: nightMode ? '#f0e6c8' : '#1a3a3a' }}
         >
           <ArrowLeft className="h-4 w-4" />
         </button>
 
         {/* Center: Surah name + page */}
         <div className="flex-1 flex items-center justify-center gap-2">
-          <span className="text-xs font-medium truncate" style={{ color: '#f0e6c8', fontFamily: "'Playfair Display', serif" }}>
+          <span className="text-xs font-medium truncate" style={{ color: nightMode ? '#f0e6c8' : '#1a3a3a', fontFamily: "'Playfair Display', serif" }}>
             {surah ? surah.name : ''}
           </span>
-          <span className="text-[10px]" style={{ color: 'rgba(240,230,200,0.5)' }}>·</span>
+          <span className="text-[10px]" style={{ color: nightMode ? 'rgba(240,230,200,0.5)' : 'rgba(26,58,58,0.4)' }}>·</span>
           <input
             type="number"
             inputMode="numeric"
@@ -367,8 +367,8 @@ export default function QuranReaderPage() {
             onClick={(e) => e.stopPropagation()}
             className="w-10 text-center text-xs font-semibold rounded border-0 outline-none"
             style={{
-              background: 'rgba(255,255,255,0.12)',
-              color: '#f0e6c8',
+              background: nightMode ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.08)',
+              color: nightMode ? '#f0e6c8' : '#1a3a3a',
               padding: '2px 0',
             }}
           />
@@ -381,8 +381,8 @@ export default function QuranReaderPage() {
             onClick={(e) => { e.stopPropagation(); togglePlay(); }}
             className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
             style={{
-              background: isPlaying ? 'rgba(212,175,55,0.25)' : 'transparent',
-              color: '#f0e6c8',
+              background: isPlaying ? 'rgba(180,150,60,0.25)' : 'transparent',
+              color: nightMode ? '#f0e6c8' : '#1a3a3a',
             }}
           >
             {audioLoading ? (
@@ -398,7 +398,7 @@ export default function QuranReaderPage() {
           <button
             onClick={handleBookmark}
             className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
-            style={{ color: bookmark !== null ? '#d4af37' : '#f0e6c8' }}
+            style={{ color: bookmark !== null ? '#d4af37' : (nightMode ? '#f0e6c8' : '#1a3a3a') }}
           >
             {bookmark !== null ? <BookmarkCheck className="h-4 w-4" /> : <Bookmark className="h-4 w-4" />}
           </button>

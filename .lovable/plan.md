@@ -1,21 +1,21 @@
 
 
-## Éclaircir le turquoise : passer au vert menthe doux
+# Diagnostic : 404 sur /quran-reader
 
-La couleur de référence de l'image est un **vert menthe pastel** (~`#8ed1c4` / `#a0d9ce`), bien plus clair que le turquoise foncé actuel (`#0d5c63`).
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Fichiers modifiés
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-**1. `AccueilPage.tsx`** — Carte "LE NOBLE CORAN" (admin + inactive, ~lignes 202 et 238)
-- Fond : `linear-gradient(135deg, #8ed1c4, #a0d9ce)` au lieu de `#0d5c63`
-- Bordure dorée conservée mais ajustée pour le fond clair
-- Texte titre : passer à un or-bronze foncé (`#6b5417`) ou blanc pour lisibilité sur fond clair
-- Icône : garder l'or `#d4af37`
-- Ombres et overlays : ajuster les opacités pour le fond clair
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-**2. `QuranReaderPage.tsx`** — Barre d'outils inférieure (~lignes 321-323)
-- Fond jour : `linear-gradient(135deg, #8ed1c4, #a0d9ce)`
-- Fond nuit : version assombrie `#3a8a80`
-- Texte/icônes : passer de `#f0e6c8` (clair) à `#2d3a25` ou `#1a3a3a` (foncé) pour contraste sur fond clair
-- Bordures dorées : conserver
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
