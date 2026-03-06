@@ -177,7 +177,7 @@ export default function QuranTextView({ page, highlightAyah, darkMode = false }:
               <div className="text-center mb-2">
                 <div
                   className="inline-block px-6 py-1.5 rounded-xl mx-auto"
-                  style={{ background: darkMode ? 'rgba(122,139,111,0.2)' : '#f7f3eb', border: '1px solid rgba(122,139,111,0.15)' }}
+                  style={{ background: darkMode ? 'rgba(122,139,111,0.2)' : 'transparent', border: 'none' }}
                 >
                   <h3
                     className="text-base font-bold"
