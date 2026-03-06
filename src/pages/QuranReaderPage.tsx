@@ -151,12 +151,38 @@ export default function QuranReaderPage() {
     });
   }, [page, getPageUrl, viewMode]);
 
-  // Auto-hide controls
+  // Auto-hide controls — scroll-aware for text mode
+  const lastScrollY = useRef(0);
   const resetControlsTimer = useCallback(() => {
     setShowControls(true);
     if (controlsTimer.current) clearTimeout(controlsTimer.current);
     controlsTimer.current = setTimeout(() => setShowControls(false), 4000);
   }, []);
+
+  // In text mode, show controls on scroll up, hide on scroll down
+  useEffect(() => {
+    if (viewMode !== 'text') return;
+    const container = containerRef.current;
+    if (!container) return;
+    const scrollEl = container.querySelector('[data-text-scroll]') as HTMLElement | null;
+    if (!scrollEl) return;
+
+    const handleScroll = () => {
+      const currentY = scrollEl.scrollTop;
+      if (currentY < lastScrollY.current - 10) {
+        // Scrolling UP → show controls
+        resetControlsTimer();
+      } else if (currentY > lastScrollY.current + 10) {
+        // Scrolling DOWN → hide controls
+        setShowControls(false);
+        if (controlsTimer.current) clearTimeout(controlsTimer.current);
+      }
+      lastScrollY.current = currentY;
+    };
+
+    scrollEl.addEventListener('scroll', handleScroll, { passive: true });
+    return () => scrollEl.removeEventListener('scroll', handleScroll);
+  }, [viewMode, resetControlsTimer]);
 
   useEffect(() => {
     resetControlsTimer();
