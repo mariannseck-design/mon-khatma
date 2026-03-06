@@ -66,7 +66,7 @@ export default function QuranReaderPage() {
     return saved ? parseInt(saved) : null;
   });
   const [pageInput, setPageInput] = useState(page.toString());
-  const [showReciterMenu, setShowReciterMenu] = useState(false);
+  
   const [selectedVerse, setSelectedVerse] = useState<string | null>(null);
   const [pageVerses, setPageVerses] = useState<VerseLineInfo[]>([]);
 
