@@ -43,7 +43,7 @@ function parseTajweed(text: string): string {
 
 const FONT_FAMILY = "'Scheherazade New', 'Traditional Arabic', serif";
 
-export default function QuranTextView({ page, highlightAyah, fontSize = 24 }: QuranTextViewProps) {
+export default function QuranTextView({ page, highlightAyah, fontSize = 24, darkMode = false }: QuranTextViewProps) {
   const [ayahs, setAyahs] = useState<Ayah[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
