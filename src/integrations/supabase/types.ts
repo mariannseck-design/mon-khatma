@@ -116,6 +116,123 @@ export type Database = {
           },
         ]
       }
+      hifz_memorized_verses: {
+        Row: {
+          created_at: string
+          id: string
+          last_reviewed_at: string | null
+          memorized_at: string
+          next_review_date: string
+          sm2_ease_factor: number
+          sm2_interval: number
+          sm2_repetitions: number
+          surah_number: number
+          user_id: string
+          verse_end: number
+          verse_start: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          last_reviewed_at?: string | null
+          memorized_at?: string
+          next_review_date?: string
+          sm2_ease_factor?: number
+          sm2_interval?: number
+          sm2_repetitions?: number
+          surah_number: number
+          user_id: string
+          verse_end: number
+          verse_start: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          last_reviewed_at?: string | null
+          memorized_at?: string
+          next_review_date?: string
+          sm2_ease_factor?: number
+          sm2_interval?: number
+          sm2_repetitions?: number
+          surah_number?: number
+          user_id?: string
+          verse_end?: number
+          verse_start?: number
+        }
+        Relationships: []
+      }
+      hifz_sessions: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          current_step: number
+          end_verse: number
+          id: string
+          repetition_level: number
+          start_verse: number
+          started_at: string
+          step_status: Json | null
+          surah_number: number
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          current_step?: number
+          end_verse: number
+          id?: string
+          repetition_level?: number
+          start_verse: number
+          started_at?: string
+          step_status?: Json | null
+          surah_number: number
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          current_step?: number
+          end_verse?: number
+          id?: string
+          repetition_level?: number
+          start_verse?: number
+          started_at?: string
+          step_status?: Json | null
+          surah_number?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      hifz_streaks: {
+        Row: {
+          current_streak: number
+          id: string
+          last_active_date: string | null
+          longest_streak: number
+          total_tours_completed: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          current_streak?: number
+          id?: string
+          last_active_date?: string | null
+          longest_streak?: number
+          total_tours_completed?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          current_streak?: number
+          id?: string
+          last_active_date?: string | null
+          longest_streak?: number
+          total_tours_completed?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       khatma_completions: {
         Row: {
           completed_at: string
@@ -167,6 +284,36 @@ export type Database = {
           mood_value?: number
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      muraja_sessions: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          difficulty_rating: string | null
+          id: string
+          session_type: string
+          user_id: string
+          verses_reviewed: Json | null
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          difficulty_rating?: string | null
+          id?: string
+          session_type?: string
+          user_id: string
+          verses_reviewed?: Json | null
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          difficulty_rating?: string | null
+          id?: string
+          session_type?: string
+          user_id?: string
+          verses_reviewed?: Json | null
         }
         Relationships: []
       }
