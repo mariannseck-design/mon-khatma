@@ -1,54 +1,21 @@
 
 
-## Correction des couleurs Tajweed - Alignement exact avec l'API Al-Quran.cloud
+# Diagnostic : 404 sur /quran-reader
 
-### Probleme identifie
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-Les mappings de couleurs dans `TAJWEED_COLORS` sont **presque tous faux**. En comparant avec la documentation officielle de l'API (https://alquran.cloud/tajweed-guide), voici les erreurs :
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-| Code | Regle | Couleur actuelle (FAUSSE) | Couleur officielle API |
-|------|-------|---------------------------|----------------------|
-| `l` | Lam Shamsiyyah | `#DD0000` (rouge) | `#AAAAAA` (gris) |
-| `n` | Madd Normal | `#169777` (vert) | `#537FFF` (bleu) |
-| `q` | Qalqalah | `#4050FF` (bleu) | `#DD0008` (rouge) |
-| `i` | Iqlab | `#992299` (violet) | `#26BFFD` (bleu clair) |
-| `o` | Madd Obligatoire | `#FF7E1E` (orange) | `#2144C1` (bleu) |
-| `m` | Madd Necessaire | `#D50000` (rouge) | `#000EBC` (bleu fonce) |
-| `f` | Ikhfa | `#FF7E1E` (orange) | `#9400A8` (violet) |
-| `w` | Idgham Shafawi | `#999999` (gris) | `#58B800` (vert) |
-| `a` | Idgham avec Ghunnah | `#4050FF` (bleu) | `#169777` (vert) |
-| `u` | Idgham sans Ghunnah | `#169777` | `#169200` (vert) |
-| `b` | Idgham Mutaqaribayn | `#4050FF` (bleu) | `#A1A1A1` (gris) |
-| `r` | Code inexistant | `#FF4500` | A supprimer |
-| `k` | Code inexistant | `#169777` | A supprimer |
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-Codes manquants : `p` (Madd Permissible), `c` (Ikhfa Shafawi), `d` (Idgham Mutajanisayn), `g` (Ghunnah).
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-### Modification : `src/components/quran/QuranTextView.tsx`
-
-Remplacer `TAJWEED_COLORS` par les couleurs officielles exactes de l'API :
-
-```typescript
-const TAJWEED_COLORS: Record<string, string> = {
-  h: '#AAAAAA',   // Hamzat ul Wasl
-  s: '#AAAAAA',   // Silent
-  l: '#AAAAAA',   // Lam Shamsiyyah
-  n: '#537FFF',   // Madd Normal (2 vowels)
-  p: '#4050FF',   // Madd Permissible (2,4,6 vowels)
-  m: '#000EBC',   // Madd Necessary (6 vowels)
-  o: '#2144C1',   // Madd Obligatory (4-5 vowels)
-  q: '#DD0008',   // Qalqalah
-  c: '#D500B7',   // Ikhfa Shafawi
-  f: '#9400A8',   // Ikhfa
-  w: '#58B800',   // Idgham Shafawi
-  i: '#26BFFD',   // Iqlab
-  a: '#169777',   // Idgham with Ghunnah
-  u: '#169200',   // Idgham without Ghunnah
-  d: '#A1A1A1',   // Idgham Mutajanisayn
-  b: '#A1A1A1',   // Idgham Mutaqaribayn
-  g: '#FF7E1E',   // Ghunnah (2 vowels)
-};
-```
-
-Supprimer les codes inexistants (`r`, `k`). Aucune autre modification necessaire -- la logique de parsing `renderTajweed` fonctionne correctement.
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

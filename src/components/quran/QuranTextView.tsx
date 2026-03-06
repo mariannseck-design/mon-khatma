@@ -18,21 +18,23 @@ const FONT_FAMILY = "'KFGQPC Uthmanic Script HAFS', 'Amiri Quran', 'Amiri', 'Sch
 
 // Tajweed color map based on Al-Quran.cloud tajweed codes
 const TAJWEED_COLORS: Record<string, string> = {
-  h: '#AAAAAA',   // hamza wasl
-  s: '#AAAAAA',   // silent
-  l: '#DD0000',   // lam shamsiyyah
-  n: '#169777',   // ghunnah / noon sakinah
-  q: '#4050FF',   // qalqalah
-  i: '#992299',   // ikhfa
-  o: '#FF7E1E',   // ikhfa shafawi / idgham
-  m: '#D50000',   // madd (prolongation)
-  u: '#169777',   // idgham without ghunnah
-  a: '#4050FF',   // iqlab
-  r: '#FF4500',   // madd lazim
-  f: '#FF7E1E',   // ikhfa with ghunnah
-  w: '#999999',   // waqf
-  k: '#169777',   // idgham with ghunnah
-  b: '#4050FF',   // idgham shafawi
+  h: '#AAAAAA',   // Hamzat ul Wasl
+  s: '#AAAAAA',   // Silent
+  l: '#AAAAAA',   // Lam Shamsiyyah
+  n: '#537FFF',   // Madd Normal (2 vowels)
+  p: '#4050FF',   // Madd Permissible (2,4,6 vowels)
+  m: '#000EBC',   // Madd Necessary (6 vowels)
+  o: '#2144C1',   // Madd Obligatory (4-5 vowels)
+  q: '#DD0008',   // Qalqalah
+  c: '#D500B7',   // Ikhfa Shafawi
+  f: '#9400A8',   // Ikhfa
+  w: '#58B800',   // Idgham Shafawi
+  i: '#26BFFD',   // Iqlab
+  a: '#169777',   // Idgham with Ghunnah
+  u: '#169200',   // Idgham without Ghunnah
+  d: '#A1A1A1',   // Idgham Mutajanisayn
+  b: '#A1A1A1',   // Idgham Mutaqaribayn
+  g: '#FF7E1E',   // Ghunnah (2 vowels)
 };
 
 function renderTajweed(text: string, darkMode: boolean): React.ReactNode[] {
