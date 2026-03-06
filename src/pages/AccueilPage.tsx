@@ -199,9 +199,9 @@ export default function AccueilPage() {
                 <motion.div
                   className="relative overflow-hidden rounded-[2rem] p-8 group"
                   style={{
-                    background: 'linear-gradient(135deg, #0d5c63 0%, #0a4f55 40%, #0d5c63 100%)',
-                    border: '2px solid rgba(212,175,55,0.5)',
-                    boxShadow: '0 8px 32px -8px rgba(13,92,99,0.4), inset 0 0 30px rgba(212,175,55,0.06), 0 0 0 1px rgba(212,175,55,0.15)',
+                    background: 'linear-gradient(135deg, #8ed1c4 0%, #a0d9ce 50%, #8ed1c4 100%)',
+                    border: '2px solid rgba(180,150,60,0.4)',
+                    boxShadow: '0 8px 32px -8px rgba(142,209,196,0.4), inset 0 0 30px rgba(180,150,60,0.06), 0 0 0 1px rgba(180,150,60,0.15)',
                   }}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
@@ -225,7 +225,7 @@ export default function AccueilPage() {
                       <BookOpenCheck className="h-9 w-9" style={{ color: '#d4af37' }} />
                     </div>
                     <div className="flex-1 text-center">
-                      <h3 className="text-2xl font-semibold tracking-[0.15em] uppercase" style={{ fontFamily: "'Playfair Display', 'Georgia', serif", color: '#f0e6c8' }}>Le Noble Coran</h3>
+                      <h3 className="text-2xl font-semibold tracking-[0.15em] uppercase" style={{ fontFamily: "'Playfair Display', 'Georgia', serif", color: '#6b5417' }}>Le Noble Coran</h3>
                     </div>
                   </div>
                 </motion.div>
@@ -235,10 +235,10 @@ export default function AccueilPage() {
                 <div
                   className="relative overflow-hidden rounded-[2rem] p-8"
                   style={{
-                    background: 'linear-gradient(135deg, #0d5c63 0%, #0a4f55 40%, #0d5c63 100%)',
-                    border: '2px solid rgba(212,175,55,0.35)',
-                    boxShadow: '0 4px 20px -6px rgba(13,92,99,0.3), inset 0 0 20px rgba(212,175,55,0.04)',
-                    opacity: 0.7,
+                    background: 'linear-gradient(135deg, #8ed1c4 0%, #a0d9ce 50%, #8ed1c4 100%)',
+                    border: '2px solid rgba(180,150,60,0.3)',
+                    boxShadow: '0 4px 20px -6px rgba(142,209,196,0.3), inset 0 0 20px rgba(180,150,60,0.04)',
+                    opacity: 0.75,
                   }}
                 >
                   <div className="absolute inset-0 pointer-events-none" style={{
@@ -255,8 +255,8 @@ export default function AccueilPage() {
                       <BookOpenCheck className="h-9 w-9" style={{ color: '#d4af37' }} />
                     </div>
                     <div className="flex-1 text-center">
-                      <h3 className="text-2xl font-semibold tracking-[0.15em] uppercase" style={{ fontFamily: "'Playfair Display', 'Georgia', serif", color: '#f0e6c8' }}>Le Noble Coran</h3>
-                      <p className="text-sm mt-1" style={{ color: 'rgba(240,230,200,0.6)' }}>Bientôt disponible in shaa Allah</p>
+                      <h3 className="text-2xl font-semibold tracking-[0.15em] uppercase" style={{ fontFamily: "'Playfair Display', 'Georgia', serif", color: '#6b5417' }}>Le Noble Coran</h3>
+                      <p className="text-sm mt-1" style={{ color: 'rgba(107,84,23,0.5)' }}>Bientôt disponible in shaa Allah</p>
                     </div>
                   </div>
                 </div>
