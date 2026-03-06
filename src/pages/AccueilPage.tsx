@@ -396,8 +396,8 @@ export default function AccueilPage() {
                 </motion.div>
               </Link>
 
-              {/* Espace Dhikr — Bientôt */}
-              <div className="block opacity-65 cursor-default">
+              {/* Mon Dhikr Quotidien */}
+              <Link to="/dhikr" className="block">
                 <div
                   className="relative overflow-hidden rounded-2xl p-5 aspect-square flex flex-col items-center justify-center text-center"
                   style={{
@@ -419,7 +419,7 @@ export default function AccueilPage() {
                   </h4>
                   <p className="text-xs mt-1" style={{ color: COLORS.sage }}>Adhkâr & invocations</p>
                 </div>
-              </div>
+              </Link>
             </motion.div>
           </motion.div>
         )}
