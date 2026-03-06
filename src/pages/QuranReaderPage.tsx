@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence, type PanInfo } from 'framer-motion';
-import { ArrowLeft, List, Type, Image as ImageIcon, Play, Pause, Loader2, Mic, Repeat, Moon, Sun } from 'lucide-react';
+import { ArrowLeft, List, Type, Image as ImageIcon, Play, Pause, Loader2, Mic, Repeat, Moon, Sun, Bookmark, BookmarkCheck } from 'lucide-react';
+import { toast } from 'sonner';
 import { getSurahByPage } from '@/lib/surahData';
 import { Slider } from '@/components/ui/slider';
 import SurahDrawer from '@/components/quran/SurahDrawer';
@@ -48,6 +49,39 @@ export default function QuranReaderPage() {
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem('quran_dark_mode') === 'true';
   });
+
+  const [bookmark, setBookmark] = useState<number | null>(() => {
+    const saved = localStorage.getItem('quran_bookmark');
+    return saved ? parseInt(saved) : null;
+  });
+
+  const handleBookmark = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (bookmark === page) {
+      // Remove bookmark
+      setBookmark(null);
+      localStorage.removeItem('quran_bookmark');
+      toast('Marque-page retiré');
+    } else if (bookmark !== null && bookmark !== page) {
+      // Navigate to bookmarked page
+      goToPage(bookmark);
+      toast(`Retour au marque-page · Page ${bookmark}`);
+    } else {
+      // Set bookmark
+      setBookmark(page);
+      localStorage.setItem('quran_bookmark', page.toString());
+      const s = getSurahByPage(page);
+      toast(`Marque-page enregistré · Page ${page}${s ? ` · ${s.name}` : ''}`);
+    }
+  };
+
+  const handleBookmarkLongPress = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setBookmark(page);
+    localStorage.setItem('quran_bookmark', page.toString());
+    const s = getSurahByPage(page);
+    toast(`Marque-page enregistré · Page ${page}${s ? ` · ${s.name}` : ''}`);
+  };
 
   const surah = getSurahByPage(page);
   const juz = Math.ceil(page / 20);
@@ -386,6 +420,20 @@ export default function QuranReaderPage() {
                   style={{ background: theme.btnBg, backdropFilter: 'blur(8px)' }}
                 >
                   <List className="h-5 w-5" style={{ color: theme.iconColor }} />
+                </button>
+
+                <button
+                  onClick={handleBookmark}
+                  onContextMenu={(e) => { e.preventDefault(); handleBookmarkLongPress(e); }}
+                  className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+                  style={{ background: bookmark !== null ? theme.btnBgActive : theme.btnBg, backdropFilter: 'blur(8px)' }}
+                  title={bookmark !== null ? `Marque-page : page ${bookmark}` : 'Ajouter un marque-page'}
+                >
+                  {bookmark !== null ? (
+                    <BookmarkCheck className="h-5 w-5" style={{ color: theme.pageCounter }} />
+                  ) : (
+                    <Bookmark className="h-5 w-5" style={{ color: theme.iconColor }} />
+                  )}
                 </button>
 
                 <div className="flex-1 flex flex-col gap-1">
