@@ -23,8 +23,10 @@ export default function QuranReaderPage() {
   const [direction, setDirection] = useState(0);
   const [showControls, setShowControls] = useState(true);
   const [showSurahDrawer, setShowSurahDrawer] = useState(false);
-  const [textMode, setTextMode] = useState(false);
+  const [textMode, setTextMode] = useState(true);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
+  const imageTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
   const controlsTimer = useRef<ReturnType<typeof setTimeout>>();
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -148,7 +150,19 @@ export default function QuranReaderPage() {
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  setTextMode(m => !m);
+                  setTextMode(m => {
+                    if (m) {
+                      // Switching to image mode — start timeout
+                      setImageError(false);
+                      setImageLoaded(false);
+                      if (imageTimeoutRef.current) clearTimeout(imageTimeoutRef.current);
+                      imageTimeoutRef.current = setTimeout(() => {
+                        setTextMode(true);
+                        setImageError(true);
+                      }, 10000);
+                    }
+                    return !m;
+                  });
                 }}
                 className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center"
               >
@@ -180,19 +194,41 @@ export default function QuranReaderPage() {
               className="absolute inset-0 flex items-center justify-center"
               style={{ touchAction: 'pinch-zoom' }}
             >
-              {!imageLoaded && (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+              {imageError ? (
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 px-8 text-center">
+                  <p className="text-muted-foreground text-lg">Images indisponibles</p>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); setTextMode(true); }}
+                    className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium"
+                  >
+                    Basculer en mode texte
+                  </button>
                 </div>
+              ) : (
+                <>
+                  {!imageLoaded && (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+                    </div>
+                  )}
+                  <img
+                    src={getPageUrl(page)}
+                    alt={`Page ${page} du Mushaf`}
+                    className="max-h-full max-w-full object-contain select-none"
+                    draggable={false}
+                    onLoad={() => {
+                      setImageLoaded(true);
+                      if (imageTimeoutRef.current) clearTimeout(imageTimeoutRef.current);
+                    }}
+                    onError={() => {
+                      setImageError(true);
+                      if (imageTimeoutRef.current) clearTimeout(imageTimeoutRef.current);
+                      setTimeout(() => setTextMode(true), 2000);
+                    }}
+                    style={{ opacity: imageLoaded ? 1 : 0, transition: 'opacity 0.2s' }}
+                  />
+                </>
               )}
-              <img
-                src={getPageUrl(page)}
-                alt={`Page ${page} du Mushaf`}
-                className="max-h-full max-w-full object-contain select-none"
-                draggable={false}
-                onLoad={() => setImageLoaded(true)}
-                style={{ opacity: imageLoaded ? 1 : 0, transition: 'opacity 0.2s' }}
-              />
             </motion.div>
           </AnimatePresence>
         )}
