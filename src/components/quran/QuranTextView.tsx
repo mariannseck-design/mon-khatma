@@ -83,6 +83,7 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 28, dark
 
   return (
     <div
+      data-text-scroll
       className="h-full w-full overflow-y-auto px-5 py-8 select-text"
       dir="rtl"
       style={{
