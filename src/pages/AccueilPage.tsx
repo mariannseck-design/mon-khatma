@@ -391,9 +391,8 @@ export default function AccueilPage() {
                     className="text-sm font-bold tracking-[0.06em] uppercase"
                     style={{ fontFamily: "'Inter', sans-serif", color: COLORS.emerald }}
                   >
-                    Mon Suivi
+                    Mon Suivi Hifz
                   </h4>
-                  <p className="text-xs mt-1" style={{ color: COLORS.sage }}>Statistiques</p>
                 </motion.div>
               </Link>
 
