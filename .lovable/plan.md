@@ -1,27 +1,21 @@
 
 
-# Correction de 5 bugs dans le lecteur Mushaf
+# Diagnostic : 404 sur /quran-reader
 
-## Bugs identifiés
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-1. **Navigation par swipe ne fonctionne pas en mode texte** -- Le gestionnaire de swipe (`drag`/`onDragEnd`) est uniquement attaché au `motion.div` du mode image. En mode texte, `QuranTextView` n'a aucun support swipe.
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-2. **Ecran non zoomable** -- Le conteneur texte a `overflow-hidden` et aucun support pinch-to-zoom.
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-3. **Sélecteur de récitateur disparaît trop vite** -- Le timer auto-hide (4s) masque la barre de contrôle entière, y compris le menu de sélection du récitateur ouvert.
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-4. **Basmala manquante** -- L'API `quran-tajweed` n'inclut pas la Basmala dans le texte des versets (sauf Al-Fatiha). Il faut l'ajouter manuellement quand `numberInSurah === 1` et que la sourate n'est ni Al-Fatiha (1) ni At-Tawbah (9).
-
-## Fichiers à modifier
-
-### `src/pages/QuranReaderPage.tsx`
-- Envelopper le `QuranTextView` dans un `motion.div` avec `drag="x"` et `onDragEnd` pour supporter le swipe en mode texte (même logique que le mode image)
-- Quand `showReciterSelect` est `true`, annuler le timer auto-hide pour laisser le temps de choisir
-- Réactiver le timer quand le sélecteur se ferme
-
-### `src/components/quran/QuranTextView.tsx`
-- Ajouter la Basmala (`بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ`) au-dessus du texte quand la première ayah du groupe a `numberInSurah === 1`, sauf pour les sourates 1 et 9
-- Permettre le zoom tactile en changeant le style du conteneur (retirer les contraintes qui bloquent le pinch-zoom)
-
-## Estimation : 1 crédit
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
