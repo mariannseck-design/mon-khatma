@@ -177,7 +177,7 @@ export default function QuranReaderPage() {
       ref={containerRef}
       className="fixed inset-0 flex flex-col z-50"
       onClick={handleTap}
-      style={{ background: 'linear-gradient(180deg, #fefdfb 0%, #f9f6f0 100%)' }}
+      style={{ background: theme.bg }}
     >
       {/* Top Bar */}
       <AnimatePresence>
