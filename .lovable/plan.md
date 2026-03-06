@@ -1,21 +1,36 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Palette Tajweed stricte — 4 couleurs uniques
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Modification unique : `src/components/quran/QuranTextView.tsx` (lignes 20-38)
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+Remplacer `TAJWEED_COLORS` par exactement 4 couleurs, une par categorie :
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+```typescript
+const TAJWEED_COLORS: Record<string, string> = {
+  // GRIS — lettres muettes
+  h: '#AAAAAA',   // Hamzat ul Wasl
+  s: '#AAAAAA',   // Silent
+  l: '#AAAAAA',   // Lam Shamsiyyah
+  d: '#AAAAAA',   // Idgham Mutajanisayn
+  b: '#AAAAAA',   // Idgham Mutaqaribayn
+  // ROUGE — Madd (prolongations)
+  n: '#D50000',   // Madd Normal
+  p: '#D50000',   // Madd Permissible
+  m: '#D50000',   // Madd Necessary
+  o: '#D50000',   // Madd Obligatory
+  // BLEU — Qalqalah (vibrations)
+  q: '#1565C0',
+  // VERT — nasalisations (Ghunna, Ikhfa, Idgham)
+  c: '#2E7D32',   // Ikhfa Shafawi
+  f: '#2E7D32',   // Ikhfa
+  w: '#2E7D32',   // Idgham Shafawi
+  i: '#2E7D32',   // Iqlab
+  a: '#2E7D32',   // Idgham avec Ghunnah
+  u: '#2E7D32',   // Idgham sans Ghunnah
+  g: '#2E7D32',   // Ghunnah
+};
+```
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
-
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+4 couleurs strictes : `#AAAAAA` (gris), `#D50000` (rouge), `#1565C0` (bleu), `#2E7D32` (vert). Aucune nuance, aucune variation.
 
