@@ -20,6 +20,58 @@ export default function VerseTranslationDrawer({ verseKey, allVerses, onClose, o
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
+  // Audio state
+  const [audioPlaying, setAudioPlaying] = useState(false);
+  const [audioLoading, setAudioLoading] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const reciter = localStorage.getItem('quran_reciter') || 'ar.alafasy';
+
+  const stopAudio = useCallback(() => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.removeAttribute('src');
+      audioRef.current = null;
+    }
+    setAudioPlaying(false);
+    setAudioLoading(false);
+  }, []);
+
+  // Stop audio when verse changes or drawer closes
+  useEffect(() => {
+    stopAudio();
+  }, [verseKey, stopAudio]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => { stopAudio(); };
+  }, [stopAudio]);
+
+  const playVerse = useCallback(async () => {
+    if (!verseKey) return;
+    if (audioPlaying) { stopAudio(); return; }
+
+    setAudioLoading(true);
+    try {
+      const [surah, ayah] = verseKey.split(':');
+      const res = await fetch(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/${reciter}`);
+      const json = await res.json();
+      if (json.code !== 200) throw new Error('API error');
+
+      const audioUrl = json.data.audio;
+      const audio = new Audio(audioUrl);
+      audioRef.current = audio;
+
+      audio.onended = () => { setAudioPlaying(false); };
+      audio.onerror = () => { setAudioPlaying(false); setAudioLoading(false); };
+      audio.oncanplaythrough = () => { setAudioLoading(false); };
+
+      await audio.play();
+      setAudioPlaying(true);
+    } catch {
+      setAudioLoading(false);
+    }
+  }, [verseKey, audioPlaying, stopAudio, reciter]);
+
   useEffect(() => {
     if (!verseKey) { setData(null); return; }
     let cancelled = false;
