@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronRight, ChevronLeft, Loader2 } from 'lucide-react';
+import { X, ChevronRight, ChevronLeft, Loader2, Play, Pause, RotateCcw } from 'lucide-react';
 import type { VerseLineInfo } from './ImageVerseOverlay';
 
 interface TranslationData {
@@ -19,6 +19,58 @@ export default function VerseTranslationDrawer({ verseKey, allVerses, onClose, o
   const [data, setData] = useState<TranslationData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+
+  // Audio state
+  const [audioPlaying, setAudioPlaying] = useState(false);
+  const [audioLoading, setAudioLoading] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const reciter = localStorage.getItem('quran_reciter') || 'ar.alafasy';
+
+  const stopAudio = useCallback(() => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.removeAttribute('src');
+      audioRef.current = null;
+    }
+    setAudioPlaying(false);
+    setAudioLoading(false);
+  }, []);
+
+  // Stop audio when verse changes or drawer closes
+  useEffect(() => {
+    stopAudio();
+  }, [verseKey, stopAudio]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => { stopAudio(); };
+  }, [stopAudio]);
+
+  const playVerse = useCallback(async () => {
+    if (!verseKey) return;
+    if (audioPlaying) { stopAudio(); return; }
+
+    setAudioLoading(true);
+    try {
+      const [surah, ayah] = verseKey.split(':');
+      const res = await fetch(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/${reciter}`);
+      const json = await res.json();
+      if (json.code !== 200) throw new Error('API error');
+
+      const audioUrl = json.data.audio;
+      const audio = new Audio(audioUrl);
+      audioRef.current = audio;
+
+      audio.onended = () => { setAudioPlaying(false); };
+      audio.onerror = () => { setAudioPlaying(false); setAudioLoading(false); };
+      audio.oncanplaythrough = () => { setAudioLoading(false); };
+
+      await audio.play();
+      setAudioPlaying(true);
+    } catch {
+      setAudioLoading(false);
+    }
+  }, [verseKey, audioPlaying, stopAudio, reciter]);
 
   useEffect(() => {
     if (!verseKey) { setData(null); return; }
@@ -111,13 +163,32 @@ export default function VerseTranslationDrawer({ verseKey, allVerses, onClose, o
                 <ChevronLeft className="h-4 w-4" />
               </button>
             </div>
-            <button
-              onClick={onClose}
-              className="w-7 h-7 rounded-full flex items-center justify-center"
-              style={{ color: '#5e6e54' }}
-            >
-              <X className="h-4 w-4" />
-            </button>
+            <div className="flex items-center gap-1">
+              {/* Play button */}
+              <button
+                onClick={playVerse}
+                className="w-8 h-8 rounded-full flex items-center justify-center transition-colors"
+                style={{
+                  background: audioPlaying ? '#7a8b6f' : 'rgba(122,139,111,0.15)',
+                  color: audioPlaying ? '#faf8f2' : '#5e6e54',
+                }}
+              >
+                {audioLoading ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                ) : audioPlaying ? (
+                  <Pause className="h-3.5 w-3.5" />
+                ) : (
+                  <Play className="h-3.5 w-3.5 ml-0.5" />
+                )}
+              </button>
+              <button
+                onClick={onClose}
+                className="w-7 h-7 rounded-full flex items-center justify-center"
+                style={{ color: '#5e6e54' }}
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
           </div>
 
           {/* Content */}
