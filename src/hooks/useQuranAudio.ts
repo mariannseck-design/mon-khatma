@@ -17,7 +17,7 @@ interface AyahAudio {
   audio: string;
 }
 
-export function useQuranAudio(page: number) {
+export function useQuranAudio(page: number, onPageFinished?: () => void) {
   const [reciter, setReciter] = useState(() => {
     return localStorage.getItem('quran_reciter') || 'ar.alafasy';
   });
@@ -51,6 +51,7 @@ export function useQuranAudio(page: number) {
     if (index >= ayahs.length) {
       setIsPlaying(false);
       setCurrentAyahNumber(null);
+      onPageFinished?.();
       return;
     }
 

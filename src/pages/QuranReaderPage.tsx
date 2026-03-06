@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence, type PanInfo } from 'framer-motion';
-import { ArrowLeft, BookOpen, List, Type, Image as ImageIcon, Play, Pause, Loader2, Mic } from 'lucide-react';
+import { ArrowLeft, BookOpen, List, Type, Image as ImageIcon, Play, Pause, Loader2, Mic, Repeat } from 'lucide-react';
 import { getSurahByPage } from '@/lib/surahData';
 import { Slider } from '@/components/ui/slider';
 import SurahDrawer from '@/components/quran/SurahDrawer';
@@ -35,6 +35,17 @@ export default function QuranReaderPage() {
   const surah = getSurahByPage(page);
   const juz = Math.ceil(page / 20);
   const [showReciterSelect, setShowReciterSelect] = useState(false);
+  const [autoPlay, setAutoPlay] = useState(() => {
+    return localStorage.getItem('quran_autoplay') === 'true';
+  });
+
+  const handlePageFinished = useCallback(() => {
+    if (autoPlay && page < TOTAL_PAGES) {
+      setDirection(1);
+      setImageLoaded(false);
+      setPage(p => Math.min(p + 1, TOTAL_PAGES));
+    }
+  }, [autoPlay, page]);
 
   const {
     isPlaying,
@@ -44,7 +55,12 @@ export default function QuranReaderPage() {
     setReciter,
     togglePlay,
     stop: stopAudio,
-  } = useQuranAudio(page);
+  } = useQuranAudio(page, handlePageFinished);
+
+  // Save autoplay preference
+  useEffect(() => {
+    localStorage.setItem('quran_autoplay', autoPlay.toString());
+  }, [autoPlay]);
 
   // Save page to localStorage
   useEffect(() => {
@@ -297,6 +313,15 @@ export default function QuranReaderPage() {
                   />
                   <span className="text-white/80 text-xs font-mono w-10">604</span>
                 </div>
+
+                {/* Auto-play toggle */}
+                <button
+                  onClick={(e) => { e.stopPropagation(); setAutoPlay(a => !a); }}
+                  className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${autoPlay ? 'bg-white/40 backdrop-blur-sm' : 'bg-white/20 backdrop-blur-sm'}`}
+                  title={autoPlay ? 'Lecture auto activée' : 'Lecture auto désactivée'}
+                >
+                  <Repeat className={`h-5 w-5 ${autoPlay ? 'text-green-300' : 'text-white'}`} />
+                </button>
 
                 {/* Reciter button */}
                 <button
