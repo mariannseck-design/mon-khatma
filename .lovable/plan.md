@@ -1,32 +1,55 @@
 
 
-# Diagnostic et Correction du Lecteur Mushaf
+# Lecteur Mushaf avec Tajweed colore -- Affichage page par page
 
-## Probleme identifie
+## Contexte
 
-Le CDN d'images `cdn.islamic.network` retourne une erreur **AccessDenied** sur toutes les URLs. Ce service a bloque l'acces public a ses images de Mushaf. C'est la raison pour laquelle le lecteur reste en chargement infini -- l'image ne se charge jamais.
+Les CDN d'images Mushaf (islamic.network, easyquran.com, GitHub LFS) sont tous inaccessibles ou bloques. Cependant, l'API `api.alquran.cloud` propose une edition **`quran-tajweed`** qui retourne le texte arabe avec des marqueurs de Tajweed (ex: `[h:1[ٱ]`, `[n[ـٰ]`, `[p[ِي]`, `[m[َا]`, `[g[نّ]`). Ces marqueurs peuvent etre convertis en spans HTML colores.
 
-## Solution proposee
+## Solution
 
-Puisque l'API texte `api.alquran.cloud` fonctionne parfaitement (verifie et confirme), la correction consiste a :
+Utiliser l'edition `quran-tajweed` de l'API pour afficher le texte Uthmani avec les **codes couleurs du Tajweed** -- chaque regle (Ghunnah, Idgham, Ikhfa, Qalqalah, etc.) est mise en evidence par une couleur specifique, exactement comme dans un Mushaf Tajweed imprime.
 
-### 1. Basculer le mode par defaut sur le mode texte
-- Le mode texte (police Amiri / Uthmani) devient le mode par defaut au lieu du mode image
-- Le rendu est beau et calligraphique, avec un texte arabe authentique
+### Codes couleurs du Tajweed (standard)
 
-### 2. Ajouter un fallback intelligent pour le mode image
-- Ajouter un `onError` sur l'image qui affiche un message clair ("Images indisponibles, basculez en mode texte")
-- Ajouter un timeout de 10 secondes : si l'image ne charge pas, bascule automatique vers le mode texte avec un toast d'information
+```text
+[h  = Hamzat ul Wasl     → gris #AAAAAA
+[s  = Silent              → gris #AAAAAA
+[l  = Lam Shamsiyyah      → gris #AAAAAA
+[n  = Madd Normal         → orange #537FFF
+[p  = Madd Permissible    → bleu #4050FF
+[m  = Madd Obligatoire    → bleu #000EBC
+[q  = Qalqalah            → vert #DD0008
+[i  = Ikhfa               → rose #9400A8
+[o  = Ikhfa Meem Saakin   → rose #9400A8
+[g  = Ghunnah             → orange #FF7E1E
+[f  = Idgham avec Ghunnah → vert #169200
+[d  = Idgham sans Ghunnah → vert #169777
+[b  = Iqlab               → vert #26BFFD
+```
 
-### 3. Preparer un CDN de secours
-- Configurer une liste de CDN en fallback (pour le jour ou un CDN fonctionnel sera trouve)
-- Pour l'instant, le mode texte est la solution fiable et fonctionnelle
+### Fichiers a modifier
 
-### Fichier a modifier
-- `src/pages/QuranReaderPage.tsx` : changer `textMode` par defaut a `true`, ajouter gestion d'erreur image avec fallback automatique
+#### 1. `src/components/quran/QuranTextView.tsx`
+- Changer l'API de `quran-uthmani` vers **`quran-tajweed`**
+- Ajouter un parseur qui convertit les marqueurs `[x[...]]` en elements `<span>` avec les couleurs correspondantes
+- Supprimer le scroll continu : afficher le contenu d'une seule page a la fois (le composant recoit deja `page` en prop, donc pas de scroll -- juste le contenu fixe de la page)
+- Remplacer `overflow-y-auto` par un affichage centre sans scroll pour un rendu "page de livre"
+- Utiliser `dangerouslySetInnerHTML` ou un parseur React pour le rendu colore
+
+#### 2. `src/pages/QuranReaderPage.tsx`
+- Le mode texte (Tajweed colore) reste le mode par defaut (puisque les CDN images sont inaccessibles)
+- Le swipe horizontal page par page est deja en place
+- Aucun changement majeur necessaire
+
+### Rendu visuel attendu
+- Police Amiri (calligraphique) en taille genereuse
+- Texte arabe RTL avec couleurs Tajweed integrees
+- Affichage page par page (pas de defilement vertical) -- le contenu de chaque page tient dans l'ecran
+- Nom de la sourate affiche en haut quand c'est le debut d'une sourate
 
 ### Impact
-- Le lecteur s'affiche immediatement avec le texte Uthmani
-- L'utilisatrice peut toujours tenter de basculer en mode image (le bouton reste present)
-- Si le CDN redevient accessible, le mode image fonctionnera sans changement de code
+- Rendu fidele au Mushaf Tajweed avec codes couleurs standard
+- API gratuite, fiable, sans cle
+- Affichage instantane page par page avec navigation par swipe
 
