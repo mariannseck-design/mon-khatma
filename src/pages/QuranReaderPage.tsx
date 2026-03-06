@@ -361,13 +361,13 @@ export default function QuranReaderPage() {
             exit={{ y: 60, opacity: 0 }}
             transition={{ duration: 0.25 }}
             className="absolute bottom-0 left-0 right-0 z-30 px-4 pb-6 pt-10"
-            style={{ background: 'linear-gradient(to top, rgba(62, 50, 28, 0.55), transparent)' }}
+            style={{ background: theme.barGradientBottom }}
           >
             <div className="flex flex-col gap-3">
               {showReciterSelect && (
                 <div className="flex justify-center" onClick={(e) => e.stopPropagation()}>
                   <Select value={reciter} onValueChange={(v) => { setReciter(v); setShowReciterSelect(false); }}>
-                    <SelectTrigger className="w-56 backdrop-blur-sm text-xs h-8" style={{ background: 'rgba(184, 149, 46, 0.3)', borderColor: 'rgba(184, 149, 46, 0.4)', color: '#f5edd6' }}>
+                    <SelectTrigger className="w-56 backdrop-blur-sm text-xs h-8" style={{ background: theme.selectBg, borderColor: theme.selectBorder, color: theme.iconColor }}>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -383,19 +383,19 @@ export default function QuranReaderPage() {
                 <button
                   onClick={(e) => { e.stopPropagation(); setShowSurahDrawer(true); }}
                   className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
-                  style={{ background: 'rgba(184, 149, 46, 0.25)', backdropFilter: 'blur(8px)' }}
+                  style={{ background: theme.btnBg, backdropFilter: 'blur(8px)' }}
                 >
-                  <List className="h-5 w-5" style={{ color: '#f5edd6' }} />
+                  <List className="h-5 w-5" style={{ color: theme.iconColor }} />
                 </button>
 
                 <div className="flex-1 flex flex-col gap-1">
                   <div className="text-center">
-                    <span className="text-xs font-semibold" style={{ color: '#d4af37', fontFamily: "'Playfair Display', serif" }}>
+                    <span className="text-xs font-semibold" style={{ color: theme.pageCounter, fontFamily: "'Playfair Display', serif" }}>
                       Page {page} / {TOTAL_PAGES}
                     </span>
                   </div>
                   <div className="flex items-center gap-3" dir="ltr">
-                    <span className="text-xs font-mono w-7 text-right" style={{ color: 'rgba(245, 237, 214, 0.8)' }}>1</span>
+                    <span className="text-xs font-mono w-7 text-right" style={{ color: theme.sliderLabel }}>1</span>
                     <Slider
                       value={[page]}
                       min={1}
@@ -405,38 +405,38 @@ export default function QuranReaderPage() {
                       onClick={(e) => e.stopPropagation()}
                       className="flex-1"
                     />
-                    <span className="text-xs font-mono w-10" style={{ color: 'rgba(245, 237, 214, 0.8)' }}>604</span>
+                    <span className="text-xs font-mono w-10" style={{ color: theme.sliderLabel }}>604</span>
                   </div>
                 </div>
 
                 <button
                   onClick={(e) => { e.stopPropagation(); setAutoPlay(a => !a); }}
                   className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
-                  style={{ background: autoPlay ? 'rgba(184, 149, 46, 0.45)' : 'rgba(184, 149, 46, 0.25)', backdropFilter: 'blur(8px)' }}
+                  style={{ background: autoPlay ? theme.btnBgActive : theme.btnBg, backdropFilter: 'blur(8px)' }}
                   title={autoPlay ? 'Lecture auto activée' : 'Lecture auto désactivée'}
                 >
-                  <Repeat className="h-5 w-5" style={{ color: autoPlay ? '#d4af37' : '#f5edd6' }} />
+                  <Repeat className="h-5 w-5" style={{ color: autoPlay ? theme.pageCounter : theme.iconColor }} />
                 </button>
 
                 <button
                   onClick={(e) => { e.stopPropagation(); setShowReciterSelect(s => !s); }}
                   className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
-                  style={{ background: 'rgba(184, 149, 46, 0.25)', backdropFilter: 'blur(8px)' }}
+                  style={{ background: theme.btnBg, backdropFilter: 'blur(8px)' }}
                 >
-                  <Mic className="h-5 w-5" style={{ color: '#f5edd6' }} />
+                  <Mic className="h-5 w-5" style={{ color: theme.iconColor }} />
                 </button>
 
                 <button
                   onClick={(e) => { e.stopPropagation(); togglePlay(); }}
                   className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
-                  style={{ background: 'rgba(184, 149, 46, 0.25)', backdropFilter: 'blur(8px)' }}
+                  style={{ background: theme.btnBg, backdropFilter: 'blur(8px)' }}
                 >
                   {audioLoading ? (
-                    <Loader2 className="h-5 w-5 animate-spin" style={{ color: '#f5edd6' }} />
+                    <Loader2 className="h-5 w-5 animate-spin" style={{ color: theme.iconColor }} />
                   ) : isPlaying ? (
-                    <Pause className="h-5 w-5" style={{ color: '#f5edd6' }} />
+                    <Pause className="h-5 w-5" style={{ color: theme.iconColor }} />
                   ) : (
-                    <Play className="h-5 w-5" style={{ color: '#f5edd6' }} />
+                    <Play className="h-5 w-5" style={{ color: theme.iconColor }} />
                   )}
                 </button>
               </div>
