@@ -1,20 +1,49 @@
-# Modifications de la celebration Khatma
 
-## Changements a effectuer
 
-### 1. `src/components/planificateur/KhatmaCelebration.tsx`
+# Lecteur Mushaf complet — 604 pages HD avec mode texte
 
-**Supprimer l'etape 1** ("Benediction des lettres" — le texte Alif a Ya). Passer de 4 etapes a 3.
+## Objectif
+Creer un lecteur de Coran immersif plein ecran avec les 604 pages du Mushaf de Medine en images HD, navigation par swipe horizontal, zoom tactile, et une option de bascule vers un mode texte (police Uthmani). Pas de modules de memorisation ni de revision dans cette phase.
 
-**Supprimer les titres** des etapes : retirer le `h2` avec `step.title` et le texte "Etape X sur Y". Garder uniquement l'icone et le contenu textuel dans la carte.
+## Fichiers a creer
 
-**Ajouter a la derniere etape** : apres le texte actuel des salutations, ajouter un paragraphe "Fais tes duas 🤲" suivi de "Qu'Allah accepte".
+### 1. `src/pages/QuranReaderPage.tsx` — Page principale du lecteur
 
-### 2. `src/pages/PlanificateurPage.tsx`
+- **Plein ecran** : pas de `AppLayout`, navigation propre (bouton retour, nom de sourate via `getSurahByPage()`, numero de page)
+- **Mode Image (defaut)** : Affiche l'image depuis `https://cdn.islamic.network/quran/images/page/{pageNumber}.png`
+- **Swipe horizontal** : `framer-motion` drag gestures avec `AnimatePresence` pour transitions fluides entre pages
+- **Zoom tactile** : CSS `touch-action: pinch-zoom` sur le conteneur d'image
+- **Prechargement** : preload des 2 pages adjacentes (page-1 et page+1) via `new Image()`
+- **Barre inferieure** : slider rapide pour sauter a une page, bouton tiroir sourates
+- **Bouton bascule** : icone pour switcher entre mode image et mode texte
+- **Lecture RTL** : navigation inversee (swipe gauche = page suivante en sens arabe, page 604 → 1)
 
-**Corriger le timing** : actuellement quand l'utilisatrice atteint 604 pages, le success modal (objectif quotidien atteint) s'affiche pendant 800ms puis est immediatement ecrase par `setShowKhatmaCelebration(true)`. Solution : tu peux afficher le success modal quand la Khatma est complete  ensuite  a la celebration, mais avec un delai de ~2-3 secondes et un toast visible avant la transition pour que l'utilisatrice ait le temps de lire le message de felicitations. "Mets à jour l’annonce de 48 heures dans le tableau de bord de groupe de **Ma Khatma** :
+### 2. `src/components/quran/QuranTextView.tsx` — Mode texte (Uthmani)
 
-- **Titre :** « Félicitations à notre sœur qui vient de boucler sa Khatma ! 🎊 »
-- **Verset :** « En vérité, c’est Nous qui avons fait descendre le Rappel (Al-Zikr), et c’est Nous qui en sommes les gardiens. » (Sourate Al-Hijr, verset 9)
-- **Message de clôture :** « Continuez vos efforts, car le Coran est le meilleur des Zikr. **Chaque lettre lue vous rapproche de la Paix intérieure et de la satisfaction d’Allah.** »
-- **Conception :** Utilise un encadré avec une bordure fine dorée et un fond très clair pour que le texte soit apaisant à lire."
+- Utilise l'API gratuite `https://api.alquran.cloud/v1/page/{page}/quran-uthmani` pour recuperer le texte arabe Uthmani
+- Affichage du texte arabe avec `font-family: 'Amiri'` ou police Uthmani (Google Fonts)
+- Taille de texte genereuse, direction RTL, espacement genereux
+- Permet copier-coller et selection de texte
+
+### 3. `src/components/quran/SurahDrawer.tsx` — Tiroir de navigation par sourate
+
+- Liste des 114 sourates (depuis `surahData.ts` existant)
+- Au clic, navigue directement a la page de debut de la sourate
+- Recherche/filtre rapide par nom
+
+## Fichiers a modifier
+
+### 4. `src/App.tsx`
+- Ajouter la route `/quran-reader` protegee
+
+### 5. `src/pages/AccueilPage.tsx`
+- Ajouter un bouton/carte "Lire le Mushaf" qui navigue vers `/quran-reader`
+
+## Source des images
+- CDN : `https://cdn.islamic.network/quran/images/page/{1-604}.png`
+- Mushaf de Medine, haute definition, gratuit, pas de cle API
+
+## Source du texte (mode bascule)
+- API : `https://api.alquran.cloud/v1/page/{page}/quran-uthmani` — gratuite, sans cle
+- Police : Amiri (Google Fonts) pour un rendu calligraphique authentique
+
