@@ -276,9 +276,11 @@ export default function QuranReaderPage() {
 
       {/* Main Content */}
       <div
-        className="flex-1 relative overflow-hidden flex items-center justify-center"
+        className="flex-1 relative overflow-hidden flex items-center justify-center touch-none"
         onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
+        onClick={handleDoubleTap}
         style={{ background: '#ffffff' }}
       >
         <AnimatePresence initial={false} mode="popLayout">
@@ -304,7 +306,11 @@ export default function QuranReaderPage() {
               referrerPolicy="no-referrer"
               onLoad={handleImageLoad}
               onError={handleImageError}
-              style={{ opacity: imageLoaded ? 1 : 0, transition: 'opacity 0.2s' }}
+              style={{
+                opacity: imageLoaded ? 1 : 0,
+                transform: `scale(${scale}) translate(${translate.x / scale}px, ${translate.y / scale}px)`,
+                transition: pinchRef.current || panRef.current ? 'none' : 'opacity 0.2s, transform 0.2s',
+              }}
             />
           </motion.div>
         </AnimatePresence>
