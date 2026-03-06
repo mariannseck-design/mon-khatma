@@ -152,21 +152,6 @@ export default function QuranReaderPage() {
       onClick={handleTap}
       style={{ background: 'linear-gradient(180deg, #f5edd6 0%, #efe6d0 40%, #e8dcc4 100%)' }}
     >
-      {/* Persistent Title */}
-      <div className="relative z-20 pt-safe text-center py-3">
-        <h1
-          className="text-lg tracking-[0.15em] uppercase"
-          style={{
-            fontFamily: "'Playfair Display', 'Georgia', serif",
-            color: '#b8952e',
-            fontWeight: 600,
-            textShadow: '0 1px 2px rgba(184, 149, 46, 0.15)',
-          }}
-        >
-          Lis le Noble Coran
-        </h1>
-      </div>
-
       {/* Top Bar */}
       <AnimatePresence>
         {showControls && (
@@ -175,7 +160,7 @@ export default function QuranReaderPage() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -60, opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="absolute top-10 left-0 right-0 z-30 px-4 pt-2 pb-8"
+            className="absolute top-0 left-0 right-0 z-30 px-4 pt-3 pb-10"
             style={{ background: 'linear-gradient(to bottom, rgba(62, 50, 28, 0.55), transparent)' }}
           >
             <div className="flex items-center justify-between">
