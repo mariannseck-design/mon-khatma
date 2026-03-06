@@ -368,20 +368,21 @@ export default function QuranReaderPage() {
                   className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
                   style={{ background: 'rgba(184, 149, 46, 0.25)', backdropFilter: 'blur(8px)' }}
                 >
-                  <Mic className="h-5 w-5 text-white" />
+                  <Mic className="h-5 w-5" style={{ color: '#f5edd6' }} />
                 </button>
 
                 {/* Play/Pause button */}
                 <button
                   onClick={(e) => { e.stopPropagation(); togglePlay(); }}
-                  className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0"
+                  className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+                  style={{ background: 'rgba(184, 149, 46, 0.25)', backdropFilter: 'blur(8px)' }}
                 >
                   {audioLoading ? (
-                    <Loader2 className="h-5 w-5 text-white animate-spin" />
+                    <Loader2 className="h-5 w-5 animate-spin" style={{ color: '#f5edd6' }} />
                   ) : isPlaying ? (
-                    <Pause className="h-5 w-5 text-white" />
+                    <Pause className="h-5 w-5" style={{ color: '#f5edd6' }} />
                   ) : (
-                    <Play className="h-5 w-5 text-white" />
+                    <Play className="h-5 w-5" style={{ color: '#f5edd6' }} />
                   )}
                 </button>
               </div>
