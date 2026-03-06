@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, List, Bookmark, BookmarkCheck } from 'lucide-react';
+import { ArrowLeft, List, Bookmark, BookmarkCheck, ChevronUp } from 'lucide-react';
 import { toast } from 'sonner';
 import { getSurahByPage } from '@/lib/surahData';
 import SurahDrawer from '@/components/quran/SurahDrawer';
@@ -468,6 +468,23 @@ export default function QuranReaderPage() {
               </div>
             </div>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Floating button to show controls */}
+      <AnimatePresence>
+        {!showControls && (
+          <motion.button
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ duration: 0.2 }}
+            onClick={(e) => { e.stopPropagation(); resetControlsTimer(); }}
+            className="fixed bottom-6 right-4 z-30 w-10 h-10 rounded-full flex items-center justify-center"
+            style={{ background: 'rgba(122, 139, 111, 0.4)', backdropFilter: 'blur(8px)' }}
+          >
+            <ChevronUp className="h-5 w-5" style={{ color: '#e8e2d0' }} />
+          </motion.button>
         )}
       </AnimatePresence>
 
