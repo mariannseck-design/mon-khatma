@@ -256,37 +256,50 @@ export default function QuranReaderPage() {
         style={{ background: contentBg, paddingBottom: 0 }}
       >
         {viewMode === 'image' ? (
-          <AnimatePresence initial={false} mode="popLayout">
-            <motion.div
-              key={page}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="absolute inset-0 flex items-center justify-center"
-            >
-              {!imageLoaded && (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-8 h-8 border-4 rounded-full animate-spin" style={{ borderColor: '#7a8b6f', borderTopColor: 'transparent' }} />
-                </div>
-              )}
-              <img
-                key={`${page}-${sourceIndex}`}
-                src={getPageUrl(page, sourceIndex)}
-                alt={`Page ${page} du Mushaf`}
-                className="max-h-full max-w-full object-contain select-none"
-                draggable={false}
-                referrerPolicy="no-referrer"
-                onLoad={handleImageLoad}
-                onError={handleImageError}
-                style={{
-                  opacity: imageLoaded ? 1 : 0,
-                  transform: `scale(${scale}) translate(${translate.x / scale}px, ${translate.y / scale}px)`,
-                  transition: pinchRef.current || panRef.current ? 'none' : 'opacity 0.2s, transform 0.2s',
-                }}
-              />
-            </motion.div>
-          </AnimatePresence>
+          <>
+            <AnimatePresence initial={false} mode="popLayout">
+              <motion.div
+                key={page}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="absolute inset-0 flex items-center justify-center"
+              >
+                {!imageLoaded && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-8 h-8 border-4 rounded-full animate-spin" style={{ borderColor: '#7a8b6f', borderTopColor: 'transparent' }} />
+                  </div>
+                )}
+                <img
+                  key={`${page}-${sourceIndex}`}
+                  src={getPageUrl(page, sourceIndex)}
+                  alt={`Page ${page} du Mushaf`}
+                  className="max-h-full max-w-full object-contain select-none"
+                  draggable={false}
+                  referrerPolicy="no-referrer"
+                  onLoad={handleImageLoad}
+                  onError={handleImageError}
+                  style={{
+                    opacity: imageLoaded ? 1 : 0,
+                    transform: `scale(${scale}) translate(${translate.x / scale}px, ${translate.y / scale}px)`,
+                    transition: pinchRef.current || panRef.current ? 'none' : 'opacity 0.2s, transform 0.2s',
+                  }}
+                />
+                {imageLoaded && (
+                  <ImageVerseOverlay
+                    page={page}
+                    scale={scale}
+                    selectedVerse={selectedVerse}
+                    onVerseSelect={(vk, verses) => {
+                      setSelectedVerse(vk);
+                      setPageVerses(verses);
+                    }}
+                  />
+                )}
+              </motion.div>
+            </AnimatePresence>
+          </>
         ) : (
           <QuranTextView
             page={page}
