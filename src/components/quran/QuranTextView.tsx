@@ -226,7 +226,7 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 28, dark
                         userSelect: 'none',
                       }}
                     >
-                      ﴿{ayah.numberInSurah.toLocaleString('ar-EG')}﴾
+                      ﴿{ayah.numberInSurah}﴾
                     </span>
                     {' '}
                   </span>
