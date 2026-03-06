@@ -130,10 +130,10 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 24, dark
               <span
                 key={ayah.number}
                 className={highlightAyah === ayah.number ? 'rounded px-0.5 transition-colors duration-300' : 'transition-colors duration-300'}
-                style={highlightAyah === ayah.number ? { background: 'rgba(138, 109, 27, 0.12)' } : undefined}
+                style={highlightAyah === ayah.number ? { background: highlightBg } : undefined}
               >
                 <span dangerouslySetInnerHTML={{ __html: parseTajweed(ayah.text) }} />{' '}
-                <span className="font-bold" style={{ color: '#8a6d1b', fontSize: `${ayahNumberSize}px` }}>
+                <span className="font-bold" style={{ color: surahNameColor, fontSize: `${ayahNumberSize}px` }}>
                   ﴿{ayah.numberInSurah.toLocaleString('ar-EG')}﴾
                 </span>{' '}
               </span>
