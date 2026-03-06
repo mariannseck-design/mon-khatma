@@ -188,15 +188,15 @@ export default function QuranReaderPage() {
             exit={{ y: -60, opacity: 0 }}
             transition={{ duration: 0.25 }}
             className="absolute top-0 left-0 right-0 z-30 px-4 pt-3 pb-10"
-            style={{ background: 'linear-gradient(to bottom, rgba(62, 50, 28, 0.55), transparent)' }}
+            style={{ background: theme.barGradientTop }}
           >
             <div className="flex items-center justify-between">
               <button
                 onClick={(e) => { e.stopPropagation(); navigate(-1); }}
                 className="w-10 h-10 rounded-full flex items-center justify-center"
-                style={{ background: 'rgba(184, 149, 46, 0.25)', backdropFilter: 'blur(8px)' }}
+                style={{ background: theme.btnBg, backdropFilter: 'blur(8px)' }}
               >
-                <ArrowLeft className="h-5 w-5" style={{ color: '#f5edd6' }} />
+                <ArrowLeft className="h-5 w-5" style={{ color: theme.iconColor }} />
               </button>
 
               <div className="text-center">
