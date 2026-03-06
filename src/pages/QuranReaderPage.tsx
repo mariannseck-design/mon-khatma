@@ -350,25 +350,39 @@ export default function QuranReaderPage() {
                 )}
               </button>
 
-              <div className="flex-1 flex flex-col gap-1">
-                <div className="text-center">
-                  <span className="text-xs font-semibold" style={{ color: '#e8e2d0', fontFamily: "'Playfair Display', serif" }}>
-                    Page {page} / {TOTAL_PAGES}
-                  </span>
-                </div>
-                <div className="flex items-center gap-3" dir="ltr">
-                  <span className="text-xs font-mono w-7 text-right" style={{ color: 'rgba(240, 234, 217, 0.8)' }}>1</span>
-                  <Slider
-                    value={[page]}
-                    min={1}
-                    max={TOTAL_PAGES}
-                    step={1}
-                    onValueChange={([v]) => goToPage(v)}
-                    onClick={(e) => e.stopPropagation()}
-                    className="flex-1"
-                  />
-                  <span className="text-xs font-mono w-10" style={{ color: 'rgba(240, 234, 217, 0.8)' }}>604</span>
-                </div>
+              <div className="flex-1 flex items-center justify-center gap-2">
+                <span className="text-xs" style={{ color: 'rgba(240, 234, 217, 0.7)' }}>Page</span>
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  min={1}
+                  max={TOTAL_PAGES}
+                  value={pageInput}
+                  onChange={(e) => setPageInput(e.target.value)}
+                  onFocus={(e) => e.target.select()}
+                  onBlur={() => {
+                    const v = parseInt(pageInput);
+                    if (!isNaN(v) && v >= 1 && v <= TOTAL_PAGES) {
+                      goToPage(v);
+                    } else {
+                      setPageInput(page.toString());
+                    }
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      (e.target as HTMLInputElement).blur();
+                    }
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                  className="w-14 text-center text-sm font-semibold rounded-lg border-0 outline-none"
+                  style={{
+                    background: 'rgba(255,255,255,0.15)',
+                    color: '#f0ead9',
+                    backdropFilter: 'blur(4px)',
+                    padding: '4px 2px',
+                  }}
+                />
+                <span className="text-xs" style={{ color: 'rgba(240, 234, 217, 0.7)' }}>/ {TOTAL_PAGES}</span>
               </div>
             </div>
           </motion.div>
