@@ -1,40 +1,189 @@
+import { useState, useCallback } from 'react';
 import { AppLayout } from '@/components/layout/AppLayout';
-import { BookOpen } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import HifzConfig from '@/components/hifz/HifzConfig';
+import HifzStep0Intention from '@/components/hifz/HifzStep0Intention';
+import HifzStep1Revision from '@/components/hifz/HifzStep1Revision';
+import HifzStep2Impregnation from '@/components/hifz/HifzStep2Impregnation';
+import HifzStep3Memorisation from '@/components/hifz/HifzStep3Memorisation';
+import HifzStep4Validation from '@/components/hifz/HifzStep4Validation';
+import HifzStep5Liaison from '@/components/hifz/HifzStep5Liaison';
+import HifzStep6Tour from '@/components/hifz/HifzStep6Tour';
+import HifzSuccess from '@/components/hifz/HifzSuccess';
+
+interface HifzSession {
+  surahNumber: number;
+  startVerse: number;
+  endVerse: number;
+  repetitionLevel: number;
+}
 
 export default function HifzPage() {
-  return (
-    <AppLayout title="Espace Hifz" hideNav>
-      <div className="min-h-[70vh] flex flex-col items-center justify-center px-4">
+  const { user } = useAuth();
+  const [step, setStep] = useState<number>(-1); // -1 = config
+  const [session, setSession] = useState<HifzSession | null>(null);
+  const [sessionId, setSessionId] = useState<string | null>(null);
+
+  const startSession = useCallback(async (config: HifzSession) => {
+    setSession(config);
+
+    if (user) {
+      const { data } = await supabase.from('hifz_sessions').insert({
+        user_id: user.id,
+        surah_number: config.surahNumber,
+        start_verse: config.startVerse,
+        end_verse: config.endVerse,
+        repetition_level: config.repetitionLevel,
+        current_step: 0,
+      }).select('id').single();
+
+      if (data) setSessionId(data.id);
+    }
+
+    setStep(0);
+  }, [user]);
+
+  const updateStep = useCallback(async (newStep: number) => {
+    setStep(newStep);
+    if (sessionId && user) {
+      await supabase.from('hifz_sessions').update({
+        current_step: newStep,
+        step_status: { [`step_${newStep}`]: 'in_progress' },
+      }).eq('id', sessionId);
+    }
+  }, [sessionId, user]);
+
+  const completeSession = useCallback(async (difficulty: string) => {
+    if (sessionId && user) {
+      // Mark session complete
+      await supabase.from('hifz_sessions').update({
+        current_step: 6,
+        completed_at: new Date().toISOString(),
+      }).eq('id', sessionId);
+
+      // Save memorized verses
+      if (session) {
+        await supabase.from('hifz_memorized_verses').upsert({
+          user_id: user.id,
+          surah_number: session.surahNumber,
+          verse_start: session.startVerse,
+          verse_end: session.endVerse,
+          memorized_at: new Date().toISOString(),
+          next_review_date: new Date(Date.now() + 86400000).toISOString().split('T')[0],
+        }, { onConflict: 'user_id,surah_number,verse_start,verse_end' });
+      }
+
+      // Update streak
+      const today = new Date().toISOString().split('T')[0];
+      const { data: streak } = await supabase.from('hifz_streaks')
+        .select('*').eq('user_id', user.id).maybeSingle();
+
+      if (streak) {
+        const lastDate = streak.last_active_date;
+        const isConsecutive = lastDate && (
+          new Date(today).getTime() - new Date(lastDate).getTime() <= 86400000
+        );
+        await supabase.from('hifz_streaks').update({
+          current_streak: isConsecutive ? streak.current_streak + 1 : 1,
+          longest_streak: Math.max(streak.longest_streak, isConsecutive ? streak.current_streak + 1 : 1),
+          last_active_date: today,
+        }).eq('id', streak.id);
+      } else {
+        await supabase.from('hifz_streaks').insert({
+          user_id: user.id,
+          current_streak: 1,
+          longest_streak: 1,
+          last_active_date: today,
+        });
+      }
+    }
+    setStep(7); // success screen
+  }, [sessionId, user, session]);
+
+  if (!session || step === -1) {
+    return (
+      <AppLayout title="Espace Hifz" hideNav>
         <div
-          className="w-full max-w-md rounded-[2rem] p-8 text-center"
+          className="min-h-[80vh] rounded-[2rem] p-6 mx-[-4px]"
           style={{
             background: 'linear-gradient(135deg, #0d7377 0%, #14919b 50%, #0d7377 100%)',
             border: '2px solid rgba(212,175,55,0.4)',
-            boxShadow: '0 8px 32px -8px rgba(13,115,119,0.4), inset 0 0 30px rgba(212,175,55,0.06)',
+            boxShadow: '0 8px 32px -8px rgba(13,115,119,0.4)',
           }}
         >
-          <div
-            className="w-20 h-20 rounded-2xl mx-auto mb-6 flex items-center justify-center"
-            style={{
-              background: 'linear-gradient(135deg, rgba(212,175,55,0.25), rgba(212,175,55,0.1))',
-              border: '1px solid rgba(212,175,55,0.3)',
-            }}
-          >
-            <BookOpen className="h-10 w-10" style={{ color: '#d4af37' }} />
-          </div>
-          <h1
-            className="text-2xl font-bold tracking-[0.1em] uppercase mb-3"
-            style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#d4af37' }}
-          >
-            Espace Hifz
-          </h1>
-          <p className="text-white/80 text-base leading-relaxed">
-            Mémorise le Noble Coran pas à pas, avec une méthode guidée alliant tradition et sciences cognitives.
-          </p>
-          <p className="text-white/50 text-sm mt-6">
-            Module en cours de construction in shaa Allah
-          </p>
+          <HifzConfig onStart={startSession} />
         </div>
+      </AppLayout>
+    );
+  }
+
+  return (
+    <AppLayout title="Espace Hifz" hideNav>
+      <div
+        className="min-h-[80vh] rounded-[2rem] p-6 mx-[-4px]"
+        style={{
+          background: 'linear-gradient(135deg, #0d7377 0%, #14919b 50%, #0d7377 100%)',
+          border: '2px solid rgba(212,175,55,0.4)',
+          boxShadow: '0 8px 32px -8px rgba(13,115,119,0.4)',
+        }}
+      >
+        {step === 0 && (
+          <HifzStep0Intention
+            surahNumber={session.surahNumber}
+            startVerse={session.startVerse}
+            endVerse={session.endVerse}
+            onNext={() => updateStep(1)}
+            onBack={() => setStep(-1)}
+          />
+        )}
+        {step === 1 && (
+          <HifzStep1Revision
+            onNext={() => updateStep(2)}
+            onBack={() => setStep(0)}
+          />
+        )}
+        {step === 2 && (
+          <HifzStep2Impregnation
+            surahNumber={session.surahNumber}
+            startVerse={session.startVerse}
+            endVerse={session.endVerse}
+            onNext={() => updateStep(3)}
+            onBack={() => setStep(1)}
+          />
+        )}
+        {step === 3 && (
+          <HifzStep3Memorisation
+            surahNumber={session.surahNumber}
+            startVerse={session.startVerse}
+            endVerse={session.endVerse}
+            repetitionLevel={session.repetitionLevel}
+            onNext={() => updateStep(4)}
+            onBack={() => setStep(2)}
+          />
+        )}
+        {step === 4 && (
+          <HifzStep4Validation
+            surahNumber={session.surahNumber}
+            startVerse={session.startVerse}
+            endVerse={session.endVerse}
+            onNext={() => updateStep(5)}
+            onBack={() => setStep(3)}
+          />
+        )}
+        {step === 5 && (
+          <HifzStep5Liaison
+            onNext={() => updateStep(6)}
+            onBack={() => setStep(4)}
+          />
+        )}
+        {step === 6 && (
+          <HifzStep6Tour
+            onComplete={completeSession}
+            onBack={() => setStep(5)}
+          />
+        )}
+        {step === 7 && <HifzSuccess />}
       </div>
     </AppLayout>
   );
