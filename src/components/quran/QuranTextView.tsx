@@ -54,8 +54,7 @@ function renderTajweed(text: string, darkMode: boolean): React.ReactNode[] {
 }
 
 function VerseCircle({ number, size }: { number: number; size: number }) {
-  const isMultipleOf5 = number % 5 === 0;
-  const bg = isMultipleOf5 ? '#D50000' : '#2E7D32';
+  const bg = '#2E7D32';
   const circleSize = Math.max(size, 16);
 
   return (
