@@ -127,8 +127,8 @@ export default function VerseTranslationDrawer({ verseKey, allVerses, onClose, o
           transition={{ type: 'spring', damping: 28, stiffness: 300 }}
           className="fixed bottom-0 left-0 right-0 z-40 rounded-t-2xl shadow-2xl"
           style={{
-            background: '#faf8f2',
-            borderTop: '1px solid rgba(122,139,111,0.15)',
+            background: '#f5e6c8',
+            borderTop: '1px solid rgba(181,148,46,0.25)',
             maxHeight: '55vh',
           }}
           onTouchStart={(e) => e.stopPropagation()}
@@ -137,7 +137,7 @@ export default function VerseTranslationDrawer({ verseKey, allVerses, onClose, o
         >
           {/* Handle */}
           <div className="flex justify-center pt-2 pb-1">
-            <div className="w-10 h-1 rounded-full" style={{ background: 'rgba(122,139,111,0.25)' }} />
+            <div className="w-10 h-1 rounded-full" style={{ background: 'rgba(181,148,46,0.35)' }} />
           </div>
 
           {/* Header */}
@@ -147,18 +147,18 @@ export default function VerseTranslationDrawer({ verseKey, allVerses, onClose, o
                 onClick={handlePrev}
                 disabled={!canPrev}
                 className="w-7 h-7 rounded-full flex items-center justify-center disabled:opacity-25"
-                style={{ color: '#5e6e54' }}
+                style={{ color: '#1a1a1a' }}
               >
                 <ChevronRight className="h-4 w-4" />
               </button>
-              <span className="text-sm font-semibold" style={{ color: '#2d3a25' }}>
+              <span className="text-sm font-semibold" style={{ color: '#1a1a1a' }}>
                 {verseKey && `Verset ${verseKey.replace(':', ' : ')}`}
               </span>
               <button
                 onClick={handleNext}
                 disabled={!canNext}
                 className="w-7 h-7 rounded-full flex items-center justify-center disabled:opacity-25"
-                style={{ color: '#5e6e54' }}
+                style={{ color: '#1a1a1a' }}
               >
                 <ChevronLeft className="h-4 w-4" />
               </button>
@@ -169,8 +169,8 @@ export default function VerseTranslationDrawer({ verseKey, allVerses, onClose, o
                 onClick={playVerse}
                 className="w-8 h-8 rounded-full flex items-center justify-center transition-colors"
                 style={{
-                  background: audioPlaying ? '#7a8b6f' : 'rgba(122,139,111,0.15)',
-                  color: audioPlaying ? '#faf8f2' : '#5e6e54',
+                  background: audioPlaying ? '#b5942e' : 'rgba(181,148,46,0.15)',
+                  color: audioPlaying ? '#fff' : '#1a1a1a',
                 }}
               >
                 {audioLoading ? (
@@ -184,7 +184,7 @@ export default function VerseTranslationDrawer({ verseKey, allVerses, onClose, o
               <button
                 onClick={onClose}
                 className="w-7 h-7 rounded-full flex items-center justify-center"
-                style={{ color: '#5e6e54' }}
+                style={{ color: '#1a1a1a' }}
               >
                 <X className="h-4 w-4" />
               </button>
@@ -208,13 +208,13 @@ export default function VerseTranslationDrawer({ verseKey, allVerses, onClose, o
                 {/* Arabic */}
                 <p
                   className="text-right leading-loose mb-4 font-arabic"
-                  style={{ fontSize: '24px', color: '#2d3a25', fontFamily: "'Scheherazade New', 'Amiri', serif" }}
+                  style={{ fontSize: '24px', color: '#1a1a1a', fontFamily: "'Scheherazade New', 'Amiri', serif" }}
                   dir="rtl"
                 >
                   {data.arabic}
                 </p>
                 {/* Translation */}
-                <p className="text-sm leading-relaxed" style={{ color: '#5e6e54' }}>
+                <p className="text-sm leading-relaxed" style={{ color: '#2a2a2a' }}>
                   {data.translation}
                 </p>
               </>
