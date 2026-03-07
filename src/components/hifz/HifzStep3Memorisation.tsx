@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { BookOpen, Check, Play, Pause } from 'lucide-react';
+import { BookOpen, Check, Play, Pause, Eye, EyeOff } from 'lucide-react';
 import HifzStepWrapper from './HifzStepWrapper';
+import { SURAHS } from '@/lib/surahData';
 
 interface Props {
   surahNumber: number;
@@ -12,13 +14,41 @@ interface Props {
   onBack: () => void;
 }
 
+// Persist ancrage to avoid losing progress
+function getStorageKey(surah: number, start: number, end: number) {
+  return `hifz_ancrage_${surah}_${start}_${end}`;
+}
+
 export default function HifzStep3Memorisation({ surahNumber, startVerse, endVerse, repetitionLevel, onNext, onBack }: Props) {
-  const [ancrage, setAncrage] = useState(0);
+  const navigate = useNavigate();
+  const storageKey = getStorageKey(surahNumber, startVerse, endVerse);
+
+  const [ancrage, setAncrage] = useState(() => {
+    const saved = localStorage.getItem(storageKey);
+    return saved ? Math.min(parseInt(saved, 10) || 0, repetitionLevel) : 0;
+  });
   const [isPlaying, setIsPlaying] = useState(false);
+  const [showMushaf, setShowMushaf] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const ayahsRef = useRef<{ audio: string }[]>([]);
   const indexRef = useRef(0);
   const reciter = localStorage.getItem('quran_reciter') || 'ar.alafasy';
+
+  // Mushaf image
+  const mushafPage = SURAHS.find(s => s.number === surahNumber)?.startPage ?? 1;
+  const mushafImageUrl = `https://cdn.jsdelivr.net/gh/QuranHub/quran-pages-images@main/easyquran.com/hafs-tajweed/${mushafPage}.jpg`;
+
+  // Persist ancrage
+  useEffect(() => {
+    localStorage.setItem(storageKey, String(ancrage));
+  }, [ancrage, storageKey]);
+
+  // Clear persisted ancrage when completed
+  useEffect(() => {
+    if (ancrage >= repetitionLevel) {
+      localStorage.removeItem(storageKey);
+    }
+  }, [ancrage, repetitionLevel, storageKey]);
 
   useEffect(() => {
     const fetchAyahs = async () => {
@@ -64,11 +94,16 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
     return () => { audioRef.current?.pause(); };
   }, []);
 
+  const openInMushaf = () => {
+    localStorage.setItem('quran_reader_page', String(mushafPage));
+    navigate('/quran-reader');
+  };
+
   const progress = Math.min((ancrage / repetitionLevel) * 100, 100);
 
   return (
     <HifzStepWrapper stepNumber={3} stepTitle="Mémorisation Active" onBack={onBack}>
-      <div className="text-center space-y-6">
+      <div className="text-center space-y-5">
         <div
           className="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center"
           style={{ background: 'rgba(212,175,55,0.2)', border: '1px solid rgba(212,175,55,0.3)' }}
@@ -99,6 +134,47 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
           </div>
         </div>
         <p className="text-white/50 text-xs uppercase tracking-wider">Ancrage {ancrage}/{repetitionLevel}</p>
+
+        {/* Mushaf toggle + image */}
+        <div className="relative">
+          <button
+            onClick={() => setShowMushaf(!showMushaf)}
+            className="flex items-center justify-center gap-2 mx-auto px-4 py-2 rounded-xl text-sm font-medium transition-all active:scale-95 mb-3"
+            style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(212,175,55,0.2)', color: '#d4af37' }}
+          >
+            {showMushaf ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            {showMushaf ? 'Masquer le passage' : 'Voir le passage'}
+          </button>
+
+          {showMushaf && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="space-y-3"
+            >
+              <div
+                className="max-h-56 overflow-auto w-full rounded-xl"
+                style={{ border: '1px solid rgba(212,175,55,0.25)' }}
+              >
+                <img
+                  src={mushafImageUrl}
+                  alt={`Page ${mushafPage} du Mushaf`}
+                  className="w-full h-auto"
+                  loading="eager"
+                />
+              </div>
+              <button
+                onClick={openInMushaf}
+                className="flex items-center justify-center gap-2 mx-auto px-4 py-2 rounded-xl text-sm font-medium transition-all active:scale-95"
+                style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(212,175,55,0.2)', color: '#d4af37' }}
+              >
+                <BookOpen className="h-4 w-4" />
+                Ouvrir dans le Mushaf
+              </button>
+            </motion.div>
+          )}
+        </div>
 
         {/* Play button */}
         <motion.button
