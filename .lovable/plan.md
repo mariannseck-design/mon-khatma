@@ -1,26 +1,21 @@
 
 
-# Corrections du mode texte Coran
+# Diagnostic : 404 sur /quran-reader
 
-## Analyse des images de référence
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-Les images de référence montrent un Mushaf avec :
-- **Numéros de versets** dans des cercles/médaillons **tous verts** (pas de rouge pour les multiples de 5)
-- Texte arabe dense avec justification complète
-- Style classique épuré
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-## Changement unique
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-### `src/components/quran/QuranTextView.tsx` — VerseCircle (lignes 57-58)
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-Supprimer la condition `isMultipleOf5` et fixer la couleur de fond à `#2E7D32` (vert) pour tous les numéros de versets sans exception.
-
-```typescript
-// Avant
-const isMultipleOf5 = number % 5 === 0;
-const bg = isMultipleOf5 ? '#D50000' : '#2E7D32';
-
-// Après
-const bg = '#2E7D32';
-```
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
