@@ -272,6 +272,7 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 28, dark
             <div
               style={{
                 textAlign: 'justify',
+                textAlignLast: 'center',
                 direction: 'rtl',
                 fontSize: `${computedFontSize}px`,
                 lineHeight: `${lineHeight}px`,
