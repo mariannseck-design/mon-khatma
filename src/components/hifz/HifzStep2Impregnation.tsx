@@ -15,6 +15,7 @@ interface Props {
 
 const MUSHAF_ZOOM_LEVELS = ['Petit', 'Moyen', 'Grand'] as const;
 const MUSHAF_SCALES = [1, 1.5, 2.2];
+const MUSHAF_CONTAINER_HEIGHTS = ['max-h-48', 'max-h-72', 'max-h-[500px]'];
 
 export default function HifzStep2Impregnation({ surahNumber, startVerse, endVerse, onNext, onBack }: Props) {
   const storageKey = `hifz_listen_${surahNumber}_${startVerse}_${endVerse}`;
@@ -129,13 +130,13 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
             </button>
           </div>
           <div
-            className="max-h-72 overflow-auto w-full rounded-xl transition-all duration-300"
+            className={`${MUSHAF_CONTAINER_HEIGHTS[mushafZoom]} overflow-auto w-full rounded-xl transition-all duration-300`}
             style={{ border: '1px solid rgba(212,175,55,0.25)' }}
           >
             <img
               src={mushafImageUrl}
               alt={`Page ${mushafPage} du Mushaf`}
-              className="h-auto origin-top-left transition-transform duration-300"
+              className="h-auto origin-top-left transition-all duration-300"
               style={{ width: `${MUSHAF_SCALES[mushafZoom] * 100}%` }}
               loading="eager"
             />
