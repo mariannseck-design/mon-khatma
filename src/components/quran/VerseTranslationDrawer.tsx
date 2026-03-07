@@ -148,6 +148,7 @@ export default function VerseTranslationDrawer({ verseKey, allVerses, onClose, o
     setFavLoading(false);
   };
 
+  const currentIdx = allVerses.findIndex(v => v.verseKey === verseKey);
   const canPrev = currentIdx > 0;
   const canNext = currentIdx < allVerses.length - 1;
 
