@@ -14,6 +14,7 @@ import { DailyReminderBanner } from '@/components/notifications/DailyReminderBan
 import RamadanWeeklyReport from '@/components/ramadan/RamadanWeeklyReport';
 import DefiAlMulk from '@/components/defis/DefiAlMulk';
 import DefiAlBaqara from '@/components/defis/DefiAlBaqara';
+import DefisCommunityCounter from '@/components/defis/DefisCommunityCounter';
 import { useDailyNotification } from '@/hooks/useDailyNotification';
 import { usePushSubscription } from '@/hooks/usePushSubscription';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
