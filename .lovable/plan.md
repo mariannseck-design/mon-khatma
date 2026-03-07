@@ -1,21 +1,34 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+# Refonte du rendu texte Coran — Espacement Mushaf Uthmani/Madani + Layout épuré
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+## Analyse de l'espacement actuel vs souhaité
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+| Paramètre | Actuel | Souhaité (référence) |
+|-----------|--------|---------------------|
+| `lineHeight` | `fontSize × 2.3` (très aéré) | `fontSize × 1.6–1.7` (plus compact, style Mushaf imprimé) |
+| `wordSpacing` | `3px` (serré) | `6–8px` (mots plus espacés horizontalement) |
+| `letterSpacing` | aucun | `0.02–0.04em` (légère aération entre les lettres) |
+| Disposition | Paragraphe continu (`<span>` inline) | Verset par ligne (`display: block`) |
+| Numéros versets | ﴿n﴾ en olive, petits | Cercles colorés (vert / rouge multiples de 5) |
+| En-tête sourate | Nom arabe seul | Numéro cercle + nom arabe + nom français |
+| Basmala | 1.2× taille, vert olive | 1.3× taille, vert foncé, espacement plus généreux |
+| Police | KFGQPC Uthmanic Script HAFS (déjà correcte) | Idem — confirmé |
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+## Changements techniques
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+### `src/components/quran/QuranTextView.tsx`
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+1. **Interligne** : Réduire le multiplicateur de `2.3` à `1.65` pour un rendu plus compact, fidèle au Mushaf imprimé
+2. **Espacement des mots** : Augmenter `wordSpacing` de `3px` à `7px` pour aérer horizontalement
+3. **Espacement des lettres** : Ajouter `letterSpacing: '0.03em'`
+4. **Layout verset par ligne** : Chaque verset dans un `div` block centré au lieu de `span` inline dans un `<p>` justifié
+5. **Numéros de versets** : Cercles inline colorés (~18px), fond vert `#2E7D32` par défaut, rouge `#D50000` pour multiples de 5, chiffre blanc
+6. **En-tête sourate** : Cercle vert avec numéro + nom arabe + nom français
+7. **Basmala** : Facteur 1.3×, vert foncé `#2d5a2d`, `letterSpacing: '0.05em'`
+8. **Conserver** : API `quran-tajweed`, `renderTajweed()`, `TAJWEED_COLORS`, interactions de sélection
+
+### `src/lib/surahData.ts`
+
+- Ajouter un champ `nameFr` (nom français) aux 114 sourates pour l'en-tête (ex: "La Vache", "La Famille d'Imran"...)
 
