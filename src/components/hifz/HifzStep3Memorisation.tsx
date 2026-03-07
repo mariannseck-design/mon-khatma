@@ -119,21 +119,13 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
     audio.play().catch(() => setIsPlaying(false));
   }, []);
 
-  const togglePlay = () => {
+  const toggleAudioHelp = () => {
     if (isPlaying) {
       audioRef.current?.pause();
       setIsPlaying(false);
-    } else {
+    } else if (ayahsRef.current.length > 0) {
       setIsPlaying(true);
       playNextAyah(0);
-    }
-  };
-
-  const playOneAyahForCheck = () => {
-    if (ayahsRef.current.length > 0) {
-      const audio = new Audio(ayahsRef.current[0].audio);
-      audioRef.current = audio;
-      audio.play().catch(() => {});
     }
   };
 
