@@ -12,6 +12,8 @@ import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
 import { DailyReminderBanner } from '@/components/notifications/DailyReminderBanner';
 import RamadanWeeklyReport from '@/components/ramadan/RamadanWeeklyReport';
+import DefiAlMulk from '@/components/defis/DefiAlMulk';
+import DefiAlBaqara from '@/components/defis/DefiAlBaqara';
 import { useDailyNotification } from '@/hooks/useDailyNotification';
 import { usePushSubscription } from '@/hooks/usePushSubscription';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
