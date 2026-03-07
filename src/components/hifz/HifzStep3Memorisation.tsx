@@ -154,7 +154,7 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
   };
 
   useEffect(() => {
-    return () => { audioRef.current?.pause(); };
+    return () => { isPlayingRef.current = false; audioRef.current?.pause(); };
   }, []);
 
   const openInMushaf = () => {
