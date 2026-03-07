@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
+import { SURAHS } from '@/lib/surahData';
 
 interface Ayah {
   number: number;
@@ -18,27 +19,11 @@ const FONT_FAMILY = "'KFGQPC Uthmanic Script HAFS', 'Amiri Quran', 'Amiri', 'Sch
 
 // Tajweed color map based on Al-Quran.cloud tajweed codes
 const TAJWEED_COLORS: Record<string, string> = {
-  // GRIS — lettres muettes
-  h: '#AAAAAA',   // Hamzat ul Wasl
-  s: '#AAAAAA',   // Silent
-  l: '#AAAAAA',   // Lam Shamsiyyah
-  d: '#AAAAAA',   // Idgham Mutajanisayn
-  b: '#AAAAAA',   // Idgham Mutaqaribayn
-  // ROUGE — Madd (prolongations)
-  n: '#D50000',   // Madd Normal
-  p: '#D50000',   // Madd Permissible
-  m: '#D50000',   // Madd Necessary
-  o: '#D50000',   // Madd Obligatory
-  // BLEU — Qalqalah (vibrations)
+  h: '#AAAAAA', s: '#AAAAAA', l: '#AAAAAA', d: '#AAAAAA', b: '#AAAAAA',
+  n: '#D50000', p: '#D50000', m: '#D50000', o: '#D50000',
   q: '#1565C0',
-  // VERT — nasalisations (Ghunna, Ikhfa, Idgham)
-  c: '#2E7D32',   // Ikhfa Shafawi
-  f: '#2E7D32',   // Ikhfa
-  w: '#2E7D32',   // Idgham Shafawi
-  i: '#2E7D32',   // Iqlab
-  a: '#2E7D32',   // Idgham avec Ghunnah
-  u: '#2E7D32',   // Idgham sans Ghunnah
-  g: '#2E7D32',   // Ghunnah
+  c: '#2E7D32', f: '#2E7D32', w: '#2E7D32', i: '#2E7D32',
+  a: '#2E7D32', u: '#2E7D32', g: '#2E7D32',
 };
 
 function renderTajweed(text: string, darkMode: boolean): React.ReactNode[] {
@@ -68,7 +53,90 @@ function renderTajweed(text: string, darkMode: boolean): React.ReactNode[] {
   return parts;
 }
 
-const LINES_PER_PAGE = 15;
+function VerseCircle({ number, size }: { number: number; size: number }) {
+  const isMultipleOf5 = number % 5 === 0;
+  const bg = isMultipleOf5 ? '#D50000' : '#2E7D32';
+  const circleSize = Math.max(size, 16);
+
+  return (
+    <span
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: `${circleSize}px`,
+        height: `${circleSize}px`,
+        borderRadius: '50%',
+        backgroundColor: bg,
+        color: '#ffffff',
+        fontSize: `${Math.max(circleSize * 0.5, 9)}px`,
+        fontFamily: 'system-ui, sans-serif',
+        fontWeight: 700,
+        lineHeight: 1,
+        verticalAlign: 'middle',
+        marginRight: '4px',
+        marginLeft: '4px',
+        userSelect: 'none',
+        flexShrink: 0,
+      }}
+    >
+      {number}
+    </span>
+  );
+}
+
+function SurahHeader({ surahNumber, surahName, darkMode }: { surahNumber: number; surahName: string; darkMode: boolean }) {
+  const surahData = SURAHS.find(s => s.number === surahNumber);
+  const nameFr = surahData?.nameFr || '';
+
+  return (
+    <div className="text-center mb-3 mt-1">
+      <div className="flex items-center justify-center gap-3 mb-1">
+        <span
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '28px',
+            height: '28px',
+            borderRadius: '50%',
+            backgroundColor: '#2E7D32',
+            color: '#ffffff',
+            fontSize: '12px',
+            fontFamily: 'system-ui, sans-serif',
+            fontWeight: 700,
+          }}
+        >
+          {surahNumber}
+        </span>
+        <h3
+          style={{
+            fontFamily: FONT_FAMILY,
+            color: darkMode ? '#d4c9a8' : '#2d3a25',
+            fontSize: '18px',
+            fontWeight: 'bold',
+            letterSpacing: '0.02em',
+          }}
+        >
+          {surahName}
+        </h3>
+      </div>
+      {nameFr && (
+        <p
+          style={{
+            color: darkMode ? '#8a9a7a' : '#6b7c5e',
+            fontSize: '12px',
+            fontFamily: 'system-ui, sans-serif',
+            fontWeight: 500,
+            letterSpacing: '0.05em',
+          }}
+        >
+          {nameFr}
+        </p>
+      )}
+    </div>
+  );
+}
 
 export default function QuranTextView({ page, highlightAyah, fontSize = 28, darkMode = false }: QuranTextViewProps) {
   const [ayahs, setAyahs] = useState<Ayah[]>([]);
@@ -78,8 +146,8 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 28, dark
   const containerRef = useRef<HTMLDivElement>(null);
 
   const computedFontSize = fontSize;
-
-  const lineHeight = Math.round(computedFontSize * 2.3);
+  const lineHeight = Math.round(computedFontSize * 1.65);
+  const circleSize = Math.round(computedFontSize * 0.65);
 
   useEffect(() => {
     setLoading(true);
@@ -129,7 +197,6 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 28, dark
   }
 
   const activeAyah = selectedAyah ?? highlightAyah ?? null;
-  const ayahNumberSize = Math.max(computedFontSize * 0.5, 12);
   const textColor = darkMode ? '#d4c9a8' : '#1a1a1a';
   const bgColor = darkMode ? '#1a2e1a' : '#ffffff';
 
@@ -145,63 +212,46 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 28, dark
         touchAction: 'pan-y',
       }}
     >
-      {/* Fixed 15-line page container */}
       <div
-        className={`flex-1 flex flex-col px-5 py-3 pb-16 ${page <= 2 ? 'justify-center items-center' : 'justify-between'}`}
-        style={{
-          minHeight: 0,
-        }}
+        className={`flex-1 flex flex-col px-5 py-3 pb-16 ${page <= 2 ? 'justify-center items-center' : ''}`}
+        style={{ minHeight: 0 }}
       >
         {grouped.map((group) => (
           <div key={`${group.surahNumber}-${page}`} className="last:mb-0">
             {/* Surah header */}
             {group.ayahs[0].numberInSurah === 1 && (
-              <div className="text-center mb-2">
-                <div
-                  className="inline-block px-6 py-1.5 rounded-xl mx-auto"
-                  style={{ background: darkMode ? 'rgba(122,139,111,0.2)' : 'transparent', border: 'none' }}
-                >
-                  <h3
-                    className="text-base font-bold"
-                    style={{ fontFamily: FONT_FAMILY, color: darkMode ? '#d4c9a8' : '#2d3a25', letterSpacing: '0.02em' }}
-                  >
-                    {group.surahName}
-                  </h3>
-                </div>
+              <>
+                <SurahHeader
+                  surahNumber={group.surahNumber}
+                  surahName={group.surahName}
+                  darkMode={darkMode}
+                />
                 {group.surahNumber !== 1 && group.surahNumber !== 9 && (
                   <p
-                    className="mt-2 mb-1"
+                    className="text-center mb-3"
                     style={{
                       fontFamily: FONT_FAMILY,
-                      color: darkMode ? '#8a9a7a' : '#5e6e54',
-                      fontSize: `${Math.round(computedFontSize * 1.2)}px`,
-                      lineHeight: `${lineHeight}px`,
+                      color: darkMode ? '#6a9a6a' : '#2d5a2d',
+                      fontSize: `${Math.round(computedFontSize * 1.3)}px`,
+                      lineHeight: `${Math.round(lineHeight * 1.3)}px`,
                       fontWeight: 'bold',
+                      letterSpacing: '0.05em',
                     }}
                   >
                     بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
                   </p>
                 )}
-              </div>
+              </>
             )}
 
-            {/* Ayahs as flowing text with tajweed */}
-            <p
-              className={page <= 2 ? 'text-center' : 'text-justify'}
-              style={{
-                fontSize: `${computedFontSize}px`,
-                lineHeight: `${lineHeight}px`,
-                color: textColor,
-                wordSpacing: '3px',
-                textAlignLast: page <= 2 ? 'center' : 'center',
-              }}
-            >
+            {/* Ayahs — verse by verse */}
+            <div className={page <= 2 ? 'text-center' : ''}>
               {group.ayahs.map((ayah) => {
                 const isActive = activeAyah === ayah.number;
                 const tajweedContent = renderTajweed(ayah.text, darkMode);
 
                 return (
-                  <span
+                  <div
                     key={ayah.number}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -209,30 +259,29 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 28, dark
                     }}
                     className="cursor-pointer transition-colors duration-200"
                     style={{
-                      background: isActive ? (darkMode ? 'rgba(122, 139, 111, 0.25)' : 'rgba(122, 139, 111, 0.12)') : 'transparent',
-                      borderRadius: isActive ? '3px' : '0',
-                      padding: isActive ? '1px 2px' : '0',
+                      display: 'block',
+                      textAlign: page <= 2 ? 'center' : 'justify',
+                      fontSize: `${computedFontSize}px`,
+                      lineHeight: `${lineHeight}px`,
+                      color: textColor,
+                      wordSpacing: '7px',
+                      letterSpacing: '0.03em',
+                      padding: '2px 4px',
+                      marginBottom: '2px',
+                      background: isActive
+                        ? (darkMode ? 'rgba(122, 139, 111, 0.25)' : 'rgba(122, 139, 111, 0.10)')
+                        : 'transparent',
+                      borderRadius: isActive ? '6px' : '0',
                       borderBottom: isActive ? '2px solid rgba(122, 139, 111, 0.4)' : '2px solid transparent',
                     }}
                   >
                     {tajweedContent}
                     {' '}
-                    <span
-                      style={{
-                        fontFamily: FONT_FAMILY,
-                        color: '#7a8b6f',
-                        fontSize: `${ayahNumberSize}px`,
-                        fontWeight: 'bold',
-                        userSelect: 'none',
-                      }}
-                    >
-                      ﴿{ayah.numberInSurah}﴾
-                    </span>
-                    {' '}
-                  </span>
+                    <VerseCircle number={ayah.numberInSurah} size={circleSize} />
+                  </div>
                 );
               })}
-            </p>
+            </div>
           </div>
         ))}
       </div>
