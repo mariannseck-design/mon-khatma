@@ -459,6 +459,20 @@ export default function AccueilPage() {
               </Link>
             </motion.div>
 
+            {/* ═══ NOS DÉFIS ═══ */}
+            <motion.div variants={itemVariants}>
+              <h3
+                className="text-sm font-bold tracking-[0.1em] uppercase mb-3 px-1"
+                style={{ fontFamily: "'Inter', sans-serif", color: COLORS.emerald }}
+              >
+                Nos Défis
+              </h3>
+              <div className="space-y-3">
+                <DefiAlMulk />
+                <DefiAlBaqara />
+              </div>
+            </motion.div>
+
             {/* Espace Communauté */}
             <motion.div variants={itemVariants}>
               <Link to="/cercle" className="block">
