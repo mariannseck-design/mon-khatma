@@ -31,17 +31,17 @@ function isSundayEvening() {
   return now.getDay() === 0 && now.getHours() >= 17;
 }
 
-export default function DefiAlMulk() {
+export default function DefiAlMulk({ disabled = false }: { disabled?: boolean }) {
   const { user } = useAuth();
   const weekKey = getWeekKey();
   const [days, setDays] = useState<boolean[]>(Array(7).fill(false));
   const [showCelebration, setShowCelebration] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(disabled ? false : true);
 
   // Load from DB
   useEffect(() => {
+    if (disabled) return;
     if (!user) {
-      // Fallback to localStorage for non-authenticated users
       const saved = localStorage.getItem(weekKey);
       setDays(saved ? JSON.parse(saved) : Array(7).fill(false));
       setLoading(false);
@@ -62,7 +62,7 @@ export default function DefiAlMulk() {
       setLoading(false);
     };
     load();
-  }, [user, weekKey]);
+  }, [user, weekKey, disabled]);
 
   const saveDays = useCallback(async (updated: boolean[]) => {
     if (!user) {
@@ -79,6 +79,7 @@ export default function DefiAlMulk() {
   }, [user, weekKey]);
 
   const toggleDay = (index: number) => {
+    if (disabled) return;
     const updated = [...days];
     updated[index] = !updated[index];
     setDays(updated);

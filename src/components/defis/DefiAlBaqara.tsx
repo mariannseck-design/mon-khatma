@@ -34,15 +34,16 @@ function getToday() {
   return new Date().toISOString().split('T')[0];
 }
 
-export default function DefiAlBaqara() {
+export default function DefiAlBaqara({ disabled = false }: { disabled?: boolean }) {
   const { user } = useAuth();
   const [challenge, setChallenge] = useState<ChallengeState | null>(null);
   const [selectedGoal, setSelectedGoal] = useState(48);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(disabled ? false : true);
   const [dbId, setDbId] = useState<string | null>(null);
 
   // Load from DB or localStorage
   useEffect(() => {
+    if (disabled) return;
     if (!user) {
       const saved = localStorage.getItem(STORAGE_KEY);
       setChallenge(saved ? JSON.parse(saved) : null);
@@ -70,7 +71,7 @@ export default function DefiAlBaqara() {
       setLoading(false);
     };
     load();
-  }, [user]);
+  }, [user, disabled]);
 
   const saveChallenge = useCallback(async (state: ChallengeState | null) => {
     if (!user) {
@@ -195,11 +196,12 @@ export default function DefiAlBaqara() {
           </div>
 
           <Button
-            onClick={startChallenge}
+            onClick={disabled ? undefined : startChallenge}
+            disabled={disabled}
             className="w-full rounded-xl font-bold"
-            style={{ background: COLORS.emerald, color: '#fff' }}
+            style={{ background: disabled ? `${COLORS.emerald}60` : COLORS.emerald, color: '#fff' }}
           >
-            Lancer le défi 🚀
+            {disabled ? 'Lancement après le Ramadan in shâ Allah 🌸' : 'Lancer le défi 🚀'}
           </Button>
         </div>
       </motion.div>
