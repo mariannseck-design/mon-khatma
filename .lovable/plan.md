@@ -1,21 +1,39 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Refonte de l'étape 3 — "Tikrar" avec objectif 40 et mode d'emploi par phases
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Vue d'ensemble
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+Transformer l'étape 3 (Mémorisation Active) en une expérience guidée "Tikrar" avec un objectif fixe de 40 répétitions, un mode d'emploi par phases (1-10, 11-15, 16+), un message de bienveillance, et une célébration finale.
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+### Modifications
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+**`src/components/hifz/HifzStep3Memorisation.tsx`** — Refonte complète :
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+1. **Titre et sous-titre** : Remplacer "Mémorisation Active" par "Tikrar" dans le stepTitle. Ajouter un sous-titre "L'ancrage d'acier (Objectif 40 répétitions)" sous l'icône.
+
+2. **Objectif fixe à 40** : Ignorer le `repetitionLevel` passé en props et utiliser 40 comme cible. Le bouton "Étape suivante" ne s'affiche en mode complet (gradient doré) qu'à 40/40. Le bouton "Passer quand même" reste disponible dès 1 répétition pour la flexibilité.
+
+3. **Mode d'emploi par phases** — Afficher dynamiquement une indication contextuelle selon la phase en cours :
+   - `ancrage 0-10` : "📖 Regardez le Mushaf et récitez avec le récitant" — Mushaf visible par défaut, audio activé
+   - `ancrage 11-15` : "📖 Regardez le Mushaf, récitez sans le récitant" — Mushaf visible, bouton Play masqué/désactivé
+   - `ancrage 16+` : "🧠 Récitez de mémoire, sans Mushaf ni audio" — Mushaf masqué automatiquement, Play désactivé
+
+   Cette indication apparaît dans une petite barre colorée sous le compteur circulaire.
+
+4. **Message de bienveillance** — Apparaît à partir de la 16ème répétition dans une bulle discrète en italique avec fond semi-transparent :
+   > « N'ayez aucune crainte si vous devez jeter un coup d'œil furtif au Mushaf après la 15ème répétition. Le cerveau apprend aussi par la correction. Ce n'est pas un échec, mais une étape vers la maîtrise parfaite. L'essentiel est la sincérité de votre effort pour plaire à Allah **<span style="font-family:'Amiri'">(عز وجل)</span>**, à l'image de la persévérance des Prophètes **<span style="font-family:'Amiri'">(عليهم السلام)</span>**. »
+
+5. **Aide ponctuelle (phase 16+)** — Même si le Mushaf est masqué automatiquement, conserver le bouton "Voir le passage" pour un coup d'œil rapide. Conserver aussi un petit bouton haut-parleur discret pour une vérification audio ponctuelle.
+
+6. **Célébration à 40/40** — Quand `ancrage` atteint 40, afficher une animation de célébration inline (confettis dorés + message) :
+   > « Félicitations ! Votre ancrage Tikrar est terminé. Par la grâce d'Allah **<span style="font-family:'Amiri'">(عز وجل)</span>**, vous avez honoré ce dépôt sacré. »
+
+   Avec le bouton "Passer au test de validation" en gradient doré complet.
+
+7. **Honorifiques** : Mettre à jour le texte existant pour utiliser les honorifiques corrects en arabe (Amiri, gras, 1.1em) conformément aux règles du projet.
+
+### Fichiers modifiés
+
+- `src/components/hifz/HifzStep3Memorisation.tsx` — Seul fichier modifié
 
