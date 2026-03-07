@@ -17,6 +17,7 @@ interface QuranTextViewProps {
 
 const FONT_FAMILY = "'KFGQPC Uthmanic Script HAFS', 'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
 
+const BASMALA_LEADING_PATTERN = /^[\s\u200E\u200F\u061C]*(?:﷽|ب[\s\S]{0,120}?(?:ٱلرَّحِيمِ|ٱلرَّحِیمِ|الرَّحِيمِ|الرَّحِیمِ|الرَّحِيمِ|الرَّحِیمِ|الرَّحِيْمِ|الرَّحِيْمِ))(?=[\s\u200E\u200F\u061C]|$)[\s\u200E\u200F\u061C]*/u;
 
 function VerseCircle({ number, size }: { number: number; size: number }) {
   const bg = '#2E7D32';
@@ -251,13 +252,8 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 28, dark
                 // Remove Basmala from verse 1 text for all surahs except Al-Fatiha (1) and At-Tawbah (9)
                 let displayText = ayah.text;
                 if (ayah.numberInSurah === 1 && group.surahNumber !== 1 && group.surahNumber !== 9) {
-                  // Remove all known Basmala variants (different Unicode forms)
-                  displayText = displayText
-                    .replace(/^بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ\s*/, '')
-                    .replace(/^بِسۡمِ ٱللَّهِ ٱلرَّحۡمَـٰنِ ٱلرَّحِیمِ\s*/, '')
-                    .replace(/^بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ\s*/, '')
-                    .replace(/^بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ\s*/, '')
-                    .replace(/^﷽\s*/, '');
+                  // Keep only the large green Basmala header; strip any leading Basmala variant from verse text
+                  displayText = displayText.replace(BASMALA_LEADING_PATTERN, '');
                 }
 
                 return (
