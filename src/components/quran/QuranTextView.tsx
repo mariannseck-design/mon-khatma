@@ -280,7 +280,7 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 28, dark
                 let displayText = ayah.text;
                 if (ayah.numberInSurah === 1 && group.surahNumber !== 1 && group.surahNumber !== 9) {
                   // Keep only the large green Basmala header; strip any leading Basmala variant from verse text
-                  displayText = displayText.replace(BASMALA_LEADING_PATTERN, '');
+                  displayText = stripLeadingBasmala(displayText);
                 }
 
                 return (
