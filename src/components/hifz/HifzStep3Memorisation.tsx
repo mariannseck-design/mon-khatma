@@ -362,33 +362,51 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
 
         {/* Audio controls — manual +1 for all phases + speaker for help */}
         {!isComplete && (
-          <div className="flex items-center justify-center gap-4">
-            <motion.button
-              whileTap={{ scale: 0.85 }}
-              onClick={() => {
-                setAncrage(prev => Math.min(prev + 1, TIKRAR_TARGET));
-                try { navigator?.vibrate?.(40); } catch {}
-              }}
-              className="w-20 h-20 rounded-full flex items-center justify-center"
-              style={{
-                background: 'rgba(212,175,55,0.15)',
-                border: '2px solid rgba(212,175,55,0.4)',
-              }}
-            >
-              <span className="text-2xl font-bold" style={{ color: '#d4af37' }}>+1</span>
-            </motion.button>
+          <div className="space-y-3">
+            <div className="flex items-center justify-center">
+              <motion.button
+                whileTap={{ scale: 0.85 }}
+                onClick={() => {
+                  setAncrage(prev => Math.min(prev + 1, TIKRAR_TARGET));
+                  try { navigator?.vibrate?.(40); } catch {}
+                }}
+                className="w-20 h-20 rounded-full flex items-center justify-center"
+                style={{
+                  background: 'rgba(212,175,55,0.15)',
+                  border: '2px solid rgba(212,175,55,0.4)',
+                }}
+              >
+                <span className="text-2xl font-bold" style={{ color: '#d4af37' }}>+1</span>
+              </motion.button>
 
-            <button
-              onClick={toggleAudioHelp}
-              className="w-12 h-12 rounded-full flex items-center justify-center transition-all active:scale-95"
-              style={{ 
-                background: isPlaying ? 'rgba(212,175,55,0.15)' : 'rgba(255,255,255,0.08)', 
-                border: isPlaying ? '1px solid rgba(212,175,55,0.4)' : '1px solid rgba(255,255,255,0.15)' 
-              }}
-              title={isPlaying ? 'Arrêter l\'audio' : 'Écouter le passage complet'}
-            >
-              <Volume2 className="h-5 w-5" style={{ color: isPlaying ? '#d4af37' : 'rgba(255,255,255,0.5)' }} />
-            </button>
+              {ancrage < 10 && (
+                <button
+                  onClick={toggleAudioHelp}
+                  className="w-12 h-12 rounded-full flex items-center justify-center transition-all active:scale-95 ml-4"
+                  style={{ 
+                    background: isPlaying ? 'rgba(212,175,55,0.15)' : 'rgba(255,255,255,0.08)', 
+                    border: isPlaying ? '1px solid rgba(212,175,55,0.4)' : '1px solid rgba(255,255,255,0.15)' 
+                  }}
+                  title={isPlaying ? 'Arrêter l\'audio' : 'Écouter le passage complet'}
+                >
+                  <Volume2 className="h-5 w-5" style={{ color: isPlaying ? '#d4af37' : 'rgba(255,255,255,0.5)' }} />
+                </button>
+              )}
+            </div>
+
+            {ancrage >= 10 && (
+              <button
+                onClick={toggleAudioHelp}
+                className="flex items-center justify-center gap-1.5 mx-auto px-3 py-1.5 rounded-lg text-xs transition-all active:scale-95"
+                style={{ color: 'rgba(255,255,255,0.3)' }}
+                title={isPlaying ? 'Arrêter l\'audio' : 'Aide audio (en cas de doute)'}
+              >
+                <Volume2 className="h-3 w-3" style={{ color: isPlaying ? '#d4af37' : 'rgba(255,255,255,0.3)' }} />
+                <span style={{ color: isPlaying ? '#d4af37' : undefined }}>
+                  {isPlaying ? 'Arrêter' : 'Aide audio'}
+                </span>
+              </button>
+            )}
           </div>
         )}
 
