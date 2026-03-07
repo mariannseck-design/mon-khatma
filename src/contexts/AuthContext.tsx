@@ -162,6 +162,7 @@ export function useAuth() {
       signUp: async () => ({ error: new Error('Auth not initialized') }),
       signIn: async () => ({ error: new Error('Auth not initialized') }),
       signOut: async () => {},
+      resendConfirmation: async () => ({ error: new Error('Auth not initialized') }),
     } as AuthContextType;
   }
   return context;
