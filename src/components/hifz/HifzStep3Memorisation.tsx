@@ -372,13 +372,13 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
               </button>
             </div>
             <div
-              className="max-h-72 overflow-auto w-full rounded-xl transition-all duration-300"
+              className={`${MUSHAF_CONTAINER_HEIGHTS[mushafZoom]} overflow-auto w-full rounded-xl transition-all duration-300`}
               style={{ border: '1px solid rgba(212,175,55,0.25)' }}
             >
               <img
                 src={mushafImageUrl}
                 alt={`Page ${mushafPage} du Mushaf`}
-                className="h-auto origin-top-left transition-transform duration-300"
+                className="h-auto origin-top-left transition-all duration-300"
                 style={{ width: `${MUSHAF_SCALES[mushafZoom] * 100}%` }}
                 loading="eager"
               />
