@@ -24,6 +24,7 @@ export default function HifzConfig({ onStart }: HifzConfigProps) {
   const [showSurahList, setShowSurahList] = useState(false);
 
   const selectedSurah = SURAHS.find(s => s.number === surahNumber);
+  const maxVerse = selectedSurah?.versesCount ?? 999;
 
   return (
     <div className="space-y-6">
@@ -75,7 +76,7 @@ export default function HifzConfig({ onStart }: HifzConfigProps) {
               onClick={() => {
                 setSurahNumber(s.number);
                 setStartVerse(1);
-                setEndVerse(Math.min(6, 286)); // will adjust
+                setEndVerse(Math.min(6, s.versesCount));
                 setShowSurahList(false);
               }}
             >
@@ -107,7 +108,7 @@ export default function HifzConfig({ onStart }: HifzConfigProps) {
               const val = e.target.value.replace(/\D/g, '');
               setStartVerse(val === '' ? 0 : parseInt(val));
             }}
-            onBlur={() => setStartVerse(prev => Math.max(1, prev))}
+            onBlur={() => setStartVerse(prev => Math.min(maxVerse, Math.max(1, prev)))}
             className="w-full bg-transparent text-white text-2xl font-bold outline-none text-center [appearance:textfield]"
             style={{ fontSize: '16px' }}
           />
@@ -131,7 +132,7 @@ export default function HifzConfig({ onStart }: HifzConfigProps) {
               const val = e.target.value.replace(/\D/g, '');
               setEndVerse(val === '' ? 0 : parseInt(val));
             }}
-            onBlur={() => setEndVerse(prev => Math.max(startVerse, prev || startVerse))}
+            onBlur={() => setEndVerse(prev => Math.min(maxVerse, Math.max(startVerse, prev || startVerse)))}
             className="w-full bg-transparent text-white text-2xl font-bold outline-none text-center [appearance:textfield]"
             style={{ fontSize: '16px' }}
           />
