@@ -132,7 +132,7 @@ export default function DefiAlMulk({ disabled = false }: { disabled?: boolean })
             </span>
           </div>
 
-          <div className="flex justify-between gap-1">
+          <div className={`flex justify-between gap-1 ${disabled ? 'opacity-50 pointer-events-none' : ''}`}>
             {DAYS.map((label, i) => {
               const isToday = i === getTodayIndex();
               const done = days[i];

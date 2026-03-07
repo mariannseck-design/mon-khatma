@@ -178,11 +178,11 @@ export default function DefiAlBaqara({ disabled = false }: { disabled?: boolean 
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-2 mb-4">
+          <div className={`grid grid-cols-2 gap-2 mb-4 ${disabled ? 'opacity-50 pointer-events-none' : ''}`}>
             {GOALS.map((g) => (
               <button
                 key={g.days}
-                onClick={() => setSelectedGoal(g.days)}
+                onClick={() => !disabled && setSelectedGoal(g.days)}
                 className="py-2.5 px-3 rounded-xl text-left transition-all"
                 style={{
                   background: selectedGoal === g.days ? `${COLORS.gold}20` : 'rgba(255,255,255,0.6)',
