@@ -26,6 +26,7 @@ const FONT_SIZE_PRESETS = [
   { label: 'Moyen', value: 22 },
   { label: 'Grand', value: 28 },
   { label: 'Très Grand', value: 36 },
+  { label: 'Mushaf', value: 42 },
 ];
 
 export default function ReaderSettingsPanel({
@@ -138,7 +139,7 @@ export default function ReaderSettingsPanel({
               {viewMode === 'text' && (
                 <div className="mb-4">
                   <p className="text-xs font-medium mb-2 opacity-70">Taille du texte</p>
-                  <div className="grid grid-cols-4 gap-1.5">
+                  <div className="grid grid-cols-5 gap-1.5">
                     {activeSizes.map((size, idx) => (
                       <button
                         key={size.label}
