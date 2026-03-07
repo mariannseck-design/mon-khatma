@@ -52,6 +52,7 @@ function getPhaseInfo(ancrage: number) {
 
 const MUSHAF_ZOOM_LEVELS = ['Petit', 'Moyen', 'Grand'] as const;
 const MUSHAF_SCALES = [1, 1.5, 2.2];
+const MUSHAF_CONTAINER_HEIGHTS = ['max-h-48', 'max-h-72', 'max-h-[500px]'];
 
 export default function HifzStep3Memorisation({ surahNumber, startVerse, endVerse, onNext, onBack }: Props) {
   const storageKey = getStorageKey(surahNumber, startVerse, endVerse);
