@@ -59,8 +59,14 @@ export default function AuthPage() {
           toast.success('Assalamu alaykum! Bienvenue 🌙');
         }
       } else {
-        if (!displayName.trim()) {
-          toast.error('Merci d\'entrer ton prénom');
+        const trimmedName = displayName.trim();
+        if (!trimmedName || trimmedName.length < 3) {
+          toast.error('Merci d\'entrer ton prénom (au moins 3 caractères)');
+          setLoading(false);
+          return;
+        }
+        if (/^[\d\W]+$/.test(trimmedName)) {
+          toast.error('Merci d\'entrer un vrai prénom');
           setLoading(false);
           return;
         }
@@ -161,16 +167,17 @@ export default function AuthPage() {
               <form onSubmit={handleSubmit} className="space-y-4">
                 {mode === 'signup' && (
                   <div className="space-y-2">
-                    <Label htmlFor="name" className="text-foreground">Prénom</Label>
+                    <Label htmlFor="name" className="text-foreground">Ton prénom</Label>
                     <div className="relative">
                       <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                       <Input
                         id="name"
                         type="text"
-                        placeholder="Ton prénom"
+                        placeholder="Ex: Fatima, Aïcha..."
                         value={displayName}
                         onChange={(e) => setDisplayName(e.target.value)}
                         required
+                        minLength={3}
                         className="pl-10 rounded-xl"
                       />
                     </div>
