@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Headphones, Check, Play, Pause, BookOpen } from 'lucide-react';
+import { Headphones, Check, Play, Pause, BookOpen, RotateCcw } from 'lucide-react';
 import HifzStepWrapper from './HifzStepWrapper';
 import { RECITERS } from '@/hooks/useQuranAudio';
 import { SURAHS } from '@/lib/surahData';
@@ -185,6 +185,17 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
         <p className="text-white/40 text-xs">
           Écoute {listenCount}/3{listenCount > 3 ? ` (${listenCount} au total)` : ''}
         </p>
+
+        {listenCount > 0 && (
+          <button
+            onClick={() => { setListenCount(0); localStorage.removeItem(storageKey); audioRef.current?.pause(); setIsPlaying(false); }}
+            className="flex items-center justify-center gap-1.5 mx-auto px-3 py-1.5 rounded-lg text-xs transition-all active:scale-95"
+            style={{ color: 'rgba(255,255,255,0.4)' }}
+          >
+            <RotateCcw className="h-3 w-3" />
+            Recommencer
+          </button>
+        )}
 
         {listenCount >= 3 && (
           <motion.button

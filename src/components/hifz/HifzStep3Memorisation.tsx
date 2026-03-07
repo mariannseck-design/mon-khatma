@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { BookOpen, Check, Play, Pause, Eye, EyeOff } from 'lucide-react';
+import { BookOpen, Check, Play, Pause, Eye, EyeOff, RotateCcw } from 'lucide-react';
 import HifzStepWrapper from './HifzStepWrapper';
 import { SURAHS } from '@/lib/surahData';
 
@@ -135,7 +135,17 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
         </div>
         <p className="text-white/50 text-xs uppercase tracking-wider">Ancrage {ancrage}/{repetitionLevel}</p>
 
-        {/* Mushaf toggle + image */}
+        {ancrage > 0 && ancrage < repetitionLevel && (
+          <button
+            onClick={() => { setAncrage(0); localStorage.removeItem(storageKey); audioRef.current?.pause(); setIsPlaying(false); }}
+            className="flex items-center justify-center gap-1.5 mx-auto px-3 py-1.5 rounded-lg text-xs transition-all active:scale-95"
+            style={{ color: 'rgba(255,255,255,0.4)' }}
+          >
+            <RotateCcw className="h-3 w-3" />
+            Recommencer
+          </button>
+        )}
+
         <div className="relative">
           <button
             onClick={() => setShowMushaf(!showMushaf)}
