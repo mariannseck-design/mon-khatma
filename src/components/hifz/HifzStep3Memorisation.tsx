@@ -334,8 +334,11 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
             {/* Manual increment for phases without audio */}
             {!phaseInfo.audioEnabled && (
               <motion.button
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setAncrage(prev => Math.min(prev + 1, TIKRAR_TARGET))}
+                whileTap={{ scale: 0.85 }}
+                onClick={() => {
+                  setAncrage(prev => Math.min(prev + 1, TIKRAR_TARGET));
+                  try { navigator?.vibrate?.(40); } catch {}
+                }}
                 className="w-20 h-20 rounded-full flex items-center justify-center"
                 style={{
                   background: 'rgba(212,175,55,0.15)',
