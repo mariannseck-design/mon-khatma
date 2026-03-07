@@ -1,21 +1,12 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan: Ajouter une note "3 fois minimum" sur le bouton "Passer quand même"
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Modification
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+**`src/components/hifz/HifzStep2Impregnation.tsx`** (lignes 204-221)
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+Quand `listenCount < 3`, transformer le bouton pour inclure une sous-ligne de texte en plus petit : *"L'écoute c'est 3 fois minimum 🤲"*. Le bouton passera de `flex items-center justify-center` à une disposition en colonne (`flex-col`) pour afficher le texte principal + la note en dessous en `text-xs` avec une opacité réduite.
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
-
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+Quand `listenCount >= 3`, le bouton reste inchangé (texte simple "Passer à la mémorisation").
 
