@@ -1,21 +1,19 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Corriger l'audio qui s'arrête en mi-récitation
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Diagnostic
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+Le bouton haut-parleur (`playOneAyahForCheck`) ne joue que le **premier verset** du passage (`ayahsRef.current[0]`), sans enchaîner les suivants. L'audio s'arrête donc après un seul verset au lieu de réciter tout le passage sélectionné.
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+### Correction dans `src/components/hifz/HifzStep3Memorisation.tsx`
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+1. **Remplacer `playOneAyahForCheck`** par une fonction qui enchaîne tous les versets du passage séquentiellement, en réutilisant la logique de `playNextAyah` existante.
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+2. **Ajouter un état `isPlaying`** pour permettre d'arrêter/reprendre l'audio en cliquant à nouveau sur le bouton haut-parleur (toggle play/pause).
+
+3. **Feedback visuel** : animer l'icône Volume2 quand l'audio est en cours (couleur dorée au lieu de gris).
+
+### Fichier modifié
+- `src/components/hifz/HifzStep3Memorisation.tsx`
 
