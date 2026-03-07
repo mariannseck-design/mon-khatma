@@ -1,26 +1,21 @@
-## Plan : Audio qui continue lors de l'interaction avec le Mushaf
 
-### Probleme identifie
 
-**2 causes distinctes :**
+# Diagnostic : 404 sur /quran-reader
 
-1. **Step 3 (Tikrar)** : Le toggle "Voir le passage" utilise `AnimatePresence` qui monte/demonte le DOM. Sur certains navigateurs mobiles, ce re-render interrompt l'objet `Audio` en cours.
-2. **Step 2 (Impregnation) + Step 3** : Le bouton "Ouvrir dans le Mushaf" fait un `navigate('/quran-reader')` qui demonte le composant entier, declenchant le cleanup `audioRef.current?.pause()`.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Corrections
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-**Fichier : `src/components/hifz/HifzStep3Memorisation.tsx**`
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-- Remplacer le bloc `AnimatePresence` du Mushaf (lignes 355-384) par un `div` permanent avec `style={{ display: showMushaf ? 'block' : 'none' }}`. L'image reste dans le DOM, aucun demontage ne se produit.
-- Supprimer le bouton "Ouvrir dans le Mushaf" (qui navigue et tue l'audio). Le Mushaf est deja visible en ligne.
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-**Fichier : `src/components/hifz/HifzStep2Impregnation.tsx**`
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
-- Supprimer le bouton "Ouvrir dans le Mushaf" et la fonction `openInMushaf` (lignes 94-97, 127-134). Le Mushaf est deja affiche en image juste au-dessus.
-
-### Fichiers modifies
-
-- `src/components/hifz/HifzStep3Memorisation.tsx`
-- `src/components/hifz/HifzStep2Impregnation.tsx`
-
-Dans ce cas ou il faut calculer la page exact du Mushaf en fonction du numéro de verset (startVerse) plutôt que d'utiliser toute la page si pas besoin , et autoriser le mode de pouvoir agrandir le mushaf en double cliquant ou avec ses mains ou proposer grand moyen tres grand a cote du mushaf

@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Headphones, Check, Play, Pause, BookOpen, RotateCcw } from 'lucide-react';
+import { Headphones, Check, Play, Pause, RotateCcw, ZoomIn, ZoomOut } from 'lucide-react';
 import HifzStepWrapper from './HifzStepWrapper';
 import { RECITERS } from '@/hooks/useQuranAudio';
 import { SURAHS } from '@/lib/surahData';
@@ -14,8 +13,10 @@ interface Props {
   onBack: () => void;
 }
 
+const MUSHAF_ZOOM_LEVELS = ['Petit', 'Moyen', 'Grand'] as const;
+const MUSHAF_MAX_HEIGHTS = ['max-h-48', 'max-h-64', 'max-h-[500px]'];
+
 export default function HifzStep2Impregnation({ surahNumber, startVerse, endVerse, onNext, onBack }: Props) {
-  const navigate = useNavigate();
   const storageKey = `hifz_listen_${surahNumber}_${startVerse}_${endVerse}`;
 
   const [listenCount, setListenCount] = useState(() => {
@@ -25,6 +26,7 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
   const [isPlaying, setIsPlaying] = useState(false);
   const [reciter, setReciter] = useState('ar.alafasy');
   const [currentAyahIndex, setCurrentAyahIndex] = useState(-1);
+  const [mushafZoom, setMushafZoom] = useState(1); // 0=Petit, 1=Moyen, 2=Grand
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const ayahsRef = useRef<{ audio: string; numberInSurah: number }[]>([]);
   const indexRef = useRef(0);
@@ -91,11 +93,6 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
     return () => { audioRef.current?.pause(); };
   }, []);
 
-  const openInMushaf = () => {
-    localStorage.setItem('quran_reader_page', String(mushafPage));
-    navigate('/quran-reader');
-  };
-
   return (
     <HifzStepWrapper stepNumber={2} stepTitle="Imprégnation & Sens" onBack={onBack}>
       <div className="text-center space-y-5">
@@ -110,28 +107,39 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
           Écoute attentivement le récitateur au moins 3 fois. Tu peux écouter autant de fois que tu le souhaites.
         </p>
 
-        {/* Mushaf image display */}
-        <div
-          className="max-h-64 overflow-auto w-full rounded-xl"
-          style={{ border: '1px solid rgba(212,175,55,0.25)' }}
-        >
-          <img
-            src={mushafImageUrl}
-            alt={`Page ${mushafPage} du Mushaf`}
-            className="w-full h-auto"
-            loading="eager"
-          />
+        {/* Mushaf image display with zoom controls */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-end gap-1.5 px-1">
+            <button
+              onClick={() => setMushafZoom(z => Math.max(0, z - 1))}
+              disabled={mushafZoom === 0}
+              className="w-8 h-8 rounded-lg flex items-center justify-center disabled:opacity-30 transition-all active:scale-95"
+              style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(212,175,55,0.15)' }}
+            >
+              <ZoomOut className="h-3.5 w-3.5" style={{ color: '#d4af37' }} />
+            </button>
+            <span className="text-xs px-2" style={{ color: 'rgba(255,255,255,0.5)' }}>{MUSHAF_ZOOM_LEVELS[mushafZoom]}</span>
+            <button
+              onClick={() => setMushafZoom(z => Math.min(2, z + 1))}
+              disabled={mushafZoom === 2}
+              className="w-8 h-8 rounded-lg flex items-center justify-center disabled:opacity-30 transition-all active:scale-95"
+              style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(212,175,55,0.15)' }}
+            >
+              <ZoomIn className="h-3.5 w-3.5" style={{ color: '#d4af37' }} />
+            </button>
+          </div>
+          <div
+            className={`${MUSHAF_MAX_HEIGHTS[mushafZoom]} overflow-auto w-full rounded-xl transition-all duration-300`}
+            style={{ border: '1px solid rgba(212,175,55,0.25)' }}
+          >
+            <img
+              src={mushafImageUrl}
+              alt={`Page ${mushafPage} du Mushaf`}
+              className="w-full h-auto"
+              loading="eager"
+            />
+          </div>
         </div>
-
-        {/* Mushaf link */}
-        <button
-          onClick={openInMushaf}
-          className="flex items-center justify-center gap-2 mx-auto px-4 py-2 rounded-xl text-sm font-medium transition-all active:scale-95"
-          style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(212,175,55,0.2)', color: '#d4af37' }}
-        >
-          <BookOpen className="h-4 w-4" />
-          Ouvrir dans le Mushaf
-        </button>
 
         {/* Reciter selector */}
         <select
