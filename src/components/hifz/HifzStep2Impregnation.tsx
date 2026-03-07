@@ -201,17 +201,23 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
           </button>
         )}
 
-        {listenCount >= 3 && (
+        {listenCount >= 1 && (
           <motion.button
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             whileTap={{ scale: 0.97 }}
             onClick={onNext}
             className="w-full rounded-2xl py-4 flex items-center justify-center gap-2 font-semibold"
-            style={{ background: 'linear-gradient(135deg, #d4af37, #b8962e)', color: '#1a2e1a' }}
+            style={{
+              background: listenCount >= 3
+                ? 'linear-gradient(135deg, #d4af37, #b8962e)'
+                : 'rgba(212,175,55,0.2)',
+              color: listenCount >= 3 ? '#1a2e1a' : '#d4af37',
+              border: listenCount < 3 ? '1px solid rgba(212,175,55,0.3)' : 'none',
+            }}
           >
             <Check className="h-5 w-5" />
-            Passer à la mémorisation
+            {listenCount >= 3 ? 'Passer à la mémorisation' : `Passer quand même (${listenCount}/3)`}
           </motion.button>
         )}
       </div>
