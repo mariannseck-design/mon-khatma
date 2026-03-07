@@ -17,41 +17,6 @@ interface QuranTextViewProps {
 
 const FONT_FAMILY = "'KFGQPC Uthmanic Script HAFS', 'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
 
-// Tajweed color map based on Al-Quran.cloud tajweed codes
-const TAJWEED_COLORS: Record<string, string> = {
-  h: '#AAAAAA', s: '#AAAAAA', l: '#AAAAAA', d: '#AAAAAA', b: '#AAAAAA',
-  n: '#D50000', p: '#D50000', m: '#D50000', o: '#D50000',
-  q: '#1565C0',
-  c: '#2E7D32', f: '#2E7D32', w: '#2E7D32', i: '#2E7D32',
-  a: '#2E7D32', u: '#2E7D32', g: '#2E7D32',
-};
-
-function renderTajweed(text: string, darkMode: boolean): React.ReactNode[] {
-  const parts: React.ReactNode[] = [];
-  let lastIndex = 0;
-  const regex = /\[([a-z])(?::\d+)?\[([^\]]*)\]/g;
-  let match;
-  let key = 0;
-
-  while ((match = regex.exec(text)) !== null) {
-    if (match.index > lastIndex) {
-      parts.push(text.slice(lastIndex, match.index));
-    }
-    const code = match[1];
-    const content = match[2];
-    const color = TAJWEED_COLORS[code] || (darkMode ? '#d4c9a8' : '#1a1a1a');
-    parts.push(
-      <span key={key++} style={{ color }}>{content}</span>
-    );
-    lastIndex = regex.lastIndex;
-  }
-
-  if (lastIndex < text.length) {
-    parts.push(text.slice(lastIndex));
-  }
-
-  return parts;
-}
 
 function VerseCircle({ number, size }: { number: number; size: number }) {
   const bg = '#2E7D32';
@@ -151,7 +116,7 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 28, dark
   useEffect(() => {
     setLoading(true);
     setError(false);
-    fetch(`https://api.alquran.cloud/v1/page/${page}/quran-tajweed`)
+    fetch(`https://api.alquran.cloud/v1/page/${page}/quran-uthmani`)
       .then(res => res.json())
       .then(data => {
         if (data.code === 200) {
@@ -283,7 +248,6 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 28, dark
             >
               {group.ayahs.map((ayah) => {
                 const isActive = activeAyah === ayah.number;
-                const tajweedContent = renderTajweed(ayah.text, darkMode);
 
                 return (
                   <span
@@ -301,7 +265,7 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 28, dark
                       padding: isActive ? '0 2px' : '0',
                     }}
                   >
-                    {tajweedContent}
+                    {ayah.text}
                     {' '}
                     <VerseCircle number={ayah.numberInSurah} size={circleSize} />
                     {' '}
