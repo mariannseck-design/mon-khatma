@@ -1,31 +1,21 @@
 
 
-## Plan : Corriger la sauvegarde des versets mémorisés + affichage Muraja'a
+# Diagnostic : 404 sur /quran-reader
 
-### Problème identifié
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-La table `hifz_memorized_verses` est **vide** malgré les sessions Hifz. La cause : le code utilise `upsert` avec `onConflict: 'user_id,surah_number,verse_start,verse_end'` mais **aucune contrainte unique n'existe** sur ces colonnes. L'upsert échoue silencieusement.
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-### Corrections
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-**1. Migration : ajouter la contrainte unique manquante**
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-Ajouter un index unique sur `(user_id, surah_number, verse_start, verse_end)` dans `hifz_memorized_verses` pour que l'upsert fonctionne correctement.
-
-**2. `src/pages/HifzPage.tsx` — sécuriser la sauvegarde**
-
-- Ajouter un `try/catch` + log d'erreur autour de l'upsert pour détecter les échecs futurs.
-- En fallback, utiliser `insert` si l'upsert échoue.
-
-**3. `src/pages/MurjaPage.tsx` — affichage intelligent**
-
-Quand des versets existent mais qu'aucun n'est dû aujourd'hui, au lieu de ne rien montrer après le countdown, afficher un résumé clair :
-- Nombre total de versets ancrés
-- Prochaine révision prévue le [date]
-- Liste des sourates mémorisées avec leur prochaine date de révision
-
-### Fichiers modifiés
-- Migration SQL (contrainte unique)
-- `src/pages/HifzPage.tsx`
-- `src/pages/MurjaPage.tsx`
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
