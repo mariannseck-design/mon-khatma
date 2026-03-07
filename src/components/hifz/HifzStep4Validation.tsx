@@ -48,7 +48,15 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const playbackRef = useRef<HTMLAudioElement | null>(null);
 
-  // Fetch arabic text
+  // Compute mushaf page from surah number
+  useEffect(() => {
+    const surah = SURAHS.find(s => s.number === surahNumber);
+    if (surah) {
+      setMushafPage(surah.startPage);
+    }
+  }, [surahNumber]);
+
+  // Fetch arabic text (kept for potential future use)
   useEffect(() => {
     const fetchArabic = async () => {
       try {
