@@ -479,7 +479,7 @@ export default function AccueilPage() {
                   border: `1.5px solid ${COLORS.gold}30`,
                 }}
               >
-                <p className="text-2xl mb-2">🌙</p>
+                <p className="text-2xl mb-2">🌸</p>
                 <p className="text-sm font-semibold" style={{ color: COLORS.emerald }}>
                   Les défis reviennent après le Ramadan
                 </p>
