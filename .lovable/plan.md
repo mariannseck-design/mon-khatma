@@ -1,38 +1,21 @@
-## Plan : Supprimer les faux comptes + Activer la vérification email + Exiger le vrai nom
 
-### 1. Supprimer les 4 comptes avec faux emails
 
-Créer une edge function admin temporaire `admin-cleanup` qui utilise le service role key pour supprimer ces utilisateurs via `supabase.auth.admin.deleteUser()` :
+# Diagnostic : 404 sur /quran-reader
 
-- `197398f4` — [aitougnaounadia@hmail.com](mailto:aitougnaounadia@hmail.com)
-- `8f2dc9d5` — [testlovable2026@yopmail.com](mailto:testlovable2026@yopmail.com)
-- `609a518b` — mactar.coran@gmail (sans .com)
-- `2d880e35` — [rahma.benyedir2ga@gmail.clm](mailto:rahma.benyedir2ga@gmail.clm)
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-Appeler la fonction, puis la supprimer.
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-### 2. Désactiver l'auto-confirmation des emails
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-Modifier `supabase/config.toml` ne fonctionne pas directement. A la place, ajouter une vérification côté code :
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-- Dans `AuthPage.tsx`, après l'inscription réussie, afficher un message clair demandant de vérifier l'email
-- La config actuelle a l'auto-confirm activé (mémoire). Il faut la désactiver via la configuration auth
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
-Note : je n'ai pas accès au tool `configure_auth`. Je vais le signaler et proposer une alternative côté code.
-
-### 3. Renforcer la validation du prénom à l'inscription
-
-Dans `AuthPage.tsx` :
-
-- Exiger un prénom d'au moins 3 caractères
-- Interdire les noms avec uniquement des chiffres ou caractères spéciaux
-- Ajouter un label plus explicite : "Ton vrai prénom (visible dans la communauté)"  ne pas mettre visible dans la commauté sinon certain risque de mettre de faux  prenom , lui demande juste son prenom et faire que le remplissage soit obligatoire
-
-Dans `src/contexts/AuthContext.tsx` :
-
-- Vérifier que `displayName` est non-vide avant l'inscription
-
-### Fichiers modifiés
-
-- Edge function temporaire `admin-cleanup` (créer, appeler, supprimer)
-- `src/pages/AuthPage.tsx` — validation renforcée du prénom
