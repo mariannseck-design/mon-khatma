@@ -97,11 +97,18 @@ export default function HifzConfig({ onStart }: HifzConfigProps) {
         >
           <p className="text-white/50 text-xs uppercase tracking-wider mb-2">Verset début</p>
           <input
-            type="number"
-            min={1}
-            value={startVerse}
-            onChange={e => setStartVerse(Math.max(1, parseInt(e.target.value) || 1))}
-            className="w-full bg-transparent text-white text-2xl font-bold outline-none text-center"
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            value={startVerse === 0 ? '' : startVerse}
+            onFocus={e => e.target.select()}
+            onTouchStart={e => (e.target as HTMLInputElement).select()}
+            onChange={e => {
+              const val = e.target.value.replace(/\D/g, '');
+              setStartVerse(val === '' ? 0 : parseInt(val));
+            }}
+            onBlur={() => setStartVerse(prev => Math.max(1, prev))}
+            className="w-full bg-transparent text-white text-2xl font-bold outline-none text-center [appearance:textfield]"
             style={{ fontSize: '16px' }}
           />
         </div>
@@ -114,11 +121,18 @@ export default function HifzConfig({ onStart }: HifzConfigProps) {
         >
           <p className="text-white/50 text-xs uppercase tracking-wider mb-2">Verset fin</p>
           <input
-            type="number"
-            min={startVerse}
-            value={endVerse}
-            onChange={e => setEndVerse(Math.max(startVerse, parseInt(e.target.value) || startVerse))}
-            className="w-full bg-transparent text-white text-2xl font-bold outline-none text-center"
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            value={endVerse === 0 ? '' : endVerse}
+            onFocus={e => e.target.select()}
+            onTouchStart={e => (e.target as HTMLInputElement).select()}
+            onChange={e => {
+              const val = e.target.value.replace(/\D/g, '');
+              setEndVerse(val === '' ? 0 : parseInt(val));
+            }}
+            onBlur={() => setEndVerse(prev => Math.max(startVerse, prev || startVerse))}
+            className="w-full bg-transparent text-white text-2xl font-bold outline-none text-center [appearance:textfield]"
             style={{ fontSize: '16px' }}
           />
         </div>
