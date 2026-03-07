@@ -1,30 +1,21 @@
 
-### Diagnostic confirmé
-- Les logs montrent que l’inscription passe au 1er essai (code 200 + envoi de mail), puis les tentatives rapprochées renvoient `429 over_email_send_rate_limit`.
-- Donc le problème vient surtout des renvois trop fréquents, pas d’un bug bloquant de formulaire.
 
-### Plan d’implémentation
-1. **Traduire et normaliser les erreurs d’auth**
-   - Remplacer les messages bruts (`email rate limit exceeded`, etc.) par des messages FR clairs et actionnables.
-2. **Ajouter un anti-spam côté inscription**
-   - Mettre un cooldown (ex. 60s) après envoi réussi **et** après une erreur 429.
-   - Désactiver temporairement le bouton d’inscription avec compte à rebours visible.
-3. **Gérer le cas “email non confirmé”**
-   - Si la connexion échoue avec `email_not_confirmed`, afficher un message explicite.
-   - Proposer un bouton “Renvoyer l’email de confirmation” avec le même cooldown.
-4. **Améliorer l’état post-inscription**
-   - Après inscription réussie, afficher une vue “Vérifie ton email” pour éviter de relancer immédiatement l’inscription.
-   - Ajouter une aide claire: boîte principale + spam + délai avant renvoi.
-5. **Ajustement de limite côté backend (si nécessaire)**
-   - Vérifier le paramètre de limite d’envoi d’emails d’auth sur Lovable Cloud et l’augmenter légèrement si trop strict pour ton usage.
+# Diagnostic : 404 sur /quran-reader
 
-### Détails techniques
-- Fichiers ciblés: `src/pages/AuthPage.tsx` (gestion erreurs, cooldown, UX post-inscription), `src/contexts/AuthContext.tsx` (méthode de renvoi de confirmation si on centralise la logique).
-- Pas de migration base de données.
-- La vérification email reste activée (on ne la désactive pas).
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Vérification
-- Inscription valide: succès + message clair de confirmation email.
-- Clics répétés: blocage local + plus de spam de requêtes.
-- Connexion avant validation email: message guidé + option de renvoi.
-- En cas de 429: message FR compréhensible (plus de message technique brut).
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
+
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+
