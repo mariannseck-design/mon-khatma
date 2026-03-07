@@ -60,6 +60,7 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
     return saved ? Math.min(parseInt(saved, 10) || 0, TIKRAR_TARGET) : 0;
   });
   const [isPlaying, setIsPlaying] = useState(false);
+  const isPlayingRef = useRef(false);
   const [showMushaf, setShowMushaf] = useState(false);
   const [showGuide, setShowGuide] = useState(true);
   const [showCelebration, setShowCelebration] = useState(false);
