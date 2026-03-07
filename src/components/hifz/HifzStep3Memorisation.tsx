@@ -60,6 +60,7 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
     return saved ? Math.min(parseInt(saved, 10) || 0, TIKRAR_TARGET) : 0;
   });
   const [isPlaying, setIsPlaying] = useState(false);
+  const isPlayingRef = useRef(false);
   const [showMushaf, setShowMushaf] = useState(false);
   const [showGuide, setShowGuide] = useState(true);
   const [showCelebration, setShowCelebration] = useState(false);
@@ -105,18 +106,21 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
   }, [surahNumber, startVerse, endVerse, reciter]);
 
   const playNextAyah = useCallback((idx: number) => {
+    if (!isPlayingRef.current && idx > 0) return; // Stopped by user
     if (idx >= ayahsRef.current.length) {
       // Passage terminé : incrémenter le compteur
       setAncrage(prev => {
         const next = Math.min(prev + 1, TIKRAR_TARGET);
         try { navigator?.vibrate?.(40); } catch {}
         if (next >= TIKRAR_TARGET) {
-          // Objectif atteint, arrêter
+          isPlayingRef.current = false;
           setIsPlaying(false);
           return next;
         }
         // Boucler : relancer le passage depuis le début
-        setTimeout(() => playNextAyah(0), 600);
+        setTimeout(() => {
+          if (isPlayingRef.current) playNextAyah(0);
+        }, 600);
         return next;
       });
       indexRef.current = 0;
@@ -125,23 +129,32 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
     indexRef.current = idx;
     const audio = new Audio(ayahsRef.current[idx].audio);
     audioRef.current = audio;
-    audio.onended = () => playNextAyah(idx + 1);
-    audio.onerror = () => playNextAyah(idx + 1);
-    audio.play().catch(() => setIsPlaying(false));
+    audio.onended = () => {
+      if (isPlayingRef.current) playNextAyah(idx + 1);
+    };
+    audio.onerror = () => {
+      if (isPlayingRef.current) playNextAyah(idx + 1);
+    };
+    audio.play().catch(() => {
+      isPlayingRef.current = false;
+      setIsPlaying(false);
+    });
   }, []);
 
   const toggleAudioHelp = () => {
-    if (isPlaying) {
+    if (isPlayingRef.current) {
+      isPlayingRef.current = false;
       audioRef.current?.pause();
       setIsPlaying(false);
     } else if (ayahsRef.current.length > 0) {
+      isPlayingRef.current = true;
       setIsPlaying(true);
       playNextAyah(0);
     }
   };
 
   useEffect(() => {
-    return () => { audioRef.current?.pause(); };
+    return () => { isPlayingRef.current = false; audioRef.current?.pause(); };
   }, []);
 
   const openInMushaf = () => {
