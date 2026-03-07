@@ -1,29 +1,21 @@
 
 
-## Plan : Réafficher les défis en mode inactif avec message "Lancement après le Ramadan"
+# Diagnostic : 404 sur /quran-reader
 
-### Approche
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-Remplacer le bloc placeholder actuel (lignes 465-490 de AccueilPage.tsx) par les composants `DefiAlMulk` et `DefiAlBaqara` originaux, mais en leur passant une prop `disabled={true}`. Chaque composant affichera son interface complète (jours cliquables pour Mulk, grille d'objectifs pour Baqara) mais en mode inactif (clics désactivés, opacité réduite).
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-### Modifications
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-**1. `src/components/defis/DefiAlMulk.tsx`**
-- Ajouter une prop `disabled?: boolean`
-- Quand `disabled=true` : ne pas charger depuis la DB, afficher les 7 jours tous décochés, désactiver les clics (pointer-events-none + opacity réduite)
-- Pas de compteur en haut à droite ou afficher "0/7" grisé
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-**2. `src/components/defis/DefiAlBaqara.tsx`**
-- Ajouter une prop `disabled?: boolean`
-- Quand `disabled=true` : afficher la vue de configuration (grille des objectifs) mais tout en mode inactif
-- Remplacer le bouton "Lancer le défi 🚀" par un bouton désactivé "Lancement après le Ramadan in shâ Allah 🌸"
-- Désactiver les clics sur les options d'objectifs
-
-**3. `src/pages/AccueilPage.tsx`**
-- Lignes 465-490 : remplacer le bloc placeholder par les deux composants avec `disabled` :
-  ```
-  <DefiAlMulk disabled />
-  <DefiAlBaqara disabled />
-  ```
-- Titre "Nos Défis" suivi de "Lancement après le Ramadan 🌸" en sous-titre
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

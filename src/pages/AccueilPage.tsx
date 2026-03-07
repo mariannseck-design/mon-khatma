@@ -472,20 +472,12 @@ export default function AccueilPage() {
                   Nos Défis
                 </h3>
               </div>
-              <div
-                className="relative overflow-hidden rounded-2xl p-6 text-center"
-                style={{
-                  background: `linear-gradient(135deg, ${COLORS.emerald}08, ${COLORS.gold}12)`,
-                  border: `1.5px solid ${COLORS.gold}30`,
-                }}
-              >
-                <p className="text-2xl mb-2">🌸</p>
-                <p className="text-sm font-semibold" style={{ color: COLORS.emerald }}>
-                  Les défis reviennent après le Ramadan
+              <div className="space-y-4">
+                <p className="text-xs text-center font-medium" style={{ color: COLORS.gold }}>
+                  Lancement après le Ramadan 🌸
                 </p>
-                <p className="text-xs mt-1" style={{ color: `${COLORS.emerald}90` }}>
-                  Concentre-toi sur ton Ramadan, les défis Al-Mulk et Al-Baqara seront de retour in shâ Allah !
-                </p>
+                <DefiAlMulk disabled />
+                <DefiAlBaqara disabled />
               </div>
             </motion.div>
 
