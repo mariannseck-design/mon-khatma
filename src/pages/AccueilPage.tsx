@@ -12,6 +12,8 @@ import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
 import { DailyReminderBanner } from '@/components/notifications/DailyReminderBanner';
 import RamadanWeeklyReport from '@/components/ramadan/RamadanWeeklyReport';
+import DefiAlMulk from '@/components/defis/DefiAlMulk';
+import DefiAlBaqara from '@/components/defis/DefiAlBaqara';
 import { useDailyNotification } from '@/hooks/useDailyNotification';
 import { usePushSubscription } from '@/hooks/usePushSubscription';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -457,6 +459,20 @@ export default function AccueilPage() {
                   </div>
                 </motion.div>
               </Link>
+            </motion.div>
+
+            {/* ═══ NOS DÉFIS ═══ */}
+            <motion.div variants={itemVariants}>
+              <h3
+                className="text-sm font-bold tracking-[0.1em] uppercase mb-3 px-1"
+                style={{ fontFamily: "'Inter', sans-serif", color: COLORS.emerald }}
+              >
+                Nos Défis
+              </h3>
+              <div className="space-y-3">
+                <DefiAlMulk />
+                <DefiAlBaqara />
+              </div>
             </motion.div>
 
             {/* Espace Communauté */}
