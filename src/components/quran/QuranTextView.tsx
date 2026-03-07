@@ -17,7 +17,34 @@ interface QuranTextViewProps {
 
 const FONT_FAMILY = "'KFGQPC Uthmanic Script HAFS', 'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
 
-const BASMALA_LEADING_PATTERN = /^[\s\u200E\u200F\u061C]*(?:﷽|ب[\s\S]{0,120}?(?:ٱلرَّحِيمِ|ٱلرَّحِیمِ|الرَّحِيمِ|الرَّحِیمِ|الرَّحِيمِ|الرَّحِیمِ|الرَّحِيْمِ|الرَّحِيْمِ))(?=[\s\u200E\u200F\u061C]|$)[\s\u200E\u200F\u061C]*/u;
+const LEADING_DECORATION_PATTERN = /^[\s\u200E\u200F\u061C\u06DD\u06DE\u06E9\u06DA\u06DB\u06DC\u06DF\u06E0\u06E1\u06E2\u06E3\u06E4\u06E5\u06E6\u06E7\u06E8\u06EA\u06EB\u06EC\u06ED]+/u;
+
+function normalizeArabicForMatch(value: string) {
+  return value
+    .normalize('NFKD')
+    .replace(/\p{M}/gu, '')
+    .replace(/[\s\u200E\u200F\u061C]/gu, '')
+    .replace(/[ٱأإآ]/gu, 'ا')
+    .replace(/ى/gu, 'ي');
+}
+
+function stripLeadingBasmala(text: string) {
+  const withoutDecorations = text.replace(LEADING_DECORATION_PATTERN, '').trimStart();
+  if (!withoutDecorations) return withoutDecorations;
+
+  if (withoutDecorations.startsWith('﷽')) {
+    return withoutDecorations.slice(1).replace(LEADING_DECORATION_PATTERN, '').trimStart();
+  }
+
+  const normalized = normalizeArabicForMatch(withoutDecorations);
+  if (!normalized.startsWith('بسماللهالرحمنالرحيم')) {
+    return withoutDecorations;
+  }
+
+  const words = withoutDecorations.split(/\s+/u);
+  if (words.length <= 4) return '';
+  return words.slice(4).join(' ').trimStart();
+}
 
 function VerseCircle({ number, size }: { number: number; size: number }) {
   const bg = '#2E7D32';
