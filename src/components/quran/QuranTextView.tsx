@@ -248,6 +248,11 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 28, dark
             >
               {group.ayahs.map((ayah) => {
                 const isActive = activeAyah === ayah.number;
+                // Remove Basmala from verse 1 text for all surahs except Al-Fatiha (1) and At-Tawbah (9)
+                let displayText = ayah.text;
+                if (ayah.numberInSurah === 1 && group.surahNumber !== 1 && group.surahNumber !== 9) {
+                  displayText = displayText.replace(/^بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ\s*/, '');
+                }
 
                 return (
                   <span
@@ -265,7 +270,7 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 28, dark
                       padding: isActive ? '0 2px' : '0',
                     }}
                   >
-                    {ayah.text}
+                    {displayText}
                     {' '}
                     <VerseCircle number={ayah.numberInSurah} size={circleSize} />
                     {' '}
