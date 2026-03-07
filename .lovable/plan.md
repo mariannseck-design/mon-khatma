@@ -1,21 +1,10 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Rendre le compteur communautaire visible pour tous
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Modification unique
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+**`src/pages/AccueilPage.tsx`** : Retirer la condition `{isAdmin && ...}` autour de `<DefisCommunityCounter />` pour qu'il s'affiche pour tous les utilisateurs, sous les défis (qu'ils soient actifs ou inactifs).
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
-
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
-
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+Le compteur utilise déjà une fonction RPC `SECURITY DEFINER` (`get_defis_collective_stats`) qui agrège les données anonymement — aucun changement backend nécessaire.
 
