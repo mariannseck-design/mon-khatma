@@ -217,19 +217,20 @@ export default function AuthPage() {
 
 /* ── Sub-components ── */
 
-function CheckEmailView({ email, cooldown, loading, onResend, onBack }: {
+function CheckEmailView({ email, cooldown, loading, onResend, onBack, title, description }: {
   email: string; cooldown: number; loading: boolean;
   onResend: () => void; onBack: () => void;
+  title?: string; description?: React.ReactNode;
 }) {
   return (
     <div className="text-center space-y-4">
       <CheckCircle className="h-12 w-12 text-primary mx-auto" />
-      <h2 className="font-display text-xl">Vérifie ta boîte mail</h2>
+      <h2 className="font-display text-xl">{title || 'Vérifie ta boîte mail'}</h2>
       <p className="text-sm text-muted-foreground">
-        Un email de confirmation a été envoyé à <strong className="text-foreground">{email}</strong>.
+        {description || <>Un email de confirmation a été envoyé à <strong className="text-foreground">{email}</strong>.</>}
       </p>
       <div className="text-xs text-muted-foreground space-y-1">
-        <p>📬 Vérifie aussi tes <strong>spams</strong></p>
+        <p>📬 Vérifie aussi tes <strong>spams</strong> et <strong>courrier indésirable</strong></p>
         <p>⏳ L'email peut prendre quelques minutes</p>
       </div>
       <Button
