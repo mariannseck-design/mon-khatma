@@ -1,21 +1,29 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Corriger 3 bugs et améliorer l'étape Imprégnation
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Bug 1 — Bouton "Réactualiser" inactif (Hifz Step 1)
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+L'icône RotateCcw en haut est juste décorative, pas un bouton. Ajouter un bouton pour réinitialiser le timer et le compteur de récitations.
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+**`src/components/hifz/HifzStep1Revision.tsx`** : Transformer l'icône en bouton cliquable qui reset `timer` à 300 et `count` à 0, et relance l'intervalle.
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+### Bug 2 — Mode jour/nuit inactif (Quran Reader)
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+**`src/pages/QuranReaderPage.tsx`** :
+- Ligne 45 : Changer `const [nightMode]` en `const [nightMode, setNightMode]`
+- Créer une fonction `handleNightModeChange` qui met à jour le state et persiste dans `localStorage`
+- Ligne 411 : Remplacer `onNightModeChange={() => {}}` par `onNightModeChange={handleNightModeChange}`
+
+### Amélioration 3 — Étape Imprégnation (Hifz Step 2)
+
+**`src/components/hifz/HifzStep2Impregnation.tsx`** :
+1. Afficher les versets arabes en cours de mémorisation pendant l'écoute (fetcher le texte arabe depuis l'API alquran.cloud en même temps que l'audio)
+2. Ajouter un bouton "Ouvrir dans le Mushaf" qui redirige vers `/quran-reader` à la bonne page
+3. Supprimer le plafond de 3 écoutes — permettre d'écouter autant de fois que souhaité, mais afficher le bouton "Suivant" dès 3 écoutes atteintes
+
+**Détails techniques pour l'affichage des versets** :
+- Stocker le texte arabe de chaque ayah dans `ayahsRef` (déjà disponible dans la réponse API)
+- Afficher une `ScrollArea` avec les versets arabes, en surlignant le verset en cours de lecture
+- Ajouter un lien vers le Mushaf en utilisant `useNavigate` + la fonction `getSurahByPage` pour trouver la page correspondante
 
