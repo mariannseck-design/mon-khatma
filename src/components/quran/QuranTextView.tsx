@@ -268,41 +268,43 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 28, dark
               </>
             )}
 
-            {/* Ayahs — centered */}
-            <div style={{ textAlign: 'center' }}>
+            {/* Ayahs — continuous flow */}
+            <div
+              style={{
+                textAlign: 'justify',
+                direction: 'rtl',
+                fontSize: `${computedFontSize}px`,
+                lineHeight: `${lineHeight}px`,
+                color: textColor,
+                wordSpacing: '7px',
+                letterSpacing: '0.03em',
+              }}
+            >
               {group.ayahs.map((ayah) => {
                 const isActive = activeAyah === ayah.number;
                 const tajweedContent = renderTajweed(ayah.text, darkMode);
 
                 return (
-                  <div
+                  <span
                     key={ayah.number}
                     onClick={(e) => {
                       e.stopPropagation();
                       setSelectedAyah(prev => prev === ayah.number ? null : ayah.number);
                     }}
-                    className="cursor-pointer transition-colors duration-200"
+                    className="cursor-pointer"
                     style={{
-                      display: 'block',
-                      textAlign: 'center',
-                      fontSize: `${computedFontSize}px`,
-                      lineHeight: `${lineHeight}px`,
-                      color: textColor,
-                      wordSpacing: '7px',
-                      letterSpacing: '0.03em',
-                      padding: '2px 4px',
-                      marginBottom: '2px',
                       background: isActive
                         ? (darkMode ? 'rgba(122, 139, 111, 0.25)' : 'rgba(122, 139, 111, 0.10)')
                         : 'transparent',
-                      borderRadius: isActive ? '6px' : '0',
-                      borderBottom: isActive ? '2px solid rgba(122, 139, 111, 0.4)' : '2px solid transparent',
+                      borderRadius: isActive ? '4px' : '0',
+                      padding: isActive ? '0 2px' : '0',
                     }}
                   >
                     {tajweedContent}
                     {' '}
                     <VerseCircle number={ayah.numberInSurah} size={circleSize} />
-                  </div>
+                    {' '}
+                  </span>
                 );
               })}
             </div>
