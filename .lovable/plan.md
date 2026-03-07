@@ -1,24 +1,21 @@
 
 
-## Plan : Corriger les identifiants des récitateurs
+# Diagnostic : 404 sur /quran-reader
 
-### Probleme identifie
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-En comparant les IDs utilisés dans le code avec l'API `alquran.cloud`, deux récitateurs ont des identifiants incorrects :
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-| Récitateur | ID actuel (incorrect) | ID correct dans l'API |
-|---|---|---|
-| Ibrahim Al-Akhdar | `ar.ibrahimakhdar` | `ar.ibrahimakhbar` |
-| Saad Al-Ghamidi | `ar.saadalghamidi` | **N'existe pas dans l'API** |
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-Saad Al-Ghamidi n'est pas disponible dans cette API. On peut le remplacer par un récitateur disponible comme **Maher Al-Muaiqly** (`ar.mahermuaiqly`) ou **Abu Bakr Ash-Shaatree** (`ar.shaatree`).
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-### Modification
-
-**`src/hooks/useQuranAudio.ts`** (ligne 8 et 11) : Corriger les deux identifiants dans le tableau `RECITERS`.
-
-- Ligne 8 : Remplacer `ar.saadalghamidi` par `ar.mahermuaiqly` (Maher Al-Muaiqly) — ou un autre récitateur disponible si vous préférez
-- Ligne 11 : Remplacer `ar.ibrahimakhdar` par `ar.ibrahimakhbar`
-
-Ce changement corrige automatiquement les deux composants Hifz (`HifzStep2Impregnation` et `HifzStep3Memorisation`) et le lecteur Quran, car ils utilisent tous la même liste `RECITERS`.
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

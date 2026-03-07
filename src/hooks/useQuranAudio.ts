@@ -5,10 +5,10 @@ export const RECITERS = [
   { id: 'ar.husary', name: 'Al-Husary' },
   { id: 'ar.abdulsamad', name: 'Abdul Samad' },
   { id: 'ar.minshawi', name: 'Al-Minshawi' },
-  { id: 'ar.saadalghamidi', name: 'Saad Al-Ghamidi' },
+  { id: 'ar.mahermuaiqly', name: 'Maher Al-Muaiqly' },
   { id: 'ar.abdurrahmaansudais', name: 'Al-Sudais' },
   { id: 'ar.hudhaify', name: 'Al-Huthaify' },
-  { id: 'ar.ibrahimakhdar', name: 'Ibrahim Al-Akhdar' },
+  { id: 'ar.ibrahimakhbar', name: 'Ibrahim Al-Akhdar' },
 ] as const;
 
 interface AyahAudio {
