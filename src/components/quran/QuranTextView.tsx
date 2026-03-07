@@ -110,8 +110,8 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 28, dark
   const containerRef = useRef<HTMLDivElement>(null);
 
   const computedFontSize = fontSize;
-  const lineHeight = Math.round(computedFontSize * 1.65);
-  const circleSize = Math.round(computedFontSize * 0.65);
+  const lineHeight = Math.round(computedFontSize * 2.1);
+  const circleSize = Math.round(computedFontSize * 0.6);
 
   useEffect(() => {
     setLoading(true);
@@ -242,8 +242,8 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 28, dark
                 fontSize: `${computedFontSize}px`,
                 lineHeight: `${lineHeight}px`,
                 color: textColor,
-                wordSpacing: '7px',
-                letterSpacing: '0.03em',
+                wordSpacing: '0.12em',
+                letterSpacing: '0.01em',
               }}
             >
               {group.ayahs.map((ayah) => {
