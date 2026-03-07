@@ -14,6 +14,7 @@ import { DailyReminderBanner } from '@/components/notifications/DailyReminderBan
 import RamadanWeeklyReport from '@/components/ramadan/RamadanWeeklyReport';
 import DefiAlMulk from '@/components/defis/DefiAlMulk';
 import DefiAlBaqara from '@/components/defis/DefiAlBaqara';
+import DefisCommunityCounter from '@/components/defis/DefisCommunityCounter';
 import { useDailyNotification } from '@/hooks/useDailyNotification';
 import { usePushSubscription } from '@/hooks/usePushSubscription';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -463,12 +464,15 @@ export default function AccueilPage() {
 
             {/* ═══ NOS DÉFIS ═══ */}
             <motion.div variants={itemVariants}>
-              <h3
-                className="text-sm font-bold tracking-[0.1em] uppercase mb-3 px-1"
-                style={{ fontFamily: "'Inter', sans-serif", color: COLORS.emerald }}
-              >
-                Nos Défis
-              </h3>
+              <div className="flex items-center justify-between mb-3 px-1">
+                <h3
+                  className="text-sm font-bold tracking-[0.1em] uppercase"
+                  style={{ fontFamily: "'Inter', sans-serif", color: COLORS.emerald }}
+                >
+                  Nos Défis
+                </h3>
+                <DefisCommunityCounter />
+              </div>
               <div className="space-y-3">
                 <DefiAlMulk />
                 <DefiAlBaqara />
