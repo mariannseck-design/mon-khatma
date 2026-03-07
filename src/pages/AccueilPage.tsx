@@ -463,6 +463,11 @@ export default function AccueilPage() {
               </Link>
             </motion.div>
 
+            {/* ═══ MES VERSETS FAVORIS ═══ */}
+            <motion.div variants={itemVariants}>
+              <FavoriteVersesSection />
+            </motion.div>
+
             {/* ═══ NOS DÉFIS ═══ */}
             <motion.div variants={itemVariants}>
               <div className="flex items-center justify-between mb-3 px-1">
