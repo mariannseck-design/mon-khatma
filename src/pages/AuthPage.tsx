@@ -73,7 +73,7 @@ export default function AuthPage() {
         redirectTo: `${window.location.origin}/reset-password`,
       });
       if (error) toast.error(translateAuthError(error.message));
-      else { toast.success('Lien envoyé ! Vérifie ta boîte mail.'); setMode('login'); }
+      else { setMode('check-email-reset'); }
     } catch { toast.error('Une erreur est survenue'); }
     finally { setLoading(false); }
   };
