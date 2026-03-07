@@ -42,9 +42,14 @@ export default function QuranReaderPage() {
   const [viewMode, setViewMode] = useState<'image' | 'text'>(() => {
     return (localStorage.getItem('quran_view_mode') as 'image' | 'text') || 'image';
   });
-  const [nightMode] = useState(() => {
+  const [nightMode, setNightMode] = useState(() => {
     return localStorage.getItem('quran_night_mode') === 'true';
   });
+
+  const handleNightModeChange = (on: boolean) => {
+    setNightMode(on);
+    localStorage.setItem('quran_night_mode', String(on));
+  };
 
   const TEXT_SIZES = [
     { label: 'Petit', value: 16 },
@@ -408,7 +413,7 @@ export default function QuranReaderPage() {
             viewMode={viewMode}
             onViewModeChange={setViewMode}
             nightMode={nightMode}
-            onNightModeChange={() => {}}
+            onNightModeChange={handleNightModeChange}
             fontSize={TEXT_SIZES[textSizeIndex].value}
             onFontSizeChange={(size) => {
               const idx = TEXT_SIZES.findIndex(t => t.value === size);
