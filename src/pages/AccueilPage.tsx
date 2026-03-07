@@ -486,7 +486,7 @@ export default function AccueilPage() {
                 )}
                 <DefiAlMulk disabled={!isAdmin} />
                 <DefiAlBaqara disabled={!isAdmin} />
-                {isAdmin && <DefisCommunityCounter />}
+                <DefisCommunityCounter />
               </div>
             </motion.div>
 
