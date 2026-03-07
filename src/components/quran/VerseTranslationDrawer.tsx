@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronRight, ChevronLeft, Loader2, Play, Pause, RotateCcw } from 'lucide-react';
+import { X, ChevronRight, ChevronLeft, Loader2, Play, Pause, Heart } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 import type { VerseLineInfo } from './ImageVerseOverlay';
 
 interface TranslationData {
@@ -16,9 +18,12 @@ interface Props {
 }
 
 export default function VerseTranslationDrawer({ verseKey, allVerses, onClose, onNavigate }: Props) {
+  const { user } = useAuth();
   const [data, setData] = useState<TranslationData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [favLoading, setFavLoading] = useState(false);
 
   // Audio state
   const [audioPlaying, setAudioPlaying] = useState(false);
@@ -106,6 +111,43 @@ export default function VerseTranslationDrawer({ verseKey, allVerses, onClose, o
     return () => { cancelled = true; };
   }, [verseKey]);
 
+  // Check if verse is favorited
+  useEffect(() => {
+    if (!verseKey || !user) { setIsFavorite(false); return; }
+    const check = async () => {
+      const { data: fav } = await supabase
+        .from('favorite_verses')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('verse_key', verseKey)
+        .maybeSingle();
+      setIsFavorite(!!fav);
+    };
+    check();
+  }, [verseKey, user]);
+
+  const toggleFavorite = async () => {
+    if (!verseKey || !user || favLoading) return;
+    setFavLoading(true);
+    const [surah, verse] = verseKey.split(':').map(Number);
+    
+    if (isFavorite) {
+      await supabase.from('favorite_verses').delete().eq('user_id', user.id).eq('verse_key', verseKey);
+      setIsFavorite(false);
+    } else {
+      await supabase.from('favorite_verses').insert({
+        user_id: user.id,
+        surah_number: surah,
+        verse_number: verse,
+        verse_key: verseKey,
+        arabic_text: data?.arabic || null,
+        translation_text: data?.translation || null,
+      });
+      setIsFavorite(true);
+    }
+    setFavLoading(false);
+  };
+
   const currentIdx = allVerses.findIndex(v => v.verseKey === verseKey);
   const canPrev = currentIdx > 0;
   const canNext = currentIdx < allVerses.length - 1;
@@ -181,6 +223,19 @@ export default function VerseTranslationDrawer({ verseKey, allVerses, onClose, o
                   <Play className="h-3.5 w-3.5 ml-0.5" />
                 )}
               </button>
+              {/* Favorite button */}
+              {user && (
+                <button
+                  onClick={toggleFavorite}
+                  className="w-8 h-8 rounded-full flex items-center justify-center transition-colors"
+                  style={{
+                    background: isFavorite ? 'rgba(220,38,38,0.15)' : 'rgba(181,148,46,0.15)',
+                    color: isFavorite ? '#dc2626' : '#1a1a1a',
+                  }}
+                >
+                  <Heart className="h-3.5 w-3.5" fill={isFavorite ? '#dc2626' : 'none'} />
+                </button>
+              )}
               <button
                 onClick={onClose}
                 className="w-7 h-7 rounded-full flex items-center justify-center"

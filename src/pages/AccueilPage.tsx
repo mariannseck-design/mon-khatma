@@ -15,6 +15,7 @@ import RamadanWeeklyReport from '@/components/ramadan/RamadanWeeklyReport';
 import DefiAlMulk from '@/components/defis/DefiAlMulk';
 import DefiAlBaqara from '@/components/defis/DefiAlBaqara';
 import DefisCommunityCounter from '@/components/defis/DefisCommunityCounter';
+import FavoriteVersesSection from '@/components/favoris/FavoriteVersesSection';
 import { useDailyNotification } from '@/hooks/useDailyNotification';
 import { usePushSubscription } from '@/hooks/usePushSubscription';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -460,6 +461,11 @@ export default function AccueilPage() {
                   </div>
                 </motion.div>
               </Link>
+            </motion.div>
+
+            {/* ═══ MES VERSETS FAVORIS ═══ */}
+            <motion.div variants={itemVariants}>
+              <FavoriteVersesSection />
             </motion.div>
 
             {/* ═══ NOS DÉFIS ═══ */}

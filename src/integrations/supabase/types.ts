@@ -173,6 +173,39 @@ export type Database = {
           },
         ]
       }
+      favorite_verses: {
+        Row: {
+          arabic_text: string | null
+          created_at: string
+          id: string
+          surah_number: number
+          translation_text: string | null
+          user_id: string
+          verse_key: string
+          verse_number: number
+        }
+        Insert: {
+          arabic_text?: string | null
+          created_at?: string
+          id?: string
+          surah_number: number
+          translation_text?: string | null
+          user_id: string
+          verse_key: string
+          verse_number: number
+        }
+        Update: {
+          arabic_text?: string | null
+          created_at?: string
+          id?: string
+          surah_number?: number
+          translation_text?: string | null
+          user_id?: string
+          verse_key?: string
+          verse_number?: number
+        }
+        Relationships: []
+      }
       hifz_memorized_verses: {
         Row: {
           created_at: string
