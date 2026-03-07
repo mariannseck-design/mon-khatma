@@ -1,21 +1,17 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Afficher l'image du Mushaf au lieu du texte arabe dans l'étape Imprégnation
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Changement
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+Remplacer l'affichage texte arabe des versets (lignes 98-118) par l'image de la page du Mushaf correspondante, dans un conteneur scrollable.
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+**`src/components/hifz/HifzStep2Impregnation.tsx`** :
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
-
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+1. Calculer la page du Mushaf via `SURAHS.find(s => s.number === surahNumber).startPage`
+2. Remplacer la `ScrollArea` contenant les `<p>` de texte arabe par une `ScrollArea` affichant l'image Mushaf (même URL CDN que le lecteur Quran : `https://cdn.jsdelivr.net/gh/QuranHub/quran-pages-images@main/easyquran.com/hafs-tajweed/{page}.jpg`)
+3. L'image est dans un conteneur scrollable (`max-h-64 overflow-auto`) avec coins arrondis et bordure dorée
+4. Conserver le bouton "Ouvrir dans le Mushaf" en dessous
+5. Supprimer le fetch du texte arabe (`ayahs.text`) — garder uniquement le fetch audio (toujours nécessaire pour la lecture)
+6. Simplifier le state : retirer `ayahs` state et le champ `text` de `ayahsRef`
 
