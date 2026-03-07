@@ -816,6 +816,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_defis_collective_stats: { Args: never; Returns: Json }
       get_today_collective_stats: { Args: never; Returns: Json }
       has_role: {
         Args: {
