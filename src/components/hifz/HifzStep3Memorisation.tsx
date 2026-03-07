@@ -208,17 +208,23 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
           }
         </motion.button>
 
-        {ancrage >= repetitionLevel && (
+        {ancrage >= 1 && (
           <motion.button
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             whileTap={{ scale: 0.97 }}
             onClick={onNext}
             className="w-full rounded-2xl py-4 flex items-center justify-center gap-2 font-semibold"
-            style={{ background: 'linear-gradient(135deg, #d4af37, #b8962e)', color: '#1a2e1a' }}
+            style={{
+              background: ancrage >= repetitionLevel
+                ? 'linear-gradient(135deg, #d4af37, #b8962e)'
+                : 'rgba(212,175,55,0.2)',
+              color: ancrage >= repetitionLevel ? '#1a2e1a' : '#d4af37',
+              border: ancrage < repetitionLevel ? '1px solid rgba(212,175,55,0.3)' : 'none',
+            }}
           >
             <Check className="h-5 w-5" />
-            Passer au test de validation
+            {ancrage >= repetitionLevel ? 'Passer au test de validation' : `Passer quand même (${ancrage}/${repetitionLevel})`}
           </motion.button>
         )}
       </div>
