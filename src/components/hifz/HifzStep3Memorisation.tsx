@@ -106,8 +106,19 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
 
   const playNextAyah = useCallback((idx: number) => {
     if (idx >= ayahsRef.current.length) {
-      setIsPlaying(false);
-      setAncrage(prev => Math.min(prev + 1, TIKRAR_TARGET));
+      // Passage terminé : incrémenter le compteur
+      setAncrage(prev => {
+        const next = Math.min(prev + 1, TIKRAR_TARGET);
+        try { navigator?.vibrate?.(40); } catch {}
+        if (next >= TIKRAR_TARGET) {
+          // Objectif atteint, arrêter
+          setIsPlaying(false);
+          return next;
+        }
+        // Boucler : relancer le passage depuis le début
+        setTimeout(() => playNextAyah(0), 600);
+        return next;
+      });
       indexRef.current = 0;
       return;
     }
