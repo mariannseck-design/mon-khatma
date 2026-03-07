@@ -1,14 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Landmark, RotateCcw, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 
 const COLORS = {
   emerald: '#2d6a4f',
   gold: '#b5942e',
   goldAccent: '#d4af37',
-  beige: '#faf8f5',
   beigeWarm: '#f5f0e8',
 };
 
@@ -27,7 +27,7 @@ const STORAGE_KEY = 'baqara_challenge';
 interface ChallengeState {
   targetDays: number;
   startDate: string;
-  checkedDays: string[]; // ISO date strings
+  checkedDays: string[];
 }
 
 function getToday() {
@@ -35,17 +35,81 @@ function getToday() {
 }
 
 export default function DefiAlBaqara() {
-  const [challenge, setChallenge] = useState<ChallengeState | null>(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    return saved ? JSON.parse(saved) : null;
-  });
+  const { user } = useAuth();
+  const [challenge, setChallenge] = useState<ChallengeState | null>(null);
   const [selectedGoal, setSelectedGoal] = useState(48);
+  const [loading, setLoading] = useState(true);
+  const [dbId, setDbId] = useState<string | null>(null);
 
+  // Load from DB or localStorage
   useEffect(() => {
-    if (challenge) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(challenge));
+    if (!user) {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      setChallenge(saved ? JSON.parse(saved) : null);
+      setLoading(false);
+      return;
     }
-  }, [challenge]);
+
+    const load = async () => {
+      const { data } = await supabase
+        .from('challenge_baqara')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (data) {
+        setDbId(data.id);
+        setChallenge({
+          targetDays: data.target_days,
+          startDate: data.start_date,
+          checkedDays: (data.checked_days as string[]) || [],
+        });
+      }
+      setLoading(false);
+    };
+    load();
+  }, [user]);
+
+  const saveChallenge = useCallback(async (state: ChallengeState | null) => {
+    if (!user) {
+      if (state) localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      else localStorage.removeItem(STORAGE_KEY);
+      return;
+    }
+
+    if (!state) {
+      if (dbId) {
+        await supabase.from('challenge_baqara').delete().eq('id', dbId);
+        setDbId(null);
+      }
+      return;
+    }
+
+    if (dbId) {
+      await supabase
+        .from('challenge_baqara')
+        .update({
+          target_days: state.targetDays,
+          start_date: state.startDate,
+          checked_days: state.checkedDays,
+        })
+        .eq('id', dbId);
+    } else {
+      const { data } = await supabase
+        .from('challenge_baqara')
+        .insert({
+          user_id: user.id,
+          target_days: state.targetDays,
+          start_date: state.startDate,
+          checked_days: state.checkedDays,
+        })
+        .select('id')
+        .single();
+      if (data) setDbId(data.id);
+    }
+  }, [user, dbId]);
 
   const startChallenge = () => {
     const state: ChallengeState = {
@@ -54,12 +118,12 @@ export default function DefiAlBaqara() {
       checkedDays: [],
     };
     setChallenge(state);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    saveChallenge(state);
   };
 
   const resetChallenge = () => {
     setChallenge(null);
-    localStorage.removeItem(STORAGE_KEY);
+    saveChallenge(null);
   };
 
   const toggleToday = () => {
@@ -72,7 +136,10 @@ export default function DefiAlBaqara() {
       updated.checkedDays = [...updated.checkedDays, today];
     }
     setChallenge(updated);
+    saveChallenge(updated);
   };
+
+  if (loading) return null;
 
   const todayChecked = challenge?.checkedDays.includes(getToday()) ?? false;
   const progress = challenge ? Math.min((challenge.checkedDays.length / challenge.targetDays) * 100, 100) : 0;
@@ -179,7 +246,6 @@ export default function DefiAlBaqara() {
           </button>
         </div>
 
-        {/* Progress bar */}
         <div className="mb-3">
           <div className="flex justify-between text-[10px] font-semibold mb-1.5" style={{ color: COLORS.emerald }}>
             <span>Progression</span>
@@ -196,7 +262,6 @@ export default function DefiAlBaqara() {
           </div>
         </div>
 
-        {/* Today's check */}
         <button
           onClick={toggleToday}
           className="w-full flex items-center justify-center gap-2 py-3 rounded-xl transition-all font-semibold text-sm"

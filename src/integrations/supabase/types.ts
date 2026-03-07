@@ -14,6 +14,63 @@ export type Database = {
   }
   public: {
     Tables: {
+      challenge_baqara: {
+        Row: {
+          checked_days: string[]
+          created_at: string
+          id: string
+          start_date: string
+          target_days: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          checked_days?: string[]
+          created_at?: string
+          id?: string
+          start_date?: string
+          target_days: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          checked_days?: string[]
+          created_at?: string
+          id?: string
+          start_date?: string
+          target_days?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      challenge_mulk: {
+        Row: {
+          created_at: string
+          days: boolean[]
+          id: string
+          updated_at: string
+          user_id: string
+          week_key: string
+        }
+        Insert: {
+          created_at?: string
+          days?: boolean[]
+          id?: string
+          updated_at?: string
+          user_id: string
+          week_key: string
+        }
+        Update: {
+          created_at?: string
+          days?: boolean[]
+          id?: string
+          updated_at?: string
+          user_id?: string
+          week_key?: string
+        }
+        Relationships: []
+      }
       circle_members: {
         Row: {
           accepted_charter: boolean | null
