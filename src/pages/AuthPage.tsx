@@ -10,7 +10,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
-type AuthMode = 'login' | 'signup' | 'forgot-password' | 'check-email';
+type AuthMode = 'login' | 'signup' | 'forgot-password' | 'check-email' | 'check-email-reset';
 
 const COOLDOWN_SECONDS = 60;
 
@@ -73,9 +73,29 @@ export default function AuthPage() {
         redirectTo: `${window.location.origin}/reset-password`,
       });
       if (error) toast.error(translateAuthError(error.message));
-      else { toast.success('Lien envoyé ! Vérifie ta boîte mail.'); setMode('login'); }
+      else { setMode('check-email-reset'); }
     } catch { toast.error('Une erreur est survenue'); }
     finally { setLoading(false); }
+  };
+
+  const handleForgotPasswordResend = async () => {
+    if (cooldown > 0 || !email) return;
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      if (error) {
+        toast.error(translateAuthError(error.message));
+      } else {
+        toast.success('Email renvoyé !');
+        startCooldown();
+      }
+    } catch {
+      toast.error('Une erreur est survenue');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -148,6 +168,18 @@ export default function AuthPage() {
               loading={loading}
               onResend={handleResend}
               onBack={() => setMode('login')}
+              title="Vérifie ta boîte mail"
+              description={<>Un email de confirmation a été envoyé à <strong className="text-foreground">{email}</strong>.</>}
+            />
+          ) : mode === 'check-email-reset' ? (
+            <CheckEmailView
+              email={email}
+              cooldown={cooldown}
+              loading={loading}
+              onResend={handleForgotPasswordResend}
+              onBack={() => setMode('login')}
+              title="Email envoyé !"
+              description={<>Un lien de réinitialisation a été envoyé à <strong className="text-foreground">{email}</strong>.</>}
             />
           ) : mode === 'forgot-password' ? (
             <ForgotPasswordForm
@@ -159,7 +191,7 @@ export default function AuthPage() {
             />
           ) : (
             <LoginSignupForm
-              mode={mode}
+              mode={mode as 'login' | 'signup'}
               email={email}
               setEmail={setEmail}
               password={password}
@@ -185,19 +217,20 @@ export default function AuthPage() {
 
 /* ── Sub-components ── */
 
-function CheckEmailView({ email, cooldown, loading, onResend, onBack }: {
+function CheckEmailView({ email, cooldown, loading, onResend, onBack, title, description }: {
   email: string; cooldown: number; loading: boolean;
   onResend: () => void; onBack: () => void;
+  title?: string; description?: React.ReactNode;
 }) {
   return (
     <div className="text-center space-y-4">
       <CheckCircle className="h-12 w-12 text-primary mx-auto" />
-      <h2 className="font-display text-xl">Vérifie ta boîte mail</h2>
+      <h2 className="font-display text-xl">{title || 'Vérifie ta boîte mail'}</h2>
       <p className="text-sm text-muted-foreground">
-        Un email de confirmation a été envoyé à <strong className="text-foreground">{email}</strong>.
+        {description || <>Un email de confirmation a été envoyé à <strong className="text-foreground">{email}</strong>.</>}
       </p>
       <div className="text-xs text-muted-foreground space-y-1">
-        <p>📬 Vérifie aussi tes <strong>spams</strong></p>
+        <p>📬 Vérifie aussi tes <strong>spams</strong> et <strong>courrier indésirable</strong></p>
         <p>⏳ L'email peut prendre quelques minutes</p>
       </div>
       <Button
