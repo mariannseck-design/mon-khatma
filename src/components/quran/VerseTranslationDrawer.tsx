@@ -223,6 +223,19 @@ export default function VerseTranslationDrawer({ verseKey, allVerses, onClose, o
                   <Play className="h-3.5 w-3.5 ml-0.5" />
                 )}
               </button>
+              {/* Favorite button */}
+              {user && (
+                <button
+                  onClick={toggleFavorite}
+                  className="w-8 h-8 rounded-full flex items-center justify-center transition-colors"
+                  style={{
+                    background: isFavorite ? 'rgba(220,38,38,0.15)' : 'rgba(181,148,46,0.15)',
+                    color: isFavorite ? '#dc2626' : '#1a1a1a',
+                  }}
+                >
+                  <Heart className="h-3.5 w-3.5" fill={isFavorite ? '#dc2626' : 'none'} />
+                </button>
+              )}
               <button
                 onClick={onClose}
                 className="w-7 h-7 rounded-full flex items-center justify-center"
