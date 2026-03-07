@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BookOpen, Check, Play, Pause, Eye, EyeOff, RotateCcw, Volume2, Star, ChevronDown, ChevronUp } from 'lucide-react';
+import { BookOpen, Check, Eye, EyeOff, RotateCcw, Volume2, Star, ChevronDown, ChevronUp } from 'lucide-react';
 import HifzStepWrapper from './HifzStepWrapper';
 import { SURAHS } from '@/lib/surahData';
 
@@ -61,7 +61,7 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
   });
   const [isPlaying, setIsPlaying] = useState(false);
   const [showMushaf, setShowMushaf] = useState(false);
-  const [showGuide, setShowGuide] = useState(false);
+  const [showGuide, setShowGuide] = useState(true);
   const [showCelebration, setShowCelebration] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const ayahsRef = useRef<{ audio: string }[]>([]);
