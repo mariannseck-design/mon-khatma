@@ -78,6 +78,26 @@ export default function AuthPage() {
     finally { setLoading(false); }
   };
 
+  const handleForgotPasswordResend = async () => {
+    if (cooldown > 0 || !email) return;
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      if (error) {
+        toast.error(translateAuthError(error.message));
+      } else {
+        toast.success('Email renvoyé !');
+        startCooldown();
+      }
+    } catch {
+      toast.error('Une erreur est survenue');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (cooldown > 0) return;
