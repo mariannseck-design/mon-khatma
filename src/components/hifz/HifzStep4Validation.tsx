@@ -32,6 +32,7 @@ interface Props {
 
 export default function HifzStep4Validation({ surahNumber, startVerse, endVerse, onNext, onBack }: Props) {
   const [arabicVerses, setArabicVerses] = useState<{ number: number; text: string }[]>([]);
+  const [mushafPage, setMushafPage] = useState<number | null>(null);
   const [attempt, setAttempt] = useState(0); // 0-based
   const [isRecording, setIsRecording] = useState(false);
   const [recordingTime, setRecordingTime] = useState(0);
