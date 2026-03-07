@@ -473,11 +473,13 @@ export default function AccueilPage() {
                 </h3>
               </div>
               <div className="space-y-4">
-                <p className="text-xs text-center font-medium" style={{ color: COLORS.gold }}>
-                  Lancement après le Ramadan 🌸
-                </p>
-                <DefiAlMulk disabled />
-                <DefiAlBaqara disabled />
+                {!isAdmin && (
+                  <p className="text-xs text-center font-medium" style={{ color: COLORS.gold }}>
+                    Lancement après le Ramadan 🌸
+                  </p>
+                )}
+                <DefiAlMulk disabled={!isAdmin} />
+                <DefiAlBaqara disabled={!isAdmin} />
               </div>
             </motion.div>
 
