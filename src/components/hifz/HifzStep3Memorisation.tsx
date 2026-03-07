@@ -137,7 +137,11 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
 
         {ancrage > 0 && ancrage < repetitionLevel && (
           <button
-            onClick={() => { setAncrage(0); localStorage.removeItem(storageKey); audioRef.current?.pause(); setIsPlaying(false); }}
+            onClick={() => {
+              if (window.confirm('Réinitialiser le compteur d\'ancrage ? Ta progression sera perdue.')) {
+                setAncrage(0); localStorage.removeItem(storageKey); audioRef.current?.pause(); setIsPlaying(false);
+              }
+            }}
             className="flex items-center justify-center gap-1.5 mx-auto px-3 py-1.5 rounded-lg text-xs transition-all active:scale-95"
             style={{ color: 'rgba(255,255,255,0.4)' }}
           >
