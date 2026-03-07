@@ -10,7 +10,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
-type AuthMode = 'login' | 'signup' | 'forgot-password' | 'check-email';
+type AuthMode = 'login' | 'signup' | 'forgot-password' | 'check-email' | 'check-email-reset';
 
 const COOLDOWN_SECONDS = 60;
 
