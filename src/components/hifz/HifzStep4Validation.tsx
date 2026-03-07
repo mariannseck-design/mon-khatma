@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mic, Square, Play, Pause, Check, X, Eye } from 'lucide-react';
 import HifzStepWrapper from './HifzStepWrapper';
+import { SURAHS } from '@/lib/surahData';
 
 const ENCOURAGEMENTS = [
   {
