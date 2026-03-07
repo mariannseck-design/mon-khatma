@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, Trash2, BookOpen } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
@@ -26,6 +27,7 @@ function getSurahName(num: number) {
 }
 
 export default function FavoriteVersesSection() {
+  const navigate = useNavigate();
   const { user } = useAuth();
   const [verses, setVerses] = useState<FavoriteVerse[]>([]);
   const [loading, setLoading] = useState(true);
@@ -105,10 +107,20 @@ export default function FavoriteVersesSection() {
                 style={{ background: 'rgba(255,255,255,0.7)', border: `1px solid ${COLORS.gold}18` }}
               >
                 <div className="flex items-start justify-between gap-2 mb-1.5">
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
-                    style={{ background: `${COLORS.gold}15`, color: COLORS.gold }}>
+                  <button
+                    onClick={() => {
+                      const surah = SURAHS.find(s => s.number === v.surah_number);
+                      if (surah) {
+                        localStorage.setItem('quran_reader_page', String(surah.startPage));
+                        navigate('/quran-reader');
+                      }
+                    }}
+                    className="text-[10px] font-semibold px-2 py-0.5 rounded-full flex items-center gap-1 active:scale-95 transition-transform"
+                    style={{ background: `${COLORS.gold}15`, color: COLORS.gold }}
+                  >
+                    <BookOpen className="h-3 w-3" />
                     {getSurahName(v.surah_number)} : {v.verse_number}
-                  </span>
+                  </button>
                   <button
                     onClick={() => removeFavorite(v.id)}
                     className="w-6 h-6 rounded-full flex items-center justify-center shrink-0"
