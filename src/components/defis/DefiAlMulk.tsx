@@ -1,8 +1,10 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect, useCallback } from 'react';
+import { motion } from 'framer-motion';
 import { Shield, Moon } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 
 const DAYS = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
 
@@ -21,7 +23,7 @@ function getWeekKey() {
 
 function getTodayIndex() {
   const day = new Date().getDay();
-  return day === 0 ? 6 : day - 1; // Monday=0 … Sunday=6
+  return day === 0 ? 6 : day - 1;
 }
 
 function isSundayEvening() {
@@ -30,32 +32,68 @@ function isSundayEvening() {
 }
 
 export default function DefiAlMulk() {
+  const { user } = useAuth();
   const weekKey = getWeekKey();
-  const [days, setDays] = useState<boolean[]>(() => {
-    const saved = localStorage.getItem(weekKey);
-    return saved ? JSON.parse(saved) : Array(7).fill(false);
-  });
+  const [days, setDays] = useState<boolean[]>(Array(7).fill(false));
   const [showCelebration, setShowCelebration] = useState(false);
+  const [loading, setLoading] = useState(true);
 
+  // Load from DB
   useEffect(() => {
-    localStorage.setItem(weekKey, JSON.stringify(days));
-  }, [days, weekKey]);
+    if (!user) {
+      // Fallback to localStorage for non-authenticated users
+      const saved = localStorage.getItem(weekKey);
+      setDays(saved ? JSON.parse(saved) : Array(7).fill(false));
+      setLoading(false);
+      return;
+    }
+
+    const load = async () => {
+      const { data } = await supabase
+        .from('challenge_mulk')
+        .select('days')
+        .eq('user_id', user.id)
+        .eq('week_key', weekKey)
+        .maybeSingle();
+
+      if (data?.days) {
+        setDays(data.days as boolean[]);
+      }
+      setLoading(false);
+    };
+    load();
+  }, [user, weekKey]);
+
+  const saveDays = useCallback(async (updated: boolean[]) => {
+    if (!user) {
+      localStorage.setItem(weekKey, JSON.stringify(updated));
+      return;
+    }
+
+    await supabase
+      .from('challenge_mulk')
+      .upsert(
+        { user_id: user.id, week_key: weekKey, days: updated },
+        { onConflict: 'user_id,week_key' }
+      );
+  }, [user, weekKey]);
 
   const toggleDay = (index: number) => {
     const updated = [...days];
     updated[index] = !updated[index];
     setDays(updated);
+    saveDays(updated);
 
-    // Sunday evening celebration
     if (updated[index] && index === 6 && isSundayEvening()) {
-      const allDone = updated.every(Boolean);
-      if (allDone) {
+      if (updated.every(Boolean)) {
         setTimeout(() => setShowCelebration(true), 400);
       }
     }
   };
 
   const completedCount = days.filter(Boolean).length;
+
+  if (loading) return null;
 
   return (
     <>
@@ -69,7 +107,6 @@ export default function DefiAlMulk() {
           boxShadow: `0 4px 20px -6px ${COLORS.emerald}60`,
         }}
       >
-        {/* Decorative glow */}
         <div className="absolute -top-8 -right-8 w-28 h-28 rounded-full blur-2xl" style={{ background: `${COLORS.goldAccent}12` }} />
 
         <div className="relative z-10">
@@ -94,7 +131,6 @@ export default function DefiAlMulk() {
             </span>
           </div>
 
-          {/* 7-day tracker */}
           <div className="flex justify-between gap-1">
             {DAYS.map((label, i) => {
               const isToday = i === getTodayIndex();
@@ -133,7 +169,6 @@ export default function DefiAlMulk() {
         </div>
       </motion.div>
 
-      {/* Celebration modal */}
       <Dialog open={showCelebration} onOpenChange={setShowCelebration}>
         <DialogContent className="sm:max-w-sm text-center border-none" style={{ background: `linear-gradient(135deg, #1b4332, ${COLORS.emerald})` }}>
           <DialogHeader className="space-y-3">
