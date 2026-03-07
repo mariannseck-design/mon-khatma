@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronRight, ChevronLeft, Loader2, Play, Pause, RotateCcw } from 'lucide-react';
+import { X, ChevronRight, ChevronLeft, Loader2, Play, Pause, Heart } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 import type { VerseLineInfo } from './ImageVerseOverlay';
 
 interface TranslationData {
@@ -16,9 +18,12 @@ interface Props {
 }
 
 export default function VerseTranslationDrawer({ verseKey, allVerses, onClose, onNavigate }: Props) {
+  const { user } = useAuth();
   const [data, setData] = useState<TranslationData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [favLoading, setFavLoading] = useState(false);
 
   // Audio state
   const [audioPlaying, setAudioPlaying] = useState(false);
