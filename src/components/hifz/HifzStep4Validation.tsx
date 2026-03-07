@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mic, Square, Play, Pause, Check, X, Eye } from 'lucide-react';
 import HifzStepWrapper from './HifzStepWrapper';
+import { SURAHS } from '@/lib/surahData';
 
 const ENCOURAGEMENTS = [
   {
@@ -31,6 +32,7 @@ interface Props {
 
 export default function HifzStep4Validation({ surahNumber, startVerse, endVerse, onNext, onBack }: Props) {
   const [arabicVerses, setArabicVerses] = useState<{ number: number; text: string }[]>([]);
+  const [mushafPage, setMushafPage] = useState<number | null>(null);
   const [attempt, setAttempt] = useState(0); // 0-based
   const [isRecording, setIsRecording] = useState(false);
   const [recordingTime, setRecordingTime] = useState(0);
@@ -46,7 +48,15 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const playbackRef = useRef<HTMLAudioElement | null>(null);
 
-  // Fetch arabic text
+  // Compute mushaf page from surah number
+  useEffect(() => {
+    const surah = SURAHS.find(s => s.number === surahNumber);
+    if (surah) {
+      setMushafPage(surah.startPage);
+    }
+  }, [surahNumber]);
+
+  // Fetch arabic text (kept for potential future use)
   useEffect(() => {
     const fetchArabic = async () => {
       try {
@@ -181,9 +191,9 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
         </div>
         <p className="text-white/40 text-xs text-center">Essai {attempt + 1}/3</p>
 
-        {/* Blurred Arabic text */}
+        {/* Blurred Mushaf image */}
         <div
-          className="rounded-2xl p-4 relative overflow-hidden cursor-pointer"
+          className="rounded-2xl relative overflow-hidden cursor-pointer"
           style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(212,175,55,0.15)' }}
           onTouchStart={() => setShowText(true)}
           onTouchEnd={() => setShowText(false)}
@@ -191,26 +201,27 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
           onMouseUp={() => setShowText(false)}
           onMouseLeave={() => setShowText(false)}
         >
-          <div className="flex items-center justify-between mb-2">
-            <p className="text-white/40 text-xs uppercase tracking-wider">Texte arabe</p>
+          <div className="flex items-center justify-between px-4 pt-3 pb-1">
+            <p className="text-white/40 text-xs uppercase tracking-wider">AYAT</p>
             <Eye className="h-4 w-4 text-white/30" />
           </div>
           <div
-            className="text-right leading-loose text-lg transition-all duration-300"
+            className="px-2 pb-2 transition-all duration-300"
             style={{
-              fontFamily: "'Scheherazade New', 'Traditional Arabic', serif",
-              direction: 'rtl',
-              color: 'white',
               filter: showText ? 'none' : 'blur(8px)',
-              userSelect: 'none',
             }}
           >
-            {arabicVerses.map(v => (
-              <span key={v.number}>{v.text} ﴿{v.number}﴾ </span>
-            ))}
+            {mushafPage && (
+              <img
+                src={`https://cdn.jsdelivr.net/gh/QuranHub/quran-pages-images@main/easyquran.com/hafs-tajweed/${mushafPage}.jpg`}
+                alt={`Page ${mushafPage} du Mushaf`}
+                className="w-full rounded-lg"
+                style={{ maxHeight: '200px', objectFit: 'contain' }}
+              />
+            )}
           </div>
           {!showText && (
-            <p className="text-white/30 text-xs text-center mt-2">Maintiens appuyé pour vérifier</p>
+            <p className="text-white/30 text-xs text-center pb-3">Maintiens appuyé pour vérifier</p>
           )}
         </div>
 
