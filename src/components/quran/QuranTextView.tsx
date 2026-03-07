@@ -17,6 +17,7 @@ interface QuranTextViewProps {
 
 const FONT_FAMILY = "'KFGQPC Uthmanic Script HAFS', 'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
 
+const BASMALA_LEADING_PATTERN = /^[\s\u200E\u200F\u061C]*(?:﷽|ب[\s\S]{0,120}?(?:ٱلرَّحِيمِ|ٱلرَّحِیمِ|الرَّحِيمِ|الرَّحِیمِ|الرَّحِيمِ|الرَّحِیمِ|الرَّحِيْمِ|الرَّحِيْمِ))(?=[\s\u200E\u200F\u061C]|$)[\s\u200E\u200F\u061C]*/u;
 
 function VerseCircle({ number, size }: { number: number; size: number }) {
   const bg = '#2E7D32';
