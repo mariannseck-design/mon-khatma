@@ -10,10 +10,11 @@ interface Props {
 
 export default function HifzStep1Revision({ onNext, onBack }: Props) {
   const [count, setCount] = useState(0);
-  const [timer, setTimer] = useState(300); // 5 minutes
+  const [timer, setTimer] = useState(300);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  useEffect(() => {
+  const startTimer = () => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
     intervalRef.current = setInterval(() => {
       setTimer(prev => {
         if (prev <= 1) {
@@ -23,8 +24,18 @@ export default function HifzStep1Revision({ onNext, onBack }: Props) {
         return prev - 1;
       });
     }, 1000);
+  };
+
+  useEffect(() => {
+    startTimer();
     return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
   }, []);
+
+  const handleReset = () => {
+    setCount(0);
+    setTimer(300);
+    startTimer();
+  };
 
   const mins = Math.floor(timer / 60);
   const secs = timer % 60;
@@ -32,12 +43,13 @@ export default function HifzStep1Revision({ onNext, onBack }: Props) {
   return (
     <HifzStepWrapper stepNumber={1} stepTitle="Le Réveil de la Veille" onBack={onBack}>
       <div className="text-center space-y-6">
-        <div
-          className="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center"
+        <button
+          onClick={handleReset}
+          className="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center active:scale-95 transition-transform"
           style={{ background: 'rgba(212,175,55,0.2)', border: '1px solid rgba(212,175,55,0.3)' }}
         >
           <RotateCcw className="h-8 w-8" style={{ color: '#d4af37' }} />
-        </div>
+        </button>
 
         <p className="text-white/80 text-sm leading-relaxed px-2">
           Avant d'avancer, consolidons tes acquis. Récite de mémoire, 5 fois, la partie apprise hier.

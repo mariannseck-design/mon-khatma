@@ -1,8 +1,11 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Headphones, Check, Play, Pause } from 'lucide-react';
+import { Headphones, Check, Play, Pause, BookOpen } from 'lucide-react';
 import HifzStepWrapper from './HifzStepWrapper';
 import { RECITERS } from '@/hooks/useQuranAudio';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { SURAHS } from '@/lib/surahData';
 
 interface Props {
   surahNumber: number;
@@ -13,11 +16,14 @@ interface Props {
 }
 
 export default function HifzStep2Impregnation({ surahNumber, startVerse, endVerse, onNext, onBack }: Props) {
+  const navigate = useNavigate();
   const [listenCount, setListenCount] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [reciter, setReciter] = useState('ar.alafasy');
+  const [currentAyahIndex, setCurrentAyahIndex] = useState(-1);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const ayahsRef = useRef<{ audio: string }[]>([]);
+  const ayahsRef = useRef<{ audio: string; text: string; numberInSurah: number }[]>([]);
+  const [ayahs, setAyahs] = useState<{ text: string; numberInSurah: number }[]>([]);
   const indexRef = useRef(0);
 
   const fetchAyahs = useCallback(async () => {
@@ -25,9 +31,11 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
       const res = await fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}/${reciter}`);
       const data = await res.json();
       if (data.code === 200) {
-        ayahsRef.current = data.data.ayahs
+        const filtered = data.data.ayahs
           .filter((a: any) => a.numberInSurah >= startVerse && a.numberInSurah <= endVerse)
-          .map((a: any) => ({ audio: a.audio }));
+          .map((a: any) => ({ audio: a.audio, text: a.text, numberInSurah: a.numberInSurah }));
+        ayahsRef.current = filtered;
+        setAyahs(filtered.map((a: any) => ({ text: a.text, numberInSurah: a.numberInSurah })));
       }
     } catch { /* ignore */ }
   }, [surahNumber, startVerse, endVerse, reciter]);
@@ -37,11 +45,13 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
   const playNextAyah = useCallback((idx: number) => {
     if (idx >= ayahsRef.current.length) {
       setIsPlaying(false);
+      setCurrentAyahIndex(-1);
       setListenCount(prev => prev + 1);
       indexRef.current = 0;
       return;
     }
     indexRef.current = idx;
+    setCurrentAyahIndex(idx);
     const audio = new Audio(ayahsRef.current[idx].audio);
     audioRef.current = audio;
     audio.onended = () => playNextAyah(idx + 1);
@@ -63,9 +73,17 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
     return () => { audioRef.current?.pause(); };
   }, []);
 
+  const openInMushaf = () => {
+    const surah = SURAHS.find(s => s.number === surahNumber);
+    if (surah) {
+      localStorage.setItem('quran_reader_page', String(surah.startPage));
+      navigate('/quran-reader');
+    }
+  };
+
   return (
     <HifzStepWrapper stepNumber={2} stepTitle="Imprégnation & Sens" onBack={onBack}>
-      <div className="text-center space-y-6">
+      <div className="text-center space-y-5">
         <div
           className="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center"
           style={{ background: 'rgba(212,175,55,0.2)', border: '1px solid rgba(212,175,55,0.3)' }}
@@ -74,8 +92,40 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
         </div>
 
         <p className="text-white/80 text-sm leading-relaxed px-2">
-          Écoute attentivement le récitateur 3 fois. La mémorisation est plus forte quand le cœur comprend.
+          Écoute attentivement le récitateur au moins 3 fois. Tu peux écouter autant de fois que tu le souhaites.
         </p>
+
+        {/* Verses display */}
+        {ayahs.length > 0 && (
+          <ScrollArea className="max-h-48 w-full rounded-xl" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(212,175,55,0.15)' }}>
+            <div className="p-4 space-y-3" dir="rtl">
+              {ayahs.map((ayah, idx) => (
+                <p
+                  key={ayah.numberInSurah}
+                  className="text-right leading-loose transition-all duration-300"
+                  style={{
+                    fontFamily: "'Amiri', 'Traditional Arabic', serif",
+                    fontSize: '1.25rem',
+                    color: currentAyahIndex === idx ? '#d4af37' : 'rgba(255,255,255,0.7)',
+                    textShadow: currentAyahIndex === idx ? '0 0 12px rgba(212,175,55,0.3)' : 'none',
+                  }}
+                >
+                  {ayah.text} <span className="text-xs opacity-50" style={{ fontFamily: 'sans-serif' }}>﴿{ayah.numberInSurah}﴾</span>
+                </p>
+              ))}
+            </div>
+          </ScrollArea>
+        )}
+
+        {/* Mushaf link */}
+        <button
+          onClick={openInMushaf}
+          className="flex items-center justify-center gap-2 mx-auto px-4 py-2 rounded-xl text-sm font-medium transition-all active:scale-95"
+          style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(212,175,55,0.2)', color: '#d4af37' }}
+        >
+          <BookOpen className="h-4 w-4" />
+          Ouvrir dans le Mushaf
+        </button>
 
         {/* Reciter selector */}
         <select
@@ -110,7 +160,7 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
           }
         </motion.button>
 
-        {/* Listen count */}
+        {/* Listen count - show up to 3 dots, then counter */}
         <div className="flex items-center justify-center gap-3">
           {[1, 2, 3].map(n => (
             <div
@@ -126,7 +176,9 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
             </div>
           ))}
         </div>
-        <p className="text-white/40 text-xs">Écoute {listenCount}/3</p>
+        <p className="text-white/40 text-xs">
+          Écoute {listenCount}/3{listenCount > 3 ? ` (${listenCount} au total)` : ''}
+        </p>
 
         {listenCount >= 3 && (
           <motion.button
