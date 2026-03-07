@@ -4,7 +4,6 @@ import { motion } from 'framer-motion';
 import { Headphones, Check, Play, Pause, BookOpen } from 'lucide-react';
 import HifzStepWrapper from './HifzStepWrapper';
 import { RECITERS } from '@/hooks/useQuranAudio';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { SURAHS } from '@/lib/surahData';
 
 interface Props {
@@ -22,25 +21,27 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
   const [reciter, setReciter] = useState('ar.alafasy');
   const [currentAyahIndex, setCurrentAyahIndex] = useState(-1);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const ayahsRef = useRef<{ audio: string; text: string; numberInSurah: number }[]>([]);
-  const [ayahs, setAyahs] = useState<{ text: string; numberInSurah: number }[]>([]);
+  const ayahsRef = useRef<{ audio: string; numberInSurah: number }[]>([]);
   const indexRef = useRef(0);
 
-  const fetchAyahs = useCallback(async () => {
+  // Calculate Mushaf page from surah data
+  const mushafPage = SURAHS.find(s => s.number === surahNumber)?.startPage ?? 1;
+  const mushafImageUrl = `https://cdn.jsdelivr.net/gh/QuranHub/quran-pages-images@main/easyquran.com/hafs-tajweed/${mushafPage}.jpg`;
+
+  const fetchAudio = useCallback(async () => {
     try {
       const res = await fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}/${reciter}`);
       const data = await res.json();
       if (data.code === 200) {
         const filtered = data.data.ayahs
           .filter((a: any) => a.numberInSurah >= startVerse && a.numberInSurah <= endVerse)
-          .map((a: any) => ({ audio: a.audio, text: a.text, numberInSurah: a.numberInSurah }));
+          .map((a: any) => ({ audio: a.audio, numberInSurah: a.numberInSurah }));
         ayahsRef.current = filtered;
-        setAyahs(filtered.map((a: any) => ({ text: a.text, numberInSurah: a.numberInSurah })));
       }
     } catch { /* ignore */ }
   }, [surahNumber, startVerse, endVerse, reciter]);
 
-  useEffect(() => { fetchAyahs(); }, [fetchAyahs]);
+  useEffect(() => { fetchAudio(); }, [fetchAudio]);
 
   const playNextAyah = useCallback((idx: number) => {
     if (idx >= ayahsRef.current.length) {
@@ -74,11 +75,8 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
   }, []);
 
   const openInMushaf = () => {
-    const surah = SURAHS.find(s => s.number === surahNumber);
-    if (surah) {
-      localStorage.setItem('quran_reader_page', String(surah.startPage));
-      navigate('/quran-reader');
-    }
+    localStorage.setItem('quran_reader_page', String(mushafPage));
+    navigate('/quran-reader');
   };
 
   return (
@@ -95,27 +93,18 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
           Écoute attentivement le récitateur au moins 3 fois. Tu peux écouter autant de fois que tu le souhaites.
         </p>
 
-        {/* Verses display */}
-        {ayahs.length > 0 && (
-          <ScrollArea className="max-h-48 w-full rounded-xl" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(212,175,55,0.15)' }}>
-            <div className="p-4 space-y-3" dir="rtl">
-              {ayahs.map((ayah, idx) => (
-                <p
-                  key={ayah.numberInSurah}
-                  className="text-right leading-loose transition-all duration-300"
-                  style={{
-                    fontFamily: "'Amiri', 'Traditional Arabic', serif",
-                    fontSize: '1.25rem',
-                    color: currentAyahIndex === idx ? '#d4af37' : 'rgba(255,255,255,0.7)',
-                    textShadow: currentAyahIndex === idx ? '0 0 12px rgba(212,175,55,0.3)' : 'none',
-                  }}
-                >
-                  {ayah.text} <span className="text-xs opacity-50" style={{ fontFamily: 'sans-serif' }}>﴿{ayah.numberInSurah}﴾</span>
-                </p>
-              ))}
-            </div>
-          </ScrollArea>
-        )}
+        {/* Mushaf image display */}
+        <div
+          className="max-h-64 overflow-auto w-full rounded-xl"
+          style={{ border: '1px solid rgba(212,175,55,0.25)' }}
+        >
+          <img
+            src={mushafImageUrl}
+            alt={`Page ${mushafPage} du Mushaf`}
+            className="w-full h-auto"
+            loading="eager"
+          />
+        </div>
 
         {/* Mushaf link */}
         <button
@@ -160,7 +149,7 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
           }
         </motion.button>
 
-        {/* Listen count - show up to 3 dots, then counter */}
+        {/* Listen count */}
         <div className="flex items-center justify-center gap-3">
           {[1, 2, 3].map(n => (
             <div
