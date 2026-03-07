@@ -148,6 +148,18 @@ export default function AuthPage() {
               loading={loading}
               onResend={handleResend}
               onBack={() => setMode('login')}
+              title="Vérifie ta boîte mail"
+              description={<>Un email de confirmation a été envoyé à <strong className="text-foreground">{email}</strong>.</>}
+            />
+          ) : mode === 'check-email-reset' ? (
+            <CheckEmailView
+              email={email}
+              cooldown={cooldown}
+              loading={loading}
+              onResend={handleForgotPasswordResend}
+              onBack={() => setMode('login')}
+              title="Email envoyé !"
+              description={<>Un lien de réinitialisation a été envoyé à <strong className="text-foreground">{email}</strong>.</>}
             />
           ) : mode === 'forgot-password' ? (
             <ForgotPasswordForm
@@ -159,7 +171,7 @@ export default function AuthPage() {
             />
           ) : (
             <LoginSignupForm
-              mode={mode}
+              mode={mode as 'login' | 'signup'}
               email={email}
               setEmail={setEmail}
               password={password}
