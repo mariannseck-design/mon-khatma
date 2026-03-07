@@ -111,7 +111,43 @@ export default function VerseTranslationDrawer({ verseKey, allVerses, onClose, o
     return () => { cancelled = true; };
   }, [verseKey]);
 
-  const currentIdx = allVerses.findIndex(v => v.verseKey === verseKey);
+  // Check if verse is favorited
+  useEffect(() => {
+    if (!verseKey || !user) { setIsFavorite(false); return; }
+    const check = async () => {
+      const { data: fav } = await supabase
+        .from('favorite_verses')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('verse_key', verseKey)
+        .maybeSingle();
+      setIsFavorite(!!fav);
+    };
+    check();
+  }, [verseKey, user]);
+
+  const toggleFavorite = async () => {
+    if (!verseKey || !user || favLoading) return;
+    setFavLoading(true);
+    const [surah, verse] = verseKey.split(':').map(Number);
+    
+    if (isFavorite) {
+      await supabase.from('favorite_verses').delete().eq('user_id', user.id).eq('verse_key', verseKey);
+      setIsFavorite(false);
+    } else {
+      await supabase.from('favorite_verses').insert({
+        user_id: user.id,
+        surah_number: surah,
+        verse_number: verse,
+        verse_key: verseKey,
+        arabic_text: data?.arabic || null,
+        translation_text: data?.translation || null,
+      });
+      setIsFavorite(true);
+    }
+    setFavLoading(false);
+  };
+
   const canPrev = currentIdx > 0;
   const canNext = currentIdx < allVerses.length - 1;
 
