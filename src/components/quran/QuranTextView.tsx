@@ -215,8 +215,33 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 28, dark
         className={`flex-1 flex flex-col px-5 py-3 pb-16 ${page <= 2 ? 'justify-center items-center' : ''}`}
         style={{ minHeight: 0 }}
       >
-        {grouped.map((group) => (
+        {grouped.map((group, groupIndex) => (
           <div key={`${group.surahNumber}-${page}`} className="last:mb-0">
+            {/* Decorative separator between surahs */}
+            {groupIndex > 0 && group.ayahs[0].numberInSurah === 1 && (
+              <div className="flex items-center justify-center my-4 gap-3" dir="ltr">
+                <div
+                  className="flex-1 h-px"
+                  style={{
+                    background: darkMode
+                      ? 'linear-gradient(to right, transparent, #6a9a6a, transparent)'
+                      : 'linear-gradient(to right, transparent, #2E7D32, transparent)',
+                  }}
+                />
+                <span style={{ color: darkMode ? '#6a9a6a' : '#2E7D32', fontSize: '18px', lineHeight: 1 }}>
+                  ✦
+                </span>
+                <div
+                  className="flex-1 h-px"
+                  style={{
+                    background: darkMode
+                      ? 'linear-gradient(to right, transparent, #6a9a6a, transparent)'
+                      : 'linear-gradient(to right, transparent, #2E7D32, transparent)',
+                  }}
+                />
+              </div>
+            )}
+
             {/* Surah header */}
             {group.ayahs[0].numberInSurah === 1 && (
               <>
@@ -243,8 +268,8 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 28, dark
               </>
             )}
 
-            {/* Ayahs — verse by verse */}
-            <div className={page <= 2 ? 'text-center' : ''}>
+            {/* Ayahs — centered */}
+            <div style={{ textAlign: 'center' }}>
               {group.ayahs.map((ayah) => {
                 const isActive = activeAyah === ayah.number;
                 const tajweedContent = renderTajweed(ayah.text, darkMode);
@@ -259,7 +284,7 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 28, dark
                     className="cursor-pointer transition-colors duration-200"
                     style={{
                       display: 'block',
-                      textAlign: page <= 2 ? 'center' : 'justify',
+                      textAlign: 'center',
                       fontSize: `${computedFontSize}px`,
                       lineHeight: `${lineHeight}px`,
                       color: textColor,
