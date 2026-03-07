@@ -1,9 +1,10 @@
 import { useState, useEffect, useMemo } from 'react';
 import { AppLayout } from '@/components/layout/AppLayout';
-import { RefreshCw, RotateCcw } from 'lucide-react';
+import { RefreshCw, RotateCcw, BookOpen, CalendarDays } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { SURAHS } from '@/lib/surahData';
 import MurajaCountdown from '@/components/muraja/MurajaCountdown';
 import MurajaRabt from '@/components/muraja/MurajaRabt';
 import MurajaTour from '@/components/muraja/MurajaTour';
@@ -66,6 +67,33 @@ export default function MurjaPage() {
     const nextDateStr = sorted[0].next_review_date;
     return new Date(nextDateStr + 'T00:00:00');
   }, [allVerses]);
+
+  // Total memorized verse count
+  const totalVersesCount = useMemo(() => {
+    return allVerses.reduce((sum, v) => sum + (v.verse_end - v.verse_start + 1), 0);
+  }, [allVerses]);
+
+  // Group by surah for summary
+  const surahSummary = useMemo(() => {
+    const map = new Map<number, { name: string; versesCount: number; nextReview: string }>();
+    for (const v of allVerses) {
+      const existing = map.get(v.surah_number);
+      const count = v.verse_end - v.verse_start + 1;
+      if (existing) {
+        existing.versesCount += count;
+        if (v.next_review_date < existing.nextReview) existing.nextReview = v.next_review_date;
+      } else {
+        const surahName = SURAHS.find(s => s.number === v.surah_number)?.name || `Sourate ${v.surah_number}`;
+        map.set(v.surah_number, { name: surahName, versesCount: count, nextReview: v.next_review_date });
+      }
+    }
+    return [...map.values()].sort((a, b) => a.nextReview.localeCompare(b.nextReview));
+  }, [allVerses]);
+
+  const formatDate = (dateStr: string) => {
+    const d = new Date(dateStr + 'T00:00:00');
+    return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+  };
 
   const refresh = () => setRefreshKey(k => k + 1);
 
@@ -141,6 +169,46 @@ export default function MurjaPage() {
                 refresh();
               }}
             />
+
+            {/* Summary of memorized verses */}
+            <div
+              className="rounded-2xl p-5 space-y-4"
+              style={{
+                background: 'linear-gradient(135deg, rgba(13,115,119,0.12), rgba(20,145,155,0.06))',
+                border: '1px solid rgba(212,175,55,0.2)',
+              }}
+            >
+              <div className="flex items-center gap-2">
+                <BookOpen className="h-5 w-5" style={{ color: '#d4af37' }} />
+                <h3
+                  className="text-base font-semibold"
+                  style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#d4af37' }}
+                >
+                  Mon trésor — {totalVersesCount} verset{totalVersesCount > 1 ? 's' : ''} ancré{totalVersesCount > 1 ? 's' : ''}
+                </h3>
+              </div>
+
+              <div className="space-y-2">
+                {surahSummary.map((s) => (
+                  <div
+                    key={s.name}
+                    className="flex items-center justify-between px-3 py-2 rounded-xl"
+                    style={{ background: 'rgba(13,115,119,0.08)' }}
+                  >
+                    <span className="text-sm font-medium" style={{ color: '#0d7377' }}>
+                      {s.name}
+                    </span>
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <span>{s.versesCount} v.</span>
+                      <span className="flex items-center gap-1">
+                        <CalendarDays className="h-3 w-3" />
+                        {formatDate(s.nextReview)}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
 
             {/* Refresh button */}
             <div className="text-center pt-2">
