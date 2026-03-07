@@ -1,21 +1,16 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Harmonisation du fond de l'overlay de traduction
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Changement unique
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+**Fichier : `src/components/quran/VerseTranslationDrawer.tsx`**
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+Ligne ~130, remplacer le style `background: '#faf8f2'` par un fond beige/crème plus chaud correspondant au Mushaf : `background: '#f5e6c8'` (ton parchemin doré clair).
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
-
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+Mettre à jour les couleurs du texte pour assurer la lisibilité :
+- Texte arabe : noir `#1a1a1a` (au lieu de `#2d3a25`)
+- Traduction française : noir/gris foncé `#2a2a2a` (au lieu de `#5e6e54`)
+- Titre verset : noir `#1a1a1a`
+- Handle et bordure : teintes dorées cohérentes
 
