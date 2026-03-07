@@ -64,14 +64,31 @@ export default function HifzPage() {
 
       // Save memorized verses
       if (session) {
-        await supabase.from('hifz_memorized_verses').upsert({
-          user_id: user.id,
-          surah_number: session.surahNumber,
-          verse_start: session.startVerse,
-          verse_end: session.endVerse,
-          memorized_at: new Date().toISOString(),
-          next_review_date: new Date(Date.now() + 86400000).toISOString().split('T')[0],
-        }, { onConflict: 'user_id,surah_number,verse_start,verse_end' });
+        try {
+          const { error: upsertError } = await supabase.from('hifz_memorized_verses').upsert({
+            user_id: user.id,
+            surah_number: session.surahNumber,
+            verse_start: session.startVerse,
+            verse_end: session.endVerse,
+            memorized_at: new Date().toISOString(),
+            next_review_date: new Date(Date.now() + 86400000).toISOString().split('T')[0],
+          }, { onConflict: 'user_id,surah_number,verse_start,verse_end' });
+
+          if (upsertError) {
+            console.error('Upsert failed, trying insert:', upsertError);
+            const { error: insertError } = await supabase.from('hifz_memorized_verses').insert({
+              user_id: user.id,
+              surah_number: session.surahNumber,
+              verse_start: session.startVerse,
+              verse_end: session.endVerse,
+              memorized_at: new Date().toISOString(),
+              next_review_date: new Date(Date.now() + 86400000).toISOString().split('T')[0],
+            });
+            if (insertError) console.error('Insert fallback also failed:', insertError);
+          }
+        } catch (err) {
+          console.error('Error saving memorized verses:', err);
+        }
       }
 
       // Update streak
