@@ -16,13 +16,30 @@ interface Props {
 
 export default function HifzStep2Impregnation({ surahNumber, startVerse, endVerse, onNext, onBack }: Props) {
   const navigate = useNavigate();
-  const [listenCount, setListenCount] = useState(0);
+  const storageKey = `hifz_listen_${surahNumber}_${startVerse}_${endVerse}`;
+
+  const [listenCount, setListenCount] = useState(() => {
+    const saved = localStorage.getItem(storageKey);
+    return saved ? parseInt(saved, 10) || 0 : 0;
+  });
   const [isPlaying, setIsPlaying] = useState(false);
   const [reciter, setReciter] = useState('ar.alafasy');
   const [currentAyahIndex, setCurrentAyahIndex] = useState(-1);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const ayahsRef = useRef<{ audio: string; numberInSurah: number }[]>([]);
   const indexRef = useRef(0);
+
+  // Persist listen count
+  useEffect(() => {
+    localStorage.setItem(storageKey, String(listenCount));
+  }, [listenCount, storageKey]);
+
+  // Clear when moving to next step (3+ listens achieved)
+  useEffect(() => {
+    if (listenCount >= 3) {
+      localStorage.removeItem(storageKey);
+    }
+  }, [listenCount, storageKey]);
 
   // Calculate Mushaf page from surah data
   const mushafPage = SURAHS.find(s => s.number === surahNumber)?.startPage ?? 1;
