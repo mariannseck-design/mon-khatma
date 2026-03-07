@@ -80,9 +80,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         .maybeSingle();
 
       if (!existingProfile) {
+        // Get display_name from user metadata (set during signup)
+        const { data: { user } } = await supabase.auth.getUser();
+        const displayName = user?.user_metadata?.display_name || null;
+        
         await supabase
           .from('profiles')
-          .insert({ user_id: userId });
+          .insert({ user_id: userId, display_name: displayName });
       }
     } catch (error) {
       if (import.meta.env.DEV) console.error('Error ensuring profile:', error);
@@ -102,16 +106,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
       }
     });
-
-    if (!error && data.user) {
-      // Create profile with display name
-      await supabase
-        .from('profiles')
-        .insert({ 
-          user_id: data.user.id,
-          display_name: displayName 
-        });
-    }
 
     return { error: error as Error | null };
   };
