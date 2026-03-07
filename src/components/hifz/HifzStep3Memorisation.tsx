@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BookOpen, Check, Eye, EyeOff, RotateCcw, Volume2, Star, ChevronDown, ChevronUp } from 'lucide-react';
+import { BookOpen, Check, Eye, EyeOff, RotateCcw, Volume2, Star, ChevronDown, ChevronUp, ZoomIn, ZoomOut } from 'lucide-react';
 import HifzStepWrapper from './HifzStepWrapper';
 import { SURAHS } from '@/lib/surahData';
 
@@ -51,8 +50,10 @@ function getPhaseInfo(ancrage: number) {
   };
 }
 
+const MUSHAF_ZOOM_LEVELS = ['Petit', 'Moyen', 'Grand'] as const;
+const MUSHAF_MAX_HEIGHTS = ['max-h-48', 'max-h-56', 'max-h-[500px]'];
+
 export default function HifzStep3Memorisation({ surahNumber, startVerse, endVerse, onNext, onBack }: Props) {
-  const navigate = useNavigate();
   const storageKey = getStorageKey(surahNumber, startVerse, endVerse);
 
   const [ancrage, setAncrage] = useState(() => {
@@ -67,6 +68,7 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const ayahsRef = useRef<{ audio: string }[]>([]);
   const indexRef = useRef(0);
+  const [mushafZoom, setMushafZoom] = useState(1);
   const reciter = localStorage.getItem('quran_reciter') || 'ar.alafasy';
 
   const phaseInfo = getPhaseInfo(ancrage);
@@ -157,10 +159,6 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
     return () => { isPlayingRef.current = false; audioRef.current?.pause(); };
   }, []);
 
-  const openInMushaf = () => {
-    localStorage.setItem('quran_reader_page', String(mushafPage));
-    navigate('/quran-reader');
-  };
 
   const progress = Math.min((ancrage / TIKRAR_TARGET) * 100, 100);
   const isComplete = ancrage >= TIKRAR_TARGET;
@@ -352,36 +350,38 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
             {showMushaf ? 'Masquer le passage' : 'Voir le passage'}
           </button>
 
-          <AnimatePresence>
-            {showMushaf && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="space-y-3"
+          <div style={{ display: showMushaf ? 'block' : 'none' }} className="space-y-2">
+            <div className="flex items-center justify-end gap-1.5 px-1">
+              <button
+                onClick={() => setMushafZoom(z => Math.max(0, z - 1))}
+                disabled={mushafZoom === 0}
+                className="w-8 h-8 rounded-lg flex items-center justify-center disabled:opacity-30 transition-all active:scale-95"
+                style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(212,175,55,0.15)' }}
               >
-                <div
-                  className="max-h-56 overflow-auto w-full rounded-xl"
-                  style={{ border: '1px solid rgba(212,175,55,0.25)' }}
-                >
-                  <img
-                    src={mushafImageUrl}
-                    alt={`Page ${mushafPage} du Mushaf`}
-                    className="w-full h-auto"
-                    loading="eager"
-                  />
-                </div>
-                <button
-                  onClick={openInMushaf}
-                  className="flex items-center justify-center gap-2 mx-auto px-4 py-2 rounded-xl text-sm font-medium transition-all active:scale-95"
-                  style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(212,175,55,0.2)', color: '#d4af37' }}
-                >
-                  <BookOpen className="h-4 w-4" />
-                  Ouvrir dans le Mushaf
-                </button>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                <ZoomOut className="h-3.5 w-3.5" style={{ color: '#d4af37' }} />
+              </button>
+              <span className="text-xs px-2" style={{ color: 'rgba(255,255,255,0.5)' }}>{MUSHAF_ZOOM_LEVELS[mushafZoom]}</span>
+              <button
+                onClick={() => setMushafZoom(z => Math.min(2, z + 1))}
+                disabled={mushafZoom === 2}
+                className="w-8 h-8 rounded-lg flex items-center justify-center disabled:opacity-30 transition-all active:scale-95"
+                style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(212,175,55,0.15)' }}
+              >
+                <ZoomIn className="h-3.5 w-3.5" style={{ color: '#d4af37' }} />
+              </button>
+            </div>
+            <div
+              className={`${MUSHAF_MAX_HEIGHTS[mushafZoom]} overflow-auto w-full rounded-xl transition-all duration-300`}
+              style={{ border: '1px solid rgba(212,175,55,0.25)' }}
+            >
+              <img
+                src={mushafImageUrl}
+                alt={`Page ${mushafPage} du Mushaf`}
+                className="w-full h-auto"
+                loading="eager"
+              />
+            </div>
+          </div>
         </div>
 
         {/* Audio controls — manual +1 for all phases + speaker for help */}
