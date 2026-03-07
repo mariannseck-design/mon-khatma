@@ -119,21 +119,13 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
     audio.play().catch(() => setIsPlaying(false));
   }, []);
 
-  const togglePlay = () => {
+  const toggleAudioHelp = () => {
     if (isPlaying) {
       audioRef.current?.pause();
       setIsPlaying(false);
-    } else {
+    } else if (ayahsRef.current.length > 0) {
       setIsPlaying(true);
       playNextAyah(0);
-    }
-  };
-
-  const playOneAyahForCheck = () => {
-    if (ayahsRef.current.length > 0) {
-      const audio = new Audio(ayahsRef.current[0].audio);
-      audioRef.current = audio;
-      audio.play().catch(() => {});
     }
   };
 
@@ -387,12 +379,15 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
             </motion.button>
 
             <button
-              onClick={playOneAyahForCheck}
+              onClick={toggleAudioHelp}
               className="w-12 h-12 rounded-full flex items-center justify-center transition-all active:scale-95"
-              style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' }}
-              title="Aide audio ponctuelle"
+              style={{ 
+                background: isPlaying ? 'rgba(212,175,55,0.15)' : 'rgba(255,255,255,0.08)', 
+                border: isPlaying ? '1px solid rgba(212,175,55,0.4)' : '1px solid rgba(255,255,255,0.15)' 
+              }}
+              title={isPlaying ? 'Arrêter l\'audio' : 'Écouter le passage complet'}
             >
-              <Volume2 className="h-5 w-5" style={{ color: 'rgba(255,255,255,0.5)' }} />
+              <Volume2 className="h-5 w-5" style={{ color: isPlaying ? '#d4af37' : 'rgba(255,255,255,0.5)' }} />
             </button>
           </div>
         )}
