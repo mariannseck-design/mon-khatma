@@ -166,14 +166,14 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
           <p className="text-white/50 text-xs">(Objectif 40 répétitions)</p>
         </div>
 
-        {/* Collapsible guide */}
+        {/* Guide introductif */}
         <div className="rounded-xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>
           <button
             onClick={() => setShowGuide(!showGuide)}
             className="w-full flex items-center justify-between px-4 py-2.5 text-xs font-medium transition-all"
             style={{ color: '#d4af37' }}
           >
-            <span>📋 Mode d'emploi des phases</span>
+            <span>📋 Mode d'emploi du Tikrar</span>
             {showGuide ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
           </button>
           <AnimatePresence>
@@ -184,19 +184,39 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
                 exit={{ height: 0, opacity: 0 }}
                 className="overflow-hidden"
               >
-                <div className="px-4 pb-3 space-y-2 text-left">
-                  <div className="flex items-start gap-2 rounded-lg px-3 py-2" style={{ background: ancrage < 10 ? 'rgba(78,205,196,0.15)' : 'transparent', border: ancrage < 10 ? '1px solid rgba(78,205,196,0.3)' : '1px solid transparent' }}>
-                    <span className="text-xs mt-0.5" style={{ color: '#4ecdc4', fontWeight: ancrage < 10 ? 700 : 400 }}>1–10</span>
-                    <p className="text-xs text-white/70">📖 Mushaf + audio récitant (Tajwid)</p>
+                <div className="px-4 pb-4 space-y-3 text-left">
+                  <p className="text-xs text-white/70 leading-relaxed">
+                    Pour graver ce passage dans votre cœur par la grâce d'Allah{' '}
+                    <span style={{ fontFamily: "'Amiri', serif", fontWeight: 'bold', fontSize: '1.1em' }}>(عز وجل)</span>
+                    , nous vous suggérons un minimum de 15 répétitions pour la première séance. À titre de référence, l'école Tikrar de Médine préconise 40 répétitions pour une maîtrise parfaite.
+                  </p>
+
+                  <p className="text-xs font-semibold" style={{ color: '#d4af37' }}>Mode d'emploi de votre progression :</p>
+
+                  <div className="space-y-2">
+                    <div className="flex items-start gap-2 rounded-lg px-3 py-2" style={{ background: ancrage < 10 ? 'rgba(78,205,196,0.15)' : 'transparent', border: ancrage < 10 ? '1px solid rgba(78,205,196,0.3)' : '1px solid transparent' }}>
+                      <span className="text-xs mt-0.5 whitespace-nowrap" style={{ color: '#4ecdc4', fontWeight: ancrage < 10 ? 700 : 400 }}>1 à 10</span>
+                      <p className="text-xs text-white/70">📖 Regardez le Mushaf et récitez avec le récitant pour maîtriser le Tajwid.</p>
+                    </div>
+                    <div className="flex items-start gap-2 rounded-lg px-3 py-2" style={{ background: ancrage >= 10 && ancrage < 15 ? 'rgba(240,208,96,0.15)' : 'transparent', border: ancrage >= 10 && ancrage < 15 ? '1px solid rgba(240,208,96,0.3)' : '1px solid transparent' }}>
+                      <span className="text-xs mt-0.5 whitespace-nowrap" style={{ color: '#f0d060', fontWeight: ancrage >= 10 && ancrage < 15 ? 700 : 400 }}>11 à 15</span>
+                      <p className="text-xs text-white/70">📖 Regardez le Mushaf et récitez sans le récitant (audio désactivé).</p>
+                    </div>
+                    <div className="flex items-start gap-2 rounded-lg px-3 py-2" style={{ background: ancrage >= 15 ? 'rgba(212,175,55,0.15)' : 'transparent', border: ancrage >= 15 ? '1px solid rgba(212,175,55,0.3)' : '1px solid transparent' }}>
+                      <span className="text-xs mt-0.5 whitespace-nowrap" style={{ color: '#d4af37', fontWeight: ancrage >= 15 ? 700 : 400 }}>Dès la 16ème</span>
+                      <p className="text-xs text-white/70">🧠 Récitez exclusivement de mémoire, sans Mushaf et sans audio.</p>
+                    </div>
                   </div>
-                  <div className="flex items-start gap-2 rounded-lg px-3 py-2" style={{ background: ancrage >= 10 && ancrage < 15 ? 'rgba(240,208,96,0.15)' : 'transparent', border: ancrage >= 10 && ancrage < 15 ? '1px solid rgba(240,208,96,0.3)' : '1px solid transparent' }}>
-                    <span className="text-xs mt-0.5" style={{ color: '#f0d060', fontWeight: ancrage >= 10 && ancrage < 15 ? 700 : 400 }}>11–15</span>
-                    <p className="text-xs text-white/70">📖 Mushaf seul, sans audio</p>
-                  </div>
-                  <div className="flex items-start gap-2 rounded-lg px-3 py-2" style={{ background: ancrage >= 15 ? 'rgba(212,175,55,0.15)' : 'transparent', border: ancrage >= 15 ? '1px solid rgba(212,175,55,0.3)' : '1px solid transparent' }}>
-                    <span className="text-xs mt-0.5" style={{ color: '#d4af37', fontWeight: ancrage >= 15 ? 700 : 400 }}>16–40</span>
-                    <p className="text-xs text-white/70">🧠 De mémoire, sans Mushaf ni audio</p>
-                  </div>
+
+                  <p className="text-xs text-white/50 italic leading-relaxed">
+                    En cas de doute (oubli ou Tajwid), cliquez sur l'icône du haut-parleur 🔊 ou jetez un bref coup d'œil au Mushaf.
+                  </p>
+
+                  <p className="text-xs text-white/70 leading-relaxed">
+                    Prenez le temps nécessaire. Votre persévérance honore le message transmis par le Prophète Mouhamed{' '}
+                    <span style={{ fontFamily: "'Amiri', serif", fontWeight: 'bold', fontSize: '1.1em' }}>(ﷺ)</span>
+                    . Bismillah !
+                  </p>
                 </div>
               </motion.div>
             )}
@@ -348,87 +368,50 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
           </AnimatePresence>
         </div>
 
-        {/* Audio controls */}
+        {/* Audio controls — manual +1 for all phases + speaker for help */}
         {!isComplete && (
           <div className="flex items-center justify-center gap-4">
-            {/* Main play button — visible in phase 1, hidden in phases 2-3 */}
-            {phaseInfo.audioEnabled && (
-              <motion.button
-                whileTap={{ scale: 0.95 }}
-                onClick={togglePlay}
-                className="w-20 h-20 rounded-full flex items-center justify-center"
-                style={{
-                  background: isPlaying ? 'rgba(212,175,55,0.3)' : 'rgba(255,255,255,0.1)',
-                  border: `2px solid ${isPlaying ? '#d4af37' : 'rgba(255,255,255,0.2)'}`,
-                }}
-              >
-                {isPlaying
-                  ? <Pause className="h-8 w-8" style={{ color: '#d4af37' }} />
-                  : <Play className="h-8 w-8 ml-1" style={{ color: '#d4af37' }} />
-                }
-              </motion.button>
-            )}
+            <motion.button
+              whileTap={{ scale: 0.85 }}
+              onClick={() => {
+                setAncrage(prev => Math.min(prev + 1, TIKRAR_TARGET));
+                try { navigator?.vibrate?.(40); } catch {}
+              }}
+              className="w-20 h-20 rounded-full flex items-center justify-center"
+              style={{
+                background: 'rgba(212,175,55,0.15)',
+                border: '2px solid rgba(212,175,55,0.4)',
+              }}
+            >
+              <span className="text-2xl font-bold" style={{ color: '#d4af37' }}>+1</span>
+            </motion.button>
 
-            {/* Manual increment for phases without audio */}
-            {!phaseInfo.audioEnabled && (
-              <motion.button
-                whileTap={{ scale: 0.85 }}
-                onClick={() => {
-                  setAncrage(prev => Math.min(prev + 1, TIKRAR_TARGET));
-                  try { navigator?.vibrate?.(40); } catch {}
-                }}
-                className="w-20 h-20 rounded-full flex items-center justify-center"
-                style={{
-                  background: 'rgba(212,175,55,0.15)',
-                  border: '2px solid rgba(212,175,55,0.4)',
-                }}
-              >
-                <span className="text-2xl font-bold" style={{ color: '#d4af37' }}>+1</span>
-              </motion.button>
-            )}
-
-            {/* Quick audio check button (phase 2-3) */}
-            {!phaseInfo.audioEnabled && (
-              <button
-                onClick={playOneAyahForCheck}
-                className="w-12 h-12 rounded-full flex items-center justify-center transition-all active:scale-95"
-                style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' }}
-                title="Vérification audio rapide"
-              >
-                <Volume2 className="h-5 w-5" style={{ color: 'rgba(255,255,255,0.5)' }} />
-              </button>
-            )}
+            <button
+              onClick={playOneAyahForCheck}
+              className="w-12 h-12 rounded-full flex items-center justify-center transition-all active:scale-95"
+              style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' }}
+              title="Aide audio ponctuelle"
+            >
+              <Volume2 className="h-5 w-5" style={{ color: 'rgba(255,255,255,0.5)' }} />
+            </button>
           </div>
         )}
 
-        {/* Next button */}
-        {ancrage >= 1 && (
+        {/* Next button — only when 40/40 reached */}
+        {isComplete && (
           <motion.button
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             whileTap={{ scale: 0.97 }}
             onClick={onNext}
-            disabled={!isComplete && ancrage < 1}
             className="w-full rounded-2xl py-4 flex items-center justify-center gap-2 font-semibold"
             style={{
-              background: isComplete
-                ? 'linear-gradient(135deg, #d4af37, #b8962e)'
-                : 'rgba(212,175,55,0.2)',
-              color: isComplete ? '#1a2e1a' : '#d4af37',
-              border: !isComplete ? '1px solid rgba(212,175,55,0.3)' : 'none',
+              background: 'linear-gradient(135deg, #d4af37, #b8962e)',
+              color: '#1a2e1a',
             }}
           >
             <Check className="h-5 w-5" />
-            {isComplete ? (
-              'Passer au test de validation'
-            ) : (
-              <span className="flex flex-col items-center">
-                <span>Passer quand même ({ancrage}/{TIKRAR_TARGET})</span>
-                <span className="text-xs font-normal" style={{ color: 'rgba(212,175,55,0.6)' }}>
-                  L'ancrage c'est 40 fois minimum 🤲
-                </span>
-              </span>
-            )}
+            Passer au test de validation
           </motion.button>
         )}
       </div>
