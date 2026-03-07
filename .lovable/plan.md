@@ -1,21 +1,24 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Corriger le zoom du Mushaf (étapes 2 et 3)
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Problème
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+Le zoom utilise `width: 100%/150%/220%` sur l'image dans un conteneur fixe `max-h-72`. L'image s'agrandit en largeur mais le conteneur reste petit — l'utilisateur doit scroller dans les deux sens sans impression de zoom réel.
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+### Correction
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+Utiliser `transform: scale()` pour un vrai zoom visuel, combiné à un agrandissement du conteneur :
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+- **Petit** : conteneur `max-h-48`, image `width: 100%` (vue d'ensemble)
+- **Moyen** : conteneur `max-h-72`, image `width: 150%` (par défaut)
+- **Grand** : conteneur `max-h-[500px]`, image `width: 220%` (détail)
+
+Le conteneur grandit avec le zoom pour que l'utilisateur voie réellement plus de détails sans être coincé dans une petite fenêtre.
+
+Aussi : remplacer `transition-transform` par `transition-all` sur l'image pour animer le changement de width.
+
+### Fichiers modifiés
+- `src/components/hifz/HifzStep2Impregnation.tsx`
+- `src/components/hifz/HifzStep3Memorisation.tsx`
 
