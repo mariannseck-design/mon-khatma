@@ -252,13 +252,8 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 28, dark
                 // Remove Basmala from verse 1 text for all surahs except Al-Fatiha (1) and At-Tawbah (9)
                 let displayText = ayah.text;
                 if (ayah.numberInSurah === 1 && group.surahNumber !== 1 && group.surahNumber !== 9) {
-                  // Remove all known Basmala variants (different Unicode forms)
-                  displayText = displayText
-                    .replace(/^بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ\s*/, '')
-                    .replace(/^بِسۡمِ ٱللَّهِ ٱلرَّحۡمَـٰنِ ٱلرَّحِیمِ\s*/, '')
-                    .replace(/^بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ\s*/, '')
-                    .replace(/^بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ\s*/, '')
-                    .replace(/^﷽\s*/, '');
+                  // Keep only the large green Basmala header; strip any leading Basmala variant from verse text
+                  displayText = displayText.replace(BASMALA_LEADING_PATTERN, '');
                 }
 
                 return (
