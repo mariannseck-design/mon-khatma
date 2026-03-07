@@ -16,10 +16,10 @@ Deno.serve(async (req) => {
   );
 
   const fakeUserIds = [
-    '197398f4-b1a0-4c8e-8e1a-1b2c3d4e5f6a', // aitougnaounadia@hmail.com
-    '8f2dc9d5-a1b2-4c3d-8e4f-5a6b7c8d9e0f', // testlovable2026@yopmail.com
-    '609a518b-1a2b-3c4d-5e6f-7a8b9c0d1e2f', // mactar.coran@gmail
-    '2d880e35-a1b2-3c4d-5e6f-7a8b9c0d1e2f', // rahma.benyedir2ga@gmail.clm
+    '197398f4-3cd2-448f-b659-00f777fc8eec', // aitougnaounadia@hmail.com
+    '8f2dc9d5-ac72-4986-be86-6ce84f24ae79', // testlovable2026@yopmail.com
+    '609a518b-b014-457b-a64e-adf1854a685a', // mactar.coran@gmail
+    '2d880e35-9fe8-448d-836d-55c7818ab2fa', // rahma.benyedir2ga@gmail.clm
   ];
 
   const results = [];
