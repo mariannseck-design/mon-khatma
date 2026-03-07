@@ -1,21 +1,27 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Mise à jour de la page Tikrar — texte introductif enrichi, verrouillage strict, audio à la demande uniquement
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Changements dans `src/components/hifz/HifzStep3Memorisation.tsx`
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+**1. Remplacer le guide dépliable actuel** (lignes 169-204) par un texte introductif complet et toujours visible (ou dépliable mais ouvert par défaut). Ce texte inclura :
+- Le paragraphe d'introduction : « Pour graver ce passage dans votre cœur par la grâce d'Allah (عز وجل)... Bismillah ! »
+- Le mode d'emploi des 3 phases (1-10, 11-15, 16+) avec les consignes détaillées demandées
+- La mention du Prophète Mouhamed avec l'honorifique correct (ﷺ) en police Amiri
+- La note sur l'aide ponctuelle (haut-parleur / coup d'œil au Mushaf)
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+**2. Verrouillage strict du bouton "Étape suivante"** (lignes 404-433) :
+- Supprimer le bouton "Passer quand même" : le bouton n'apparaît QUE quand `ancrage >= 40`
+- Le bouton reste masqué (pas grisé, simplement absent) tant que 40/40 n'est pas atteint
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+**3. Audio désactivé par défaut** :
+- Supprimer le gros bouton Play automatique de la phase 1 (lignes 354-370)
+- À la place, afficher le bouton +1 manuel pour TOUTES les phases
+- Conserver uniquement le petit bouton haut-parleur discret (Volume2) pour aide ponctuelle dans TOUTES les phases (pas seulement 2-3)
+- Le bouton haut-parleur reste identique : lecture d'un verset à la demande
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+**4. Conserver tel quel** : compteur circulaire, célébration à 40/40, message de bienveillance (phase 3), persistance localStorage, bouton Mushaf toggle, bouton reset.
+
+### Fichier modifié
+- `src/components/hifz/HifzStep3Memorisation.tsx`
 
