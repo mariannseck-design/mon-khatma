@@ -61,6 +61,7 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
   });
   const [isPlaying, setIsPlaying] = useState(false);
   const [showMushaf, setShowMushaf] = useState(false);
+  const [showGuide, setShowGuide] = useState(false);
   const [showCelebration, setShowCelebration] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const ayahsRef = useRef<{ audio: string }[]>([]);
@@ -163,6 +164,43 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
         <div>
           <p className="text-sm font-semibold" style={{ color: '#d4af37' }}>L'ancrage d'acier</p>
           <p className="text-white/50 text-xs">(Objectif 40 répétitions)</p>
+        </div>
+
+        {/* Collapsible guide */}
+        <div className="rounded-xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>
+          <button
+            onClick={() => setShowGuide(!showGuide)}
+            className="w-full flex items-center justify-between px-4 py-2.5 text-xs font-medium transition-all"
+            style={{ color: '#d4af37' }}
+          >
+            <span>📋 Mode d'emploi des phases</span>
+            {showGuide ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+          </button>
+          <AnimatePresence>
+            {showGuide && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                className="overflow-hidden"
+              >
+                <div className="px-4 pb-3 space-y-2 text-left">
+                  <div className="flex items-start gap-2 rounded-lg px-3 py-2" style={{ background: ancrage < 10 ? 'rgba(78,205,196,0.15)' : 'transparent', border: ancrage < 10 ? '1px solid rgba(78,205,196,0.3)' : '1px solid transparent' }}>
+                    <span className="text-xs mt-0.5" style={{ color: '#4ecdc4', fontWeight: ancrage < 10 ? 700 : 400 }}>1–10</span>
+                    <p className="text-xs text-white/70">📖 Mushaf + audio récitant (Tajwid)</p>
+                  </div>
+                  <div className="flex items-start gap-2 rounded-lg px-3 py-2" style={{ background: ancrage >= 10 && ancrage < 15 ? 'rgba(240,208,96,0.15)' : 'transparent', border: ancrage >= 10 && ancrage < 15 ? '1px solid rgba(240,208,96,0.3)' : '1px solid transparent' }}>
+                    <span className="text-xs mt-0.5" style={{ color: '#f0d060', fontWeight: ancrage >= 10 && ancrage < 15 ? 700 : 400 }}>11–15</span>
+                    <p className="text-xs text-white/70">📖 Mushaf seul, sans audio</p>
+                  </div>
+                  <div className="flex items-start gap-2 rounded-lg px-3 py-2" style={{ background: ancrage >= 15 ? 'rgba(212,175,55,0.15)' : 'transparent', border: ancrage >= 15 ? '1px solid rgba(212,175,55,0.3)' : '1px solid transparent' }}>
+                    <span className="text-xs mt-0.5" style={{ color: '#d4af37', fontWeight: ancrage >= 15 ? 700 : 400 }}>16–40</span>
+                    <p className="text-xs text-white/70">🧠 De mémoire, sans Mushaf ni audio</p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Celebration overlay */}
