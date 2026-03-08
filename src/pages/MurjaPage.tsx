@@ -265,7 +265,7 @@ export default function MurjaPage() {
           >
             Muraja'a
           </h1>
-          <p className="text-xs" style={{ color: 'rgba(28,36,33,0.6)' }}>
+          <p className="text-xs font-medium" style={{ color: 'rgba(28,36,33,0.75)' }}>
             Consolide ta mémorisation — reset à minuit
           </p>
         </div>
