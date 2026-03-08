@@ -368,6 +368,46 @@ export default function AccueilPage() {
               )}
             </motion.div>
 
+            {/* LES SOURCES DE LUMIÈRE — Carte Premium */}
+            <motion.div variants={itemVariants}>
+              <Link to="/sources-de-lumiere" className="block">
+                <motion.div
+                  className="relative overflow-hidden rounded-[2rem] p-7 group"
+                  style={{
+                    background: 'linear-gradient(135deg, #faf8f5 0%, #f5e6c8 100%)',
+                    border: `3px solid ${COLORS.goldAccent}`,
+                    boxShadow: `0 8px 32px -8px ${COLORS.goldAccent}40`,
+                  }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <div className="absolute -bottom-6 -right-6 w-40 h-40 rounded-full blur-3xl" style={{ background: `${COLORS.goldAccent}15` }} />
+                  <div className="relative z-10 flex items-center gap-5">
+                    <div className="relative">
+                      <div
+                        className="w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0"
+                        style={{ background: `${COLORS.goldAccent}20`, border: `1.5px solid ${COLORS.goldAccent}40` }}
+                      >
+                        <Sparkles className="h-8 w-8" style={{ color: COLORS.goldAccent }} />
+                      </div>
+                      <div className="absolute inset-0 rounded-2xl blur-lg opacity-25" style={{ background: COLORS.goldAccent }} />
+                    </div>
+                    <div className="flex-1">
+                      <h3
+                        className="text-lg font-bold tracking-[0.08em]"
+                        style={{ fontFamily: "'Inter', sans-serif", color: COLORS.goldAccent }}
+                      >
+                        Les Sources de Lumière
+                      </h3>
+                      <p className="text-sm mt-0.5" style={{ color: COLORS.sage }}>
+                        Coran · Sunna · Salawât
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
+              </Link>
+            </motion.div>
+
             {/* ESPACE HIFZ */}
             <motion.div variants={itemVariants}>
               <Link to="/hifz" className="block">
