@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { RotateCcw, Check, Sparkles, BookOpen } from 'lucide-react';
 import HifzStepWrapper from './HifzStepWrapper';
+import HifzMushafToggle, { getMushafMode, setMushafMode, type MushafMode } from './HifzMushafToggle';
+import HifzMushafImage from './HifzMushafImage';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { SURAHS } from '@/lib/surahData';
