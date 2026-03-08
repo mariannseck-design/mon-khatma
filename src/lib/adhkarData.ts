@@ -596,13 +596,6 @@ export const POST_PRAYER_ADHKAR: DhikrItem[] = [
     french: "Ô Allah, je cherche refuge auprès de Toi contre la lâcheté, contre le fait d'être ramené au plus vil âge, contre les tentations de ce bas monde et contre le châtiment de la tombe.",
     target: 1,
   },
-  {
-    title: 'Après Salat al-Fajr et al-Maghrib (10×)',
-    arabic: 'لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ يُحْيِي وَيُمِيتُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ',
-    phonetic: "Lâ ilâha illa-llâhu wahdahu lâ sharîka lah, lahu-l-mulku wa lahu-l-hamd, yuhyî wa yumît, wa huwa 'alâ kulli shay'in qadîr.",
-    french: "Il n'y a de divinité qu'Allah, Seul sans associé. À Lui la royauté, à Lui la louange. Il donne la vie et la mort et Il est Omnipotent. (Après Fajr et Maghrib)",
-    target: 10,
-  },
 ];
 
 export const ANYTIME_ADHKAR: DhikrItem[] = [
