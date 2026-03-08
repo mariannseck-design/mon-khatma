@@ -388,13 +388,6 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
             <p className="text-xs" style={{ color: 'rgba(255,255,255,0.35)' }}>
               {isRecording ? 'Appuie pour arrêter' : 'Appuie pour enregistrer'}
             </p>
-            {/* Privacy note */}
-            <div className="flex items-center justify-center gap-1.5 pt-1">
-              <Lock className="h-3 w-3" style={{ color: 'rgba(255,255,255,0.25)' }} />
-              <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.25)' }}>
-                Tes enregistrements restent sur ton appareil et sont supprimés automatiquement
-              </p>
-            </div>
           </div>
         ) : (
           <div className="space-y-4">
