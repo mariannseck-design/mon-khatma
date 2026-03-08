@@ -1,6 +1,12 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { SURAHS } from '@/lib/surahData';
 import { getPageAyahs, type LocalAyah } from '@/lib/quranData';
+import {
+  getTajweedAnnotations,
+  TAJWEED_COLORS,
+  TAJWEED_COLORS_NIGHT,
+  type TajweedAnnotation,
+} from '@/lib/tajweedData';
 
 type Ayah = LocalAyah;
 
@@ -9,6 +15,7 @@ interface QuranTextViewProps {
   highlightAyah?: number | null;
   fontSize?: number;
   darkMode?: boolean;
+  tajweedEnabled?: boolean;
 }
 
 const FONT_FAMILY = "'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
@@ -16,31 +23,83 @@ const FONT_FAMILY = "'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
 // Raw Basmala words for zero-normalization detection
 const BASMALA_WORDS = ['بِسْمِ', 'ٱللَّهِ', 'ٱلرَّحْمَٰنِ', 'ٱلرَّحِيمِ'];
 
-function stripLeadingBasmala(text: string) {
+function stripLeadingBasmala(text: string): { stripped: string; offset: number } {
   const trimmed = text.trimStart();
-  if (!trimmed) return trimmed;
+  const leadingWhitespace = text.length - trimmed.length;
+  if (!trimmed) return { stripped: trimmed, offset: 0 };
 
   // Check for single Basmala ligature character
   if (trimmed.startsWith('﷽')) {
-    return trimmed.slice(1).trimStart();
+    const after = trimmed.slice(1).trimStart();
+    return { stripped: after, offset: text.length - after.length };
   }
 
-  // Check if the first 4 words match known Basmala patterns (raw comparison, zero normalization)
+  // Check if the first 4 words match known Basmala patterns
   const words = trimmed.split(/\s+/u);
-  if (words.length < 4) return trimmed;
+  if (words.length < 4) return { stripped: trimmed, offset: leadingWhitespace };
 
-  // Compare first 4 words against known Basmala variants
   const first4 = words.slice(0, 4);
   const isBasmala = first4.every((word, i) => {
-    // Strip any non-letter decoration characters for matching only
     const clean = word.replace(/[\u06DD\u06DE\u06E9\u06DA\u06DB\u06DC\u200E\u200F\u061C]/gu, '');
     return clean === BASMALA_WORDS[i];
   });
 
-  if (!isBasmala) return trimmed;
+  if (!isBasmala) return { stripped: trimmed, offset: leadingWhitespace };
 
-  if (words.length <= 4) return '';
-  return words.slice(4).join(' ').trimStart();
+  if (words.length <= 4) return { stripped: '', offset: text.length };
+  const remaining = words.slice(4).join(' ').trimStart();
+  return { stripped: remaining, offset: text.length - remaining.length };
+}
+
+/** Render text with tajweed color annotations */
+function renderTajweedText(
+  text: string,
+  annotations: TajweedAnnotation[],
+  darkMode: boolean,
+  charOffset: number = 0,
+): React.ReactNode[] {
+  if (!annotations.length) return [text];
+
+  const colors = darkMode ? TAJWEED_COLORS_NIGHT : TAJWEED_COLORS;
+  const segments: React.ReactNode[] = [];
+  let pos = 0;
+
+  for (const ann of annotations) {
+    const start = ann.start - charOffset;
+    const end = ann.end - charOffset;
+
+    // Skip annotations outside our text range
+    if (end <= 0 || start >= text.length) continue;
+
+    const effectiveStart = Math.max(start, 0);
+    const effectiveEnd = Math.min(end, text.length);
+
+    // Add plain text before this annotation
+    if (effectiveStart > pos) {
+      segments.push(text.slice(pos, effectiveStart));
+    }
+
+    // Add colored segment
+    const color = colors[ann.rule] || undefined;
+    if (color) {
+      segments.push(
+        <span key={`${ann.rule}-${effectiveStart}`} style={{ color }}>
+          {text.slice(effectiveStart, effectiveEnd)}
+        </span>
+      );
+    } else {
+      segments.push(text.slice(effectiveStart, effectiveEnd));
+    }
+
+    pos = effectiveEnd;
+  }
+
+  // Add remaining text
+  if (pos < text.length) {
+    segments.push(text.slice(pos));
+  }
+
+  return segments;
 }
 
 function VerseCircle({ number, size }: { number: number; size: number }) {
@@ -127,8 +186,12 @@ function SurahHeader({ surahNumber, surahName, darkMode }: { surahNumber: number
   );
 }
 
-export default function QuranTextView({ page, highlightAyah, fontSize = 28, darkMode = false }: QuranTextViewProps) {
-  const [ayahs, setAyahs] = useState<Ayah[]>([]);
+interface AyahWithAnnotations extends LocalAyah {
+  tajweed?: TajweedAnnotation[];
+}
+
+export default function QuranTextView({ page, highlightAyah, fontSize = 28, darkMode = false, tajweedEnabled = false }: QuranTextViewProps) {
+  const [ayahs, setAyahs] = useState<AyahWithAnnotations[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [selectedAyah, setSelectedAyah] = useState<number | null>(null);
@@ -141,22 +204,34 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 28, dark
   useEffect(() => {
     setLoading(true);
     setError(false);
+
     getPageAyahs(page)
-      .then(data => {
+      .then(async (data) => {
         if (data.length > 0) {
-          setAyahs(data);
+          if (tajweedEnabled) {
+            // Load tajweed annotations in parallel for all ayahs on this page
+            const withAnnotations = await Promise.all(
+              data.map(async (ayah) => {
+                const tajweed = await getTajweedAnnotations(ayah.surah.number, ayah.numberInSurah);
+                return { ...ayah, tajweed };
+              })
+            );
+            setAyahs(withAnnotations);
+          } else {
+            setAyahs(data);
+          }
         } else {
           setError(true);
         }
       })
       .catch(() => setError(true))
       .finally(() => setLoading(false));
-  }, [page]);
+  }, [page, tajweedEnabled]);
 
   useEffect(() => { setSelectedAyah(null); }, [page]);
 
   const grouped = useMemo(() => {
-    const groups: { surahName: string; surahNumber: number; ayahs: Ayah[] }[] = [];
+    const groups: { surahName: string; surahNumber: number; ayahs: AyahWithAnnotations[] }[] = [];
     for (const ayah of ayahs) {
       const last = groups[groups.length - 1];
       if (last && last.surahNumber === ayah.surah.number) {
@@ -263,7 +338,7 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 28, dark
                 textAlign: 'justify',
                 textAlignLast: 'center',
                 direction: 'rtl',
-              fontSize: `${computedFontSize}px`,
+                fontSize: `${computedFontSize}px`,
                 lineHeight: `${lineHeight}px`,
                 color: textColor,
                 wordSpacing: '0.12em',
@@ -275,12 +350,21 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 28, dark
             >
               {group.ayahs.map((ayah) => {
                 const isActive = activeAyah === ayah.number;
-                // Remove Basmala from verse 1 text for all surahs except Al-Fatiha (1) and At-Tawbah (9)
+                // Determine if we need to strip Basmala
+                const needsStrip = ayah.numberInSurah === 1 && group.surahNumber !== 1 && group.surahNumber !== 9;
                 let displayText = ayah.text;
-                if (ayah.numberInSurah === 1 && group.surahNumber !== 1 && group.surahNumber !== 9) {
-                  // Keep only the large green Basmala header; strip any leading Basmala variant from verse text
-                  displayText = stripLeadingBasmala(displayText);
+                let charOffset = 0;
+
+                if (needsStrip) {
+                  const result = stripLeadingBasmala(ayah.text);
+                  displayText = result.stripped;
+                  charOffset = result.offset;
                 }
+
+                // Render with or without tajweed
+                const textContent = tajweedEnabled && ayah.tajweed?.length
+                  ? renderTajweedText(displayText, ayah.tajweed, darkMode, charOffset)
+                  : displayText;
 
                 return (
                   <span
@@ -298,7 +382,7 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 28, dark
                       padding: isActive ? '0 2px' : '0',
                     }}
                   >
-                    {displayText}
+                    {textContent}
                     {' '}
                     <VerseCircle number={ayah.numberInSurah} size={circleSize} />
                     {' '}

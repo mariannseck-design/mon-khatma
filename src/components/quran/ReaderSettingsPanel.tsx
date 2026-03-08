@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Settings, X, Moon, Sun, Play, Pause, Loader2, BookOpen, Image, Type, ChevronRight } from 'lucide-react';
+import { Settings, X, Moon, Sun, Play, Pause, Loader2, BookOpen, Image, Type, ChevronRight, Palette } from 'lucide-react';
 import { RECITERS } from '@/hooks/useQuranAudio';
 
 interface ReaderSettingsPanelProps {
@@ -25,6 +25,8 @@ interface ReaderSettingsPanelProps {
   onAudioStartVerseChange?: (v: number | undefined) => void;
   onAudioEndVerseChange?: (v: number | undefined) => void;
   isOffline?: boolean;
+  tajweedEnabled?: boolean;
+  onTajweedChange?: (enabled: boolean) => void;
 }
 
 const FONT_SIZE_PRESETS = [
@@ -51,6 +53,8 @@ export default function ReaderSettingsPanel({
   onAudioStartVerseChange,
   onAudioEndVerseChange,
   isOffline,
+  tajweedEnabled,
+  onTajweedChange,
 }: ReaderSettingsPanelProps) {
   const [open, setOpen] = useState(false);
 
@@ -148,6 +152,34 @@ export default function ReaderSettingsPanel({
                       <Type className="h-4 w-4" /> Texte
                     </button>
                   </div>
+                </div>
+              )}
+
+              {/* Tajweed Toggle — only in text mode */}
+              {!textModeDisabled && viewMode === 'text' && onTajweedChange && (
+                <div className="mb-4">
+                  <button
+                    onClick={() => onTajweedChange(!tajweedEnabled)}
+                    className="w-full flex items-center justify-between py-2.5 px-4 rounded-xl text-sm font-medium transition-all"
+                    style={{ background: nightMode ? 'rgba(90,180,180,0.08)' : 'rgba(255,255,255,0.15)' }}
+                  >
+                    <span className="flex items-center gap-2">
+                      <Palette className="h-4 w-4" style={{ color: tajweedEnabled ? '#d63031' : (nightMode ? '#4a9a9a' : '#8a6d1b') }} />
+                      Couleurs Tajwid
+                    </span>
+                    <div
+                      className="w-10 h-6 rounded-full relative transition-colors"
+                      style={{ background: tajweedEnabled ? '#4a9a9a' : 'rgba(255,255,255,0.3)' }}
+                    >
+                      <div
+                        className="w-4 h-4 rounded-full absolute top-1 transition-all"
+                        style={{
+                          background: tajweedEnabled ? '#f7f3eb' : '#6b5417',
+                          left: tajweedEnabled ? '22px' : '4px',
+                        }}
+                      />
+                    </div>
+                  </button>
                 </div>
               )}
 
