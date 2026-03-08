@@ -13,7 +13,7 @@ import ResetPasswordPage from "./pages/ResetPasswordPage";
 import AccueilPage from "./pages/AccueilPage";
 import PlanificateurPage from "./pages/PlanificateurPage";
 import CerclePage from "./pages/CerclePage";
-import FavorisPage from "./pages/FavorisPage";
+
 import QuranReaderPage from "./pages/QuranReaderPage";
 
 import EmotionsPage from "./pages/EmotionsPage";
@@ -78,7 +78,7 @@ function AppRoutes() {
       <Route path="/accueil" element={<ProtectedRoute><AccueilPage /></ProtectedRoute>} />
       <Route path="/planificateur" element={<ProtectedRoute><PlanificateurPage /></ProtectedRoute>} />
       <Route path="/cercle" element={<ProtectedRoute><CerclePage /></ProtectedRoute>} />
-      <Route path="/favoris" element={<ProtectedRoute><FavorisPage /></ProtectedRoute>} />
+      
       <Route path="/quran-reader" element={<ProtectedRoute><QuranReaderPage /></ProtectedRoute>} />
       
       <Route path="/emotions" element={<ProtectedRoute><EmotionsPage /></ProtectedRoute>} />

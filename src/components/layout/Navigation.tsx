@@ -2,8 +2,6 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
   Home, 
-  Heart, 
-  BookOpen, 
   Smile, 
   Bell,
   Moon
@@ -13,7 +11,6 @@ import { cn } from '@/lib/utils';
 const navItems: { path: string; icon: typeof Home; label: string; glow?: boolean }[] = [
   { path: '/accueil', icon: Home, label: 'Accueil' },
   { path: '/ramadan', icon: Moon, label: 'Ramadan', glow: true },
-  { path: '/favoris', icon: Heart, label: 'Favoris' },
   { path: '/emotions', icon: Smile, label: 'Émotions' },
   { path: '/rappels', icon: Bell, label: 'Rappels' },
 ];

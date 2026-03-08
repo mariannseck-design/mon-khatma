@@ -1,21 +1,21 @@
 
 
-## Plan : Retirer la page Favoris inactive
+# Diagnostic : 404 sur /quran-reader
 
-La page `/favoris` est une page placeholder inactive (affiche "Aucun favori" et "Bientôt disponible"). Elle n'a rien à voir avec les versets favoris du Coran qui sont dans "Mon Univers".
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Modifications
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-1. **`src/components/layout/Navigation.tsx`** — Retirer l'entrée `{ path: '/favoris', icon: Heart, label: 'Favoris' }` de la barre de navigation (4 onglets au lieu de 5)
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-2. **`src/App.tsx`** — Retirer l'import `FavorisPage` et la route `/favoris`
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-3. **`src/hooks/useSwipeNavigation.ts`** — Retirer `'/favoris'` du tableau `SWIPE_PAGES`
-
-4. **`src/pages/FavorisPage.tsx`** — Supprimer le fichier
-
-### Ce qui ne change PAS
-- Le bouton ❤️ dans le lecteur Coran reste
-- La section "Mes Versets Favoris" dans Mon Univers reste
-- La table `favorite_verses` reste intacte
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
