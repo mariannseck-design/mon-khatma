@@ -1,27 +1,21 @@
 
 
-## Indicateur hors-ligne pour le lecteur Coran
+# Diagnostic : 404 sur /quran-reader
 
-### Comportement
-- Quand l'utilisateur passe hors-ligne (`navigator.onLine` + événements `online`/`offline`) :
-  - Une petite bannière discrète apparaît en haut du lecteur Coran : "Mode hors-ligne · Texte uniquement"
-  - Si l'utilisateur est en mode image, basculer automatiquement vers le mode texte
-  - Désactiver le bouton audio (play/pause) car le streaming audio ne fonctionne pas hors-ligne
-  - Dans le panneau de réglages, griser l'option "Image" avec une indication "Hors-ligne"
-- Quand l'utilisateur revient en ligne :
-  - La bannière disparaît avec une animation fade-out
-  - Les modes image et audio redeviennent disponibles
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Fichiers à modifier
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-1. **`src/hooks/useOnlineStatus.ts`** (nouveau) — Hook simple utilisant `navigator.onLine` + event listeners `online`/`offline`
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-2. **`src/pages/QuranReaderPage.tsx`** — Utiliser le hook, afficher la bannière, forcer le mode texte si hors-ligne, désactiver audio
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-3. **`src/components/quran/ReaderSettingsPanel.tsx`** — Recevoir une prop `isOffline` pour griser le mode image et l'audio
-
-### Design de la bannière
-- Position fixe en haut du lecteur, petite hauteur (~28px)
-- Fond ambre/orange doux, texte petit, icône wifi-off
-- Animation fade in/out avec framer-motion
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

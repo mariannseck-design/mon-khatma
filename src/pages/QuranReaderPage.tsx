@@ -1,9 +1,10 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Bookmark, BookmarkCheck, Play, Pause, Loader2, Settings } from 'lucide-react';
+import { ArrowLeft, Bookmark, BookmarkCheck, Play, Pause, Loader2, Settings, WifiOff } from 'lucide-react';
 import { toast } from 'sonner';
 import { getSurahByPage } from '@/lib/surahData';
+import { useOnlineStatus } from '@/hooks/useOnlineStatus';
 import SurahDrawer from '@/components/quran/SurahDrawer';
 import QuranTextView from '@/components/quran/QuranTextView';
 import ImageVerseOverlay from '@/components/quran/ImageVerseOverlay';
@@ -22,6 +23,7 @@ const IMAGE_SOURCES = [
 
 export default function QuranReaderPage() {
   const navigate = useNavigate();
+  const isOnline = useOnlineStatus();
   const [page, setPage] = useState(() => {
     const saved = localStorage.getItem('quran_reader_page');
     return saved ? Math.min(Math.max(parseInt(saved), 1), TOTAL_PAGES) : 1;
@@ -42,6 +44,13 @@ export default function QuranReaderPage() {
   // Text mode now uses local bundled data — no network dependency
   const [viewMode, setViewMode] = useState<'image' | 'text'>('image');
   const textModeDisabled = false;
+
+  // Force text mode when offline
+  useEffect(() => {
+    if (!isOnline && viewMode === 'image') {
+      setViewMode('text');
+    }
+  }, [isOnline, viewMode]);
   const [nightMode, setNightMode] = useState(() => {
     return localStorage.getItem('quran_night_mode') === 'true';
   });
@@ -253,6 +262,23 @@ export default function QuranReaderPage() {
       className="fixed inset-0 flex flex-col z-50"
       style={{ background: bgColor }}
     >
+      {/* Offline banner */}
+      <AnimatePresence>
+        {!isOnline && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="relative z-30 flex items-center justify-center gap-2 py-1.5 text-xs font-medium overflow-hidden"
+            style={{ background: 'hsl(35, 80%, 55%)', color: 'hsl(35, 50%, 15%)' }}
+          >
+            <WifiOff className="h-3 w-3" />
+            Mode hors-ligne · Texte uniquement
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Night mode filter for image mode */}
       {nightMode && viewMode === 'image' && (
         <div className="absolute inset-0 z-10 pointer-events-none" style={{ background: 'rgba(10, 20, 10, 0.35)', mixBlendMode: 'multiply' }} />
@@ -387,11 +413,12 @@ export default function QuranReaderPage() {
         <div className="flex items-center gap-1">
           {/* Audio play/pause */}
           <button
-            onClick={(e) => { e.stopPropagation(); togglePlay(); }}
+            onClick={(e) => { e.stopPropagation(); if (isOnline) togglePlay(); }}
             className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
             style={{
               background: isPlaying ? 'rgba(180,150,60,0.25)' : 'transparent',
               color: nightMode ? '#f0e6c8' : '#1a3a3a',
+              opacity: isOnline ? 1 : 0.35,
             }}
           >
             {audioLoading ? (
@@ -437,6 +464,7 @@ export default function QuranReaderPage() {
             audioEndVerse={audioEndVerse}
             onAudioStartVerseChange={setAudioStartVerse}
             onAudioEndVerseChange={setAudioEndVerse}
+            isOffline={!isOnline}
           />
         </div>
       </div>
