@@ -1191,6 +1191,7 @@ export const HAJJ_DUAS: DhikrItem[] = [
   },
   {
     title: "Takbîr des jours de Tachrîq",
+    readOnly: true,
     arabic: "اللَّهُ أَكْبَرُ اللَّهُ أَكْبَرُ، لَا إِلَهَ إِلَّا اللَّهُ، وَاللَّهُ أَكْبَرُ اللَّهُ أَكْبَرُ وَلِلَّهِ الْحَمْدُ",
     phonetic: "Allâhu Akbar, Allâhu Akbar, lâ ilâha illâ-llâh, wa-llâhu Akbar, Allâhu Akbar, wa li-llâhi-l-hamd.",
     french: "Allah (عز وجل) est le plus Grand, Allah (عز وجل) est le plus Grand. Nulle divinité à part Allah (عز وجل). Allah (عز وجل) est le plus Grand, Allah (عز وجل) est le plus Grand. Et à Allah (عز وجل) la louange. (Du 9 au 13 Dhû-l-Hijja)",
