@@ -139,6 +139,8 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
 
   const handleError = () => {
     destroyAudio();
+    setTotalAttempts(prev => prev + 1);
+    setTotalErrors(prev => prev + 1);
     setSuccesses(0);
     setEncourageIdx(prev => (prev + 1) % ENCOURAGEMENTS.length);
     setShowEncouragement(true);
