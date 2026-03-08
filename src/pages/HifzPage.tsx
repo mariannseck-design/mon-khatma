@@ -196,6 +196,8 @@ export default function HifzPage() {
       if (data) setSessionId(data.id);
     }
     setStep(0);
+    stepStartRef.current = Date.now();
+    stepTimesRef.current = {};
   }, [user]);
 
   const updateStep = useCallback(async (newStep: number) => {
