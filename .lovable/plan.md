@@ -1,21 +1,29 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Protéger la page Dhikr avec ComingSoonGate (admin only)
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Changement unique dans `src/App.tsx`
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+Envelopper la route `/dhikr` avec `ComingSoonGate`, comme c'est déjà fait pour Hifz, Muraja'a et Suivi.
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+**Ligne 90 actuelle :**
+```tsx
+<Route path="/dhikr" element={<ProtectedRoute><DhikrPage /></ProtectedRoute>} />
+```
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+**Devient :**
+```tsx
+<Route path="/dhikr" element={
+  <ProtectedRoute>
+    <ComingSoonGate title="Dhikr & Adhkâr" icon={BookOpenCheck} description="Accède à tes adhkâr du matin, du soir et invocations quotidiennes avec un compteur interactif.">
+      <DhikrPage />
+    </ComingSoonGate>
+  </ProtectedRoute>
+} />
+```
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+Seuls les admins verront le module interactif. Les autres verront l'écran élégant "Bientôt disponible".
+
+### Fichier modifié
+- `src/App.tsx` (1 ligne)
 
