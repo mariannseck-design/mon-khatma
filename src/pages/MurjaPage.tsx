@@ -429,7 +429,7 @@ export default function MurjaPage() {
                    className="text-base font-bold"
                    style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-text)' }}
                  >
-                   Le Tour — Révision SM-2
+                   L'Entretien Continu (Le Tour)
                  </h2>
                  <span className="text-[10px] font-medium px-2 py-0.5 rounded-full" style={{ background: 'var(--p-card-active)', color: 'var(--p-primary)' }}>
                    {tourVerses.length}
