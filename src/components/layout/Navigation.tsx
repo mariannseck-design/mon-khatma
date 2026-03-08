@@ -2,9 +2,8 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
   Home, 
-  Smile, 
-  Bell,
-  Moon
+  Moon, 
+  Bell
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
