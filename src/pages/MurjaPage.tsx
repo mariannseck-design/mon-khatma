@@ -355,9 +355,9 @@ export default function MurjaPage() {
                    {tourVerses.length}
                  </span>
               </div>
-              <p className="text-[11px] -mt-1" style={{ color: 'rgba(28,36,33,0.5)' }}>
-                Anciens acquis — auto-évaluation après chaque bloc
-              </p>
+               <p className="text-[11px] font-medium -mt-1" style={{ color: 'rgba(28,36,33,0.65)' }}>
+                 Anciens acquis — auto-évaluation après chaque bloc
+               </p>
               <MurajaChecklist
                 items={tourVerses}
                 section="tour"
