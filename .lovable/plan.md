@@ -1,21 +1,16 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Remplacer les Ayats Favoris par les Invocations Favorites dans la page Dhikr
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Problème
+La page Dhikr (`/emotions` — `EmotionsPage.tsx`) affiche actuellement la section "Mes Ayats Favoris" (`FavoriteVersesSection`), alors que cette même section existe déjà sur la page d'accueil. Il faut la remplacer par "Mes Invocations Favorites" (`FavoriteDouasSection`).
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Changement
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+**`src/pages/EmotionsPage.tsx`** :
+- Remplacer l'import de `FavoriteVersesSection` par `FavoriteDouasSection` (de `@/components/favoris/FavoriteDouasSection`)
+- Remplacer `<FavoriteVersesSection />` (ligne 358) par `<FavoriteDouasSection />`
+- Mettre à jour le commentaire "Mes Versets Favoris" → "Mes Invocations Favorites"
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
-
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+Un seul fichier modifié, deux lignes changées.
 
