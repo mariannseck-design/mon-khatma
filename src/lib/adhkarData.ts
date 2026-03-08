@@ -1111,6 +1111,7 @@ export const CHIFA_SERENITE: DhikrItem[] = [
 export const HAJJ_DUAS: DhikrItem[] = [
   {
     title: "Talbiya",
+    readOnly: true,
     arabic: "لَبَّيْكَ اللَّهُمَّ لَبَّيْكَ، لَبَّيْكَ لَا شَرِيكَ لَكَ لَبَّيْكَ، إِنَّ الْحَمْدَ وَالنِّعْمَةَ لَكَ وَالْمُلْكَ، لَا شَرِيكَ لَكَ",
     phonetic: "Labbayka-llâhumma labbayk, labbayka lâ sharîka laka labbayk, inna-l-hamda wa n-ni'mata laka wa-l-mulk, lâ sharîka lak.",
     french: "Me voici, ô Allah (عز وجل), me voici ! Me voici, Tu n'as point d'associé, me voici ! La louange, la grâce et la royauté T'appartiennent. Tu n'as point d'associé.",
