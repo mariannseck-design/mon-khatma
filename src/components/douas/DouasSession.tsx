@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Check, Share2, Heart } from 'lucide-react';
 import DhikrCounter, { type DhikrItem } from '@/components/dhikr/DhikrCounter';
