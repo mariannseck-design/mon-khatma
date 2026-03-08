@@ -36,6 +36,7 @@ export default function HifzStep1Revision({ onNext, onBack, onPause }: Props) {
   const [rescueCount, setRescueCount] = useState(0);
   const [verseTexts, setVerseTexts] = useState<LocalAyah[]>([]);
   const [loadingVerses, setLoadingVerses] = useState(false);
+  const [mushafMode, setMushafModeState] = useState<MushafMode>(getMushafMode);
 
   // Fetch yesterday's memorized verses
   useEffect(() => {
