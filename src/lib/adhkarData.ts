@@ -1159,6 +1159,7 @@ export const HAJJ_DUAS: DhikrItem[] = [
   },
   {
     title: "Du'â de Muzdalifah",
+    readOnly: true,
     arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ بِأَنَّكَ أَنتَ اللَّهُ لَا إِلَٰهَ إِلَّا أَنتَ الْأَحَدُ الصَّمَدُ الَّذِي لَمْ يَلِدْ وَلَمْ يُولَدْ وَلَمْ يَكُن لَّهُ كُفُوًا أَحَدٌ",
     phonetic: "Allâhumma innî as'aluka bi-annaka anta-llâhu lâ ilâha illâ anta-l-Ahadu s-Samadu-lladhî lam yalid wa lam yûlad wa lam yakun lahu kufuwan ahad.",
     french: "Ô Allah (عز وجل), je T'implore car Tu es Allah (عز وجل), il n'y a de divinité que Toi, l'Unique, le Seul imploré, qui n'a jamais engendré et n'a pas été engendré, et nul n'est égal à Lui.",
