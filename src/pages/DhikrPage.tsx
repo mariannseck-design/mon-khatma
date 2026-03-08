@@ -26,6 +26,7 @@ const CATEGORY_DATA: Record<string, { title: string; items: DhikrItem[] }> = {
   anytime: { title: 'Toute occasion', items: ANYTIME_ADHKAR },
   sujud: { title: 'Sujud Tilawah', items: SUJUD_TILAWAH_ADHKAR },
   omra: { title: 'Duas Omra', items: OMRA_DUAS },
+  istikharah: { title: 'Istikharah', items: ISTIKHARAH_DUAS },
 };
 
 const containerVariants = {
