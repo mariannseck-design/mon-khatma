@@ -7,13 +7,22 @@ const ARABIC_SIZES = ['1.3rem', '1.7rem', '2.2rem'];
 const ARABIC_LABELS = ['ا', 'ا', 'ا'];
 const SWIPE_THRESHOLD = 50;
 
+interface IntroSection {
+  title: string;
+  steps: string[];
+  source: string;
+  notes?: string[];
+}
+
 interface DhikrSessionProps {
   title: string;
   items: DhikrItem[];
   onBack: () => void;
+  intro?: IntroSection;
 }
 
-export default function DhikrSession({ title, items, onBack }: DhikrSessionProps) {
+export default function DhikrSession({ title, items, onBack, intro }: DhikrSessionProps) {
+  const [showIntro, setShowIntro] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [sessionComplete, setSessionComplete] = useState(false);
   const [arabicSizeIndex, setArabicSizeIndex] = useState(() => {
