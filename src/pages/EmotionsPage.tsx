@@ -378,6 +378,7 @@ export default function EmotionsPage() {
             })}
           </div>
         )}
+        </div>{/* end moodSectionRef */}
 
         {/* Reflection Card */}
         <Card className="pastel-card p-6">
