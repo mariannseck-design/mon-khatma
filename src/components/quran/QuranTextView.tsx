@@ -356,11 +356,11 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 28, dark
               </>
             )}
 
-            {/* Ayahs — continuous flow */}
+            {/* Ayahs — continuous flow or verse-by-verse with translation */}
             <div
               style={{
-                textAlign: 'justify',
-                textAlignLast: 'center',
+                textAlign: showTranslation ? 'right' : 'justify',
+                textAlignLast: showTranslation ? 'right' : 'center',
                 direction: 'rtl',
                 fontSize: `${computedFontSize}px`,
                 lineHeight: `${lineHeight}px`,
@@ -374,7 +374,6 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 28, dark
             >
               {group.ayahs.map((ayah) => {
                 const isActive = activeAyah === ayah.number;
-                // Determine if we need to strip Basmala
                 const needsStrip = ayah.numberInSurah === 1 && group.surahNumber !== 1 && group.surahNumber !== 9;
                 let displayText = ayah.text;
                 let charOffset = 0;
@@ -385,10 +384,60 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 28, dark
                   charOffset = result.offset;
                 }
 
-                // Render with or without tajweed
                 const textContent = tajweedEnabled && ayah.tajweed?.length
                   ? renderTajweedText(displayText, ayah.tajweed, darkMode, charOffset)
                   : displayText;
+
+                const translationText = showTranslation
+                  ? translations.get(`${ayah.surah.number}:${ayah.numberInSurah}`)
+                  : null;
+
+                if (showTranslation) {
+                  return (
+                    <div
+                      key={ayah.number}
+                      className="mb-4"
+                      style={{
+                        borderBottom: darkMode ? '1px solid rgba(122,139,111,0.15)' : '1px solid rgba(122,139,111,0.1)',
+                        paddingBottom: '12px',
+                      }}
+                    >
+                      <span
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedAyah(prev => prev === ayah.number ? null : ayah.number);
+                        }}
+                        className="cursor-pointer"
+                        style={{
+                          background: isActive
+                            ? (darkMode ? 'rgba(122, 139, 111, 0.25)' : 'rgba(122, 139, 111, 0.10)')
+                            : 'transparent',
+                          borderRadius: isActive ? '4px' : '0',
+                          padding: isActive ? '0 2px' : '0',
+                        }}
+                      >
+                        {textContent}
+                        {' '}
+                        <VerseCircle number={ayah.numberInSurah} size={circleSize} />
+                      </span>
+                      {translationText && (
+                        <p
+                          dir="ltr"
+                          style={{
+                            fontFamily: 'system-ui, sans-serif',
+                            fontSize: '13px',
+                            lineHeight: '1.6',
+                            color: darkMode ? 'rgba(212,201,168,0.6)' : 'rgba(26,26,26,0.55)',
+                            marginTop: '6px',
+                            textAlign: 'left',
+                          }}
+                        >
+                          {translationText}
+                        </p>
+                      )}
+                    </div>
+                  );
+                }
 
                 return (
                   <span
