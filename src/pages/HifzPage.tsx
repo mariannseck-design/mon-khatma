@@ -24,11 +24,7 @@ interface HifzSession {
   repetitionLevel: number;
 }
 
-const GRADIENT_STYLE = {
-  background: 'linear-gradient(135deg, #0d7377 0%, #14919b 50%, #0d7377 100%)',
-  border: '2px solid rgba(212,175,55,0.4)',
-  boxShadow: '0 8px 32px -8px rgba(13,115,119,0.4)',
-};
+const THEME_STORAGE_KEY = 'hifz_visual_theme';
 
 const LOCAL_KEY = 'hifz_active_session';
 
