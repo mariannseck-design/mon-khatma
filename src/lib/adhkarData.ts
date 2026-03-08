@@ -170,11 +170,11 @@ export const MORNING_ADHKAR: DhikrItem[] = [
     target: 3,
   },
   {
-    title: 'Prière sur le Prophète ﷺ',
-    source: 'Abû Dâwûd n°1531, An-Nasâ\'î n°1297',
-    arabic: 'اللَّهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَى نَبِيِّنَا مُحَمَّد',
-    phonetic: "Allâhumma salli wa sallim wa bârik 'alâ nabiyyinâ Muhammad.",
-    french: "Ô Allah, prie, accorde le salut et bénis notre Prophète Muhammad ﷺ.",
+    title: 'Prière Ibrâhîmiya ﷺ',
+    source: 'Al-Bukhârî n°3370, Muslim n°406',
+    arabic: 'اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ، كَمَا صَلَّيْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ، إِنَّكَ حَمِيدٌ مَجِيدٌ، اللَّهُمَّ بَارِكْ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ، كَمَا بَارَكْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ، إِنَّكَ حَمِيدٌ مَجِيدٌ',
+    phonetic: "Allâhumma salli 'alâ Muhammadin wa 'alâ âli Muhammad, kamâ sallayta 'alâ Ibrâhîma wa 'alâ âli Ibrâhîm, innaka Hamîdun Majîd. Allâhumma bârik 'alâ Muhammadin wa 'alâ âli Muhammad, kamâ bârakta 'alâ Ibrâhîma wa 'alâ âli Ibrâhîm, innaka Hamîdun Majîd.",
+    french: "Ô Allah, prie sur Muhammad et sur la famille de Muhammad, comme Tu as prié sur Ibrâhîm et sur la famille d'Ibrâhîm, Tu es certes Digne de louange et de gloire. Ô Allah, bénis Muhammad et la famille de Muhammad, comme Tu as béni Ibrâhîm et la famille d'Ibrâhîm, Tu es certes Digne de louange et de gloire.",
     target: 10,
   },
   {
@@ -421,11 +421,11 @@ export const EVENING_ADHKAR: DhikrItem[] = [
     target: 3,
   },
   {
-    title: 'Prière sur le Prophète ﷺ',
-    source: 'Abû Dâwûd n°1531, An-Nasâ\'î n°1297',
-    arabic: 'اللَّهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَى نَبِيِّنَا مُحَمَّد',
-    phonetic: "Allâhumma salli wa sallim wa bârik 'alâ nabiyyinâ Muhammad.",
-    french: "Ô Allah, prie, accorde le salut et bénis notre Prophète Muhammad ﷺ.",
+    title: 'Prière Ibrâhîmiya ﷺ',
+    source: 'Al-Bukhârî n°3370, Muslim n°406',
+    arabic: 'اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ، كَمَا صَلَّيْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ، إِنَّكَ حَمِيدٌ مَجِيدٌ، اللَّهُمَّ بَارِكْ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ، كَمَا بَارَكْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ، إِنَّكَ حَمِيدٌ مَجِيدٌ',
+    phonetic: "Allâhumma salli 'alâ Muhammadin wa 'alâ âli Muhammad, kamâ sallayta 'alâ Ibrâhîma wa 'alâ âli Ibrâhîm, innaka Hamîdun Majîd. Allâhumma bârik 'alâ Muhammadin wa 'alâ âli Muhammad, kamâ bârakta 'alâ Ibrâhîma wa 'alâ âli Ibrâhîm, innaka Hamîdun Majîd.",
+    french: "Ô Allah, prie sur Muhammad et sur la famille de Muhammad, comme Tu as prié sur Ibrâhîm et sur la famille d'Ibrâhîm, Tu es certes Digne de louange et de gloire. Ô Allah, bénis Muhammad et la famille de Muhammad, comme Tu as béni Ibrâhîm et la famille d'Ibrâhîm, Tu es certes Digne de louange et de gloire.",
     target: 10,
   },
   {
