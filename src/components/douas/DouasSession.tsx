@@ -1,5 +1,7 @@
 import { useState, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+
+const SWIPE_THRESHOLD = 50;
 import { ArrowLeft, Check, Share2, Heart } from 'lucide-react';
 import DhikrCounter, { type DhikrItem } from '@/components/dhikr/DhikrCounter';
 import { toast } from 'sonner';
@@ -24,6 +26,8 @@ export default function DouasSession({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [sessionComplete, setSessionComplete] = useState(false);
   const [heartPulse, setHeartPulse] = useState(false);
+  const touchStartX = useRef(0);
+  const touchStartY = useRef(0);
 
   const handleComplete = useCallback(() => {
     if (currentIndex < items.length - 1) {
@@ -32,6 +36,24 @@ export default function DouasSession({
       setSessionComplete(true);
     }
   }, [currentIndex, items.length]);
+
+  const onTouchStart = useCallback((e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  }, []);
+
+  const onTouchEnd = useCallback((e: React.TouchEvent) => {
+    const deltaX = e.changedTouches[0].clientX - touchStartX.current;
+    const deltaY = e.changedTouches[0].clientY - touchStartY.current;
+    if (Math.abs(deltaX) < SWIPE_THRESHOLD || Math.abs(deltaY) > Math.abs(deltaX)) return;
+    if (sessionComplete) return;
+
+    if (deltaX < 0 && currentIndex < items.length - 1) {
+      setCurrentIndex(prev => prev + 1);
+    } else if (deltaX > 0 && currentIndex > 0) {
+      setCurrentIndex(prev => prev - 1);
+    }
+  }, [currentIndex, items.length, sessionComplete]);
 
   const progressPercent = sessionComplete ? 100 : (currentIndex / items.length) * 100;
   const currentItem = items[currentIndex];
@@ -60,7 +82,7 @@ export default function DouasSession({
   };
 
   return (
-    <div className="flex flex-col min-h-[60vh]" style={{ background: 'var(--p-bg)' }}>
+    <div className="flex flex-col min-h-[60vh]" style={{ background: 'var(--p-bg)' }} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
       {/* Header */}
       <div className="flex items-center gap-3 px-4 py-3">
         <button onClick={onBack} className="p-2 rounded-full" style={{ color: GOLD }} aria-label="Retour">
