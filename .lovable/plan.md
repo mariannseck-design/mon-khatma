@@ -1,21 +1,14 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Fix: Single Tap Recording
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Problem
+The record button requires a double tap on mobile due to Framer Motion's `whileTap` + `onClick` interaction causing event conflicts on touch devices.
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Solution — 1 file modified
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
-
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
-
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+**`src/components/hifz/HifzStep4Validation.tsx`** (line ~292-313):
+- Replace `onClick` with `onPointerDown` on the record button for immediate single-tap response
+- Add `touch-action: manipulation` CSS to prevent browser double-tap-to-zoom delay
+- Keep `whileTap` for visual feedback but decouple it from the action trigger
 
