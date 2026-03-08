@@ -491,6 +491,7 @@ export const EVENING_ADHKAR: DhikrItem[] = [
   {
     title: 'Tahlîl',
     source: 'Al-Bukhârî n°6403, Muslim n°2693',
+    fadl: 'Quiconque le dit 100 fois : récompense de 10 affranchissements, 100 bonnes actions, 100 péchés effacés et protection contre le diable. (Al-Bukhârî, Muslim)',
     arabic: 'لَا إلَهَ إلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِير',
     phonetic: "Lâ ilâha illâ-llâhu wahdahu lâ sharîka lah, lahu-l-mulku wa lahu-l-hamdu wa huwa 'alâ kulli shay'in qadîr.",
     french: "Nulle divinité à part Allah, Seul sans associé. À Lui le royaume, à Lui la louange, et Il est Omnipotent.",
