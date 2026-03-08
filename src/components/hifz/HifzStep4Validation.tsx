@@ -162,8 +162,27 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
   const mins = Math.floor(recordingTime / 60);
   const secs = recordingTime % 60;
 
+  /* ── Bonus mode handlers ── */
+  const handleBonusSuccess = () => {
+    destroyAudio();
+    setBonusCount(prev => prev + 1);
+    setTotalAttempts(prev => prev + 1);
+    setTotalSuccesses(prev => prev + 1);
+  };
+
+  const handleBonusError = () => {
+    destroyAudio();
+    setTotalAttempts(prev => prev + 1);
+    setTotalErrors(prev => prev + 1);
+  };
+
+  const handleContinueReciting = () => {
+    setBonusMode(true);
+    setValidated(false);
+  };
+
   /* ── Validated state ── */
-  if (validated) {
+  if (validated && !bonusMode) {
     return (
       <HifzStepWrapper stepNumber={4} stepTitle="Validation" onBack={onBack} onPause={onPause}>
         <motion.div
@@ -190,24 +209,36 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
           </div>
 
           <p className="text-lg font-bold" style={{ color: '#1C2421', fontFamily: "'Playfair Display', Georgia, serif" }}>
-            Votre mémorisation est scellée<br />par la grâce d'Allah (عز وجل)
+            Votre mémorisation est scellée<br />par la grâce d'Allah <span style={{ fontFamily: "'Amiri'", fontWeight: 'bold', fontSize: '1.1em' }}>(عز وجل)</span>
           </p>
-          <p className="text-sm" style={{ color: '#065F46' }}>3 récitations parfaites sans aide</p>
+          <p className="text-sm" style={{ color: '#065F46' }}>
+            3{bonusCount > 0 ? ` + ${bonusCount}` : ''} récitation{(3 + bonusCount) > 1 ? 's' : ''} parfaite{(3 + bonusCount) > 1 ? 's' : ''} sans aide
+          </p>
           <div className="flex justify-center gap-4 text-xs" style={{ color: 'rgba(6,95,70,0.6)' }}>
             <span>{totalAttempts} tentative{totalAttempts > 1 ? 's' : ''}</span>
             <span>·</span>
             <span>{totalErrors} erreur{totalErrors > 1 ? 's' : ''}</span>
-            {peekCount > 0 && <><span>·</span><span>{peekCount} peek{peekCount > 1 ? 's' : ''}</span></>}
+            {peekCount > 0 && <><span>·</span><span>{peekCount} coup{peekCount > 1 ? 's' : ''} d'œil</span></>}
           </div>
 
-          <motion.button
-            whileTap={{ scale: 0.97 }}
-            onClick={onNext}
-            className="w-full rounded-xl py-4 font-bold text-base"
-            style={{ background: '#065F46', color: '#FDFBF7' }}
-          >
-            Valider mon Hifz ✨
-          </motion.button>
+          <div className="space-y-3">
+            <motion.button
+              whileTap={{ scale: 0.97 }}
+              onClick={onNext}
+              className="w-full rounded-xl py-4 font-bold text-base"
+              style={{ background: '#065F46', color: '#FDFBF7' }}
+            >
+              Valider mon Hifz ✨
+            </motion.button>
+            <motion.button
+              whileTap={{ scale: 0.97 }}
+              onClick={handleContinueReciting}
+              className="w-full rounded-xl py-3 font-semibold text-sm"
+              style={{ background: 'rgba(212,175,55,0.1)', color: '#D4AF37', border: '1px solid rgba(212,175,55,0.3)' }}
+            >
+              🔁 Continuer à réciter
+            </motion.button>
+          </div>
         </motion.div>
       </HifzStepWrapper>
     );
