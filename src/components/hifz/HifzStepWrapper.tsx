@@ -1,6 +1,6 @@
-import { ReactNode } from 'react';
+import { ReactNode, useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, Clock } from 'lucide-react';
 
 interface HifzStepWrapperProps {
   stepNumber: number;
@@ -10,7 +10,26 @@ interface HifzStepWrapperProps {
   totalSteps?: number;
 }
 
+function formatTime(seconds: number): string {
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return `${m}:${s.toString().padStart(2, '0')}`;
+}
+
 export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBack, totalSteps = 7 }: HifzStepWrapperProps) {
+  const [elapsed, setElapsed] = useState(0);
+  const startRef = useRef(Date.now());
+
+  // Reset timer when step changes
+  useEffect(() => {
+    startRef.current = Date.now();
+    setElapsed(0);
+    const interval = setInterval(() => {
+      setElapsed(Math.floor((Date.now() - startRef.current) / 1000));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [stepNumber]);
+
   return (
     <motion.div
       initial={{ opacity: 0, x: 20 }}
@@ -28,7 +47,13 @@ export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBac
         <div className="flex-1">
           <div className="flex items-center justify-between mb-1">
             <span className="text-white/50 text-xs uppercase tracking-wider">Étape {stepNumber}/{totalSteps - 1}</span>
-            <span className="text-xs" style={{ color: '#d4af37' }}>{stepTitle}</span>
+            <div className="flex items-center gap-2">
+              <span className="flex items-center gap-1 text-[11px] tabular-nums" style={{ color: 'rgba(255,255,255,0.4)' }}>
+                <Clock className="h-3 w-3" />
+                {formatTime(elapsed)}
+              </span>
+              <span className="text-xs" style={{ color: '#d4af37' }}>{stepTitle}</span>
+            </div>
           </div>
           <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
             <motion.div
