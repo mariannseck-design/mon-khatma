@@ -78,6 +78,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const checkAllowedEmail = async (email: string | undefined) => {
+    if (!email) { setIsAllowedEmail(false); return; }
+    try {
+      const { data } = await supabase.rpc('is_allowed_email', { _email: email });
+      setIsAllowedEmail(!!data);
+    } catch (error) {
+      if (import.meta.env.DEV) console.error('Error checking allowed email:', error);
+      setIsAllowedEmail(false);
+    }
+  };
+
   const ensureProfile = async (userId: string) => {
     try {
       const { data: existingProfile } = await supabase
