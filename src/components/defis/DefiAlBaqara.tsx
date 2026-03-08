@@ -284,22 +284,26 @@ export default function DefiAlBaqara({ disabled = false }: { disabled?: boolean 
           )}
         </button>
 
-        <button
+        <motion.button
           onClick={() => {
             const baqaraPage = 2 + Math.floor(challenge.checkedDays.length * (48 / challenge.targetDays));
             const page = Math.min(baqaraPage, 49);
             navigate(`/quran-reader?page=${page}`);
           }}
-          className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl transition-all text-xs font-medium mt-2"
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.4 }}
+          whileTap={{ scale: 0.97 }}
+          className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-medium mt-2 transition-colors"
           style={{
             background: `${COLORS.emerald}10`,
             color: COLORS.emerald,
             border: `1px solid ${COLORS.emerald}20`,
           }}
         >
-          <BookOpen className="h-3.5 w-3.5" />
+          <BookOpen className="h-3.5 w-3.5 animate-[pulse_3s_ease-in-out_infinite]" />
           Continuer ma lecture 📖
-        </button>
+        </motion.button>
         {progress >= 100 && (
           <motion.p
             initial={{ opacity: 0 }}

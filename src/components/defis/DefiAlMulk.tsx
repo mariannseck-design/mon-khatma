@@ -170,18 +170,22 @@ export default function DefiAlMulk({ disabled = false }: { disabled?: boolean })
             })}
           </div>
 
-          <button
+          <motion.button
             onClick={() => navigate('/quran-reader?page=562')}
-            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl transition-all text-xs font-medium mt-3"
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.4 }}
+            whileTap={{ scale: 0.97 }}
+            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-medium mt-3 transition-colors"
             style={{
-              background: 'rgba(255,255,255,0.1)',
-              color: 'rgba(255,255,255,0.7)',
-              border: '1px solid rgba(255,255,255,0.12)',
+              background: 'rgba(255,255,255,0.08)',
+              color: 'rgba(255,255,255,0.65)',
+              border: '1px solid rgba(255,255,255,0.1)',
             }}
           >
-            <BookOpen className="h-3.5 w-3.5" />
+            <BookOpen className="h-3.5 w-3.5 animate-[pulse_3s_ease-in-out_infinite]" />
             Lire Al-Mulk 📖
-          </button>
+          </motion.button>
         </div>
       </motion.div>
 
