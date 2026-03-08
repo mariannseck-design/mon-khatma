@@ -119,6 +119,16 @@ export default function DhikrCounter({ item, onComplete, arabicFontSize = '1.7re
         </p>
       )}
 
+      {/* Fadl (virtue) */}
+      {item.fadl && (
+        <p
+          className="text-[11px] italic text-center max-w-xs leading-relaxed"
+          style={{ color: 'var(--p-accent)', opacity: 0.9 }}
+        >
+          ✨ {item.fadl}
+        </p>
+      )}
+
       {/* Counter Circle — hidden in readOnly mode */}
       {!item.readOnly && (
         <motion.button
