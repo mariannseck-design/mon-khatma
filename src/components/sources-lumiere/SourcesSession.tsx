@@ -1,9 +1,11 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Check, Share2 } from 'lucide-react';
 import DhikrCounter, { type DhikrItem } from '@/components/dhikr/DhikrCounter';
 import SalawatCounter from './SalawatCounter';
 import { toast } from 'sonner';
+
+const SWIPE_THRESHOLD = 50;
 
 interface SourcesSessionProps {
   title: string;
