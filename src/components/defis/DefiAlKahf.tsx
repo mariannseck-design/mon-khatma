@@ -155,7 +155,7 @@ export default function DefiAlKahf({ disabled = false }: { disabled?: boolean })
             {streak > 0 && (
               <span
                 className="ml-auto text-xs font-semibold px-2 py-0.5 rounded-full"
-                style={{ background: `${COLORS.goldAccent}25`, color: COLORS.goldAccent }}
+                style={{ background: `${COLORS.sand}25`, color: COLORS.sand }}
               >
                 🔥 {streak} sem.
               </span>
