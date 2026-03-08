@@ -150,7 +150,7 @@ export default function ParametresPage() {
                   <Input
                     value={confirmText}
                     onChange={(e) => setConfirmText(e.target.value)}
-                    placeholder="Tape RÉINITIALISER"
+                    placeholder="Tape REINITIALISER"
                     className="mt-2"
                   />
                   <AlertDialogFooter>
