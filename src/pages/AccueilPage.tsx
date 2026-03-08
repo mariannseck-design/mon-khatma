@@ -453,11 +453,26 @@ export default function AccueilPage() {
                   whileTap={{ scale: 0.98 }}
                 >
                   <div className="relative z-10 flex items-center gap-4">
-                    <div
-                      className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0"
-                      style={{ background: `${COLORS.gold}18`, border: `1px solid ${COLORS.gold}30` }}
-                    >
-                      <Shield className="h-7 w-7" style={{ color: COLORS.goldAccent }} />
+                    <div className="relative">
+                      <div
+                        className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0"
+                        style={{ background: `${COLORS.gold}18`, border: `1px solid ${COLORS.gold}30` }}
+                      >
+                        <Shield className="h-7 w-7" style={{ color: COLORS.goldAccent }} />
+                      </div>
+                      {pendingReviews > 0 && (
+                        <span
+                          className="absolute -top-1.5 -right-1.5 min-w-[22px] h-[22px] rounded-full flex items-center justify-center text-[11px] font-bold px-1"
+                          style={{
+                            background: 'linear-gradient(135deg, #d4af37, #b8962e)',
+                            color: '#1a2e1a',
+                            border: '2px solid #faf8f5',
+                            boxShadow: '0 2px 6px rgba(212,175,55,0.4)',
+                          }}
+                        >
+                          {pendingReviews > 99 ? '99+' : pendingReviews}
+                        </span>
+                      )}
                     </div>
                     <div className="flex-1">
                       <h3
@@ -466,7 +481,11 @@ export default function AccueilPage() {
                       >
                         Entretien & Révision
                       </h3>
-                      <p className="text-sm mt-1" style={{ color: COLORS.sage }}>Liaison & révision espacée</p>
+                      <p className="text-sm mt-1" style={{ color: COLORS.sage }}>
+                        {pendingReviews > 0
+                          ? `${pendingReviews} bloc${pendingReviews > 1 ? 's' : ''} à réviser aujourd'hui`
+                          : 'Liaison & révision espacée'}
+                      </p>
                     </div>
                   </div>
                 </motion.div>
