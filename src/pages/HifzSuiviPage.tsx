@@ -417,7 +417,7 @@ export default function HifzSuiviPage() {
                 className="rounded-2xl p-3 flex flex-col items-center"
                 style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', boxShadow: 'var(--p-card-shadow)' }}
               >
-                <CircularGauge value={totalVerses} max={Math.max(totalVerses, 50)} label="Versets ancrés" />
+                <CircularGauge value={totalVerses} max={6236} label="Versets ancrés" />
               </motion.div>
 
               <motion.div
