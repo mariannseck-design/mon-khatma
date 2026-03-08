@@ -1,21 +1,49 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Réorganiser la page Dhikr
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Résumé des changements
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+1. **Réordonner la grille** : Mettre les 8 cartes dhikr en premier, puis "Mes Émotions" et "Mes Favoris" tout en bas de la grille
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+2. **Supprimer "Réflexion du mois"** : Retirer complètement la Card de réflexion (lignes 436-445)
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+3. **Retirer la section Favoris de cette page** : Supprimer le `<FavoriteVersesSection />` et son ref, car les favoris restent dans "Mon Univers" sur l'accueil
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+4. **Transformer "Mes Favoris" en simple carte de navigation** : Au lieu de scrollIntoView, faire un `Link` vers `/accueil` avec l'onglet "univers" (ou naviguer vers la section favoris de l'accueil)
+
+### Fichiers modifiés
+
+**`src/pages/EmotionsPage.tsx`** :
+- Réordonner la grille : d'abord les 8 dhikrCards, puis "Mes Émotions", puis "Mes Favoris"
+- Supprimer `favorisSectionRef` et `<FavoriteVersesSection />`
+- Supprimer la Card "Réflexion du mois"
+- Changer "Mes Favoris" pour utiliser `Link to="/accueil"` (section Mon Univers)
+- Supprimer l'import de `FavoriteVersesSection`
+
+### Layout résultat
+
+```text
+┌──────────────────────────┐
+│   MON DHIKR QUOTIDIEN    │
+├────────────┬─────────────┤
+│ Zikr du    │ Zikr du     │
+│ matin      │ soir        │
+├────────────┼─────────────┤
+│ Après la   │ Toute       │
+│ prière     │ occasion    │
+├────────────┼─────────────┤
+│ Sujud      │ Duas Omra   │
+│ Tilawah    │             │
+├────────────┼─────────────┤
+│ Duas Hajj  │ Istikharah  │
+├────────────┼─────────────┤
+│ Mes        │ Mes         │
+│ Émotions ↓ │ Favoris →   │
+├────────────┴─────────────┤
+│ [Section Émotions]       │
+│ (humeur + gratitude +    │
+│  moments précédents)     │
+└──────────────────────────┘
+```
 
