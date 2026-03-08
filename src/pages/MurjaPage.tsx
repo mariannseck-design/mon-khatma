@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AppLayout } from '@/components/layout/AppLayout';
-import { RefreshCw, RotateCcw, BookOpen, CalendarDays, PartyPopper } from 'lucide-react';
+import { RefreshCw, RotateCcw, TrendingUp, CalendarDays, PartyPopper } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { supabase } from '@/integrations/supabase/client';
@@ -407,12 +407,12 @@ export default function MurjaPage() {
               }}
             >
               <div className="flex items-center gap-2">
-                <BookOpen className="h-4 w-4" style={{ color: 'var(--p-accent)' }} />
+                <TrendingUp className="h-4 w-4" style={{ color: '#D4AF37' }} />
                 <h3
                    className="text-sm font-bold"
                    style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-primary)' }}
                  >
-                  Mon trésor — {totalVersesCount} verset{totalVersesCount > 1 ? 's' : ''}
+                  Mes Escaliers — {totalVersesCount} marche{totalVersesCount > 1 ? 's' : ''} gravie{totalVersesCount > 1 ? 's' : ''}
                 </h3>
               </div>
               <div className="space-y-1.5">
@@ -435,9 +435,7 @@ export default function MurjaPage() {
                       </span>
                      <span className="flex items-center gap-0.5">
                         <CalendarDays className="h-2.5 w-2.5" />
-                        {s.status === 'liaison'
-                          ? `Ancré le ${formatDate(s.nextReview)}`
-                          : `Prochaine : ${formatDate(s.nextReview)}`}
+                        {`Prochain palier le ${formatDate(s.nextReview)}`}
                       </span>
                     </div>
                   </div>
