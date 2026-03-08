@@ -9,17 +9,17 @@ import HifzMushafImage from './HifzMushafImage';
 const ENCOURAGEMENTS = [
   {
     title: 'Chaque effort est récompensé',
-    text: "Ne te décourage pas. L'erreur est une étape naturelle vers la perfection. Celui qui récite le Coran avec difficulté obtient une double récompense. Prends une grande inspiration et reprenons.",
+    text: "Ne te décourage pas. L'erreur est une étape naturelle vers la perfection. Celui qui récite le Coran avec difficulté obtient une double récompense. Regardez le texte si besoin et reprenez la série pour bien ancrer. Prends une grande inspiration et reprenons.",
     button: 'Je recommence mon essai',
   },
   {
     title: 'Une nouvelle chance',
-    text: "La mémorisation est un chemin de patience. Cette erreur t'aide à mieux ancrer le verset. Recommençons en plaçant notre confiance en Allah (عز وجل).",
+    text: "La mémorisation est un chemin de patience. Cette erreur t'aide à mieux ancrer le verset. Regardez le texte si besoin et reprenez la série pour bien ancrer. Recommençons en plaçant notre confiance en Allah (عز وجل).",
     button: 'Essayer à nouveau',
   },
   {
     title: 'Presque parfait !',
-    text: "Le Hifz demande de la répétition. Reprends ton souffle, concentre-toi et relance l'enregistrement. Tu vas y arriver !",
+    text: "Le Hifz demande de la répétition. Regardez le texte si besoin et reprenez la série pour bien ancrer. Reprends ton souffle, concentre-toi et relance l'enregistrement. Tu vas y arriver !",
     button: "Reprendre l'enregistrement",
   },
 ];
