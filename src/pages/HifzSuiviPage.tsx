@@ -432,7 +432,7 @@ export default function HifzSuiviPage() {
               </h3>
               <ResponsiveContainer width="100%" height={140}>
                 <BarChart data={weeklyData} barCategoryGap="30%">
-                  <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: 'rgba(28,36,33,0.5)', fontSize: 11 }} />
+                  <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: 'rgba(28,36,33,0.65)', fontSize: 11, fontWeight: 500 }} />
                   <YAxis hide allowDecimals={false} />
                   <Bar dataKey="count" radius={[6, 6, 0, 0]} maxBarSize={28}>
                     {weeklyData.map((entry, i) => (
