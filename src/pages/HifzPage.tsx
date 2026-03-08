@@ -212,6 +212,28 @@ export default function HifzPage() {
     }
   }, [sessionId, user, step]);
 
+  const handlePause = useCallback(async () => {
+    if (session && step >= 0 && step <= 4) {
+      saveLocalSession(session, step, sessionId);
+      if (sessionId && user) {
+        await supabase.from('hifz_sessions').update({
+          current_step: step,
+          step_status: { ...stepTimesRef.current, paused: true },
+        }).eq('id', sessionId);
+      }
+    }
+    navigate('/accueil');
+  }, [session, step, sessionId, user, navigate]);
+
+  const handleStep3Complete = useCallback(() => {
+    setShowBreathingPause(true);
+  }, []);
+
+  const handleBreathingComplete = useCallback(() => {
+    setShowBreathingPause(false);
+    updateStep(4);
+  }, [updateStep]);
+
   // Complete session after step 4 (no more steps 5-6 in this tunnel)
   const completeSession = useCallback(async () => {
     const elapsedSeconds = Math.floor((Date.now() - stepStartRef.current) / 1000);
