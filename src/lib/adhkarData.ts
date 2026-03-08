@@ -652,6 +652,7 @@ export const ANYTIME_ADHKAR: DhikrItem[] = [
     arabic: 'لَا إِلَهَ إِلَّا اللهُ',
     phonetic: "Lâ ilâha illa-llâh",
     french: "Il n'y a de divinité qu'Allah.",
+    fadl: 'La meilleure parole que j\'ai dite, moi et les prophètes avant moi. (At-Tirmidhî)',
     target: 100,
   },
   {
