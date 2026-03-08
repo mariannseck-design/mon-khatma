@@ -21,7 +21,7 @@ const difficultDuas: Dua[] = [
   {
     arabic: 'اللهم لا سهل إلا ما جعلته سهلا وأنت تجعل الحزن إذا شئت سهلا',
     phonetic: "Allâhoumma La Sahla illa ma ja'altahu sahlan wa anta taj'all al hazan idha chitta sahlan.",
-    french: "Ô Allah (عز وجل), rien n'est facile, sauf ce que Tu as rendu facile, et Tu es Celui qui, selon Ton vouloir, rend facile le chagrin.",
+    french: "Ô Allah, rien n'est facile, sauf ce que Tu as rendu facile, et Tu es Celui qui, selon Ton vouloir, rend facile le chagrin.",
   },
 ];
 
