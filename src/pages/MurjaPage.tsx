@@ -407,7 +407,7 @@ export default function MurjaPage() {
               }}
             >
               <div className="flex items-center gap-2">
-                <BookOpen className="h-4 w-4" style={{ color: 'var(--p-accent)' }} />
+                <TrendingUp className="h-4 w-4" style={{ color: '#D4AF37' }} />
                 <h3
                    className="text-sm font-bold"
                    style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-primary)' }}
