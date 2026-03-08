@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { useAuth } from '@/contexts/AuthContext';
 import { Sunrise, Moon, BookOpen, Heart, ChevronDown, MapPin, Landmark, Sparkles } from 'lucide-react';
@@ -42,7 +43,13 @@ const itemVariants = {
 
 export default function DhikrPage() {
   const { isAdmin } = useAuth();
+  const [searchParams] = useSearchParams();
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
+
+  useEffect(() => {
+    const cat = searchParams.get('category');
+    if (cat && CATEGORY_DATA[cat]) setActiveCategory(cat);
+  }, [searchParams]);
 
   const categoryData = activeCategory ? CATEGORY_DATA[activeCategory] : null;
 
