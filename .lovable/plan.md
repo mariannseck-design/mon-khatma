@@ -1,21 +1,33 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Intégration des explications Ar-Rabt et SM-2 sur la page Muraja'a
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Changements prévus
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+**Fichier modifié : `src/pages/MurjaPage.tsx`**
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+1. **Texte explicatif sous "Ar-Rabt — Liaison du jour"** (après ligne 352)
+   - Encadré discret avec bordure fine `var(--p-border)`, fond `var(--p-card)`
+   - Texte : « Ar-Rabt (La Liaison) : Récitation quotidienne obligatoire pendant 30 jours pour transformer ta mémoire immédiate en un ancrage solide par la grâce d'**Allah** (عز وجل). »
+   - Police Amiri en gras 1.1em pour les termes arabes
+   - Couleur texte atténuée `var(--p-text-65)`, taille `text-[11px]`
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+2. **Texte explicatif sous "Le Tour — Révision SM-2"** (après ligne 376)
+   - Même style d'encadré
+   - Texte : « SM-2 (SuperMemo-2) : Algorithme de révision espacée qui calcule ton taux d'oubli pour te proposer de réviser au moment parfait. C'est la clé pour préserver le dépôt des Prophètes (عليهم السلام) toute ta vie. »
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+3. **Bouton info (icône ℹ️)** à côté de chaque titre de section
+   - Ouvre un Dialog modal avec explication détaillée + graphique de la courbe de l'oubli
+
+**Nouveau composant : `src/components/muraja/MurajaMethodModal.tsx`**
+
+- Modal avec deux onglets/sections : "Ar-Rabt" et "SM-2 (SuperMemo-2)"
+- **Section Ar-Rabt** : Explication complète (empreinte dans le sable, 30 jours consécutifs)
+- **Section SM-2** : Explication de la répétition espacée
+- **Graphique courbe de l'oubli** : Composant Recharts (AreaChart) montrant :
+  - Courbe descendante "Sans révision" (rouge/grise)
+  - Courbe avec pics de révision "Avec SM-2" (émeraude) qui stabilise la rétention
+  - Axes : Jours (X) vs Rétention % (Y)
+- Formules de respect : **(عز وجل)** après Allah, **(عليهم السلام)** pour les Prophètes au pluriel, en police Amiri bold 1.1em
+- Style : fond `#FDFBF7`, texte `#1C2421`, accents émeraude/or
 
