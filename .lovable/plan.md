@@ -1,12 +1,21 @@
 
 
-## Afficher un retour à la ligne après la Basmala dans les cartes Dhikr
+# Diagnostic : 404 sur /quran-reader
 
-### Problème
-Les textes arabes contiennent déjà des `\n` après la Basmala dans les données (`adhkarData.ts`), mais le composant `DhikrCounter` utilise un simple `<p>{item.arabic}</p>` qui ne rend pas les sauts de ligne.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Solution
-**`src/components/dhikr/DhikrCounter.tsx`** : Ajouter `whiteSpace: 'pre-line'` au style du paragraphe arabe (ligne 82-91). Cela suffit pour que les `\n` existants soient rendus comme des retours à la ligne visibles.
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-Aucune modification des données nécessaire — les `\n` sont déjà en place dans `adhkarData.ts`.
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
+
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

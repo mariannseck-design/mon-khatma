@@ -86,6 +86,7 @@ export default function DhikrCounter({ item, onComplete, arabicFontSize = '1.7re
           direction: 'rtl',
           lineHeight: '2.2',
           fontSize: arabicFontSize,
+          whiteSpace: 'pre-line',
         }}
       >
         {item.arabic}
