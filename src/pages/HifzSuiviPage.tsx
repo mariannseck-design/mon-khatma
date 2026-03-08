@@ -247,9 +247,9 @@ export default function HifzSuiviPage() {
                     <span className="text-2xl font-bold" style={{ color: '#D4AF37' }}>
                       {goal.goal_unit === 'pages' ? periodProgress.toFixed(1) : periodProgress}
                     </span>
-                    <span className="text-sm" style={{ color: 'rgba(28,36,33,0.45)' }}>
-                      / {goalLabel} {periodLabel}
-                    </span>
+                     <span className="text-sm font-medium" style={{ color: 'rgba(28,36,33,0.6)' }}>
+                       / {goalLabel} {periodLabel}
+                     </span>
                   </div>
                   <div className="w-full h-2.5 rounded-full overflow-hidden" style={{ background: '#E6F0ED' }}>
                     <motion.div
