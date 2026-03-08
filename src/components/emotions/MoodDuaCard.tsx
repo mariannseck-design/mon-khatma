@@ -25,7 +25,7 @@ const difficultDuas: Dua[] = [
   },
 ];
 
-const HADITH_DIFFICILE = "Tout ce qui touche le croyant comme fatigue, comme maladie, comme soucis, comme tristesse, comme gêne, comme angoisse, même une épine qui le pique est une expiation d'Allah (عز وجل) de ses péchés.";
+const HADITH_DIFFICILE = "Tout ce qui touche le croyant comme fatigue, comme maladie, comme soucis, comme tristesse, comme gêne, comme angoisse, même une épine qui le pique est une expiation d'Allah de ses péchés.";
 
 interface MoodDuaCardProps {
   moodValue: number;
