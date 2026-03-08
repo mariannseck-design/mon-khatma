@@ -409,7 +409,7 @@ export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticPro
         </div>
 
         <p className="text-xs text-white/60 leading-relaxed">
-          Pour chaque bloc récent, indiquez depuis combien de jours vous le récitez quotidiennement. L'application calculera le reliquat de Liaison.
+          Pour chaque passage récent, indiquez depuis combien de jours vous le récitez quotidiennement. L'application calculera le reliquat de Liaison.
         </p>
 
         <div className="space-y-3 max-h-[50vh] overflow-y-auto">
