@@ -533,7 +533,7 @@ export default function AccueilPage() {
                     </div>
                     <div className="flex-1">
                       <h3 className="text-lg font-bold tracking-[0.06em] uppercase" style={{ fontFamily: "'Inter', sans-serif", color: COLORS.emerald }}>
-                        Ma Tillawah
+                        Ma Tilawah
                       </h3>
                       <p className="text-sm mt-1" style={{ color: COLORS.sage }}>Définir mon objectif de lecture</p>
                     </div>
