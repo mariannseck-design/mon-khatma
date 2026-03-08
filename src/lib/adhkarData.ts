@@ -584,6 +584,7 @@ export const POST_PRAYER_ADHKAR: DhikrItem[] = [
     arabic: 'سُبْحَانَ اللهِ',
     phonetic: "Subhâna-llâh.",
     french: "Gloire à Allah.",
+    fadl: 'Celui qui dit SubhânAllâh 33 fois, Al-Hamdulillâh 33 fois, Allâhu Akbar 33 fois et complète le centième, ses péchés seront pardonnés, fussent-ils comme l\'écume de la mer. (Muslim)',
     target: 33,
   },
   {
