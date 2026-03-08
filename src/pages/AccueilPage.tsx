@@ -137,9 +137,6 @@ export default function AccueilPage() {
 
         {/* Greeting */}
         <motion.div className="text-center pt-2 pb-2" variants={itemVariants}>
-          <h2 className="text-2xl font-bold tracking-tight" style={{ fontFamily: "'Inter', sans-serif", color: COLORS.emerald }}>
-            {displayName ? `Bienvenue, ${displayName} 🌿` : 'Bienvenue 🌿'}
-          </h2>
           <p className="text-muted-foreground text-base mt-1">{greeting()}</p>
         </motion.div>
 
