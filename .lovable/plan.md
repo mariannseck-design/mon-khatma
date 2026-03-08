@@ -1,23 +1,21 @@
 
 
-## Badge doré de révisions en attente
+# Diagnostic : 404 sur /quran-reader
 
-### Modification unique : `src/pages/AccueilPage.tsx`
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-**1. Ajouter un state + fetch des révisions en attente**
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-Dans le composant, ajouter un `useState<number>(0)` pour `pendingReviews` et un `useEffect` qui requête `hifz_memorized_verses` avec `next_review_date <= today` pour compter les blocs dus. Ce fetch ne se fait que si `user` est connecté.
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-**2. Afficher le badge sur l'icône Shield**
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-Sur la carte "Entretien & Révision", ajouter un `<span>` positionné en `absolute -top-1.5 -right-1.5` sur le conteneur de l'icône Shield. Le badge utilise un dégradé doré (`#d4af37` → `#b8962e`), texte foncé `#1a2e1a`, bordure blanche, `min-w-[22px]`, `text-[11px]`. Affiche le nombre ou "99+" si > 99. N'apparaît que si `pendingReviews > 0`.
-
-**3. Sous-titre dynamique**
-
-Remplacer le texte statique "Liaison & révision espacée" par un texte contextuel :
-- Si révisions en attente : "X bloc(s) à réviser aujourd'hui"
-- Sinon : "Liaison & révision espacée" (inchangé)
-
-### Fichier impacté
-- `src/pages/AccueilPage.tsx`
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
