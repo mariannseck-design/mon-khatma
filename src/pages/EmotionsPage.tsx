@@ -204,14 +204,14 @@ export default function EmotionsPage() {
               <motion.div
                 key={card.title}
                 variants={itemVariants}
-                className={`relative overflow-hidden rounded-2xl p-5 flex flex-col items-center justify-center text-center aspect-[4/3] ${card.enabled ? 'cursor-pointer' : ''}`}
+                className={`relative overflow-hidden rounded-2xl p-5 flex flex-col items-center justify-center text-center aspect-[4/3] ${(card.enabled || isAdmin) ? 'cursor-pointer' : ''}`}
                 style={{
                   background: card.bg,
                   border: card.border ? `1.5px solid ${card.border}` : '1px solid rgba(0,0,0,0.06)',
                   boxShadow: '0 2px 12px -2px rgba(0,0,0,0.08)',
                 }}
-                onClick={() => card.enabled && card.route && navigate(card.route)}
-                whileTap={card.enabled ? { scale: 0.96 } : {}}
+                onClick={() => (card.enabled || isAdmin) && navigate(`/dhikr?category=${card.id}`)}
+                whileTap={(card.enabled || isAdmin) ? { scale: 0.96 } : {}}
               >
                 {!card.enabled && (
                   <span
