@@ -132,7 +132,7 @@ export default function HifzStep6Tour({ onComplete, onBack }: Props) {
         </div>
 
         <p className="text-white/80 text-sm leading-relaxed px-2">
-          Ta révision quotidienne. Récite le bloc ci-dessous de mémoire, puis évalue ta facilité.
+          Ta révision quotidienne. Récite le passage ci-dessous de mémoire, puis évalue ta facilité.
         </p>
 
         {/* Review block reference */}

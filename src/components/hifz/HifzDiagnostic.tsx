@@ -267,7 +267,7 @@ export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticPro
       await supabase.from('profiles').update({ onboarding_completed: true }).eq('user_id', user.id);
       setStep('done');
       const totalCount = solidBlocks.length + recentBlocks.length;
-      toast({ title: 'Acquis enregistrés ✨', description: `${totalCount} blocs ajoutés à votre programme.` });
+      toast({ title: 'Acquis enregistrés ✨', description: `${totalCount} passages ajoutés à votre programme.` });
       setTimeout(() => onComplete(), 2000);
     } catch (err) {
       console.error('Diagnostic error:', err);
@@ -409,7 +409,7 @@ export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticPro
         </div>
 
         <p className="text-xs text-white/60 leading-relaxed">
-          Pour chaque bloc récent, indiquez depuis combien de jours vous le récitez quotidiennement. L'application calculera le reliquat de Liaison.
+          Pour chaque passage récent, indiquez depuis combien de jours vous le récitez quotidiennement. L'application calculera le reliquat de Liaison.
         </p>
 
         <div className="space-y-3 max-h-[50vh] overflow-y-auto">
@@ -427,7 +427,7 @@ export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticPro
                 </div>
                 <div>
                   <p className="text-[10px] text-white/50 mb-2">
-                    Depuis combien de jours récitez-vous ce bloc ?
+                    Depuis combien de jours récitez-vous ce passage ?
                   </p>
                   <div className="flex items-center gap-3">
                     <input
