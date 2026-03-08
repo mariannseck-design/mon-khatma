@@ -609,7 +609,7 @@ export const ANYTIME_ADHKAR: DhikrItem[] = [
     target: 100,
   },
   {
-    title: 'Meilleur du'â',
+    title: "Meilleur du'â",
     arabic: 'لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ',
     phonetic: "Lâ ilâha illa-llâhu wahdahu lâ sharîka lah, lahu-l-mulku wa lahu-l-hamd, wa huwa 'alâ kulli shay'in qadîr",
     french: "Il n'y a de divinité qu'Allah (عز وجل), Seul sans associé. À Lui la royauté et la louange, et Il est Omnipotent.",
