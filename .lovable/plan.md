@@ -1,12 +1,21 @@
 
 
-## Désactiver toutes les cartes dhikr pour les abonnés, actives pour l'admin
+# Diagnostic : 404 sur /quran-reader
 
-### Changement
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-**`src/pages/DhikrPage.tsx`** — Une seule modification :
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-Mettre **toutes les cartes** à `enabled: false` dans le tableau `dhikrCards`. La logique existante (ligne ~112) fait déjà `if (card.enabled || isAdmin) setActiveCategory(card.id)` — donc l'admin pourra toujours ouvrir toutes les cartes, et les abonnés verront "Bientôt disponible" sur chacune.
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-Concrètement : changer les 5 premières cartes (morning, evening, prayer, chifa, louanges) de `enabled: true` à `enabled: false`.
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
