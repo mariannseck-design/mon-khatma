@@ -305,11 +305,11 @@ export default function HifzSuiviPage() {
                       }}
                     >
                       <div className="flex items-center gap-3 mb-3">
-                        <div
+                      <div
                           className="w-10 h-10 rounded-xl flex items-center justify-center"
-                          style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', boxShadow: 'var(--p-card-shadow)' }}
+                          style={{ background: 'linear-gradient(135deg, #065F46, #10B981)', boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)' }}
                         >
-                          <BookOpen className="h-5 w-5" style={{ color: 'var(--p-accent)' }} />
+                          <BookOpen className="h-5 w-5 text-white" />
                         </div>
                         <div>
                           <h3 className="text-sm font-bold" style={{ color: 'var(--p-text)' }}>Programme du jour</h3>
