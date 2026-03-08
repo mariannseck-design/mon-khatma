@@ -1,12 +1,8 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { SURAHS } from '@/lib/surahData';
+import { getPageAyahs, type LocalAyah } from '@/lib/quranData';
 
-interface Ayah {
-  number: number;
-  text: string;
-  numberInSurah: number;
-  surah: { name: string; number: number };
-}
+type Ayah = LocalAyah;
 
 interface QuranTextViewProps {
   page: number;
@@ -144,11 +140,10 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 28, dark
   useEffect(() => {
     setLoading(true);
     setError(false);
-    fetch(`https://api.alquran.cloud/v1/page/${page}/quran-uthmani`)
-      .then(res => res.json())
+    getPageAyahs(page)
       .then(data => {
-        if (data.code === 200) {
-          setAyahs(data.data.ayahs);
+        if (data.length > 0) {
+          setAyahs(data);
         } else {
           setError(true);
         }
