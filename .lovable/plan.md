@@ -1,21 +1,20 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Masquer la section Émotions derrière un clic
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+Actuellement la section humeur/gratitude/moments est toujours visible en bas de page. Elle doit être cachée par défaut et s'afficher uniquement quand on clique sur la carte "Mes Émotions".
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Modification
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+**`src/pages/EmotionsPage.tsx`** :
+- Ajouter un state `showEmotions` (boolean, default `false`)
+- Le bouton "Mes Émotions" dans la grille toggle `showEmotions` au lieu de `scrollIntoView`
+- Envelopper toute la section émotions (`ref={moodSectionRef}`, lignes 288-430) dans un `AnimatePresence` + `motion.div` conditionné par `showEmotions`
+- Quand `showEmotions` passe à `true`, scroll automatiquement vers la section
+- Animation d'entrée (fade + slide down) et de sortie (fade + slide up)
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
-
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+### Résultat
+- Par défaut : seule la grille des 10 cartes est visible
+- Clic sur "Mes Émotions" : la section apparaît en dessous avec animation
+- Re-clic : la section se referme
 
