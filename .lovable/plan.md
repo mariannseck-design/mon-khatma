@@ -1,21 +1,40 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Réorganisation de la grille Dhikr
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Nouveau layout souhaité
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+```text
+┌─────────────────────────────┐
+│     Après la prière          │  ← pleine largeur, seul en haut
+└─────────────────────────────┘
+┌──────────┐  ┌──────────────┐
+│ Zikr du  │  │ Zikr du      │  ← alignés côte à côte
+│ matin    │  │ soir         │
+└──────────┘  └──────────────┘
+┌─────────────────────────────┐
+│ Les Sources de Lumière       │  ← taille réduite, superposées
+├─────────────────────────────┤
+│ Mes Douas                    │
+└─────────────────────────────┘
+┌──────────┐  ┌──────────────┐
+│ Chifâ &  │  │ Louanges &   │  ← reste de la grille 2 colonnes
+│ Sérénité │  │ Istighfar    │
+└──────────┘  └──────────────┘
+│ ... autres cartes ...        │
+```
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+### Fichier modifié : `src/pages/EmotionsPage.tsx`
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+1. **Supprimer** le bloc `Sources de Lumière` + `Mes Douas` actuel (lignes 195-259) qui est au-dessus de la grille.
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+2. **Remplacer** la grille unifiée (lignes 261-309) par un layout structuré :
+   - **"Après la prière"** rendu seul, pleine largeur (`col-span-2`), extrait du tableau `dhikrCards`
+   - **"Zikr du matin"** et **"Zikr du soir"** rendus côte à côte dans la grille 2 colonnes
+   - **Sources de Lumière** et **Mes Douas** insérés en tant que cartes empilées avec padding/taille réduits (`p-4` au lieu de `p-6`, icône `w-10 h-10`, texte `text-base`)
+   - **Reste des cartes** (`chifa`, `louanges`, etc.) continuent en grille 2 colonnes
+
+3. Réordonner le tableau `dhikrCards` pour que `prayer` soit en premier, suivi de `morning`, `evening`, puis le reste (en excluant `prayer`/`morning`/`evening` du map général).
+
+Changement purement visuel, aucun impact fonctionnel.
 
