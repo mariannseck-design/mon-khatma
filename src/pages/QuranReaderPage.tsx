@@ -361,6 +361,7 @@ export default function QuranReaderPage() {
             fontSize={TEXT_SIZES[textSizeIndex].value}
             darkMode={nightMode}
             tajweedEnabled={tajweedEnabled}
+            showTranslation={translationEnabled}
           />
         )}
       </div>
