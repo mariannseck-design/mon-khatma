@@ -370,28 +370,22 @@ export default function MurjaPage() {
             </div>
 
             {/* Section Le Tour */}
-            <div className="space-y-3">
+            <div className="space-y-4">
               <div className="flex items-center gap-2">
                  <h2
                    className="text-base font-bold"
                    style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-text)' }}
                  >
-                   L'Entretien Continu (Le Tour)
+                   Le Tour — Révision intelligente
                  </h2>
                  <span className="text-[10px] font-medium px-2 py-0.5 rounded-full" style={{ background: 'var(--p-card-active)', color: 'var(--p-primary)' }}>
                    {tourVerses.length}
                  </span>
                  <MurajaMethodModal defaultTab="sm2" />
               </div>
-               <p className="text-[11px] font-medium -mt-1" style={{ color: 'var(--p-text-65)' }}>
-                 Anciens acquis — auto-évaluation après chaque bloc
+               <p className="text-[11px] font-medium -mt-2" style={{ color: 'var(--p-text-65)' }}>
+                 Anciens acquis — auto-évaluation
                </p>
-               <div
-                 className="rounded-lg px-3 py-2 text-[11px] leading-relaxed"
-                 style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', color: 'var(--p-text-65)' }}
-               >
-                 Ton programme de révision intelligent (<strong style={{ color: 'var(--p-primary)' }}>Algorithme SM-2</strong>). Il s'adapte naturellement à ta mémoire pour te proposer de réviser chaque verset au moment parfait, préservant ainsi ton trésor de l'oubli.
-               </div>
               <MurajaChecklist
                 items={tourVerses}
                 section="tour"
