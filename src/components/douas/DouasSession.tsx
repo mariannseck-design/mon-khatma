@@ -82,7 +82,7 @@ export default function DouasSession({
   };
 
   return (
-    <div className="flex flex-col min-h-[60vh]" style={{ background: 'var(--p-bg)' }}>
+    <div className="flex flex-col min-h-[60vh]" style={{ background: 'var(--p-bg)' }} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
       {/* Header */}
       <div className="flex items-center gap-3 px-4 py-3">
         <button onClick={onBack} className="p-2 rounded-full" style={{ color: GOLD }} aria-label="Retour">
