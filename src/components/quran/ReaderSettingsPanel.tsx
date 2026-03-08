@@ -19,6 +19,11 @@ interface ReaderSettingsPanelProps {
   textSizeIndex?: number;
   textSizes?: Array<{ label: string; value: number }>;
   onTextSizeIndexChange?: (index: number) => void;
+  textModeDisabled?: boolean;
+  audioStartVerse?: number;
+  audioEndVerse?: number;
+  onAudioStartVerseChange?: (v: number | undefined) => void;
+  onAudioEndVerseChange?: (v: number | undefined) => void;
 }
 
 const FONT_SIZE_PRESETS = [
@@ -39,6 +44,11 @@ export default function ReaderSettingsPanel({
   textSizeIndex,
   textSizes,
   onTextSizeIndexChange,
+  textModeDisabled,
+  audioStartVerse,
+  audioEndVerse,
+  onAudioStartVerseChange,
+  onAudioEndVerseChange,
 }: ReaderSettingsPanelProps) {
   const [open, setOpen] = useState(false);
 
@@ -108,35 +118,37 @@ export default function ReaderSettingsPanel({
                 </div>
               )}
 
-              {/* View Mode Toggle */}
-              <div className="mb-4">
-                <p className="text-xs font-medium mb-2 opacity-70">Mode d'affichage</p>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => onViewModeChange('image')}
-                    className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium transition-all"
-                    style={{
-                      background: viewMode === 'image' ? (nightMode ? 'rgba(90,180,180,0.2)' : 'rgba(255,255,255,0.35)') : (nightMode ? 'rgba(90,180,180,0.05)' : 'rgba(255,255,255,0.15)'),
-                      border: viewMode === 'image' ? `1.5px solid ${nightMode ? 'rgba(90,180,180,0.4)' : 'rgba(180,150,60,0.5)'}` : '1.5px solid transparent',
-                    }}
-                  >
-                    <Image className="h-4 w-4" /> Mushaf
-                  </button>
-                  <button
-                    onClick={() => onViewModeChange('text')}
-                    className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium transition-all"
-                    style={{
-                      background: viewMode === 'text' ? (nightMode ? 'rgba(90,180,180,0.2)' : 'rgba(255,255,255,0.35)') : (nightMode ? 'rgba(90,180,180,0.05)' : 'rgba(255,255,255,0.15)'),
-                      border: viewMode === 'text' ? `1.5px solid ${nightMode ? 'rgba(90,180,180,0.4)' : 'rgba(180,150,60,0.5)'}` : '1.5px solid transparent',
-                    }}
-                  >
-                    <Type className="h-4 w-4" /> Texte
-                  </button>
+              {/* View Mode Toggle — hidden when text mode disabled */}
+              {!textModeDisabled && (
+                <div className="mb-4">
+                  <p className="text-xs font-medium mb-2 opacity-70">Mode d'affichage</p>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => onViewModeChange('image')}
+                      className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium transition-all"
+                      style={{
+                        background: viewMode === 'image' ? (nightMode ? 'rgba(90,180,180,0.2)' : 'rgba(255,255,255,0.35)') : (nightMode ? 'rgba(90,180,180,0.05)' : 'rgba(255,255,255,0.15)'),
+                        border: viewMode === 'image' ? `1.5px solid ${nightMode ? 'rgba(90,180,180,0.4)' : 'rgba(180,150,60,0.5)'}` : '1.5px solid transparent',
+                      }}
+                    >
+                      <Image className="h-4 w-4" /> Mushaf
+                    </button>
+                    <button
+                      onClick={() => onViewModeChange('text')}
+                      className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium transition-all"
+                      style={{
+                        background: viewMode === 'text' ? (nightMode ? 'rgba(90,180,180,0.2)' : 'rgba(255,255,255,0.35)') : (nightMode ? 'rgba(90,180,180,0.05)' : 'rgba(255,255,255,0.15)'),
+                        border: viewMode === 'text' ? `1.5px solid ${nightMode ? 'rgba(90,180,180,0.4)' : 'rgba(180,150,60,0.5)'}` : '1.5px solid transparent',
+                      }}
+                    >
+                      <Type className="h-4 w-4" /> Texte
+                    </button>
+                  </div>
                 </div>
-              </div>
+              )}
 
-              {/* Text Size (4 levels) */}
-              {viewMode === 'text' && (
+              {/* Text Size (only when text mode active and not disabled) */}
+              {!textModeDisabled && viewMode === 'text' && (
                 <div className="mb-4">
                   <p className="text-xs font-medium mb-2 opacity-70">Taille du texte</p>
                   <div className="grid grid-cols-5 gap-1.5">
@@ -191,7 +203,7 @@ export default function ReaderSettingsPanel({
               {/* Audio */}
               <div>
                 <p className="text-xs font-medium mb-2 opacity-70">Récitation audio</p>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 mb-3">
                   <button
                     onClick={(e) => { e.stopPropagation(); onTogglePlay(); }}
                     className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0"
@@ -220,6 +232,51 @@ export default function ReaderSettingsPanel({
                     ))}
                   </select>
                 </div>
+                {/* Verse range selection */}
+                {onAudioStartVerseChange && onAudioEndVerseChange && (
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1">
+                      <label className="text-[10px] opacity-60 mb-0.5 block">Du verset</label>
+                      <input
+                        type="number"
+                        inputMode="numeric"
+                        min={1}
+                        placeholder="Début"
+                        value={audioStartVerse ?? ''}
+                        onChange={(e) => {
+                          const v = e.target.value ? parseInt(e.target.value) : undefined;
+                          onAudioStartVerseChange(v && v > 0 ? v : undefined);
+                        }}
+                        onClick={(e) => e.stopPropagation()}
+                        className="w-full py-1.5 px-2 rounded-lg text-sm border-0 outline-none text-center"
+                        style={{
+                          background: nightMode ? 'rgba(90,180,180,0.08)' : 'rgba(255,255,255,0.2)',
+                          color: 'inherit',
+                        }}
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <label className="text-[10px] opacity-60 mb-0.5 block">Au verset</label>
+                      <input
+                        type="number"
+                        inputMode="numeric"
+                        min={1}
+                        placeholder="Fin"
+                        value={audioEndVerse ?? ''}
+                        onChange={(e) => {
+                          const v = e.target.value ? parseInt(e.target.value) : undefined;
+                          onAudioEndVerseChange(v && v > 0 ? v : undefined);
+                        }}
+                        onClick={(e) => e.stopPropagation()}
+                        className="w-full py-1.5 px-2 rounded-lg text-sm border-0 outline-none text-center"
+                        style={{
+                          background: nightMode ? 'rgba(90,180,180,0.08)' : 'rgba(255,255,255,0.2)',
+                          color: 'inherit',
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
             </motion.div>
           </motion.div>
