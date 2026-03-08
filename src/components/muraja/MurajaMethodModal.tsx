@@ -171,9 +171,7 @@ export default function MurajaMethodModal({ defaultTab = 'rabt', trigger }: Mura
                 style={{ background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.2)', color: '#1C2421' }}
               >
                 <strong>En résumé :</strong> Chaque révision programmée par le SM-2 vient briser la courbe de l'oubli,
-                par la grâce d'<strong>Allah</strong>{' '}
-                <span style={{ fontFamily: "'Amiri', serif", fontWeight: 'bold', fontSize: '1.1em' }}>(عز وجل)</span>,
-                stabilisant ta mémoire sur le très long terme.
+                stabilisant ta mémoire durablement sur le très long terme.
               </div>
             </div>
           </TabsContent>
