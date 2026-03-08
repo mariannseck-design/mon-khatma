@@ -1,13 +1,21 @@
 
 
-## Plan : Ajouter le mois/année au graphique hebdomadaire
+# Diagnostic : 404 sur /quran-reader
 
-### Changement dans `src/pages/HifzSuiviPage.tsx`
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-Ajouter dynamiquement le mois et l'année en cours (ex: "Mars 2026") à droite du titre du graphique, comme un petit badge ou texte secondaire.
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-**Ligne 436-438** — Modifier le header du graphique pour ajouter le mois :
-- Utiliser `new Date().toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })` pour générer "mars 2026"
-- Capitaliser la première lettre
-- L'afficher à droite du titre avec un style discret (`text-[11px]`, couleur `var(--p-text-55)`)
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
+
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
