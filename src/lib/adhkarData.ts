@@ -610,6 +610,7 @@ export const POST_PRAYER_ADHKAR: DhikrItem[] = [
   },
   {
     title: 'Invocation pour la protection',
+    fadl: 'Mu\'âdh ibn Jabal rapporte que le Prophète ﷺ lui a pris la main et lui a dit : « Je t\'aime, ne manque jamais de dire après chaque prière... » (Abû Dâwûd)',
     arabic: 'اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ',
     phonetic: "Allâhumma a'innî 'alâ dhikrika wa shukrika wa husni 'ibâdatik.",
     french: "Ô Allah, aide-moi à T'évoquer, à Te remercier et à T'adorer de la meilleure manière.",
