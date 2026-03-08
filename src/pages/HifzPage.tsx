@@ -15,6 +15,7 @@ import HifzSuccess from '@/components/hifz/HifzSuccess';
 import DevSkipButton from '@/components/hifz/DevSkipButton';
 import { SURAHS } from '@/lib/surahData';
 import { motion } from 'framer-motion';
+import { type HifzTheme, getContainerStyle } from '@/lib/hifzTheme';
 
 interface HifzSession {
   surahNumber: number;
@@ -23,11 +24,7 @@ interface HifzSession {
   repetitionLevel: number;
 }
 
-const GRADIENT_STYLE = {
-  background: 'linear-gradient(135deg, #0d7377 0%, #14919b 50%, #0d7377 100%)',
-  border: '2px solid rgba(212,175,55,0.4)',
-  boxShadow: '0 8px 32px -8px rgba(13,115,119,0.4)',
-};
+const THEME_STORAGE_KEY = 'hifz_visual_theme';
 
 const LOCAL_KEY = 'hifz_active_session';
 
@@ -75,6 +72,35 @@ export default function HifzPage() {
   const { isDevMode } = useDevMode();
   const stepStartRef = useRef<number>(Date.now());
   const stepTimesRef = useRef<Record<string, number>>({});
+  const [hifzTheme, setHifzTheme] = useState<HifzTheme>(() => {
+    return (localStorage.getItem(THEME_STORAGE_KEY) as HifzTheme) || 'teal';
+  });
+
+  const containerStyle = getContainerStyle(hifzTheme);
+
+  const handleThemeChange = (t: HifzTheme) => {
+    setHifzTheme(t);
+    localStorage.setItem(THEME_STORAGE_KEY, t);
+  };
+
+  const themeToggle = (
+    <div className="flex items-center justify-center gap-1 mb-4">
+      {([['teal', '🌊'], ['nur', '☀️'], ['parchemin', '📜']] as [HifzTheme, string][]).map(([t, emoji]) => (
+        <button
+          key={t}
+          onClick={() => handleThemeChange(t)}
+          className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all"
+          style={{
+            background: hifzTheme === t ? 'rgba(212,175,55,0.3)' : 'rgba(0,0,0,0.1)',
+            border: `1px solid ${hifzTheme === t ? '#d4af37' : 'rgba(0,0,0,0.1)'}`,
+            color: hifzTheme === t ? '#d4af37' : (hifzTheme === 'teal' ? 'rgba(255,255,255,0.6)' : '#666'),
+          }}
+        >
+          {emoji} {t === 'teal' ? 'Teal' : t === 'nur' ? 'An-Nur' : 'Parchemin'}
+        </button>
+      ))}
+    </div>
+  );
 
   useEffect(() => {
     if (session && step >= 0 && step <= 4) {
@@ -296,7 +322,7 @@ export default function HifzPage() {
   if (showDiagnostic) {
     return (
       <AppLayout title="Espace Hifz" hideNav>
-        <div className="min-h-[80vh] rounded-[2rem] p-6 mx-[-4px]" style={GRADIENT_STYLE}>
+        <div className="min-h-[80vh] rounded-[2rem] p-6 mx-[-4px]" style={containerStyle}>
           <HifzDiagnostic
             onComplete={() => {
               setShowDiagnostic(false);
@@ -327,7 +353,7 @@ export default function HifzPage() {
     const stepName = STEP_NAMES[pendingResume.step] || `Étape ${pendingResume.step}`;
     return (
       <AppLayout title="Espace Hifz" hideNav>
-        <div className="min-h-[80vh] rounded-[2rem] p-6 mx-[-4px]" style={GRADIENT_STYLE}>
+        <div className="min-h-[80vh] rounded-[2rem] p-6 mx-[-4px]" style={containerStyle}>
           {devModeBadge}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -374,7 +400,7 @@ export default function HifzPage() {
   if (showGoalOnboarding) {
     return (
       <AppLayout title="Espace Hifz" hideNav>
-        <div className="min-h-[80vh] rounded-[2rem] p-6 mx-[-4px]" style={GRADIENT_STYLE}>
+        <div className="min-h-[80vh] rounded-[2rem] p-6 mx-[-4px]" style={containerStyle}>
           <HifzGoalOnboarding
             onGoalSet={() => { setHasGoal(true); setShowGoalOnboarding(false); }}
           />
@@ -386,7 +412,7 @@ export default function HifzPage() {
   if (!session || step === -1) {
     return (
       <AppLayout title="Espace Hifz" hideNav>
-        <div className="min-h-[80vh] rounded-[2rem] p-6 mx-[-4px]" style={GRADIENT_STYLE}>
+        <div className="min-h-[80vh] rounded-[2rem] p-6 mx-[-4px]" style={containerStyle}>
           {devModeBadge}
           <HifzConfig onStart={startSession} />
         </div>
@@ -396,13 +422,14 @@ export default function HifzPage() {
 
   return (
     <AppLayout title="Espace Hifz" hideNav>
-      <div className="min-h-[80vh] rounded-[2rem] p-6 mx-[-4px]" style={GRADIENT_STYLE}>
+      <div className="min-h-[80vh] rounded-[2rem] p-6 mx-[-4px]" style={containerStyle}>
+        {themeToggle}
         {devModeBadge}
         {step === 0 && <HifzStep0Intention surahNumber={session.surahNumber} startVerse={session.startVerse} endVerse={session.endVerse} onNext={() => updateStep(1)} onBack={() => setStep(-1)} />}
         {step === 1 && <HifzStep1Revision onNext={() => updateStep(2)} onBack={() => setStep(0)} />}
-        {step === 2 && <HifzStep2Impregnation surahNumber={session.surahNumber} startVerse={session.startVerse} endVerse={session.endVerse} onNext={() => updateStep(3)} onBack={() => setStep(1)} />}
-        {step === 3 && <HifzStep3Memorisation surahNumber={session.surahNumber} startVerse={session.startVerse} endVerse={session.endVerse} repetitionLevel={session.repetitionLevel} onNext={() => updateStep(4)} onBack={() => setStep(2)} />}
-        {step === 4 && <HifzStep4Validation surahNumber={session.surahNumber} startVerse={session.startVerse} endVerse={session.endVerse} onNext={completeSession} onBack={() => setStep(3)} />}
+        {step === 2 && <HifzStep2Impregnation surahNumber={session.surahNumber} startVerse={session.startVerse} endVerse={session.endVerse} onNext={() => updateStep(3)} onBack={() => setStep(1)} theme={hifzTheme} />}
+        {step === 3 && <HifzStep3Memorisation surahNumber={session.surahNumber} startVerse={session.startVerse} endVerse={session.endVerse} repetitionLevel={session.repetitionLevel} onNext={() => updateStep(4)} onBack={() => setStep(2)} theme={hifzTheme} />}
+        {step === 4 && <HifzStep4Validation surahNumber={session.surahNumber} startVerse={session.startVerse} endVerse={session.endVerse} onNext={completeSession} onBack={() => setStep(3)} theme={hifzTheme} />}
         {step === 5 && <HifzSuccess stepTimes={stepTimesRef.current} />}
       </div>
       {step >= 0 && step <= 4 && (

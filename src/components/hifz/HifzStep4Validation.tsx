@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Mic, Square, Play, Pause, Check, X, Eye } from 'lucide-react';
 import HifzStepWrapper from './HifzStepWrapper';
 import { SURAHS } from '@/lib/surahData';
+import { type HifzTheme, getThemeColors } from '@/lib/hifzTheme';
 
 const ENCOURAGEMENTS = [
   {
@@ -28,9 +29,11 @@ interface Props {
   endVerse: number;
   onNext: () => void;
   onBack: () => void;
+  theme?: HifzTheme;
 }
 
-export default function HifzStep4Validation({ surahNumber, startVerse, endVerse, onNext, onBack }: Props) {
+export default function HifzStep4Validation({ surahNumber, startVerse, endVerse, onNext, onBack, theme = 'teal' }: Props) {
+  const tc = getThemeColors(theme);
   const [arabicVerses, setArabicVerses] = useState<{ number: number; text: string }[]>([]);
   const [mushafPage, setMushafPage] = useState<number | null>(null);
   const [attempt, setAttempt] = useState(0); // 0-based
@@ -166,9 +169,9 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
   const secs = recordingTime % 60;
 
   return (
-    <HifzStepWrapper stepNumber={4} stepTitle="Test de Validation" onBack={onBack}>
+    <HifzStepWrapper stepNumber={4} stepTitle="Test de Validation" onBack={onBack} theme={theme}>
       <div className="space-y-5">
-        <p className="text-white/80 text-sm leading-relaxed text-center px-2">
+        <p style={{ color: tc.textSecondary }} className="text-sm leading-relaxed text-center px-2">
           Enregistre-toi 3 fois de suite sans regarder le Coran. Tu peux écouter ton audio ensuite pour vérifier.
           Si tu réussis les 3 sans erreur, tu as validé ton Hifz !
         </p>
@@ -180,21 +183,21 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
               key={i}
               className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold"
               style={{
-                background: i < attempt ? 'rgba(212,175,55,0.3)' : 'rgba(255,255,255,0.06)',
-                border: `2px solid ${i < attempt ? '#d4af37' : i === attempt ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.1)'}`,
-                color: i < attempt ? '#d4af37' : 'rgba(255,255,255,0.4)',
+                background: i < attempt ? 'rgba(212,175,55,0.3)' : tc.cardBg,
+                border: `2px solid ${i < attempt ? '#d4af37' : i === attempt ? tc.textMuted : tc.cardBorder}`,
+                color: i < attempt ? '#d4af37' : tc.textMuted,
               }}
             >
               {i < attempt ? '✓' : `${i + 1}`}
             </div>
           ))}
         </div>
-        <p className="text-white/40 text-xs text-center">Essai {attempt + 1}/3</p>
+        <p style={{ color: tc.textMuted }} className="text-xs text-center">Essai {attempt + 1}/3</p>
 
         {/* Blurred Mushaf image */}
         <div
           className="rounded-2xl relative overflow-hidden cursor-pointer"
-          style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(212,175,55,0.15)' }}
+          style={{ background: tc.cardBg, border: `1px solid rgba(212,175,55,0.15)` }}
           onTouchStart={() => setShowText(true)}
           onTouchEnd={() => setShowText(false)}
           onMouseDown={() => setShowText(true)}
@@ -202,8 +205,8 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
           onMouseLeave={() => setShowText(false)}
         >
           <div className="flex items-center justify-between px-4 pt-3 pb-1">
-            <p className="text-white/40 text-xs uppercase tracking-wider">AYAT</p>
-            <Eye className="h-4 w-4 text-white/30" />
+            <p style={{ color: tc.textMuted }} className="text-xs uppercase tracking-wider">AYAT</p>
+            <Eye className="h-4 w-4" style={{ color: tc.textFaint }} />
           </div>
           <div
             className="px-2 pb-2 transition-all duration-300"
@@ -221,7 +224,7 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
             )}
           </div>
           {!showText && (
-            <p className="text-white/30 text-xs text-center pb-3">Maintiens appuyé pour vérifier</p>
+            <p style={{ color: tc.textFaint }} className="text-xs text-center pb-3">Maintiens appuyé pour vérifier</p>
           )}
         </div>
 
@@ -247,7 +250,7 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
                 : <Mic className="h-8 w-8" style={{ color: '#d4af37' }} />
               }
             </motion.button>
-            <p className="text-white/40 text-xs">
+            <p style={{ color: tc.textMuted }} className="text-xs">
               {isRecording ? 'Appuie pour arrêter' : 'Appuie pour enregistrer'}
             </p>
           </div>

@@ -6,6 +6,7 @@ import { RECITERS, getAyahAudioUrl } from '@/hooks/useQuranAudio';
 import { SURAHS } from '@/lib/surahData';
 import { getVersesByRange, type LocalAyah } from '@/lib/quranData';
 import { getTajweedAnnotations, TAJWEED_COLORS, type TajweedAnnotation } from '@/lib/tajweedData';
+import { type HifzTheme, getThemeColors } from '@/lib/hifzTheme';
 
 interface Props {
   surahNumber: number;
@@ -13,6 +14,7 @@ interface Props {
   endVerse: number;
   onNext: () => void;
   onBack: () => void;
+  theme?: HifzTheme;
 }
 
 const FONT_FAMILY = "'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
@@ -68,9 +70,10 @@ interface AyahWithAnnotations extends LocalAyah {
   tajweed?: TajweedAnnotation[];
 }
 
-export default function HifzStep2Impregnation({ surahNumber, startVerse, endVerse, onNext, onBack }: Props) {
+export default function HifzStep2Impregnation({ surahNumber, startVerse, endVerse, onNext, onBack, theme = 'teal' }: Props) {
   const storageKey = `hifz_listen_${surahNumber}_${startVerse}_${endVerse}`;
   const surahName = SURAHS.find(s => s.number === surahNumber)?.name || '';
+  const tc = getThemeColors(theme);
 
   const [listenCount, setListenCount] = useState(() => {
     const saved = localStorage.getItem(storageKey);
@@ -149,7 +152,7 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
           lineHeight: '52px',
           textAlign: 'justify',
           textAlignLast: 'center',
-          color: '#e8e0d0',
+          color: tc.text,
           wordSpacing: '0.12em',
           fontVariantLigatures: 'common-ligatures',
           fontFeatureSettings: '"liga" 1, "calt" 1, "kern" 1',
@@ -259,7 +262,7 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
   }, []);
 
   return (
-    <HifzStepWrapper stepNumber={2} stepTitle="Imprégnation & Sens" onBack={onBack}>
+    <HifzStepWrapper stepNumber={2} stepTitle="Imprégnation & Sens" onBack={onBack} theme={theme}>
       <div className="text-center space-y-5">
         <div
           className="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center"
@@ -268,7 +271,7 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
           <Headphones className="h-8 w-8" style={{ color: '#d4af37' }} />
         </div>
 
-        <p className="text-white/80 text-sm leading-relaxed px-2">
+        <p style={{ color: tc.textSecondary }} className="text-sm leading-relaxed px-2">
           Écoute attentivement le récitateur. L'idéal est d'écouter 3 fois, mais tu peux passer dès la 1ère écoute.
         </p>
 
@@ -283,7 +286,7 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
             >
               <ZoomOut className="h-3.5 w-3.5" style={{ color: '#d4af37' }} />
             </button>
-            <span className="text-xs px-2" style={{ color: 'rgba(255,255,255,0.5)' }}>{FONT_LABELS[fontSizeIndex]}</span>
+            <span className="text-xs px-2" style={{ color: tc.textMuted }}>{FONT_LABELS[fontSizeIndex]}</span>
             <button
               onClick={() => setFontSizeIndex(i => Math.min(2, i + 1))}
               disabled={fontSizeIndex === 2}
@@ -296,7 +299,7 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
 
           <div
             className="rounded-xl overflow-auto max-h-72 px-4 py-4"
-            style={{ background: 'linear-gradient(135deg, #0d7377, #14919b, #0d7377)', border: '1px solid rgba(212,175,55,0.3)' }}
+            style={{ background: tc.quranBlockBg, border: tc.quranBlockBorder }}
             dir="rtl"
           >
             {versesLoading ? (
@@ -304,7 +307,7 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
                 <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: '#d4af37', borderTopColor: 'transparent' }} />
               </div>
             ) : (
-              <div style={{ background: 'rgba(255,255,255,0.08)', borderRadius: '12px', padding: '16px', border: '1px solid rgba(255,255,255,0.15)' }}>
+              <div style={{ background: tc.quranInnerBg, borderRadius: '12px', padding: '16px', border: tc.quranInnerBorder }}>
                 {startVerse === 1 && surahNumber !== 1 && surahNumber !== 9 && (
                   <p
                     className="text-center mb-3"
@@ -328,19 +331,19 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
         {/* Hamidullah Translation - collapsible */}
         <div
           className="rounded-2xl overflow-hidden"
-          style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(212,175,55,0.15)' }}
+          style={{ background: tc.cardBg, border: `1px solid ${tc.cardBorder}` }}
         >
           <button
             onClick={() => setShowTranslation(v => !v)}
             className="w-full flex items-center justify-between px-4 py-3 text-left transition-all active:scale-[0.99]"
           >
-            <span className="flex items-center gap-2 text-sm" style={{ color: 'rgba(255,255,255,0.7)' }}>
+            <span className="flex items-center gap-2 text-sm" style={{ color: tc.textSecondary }}>
               <BookOpen className="h-4 w-4" style={{ color: '#d4af37' }} />
               Traduction — {surahName} (v.{startVerse}-{endVerse})
             </span>
             <ChevronDown
               className="h-4 w-4 transition-transform duration-200"
-              style={{ color: 'rgba(255,255,255,0.4)', transform: showTranslation ? 'rotate(180deg)' : 'rotate(0deg)' }}
+              style={{ color: tc.textMuted, transform: showTranslation ? 'rotate(180deg)' : 'rotate(0deg)' }}
             />
           </button>
           <AnimatePresence>
@@ -360,7 +363,7 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
                   ) : (
                     <div className="space-y-2 max-h-48 overflow-y-auto text-left">
                       {translation.map((verse, i) => (
-                        <p key={i} className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.65)' }}>{verse}</p>
+                        <p key={i} className="text-sm leading-relaxed" style={{ color: tc.textSecondary }}>{verse}</p>
                       ))}
                     </div>
                   )}
@@ -376,14 +379,14 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
           onChange={e => { setReciter(e.target.value); audioRef.current?.pause(); setIsPlaying(false); }}
           className="w-full rounded-xl px-4 py-3 text-sm outline-none"
           style={{
-            background: 'rgba(255,255,255,0.08)',
-            border: '1px solid rgba(212,175,55,0.2)',
-            color: 'white',
+            background: tc.selectBg,
+            border: `1px solid ${tc.selectBorder}`,
+            color: tc.selectColor,
             fontSize: '16px',
           }}
         >
           {RECITERS.map(r => (
-            <option key={r.id} value={r.id} style={{ background: '#0d4f4f' }}>{r.name}</option>
+            <option key={r.id} value={r.id} style={{ background: tc.selectOptionBg }}>{r.name}</option>
           ))}
         </select>
 
@@ -419,7 +422,7 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
             </div>
           ))}
         </div>
-        <p className="text-white/40 text-xs">
+        <p style={{ color: tc.textMuted }} className="text-xs">
           Écoute {listenCount}/3{listenCount > 3 ? ` (${listenCount} au total)` : ''}
         </p>
 
@@ -431,7 +434,7 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
               }
             }}
             className="flex items-center justify-center gap-1.5 mx-auto px-3 py-1.5 rounded-lg text-xs transition-all active:scale-95"
-            style={{ color: 'rgba(255,255,255,0.4)' }}
+            style={{ color: tc.textMuted }}
           >
             <RotateCcw className="h-3 w-3" />
             Recommencer

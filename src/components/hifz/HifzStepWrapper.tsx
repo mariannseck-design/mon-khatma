@@ -1,6 +1,7 @@
 import { ReactNode, useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronLeft, Clock } from 'lucide-react';
+import { type HifzTheme, isLightTheme } from '@/lib/hifzTheme';
 
 interface HifzStepWrapperProps {
   stepNumber: number;
@@ -8,6 +9,7 @@ interface HifzStepWrapperProps {
   children: ReactNode;
   onBack?: () => void;
   totalSteps?: number;
+  theme?: HifzTheme;
 }
 
 function formatTime(seconds: number): string {
@@ -16,7 +18,8 @@ function formatTime(seconds: number): string {
   return `${m}:${s.toString().padStart(2, '0')}`;
 }
 
-export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBack, totalSteps = 7 }: HifzStepWrapperProps) {
+export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBack, totalSteps = 7, theme = 'teal' }: HifzStepWrapperProps) {
+  const light = isLightTheme(theme);
   const [elapsed, setElapsed] = useState(0);
   const startRef = useRef(Date.now());
 
@@ -40,22 +43,22 @@ export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBac
       {/* Progress bar */}
       <div className="flex items-center gap-3">
         {onBack && (
-          <button onClick={onBack} className="p-2 rounded-xl" style={{ background: 'rgba(255,255,255,0.1)' }}>
-            <ChevronLeft className="h-5 w-5 text-white/70" />
+          <button onClick={onBack} className="p-2 rounded-xl" style={{ background: light ? 'rgba(0,0,0,0.05)' : 'rgba(255,255,255,0.1)' }}>
+            <ChevronLeft className="h-5 w-5" style={{ color: light ? '#666' : 'rgba(255,255,255,0.7)' }} />
           </button>
         )}
         <div className="flex-1">
           <div className="flex items-center justify-between mb-1">
-            <span className="text-white/50 text-xs uppercase tracking-wider">Étape {stepNumber}/{totalSteps - 1}</span>
+            <span className="text-xs uppercase tracking-wider" style={{ color: light ? '#999' : 'rgba(255,255,255,0.5)' }}>Étape {stepNumber}/{totalSteps - 1}</span>
             <div className="flex items-center gap-2">
-              <span className="flex items-center gap-1 text-[11px] tabular-nums" style={{ color: 'rgba(255,255,255,0.4)' }}>
+              <span className="flex items-center gap-1 text-[11px] tabular-nums" style={{ color: light ? '#aaa' : 'rgba(255,255,255,0.4)' }}>
                 <Clock className="h-3 w-3" />
                 {formatTime(elapsed)}
               </span>
               <span className="text-xs" style={{ color: '#d4af37' }}>{stepTitle}</span>
             </div>
           </div>
-          <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
+          <div className="h-1.5 rounded-full overflow-hidden" style={{ background: light ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.1)' }}>
             <motion.div
               className="h-full rounded-full"
               style={{ background: 'linear-gradient(90deg, #d4af37, #f0d060)' }}
