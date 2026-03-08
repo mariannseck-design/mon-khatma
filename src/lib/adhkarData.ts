@@ -749,6 +749,7 @@ export const OMRA_DUAS: DhikrItem[] = [
   },
   {
     title: "Du'â au début du Tawâf (Pierre Noire)",
+    readOnly: true,
     arabic: 'بِسْمِ اللهِ، اللهُ أَكْبَرُ',
     phonetic: "Bismi-llâh, Allâhu Akbar.",
     french: "Au nom d'Allah (عز وجل), Allah (عز وجل) est le Plus Grand. (À dire à chaque passage devant la Pierre Noire)",
