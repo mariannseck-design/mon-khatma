@@ -64,6 +64,7 @@ export const MORNING_ADHKAR: DhikrItem[] = [
   {
     title: 'Témoignage du matin',
     source: 'Abû Dâwûd n°5069',
+    fadl: 'Quiconque le dit 4 fois le matin et le soir, Allah l\'affranchira du Feu. (Abû Dâwûd)',
     arabic: 'اللّهُـمَّ إِنِّـي أَصْبَـحْتُ أُشْـهِدُك، وَأُشْـهِدُ حَمَلَـةَ عَـرْشِـك، وَمَلَائِكَتَكَ، وَجَمـيعَ خَلْـقِك، أَنَّـكَ أَنْـتَ اللهُ لا إلهَ إلاّ أَنْـتَ وَحْـدَكَ لا شَريكَ لَـك، وَأَنَّ مُحَمّـداً عَبْـدُكَ وَرَسـولُـك',
     phonetic: "Allâhumma innî asbahtu ush-hiduk, wa ush-hidu hamalata 'arshik, wa malâ'ikatak, wa jamî'a khalqik, annaka anta-llâhu lâ ilâha illâ anta wahdaka lâ sharîka lak, wa anna Muhammadan 'abduka wa rasûluk.",
     french: "Ô Allah, je prends à témoin en ce matin, Toi, les porteurs de Ton Trône, Tes anges et toutes Tes créatures, que Tu es Allah, nulle divinité à part Toi, Seul sans associé, et que Muhammad est Ton serviteur et Ton messager.",
