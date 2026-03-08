@@ -630,3 +630,41 @@ export const ANYTIME_ADHKAR: DhikrItem[] = [
     target: 3,
   },
 ];
+
+export const SUJUD_TILAWAH_ADHKAR: DhikrItem[] = [
+  {
+    title: "Du'â principal du Sujûd at-Tilâwah",
+    arabic: 'سَجَدَ وَجْهِيَ لِلَّذِي خَلَقَهُ، وَشَقَّ سَمْعَهُ وَبَصَرَهُ، بِحَوْلِهِ وَقُوَّتِهِ، فَتَبَارَكَ اللهُ أَحْسَنُ الْخَالِقِينَ',
+    phonetic: "Sajada wajhî li-lladhî khalaqahu, wa shaqqa sam'ahu wa basarahu, bi-hawlihi wa quwwatih, fa-tabâraka-llâhu ahsanu-l-khâliqîn.",
+    french: "Mon visage s'est prosterné devant Celui qui l'a créé, qui a formé son ouïe et sa vue par Sa force et Sa puissance. Béni soit Allah (عز وجل), le Meilleur des créateurs.",
+    target: 1,
+  },
+  {
+    title: "Du'â du Sujûd — demande de récompense",
+    arabic: 'اللَّهُمَّ اكْتُبْ لِي بِهَا عِنْدَكَ أَجْرًا، وَضَعْ عَنِّي بِهَا وِزْرًا، وَاجْعَلْهَا لِي عِنْدَكَ ذُخْرًا، وَتَقَبَّلْهَا مِنِّي كَمَا تَقَبَّلْتَهَا مِنْ عَبْدِكَ دَاوُدَ',
+    phonetic: "Allâhumma-ktub lî bihâ 'indaka ajran, wa da' 'annî bihâ wizran, wa-j'alhâ lî 'indaka dhukhran, wa taqabbalhâ minnî kamâ taqabbaltahâ min 'abdika Dâwûd.",
+    french: "Ô Allah (عز وجل), inscris-moi par cette prosternation une récompense auprès de Toi, efface-moi par elle un péché, fais-en pour moi une provision auprès de Toi, et accepte-la de moi comme Tu l'as acceptée de Ton serviteur Dâwûd.",
+    target: 1,
+  },
+  {
+    title: 'Tasbîh du Sujûd',
+    arabic: 'سُبْحَانَ رَبِّيَ الْأَعْلَى',
+    phonetic: "Subhâna Rabbiya-l-A'lâ",
+    french: "Gloire à mon Seigneur le Très Haut.",
+    target: 3,
+  },
+  {
+    title: "Du'â dans le Sujûd",
+    arabic: 'اللَّهُمَّ لَكَ سَجَدْتُ، وَبِكَ آمَنْتُ، وَلَكَ أَسْلَمْتُ، سَجَدَ وَجْهِيَ لِلَّذِي خَلَقَهُ وَصَوَّرَهُ وَشَقَّ سَمْعَهُ وَبَصَرَهُ، تَبَارَكَ اللهُ أَحْسَنُ الْخَالِقِينَ',
+    phonetic: "Allâhumma laka sajadtu, wa bika âmantu, wa laka aslamtu, sajada wajhî li-lladhî khalaqahu wa sawwarahu wa shaqqa sam'ahu wa basarahu, tabâraka-llâhu ahsanu-l-khâliqîn.",
+    french: "Ô Allah (عز وجل), c'est devant Toi que je me prosterne, c'est en Toi que je crois, c'est à Toi que je me soumets. Mon visage s'est prosterné devant Celui qui l'a créé, lui a donné sa forme, a ouvert son ouïe et sa vue. Béni soit Allah (عز وجل), le Meilleur des créateurs.",
+    target: 1,
+  },
+  {
+    title: "Du'â de glorification dans le Sujûd",
+    arabic: 'سُبْحَانَكَ اللَّهُمَّ رَبَّنَا وَبِحَمْدِكَ، اللَّهُمَّ اغْفِرْ لِي',
+    phonetic: "Subhânaka-llâhumma Rabbanâ wa bi-hamdik, Allâhumma-ghfir lî.",
+    french: "Gloire à Toi, ô Allah (عز وجل) notre Seigneur, et louange à Toi. Ô Allah (عز وجل), pardonne-moi.",
+    target: 3,
+  },
+];

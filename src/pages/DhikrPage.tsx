@@ -24,6 +24,7 @@ const CATEGORY_DATA: Record<string, { title: string; items: DhikrItem[] }> = {
   evening: { title: 'Zikr du soir', items: EVENING_ADHKAR },
   prayer: { title: 'Après la prière', items: POST_PRAYER_ADHKAR },
   anytime: { title: 'Toute occasion', items: ANYTIME_ADHKAR },
+  sujud: { title: 'Sujud Tilawah', items: SUJUD_TILAWAH_ADHKAR },
 };
 
 const containerVariants = {
