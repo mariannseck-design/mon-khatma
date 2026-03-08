@@ -80,14 +80,25 @@ function getStorageKey(surah: number, start: number, end: number) {
   return `hifz_ancrage_${surah}_${start}_${end}`;
 }
 
-function getPhaseInfo(ancrage: number) {
-  if (ancrage < 10) {
-    return { phase: 1, emoji: '📖', label: 'Récitez avec le texte Tajwid et l\'audio', showText: true, audioProminent: true, color: '#4ecdc4' };
+function getQuarters(target: number) {
+  const q1End = Math.max(Math.floor(target / 4), 1);
+  const q2End = Math.max(Math.floor(target / 2), q1End + 1);
+  const q3End = Math.max(Math.floor(target * 3 / 4), q2End + 1);
+  return { q1End, q2End, q3End };
+}
+
+function getPhaseInfo(ancrage: number, target: number) {
+  const { q1End, q2End, q3End } = getQuarters(target);
+  if (ancrage < q1End) {
+    return { phase: 1, emoji: '📖', label: 'Texte + Audio — Écoute, lecture et répétition', showText: true, audioProminent: true, color: '#4ecdc4' };
   }
-  if (ancrage < 15) {
-    return { phase: 2, emoji: '📖', label: 'Récitez avec le texte, sans audio', showText: true, audioProminent: false, color: '#f0d060' };
+  if (ancrage < q2End) {
+    return { phase: 2, emoji: '📖', label: 'Texte + Audio discret — Lecture autonome', showText: true, audioProminent: false, audioAvailable: true, color: '#45b7aa' };
   }
-  return { phase: 3, emoji: '🧠', label: 'Récitez de mémoire — Ancrage d\'acier', showText: false, audioProminent: false, color: '#d4af37' };
+  if (ancrage < q3End) {
+    return { phase: 3, emoji: '📖', label: 'Texte visible, sans audio — Autonomie', showText: true, audioProminent: false, audioAvailable: false, color: '#f0d060' };
+  }
+  return { phase: 4, emoji: '🧠', label: 'Récitez de mémoire — Ancrage d\'acier', showText: false, audioProminent: false, audioAvailable: false, color: '#d4af37' };
 }
 
 export default function HifzStep3Memorisation({ surahNumber, startVerse, endVerse, repetitionLevel, onNext, onBack }: Props) {
@@ -116,7 +127,8 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
   const ayahAudiosRef = useRef<{ audio: string }[]>([]);
   const reciter = localStorage.getItem('quran_reciter') || 'ar.alafasy';
 
-  const phaseInfo = getPhaseInfo(ancrage);
+  const phaseInfo = getPhaseInfo(ancrage, tikrarTarget);
+  const quarters = getQuarters(tikrarTarget);
 
   // Persist display mode & zoom
   useEffect(() => {
@@ -379,16 +391,20 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
                   <p className="text-xs font-semibold" style={{ color: '#d4af37' }}>Mode d'emploi de votre progression :</p>
 
                   <div className="space-y-2">
-                    <div className="flex items-start gap-2 rounded-lg px-3 py-2" style={{ background: ancrage < 10 ? 'rgba(78,205,196,0.15)' : 'transparent', border: ancrage < 10 ? '1px solid rgba(78,205,196,0.3)' : '1px solid transparent' }}>
-                      <span className="text-xs mt-0.5 whitespace-nowrap" style={{ color: '#4ecdc4', fontWeight: ancrage < 10 ? 700 : 400 }}>1 à 10</span>
-                      <p className="text-xs text-white/70">📖 Texte Tajwid visible + audio. Imprégnation visuelle et auditive.</p>
+                    <div className="flex items-start gap-2 rounded-lg px-3 py-2" style={{ background: phaseInfo.phase === 1 ? 'rgba(78,205,196,0.15)' : 'transparent', border: phaseInfo.phase === 1 ? '1px solid rgba(78,205,196,0.3)' : '1px solid transparent' }}>
+                      <span className="text-xs mt-0.5 whitespace-nowrap" style={{ color: '#4ecdc4', fontWeight: phaseInfo.phase === 1 ? 700 : 400 }}>1 à {quarters.q1End}</span>
+                      <p className="text-xs text-white/70">📖 Texte Tajwid + audio actif. Écoute, lecture et répétition simultanée.</p>
                     </div>
-                    <div className="flex items-start gap-2 rounded-lg px-3 py-2" style={{ background: ancrage >= 10 && ancrage < 15 ? 'rgba(240,208,96,0.15)' : 'transparent', border: ancrage >= 10 && ancrage < 15 ? '1px solid rgba(240,208,96,0.3)' : '1px solid transparent' }}>
-                      <span className="text-xs mt-0.5 whitespace-nowrap" style={{ color: '#f0d060', fontWeight: ancrage >= 10 && ancrage < 15 ? 700 : 400 }}>11 à 15</span>
-                      <p className="text-xs text-white/70">📖 Texte visible, audio désactivé. Autonomie visuelle.</p>
+                    <div className="flex items-start gap-2 rounded-lg px-3 py-2" style={{ background: phaseInfo.phase === 2 ? 'rgba(69,183,170,0.15)' : 'transparent', border: phaseInfo.phase === 2 ? '1px solid rgba(69,183,170,0.3)' : '1px solid transparent' }}>
+                      <span className="text-xs mt-0.5 whitespace-nowrap" style={{ color: '#45b7aa', fontWeight: phaseInfo.phase === 2 ? 700 : 400 }}>{quarters.q1End + 1} à {quarters.q2End}</span>
+                      <p className="text-xs text-white/70">📖 Texte visible + audio discret. Lecture autonome avec aide audio.</p>
                     </div>
-                    <div className="flex items-start gap-2 rounded-lg px-3 py-2" style={{ background: ancrage >= 15 ? 'rgba(212,175,55,0.15)' : 'transparent', border: ancrage >= 15 ? '1px solid rgba(212,175,55,0.3)' : '1px solid transparent' }}>
-                      <span className="text-xs mt-0.5 whitespace-nowrap" style={{ color: '#d4af37', fontWeight: ancrage >= 15 ? 700 : 400 }}>Dès la 16ème</span>
+                    <div className="flex items-start gap-2 rounded-lg px-3 py-2" style={{ background: phaseInfo.phase === 3 ? 'rgba(240,208,96,0.15)' : 'transparent', border: phaseInfo.phase === 3 ? '1px solid rgba(240,208,96,0.3)' : '1px solid transparent' }}>
+                      <span className="text-xs mt-0.5 whitespace-nowrap" style={{ color: '#f0d060', fontWeight: phaseInfo.phase === 3 ? 700 : 400 }}>{quarters.q2End + 1} à {quarters.q3End}</span>
+                      <p className="text-xs text-white/70">📖 Texte visible, sans audio. Autonomie visuelle complète.</p>
+                    </div>
+                    <div className="flex items-start gap-2 rounded-lg px-3 py-2" style={{ background: phaseInfo.phase === 4 ? 'rgba(212,175,55,0.15)' : 'transparent', border: phaseInfo.phase === 4 ? '1px solid rgba(212,175,55,0.3)' : '1px solid transparent' }}>
+                      <span className="text-xs mt-0.5 whitespace-nowrap" style={{ color: '#d4af37', fontWeight: phaseInfo.phase === 4 ? 700 : 400 }}>Dès la {quarters.q3End + 1}ème</span>
                       <p className="text-xs text-white/70">🧠 Texte masqué. Récitation de mémoire. Bouton « Vérifier » disponible.</p>
                     </div>
                   </div>
@@ -620,8 +636,8 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
               )}
             </div>
 
-            {/* Audio: discreet help in phases 2-3 */}
-            {!phaseInfo.audioProminent && (
+            {/* Audio: discreet help in phase 2 only */}
+            {!phaseInfo.audioProminent && ('audioAvailable' in phaseInfo && phaseInfo.audioAvailable) && (
               <button
                 onClick={toggleAudioHelp}
                 className="flex items-center justify-center gap-1.5 mx-auto px-3 py-1.5 rounded-lg text-xs transition-all active:scale-95"
