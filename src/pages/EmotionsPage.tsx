@@ -271,29 +271,6 @@ export default function EmotionsPage() {
             </h3>
           </motion.button>
 
-          {/* Carte Mes Favoris — navigue vers Accueil Mon Univers */}
-          <motion.button
-            variants={itemVariants}
-            onClick={() => navigate('/accueil?tab=univers')}
-            className="relative overflow-hidden rounded-2xl p-5 flex flex-col items-center justify-center text-center aspect-[4/3]"
-            style={{
-              background: '#faf8f5',
-              border: '1.5px solid #b5942e',
-              boxShadow: '0 2px 12px -2px rgba(0,0,0,0.08)',
-            }}
-          >
-            <Heart
-              className="h-7 w-7 mb-2 text-red-500 opacity-80"
-              strokeWidth={1.5}
-              fill="rgba(220,38,38,0.3)"
-            />
-            <h3
-              className="text-sm font-semibold leading-tight"
-              style={{ color: '#1b4332', fontFamily: "'Inter', sans-serif" }}
-            >
-              Mes Favoris
-            </h3>
-          </motion.button>
         </motion.div>
 
         {/* Section Émotions */}
