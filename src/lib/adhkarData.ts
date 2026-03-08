@@ -334,6 +334,7 @@ export const EVENING_ADHKAR: DhikrItem[] = [
   {
     title: 'Reconnaissance des bienfaits',
     source: 'Abû Dâwûd n°5073',
+    fadl: 'Quiconque dit cela le soir a accompli le remerciement de sa nuit. (Abû Dâwûd)',
     arabic: 'اللّهُـمَّ ما أَمْسَى بي مِـنْ نِعْـمَةٍ أَو بِأَحَـدٍ مِـنْ خَلْـقِك، فَمِـنْكَ وَحْـدَكَ لا شريكَ لَـك، فَلَـكَ الْحَمْـدُ وَلَـكَ الشُّكْـر',
     phonetic: "Allâhumma mâ amsâ bî min ni'matin aw bi-ahadin min khalqik, fa-minka wahdaka lâ sharîka lak, fa-laka-l-hamdu wa laka sh-shukr.",
     french: "Ô Allah, tout bienfait dont je jouis en ce soir, ou dont jouit l'une de Tes créatures, provient de Toi Seul, sans associé. À Toi la louange et à Toi la reconnaissance.",
