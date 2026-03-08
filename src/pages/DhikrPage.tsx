@@ -43,7 +43,13 @@ const itemVariants = {
 
 export default function DhikrPage() {
   const { isAdmin } = useAuth();
+  const [searchParams] = useSearchParams();
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
+
+  useEffect(() => {
+    const cat = searchParams.get('category');
+    if (cat && CATEGORY_DATA[cat]) setActiveCategory(cat);
+  }, [searchParams]);
 
   const categoryData = activeCategory ? CATEGORY_DATA[activeCategory] : null;
 

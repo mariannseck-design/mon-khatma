@@ -213,7 +213,7 @@ export default function EmotionsPage() {
                 onClick={() => (card.enabled || isAdmin) && navigate(`/dhikr?category=${card.id}`)}
                 whileTap={(card.enabled || isAdmin) ? { scale: 0.96 } : {}}
               >
-                {!card.enabled && (
+                {!card.enabled && !isAdmin && (
                   <span
                     className="absolute top-2 right-2 text-[9px] font-medium px-2 py-0.5 rounded-full backdrop-blur-sm"
                     style={{
