@@ -93,9 +93,9 @@ export default function DhikrPage() {
                       boxShadow: '0 2px 12px -2px rgba(0,0,0,0.08)',
                     }}
                     onClick={() => {
-                      if (card.enabled) setActiveCategory(card.id);
+                      if (card.enabled || isAdmin) setActiveCategory(card.id);
                     }}
-                    whileTap={card.enabled ? { scale: 0.96 } : {}}
+                    whileTap={card.enabled || isAdmin ? { scale: 0.96 } : {}}
                   >
                     {/* Badge Bientôt disponible — only for disabled cards */}
                     {!card.enabled && (
