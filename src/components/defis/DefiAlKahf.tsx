@@ -136,7 +136,7 @@ export default function DefiAlKahf({ disabled = false }: { disabled?: boolean })
           boxShadow: `0 4px 20px -6px ${COLORS.cave}60`,
         }}
       >
-        <div className="absolute -top-8 -right-8 w-28 h-28 rounded-full blur-2xl" style={{ background: `${COLORS.goldAccent}12` }} />
+        <div className="absolute -top-8 -right-8 w-28 h-28 rounded-full blur-2xl" style={{ background: `${COLORS.sand}12` }} />
 
         <div className="relative z-10">
           <div className="flex items-center gap-3 mb-4">
