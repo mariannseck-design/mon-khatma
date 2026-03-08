@@ -183,9 +183,9 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
               key={i}
               className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold"
               style={{
-                background: i < attempt ? 'rgba(212,175,55,0.3)' : 'rgba(255,255,255,0.06)',
-                border: `2px solid ${i < attempt ? '#d4af37' : i === attempt ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.1)'}`,
-                color: i < attempt ? '#d4af37' : 'rgba(255,255,255,0.4)',
+                background: i < attempt ? 'rgba(212,175,55,0.3)' : tc.cardBg,
+                border: `2px solid ${i < attempt ? '#d4af37' : i === attempt ? tc.textMuted : tc.cardBorder}`,
+                color: i < attempt ? '#d4af37' : tc.textMuted,
               }}
             >
               {i < attempt ? '✓' : `${i + 1}`}
