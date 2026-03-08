@@ -4,7 +4,7 @@ import { getTodayQuote } from '@/lib/dailyQuotes';
 import { useMemo } from 'react';
 
 function renderWithHonorifics(text: string) {
-  const parts = text.split(/(\(عز وجل\)|\(عليهم السلام\)|\(عليه السلام\)|\(ﷺ\))/g);
+  const parts = text.split(/(\(عليهم السلام\)|\(عليه السلام\)|\(ﷺ\))/g);
   return parts.map((part, i) => {
     if (/^\(عز وجل\)$|^\(عليهم السلام\)$|^\(عليه السلام\)$|^\(ﷺ\)$/.test(part)) {
       return (
