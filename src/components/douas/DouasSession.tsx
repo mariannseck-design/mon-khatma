@@ -75,11 +75,16 @@ export default function DouasSession({
         {!sessionComplete && (
           <div className="flex items-center gap-1">
             <button onClick={handleToggleFav} className="p-2 rounded-full" aria-label="Favori">
-              <Heart
-                className="w-4 h-4 transition-colors"
-                style={{ color: isCurrentFav ? '#e74c3c' : GOLD }}
-                fill={isCurrentFav ? '#e74c3c' : 'none'}
-              />
+              <motion.div
+                animate={heartPulse ? { scale: [1, 1.5, 0.9, 1.2, 1] } : { scale: 1 }}
+                transition={{ duration: 0.5, ease: 'easeOut' }}
+              >
+                <Heart
+                  className="w-4 h-4 transition-colors"
+                  style={{ color: isCurrentFav ? '#e74c3c' : GOLD }}
+                  fill={isCurrentFav ? '#e74c3c' : 'none'}
+                />
+              </motion.div>
             </button>
             <button onClick={handleShare} className="p-2 rounded-full" style={{ color: GOLD }} aria-label="Partager">
               <Share2 className="w-4 h-4" />
