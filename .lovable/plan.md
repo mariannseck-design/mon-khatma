@@ -1,21 +1,24 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Harmoniser la traduction entre le texte inline et le drawer
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Problème identifié
+Deux API différentes sont utilisées pour la même traduction Hamidullah :
+- **Mode texte inline** : `api.alquran.cloud/v1/page/{page}/fr.hamidullah`
+- **Drawer (panneau bas)** : `api.quran.com/api/v4/verses/by_key/{key}?translations=136`
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+Ces deux sources donnent des variantes légèrement différentes du texte Hamidullah (ex: "C'est le Livre au sujet duquel..." vs "Voici le Livre à propos duquel...").
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+### Correction
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+**`src/components/quran/VerseTranslationDrawer.tsx`** — Remplacer l'appel à `api.quran.com` par `api.alquran.cloud` avec l'édition `fr.hamidullah`, identique au mode texte :
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+```
+https://api.alquran.cloud/v1/ayah/{surah}:{ayah}/fr.hamidullah
+```
+
+Cela garantit que la traduction affichée dans le drawer correspond exactement à celle affichée en mode texte avec traduction.
+
+### Fichier modifié
+- `src/components/quran/VerseTranslationDrawer.tsx` — modifier la fonction `fetchTranslation` pour utiliser `api.alquran.cloud` au lieu de `api.quran.com`
 
