@@ -7,7 +7,7 @@ const invocations = [
     emoji: '🌙',
     arabic: 'الله أَكْـبَر اللّهُمَّ أَهِلَّـهُ عَلَيْـنا بِالأمْـنِ وَالإيمـان والسَّلامَـةِ والإسْلام، وَالتَّـوْفيـقِ لِما تُحِـبُّ رَبَّنـا وَتَـرْضـى رَبُّنـا وَرَبُّكَ الله',
     phonetic: "Allahu Akbar, Allahumma ahillu 'aleynâ bî-l-amni wâ-l-Îmân, wâ-s-salâmati wâ-l-Islâm wa-t-Tawfîq limâ tuhibbu Rabbana wa tarDa Rabbunâ wa Rabbuka-l-lah.",
-    translation: "Allah (عز وجل) est le Plus Grand ! Ô Seigneur ! Apporte-nous avec cette nouvelle lune la sécurité et la foi, le salut et l'Islam ainsi que la réussite dans tout ce que Tu aimes et que Tu agrées.",
+    translation: "Allah est le Plus Grand ! Ô Seigneur ! Apporte-nous avec cette nouvelle lune la sécurité et la foi, le salut et l'Islam ainsi que la réussite dans tout ce que Tu aimes et que Tu agrées.",
   },
   {
     title: "Rupture du jeûne (Al-Iftar)",
