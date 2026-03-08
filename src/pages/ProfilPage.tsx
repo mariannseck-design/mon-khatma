@@ -9,11 +9,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { User, Mail, Save } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { Switch } from '@/components/ui/switch';
+import { useDevMode } from '@/hooks/useDevMode';
 
 export default function ProfilPage() {
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   const [displayName, setDisplayName] = useState('');
   const [loading, setLoading] = useState(false);
+  const { isDevMode, toggleDevMode } = useDevMode();
 
   useEffect(() => {
     if (user) fetchProfile();
@@ -92,6 +95,18 @@ export default function ProfilPage() {
             </Button>
           </CardContent>
         </Card>
+
+        {isAdmin && (
+          <Card className="rounded-2xl border-dashed border-yellow-500/30">
+            <CardContent className="flex items-center justify-between pt-6">
+              <div>
+                <p className="font-semibold text-sm">Mode Testeur (Dev)</p>
+                <p className="text-xs text-muted-foreground">Bouton Skip sur les étapes Hifz</p>
+              </div>
+              <Switch checked={isDevMode} onCheckedChange={toggleDevMode} />
+            </CardContent>
+          </Card>
+        )}
       </div>
     </AppLayout>
   );

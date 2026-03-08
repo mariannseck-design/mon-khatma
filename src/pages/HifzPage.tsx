@@ -12,6 +12,7 @@ import HifzStep4Validation from '@/components/hifz/HifzStep4Validation';
 import HifzStep5Liaison from '@/components/hifz/HifzStep5Liaison';
 import HifzStep6Tour from '@/components/hifz/HifzStep6Tour';
 import HifzSuccess from '@/components/hifz/HifzSuccess';
+import DevSkipButton from '@/components/hifz/DevSkipButton';
 
 interface HifzSession {
   surahNumber: number;
@@ -181,6 +182,12 @@ export default function HifzPage() {
         {step === 5 && <HifzStep5Liaison onNext={() => updateStep(6)} onBack={() => setStep(4)} />}
         {step === 6 && <HifzStep6Tour onComplete={completeSession} onBack={() => setStep(5)} />}
         {step === 7 && <HifzSuccess />}
+        {step >= 0 && step <= 6 && (
+          <DevSkipButton onSkip={() => {
+            if (step < 6) { updateStep(step + 1); }
+            else { completeSession('easy'); }
+          }} />
+        )}
       </div>
     </AppLayout>
   );
