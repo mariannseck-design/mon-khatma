@@ -146,20 +146,21 @@ export default function HifzSuiviPage() {
       }
     }
 
-    const dayCounts: Record<string, number> = {};
+    const hifzCounts: Record<string, number> = {};
+    const murajaCounts: Record<string, number> = {};
     for (const s of (hifzSessions || [])) {
       const dateKey = s.created_at.split('T')[0];
       const verses = (s.end_verse - s.start_verse + 1);
-      dayCounts[dateKey] = (dayCounts[dateKey] || 0) + verses;
+      hifzCounts[dateKey] = (hifzCounts[dateKey] || 0) + verses;
     }
     for (const s of (murajaSessions || [])) {
       const dateKey = s.created_at.split('T')[0];
       const reviewed = Array.isArray(s.verses_reviewed) ? s.verses_reviewed as any[] : [];
       const verses = reviewed.reduce((sum: number, r: any) => sum + (Number(r.verse_end || r.end_verse || r.end || 0) - Number(r.verse_start || r.start_verse || r.start || 0) + 1), 0);
-      dayCounts[dateKey] = (dayCounts[dateKey] || 0) + (Number(verses) > 0 ? Number(verses) : 1);
+      murajaCounts[dateKey] = (murajaCounts[dateKey] || 0) + (Number(verses) > 0 ? Number(verses) : 1);
     }
 
-    const chartData: { day: string; count: number }[] = [];
+    const chartData: { day: string; hifz: number; muraja: number }[] = [];
     for (let i = 6; i >= 0; i--) {
       const d = new Date();
       d.setDate(d.getDate() - i);
@@ -167,9 +168,8 @@ export default function HifzSuiviPage() {
       const jsDay = d.getDay();
       const dayName = DAY_LABELS[jsDay === 0 ? 6 : jsDay - 1];
       const dayNum = d.getDate();
-      const month = String(d.getMonth() + 1).padStart(2, '0');
       const label = `${dayName} ${dayNum}`;
-      chartData.push({ day: label, count: dayCounts[key] || 0 });
+      chartData.push({ day: label, hifz: hifzCounts[key] || 0, muraja: murajaCounts[key] || 0 });
     }
     setWeeklyData(chartData);
 
