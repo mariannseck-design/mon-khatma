@@ -668,3 +668,76 @@ export const SUJUD_TILAWAH_ADHKAR: DhikrItem[] = [
     target: 3,
   },
 ];
+
+export const OMRA_DUAS: DhikrItem[] = [
+  {
+    title: "Talbiyah",
+    arabic: 'لَبَّيْكَ اللَّهُمَّ لَبَّيْكَ، لَبَّيْكَ لَا شَرِيكَ لَكَ لَبَّيْكَ، إِنَّ الْحَمْدَ وَالنِّعْمَةَ لَكَ وَالْمُلْكَ، لَا شَرِيكَ لَكَ',
+    phonetic: "Labbayka-llâhumma labbayk, labbayka lâ sharîka laka labbayk, inna-l-hamda wa-n-ni'mata laka wa-l-mulk, lâ sharîka lak.",
+    french: "Me voici, ô Allah (عز وجل), me voici. Me voici, Tu n'as pas d'associé, me voici. La louange, la grâce et la royauté T'appartiennent, Tu n'as pas d'associé.",
+    target: 7,
+  },
+  {
+    title: "Du'â en voyant la Ka'bah",
+    arabic: 'اللَّهُمَّ زِدْ هَذَا الْبَيْتَ تَشْرِيفًا وَتَعْظِيمًا وَتَكْرِيمًا وَمَهَابَةً، وَزِدْ مَنْ شَرَّفَهُ وَكَرَّمَهُ مِمَّنْ حَجَّهُ أَوِ اعْتَمَرَهُ تَشْرِيفًا وَتَكْرِيمًا وَتَعْظِيمًا وَبِرًّا',
+    phonetic: "Allâhumma zid hâdhâ-l-bayta tashrîfan wa ta'zîman wa takrîman wa mahâbah, wa zid man sharrafahu wa karramahu mimman hajjahu awi-'tamarahu tashrîfan wa takrîman wa ta'zîman wa birra.",
+    french: "Ô Allah (عز وجل), augmente cette Maison en noblesse, en grandeur, en honneur et en majesté. Et augmente ceux qui l'honorent parmi les pèlerins en noblesse, en honneur, en grandeur et en piété.",
+    target: 1,
+  },
+  {
+    title: "Du'â au début du Tawâf (Pierre Noire)",
+    arabic: 'بِسْمِ اللهِ، اللهُ أَكْبَرُ',
+    phonetic: "Bismi-llâh, Allâhu Akbar.",
+    french: "Au nom d'Allah (عز وجل), Allah (عز وجل) est le Plus Grand. (À dire à chaque passage devant la Pierre Noire)",
+    target: 7,
+  },
+  {
+    title: "Du'â entre le Rukn Yamânî et la Pierre Noire",
+    arabic: 'رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ',
+    phonetic: "Rabbanâ âtinâ fî-d-dunyâ hasanatan wa fî-l-âkhirati hasanatan wa qinâ 'adhâba-n-nâr.",
+    french: "Notre Seigneur, accorde-nous une belle part ici-bas et une belle part dans l'au-delà, et protège-nous du châtiment du Feu.",
+    target: 7,
+  },
+  {
+    title: "Du'â après le Tawâf (Maqâm Ibrâhîm)",
+    arabic: 'وَاتَّخِذُوا مِنْ مَقَامِ إِبْرَاهِيمَ مُصَلًّى',
+    phonetic: "Wa-ttakhidhû min maqâmi Ibrâhîma musallâ.",
+    french: "Et prenez la station d'Ibrâhîm comme lieu de prière. (Puis prier 2 rak'ât derrière le Maqâm)",
+    target: 1,
+  },
+  {
+    title: "Du'â sur As-Safâ",
+    arabic: 'إِنَّ الصَّفَا وَالْمَرْوَةَ مِنْ شَعَائِرِ اللهِ ۚ أَبْدَأُ بِمَا بَدَأَ اللهُ بِهِ',
+    phonetic: "Inna-s-Safâ wa-l-Marwata min sha'â'iri-llâh. Abda'u bi-mâ bada'a-llâhu bih.",
+    french: "As-Safâ et Al-Marwah font partie des rites d'Allah (عز وجل). Je commence par ce par quoi Allah (عز وجل) a commencé. (À dire au début du Sa'î)",
+    target: 1,
+  },
+  {
+    title: "Dhikr sur As-Safâ et Al-Marwah",
+    arabic: 'اللهُ أَكْبَرُ، اللهُ أَكْبَرُ، اللهُ أَكْبَرُ، لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ، أَنْجَزَ وَعْدَهُ، وَنَصَرَ عَبْدَهُ، وَهَزَمَ الْأَحْزَابَ وَحْدَهُ',
+    phonetic: "Allâhu Akbar, Allâhu Akbar, Allâhu Akbar. Lâ ilâha illa-llâhu wahdahu lâ sharîka lah, lahu-l-mulku wa lahu-l-hamd, wa huwa 'alâ kulli shay'in qadîr. Lâ ilâha illa-llâhu wahdah, anjaza wa'dah, wa nasara 'abdah, wa hazama-l-ahzâba wahdah.",
+    french: "Allah (عز وجل) est le Plus Grand (3×). Il n'y a de divinité qu'Allah (عز وجل), Seul sans associé. À Lui la royauté, à Lui la louange, et Il est Omnipotent. Il n'y a de divinité qu'Allah (عز وجل) Seul. Il a réalisé Sa promesse, secouru Son serviteur et défait les coalisés Seul.",
+    target: 3,
+  },
+  {
+    title: "Du'â entre As-Safâ et Al-Marwah",
+    arabic: 'رَبِّ اغْفِرْ وَارْحَمْ، إِنَّكَ أَنْتَ الْأَعَزُّ الْأَكْرَمُ',
+    phonetic: "Rabbi-ghfir wa-rham, innaka Anta-l-A'azzu-l-Akram.",
+    french: "Seigneur, pardonne et fais miséricorde, Tu es certes le Plus Puissant, le Plus Généreux.",
+    target: 7,
+  },
+  {
+    title: "Du'â en buvant Zamzam",
+    arabic: 'اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْمًا نَافِعًا، وَرِزْقًا وَاسِعًا، وَشِفَاءً مِنْ كُلِّ دَاءٍ',
+    phonetic: "Allâhumma innî as'aluka 'ilman nâfi'an, wa rizqan wâsi'an, wa shifâ'an min kulli dâ'.",
+    french: "Ô Allah (عز وجل), je Te demande une science bénéfique, une subsistance abondante et une guérison de toute maladie.",
+    target: 1,
+  },
+  {
+    title: "Du'â général pendant la Omra",
+    arabic: 'اللَّهُمَّ إِنِّي أَسْأَلُكَ الْجَنَّةَ وَأَعُوذُ بِكَ مِنَ النَّارِ',
+    phonetic: "Allâhumma innî as'aluka-l-jannata wa a'ûdhu bika mina-n-nâr.",
+    french: "Ô Allah (عز وجل), je Te demande le Paradis et je cherche refuge auprès de Toi contre le Feu.",
+    target: 3,
+  },
+];

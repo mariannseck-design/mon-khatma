@@ -25,6 +25,7 @@ const CATEGORY_DATA: Record<string, { title: string; items: DhikrItem[] }> = {
   prayer: { title: 'Après la prière', items: POST_PRAYER_ADHKAR },
   anytime: { title: 'Toute occasion', items: ANYTIME_ADHKAR },
   sujud: { title: 'Sujud Tilawah', items: SUJUD_TILAWAH_ADHKAR },
+  omra: { title: 'Duas Omra', items: OMRA_DUAS },
 };
 
 const containerVariants = {
