@@ -532,6 +532,31 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
           </button>
         )}
 
+        {/* Reciter selector — visible in phases 1 & 2 */}
+        {!isComplete && (phaseInfo.audioProminent || ('audioAvailable' in phaseInfo && phaseInfo.audioAvailable)) && (
+          <select
+            value={reciter}
+            onChange={e => {
+              setReciter(e.target.value);
+              localStorage.setItem('quran_reciter', e.target.value);
+              audioRef.current?.pause();
+              isPlayingRef.current = false;
+              setIsPlaying(false);
+            }}
+            className="w-full rounded-xl px-4 py-3 text-sm outline-none"
+            style={{
+              background: 'rgba(255,255,255,0.08)',
+              border: '1px solid rgba(212,175,55,0.2)',
+              color: 'white',
+              fontSize: '16px',
+            }}
+          >
+            {RECITERS.map(r => (
+              <option key={r.id} value={r.id} style={{ background: '#0d4f4f' }}>{r.name}</option>
+            ))}
+          </select>
+        )}
+
         {/* Controls */}
         {!isComplete && (
           <div className="space-y-3">
