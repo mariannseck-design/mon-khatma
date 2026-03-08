@@ -126,6 +126,8 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
   /* ── Validation logic ── */
   const handleSuccess = () => {
     destroyAudio();
+    setTotalAttempts(prev => prev + 1);
+    setTotalSuccesses(prev => prev + 1);
     const next = successes + 1;
     if (next >= 3) {
       setSuccesses(3);
