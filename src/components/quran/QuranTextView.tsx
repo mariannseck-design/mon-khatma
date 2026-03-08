@@ -16,6 +16,7 @@ interface QuranTextViewProps {
   fontSize?: number;
   darkMode?: boolean;
   tajweedEnabled?: boolean;
+  showTranslation?: boolean;
 }
 
 const FONT_FAMILY = "'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
