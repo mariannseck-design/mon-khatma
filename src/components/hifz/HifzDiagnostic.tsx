@@ -334,7 +334,7 @@ export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticPro
           <div className="space-y-2">
             <div className="flex items-center gap-2">
               <Building2 className="h-4 w-4" style={{ color: goldColor }} />
-              <h3 className="text-sm font-bold" style={{ color: goldColor }}>Acquis Solides — Le Tour</h3>
+              <h3 className="text-sm font-bold" style={{ color: goldColor }}>Acquis Solides — Révision espacée</h3>
             </div>
             <div className="rounded-2xl p-3 max-h-[20vh] overflow-y-auto space-y-1"
               style={{ background: 'rgba(0,0,0,0.2)', border: `1px solid ${goldBorder}` }}>
