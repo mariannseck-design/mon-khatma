@@ -1,20 +1,21 @@
 
 
-## Plan : Icônes & badges colorés pour la page Muraja'a
+# Diagnostic : 404 sur /quran-reader
 
-Appliquer le même style de badges gradient que sur le Suivi Hifz aux icônes de la page Muraja'a.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Changements dans `src/pages/MurjaPage.tsx`
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-1. **Icône header** (ligne 276-284) : Remplacer le fond plat par un gradient émeraude `linear-gradient(135deg, #065F46, #10B981)` + icône blanche + boxShadow
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-2. **Icône Ar-Rabt** (ligne 351) : Envelopper `Link` dans un cercle `w-7 h-7 rounded-full` avec gradient doré `linear-gradient(135deg, #B8960C, #D4AF37)` + icône blanche
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-3. **Badge count Ar-Rabt** (ligne 356-358) : Ajouter un fond gradient émeraude au badge count au lieu du fond plat
-
-4. **Icône Muraja'a** (ligne 375) : Envelopper `BookOpen` dans un cercle `w-7 h-7 rounded-full` avec gradient émeraude `linear-gradient(135deg, #065F46, #10B981)` + icône blanche
-
-5. **Badge count Muraja'a** (ligne 380) : Même style gradient que le badge Ar-Rabt
-
-6. **Icône Mes Escaliers** (ligne 429) : Envelopper `TrendingUp` dans un cercle `w-7 h-7 rounded-full` avec gradient violet `linear-gradient(135deg, #6D28D9, #8B5CF6)` + icône blanche
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
