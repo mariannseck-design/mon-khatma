@@ -23,7 +23,7 @@ export default function MurajaCountdown() {
 
   const pad = (n: number) => n.toString().padStart(2, '0');
 
-  const radius = 70;
+  const radius = 75;
   const circumference = 2 * Math.PI * radius;
   const totalDaySeconds = 24 * 3600;
   const elapsed = totalDaySeconds - (hours * 3600 + minutes * 60 + seconds);
@@ -38,20 +38,26 @@ export default function MurajaCountdown() {
         Ta prochaine récitation dans
       </p>
 
-      <div className="relative w-36 h-36 flex items-center justify-center">
+      <div className="relative w-40 h-40 flex items-center justify-center">
         {/* SVG Ring */}
-        <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 160 160">
+        <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 170 170">
+          <defs>
+            <linearGradient id="countdown-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="var(--p-primary)" />
+              <stop offset="100%" stopColor="#10B981" />
+            </linearGradient>
+          </defs>
           <circle
-            cx="80" cy="80" r={radius}
+            cx="85" cy="85" r={radius}
             fill="none"
             stroke="var(--p-track)"
-            strokeWidth="3"
+            strokeWidth="4"
           />
           <motion.circle
-            cx="80" cy="80" r={radius}
+            cx="85" cy="85" r={radius}
             fill="none"
-            stroke="var(--p-primary)"
-            strokeWidth="3"
+            stroke="url(#countdown-gradient)"
+            strokeWidth="5"
             strokeLinecap="round"
             strokeDasharray={circumference}
             strokeDashoffset={circumference * (1 - progress)}
@@ -61,16 +67,22 @@ export default function MurajaCountdown() {
 
         {/* Inner circle */}
         <div
-          className="w-28 h-28 rounded-full flex flex-col items-center justify-center"
+          className="w-30 h-30 rounded-full flex flex-col items-center justify-center"
           style={{
-            background: 'var(--p-card)',
+            width: '7.5rem',
+            height: '7.5rem',
+            background: 'radial-gradient(circle at center, var(--p-track), var(--p-card))',
             border: '2px solid var(--p-primary)',
-            boxShadow: 'var(--p-card-shadow)',
+            boxShadow: '0 0 20px rgba(6,95,70,0.12), var(--p-card-shadow)',
           }}
         >
           <span
-            className="text-xl font-bold tabular-nums"
-            style={{ fontFamily: "'Inter', sans-serif", color: 'var(--p-primary)' }}
+            className="text-2xl font-bold tabular-nums"
+            style={{
+              fontFamily: "'Inter', sans-serif",
+              color: 'var(--p-primary)',
+              letterSpacing: '0.05em',
+            }}
           >
             {pad(hours)}:{pad(minutes)}
           </span>

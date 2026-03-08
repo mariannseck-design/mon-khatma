@@ -192,7 +192,7 @@ export default function MurajaChecklist({
                       <button
                         key={key}
                         onClick={() => handleRate(quality, key)}
-                        className="flex-1 flex items-center justify-center gap-1.5 rounded-lg px-2 py-2.5 text-xs font-bold transition-all"
+                        className="flex-1 flex items-center justify-center gap-1.5 rounded-xl px-3 py-3 text-xs font-bold transition-all"
                         style={{
                           background: `color-mix(in srgb, var(${colorVar}) 12%, transparent)`,
                           color: `var(${colorVar})`,
