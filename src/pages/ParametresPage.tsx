@@ -1,12 +1,28 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { Card } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
-import { Moon, Sun, Type } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Moon, Sun, Type, AlertTriangle } from 'lucide-react';
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from '@/hooks/use-toast';
 
 export default function ParametresPage() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [confirmText, setConfirmText] = useState('');
+  const [isResetting, setIsResetting] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const [isDark, setIsDark] = useState(() => {
     return document.documentElement.classList.contains('dark');
   });
@@ -98,6 +114,82 @@ export default function ParametresPage() {
             </p>
           </Card>
         </motion.div>
+
+        {/* Danger Zone - Reset Hifz */}
+        {user && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
+            <Card className="pastel-card p-4 border-destructive/30">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-xl bg-destructive/10 flex items-center justify-center">
+                  <AlertTriangle className="h-5 w-5 text-destructive" />
+                </div>
+                <div>
+                  <p className="font-medium text-foreground text-sm">Zone dangereuse</p>
+                  <p className="text-xs text-muted-foreground">Actions irréversibles</p>
+                </div>
+              </div>
+
+              <AlertDialog open={dialogOpen} onOpenChange={(open) => { setDialogOpen(open); if (!open) setConfirmText(''); }}>
+                <AlertDialogTrigger asChild>
+                  <Button variant="outline" className="w-full border-destructive/30 text-destructive hover:bg-destructive/10">
+                    Réinitialiser mon parcours Hifz
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>⚠️ Réinitialiser le parcours Hifz ?</AlertDialogTitle>
+                    <AlertDialogDescription className="space-y-2">
+                      <span className="block">Cette action supprimera <strong>définitivement</strong> toutes tes données de mémorisation :</span>
+                      <span className="block">• Sessions de mémorisation</span>
+                      <span className="block">• Versets mémorisés</span>
+                      <span className="block">• Séries (streaks)</span>
+                      <span className="block">• Objectifs de Hifz</span>
+                      <span className="block mt-3">Pour confirmer, tape <strong>RÉINITIALISER</strong> ci-dessous :</span>
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <Input
+                    value={confirmText}
+                    onChange={(e) => setConfirmText(e.target.value)}
+                    placeholder="Tape RÉINITIALISER"
+                    className="mt-2"
+                  />
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Annuler</AlertDialogCancel>
+                    <AlertDialogAction
+                      disabled={confirmText !== 'RÉINITIALISER' || isResetting}
+                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                      onClick={async (e) => {
+                        e.preventDefault();
+                        setIsResetting(true);
+                        try {
+                          const uid = user.id;
+                          await Promise.all([
+                            supabase.from('hifz_sessions').delete().eq('user_id', uid),
+                            supabase.from('hifz_memorized_verses').delete().eq('user_id', uid),
+                            supabase.from('hifz_streaks').delete().eq('user_id', uid),
+                            supabase.from('hifz_goals').delete().eq('user_id', uid),
+                            supabase.from('muraja_sessions').delete().eq('user_id', uid),
+                          ]);
+                          await supabase.from('profiles').update({ onboarding_completed: false }).eq('user_id', uid);
+                          localStorage.removeItem('hifz_active_session');
+                          toast({ title: '✅ Parcours réinitialisé', description: 'Tu peux recommencer ton diagnostic.' });
+                          setDialogOpen(false);
+                          navigate('/hifz');
+                        } catch (err) {
+                          toast({ title: 'Erreur', description: 'Une erreur est survenue.', variant: 'destructive' });
+                        } finally {
+                          setIsResetting(false);
+                        }
+                      }}
+                    >
+                      {isResetting ? 'Suppression...' : 'Confirmer la réinitialisation'}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </Card>
+          </motion.div>
+        )}
       </div>
     </AppLayout>
   );

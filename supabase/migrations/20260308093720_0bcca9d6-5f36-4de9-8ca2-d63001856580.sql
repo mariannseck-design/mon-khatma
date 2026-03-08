@@ -1,0 +1,1 @@
+CREATE POLICY "Users can delete own hifz_streaks" ON public.hifz_streaks FOR DELETE TO authenticated USING (auth.uid() = user_id);
