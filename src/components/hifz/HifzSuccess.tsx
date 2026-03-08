@@ -1,9 +1,45 @@
 import { motion } from 'framer-motion';
-import { Star, ArrowLeft } from 'lucide-react';
+import { Star, ArrowLeft, Clock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-export default function HifzSuccess() {
+const STEP_LABELS: Record<number, string> = {
+  0: 'Intention',
+  1: 'Révision',
+  2: 'Imprégnation',
+  3: 'Tikrar',
+  4: 'Validation',
+  5: 'Liaison',
+  6: 'Le Tour',
+};
+
+function formatDuration(seconds: number): string {
+  if (seconds < 60) return `${seconds}s`;
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return s > 0 ? `${m}min ${s}s` : `${m}min`;
+}
+
+interface Props {
+  stepTimes?: Record<string, number | boolean | string>;
+}
+
+export default function HifzSuccess({ stepTimes }: Props) {
   const navigate = useNavigate();
+
+  // Extract step times from the record
+  const times: { step: number; label: string; seconds: number }[] = [];
+  let totalSeconds = 0;
+
+  if (stepTimes) {
+    for (let i = 0; i <= 6; i++) {
+      const key = `step_${i}_time`;
+      const val = stepTimes[key];
+      if (typeof val === 'number' && val > 0) {
+        times.push({ step: i, label: STEP_LABELS[i] || `Étape ${i}`, seconds: val });
+        totalSeconds += val;
+      }
+    }
+  }
 
   return (
     <motion.div
@@ -47,6 +83,49 @@ export default function HifzSuccess() {
         Que cette portion du Noble Coran reste gravée dans ton cœur,
         tout comme le message porté par les prophètes (aleyhi salam).
       </p>
+
+      {/* Time recap */}
+      {times.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="rounded-2xl px-4 py-4 mx-auto max-w-xs space-y-3"
+          style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(212,175,55,0.2)' }}
+        >
+          <div className="flex items-center justify-center gap-2">
+            <Clock className="h-4 w-4" style={{ color: '#d4af37' }} />
+            <span className="text-sm font-semibold" style={{ color: '#d4af37' }}>
+              Temps total : {formatDuration(totalSeconds)}
+            </span>
+          </div>
+
+          <div className="space-y-1.5">
+            {times.map(({ step, label, seconds }) => {
+              const pct = totalSeconds > 0 ? (seconds / totalSeconds) * 100 : 0;
+              return (
+                <div key={step} className="flex items-center gap-2 text-xs">
+                  <span className="w-24 text-right truncate" style={{ color: 'rgba(255,255,255,0.6)' }}>
+                    {label}
+                  </span>
+                  <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
+                    <motion.div
+                      className="h-full rounded-full"
+                      style={{ background: 'linear-gradient(90deg, #d4af37, #f0d060)' }}
+                      initial={{ width: 0 }}
+                      animate={{ width: `${pct}%` }}
+                      transition={{ duration: 0.6, delay: 0.5 + step * 0.08 }}
+                    />
+                  </div>
+                  <span className="w-14 text-left tabular-nums" style={{ color: 'rgba(255,255,255,0.5)' }}>
+                    {formatDuration(seconds)}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </motion.div>
+      )}
 
       <motion.button
         whileTap={{ scale: 0.97 }}

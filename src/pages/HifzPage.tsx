@@ -425,7 +425,7 @@ export default function HifzPage() {
         {step === 4 && <HifzStep4Validation surahNumber={session.surahNumber} startVerse={session.startVerse} endVerse={session.endVerse} onNext={() => updateStep(5)} onBack={() => setStep(3)} />}
         {step === 5 && <HifzStep5Liaison onNext={() => updateStep(6)} onBack={() => setStep(4)} />}
         {step === 6 && <HifzStep6Tour onComplete={completeSession} onBack={() => setStep(5)} />}
-        {step === 7 && <HifzSuccess />}
+        {step === 7 && <HifzSuccess stepTimes={stepTimesRef.current} />}
       </div>
       {step >= 0 && step <= 6 && (
         <DevSkipButton isDevMode={isDevMode} onSkip={() => {
