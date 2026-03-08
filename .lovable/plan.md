@@ -1,29 +1,21 @@
 
 
-## Adapter le "Bonjour" à l'heure de la journée
+# Diagnostic : 404 sur /quran-reader
 
-### Changement
-Dans `src/pages/AccueilPage.tsx` ligne 214, remplacer le texte statique "Bonjour" par un salut adapté à l'heure :
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-- Matin (< 12h) : "Bonjour"
-- Après-midi (12h-18h) : "Bon après-midi"
-- Soir/Nuit (≥ 18h) : "Bonsoir"
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-```tsx
-// Ligne 214 : au lieu de
-<p>Bonjour {displayName} 🤍</p>
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-// On utilise une fonction qui adapte le salut
-const timeGreeting = () => {
-  const hour = new Date().getHours();
-  if (hour < 12) return 'Bonjour';
-  if (hour < 18) return 'Bon après-midi';
-  return 'Bonsoir';
-};
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-<p>{timeGreeting()} {displayName} 🤍</p>
-```
-
-### Fichier modifié
-- **`src/pages/AccueilPage.tsx`** : Ajouter `timeGreeting()` et l'utiliser à la place de "Bonjour" statique.
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
