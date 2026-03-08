@@ -157,7 +157,7 @@ export default function MurajaChecklist({
                       <button
                         key={key}
                         onClick={() => handleRate(quality, key)}
-                        className="flex-1 flex items-center justify-center gap-1.5 rounded-lg px-2 py-2 text-xs font-medium transition-all"
+                        className="flex-1 flex items-center justify-center gap-1.5 rounded-lg px-2 py-2 text-xs font-bold transition-all"
                         style={{
                           background: `${color}12`,
                           color,

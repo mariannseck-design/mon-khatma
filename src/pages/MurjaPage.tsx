@@ -394,10 +394,10 @@ export default function MurjaPage() {
                     className="flex items-center justify-between px-3 py-2 rounded-lg"
                     style={{ background: '#F0F7F4' }}
                   >
-                    <span className="text-xs font-medium" style={{ color: '#065F46' }}>
-                      {s.name}
-                    </span>
-                    <div className="flex items-center gap-2 text-[10px]" style={{ color: 'rgba(28,36,33,0.5)' }}>
+                     <span className="text-xs font-bold" style={{ color: '#065F46' }}>
+                       {s.name}
+                     </span>
+                     <div className="flex items-center gap-2 text-[10px] font-medium" style={{ color: 'rgba(28,36,33,0.65)' }}>
                       <span>{s.versesCount} v.</span>
                       <span className="flex items-center gap-0.5">
                         <CalendarDays className="h-2.5 w-2.5" />

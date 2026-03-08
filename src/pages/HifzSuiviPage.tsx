@@ -450,9 +450,9 @@ export default function HifzSuiviPage() {
                 style={{ background: 'linear-gradient(135deg, #065F46, #044E3B)', border: '1px solid #D4AF37' }}
               >
                 <BookOpenCheck className="h-8 w-8 mx-auto mb-3" style={{ color: '#D4AF37' }} />
-                <p className="text-sm" style={{ color: 'rgba(253,251,247,0.85)' }}>
-                  Ton tableau de bord se remplira dès ta première session de Hifz in shaa Allah !
-                </p>
+                 <p className="text-sm font-medium" style={{ color: 'rgba(253,251,247,0.95)' }}>
+                   Ton tableau de bord se remplira dès ta première session de Hifz in shaa Allah !
+                 </p>
               </div>
             )}
           </>
