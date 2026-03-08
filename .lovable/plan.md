@@ -1,21 +1,25 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Deux corrections sur la page d'accueil
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### 1. Masquer la citation du jour (DailyQuote)
+Les citations motivationnelles sur la mémorisation seront masquées jusqu'à ce que l'utilisateur ait commencé à mémoriser (c'est-à-dire qu'il existe au moins une session hifz ou des versets mémorisés en base).
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+**Approche** : Dans `AccueilPage.tsx`, conditionner l'affichage du composant `<DailyQuote />` à l'existence de données hifz (on a déjà `activeHifzSession` et `pendingReviews` — on ajoutera un booléen `hasStartedHifz` qui vérifie si l'utilisateur a au moins un verset mémorisé).
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+### 2. Remettre "Bonjour [Prénom]"
+Le prénom (`displayName`) est calculé à la ligne 184 mais n'est plus affiché nulle part — la salutation (ligne 205) n'utilise que `greeting()` qui ne contient pas le nom.
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+**Approche** : Ajouter le prénom dans la section greeting, par exemple :
+```
+Bonjour Marianne 🤍
+☀️ Sabah el-kheir !
+```
+On affiche `Bonjour {displayName} 🤍` au-dessus du greeting horaire, uniquement si `displayName` existe.
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+### Fichier modifié
+- **`src/pages/AccueilPage.tsx`** :
+  - Ajouter un état `hasStartedHifz` (query sur `hifz_memorized_verses` count > 0)
+  - Conditionner `<DailyQuote />` à `hasStartedHifz`
+  - Ajouter `Bonjour {displayName}` dans le bloc greeting
 
