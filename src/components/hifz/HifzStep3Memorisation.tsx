@@ -470,10 +470,23 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
               </button>
             )}
 
-            {/* Text container */}
-            {loading ? (
+            {/* Content container — Text or Mushaf */}
+            {loading && displayMode === 'text' ? (
               <div className="flex items-center justify-center py-8">
                 <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: '#d4af37', borderTopColor: 'transparent' }} />
+              </div>
+            ) : displayMode === 'mushaf' ? (
+              <div
+                style={{ display: textVisible ? 'block' : 'none' }}
+                className="rounded-xl overflow-auto max-h-[400px] flex items-center justify-center"
+              >
+                <img
+                  src={`https://tajweed.me/hafs-tajweed/p${mushafPage}.png`}
+                  alt={`Mushaf page ${mushafPage}`}
+                  className="w-full rounded-lg"
+                  style={{ border: '1px solid rgba(212,175,55,0.15)' }}
+                  loading="eager"
+                />
               </div>
             ) : (
               <div
