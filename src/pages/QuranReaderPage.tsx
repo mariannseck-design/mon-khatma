@@ -91,7 +91,7 @@ export default function QuranReaderPage() {
   // Force text mode when offline
   useEffect(() => {
     if (!isOnline && viewMode === 'image') {
-      setViewMode('text');
+      handleViewModeChange('text');
     }
   }, [isOnline, viewMode]);
   const [nightMode, setNightMode] = useState(() => {
