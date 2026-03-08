@@ -453,6 +453,14 @@ export default function HifzSuiviPage() {
                   {new Date().toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
                 </span>
               </div>
+              <div className="flex items-center gap-3 mb-1 justify-end">
+                <span className="flex items-center gap-1 text-[10px] font-medium" style={{ color: 'var(--p-text-55)' }}>
+                  <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ background: 'var(--p-accent)' }} /> Hifz
+                </span>
+                <span className="flex items-center gap-1 text-[10px] font-medium" style={{ color: 'var(--p-text-55)' }}>
+                  <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ background: 'var(--p-primary)' }} /> Muraja'a
+                </span>
+              </div>
               <ResponsiveContainer width="100%" height={140}>
                 <BarChart data={weeklyData} barCategoryGap="30%">
                   <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: 'var(--p-text-65)', fontSize: 9, fontWeight: 500 }} />
@@ -460,14 +468,11 @@ export default function HifzSuiviPage() {
                   <Tooltip
                     cursor={false}
                     contentStyle={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', borderRadius: 8, fontSize: 12 }}
-                    formatter={(value: number) => [`${value} verset${value > 1 ? 's' : ''}`, '']}
+                    formatter={(value: number, name: string) => [`${value} verset${value > 1 ? 's' : ''}`, name === 'hifz' ? 'Hifz' : "Muraja'a"]}
                     labelStyle={{ color: 'var(--p-text-65)', fontWeight: 600 }}
                   />
-                  <Bar dataKey="count" radius={[6, 6, 0, 0]} maxBarSize={28}>
-                    {weeklyData.map((entry, i) => (
-                      <Cell key={i} fill={entry.count > 0 ? 'var(--p-accent)' : 'var(--p-track)'} />
-                    ))}
-                  </Bar>
+                  <Bar dataKey="hifz" stackId="a" fill="var(--p-accent)" maxBarSize={28} radius={[0, 0, 0, 0]} />
+                  <Bar dataKey="muraja" stackId="a" fill="var(--p-primary)" maxBarSize={28} radius={[6, 6, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </motion.div>
