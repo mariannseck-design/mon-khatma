@@ -1,21 +1,18 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Activer tous les modules désactivés pour les admins
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Changement dans `src/pages/DhikrPage.tsx`
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+1. Importer `useAuth` depuis `@/contexts/AuthContext`
+2. Récupérer `isAdmin` dans le composant
+3. Remplacer la condition `card.enabled` par `card.enabled || isAdmin` pour :
+   - Le clic sur la carte (ligne ~100 : `if (card.enabled)`)
+   - Le badge "Bientôt disponible" (ligne ~104 : `{!card.enabled && ...}`)
+   - L'animation `whileTap` (ligne ~102)
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+Les cartes désactivées (Toute occasion, Sujud Tilawah, Duas Omra, Duas Hajj, Istikharah) deviendront cliquables pour les admins et le badge disparaîtra. Elles n'auront pas encore de données dans `CATEGORY_DATA`, donc cliquer dessus ne lancera pas de session (comportement gracieux existant).
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
-
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+### Fichier modifié
+- `src/pages/DhikrPage.tsx` (~5 lignes)
 
