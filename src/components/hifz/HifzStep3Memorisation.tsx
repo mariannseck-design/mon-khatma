@@ -9,6 +9,7 @@ import {
   TAJWEED_COLORS,
   type TajweedAnnotation,
 } from '@/lib/tajweedData';
+import { type HifzTheme, getThemeColors } from '@/lib/hifzTheme';
 
 interface Props {
   surahNumber: number;
@@ -17,6 +18,7 @@ interface Props {
   repetitionLevel: number;
   onNext: () => void;
   onBack: () => void;
+  theme?: HifzTheme;
 }
 
 const FONT_FAMILY = "'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
