@@ -228,7 +228,9 @@ export default function HifzSuiviPage() {
               >
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <Target className="h-4 w-4" style={{ color: 'var(--p-accent)' }} />
+                    <div className="w-7 h-7 rounded-full flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #065F46, #10B981)' }}>
+                      <Target className="h-3.5 w-3.5 text-white" />
+                    </div>
                     <span className="text-sm font-semibold" style={{ color: 'var(--p-text)' }}>
                       Objectif {goal.goal_period === 'daily' ? 'du jour' : 'de la semaine'}
                     </span>
