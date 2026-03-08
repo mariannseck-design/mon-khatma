@@ -699,6 +699,7 @@ export const ANYTIME_ADHKAR: DhikrItem[] = [
     arabic: 'لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ',
     phonetic: "Lâ ilâha illa-llâhu wahdahu lâ sharîka lah, lahu-l-mulku wa lahu-l-hamd, wa huwa 'alâ kulli shay'in qadîr",
     french: "Il n'y a de divinité qu'Allah, Seul sans associé. À Lui la royauté et la louange, et Il est Omnipotent.",
+    fadl: 'Quiconque le dit 10 fois, c\'est comme s\'il avait affranchi 4 esclaves parmi les fils d\'Ismâ\'îl. (Al-Bukhârî, Muslim)',
     target: 10,
   },
   {
