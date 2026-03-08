@@ -2,9 +2,6 @@ import { createContext, useContext, useEffect, useState, ReactNode } from 'react
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 
-const ALLOWED_EMAILS: string[] = [
-  // Ajouter ici les emails autorisés
-];
 
 interface AuthContextType {
   user: User | null;
@@ -25,6 +22,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isAllowedEmail, setIsAllowedEmail] = useState(false);
 
   useEffect(() => {
     // Set up auth state listener FIRST
@@ -38,10 +36,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (session?.user) {
           setTimeout(() => {
             checkAdminRole(session.user.id);
+            checkAllowedEmail(session.user.email);
             ensureProfile(session.user.id);
           }, 0);
         } else {
           setIsAdmin(false);
+          setIsAllowedEmail(false);
         }
       }
     );
@@ -54,6 +54,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       if (session?.user) {
         checkAdminRole(session.user.id);
+        checkAllowedEmail(session.user.email);
         ensureProfile(session.user.id);
       }
     });
@@ -74,6 +75,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       if (import.meta.env.DEV) console.error('Error checking admin role:', error);
       setIsAdmin(false);
+    }
+  };
+
+  const checkAllowedEmail = async (email: string | undefined) => {
+    if (!email) { setIsAllowedEmail(false); return; }
+    try {
+      const { data } = await supabase.rpc('is_allowed_email', { _email: email });
+      setIsAllowedEmail(!!data);
+    } catch (error) {
+      if (import.meta.env.DEV) console.error('Error checking allowed email:', error);
+      setIsAllowedEmail(false);
     }
   };
 
@@ -138,7 +150,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { error: error as Error | null };
   };
 
-    const hasFullAccess = isAdmin || (user?.email ? ALLOWED_EMAILS.includes(user.email) : false);
+    const hasFullAccess = isAdmin || isAllowedEmail;
 
     return (
       <AuthContext.Provider value={{ 
