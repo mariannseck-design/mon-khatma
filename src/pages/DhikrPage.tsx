@@ -26,11 +26,13 @@ const CATEGORY_DATA: Record<string, { title: string; items: DhikrItem[] }> = {
   morning: { title: 'Zikr du matin', items: MORNING_ADHKAR },
   evening: { title: 'Zikr du soir', items: EVENING_ADHKAR },
   prayer: { title: 'Après la prière', items: POST_PRAYER_ADHKAR },
+  chifa: { title: 'Chifâ & Sérénité', items: CHIFA_SERENITE },
+  louanges: { title: 'Louanges & Istighfar', items: LOUANGES_ISTIGHFAR },
   anytime: { title: 'Toute occasion', items: ANYTIME_ADHKAR },
   sujud: { title: 'Sujud Tilawah', items: SUJUD_TILAWAH_ADHKAR },
   omra: { title: 'Duas Omra', items: OMRA_DUAS },
+  hajj: { title: 'Duas Hajj', items: HAJJ_DUAS },
   istikharah: { title: 'Istikharah', items: ISTIKHARAH_DUAS },
-  louanges: { title: 'Louanges & Istighfar', items: LOUANGES_ISTIGHFAR },
 };
 
 const containerVariants = {
