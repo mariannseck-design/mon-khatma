@@ -41,6 +41,43 @@ const ISTIKHARAH_INTRO = {
   source: "Sahîh al-Bukhârî, hadith n°1162 — Jâbir ibn 'Abdillâh (رضي الله عنه)"
 };
 
+const OMRA_INTRO = {
+  title: "Les étapes et invocations de la 'Omra",
+  steps: [
+    "Entrer en état d'Ihrâm depuis le Mîqât en formulant l'intention : « Labbayk Allâhumma 'Omra ».",
+    "Réciter la Talbiyah en continu jusqu'à l'arrivée à la Ka'ba.",
+    "Effectuer le Tawâf (7 tours autour de la Ka'ba) en commençant par la Pierre Noire.",
+    "Prier 2 rak'ât derrière le Maqâm Ibrâhîm si possible.",
+    "Boire l'eau de Zamzam et invoquer Allah.",
+    "Effectuer le Sa'î (7 parcours entre Safâ et Marwa).",
+    "Se raser ou se raccourcir les cheveux pour sortir de l'Ihrâm."
+  ],
+  notes: [
+    "La Talbiyah s'arrête au moment où l'on commence le Tawâf.",
+    "Lors du Tawâf, il est recommandé de faire du dhikr et des invocations libres.",
+    "Entre Safâ et Marwa, on peut invoquer Allah librement, il n'y a pas d'invocation fixe obligatoire."
+  ],
+  source: "Sahîh Muslim — Jâbir ibn 'Abdillâh (رضي الله عنه), description du pèlerinage du Prophète ﷺ"
+};
+
+const HAJJ_INTRO = {
+  title: "Les étapes et invocations du Hajj",
+  steps: [
+    "Jour 8 (Yawm at-Tarwiya) : Entrer en Ihrâm et se diriger vers Minâ. Prier Dhuhr, 'Asr, Maghrib, 'Ishâ et Fajr raccourcies.",
+    "Jour 9 (Yawm 'Arafa) : Se rendre à 'Arafa après le lever du soleil. Invoquer abondamment jusqu'au coucher du soleil — c'est le pilier du Hajj.",
+    "Nuit à Muzdalifa : Après le coucher du soleil à 'Arafa, se rendre à Muzdalifa pour prier Maghrib et 'Ishâ combinées, et ramasser les cailloux.",
+    "Jour 10 (Yawm an-Nahr) : Lancer 7 cailloux sur Jamrat al-'Aqaba, sacrifier, se raser, faire le Tawâf al-Ifâda et le Sa'î.",
+    "Jours 11-12-13 (Ayyâm at-Tashrîq) : Lancer les cailloux sur les 3 Jamarât chaque jour après le Dhuhr. Faire du dhikr abondamment.",
+    "Tawâf al-Wadâ' (d'adieu) : Dernier acte avant de quitter La Mecque."
+  ],
+  notes: [
+    "Le jour de 'Arafa est le meilleur jour pour les invocations. Le Prophète ﷺ a dit : « La meilleure invocation est celle du jour de 'Arafa. »",
+    "Pendant les jours de Tashrîq, il est recommandé de répéter le Takbîr : Allâhu Akbar, Allâhu Akbar, Lâ ilâha illa-Llâh, Allâhu Akbar, Allâhu Akbar, wa li-Llâhi l-hamd.",
+    "Le pèlerin peut quitter Minâ le 12 s'il est pressé, sinon il reste jusqu'au 13."
+  ],
+  source: "Sahîh Muslim — Jâbir ibn 'Abdillâh (رضي الله عنه), hadîth décrivant le Hajj du Prophète ﷺ"
+};
+
 const CATEGORY_DATA: Record<string, { title: string; items: DhikrItem[]; intro?: typeof ISTIKHARAH_INTRO }> = {
   morning: { title: 'Zikr du matin', items: MORNING_ADHKAR },
   evening: { title: 'Zikr du soir', items: EVENING_ADHKAR },
