@@ -4,7 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Sunrise, Moon, BookOpen, Heart, ChevronDown, MapPin, Landmark, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import DhikrSession from '@/components/dhikr/DhikrSession';
-import { MORNING_ADHKAR, EVENING_ADHKAR, POST_PRAYER_ADHKAR, ANYTIME_ADHKAR, SUJUD_TILAWAH_ADHKAR } from '@/lib/adhkarData';
+import { MORNING_ADHKAR, EVENING_ADHKAR, POST_PRAYER_ADHKAR, ANYTIME_ADHKAR, SUJUD_TILAWAH_ADHKAR, OMRA_DUAS } from '@/lib/adhkarData';
 import type { DhikrItem } from '@/components/dhikr/DhikrCounter';
 
 /* ── Card config ── */
