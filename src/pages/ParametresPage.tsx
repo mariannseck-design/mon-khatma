@@ -144,19 +144,19 @@ export default function ParametresPage() {
                       <span className="block">• Versets mémorisés</span>
                       <span className="block">• Séries (streaks)</span>
                       <span className="block">• Objectifs de Hifz</span>
-                      <span className="block mt-3">Pour confirmer, tape <strong>RÉINITIALISER</strong> ci-dessous :</span>
+                      <span className="block mt-3">Pour confirmer, tape <strong>REINITIALISER</strong> ci-dessous :</span>
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <Input
                     value={confirmText}
                     onChange={(e) => setConfirmText(e.target.value)}
-                    placeholder="Tape RÉINITIALISER"
+                    placeholder="Tape REINITIALISER"
                     className="mt-2"
                   />
                   <AlertDialogFooter>
                     <AlertDialogCancel>Annuler</AlertDialogCancel>
                     <AlertDialogAction
-                      disabled={confirmText !== 'RÉINITIALISER' || isResetting}
+                      disabled={confirmText !== 'REINITIALISER' || isResetting}
                       className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                       onClick={async (e) => {
                         e.preventDefault();
