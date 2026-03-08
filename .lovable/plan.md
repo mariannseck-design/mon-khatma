@@ -1,21 +1,33 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Suppression de (عز وجل) dans tous les textes dhikr (arabe + français)
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Portée
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+33 fichiers contiennent `(عز وجل)` — 1101 occurrences au total. Les fichiers principaux concernés par le dhikr :
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+**Fichiers de données :**
+- `src/lib/adhkarData.ts` — adhkâr matin/soir/prière
+- `src/lib/sourcesLumiereData.ts` — invocations coraniques, sunna, salawât
+- `src/lib/douasData.ts` — douas par catégorie
+- `src/lib/dailyQuotes.ts` — citations quotidiennes
+- `src/lib/dailyMessages.ts` — messages quotidiens
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+**Composants :**
+- `src/components/dhikr/DhikrSession.tsx` — message fin de session
+- `src/components/sources-lumiere/SourcesSession.tsx` — message fin de session
+- Tous les autres composants/pages contenant `(عز وجل)` dans du texte affiché
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+### Approche
+
+Remplacement global dans chaque fichier :
+- `Allah (عز وجل)` → `Allah`
+- `<span className="honorific">(عز وجل)</span>` → supprimé
+- ` (عز وجل)` → `` (suppression avec l'espace avant)
+
+Cela ne touche pas aux autres honorifiques (`ﷺ`, `عليه السلام`, `عليهم السلام`) qui restent en place.
+
+### Fichiers modifiés
+
+Les 33 fichiers identifiés seront nettoyés par remplacement textuel simple.
 
