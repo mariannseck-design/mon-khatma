@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Smile, Frown, Meh, Heart, Cloud, Sun, Sparkles, Trash2, Edit3, Calendar, MoreVertical, Flower2, Moon, Sunrise, BookOpen, ChevronDown, MapPin, Landmark, ShieldPlus } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Smile, Frown, Meh, Heart, Cloud, Sun, Sparkles, Trash2, Edit3, Calendar, MoreVertical, Flower2, Moon, Sunrise, BookOpen, ChevronDown, MapPin, Landmark, ShieldPlus, BookHeart } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
