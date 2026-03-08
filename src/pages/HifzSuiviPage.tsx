@@ -350,9 +350,9 @@ export default function HifzSuiviPage() {
                     <div className="flex items-center gap-3 mb-3">
                       <div
                         className="w-10 h-10 rounded-xl flex items-center justify-center"
-                        style={{ background: 'var(--p-card-active)', border: '1px solid var(--p-border)' }}
+                        style={{ background: 'linear-gradient(135deg, #B8960C, #D4AF37)', boxShadow: '0 4px 12px rgba(212, 175, 55, 0.3)' }}
                       >
-                        <RefreshCw className="h-5 w-5" style={{ color: 'var(--p-accent)' }} />
+                        <RefreshCw className="h-5 w-5 text-white" />
                       </div>
                       <div>
                         <h3 className="text-sm font-bold" style={{ color: 'var(--p-text)' }}>Révision du jour</h3>
