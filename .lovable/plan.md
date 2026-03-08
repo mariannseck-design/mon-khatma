@@ -1,21 +1,19 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Compléter les titres des cercles et afficher les versets de révision
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Changements dans `src/pages/HifzSuiviPage.tsx`
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+**1. Cercle gauche — titre complet**
+- "Programme" → "Programme de mémorisation"
+- Réduire l'icône de `w-11 h-11` à `w-9 h-9` et l'icône interne de `22px` à `18px` pour gagner de la place
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+**2. Cercle droit — titre + versets**
+- "Révision" → "À réviser"
+- Réduire l'icône de `w-11 h-11` à `w-9 h-9`
+- Au lieu d'afficher juste le nombre de portions, afficher les détails des versets : le nom de la première sourate à réviser + la plage de versets (comme le cercle Programme)
+- Si plusieurs portions, ajouter un petit `+N autre(s)` en dessous
+- Les données `todayRevisions` contiennent déjà `surah_number`, `verse_start`, `verse_end` — utiliser `SURAHS` pour récupérer le nom de la sourate
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
-
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+**3. Réduction des marges** : `mb-2` sur l'icône → `mb-1.5`, ajuster le padding si nécessaire pour que tout rentre dans le cercle
 
