@@ -154,9 +154,9 @@ export default function HifzSuiviPage() {
     }
     for (const s of (murajaSessions || [])) {
       const dateKey = s.created_at.split('T')[0];
-      const reviewed = Array.isArray(s.verses_reviewed) ? s.verses_reviewed : [];
-      const verses = reviewed.reduce((sum: number, r: any) => sum + ((r.verse_end || r.end_verse || 0) - (r.verse_start || r.start_verse || 0) + 1), 0);
-      dayCounts[dateKey] = (dayCounts[dateKey] || 0) + (verses > 0 ? verses : 1);
+      const reviewed = Array.isArray(s.verses_reviewed) ? s.verses_reviewed as any[] : [];
+      const verses = reviewed.reduce((sum: number, r: any) => sum + (Number(r.verse_end || r.end_verse || 0) - Number(r.verse_start || r.start_verse || 0) + 1), 0);
+      dayCounts[dateKey] = (dayCounts[dateKey] || 0) + (Number(verses) > 0 ? Number(verses) : 1);
     }
 
     const chartData: { day: string; count: number }[] = [];
