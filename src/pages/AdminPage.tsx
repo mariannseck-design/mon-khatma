@@ -254,6 +254,8 @@ export default function AdminPage() {
             ))
           )}
         </div>
+        {/* Allowed Emails Management */}
+        <AllowedEmailsSection />
       </div>
     </AppLayout>
   );
