@@ -1,51 +1,21 @@
 
 
-## Plan : Refonte du panneau Parametres
+# Diagnostic : 404 sur /quran-reader
 
-### Problemes identifies
-1. Le panneau prend toute la hauteur -- pas de scroll, le bouton X est cache
-2. Sourate et versets sont separes -- les regrouper dans un bloc unique
-3. Trop de contenu vertical sans possibilite de defiler
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Solution
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-**Fichier** : `src/components/quran/ReaderSettingsPanel.tsx`
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-1. **Ajouter un scroll** au contenu du panneau : limiter la hauteur max a `max-h-[75vh]` et wrapper le contenu (apres le header) dans un `overflow-y-auto` avec du padding en bas. Le header avec le X reste fixe en haut.
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-2. **Regrouper Sourate + Versets** dans un seul bloc encadre :
-   - Un bloc arrondi avec bordure subtile contenant :
-     - Le bouton "Choisir une sourate" en haut
-     - En dessous, les deux inputs "Du verset" / "Au verset" cote a cote
-   - Supprime les `mb-4` separees, un seul `mb-4` sur le bloc parent
-
-3. **Structure du panneau** (de haut en bas) :
-   - Header (Parametres + bouton X) -- toujours visible
-   - Zone scrollable contenant :
-     - Bloc Sourate + Versets (regroupe)
-     - Mode d'affichage
-     - Tajwid toggle
-     - Traduction toggle + editions
-     - Taille du texte
-     - Luminosite
-     - Audio
-
-### Details techniques
-
-```text
-┌─────────────────────────┐
-│ Paramètres          [X] │  ← fixe
-├─────────────────────────┤
-│ ┌─ Sourate & Versets ─┐ │
-│ │ 📖 Choisir sourate >│ │  ← scroll
-│ │ [Début]    [Fin]    │ │
-│ └─────────────────────┘ │
-│ Mode: [Mushaf] [Texte]  │
-│ Tajwid        [toggle]  │
-│ Traduction    [toggle]  │
-│ Taille: [P][M][G][TG][M]│
-│ Luminosité    [toggle]  │
-│ Audio: [▶] [récitant ▼] │
-└─────────────────────────┘
-```
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

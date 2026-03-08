@@ -102,18 +102,19 @@ export default function ReaderSettingsPanel({
               animate={{ y: 0 }}
               exit={{ y: 300 }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="w-full max-w-md rounded-t-3xl p-5 pb-8"
+              className="w-full max-w-md rounded-t-3xl flex flex-col"
               style={{
                 background: nightMode ? '#1a2e1a' : 'linear-gradient(135deg, #8ed1c4, #a0d9ce)',
                 color: nightMode ? '#d4c9a8' : '#1a3a3a',
                 border: `1px solid ${nightMode ? 'rgba(90,180,180,0.15)' : 'rgba(212,175,55,0.4)'}`,
                 borderBottom: 'none',
                 boxShadow: '0 -8px 40px rgba(0,0,0,0.15)',
+                maxHeight: '80vh',
               }}
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Header */}
-              <div className="flex items-center justify-between mb-5">
+              {/* Fixed Header */}
+              <div className="flex items-center justify-between px-5 pt-5 pb-3 flex-shrink-0">
                 <h3 className="text-lg font-semibold" style={{ fontFamily: "'Playfair Display', serif", color: nightMode ? '#d4c9a8' : '#6b5417' }}>
                   Paramètres
                 </h3>
@@ -122,74 +123,83 @@ export default function ReaderSettingsPanel({
                 </button>
               </div>
 
-              {/* Verse range selection — moved above surah selector */}
-              {onAudioStartVerseChange && onAudioEndVerseChange && (
-                <div className="mb-4 flex items-center gap-2">
-                  <div className="flex-1">
-                    <label className="text-[10px] opacity-60 mb-0.5 block">Du verset</label>
-                    <input
-                      type="text"
-                      inputMode="numeric"
-                      placeholder="Début"
-                      value={audioStartVerse ?? ''}
-                      onChange={(e) => {
-                        const raw = e.target.value.replace(/[^0-9]/g, '');
-                        const v = raw ? parseInt(raw) : undefined;
-                        onAudioStartVerseChange(v && v > 0 ? v : undefined);
-                      }}
-                      onFocus={(e) => e.target.select()}
-                      onClick={(e) => e.stopPropagation()}
-                      className="w-full py-1.5 px-2 rounded-lg text-sm border-0 outline-none text-center"
-                      style={{
-                        background: nightMode ? 'rgba(90,180,180,0.08)' : 'rgba(255,255,255,0.2)',
-                        color: 'inherit',
-                        fontSize: '16px',
-                      }}
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <label className="text-[10px] opacity-60 mb-0.5 block">Au verset</label>
-                    <input
-                      type="text"
-                      inputMode="numeric"
-                      placeholder="Fin"
-                      value={audioEndVerse ?? ''}
-                      onChange={(e) => {
-                        const raw = e.target.value.replace(/[^0-9]/g, '');
-                        const v = raw ? parseInt(raw) : undefined;
-                        onAudioEndVerseChange(v && v > 0 ? v : undefined);
-                      }}
-                      onFocus={(e) => e.target.select()}
-                      onClick={(e) => e.stopPropagation()}
-                      className="w-full py-1.5 px-2 rounded-lg text-sm border-0 outline-none text-center"
-                      style={{
-                        background: nightMode ? 'rgba(90,180,180,0.08)' : 'rgba(255,255,255,0.2)',
-                        color: 'inherit',
-                        fontSize: '16px',
-                      }}
-                    />
-                  </div>
+              {/* Scrollable Content */}
+              <div className="overflow-y-auto px-5 pb-8 flex-1" style={{ WebkitOverflowScrolling: 'touch' }}>
+
+              {/* Grouped: Sourate + Versets */}
+              {(onShowSurahDrawer || (onAudioStartVerseChange && onAudioEndVerseChange)) && (
+                <div
+                  className="mb-4 p-3 rounded-2xl"
+                  style={{
+                    background: nightMode ? 'rgba(90,180,180,0.06)' : 'rgba(255,255,255,0.12)',
+                    border: `1px solid ${nightMode ? 'rgba(90,180,180,0.12)' : 'rgba(212,175,55,0.25)'}`,
+                  }}
+                >
+                  {onShowSurahDrawer && (
+                    <button
+                      onClick={() => { onShowSurahDrawer(); setOpen(false); }}
+                      className="w-full flex items-center justify-between py-2.5 px-3 rounded-xl text-sm font-medium transition-all"
+                      style={{ background: nightMode ? 'rgba(90,180,180,0.08)' : 'rgba(255,255,255,0.2)', border: `1px solid ${nightMode ? 'rgba(90,180,180,0.12)' : 'rgba(212,175,55,0.2)'}` }}
+                    >
+                      <span className="flex items-center gap-2">
+                        <BookOpen className="h-4 w-4" style={{ color: '#4a9a9a' }} />
+                        Choisir une sourate
+                      </span>
+                      <ChevronRight className="h-4 w-4 opacity-50" />
+                    </button>
+                  )}
+                  {onAudioStartVerseChange && onAudioEndVerseChange && (
+                    <div className={`flex items-center gap-2 ${onShowSurahDrawer ? 'mt-2.5' : ''}`}>
+                      <div className="flex-1">
+                        <label className="text-[10px] opacity-60 mb-0.5 block">Du verset</label>
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          placeholder="Début"
+                          value={audioStartVerse ?? ''}
+                          onChange={(e) => {
+                            const raw = e.target.value.replace(/[^0-9]/g, '');
+                            const v = raw ? parseInt(raw) : undefined;
+                            onAudioStartVerseChange(v && v > 0 ? v : undefined);
+                          }}
+                          onFocus={(e) => e.target.select()}
+                          onClick={(e) => e.stopPropagation()}
+                          className="w-full py-1.5 px-2 rounded-lg text-sm border-0 outline-none text-center"
+                          style={{
+                            background: nightMode ? 'rgba(90,180,180,0.08)' : 'rgba(255,255,255,0.2)',
+                            color: 'inherit',
+                            fontSize: '16px',
+                          }}
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <label className="text-[10px] opacity-60 mb-0.5 block">Au verset</label>
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          placeholder="Fin"
+                          value={audioEndVerse ?? ''}
+                          onChange={(e) => {
+                            const raw = e.target.value.replace(/[^0-9]/g, '');
+                            const v = raw ? parseInt(raw) : undefined;
+                            onAudioEndVerseChange(v && v > 0 ? v : undefined);
+                          }}
+                          onFocus={(e) => e.target.select()}
+                          onClick={(e) => e.stopPropagation()}
+                          className="w-full py-1.5 px-2 rounded-lg text-sm border-0 outline-none text-center"
+                          style={{
+                            background: nightMode ? 'rgba(90,180,180,0.08)' : 'rgba(255,255,255,0.2)',
+                            color: 'inherit',
+                            fontSize: '16px',
+                          }}
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
 
-              {/* Surah Selector */}
-              {onShowSurahDrawer && (
-                <div className="mb-4">
-                  <button
-                    onClick={() => { onShowSurahDrawer(); setOpen(false); }}
-                    className="w-full flex items-center justify-between py-3 px-4 rounded-xl text-sm font-medium transition-all"
-                    style={{ background: nightMode ? 'rgba(90,180,180,0.08)' : 'rgba(255,255,255,0.15)', border: `1px solid ${nightMode ? 'rgba(90,180,180,0.12)' : 'rgba(212,175,55,0.3)'}` }}
-                  >
-                    <span className="flex items-center gap-2">
-                      <BookOpen className="h-4 w-4" style={{ color: '#4a9a9a' }} />
-                      Choisir une sourate
-                    </span>
-                    <ChevronRight className="h-4 w-4 opacity-50" />
-                  </button>
-                </div>
-              )}
-
-              {/* View Mode Toggle — hidden when text mode disabled */}
+              {/* View Mode Toggle */}
               {!textModeDisabled && (
                 <div className="mb-4">
                   <p className="text-xs font-medium mb-2 opacity-70">Mode d'affichage</p>
@@ -220,7 +230,7 @@ export default function ReaderSettingsPanel({
                 </div>
               )}
 
-              {/* Tajweed Toggle — only in text mode */}
+              {/* Tajweed Toggle */}
               {!textModeDisabled && viewMode === 'text' && onTajweedChange && (
                 <div className="mb-4">
                   <button
@@ -248,7 +258,7 @@ export default function ReaderSettingsPanel({
                 </div>
               )}
 
-              {/* Translation Toggle — available in both modes */}
+              {/* Translation Toggle */}
               {onTranslationChange && (
                 <div className="mb-4">
                   <button
@@ -273,7 +283,6 @@ export default function ReaderSettingsPanel({
                       />
                     </div>
                   </button>
-                  {/* Edition selector — shown when translation is enabled */}
                   {translationEnabled && onTranslationEditionChange && (
                     <div className="mt-2 grid grid-cols-2 gap-1.5">
                       {TRANSLATION_EDITIONS.map((ed) => (
@@ -298,7 +307,7 @@ export default function ReaderSettingsPanel({
                 </div>
               )}
 
-              {/* Text Size (only when text mode active and not disabled) */}
+              {/* Text Size */}
               {!textModeDisabled && viewMode === 'text' && (
                 <div className="mb-4">
                   <p className="text-xs font-medium mb-2 opacity-70">Taille du texte</p>
@@ -386,6 +395,8 @@ export default function ReaderSettingsPanel({
                   </select>
                 </div>
               </div>
+
+              </div>{/* end scrollable */}
             </motion.div>
           </motion.div>
         )}
