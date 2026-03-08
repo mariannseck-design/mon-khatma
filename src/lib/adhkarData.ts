@@ -773,6 +773,7 @@ export const OMRA_DUAS: DhikrItem[] = [
   },
   {
     title: "Du'â sur As-Safâ",
+    readOnly: true,
     arabic: 'إِنَّ الصَّفَا وَالْمَرْوَةَ مِنْ شَعَائِرِ اللهِ ۚ أَبْدَأُ بِمَا بَدَأَ اللهُ بِهِ',
     phonetic: "Inna-s-Safâ wa-l-Marwata min sha'â'iri-llâh. Abda'u bi-mâ bada'a-llâhu bih.",
     french: "As-Safâ et Al-Marwah font partie des rites d'Allah (عز وجل). Je commence par ce par quoi Allah (عز وجل) a commencé. (À dire au début du Sa'î)",
