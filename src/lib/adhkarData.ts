@@ -683,6 +683,7 @@ export const ANYTIME_ADHKAR: DhikrItem[] = [
     arabic: 'سُبْحَانَ اللهِ وَبِحَمْدِهِ، سُبْحَانَ اللهِ الْعَظِيمِ',
     phonetic: "Subhâna-llâhi wa bi-hamdih, subhâna-llâhi-l-'Azîm",
     french: "Gloire à Allah et louange à Lui. Gloire à Allah le Très Grand.",
+    fadl: 'Deux paroles légères sur la langue, lourdes sur la balance, aimées du Tout Miséricordieux. (Al-Bukhârî, Muslim)',
     target: 100,
   },
   {
