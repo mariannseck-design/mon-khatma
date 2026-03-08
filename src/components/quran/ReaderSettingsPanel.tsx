@@ -3,6 +3,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Settings, X, Moon, Sun, Play, Pause, Loader2, BookOpen, Image, Type, ChevronRight, Palette, Languages } from 'lucide-react';
 import { RECITERS } from '@/hooks/useQuranAudio';
 
+export const TRANSLATION_EDITIONS = [
+  { id: 'fr.hamidullah', label: 'Français (Hamidullah)', lang: '🇫🇷' },
+  { id: 'en.sahih', label: 'English (Sahih Int.)', lang: '🇬🇧' },
+  { id: 'fr.leclerc', label: 'Français (Montada)', lang: '🇫🇷' },
+  { id: 'en.pickthall', label: 'English (Pickthall)', lang: '🇬🇧' },
+];
+
 interface ReaderSettingsPanelProps {
   viewMode: 'image' | 'text';
   onViewModeChange: (mode: 'image' | 'text') => void;
@@ -29,6 +36,8 @@ interface ReaderSettingsPanelProps {
   onTajweedChange?: (enabled: boolean) => void;
   translationEnabled?: boolean;
   onTranslationChange?: (enabled: boolean) => void;
+  translationEdition?: string;
+  onTranslationEditionChange?: (edition: string) => void;
 }
 
 const FONT_SIZE_PRESETS = [
