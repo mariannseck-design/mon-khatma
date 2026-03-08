@@ -276,6 +276,11 @@ export default function HifzPage() {
               verse_end: session.endVerse,
               memorized_at: new Date().toISOString(),
               next_review_date: new Date(Date.now() + 86400000).toISOString().split('T')[0],
+              liaison_status: 'liaison',
+              liaison_start_date: today,
+              sm2_interval: 1,
+              sm2_ease_factor: 2.5,
+              sm2_repetitions: 0,
             });
           }
         } catch (err) {

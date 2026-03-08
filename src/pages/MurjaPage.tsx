@@ -79,12 +79,19 @@ export default function MurjaPage() {
   const [celebration, setCelebration] = useState<'daily' | 'cycle' | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
 
+  const [graduatedCount, setGraduatedCount] = useState(0);
+  const [showGraduation, setShowGraduation] = useState(false);
+
   useEffect(() => {
     if (!user) return;
     const fetchVerses = async () => {
       setLoading(true);
       // Auto-graduate liaison blocks that have completed 30 days
-      await graduateLiaisonBlocks(user.id);
+      const graduated = await graduateLiaisonBlocks(user.id);
+      if (graduated > 0) {
+        setGraduatedCount(graduated);
+        setShowGraduation(true);
+      }
       const { data } = await supabase
         .from('hifz_memorized_verses')
         .select('*')
