@@ -140,13 +140,6 @@ export default function DhikrPage() {
             transition={{ duration: 0.25 }}
             className="space-y-6"
           >
-            <h1
-              className="text-xl font-bold tracking-[0.06em] uppercase text-center"
-              style={{ fontFamily: "'Inter', sans-serif", color: 'var(--p-primary)' }}
-            >
-              Mon Dhikr Quotidien
-            </h1>
-
             <motion.div
               className="grid grid-cols-2 gap-4"
               variants={containerVariants}
