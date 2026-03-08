@@ -326,7 +326,11 @@ export default function MurjaPage() {
                     Progression du jour
                   </span>
                   <span className="font-bold" style={{ color: 'var(--p-accent)' }}>
-                    {checkedCount}/{totalBlocks} blocs
+                    {checkedCount >= totalBlocks
+                      ? 'Bravo, tu as tout révisé !'
+                      : checkedCount === 0
+                        ? "C'est parti !"
+                        : `Plus que ${totalBlocks - checkedCount} étape${totalBlocks - checkedCount > 1 ? 's' : ''} !`}
                   </span>
                 </div>
                 <div className="w-full h-2.5 rounded-full overflow-hidden" style={{ background: 'var(--p-track)' }}>
