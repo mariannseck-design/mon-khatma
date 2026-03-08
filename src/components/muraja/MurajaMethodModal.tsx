@@ -45,7 +45,7 @@ export default function MurajaMethodModal({ defaultTab = 'rabt', trigger }: Mura
             className="text-lg font-bold tracking-wide"
             style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-primary)' }}
           >
-            💡 Le coin des curieux
+            📖 Notre Méthode
           </DialogTitle>
         </DialogHeader>
 
