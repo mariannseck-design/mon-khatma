@@ -78,12 +78,13 @@ export default function DhikrCounter({ item, onComplete, arabicFontSize = '1.7re
 
       {/* Arabic text */}
       <p
-        className="text-2xl font-bold leading-relaxed text-center px-2"
+        className="font-bold leading-relaxed text-center px-2"
         style={{
           color: 'var(--p-primary)',
           fontFamily: "'Scheherazade New', 'Traditional Arabic', serif",
           direction: 'rtl',
           lineHeight: '2.2',
+          fontSize: arabicFontSize,
         }}
       >
         {item.arabic}
