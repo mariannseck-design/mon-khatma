@@ -412,7 +412,7 @@ export default function HifzPage() {
   if (!session || step === -1) {
     return (
       <AppLayout title="Espace Hifz" hideNav>
-        <div className="min-h-[80vh] rounded-[2rem] p-6 mx-[-4px]" style={GRADIENT_STYLE}>
+        <div className="min-h-[80vh] rounded-[2rem] p-6 mx-[-4px]" style={containerStyle}>
           {devModeBadge}
           <HifzConfig onStart={startSession} />
         </div>
