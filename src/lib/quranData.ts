@@ -22,7 +22,7 @@ export interface LocalAyah {
 let pageIndex: Map<number, LocalAyah[]> | null = null;
 // In-memory cache: surah number → ayahs (indexed by numberInSurah)
 let surahIndex: Map<number, Map<number, LocalAyah>> | null = null;
-let loadPromise: Promise<Map<number, LocalAyah[]>> | null = null;
+let loadPromise: Promise<void> | null = null;
 
 async function buildIndexes(): Promise<{ pages: Map<number, LocalAyah[]>; surahs: Map<number, Map<number, LocalAyah>> }> {
   const res = await fetch('/data/quran-uthmani.json');
@@ -55,23 +55,36 @@ async function buildIndexes(): Promise<{ pages: Map<number, LocalAyah[]>; surahs
   return { pages, surahs };
 }
 
-/**
- * Get ayahs for a specific page from the local bundled data.
- * Loads and indexes the full Quran on first call, then serves from memory.
- */
-export async function getPageAyahs(page: number): Promise<LocalAyah[]> {
-  if (pageIndex) {
-    return pageIndex.get(page) || [];
-  }
-
+async function ensureLoaded(): Promise<void> {
+  if (pageIndex && surahIndex) return;
   if (!loadPromise) {
-    loadPromise = buildPageIndex().then(idx => {
-      pageIndex = idx;
-      loadPromise = null;
-      return idx;
+    loadPromise = buildIndexes().then(({ pages, surahs }) => {
+      pageIndex = pages;
+      surahIndex = surahs;
     });
   }
+  await loadPromise;
+}
 
-  const idx = await loadPromise;
-  return idx.get(page) || [];
+/**
+ * Get ayahs for a specific page from the local bundled data.
+ */
+export async function getPageAyahs(page: number): Promise<LocalAyah[]> {
+  await ensureLoaded();
+  return pageIndex!.get(page) || [];
+}
+
+/**
+ * Get ayahs for a specific surah/verse range from the local bundled data.
+ */
+export async function getVersesByRange(surahNumber: number, startVerse: number, endVerse: number): Promise<LocalAyah[]> {
+  await ensureLoaded();
+  const surahMap = surahIndex!.get(surahNumber);
+  if (!surahMap) return [];
+  const result: LocalAyah[] = [];
+  for (let v = startVerse; v <= endVerse; v++) {
+    const ayah = surahMap.get(v);
+    if (ayah) result.push(ayah);
+  }
+  return result;
 }
