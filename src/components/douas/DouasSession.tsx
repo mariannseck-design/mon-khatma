@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Check, Share2, Heart } from 'lucide-react';
 import DhikrCounter, { type DhikrItem } from '@/components/dhikr/DhikrCounter';
@@ -23,6 +23,7 @@ export default function DouasSession({
 }: DouasSessionProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [sessionComplete, setSessionComplete] = useState(false);
+  const [heartPulse, setHeartPulse] = useState(false);
 
   const handleComplete = useCallback(() => {
     if (currentIndex < items.length - 1) {
@@ -51,6 +52,10 @@ export default function DouasSession({
   const handleToggleFav = () => {
     if (!currentItem) return;
     onToggleFavorite(currentId, currentItem);
+    if (!isCurrentFav) {
+      setHeartPulse(true);
+      setTimeout(() => setHeartPulse(false), 600);
+    }
     toast.success(isCurrentFav ? 'Retiré des favoris' : 'Ajouté aux favoris ❤️');
   };
 
@@ -70,11 +75,16 @@ export default function DouasSession({
         {!sessionComplete && (
           <div className="flex items-center gap-1">
             <button onClick={handleToggleFav} className="p-2 rounded-full" aria-label="Favori">
-              <Heart
-                className="w-4 h-4 transition-colors"
-                style={{ color: isCurrentFav ? '#e74c3c' : GOLD }}
-                fill={isCurrentFav ? '#e74c3c' : 'none'}
-              />
+              <motion.div
+                animate={heartPulse ? { scale: [1, 1.5, 0.9, 1.2, 1] } : { scale: 1 }}
+                transition={{ duration: 0.5, ease: 'easeOut' }}
+              >
+                <Heart
+                  className="w-4 h-4 transition-colors"
+                  style={{ color: isCurrentFav ? '#e74c3c' : GOLD }}
+                  fill={isCurrentFav ? '#e74c3c' : 'none'}
+                />
+              </motion.div>
             </button>
             <button onClick={handleShare} className="p-2 rounded-full" style={{ color: GOLD }} aria-label="Partager">
               <Share2 className="w-4 h-4" />
