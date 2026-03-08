@@ -9,13 +9,18 @@ interface Props {
   maxHeight?: string;
 }
 
-const CDN_BASE = 'https://cdn.jsdelivr.net/gh/QuranHub/quran-pages-images@main/easyquran.com/hafs-tajweed';
+const IMAGE_SOURCES = [
+  (p: number) => `https://cdn.jsdelivr.net/gh/QuranHub/quran-pages-images@main/easyquran.com/hafs-tajweed/${p}.jpg`,
+  (p: number) => `https://raw.githubusercontent.com/QuranHub/quran-pages-images/main/easyquran.com/hafs-tajweed/${p}.jpg`,
+  (p: number) => `https://cdn.statically.io/gh/QuranHub/quran-pages-images/main/easyquran.com/hafs-tajweed/${p}.jpg`,
+];
 
 export default function HifzMushafImage({ surahNumber, startVerse, endVerse, maxHeight = '320px' }: Props) {
   const [pages, setPages] = useState<number[]>([]);
   const [currentPageIdx, setCurrentPageIdx] = useState(0);
   const [loading, setLoading] = useState(true);
   const [imgLoading, setImgLoading] = useState(true);
+  const [sourceIdx, setSourceIdx] = useState(0);
 
   useEffect(() => {
     const load = async () => {
@@ -26,23 +31,23 @@ export default function HifzMushafImage({ surahNumber, startVerse, endVerse, max
       for (let p = startPage; p <= endPage; p++) pageList.push(p);
       setPages(pageList);
       setCurrentPageIdx(0);
+      setSourceIdx(0);
       setLoading(false);
     };
     load();
   }, [surahNumber, startVerse, endVerse]);
 
-  if (loading) {
-    return (
+  if (loading || !pages.length) {
+    return loading ? (
       <div className="flex items-center justify-center py-8">
         <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: '#d4af37', borderTopColor: 'transparent' }} />
       </div>
-    );
+    ) : null;
   }
 
-  if (!pages.length) return null;
-
   const page = pages[currentPageIdx];
-  const imgUrl = `${CDN_BASE}/${String(page).padStart(3, '0')}.jpg`;
+  const allFailed = sourceIdx >= IMAGE_SOURCES.length;
+  const imgUrl = allFailed ? '' : IMAGE_SOURCES[sourceIdx](page);
 
   return (
     <div className="space-y-2">
@@ -50,28 +55,35 @@ export default function HifzMushafImage({ surahNumber, startVerse, endVerse, max
         className="rounded-xl overflow-hidden relative"
         style={{ border: '1px solid rgba(212,175,55,0.25)', maxHeight, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f5f0e0' }}
       >
-        {imgLoading && (
+        {imgLoading && !allFailed && (
           <div className="absolute inset-0 flex items-center justify-center" style={{ background: 'rgba(245,240,224,0.9)' }}>
             <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: '#d4af37', borderTopColor: 'transparent' }} />
           </div>
         )}
-        <img
-          src={imgUrl}
-          alt={`Page ${page} du Mushaf`}
-          className="w-full h-auto object-contain"
-          style={{ maxHeight }}
-          onLoad={() => setImgLoading(false)}
-          onError={(e) => {
-            setImgLoading(false);
-            (e.target as HTMLImageElement).alt = `Page ${page} non disponible`;
-          }}
-        />
+        {allFailed ? (
+          <div className="flex items-center justify-center py-8 text-sm" style={{ color: 'rgba(0,0,0,0.4)' }}>
+            Page {page} non disponible
+          </div>
+        ) : (
+          <img
+            key={`${page}-${sourceIdx}`}
+            src={imgUrl}
+            alt={`Page ${page} du Mushaf`}
+            className="w-full h-auto object-contain"
+            style={{ maxHeight }}
+            onLoad={() => setImgLoading(false)}
+            onError={() => {
+              setSourceIdx(i => i + 1);
+              setImgLoading(true);
+            }}
+          />
+        )}
       </div>
 
       {pages.length > 1 && (
         <div className="flex items-center justify-center gap-3">
           <button
-            onClick={() => { setCurrentPageIdx(i => i - 1); setImgLoading(true); }}
+            onClick={() => { setCurrentPageIdx(i => i - 1); setImgLoading(true); setSourceIdx(0); }}
             disabled={currentPageIdx === 0}
             className="w-8 h-8 rounded-full flex items-center justify-center disabled:opacity-30 transition-all active:scale-95"
             style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(212,175,55,0.2)' }}
@@ -82,7 +94,7 @@ export default function HifzMushafImage({ surahNumber, startVerse, endVerse, max
             Page {page} ({currentPageIdx + 1}/{pages.length})
           </span>
           <button
-            onClick={() => { setCurrentPageIdx(i => i + 1); setImgLoading(true); }}
+            onClick={() => { setCurrentPageIdx(i => i + 1); setImgLoading(true); setSourceIdx(0); }}
             disabled={currentPageIdx === pages.length - 1}
             className="w-8 h-8 rounded-full flex items-center justify-center disabled:opacity-30 transition-all active:scale-95"
             style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(212,175,55,0.2)' }}
