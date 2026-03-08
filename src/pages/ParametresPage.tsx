@@ -144,7 +144,7 @@ export default function ParametresPage() {
                       <span className="block">• Versets mémorisés</span>
                       <span className="block">• Séries (streaks)</span>
                       <span className="block">• Objectifs de Hifz</span>
-                      <span className="block mt-3">Pour confirmer, tape <strong>RÉINITIALISER</strong> ci-dessous :</span>
+                      <span className="block mt-3">Pour confirmer, tape <strong>REINITIALISER</strong> ci-dessous :</span>
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <Input
