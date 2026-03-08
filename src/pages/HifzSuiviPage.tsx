@@ -321,9 +321,9 @@ export default function HifzSuiviPage() {
                         <p className="text-sm font-semibold" style={{ color: '#065F46' }}>
                           {nextPoint.surahName}
                         </p>
-                        <p className="text-xs" style={{ color: 'rgba(28,36,33,0.45)' }}>
-                          Versets {nextPoint.startVerse} → {nextPoint.endVerse}
-                        </p>
+                         <p className="text-xs font-medium" style={{ color: 'rgba(28,36,33,0.6)' }}>
+                           Versets {nextPoint.startVerse} → {nextPoint.endVerse}
+                         </p>
                       </div>
                     </div>
                   </Link>
