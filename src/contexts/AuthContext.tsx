@@ -54,6 +54,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       if (session?.user) {
         checkAdminRole(session.user.id);
+        checkAllowedEmail(session.user.email);
         ensureProfile(session.user.id);
       }
     });
