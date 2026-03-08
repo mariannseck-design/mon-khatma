@@ -1,12 +1,14 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { AppLayout } from '@/components/layout/AppLayout';
-import { RefreshCw, RotateCcw, BookOpen, CalendarDays } from 'lucide-react';
+import { RefreshCw, RotateCcw, BookOpen, CalendarDays, PartyPopper } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { SURAHS } from '@/lib/surahData';
 import { graduateLiaisonBlocks } from '@/lib/hifzUtils';
+import { SparkleEffect } from '@/components/planificateur/SparkleEffect';
 import MurajaCountdown from '@/components/muraja/MurajaCountdown';
 import MurajaChecklist from '@/components/muraja/MurajaChecklist';
 import MurajaCelebration from '@/components/muraja/MurajaCelebration';
@@ -79,12 +81,19 @@ export default function MurjaPage() {
   const [celebration, setCelebration] = useState<'daily' | 'cycle' | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
 
+  const [graduatedCount, setGraduatedCount] = useState(0);
+  const [showGraduation, setShowGraduation] = useState(false);
+
   useEffect(() => {
     if (!user) return;
     const fetchVerses = async () => {
       setLoading(true);
       // Auto-graduate liaison blocks that have completed 30 days
-      await graduateLiaisonBlocks(user.id);
+      const graduated = await graduateLiaisonBlocks(user.id);
+      if (graduated > 0) {
+        setGraduatedCount(graduated);
+        setShowGraduation(true);
+      }
       const { data } = await supabase
         .from('hifz_memorized_verses')
         .select('*')
@@ -367,6 +376,52 @@ export default function MurjaPage() {
               />
             </div>
 
+            {/* Maturity Bar — Mes ancrages en cours */}
+            {rabtVerses.length > 0 && (
+              <div className="space-y-3">
+                <h2
+                  className="text-base font-bold"
+                  style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-text)' }}
+                >
+                  Mes ancrages en cours (La Liaison)
+                </h2>
+                <div className="space-y-2">
+                  {rabtVerses.map((verse) => {
+                    const start = verse.liaison_start_date ? new Date(verse.liaison_start_date + 'T00:00:00') : new Date(verse.memorized_at);
+                    const daysPassed = Math.min(30, Math.max(0, Math.floor((Date.now() - start.getTime()) / 86400000)));
+                    const surahName = SURAHS.find(s => s.number === verse.surah_number)?.name || `Sourate ${verse.surah_number}`;
+                    return (
+                      <motion.div
+                        key={verse.id}
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="rounded-xl px-4 py-3 space-y-2"
+                        style={{ background: '#FFFFFF', border: '1px solid #E6F0ED' }}
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-semibold" style={{ color: '#1C2421' }}>
+                            {surahName} ({verse.verse_start}-{verse.verse_end})
+                          </span>
+                          <span className="text-xs font-bold" style={{ color: '#065F46' }}>
+                            Jour {daysPassed} / 30
+                          </span>
+                        </div>
+                        <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: '#E6F0ED' }}>
+                          <motion.div
+                            className="h-full rounded-full"
+                            style={{ background: 'linear-gradient(90deg, #065F46, #10B981)' }}
+                            initial={{ width: 0 }}
+                            animate={{ width: `${(daysPassed / 30) * 100}%` }}
+                            transition={{ duration: 0.6 }}
+                          />
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             {/* Section Le Tour */}
             <div className="space-y-3">
               <div className="flex items-center gap-2">
@@ -468,6 +523,43 @@ export default function MurjaPage() {
         isOpen={celebration !== null}
         onClose={() => setCelebration(null)}
       />
+
+      {/* Graduation celebration */}
+      <Dialog open={showGraduation} onOpenChange={setShowGraduation}>
+        <DialogContent className="sm:max-w-md text-center border-none shadow-xl bg-gradient-to-br from-card via-card to-accent/10 relative overflow-hidden">
+          <SparkleEffect isActive={showGraduation} />
+          <DialogHeader className="space-y-4">
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: 'spring', duration: 0.6 }}
+              className="mx-auto text-5xl"
+            >
+              🎉
+            </motion.div>
+            <DialogTitle className="text-xl font-display text-center">
+              Félicitations !
+            </DialogTitle>
+            <DialogDescription className="text-base text-center leading-relaxed px-2">
+              Vos versets sont désormais ancrés dans votre cœur. Ils rejoignent votre trésor éternel pour l'entretien espacé.
+            </DialogDescription>
+          </DialogHeader>
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="mt-4"
+          >
+            <Button
+              onClick={() => setShowGraduation(false)}
+              className="w-full"
+              style={{ background: 'linear-gradient(135deg, #065F46, #10B981)', color: '#fff' }}
+            >
+              Alhamdulillah 🤲
+            </Button>
+          </motion.div>
+        </DialogContent>
+      </Dialog>
     </AppLayout>
   );
 }

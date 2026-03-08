@@ -76,8 +76,7 @@ export default function HifzSuccess({ stepTimes }: Props) {
       </h1>
 
       <p className="text-white/80 text-sm leading-relaxed px-4">
-        Félicitations ! Tu as terminé ta session de mémorisation avec succès.
-        Pense à consolider tes acquis en accédant à l'espace Entretien & Révision.
+        C'est validé ! Retrouvez ces versets demain dans votre « Réveil de la Veille » et pendant 30 jours dans votre « Liaison » pour un ancrage parfait.
       </p>
 
       {/* Time recap */}
