@@ -163,12 +163,12 @@ export default function DhikrPage() {
                       boxShadow: '0 2px 12px -2px rgba(0,0,0,0.08)',
                     }}
                     onClick={() => {
-                      if (card.enabled || isAdmin) setActiveCategory(card.id);
+                      if (card.enabled || hasFullAccess) setActiveCategory(card.id);
                     }}
-                    whileTap={card.enabled || isAdmin ? { scale: 0.96 } : {}}
+                    whileTap={card.enabled || hasFullAccess ? { scale: 0.96 } : {}}
                   >
                     {/* Badge Bientôt disponible — only for disabled cards */}
-                    {!card.enabled && !isAdmin && (
+                    {!card.enabled && !hasFullAccess && (
                       <span
                         className="absolute top-2 right-2 text-[9px] font-medium px-2 py-0.5 rounded-full backdrop-blur-sm"
                         style={{

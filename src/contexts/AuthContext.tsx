@@ -167,6 +167,7 @@ export function useAuth() {
       session: null,
       loading: true,
       isAdmin: false,
+      hasFullAccess: false,
       signUp: async () => ({ error: new Error('Auth not initialized') }),
       signIn: async () => ({ error: new Error('Auth not initialized') }),
       signOut: async () => {},
