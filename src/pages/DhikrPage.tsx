@@ -5,6 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Sunrise, Moon, BookOpen, Heart, ChevronDown, MapPin, Landmark, Sparkles, ShieldPlus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import DhikrSession from '@/components/dhikr/DhikrSession';
+import FavoriteDouasSection from '@/components/favoris/FavoriteDouasSection';
 import { MORNING_ADHKAR, EVENING_ADHKAR, POST_PRAYER_ADHKAR, ANYTIME_ADHKAR, SUJUD_TILAWAH_ADHKAR, OMRA_DUAS, ISTIKHARAH_DUAS, LOUANGES_ISTIGHFAR, CHIFA_SERENITE, HAJJ_DUAS } from '@/lib/adhkarData';
 import type { DhikrItem } from '@/components/dhikr/DhikrCounter';
 
@@ -140,6 +141,8 @@ export default function DhikrPage() {
             transition={{ duration: 0.25 }}
             className="space-y-6"
           >
+            <FavoriteDouasSection />
+
             <motion.div
               className="grid grid-cols-2 gap-4"
               variants={containerVariants}
