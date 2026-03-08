@@ -265,7 +265,7 @@ export default function MurjaPage() {
           >
             Muraja'a
           </h1>
-          <p className="text-xs" style={{ color: 'rgba(28,36,33,0.6)' }}>
+          <p className="text-xs font-medium" style={{ color: 'rgba(28,36,33,0.75)' }}>
             Consolide ta mémorisation — reset à minuit
           </p>
         </div>
@@ -284,10 +284,10 @@ export default function MurjaPage() {
             }}
           >
             <RotateCcw className="h-10 w-10 mx-auto mb-4" style={{ color: '#D4AF37' }} />
-            <p className="text-base leading-relaxed" style={{ color: 'rgba(253,251,247,0.85)' }}>
+            <p className="text-base font-medium leading-relaxed" style={{ color: 'rgba(253,251,247,0.9)' }}>
               Tu n'as pas encore de versets mémorisés.
             </p>
-            <p className="text-sm mt-2" style={{ color: 'rgba(253,251,247,0.5)' }}>
+            <p className="text-sm font-medium mt-2" style={{ color: 'rgba(253,251,247,0.7)' }}>
               Commence par le module Hifz pour ancrer tes premiers versets !
             </p>
           </div>
@@ -300,7 +300,7 @@ export default function MurjaPage() {
             {totalBlocks > 0 && (
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-medium" style={{ color: '#065F46' }}>
+                   <span className="font-bold" style={{ color: '#065F46' }}>
                     Progression du jour
                   </span>
                   <span className="font-bold" style={{ color: '#D4AF37' }}>
@@ -321,19 +321,19 @@ export default function MurjaPage() {
             {/* Section Ar-Rabt */}
             <div className="space-y-3">
               <div className="flex items-center gap-2">
-                <h2
-                  className="text-base font-semibold"
-                  style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#1C2421' }}
-                >
-                  Ar-Rabt — Liaison du jour
-                </h2>
-                <span className="text-[10px] px-2 py-0.5 rounded-full" style={{ background: '#F0F7F4', color: '#065F46' }}>
-                  {rabtVerses.length}
-                </span>
+                 <h2
+                   className="text-base font-bold"
+                   style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#1C2421' }}
+                 >
+                   Ar-Rabt — Liaison du jour
+                 </h2>
+                 <span className="text-[10px] font-medium px-2 py-0.5 rounded-full" style={{ background: '#F0F7F4', color: '#065F46' }}>
+                   {rabtVerses.length}
+                 </span>
               </div>
-              <p className="text-[11px] -mt-1" style={{ color: 'rgba(28,36,33,0.5)' }}>
-                Acquis récents (30 derniers jours) — révision quotidienne sans plafond
-              </p>
+               <p className="text-[11px] font-medium -mt-1" style={{ color: 'rgba(28,36,33,0.65)' }}>
+                 Acquis récents (30 derniers jours) — révision quotidienne sans plafond
+               </p>
               <MurajaChecklist
                 items={rabtVerses}
                 section="rabt"
@@ -345,19 +345,19 @@ export default function MurjaPage() {
             {/* Section Le Tour */}
             <div className="space-y-3">
               <div className="flex items-center gap-2">
-                <h2
-                  className="text-base font-semibold"
-                  style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#1C2421' }}
-                >
-                  Le Tour — Révision SM-2
-                </h2>
-                <span className="text-[10px] px-2 py-0.5 rounded-full" style={{ background: '#F0F7F4', color: '#065F46' }}>
-                  {tourVerses.length}
-                </span>
+                 <h2
+                   className="text-base font-bold"
+                   style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#1C2421' }}
+                 >
+                   Le Tour — Révision SM-2
+                 </h2>
+                 <span className="text-[10px] font-medium px-2 py-0.5 rounded-full" style={{ background: '#F0F7F4', color: '#065F46' }}>
+                   {tourVerses.length}
+                 </span>
               </div>
-              <p className="text-[11px] -mt-1" style={{ color: 'rgba(28,36,33,0.5)' }}>
-                Anciens acquis — auto-évaluation après chaque bloc
-              </p>
+               <p className="text-[11px] font-medium -mt-1" style={{ color: 'rgba(28,36,33,0.65)' }}>
+                 Anciens acquis — auto-évaluation après chaque bloc
+               </p>
               <MurajaChecklist
                 items={tourVerses}
                 section="tour"
@@ -381,9 +381,9 @@ export default function MurjaPage() {
               <div className="flex items-center gap-2">
                 <BookOpen className="h-4 w-4" style={{ color: '#D4AF37' }} />
                 <h3
-                  className="text-sm font-semibold"
-                  style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#065F46' }}
-                >
+                   className="text-sm font-bold"
+                   style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#065F46' }}
+                 >
                   Mon trésor — {totalVersesCount} verset{totalVersesCount > 1 ? 's' : ''}
                 </h3>
               </div>
@@ -394,10 +394,10 @@ export default function MurjaPage() {
                     className="flex items-center justify-between px-3 py-2 rounded-lg"
                     style={{ background: '#F0F7F4' }}
                   >
-                    <span className="text-xs font-medium" style={{ color: '#065F46' }}>
-                      {s.name}
-                    </span>
-                    <div className="flex items-center gap-2 text-[10px]" style={{ color: 'rgba(28,36,33,0.5)' }}>
+                     <span className="text-xs font-bold" style={{ color: '#065F46' }}>
+                       {s.name}
+                     </span>
+                     <div className="flex items-center gap-2 text-[10px] font-medium" style={{ color: 'rgba(28,36,33,0.65)' }}>
                       <span>{s.versesCount} v.</span>
                       <span className="flex items-center gap-0.5">
                         <CalendarDays className="h-2.5 w-2.5" />

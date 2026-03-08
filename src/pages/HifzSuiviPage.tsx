@@ -48,11 +48,11 @@ function CircularGauge({ value, max, label }: { value: number; max: number; labe
         <text x="48" y="44" textAnchor="middle" fill="#065F46" fontSize="18" fontWeight="bold" fontFamily="Inter, sans-serif">
           {value}
         </text>
-        <text x="48" y="60" textAnchor="middle" fill="rgba(6,95,70,0.5)" fontSize="9">
+        <text x="48" y="60" textAnchor="middle" fill="rgba(6,95,70,0.7)" fontSize="9" fontWeight="600">
           / {max}
         </text>
       </svg>
-      <span className="text-xs" style={{ color: 'rgba(28,36,33,0.5)' }}>{label}</span>
+      <span className="text-xs font-medium" style={{ color: 'rgba(28,36,33,0.65)' }}>{label}</span>
     </div>
   );
 }
@@ -204,7 +204,7 @@ export default function HifzSuiviPage() {
           <h1 className="text-xl font-bold" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#065F46' }}>
             {greeting} 🌙
           </h1>
-          <p className="text-sm" style={{ color: 'rgba(28,36,33,0.5)' }}>{motivation}</p>
+          <p className="text-sm font-medium" style={{ color: 'rgba(28,36,33,0.65)' }}>{motivation}</p>
         </motion.div>
 
         {loading ? (
@@ -247,9 +247,9 @@ export default function HifzSuiviPage() {
                     <span className="text-2xl font-bold" style={{ color: '#D4AF37' }}>
                       {goal.goal_unit === 'pages' ? periodProgress.toFixed(1) : periodProgress}
                     </span>
-                    <span className="text-sm" style={{ color: 'rgba(28,36,33,0.45)' }}>
-                      / {goalLabel} {periodLabel}
-                    </span>
+                     <span className="text-sm font-medium" style={{ color: 'rgba(28,36,33,0.6)' }}>
+                       / {goalLabel} {periodLabel}
+                     </span>
                   </div>
                   <div className="w-full h-2.5 rounded-full overflow-hidden" style={{ background: '#E6F0ED' }}>
                     <motion.div
@@ -281,7 +281,7 @@ export default function HifzSuiviPage() {
                 }}
               >
                 <Target className="h-6 w-6 mx-auto mb-2" style={{ color: '#D4AF37' }} />
-                <p className="text-sm" style={{ color: 'rgba(28,36,33,0.6)' }}>Définis ton objectif de mémorisation</p>
+                <p className="text-sm font-medium" style={{ color: 'rgba(28,36,33,0.75)' }}>Définis ton objectif de mémorisation</p>
               </motion.button>
             )}
 
@@ -311,7 +311,7 @@ export default function HifzSuiviPage() {
                         </div>
                         <div>
                           <h3 className="text-sm font-bold" style={{ color: '#1C2421' }}>Programme du jour</h3>
-                          <p className="text-[10px] uppercase tracking-wider" style={{ color: 'rgba(28,36,33,0.4)' }}>Nouvelle mémorisation</p>
+                          <p className="text-[10px] font-medium uppercase tracking-wider" style={{ color: 'rgba(28,36,33,0.6)' }}>Nouvelle mémorisation</p>
                         </div>
                       </div>
                       <div
@@ -321,9 +321,9 @@ export default function HifzSuiviPage() {
                         <p className="text-sm font-semibold" style={{ color: '#065F46' }}>
                           {nextPoint.surahName}
                         </p>
-                        <p className="text-xs" style={{ color: 'rgba(28,36,33,0.45)' }}>
-                          Versets {nextPoint.startVerse} → {nextPoint.endVerse}
-                        </p>
+                         <p className="text-xs font-medium" style={{ color: 'rgba(28,36,33,0.6)' }}>
+                           Versets {nextPoint.startVerse} → {nextPoint.endVerse}
+                         </p>
                       </div>
                     </div>
                   </Link>
@@ -354,7 +354,7 @@ export default function HifzSuiviPage() {
                       </div>
                       <div>
                         <h3 className="text-sm font-bold" style={{ color: '#1C2421' }}>Révision du jour</h3>
-                        <p className="text-[10px] uppercase tracking-wider" style={{ color: 'rgba(28,36,33,0.4)' }}>Acquis à consolider</p>
+                        <p className="text-[10px] font-medium uppercase tracking-wider" style={{ color: 'rgba(28,36,33,0.6)' }}>Acquis à consolider</p>
                       </div>
                     </div>
                     {todayRevisions.length > 0 ? (
@@ -367,13 +367,13 @@ export default function HifzSuiviPage() {
                               className="rounded-lg px-3 py-2 flex items-center justify-between"
                               style={{ background: '#F0F7F4', border: '1px solid #E6F0ED' }}
                             >
-                              <span className="text-xs" style={{ color: '#1C2421' }}>{surah?.name || `Sourate ${rev.surah_number}`}</span>
-                              <span className="text-[10px]" style={{ color: 'rgba(28,36,33,0.4)' }}>v.{rev.verse_start}-{rev.verse_end}</span>
+                               <span className="text-xs font-semibold" style={{ color: '#1C2421' }}>{surah?.name || `Sourate ${rev.surah_number}`}</span>
+                               <span className="text-[10px] font-medium" style={{ color: 'rgba(28,36,33,0.6)' }}>v.{rev.verse_start}-{rev.verse_end}</span>
                             </div>
                           );
                         })}
                         {todayRevisions.length > 4 && (
-                          <p className="text-[10px] text-center" style={{ color: 'rgba(28,36,33,0.4)' }}>+{todayRevisions.length - 4} autres portions</p>
+                          <p className="text-[10px] font-medium text-center" style={{ color: 'rgba(28,36,33,0.6)' }}>+{todayRevisions.length - 4} autres portions</p>
                         )}
                       </div>
                     ) : (
@@ -381,7 +381,7 @@ export default function HifzSuiviPage() {
                         className="rounded-xl px-4 py-3 text-center"
                         style={{ background: '#F0F7F4' }}
                       >
-                        <p className="text-xs" style={{ color: 'rgba(28,36,33,0.45)' }}>Aucune révision prévue aujourd'hui ✨</p>
+                        <p className="text-xs font-medium" style={{ color: 'rgba(28,36,33,0.6)' }}>Aucune révision prévue aujourd'hui ✨</p>
                       </div>
                     )}
                   </div>
@@ -398,8 +398,8 @@ export default function HifzSuiviPage() {
               >
                 <Flame className="h-5 w-5" style={{ color: '#D4AF37' }} />
                 <span className="text-2xl font-bold" style={{ color: '#065F46' }}>{streak.current}</span>
-                <span className="text-[10px] text-center leading-tight" style={{ color: 'rgba(28,36,33,0.5)' }}>Jours consécutifs</span>
-                <span className="text-[9px]" style={{ color: 'rgba(28,36,33,0.35)' }}>Record : {streak.longest}</span>
+                 <span className="text-[10px] font-medium text-center leading-tight" style={{ color: 'rgba(28,36,33,0.65)' }}>Jours consécutifs</span>
+                 <span className="text-[9px] font-medium" style={{ color: 'rgba(28,36,33,0.55)' }}>Record : {streak.longest}</span>
               </motion.div>
 
               <motion.div
@@ -417,7 +417,7 @@ export default function HifzSuiviPage() {
               >
                 <RotateCcw className="h-5 w-5" style={{ color: '#D4AF37' }} />
                 <span className="text-2xl font-bold" style={{ color: '#065F46' }}>{streak.tours}</span>
-                <span className="text-[10px] text-center leading-tight" style={{ color: 'rgba(28,36,33,0.5)' }}>Cycles terminés</span>
+                <span className="text-[10px] font-medium text-center leading-tight" style={{ color: 'rgba(28,36,33,0.65)' }}>Cycles terminés</span>
               </motion.div>
             </div>
 
@@ -427,12 +427,12 @@ export default function HifzSuiviPage() {
               className="rounded-2xl p-5"
               style={{ background: '#FFFFFF', border: '1px solid #E6F0ED', boxShadow: '0 4px 20px rgba(6,95,70,0.06)' }}
             >
-              <h3 className="text-sm font-semibold mb-4" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#065F46' }}>
+              <h3 className="text-sm font-bold mb-4" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#065F46' }}>
                 Activité des 7 derniers jours
               </h3>
               <ResponsiveContainer width="100%" height={140}>
                 <BarChart data={weeklyData} barCategoryGap="30%">
-                  <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: 'rgba(28,36,33,0.5)', fontSize: 11 }} />
+                  <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: 'rgba(28,36,33,0.65)', fontSize: 11, fontWeight: 500 }} />
                   <YAxis hide allowDecimals={false} />
                   <Bar dataKey="count" radius={[6, 6, 0, 0]} maxBarSize={28}>
                     {weeklyData.map((entry, i) => (
@@ -450,9 +450,9 @@ export default function HifzSuiviPage() {
                 style={{ background: 'linear-gradient(135deg, #065F46, #044E3B)', border: '1px solid #D4AF37' }}
               >
                 <BookOpenCheck className="h-8 w-8 mx-auto mb-3" style={{ color: '#D4AF37' }} />
-                <p className="text-sm" style={{ color: 'rgba(253,251,247,0.85)' }}>
-                  Ton tableau de bord se remplira dès ta première session de Hifz in shaa Allah !
-                </p>
+                 <p className="text-sm font-medium" style={{ color: 'rgba(253,251,247,0.95)' }}>
+                   Ton tableau de bord se remplira dès ta première session de Hifz in shaa Allah !
+                 </p>
               </div>
             )}
           </>

@@ -68,7 +68,7 @@ export default function MurajaChecklist({
         }}
       >
         <BookOpen className="h-6 w-6 mx-auto mb-2" style={{ color: '#D4AF37' }} />
-        <p className="text-sm" style={{ color: 'rgba(28,36,33,0.5)' }}>
+        <p className="text-sm font-medium" style={{ color: 'rgba(28,36,33,0.65)' }}>
           {section === 'rabt'
             ? 'Aucun acquis récent (< 30 jours)'
             : "Aucune révision planifiée aujourd'hui"}
@@ -129,12 +129,12 @@ export default function MurajaChecklist({
                   className="text-sm truncate"
                   style={{
                     color: isChecked ? '#065F46' : '#1C2421',
-                    fontWeight: isChecked ? 700 : 600,
+                    fontWeight: isChecked ? 800 : 700,
                   }}
                 >
                   {getSurahName(item.surah_number)}
                 </p>
-                <p className="text-xs" style={{ color: 'rgba(28,36,33,0.45)' }}>
+                <p className="text-xs font-medium" style={{ color: 'rgba(28,36,33,0.6)' }}>
                   v. {item.verse_start} → {item.verse_end}
                   {section === 'tour' && item.sm2_interval != null && (
                     <span className="ml-2 opacity-60">· {item.sm2_interval}j</span>
@@ -157,7 +157,7 @@ export default function MurajaChecklist({
                       <button
                         key={key}
                         onClick={() => handleRate(quality, key)}
-                        className="flex-1 flex items-center justify-center gap-1.5 rounded-lg px-2 py-2 text-xs font-medium transition-all"
+                        className="flex-1 flex items-center justify-center gap-1.5 rounded-lg px-2 py-2 text-xs font-bold transition-all"
                         style={{
                           background: `${color}12`,
                           color,
