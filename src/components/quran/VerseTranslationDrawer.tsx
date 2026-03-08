@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { getAyahAudioUrl } from '@/hooks/useQuranAudio';
 import { X, ChevronRight, ChevronLeft, Loader2, Play, Pause, Heart } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -57,12 +58,22 @@ export default function VerseTranslationDrawer({ verseKey, allVerses, onClose, o
 
     setAudioLoading(true);
     try {
-      const [surah, ayah] = verseKey.split(':');
-      const res = await fetch(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/${reciter}`);
-      const json = await res.json();
-      if (json.code !== 200) throw new Error('API error');
+      const [surah, ayah] = verseKey.split(':').map(Number);
 
-      const audioUrl = json.data.audio;
+      // Try everyayah direct URL first
+      const directUrl = getAyahAudioUrl(reciter, surah, ayah);
+      let audioUrl: string;
+
+      if (directUrl) {
+        audioUrl = directUrl;
+      } else {
+        // Fallback: alquran.cloud API
+        const res = await fetch(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/${reciter}`);
+        const json = await res.json();
+        if (json.code !== 200) throw new Error('API error');
+        audioUrl = json.data.audio;
+      }
+
       const audio = new Audio(audioUrl);
       audioRef.current = audio;
 

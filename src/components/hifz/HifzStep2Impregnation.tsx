@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Headphones, Check, Play, Pause, RotateCcw, ZoomIn, ZoomOut } from 'lucide-react';
 import HifzStepWrapper from './HifzStepWrapper';
-import { RECITERS } from '@/hooks/useQuranAudio';
+import { RECITERS, getAyahAudioUrl } from '@/hooks/useQuranAudio';
 import { SURAHS } from '@/lib/surahData';
 
 interface Props {
@@ -50,6 +50,22 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
 
   const fetchAudio = useCallback(async () => {
     try {
+      // Check if this reciter uses everyayah (direct URLs)
+      const testUrl = getAyahAudioUrl(reciter, surahNumber, startVerse);
+      if (testUrl) {
+        // Build direct URLs for each ayah
+        const ayahs = [];
+        for (let v = startVerse; v <= endVerse; v++) {
+          ayahs.push({
+            audio: getAyahAudioUrl(reciter, surahNumber, v)!,
+            numberInSurah: v,
+          });
+        }
+        ayahsRef.current = ayahs;
+        return;
+      }
+
+      // Fallback: alquran.cloud API
       const res = await fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}/${reciter}`);
       const data = await res.json();
       if (data.code === 200) {

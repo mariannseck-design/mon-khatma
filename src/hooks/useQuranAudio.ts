@@ -1,23 +1,45 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { getPageAyahs } from '@/lib/quranData';
 
-export const RECITERS = [
-  { id: 'ar.alafasy', name: 'Mishary Al-Afasy' },
-  { id: 'ar.husary', name: 'Al-Husary' },
-  { id: 'ar.abdulsamad', name: 'Abdul Samad' },
-  { id: 'ar.minshawi', name: 'Al-Minshawi' },
-  { id: 'ar.mahermuaiqly', name: 'Maher Al-Muaiqly' },
-  { id: 'ar.abdurrahmaansudais', name: 'Al-Sudais' },
-  { id: 'ar.hudhaify', name: 'Al-Huthaify' },
-  { id: 'ar.ibrahimakhbar', name: 'Ibrahim Al-Akhdar' },
-  { id: 'ar.saoodshuraym', name: 'Saoud Al-Shuraym' },
-  { id: 'ar.shaatree', name: 'Abu Bakr Al-Shatri' },
-  { id: 'ar.hanirifai', name: 'Hani Ar-Rifai' },
-  { id: 'ar.muhammadayyoub', name: 'Muhammad Ayyoub' },
+interface ReciterEntry {
+  id: string;
+  name: string;
+  source: 'alquran' | 'everyayah';
+  folder?: string; // everyayah folder name
+}
+
+export const RECITERS: readonly ReciterEntry[] = [
+  { id: 'ar.alafasy', name: 'Mishary Al-Afasy', source: 'alquran' },
+  { id: 'ea.ghamidi', name: 'Saad Al-Ghamidi', source: 'everyayah', folder: 'Sa3d_Al-Ghamidi/128kbps' },
+  { id: 'ar.husary', name: 'Al-Husary', source: 'alquran' },
+  { id: 'ar.abdulsamad', name: 'Abdul Samad', source: 'alquran' },
+  { id: 'ar.minshawi', name: 'Al-Minshawi', source: 'alquran' },
+  { id: 'ar.mahermuaiqly', name: 'Maher Al-Muaiqly', source: 'alquran' },
+  { id: 'ar.abdurrahmaansudais', name: 'Al-Sudais', source: 'alquran' },
+  { id: 'ar.hudhaify', name: 'Al-Huthaify', source: 'alquran' },
+  { id: 'ar.ibrahimakhbar', name: 'Ibrahim Al-Akhdar', source: 'alquran' },
+  { id: 'ar.saoodshuraym', name: 'Saoud Al-Shuraym', source: 'alquran' },
+  { id: 'ar.shaatree', name: 'Abu Bakr Al-Shatri', source: 'alquran' },
+  { id: 'ar.hanirifai', name: 'Hani Ar-Rifai', source: 'alquran' },
+  { id: 'ar.muhammadayyoub', name: 'Muhammad Ayyoub', source: 'alquran' },
 ] as const;
+
+function getReciterConfig(id: string): ReciterEntry {
+  return RECITERS.find(r => r.id === id) || RECITERS[0];
+}
+
+function pad3(n: number): string {
+  return n.toString().padStart(3, '0');
+}
+
+function buildEveryayahUrl(folder: string, surah: number, ayah: number): string {
+  return `https://everyayah.com/data/${folder}/${pad3(surah)}${pad3(ayah)}.mp3`;
+}
 
 interface AyahAudio {
   number: number;
   numberInSurah: number;
+  surahNumber: number;
   audio: string;
 }
 
@@ -34,7 +56,6 @@ export function useQuranAudio(page: number, onPageFinished?: () => void, startVe
   const indexRef = useRef(0);
   const wasPlayingRef = useRef(false);
 
-  // Save reciter preference
   useEffect(() => {
     localStorage.setItem('quran_reciter', reciter);
   }, [reciter]);
@@ -75,7 +96,6 @@ export function useQuranAudio(page: number, onPageFinished?: () => void, startVe
     };
 
     audio.onerror = () => {
-      // Skip to next on error
       playAyah(index + 1);
     };
 
@@ -87,26 +107,53 @@ export function useQuranAudio(page: number, onPageFinished?: () => void, startVe
   const fetchAndPlay = useCallback(async (targetPage: number, targetReciter: string) => {
     setLoading(true);
     try {
-      const res = await fetch(`https://api.alquran.cloud/v1/page/${targetPage}/${targetReciter}`);
-      const data = await res.json();
-      if (data.code === 200) {
-        let ayahs = data.data.ayahs.map((a: any) => ({
+      const config = getReciterConfig(targetReciter);
+
+      if (config.source === 'everyayah' && config.folder) {
+        // Use local page data + everyayah.com direct URLs
+        const localAyahs = await getPageAyahs(targetPage);
+        let ayahs: AyahAudio[] = localAyahs.map(a => ({
           number: a.number,
           numberInSurah: a.numberInSurah,
-          audio: a.audio,
+          surahNumber: a.surah.number,
+          audio: buildEveryayahUrl(config.folder!, a.surah.number, a.numberInSurah),
         }));
-        // Filter by verse range if specified
+
         if (startVerse || endVerse) {
-          ayahs = ayahs.filter((a: AyahAudio) => {
+          ayahs = ayahs.filter(a => {
             if (startVerse && a.numberInSurah < startVerse) return false;
             if (endVerse && a.numberInSurah > endVerse) return false;
             return true;
           });
         }
+
         ayahsRef.current = ayahs;
         indexRef.current = 0;
         setIsPlaying(true);
         playAyah(0);
+      } else {
+        // Use alquran.cloud API
+        const res = await fetch(`https://api.alquran.cloud/v1/page/${targetPage}/${targetReciter}`);
+        const data = await res.json();
+        if (data.code === 200) {
+          let ayahs: AyahAudio[] = data.data.ayahs.map((a: any) => ({
+            number: a.number,
+            numberInSurah: a.numberInSurah,
+            surahNumber: a.surah?.number || 0,
+            audio: a.audio,
+          }));
+          if (startVerse || endVerse) {
+            ayahs = ayahs.filter(a => {
+              if (startVerse && a.numberInSurah < startVerse) return false;
+              if (endVerse && a.numberInSurah > endVerse) return false;
+              return true;
+            });
+          }
+          ayahsRef.current = ayahs;
+          indexRef.current = 0;
+          setIsPlaying(true);
+          playAyah(0);
+        }
       }
     } catch {
       setIsPlaying(false);
@@ -144,7 +191,7 @@ export function useQuranAudio(page: number, onPageFinished?: () => void, startVe
     wasPlayingRef.current = isPlaying;
     stopAudio();
     ayahsRef.current = [];
-  }, [page]); // intentionally exclude stopAudio/isPlaying
+  }, [page]);
 
   // Auto-resume on page change if was playing
   useEffect(() => {
@@ -152,7 +199,7 @@ export function useQuranAudio(page: number, onPageFinished?: () => void, startVe
       fetchAndPlay(page, reciter);
       wasPlayingRef.current = false;
     }
-  }, [page]); // intentionally minimal deps
+  }, [page]);
 
   // Stop on reciter change
   useEffect(() => {
@@ -162,7 +209,7 @@ export function useQuranAudio(page: number, onPageFinished?: () => void, startVe
     if (wasPlaying) {
       fetchAndPlay(page, reciter);
     }
-  }, [reciter]); // intentionally minimal deps
+  }, [reciter]);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -183,4 +230,17 @@ export function useQuranAudio(page: number, onPageFinished?: () => void, startVe
     togglePlay,
     stop: stopAudio,
   };
+}
+
+/**
+ * Build audio URL for a single ayah given a reciter ID.
+ * Used by components that fetch audio independently (e.g. HifzStep2).
+ */
+export function getAyahAudioUrl(reciterId: string, surahNumber: number, ayahNumber: number): string | null {
+  const config = getReciterConfig(reciterId);
+  if (config.source === 'everyayah' && config.folder) {
+    return buildEveryayahUrl(config.folder, surahNumber, ayahNumber);
+  }
+  // For alquran.cloud, caller must use the API
+  return null;
 }
