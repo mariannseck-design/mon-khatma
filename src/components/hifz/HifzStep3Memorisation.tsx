@@ -17,6 +17,7 @@ interface Props {
   repetitionLevel: number;
   onNext: () => void;
   onBack: () => void;
+  onPause?: () => void;
 }
 
 const FONT_FAMILY = "'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
@@ -101,7 +102,7 @@ function getPhaseInfo(ancrage: number, target: number) {
   return { phase: 4, emoji: '🧠', label: 'Récitez de mémoire — Ancrage d\'acier', showText: false, audioProminent: false, audioAvailable: false, color: '#d4af37' };
 }
 
-export default function HifzStep3Memorisation({ surahNumber, startVerse, endVerse, repetitionLevel, onNext, onBack }: Props) {
+export default function HifzStep3Memorisation({ surahNumber, startVerse, endVerse, repetitionLevel, onNext, onBack, onPause }: Props) {
   const tikrarTarget = repetitionLevel || 40;
   const storageKey = getStorageKey(surahNumber, startVerse, endVerse);
 
@@ -293,7 +294,7 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
   }, [ayahs, surahNumber]);
 
   return (
-    <HifzStepWrapper stepNumber={3} stepTitle="Tikrar" onBack={onBack}>
+    <HifzStepWrapper stepNumber={3} stepTitle="Tikrar" onBack={onBack} onPause={onPause}>
       <div className="text-center space-y-4">
         {/* Icon */}
         <div

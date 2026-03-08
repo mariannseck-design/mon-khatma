@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useDevMode } from '@/hooks/useDevMode';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { useAuth } from '@/contexts/AuthContext';
@@ -12,6 +13,7 @@ import HifzStep2Impregnation from '@/components/hifz/HifzStep2Impregnation';
 import HifzStep3Memorisation from '@/components/hifz/HifzStep3Memorisation';
 import HifzStep4Validation from '@/components/hifz/HifzStep4Validation';
 import HifzSuccess from '@/components/hifz/HifzSuccess';
+import HifzBreathingPause from '@/components/hifz/HifzBreathingPause';
 import DevSkipButton from '@/components/hifz/DevSkipButton';
 import { SURAHS } from '@/lib/surahData';
 import { motion } from 'framer-motion';
@@ -63,6 +65,7 @@ const STEP_NAMES = [
 
 export default function HifzPage() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [step, setStep] = useState<number>(-1);
   const [session, setSession] = useState<HifzSession | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -71,6 +74,7 @@ export default function HifzPage() {
   const [showDiagnostic, setShowDiagnostic] = useState(false);
   const [restoringSession, setRestoringSession] = useState(true);
   const [showResumePrompt, setShowResumePrompt] = useState(false);
+  const [showBreathingPause, setShowBreathingPause] = useState(false);
   const [pendingResume, setPendingResume] = useState<{ session: HifzSession; step: number; sessionId: string | null } | null>(null);
   const { isDevMode } = useDevMode();
   const stepStartRef = useRef<number>(Date.now());
@@ -207,6 +211,28 @@ export default function HifzPage() {
       }).eq('id', sessionId);
     }
   }, [sessionId, user, step]);
+
+  const handlePause = useCallback(async () => {
+    if (session && step >= 0 && step <= 4) {
+      saveLocalSession(session, step, sessionId);
+      if (sessionId && user) {
+        await supabase.from('hifz_sessions').update({
+          current_step: step,
+          step_status: { ...stepTimesRef.current, paused: true },
+        }).eq('id', sessionId);
+      }
+    }
+    navigate('/accueil');
+  }, [session, step, sessionId, user, navigate]);
+
+  const handleStep3Complete = useCallback(() => {
+    setShowBreathingPause(true);
+  }, []);
+
+  const handleBreathingComplete = useCallback(() => {
+    setShowBreathingPause(false);
+    updateStep(4);
+  }, [updateStep]);
 
   // Complete session after step 4 (no more steps 5-6 in this tunnel)
   const completeSession = useCallback(async () => {
@@ -398,14 +424,15 @@ export default function HifzPage() {
     <AppLayout title="Espace Hifz" hideNav>
       <div className="min-h-[80vh] rounded-[2rem] p-6 mx-[-4px]" style={GRADIENT_STYLE}>
         {devModeBadge}
-        {step === 0 && <HifzStep0Intention surahNumber={session.surahNumber} startVerse={session.startVerse} endVerse={session.endVerse} onNext={() => updateStep(1)} onBack={() => setStep(-1)} />}
-        {step === 1 && <HifzStep1Revision onNext={() => updateStep(2)} onBack={() => setStep(0)} />}
-        {step === 2 && <HifzStep2Impregnation surahNumber={session.surahNumber} startVerse={session.startVerse} endVerse={session.endVerse} onNext={() => updateStep(3)} onBack={() => setStep(1)} />}
-        {step === 3 && <HifzStep3Memorisation surahNumber={session.surahNumber} startVerse={session.startVerse} endVerse={session.endVerse} repetitionLevel={session.repetitionLevel} onNext={() => updateStep(4)} onBack={() => setStep(2)} />}
-        {step === 4 && <HifzStep4Validation surahNumber={session.surahNumber} startVerse={session.startVerse} endVerse={session.endVerse} onNext={completeSession} onBack={() => setStep(3)} />}
+        {showBreathingPause && <HifzBreathingPause onComplete={handleBreathingComplete} />}
+        {!showBreathingPause && step === 0 && <HifzStep0Intention surahNumber={session.surahNumber} startVerse={session.startVerse} endVerse={session.endVerse} onNext={() => updateStep(1)} onBack={() => setStep(-1)} onPause={handlePause} />}
+        {!showBreathingPause && step === 1 && <HifzStep1Revision onNext={() => updateStep(2)} onBack={() => setStep(0)} onPause={handlePause} />}
+        {!showBreathingPause && step === 2 && <HifzStep2Impregnation surahNumber={session.surahNumber} startVerse={session.startVerse} endVerse={session.endVerse} onNext={() => updateStep(3)} onBack={() => setStep(1)} onPause={handlePause} />}
+        {!showBreathingPause && step === 3 && <HifzStep3Memorisation surahNumber={session.surahNumber} startVerse={session.startVerse} endVerse={session.endVerse} repetitionLevel={session.repetitionLevel} onNext={handleStep3Complete} onBack={() => setStep(2)} onPause={handlePause} />}
+        {!showBreathingPause && step === 4 && <HifzStep4Validation surahNumber={session.surahNumber} startVerse={session.startVerse} endVerse={session.endVerse} onNext={completeSession} onBack={() => setStep(3)} onPause={handlePause} />}
         {step === 5 && <HifzSuccess stepTimes={stepTimesRef.current} />}
       </div>
-      {step >= 0 && step <= 4 && (
+      {step >= 0 && step <= 4 && !showBreathingPause && (
         <DevSkipButton isDevMode={isDevMode} onSkip={() => {
           if (step < 4) { updateStep(step + 1); }
           else { completeSession(); }

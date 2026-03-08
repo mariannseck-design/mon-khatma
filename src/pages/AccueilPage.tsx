@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import type { Easing } from 'framer-motion';
-import { BookOpen, Target, Users, Download, Moon, Sun, Sunrise, Share2, BookOpenCheck, RefreshCw, BarChart3, Shield } from 'lucide-react';
+import { BookOpen, Target, Users, Download, Moon, Sun, Sunrise, Share2, BookOpenCheck, RefreshCw, BarChart3, Shield, Play } from 'lucide-react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { SamsungBanner } from '@/components/layout/SamsungBanner';
 import { useAuth } from '@/contexts/AuthContext';
@@ -69,6 +69,9 @@ export default function AccueilPage() {
   const [todayProgress, setTodayProgress] = useState(0);
   const [weeklyStreak, setWeeklyStreak] = useState(0);
   const [readingGoal, setReadingGoal] = useState<{ first_name: string; daily_pages: number } | null>(null);
+  const [activeHifzSession, setActiveHifzSession] = useState<{ surahName: string; stepName: string } | null>(null);
+
+  const STEP_NAMES = ['Intention', 'Réveil', 'Imprégnation', 'Ancrage (Tikrar)', 'Validation'];
 
   useEffect(() => {
     if (user) {
@@ -76,7 +79,49 @@ export default function AccueilPage() {
       fetchProgress();
       fetchReadingGoal();
     }
+    // Check for active hifz session (localStorage first, then DB)
+    detectActiveHifzSession();
   }, [user]);
+
+  const detectActiveHifzSession = async () => {
+    try {
+      const raw = localStorage.getItem('hifz_active_session');
+      if (raw) {
+        const data = JSON.parse(raw);
+        if (data.session && typeof data.step === 'number' && data.step >= 0 && data.step <= 4) {
+          if (Date.now() - (data.ts || 0) < 24 * 60 * 60 * 1000) {
+            const surahData = await import('@/lib/surahData');
+            const surah = surahData.SURAHS.find((s: any) => s.number === data.session.surahNumber);
+            setActiveHifzSession({
+              surahName: surah?.name || `Sourate ${data.session.surahNumber}`,
+              stepName: STEP_NAMES[data.step] || `Étape ${data.step}`,
+            });
+            return;
+          }
+        }
+      }
+      if (user) {
+        const { data: dbSession } = await supabase
+          .from('hifz_sessions')
+          .select('surah_number, current_step')
+          .eq('user_id', user.id)
+          .is('completed_at', null)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        if (dbSession && dbSession.current_step >= 0 && dbSession.current_step <= 4) {
+          const surahData = await import('@/lib/surahData');
+          const surah = surahData.SURAHS.find((s: any) => s.number === dbSession.surah_number);
+          setActiveHifzSession({
+            surahName: surah?.name || `Sourate ${dbSession.surah_number}`,
+            stepName: STEP_NAMES[dbSession.current_step] || `Étape ${dbSession.current_step}`,
+          });
+        }
+      }
+    } catch {
+      // ignore
+    }
+  };
 
   const fetchReadingGoal = async () => {
     if (!user) return;
@@ -318,16 +363,24 @@ export default function AccueilPage() {
                       className="w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0"
                       style={{ background: `${COLORS.gold}22`, border: `1px solid ${COLORS.gold}35` }}
                     >
-                      <BookOpen className="h-8 w-8" style={{ color: COLORS.goldAccent }} />
+                      {activeHifzSession ? (
+                        <Play className="h-8 w-8" style={{ color: COLORS.goldAccent }} />
+                      ) : (
+                        <BookOpen className="h-8 w-8" style={{ color: COLORS.goldAccent }} />
+                      )}
                     </div>
                     <div className="flex-1">
                       <h3
                         className="text-xl font-bold tracking-[0.08em] uppercase"
                         style={{ fontFamily: "'Inter', sans-serif", color: COLORS.goldAccent }}
                       >
-                        Espace Hifz
+                        {activeHifzSession ? '▶️ Continuer ma session' : 'Espace Hifz'}
                       </h3>
-                      <p className="text-white/70 text-sm mt-1">Mémoriser le Noble Coran</p>
+                      <p className="text-white/70 text-sm mt-1">
+                        {activeHifzSession
+                          ? `${activeHifzSession.surahName} — ${activeHifzSession.stepName}`
+                          : 'Mémoriser le Noble Coran'}
+                      </p>
                     </div>
                   </div>
                 </motion.div>

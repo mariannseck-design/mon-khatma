@@ -6,9 +6,10 @@ import HifzStepWrapper from './HifzStepWrapper';
 interface Props {
   onNext: () => void;
   onBack: () => void;
+  onPause?: () => void;
 }
 
-export default function HifzStep1Revision({ onNext, onBack }: Props) {
+export default function HifzStep1Revision({ onNext, onBack, onPause }: Props) {
   const [count, setCount] = useState(0);
   const [timer, setTimer] = useState(300);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -41,7 +42,7 @@ export default function HifzStep1Revision({ onNext, onBack }: Props) {
   const secs = timer % 60;
 
   return (
-    <HifzStepWrapper stepNumber={1} stepTitle="Le Réveil de la Veille" onBack={onBack}>
+    <HifzStepWrapper stepNumber={1} stepTitle="Le Réveil de la Veille" onBack={onBack} onPause={onPause}>
       <div className="text-center space-y-6">
         <button
           onClick={handleReset}
