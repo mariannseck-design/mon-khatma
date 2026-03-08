@@ -32,7 +32,8 @@ interface Props {
   theme?: HifzTheme;
 }
 
-export default function HifzStep4Validation({ surahNumber, startVerse, endVerse, onNext, onBack }: Props) {
+export default function HifzStep4Validation({ surahNumber, startVerse, endVerse, onNext, onBack, theme = 'teal' }: Props) {
+  const tc = getThemeColors(theme);
   const [arabicVerses, setArabicVerses] = useState<{ number: number; text: string }[]>([]);
   const [mushafPage, setMushafPage] = useState<number | null>(null);
   const [attempt, setAttempt] = useState(0); // 0-based
