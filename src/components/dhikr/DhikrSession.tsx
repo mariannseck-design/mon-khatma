@@ -1,19 +1,28 @@
 import { useState, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Check, ChevronLeft, ChevronRight, Minus, Plus } from 'lucide-react';
+import { ArrowLeft, Check, ChevronLeft, ChevronRight, Minus, Plus, Info, ChevronDown } from 'lucide-react';
 import DhikrCounter, { type DhikrItem } from './DhikrCounter';
 
 const ARABIC_SIZES = ['1.3rem', '1.7rem', '2.2rem'];
 const ARABIC_LABELS = ['ا', 'ا', 'ا'];
 const SWIPE_THRESHOLD = 50;
 
+interface IntroSection {
+  title: string;
+  steps: string[];
+  source: string;
+  notes?: string[];
+}
+
 interface DhikrSessionProps {
   title: string;
   items: DhikrItem[];
   onBack: () => void;
+  intro?: IntroSection;
 }
 
-export default function DhikrSession({ title, items, onBack }: DhikrSessionProps) {
+export default function DhikrSession({ title, items, onBack, intro }: DhikrSessionProps) {
+  const [showIntro, setShowIntro] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [sessionComplete, setSessionComplete] = useState(false);
   const [arabicSizeIndex, setArabicSizeIndex] = useState(() => {
@@ -161,6 +170,59 @@ export default function DhikrSession({ title, items, onBack }: DhikrSessionProps
           />
         </div>
       </div>
+
+      {/* Intro method card */}
+      {intro && (
+        <div className="px-4 pb-2">
+          <button
+            onClick={() => setShowIntro(!showIntro)}
+            className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-left transition-all"
+            style={{ background: 'var(--p-track)', color: 'var(--p-text)' }}
+          >
+            <Info className="w-4 h-4 flex-shrink-0" style={{ color: 'var(--p-accent)' }} />
+            <span className="text-xs font-semibold flex-1">{intro.title}</span>
+            <motion.div animate={{ rotate: showIntro ? 180 : 0 }} transition={{ duration: 0.2 }}>
+              <ChevronDown className="w-4 h-4" style={{ color: 'var(--p-text-55)' }} />
+            </motion.div>
+          </button>
+          <AnimatePresence>
+            {showIntro && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="overflow-hidden"
+              >
+                <div className="px-3 pt-3 pb-2 space-y-3">
+                  <ol className="space-y-2">
+                    {intro.steps.map((step, i) => (
+                      <li key={i} className="flex gap-2 text-xs leading-relaxed" style={{ color: 'var(--p-text-80)' }}>
+                        <span className="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold" style={{ background: 'var(--p-accent)', color: 'var(--p-bg)' }}>
+                          {i + 1}
+                        </span>
+                        <span className="pt-0.5">{step}</span>
+                      </li>
+                    ))}
+                  </ol>
+                  {intro.notes && intro.notes.length > 0 && (
+                    <div className="space-y-1 pt-1">
+                      {intro.notes.map((note, i) => (
+                        <p key={i} className="text-[11px] leading-relaxed" style={{ color: 'var(--p-text-55)' }}>
+                          💡 {note}
+                        </p>
+                      ))}
+                    </div>
+                  )}
+                  <p className="text-[10px] pt-1 font-medium" style={{ color: 'var(--p-accent)' }}>
+                    📚 {intro.source}
+                  </p>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      )}
 
       {/* Content */}
       <div className="flex-1 flex flex-col items-center justify-center">
