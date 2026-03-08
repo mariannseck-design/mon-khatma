@@ -6,6 +6,7 @@ import { RECITERS, getAyahAudioUrl } from '@/hooks/useQuranAudio';
 import { SURAHS } from '@/lib/surahData';
 import { getVersesByRange, type LocalAyah } from '@/lib/quranData';
 import { getTajweedAnnotations, TAJWEED_COLORS, type TajweedAnnotation } from '@/lib/tajweedData';
+import { type HifzTheme, getThemeColors } from '@/lib/hifzTheme';
 
 interface Props {
   surahNumber: number;
@@ -13,6 +14,7 @@ interface Props {
   endVerse: number;
   onNext: () => void;
   onBack: () => void;
+  theme?: HifzTheme;
 }
 
 const FONT_FAMILY = "'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
