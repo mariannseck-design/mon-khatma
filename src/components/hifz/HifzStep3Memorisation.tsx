@@ -123,6 +123,7 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const ayahAudiosRef = useRef<{ audio: string }[]>([]);
   const reciter = localStorage.getItem('quran_reciter') || 'ar.alafasy';
+  const [mushafMode, setMushafModeState] = useState<MushafMode>(getMushafMode);
 
   const phaseInfo = getPhaseInfo(ancrage, tikrarTarget);
   const quarters = getPhaseBreaks(tikrarTarget);
