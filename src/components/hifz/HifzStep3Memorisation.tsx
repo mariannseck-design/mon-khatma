@@ -127,7 +127,8 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
   const ayahAudiosRef = useRef<{ audio: string }[]>([]);
   const reciter = localStorage.getItem('quran_reciter') || 'ar.alafasy';
 
-  const phaseInfo = getPhaseInfo(ancrage);
+  const phaseInfo = getPhaseInfo(ancrage, tikrarTarget);
+  const quarters = getQuarters(tikrarTarget);
 
   // Persist display mode & zoom
   useEffect(() => {
