@@ -321,15 +321,15 @@ export default function MurjaPage() {
             {/* Section Ar-Rabt */}
             <div className="space-y-3">
               <div className="flex items-center gap-2">
-                <h2
-                  className="text-base font-semibold"
-                  style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#1C2421' }}
-                >
-                  Ar-Rabt — Liaison du jour
-                </h2>
-                <span className="text-[10px] px-2 py-0.5 rounded-full" style={{ background: '#F0F7F4', color: '#065F46' }}>
-                  {rabtVerses.length}
-                </span>
+                 <h2
+                   className="text-base font-bold"
+                   style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#1C2421' }}
+                 >
+                   Ar-Rabt — Liaison du jour
+                 </h2>
+                 <span className="text-[10px] font-medium px-2 py-0.5 rounded-full" style={{ background: '#F0F7F4', color: '#065F46' }}>
+                   {rabtVerses.length}
+                 </span>
               </div>
               <p className="text-[11px] -mt-1" style={{ color: 'rgba(28,36,33,0.5)' }}>
                 Acquis récents (30 derniers jours) — révision quotidienne sans plafond
