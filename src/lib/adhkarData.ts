@@ -1175,6 +1175,7 @@ export const HAJJ_DUAS: DhikrItem[] = [
   },
   {
     title: "Du'â après le sacrifice",
+    readOnly: true,
     arabic: "بِسْمِ اللَّهِ وَاللَّهُ أَكْبَرُ، اللَّهُمَّ مِنْكَ وَلَكَ، اللَّهُمَّ تَقَبَّلْ مِنِّي",
     phonetic: "Bismi-llâhi wa-llâhu Akbar. Allâhumma minka wa lak. Allâhumma taqabbal minnî.",
     french: "Au nom d'Allah (عز وجل), Allah (عز وجل) est le plus Grand. Ô Allah (عز وجل), cela vient de Toi et c'est pour Toi. Ô Allah (عز وجل), accepte de moi.",
