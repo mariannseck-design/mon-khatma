@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BookOpen, Check, Eye, EyeOff, RotateCcw, Volume2, Star, ChevronDown, ChevronUp } from 'lucide-react';
 import HifzStepWrapper from './HifzStepWrapper';
-import { getVersesByRange, getExactVersePage, type LocalAyah } from '@/lib/quranData';
+import { getVersesByRange, type LocalAyah } from '@/lib/quranData';
 import { SURAHS } from '@/lib/surahData';
 import {
   getTajweedAnnotations,
