@@ -456,7 +456,13 @@ export default function HifzSuiviPage() {
               <ResponsiveContainer width="100%" height={140}>
                 <BarChart data={weeklyData} barCategoryGap="30%">
                   <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: 'var(--p-text-65)', fontSize: 9, fontWeight: 500 }} />
-                  <YAxis hide allowDecimals={false} />
+                  <YAxis axisLine={false} tickLine={false} allowDecimals={false} tick={{ fill: 'var(--p-text-55)', fontSize: 9 }} width={28} />
+                  <Tooltip
+                    cursor={false}
+                    contentStyle={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', borderRadius: 8, fontSize: 12 }}
+                    formatter={(value: number) => [`${value} verset${value > 1 ? 's' : ''}`, '']}
+                    labelStyle={{ color: 'var(--p-text-65)', fontWeight: 600 }}
+                  />
                   <Bar dataKey="count" radius={[6, 6, 0, 0]} maxBarSize={28}>
                     {weeklyData.map((entry, i) => (
                       <Cell key={i} fill={entry.count > 0 ? 'var(--p-accent)' : 'var(--p-track)'} />
