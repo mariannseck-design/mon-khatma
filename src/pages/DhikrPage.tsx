@@ -9,7 +9,7 @@ import type { DhikrItem } from '@/components/dhikr/DhikrCounter';
 /* ── Card config ── */
 const dhikrCards = [
   { id: 'morning', title: 'Zikr du matin', icon: Sunrise, bg: '#e8d5a3', text: '#1b4332', border: '', enabled: true },
-  { id: 'evening', title: 'Zikr du soir', icon: Moon, bg: '#1a1a2e', text: '#ffffff', border: '', enabled: false },
+  { id: 'evening', title: 'Zikr du soir', icon: Moon, bg: '#1a1a2e', text: '#ffffff', border: '', enabled: true },
   { id: 'prayer', title: 'Après la prière', icon: BookOpen, bg: '#c8d5c0', text: '#1b4332', border: '', enabled: false },
   { id: 'anytime', title: 'Toute occasion', icon: Heart, bg: '#f0ebe3', text: '#1b4332', border: '', enabled: false },
   { id: 'sujud', title: 'Sujud Tilawah', icon: ChevronDown, bg: '#c67a5c', text: '#ffffff', border: '', enabled: false },
