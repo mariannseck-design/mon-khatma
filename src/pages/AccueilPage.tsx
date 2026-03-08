@@ -269,7 +269,7 @@ export default function AccueilPage() {
                 style={{ background: `${COLORS.emerald}08`, border: `1px solid ${COLORS.emerald}15` }}
               >
                 <Target className="h-5 w-5" style={{ color: COLORS.goldAccent }} />
-                <span className="text-sm font-semibold" style={{ color: COLORS.emerald }}>Ma Tillawah — Définir mon objectif</span>
+                <span className="text-sm font-semibold" style={{ color: COLORS.emerald }}>Ma Tilawah <span className="font-normal text-xs" style={{ color: COLORS.sage }}>(Définir mon objectif)</span></span>
               </div>
             </Link>
           </div>
@@ -533,7 +533,7 @@ export default function AccueilPage() {
                     </div>
                     <div className="flex-1">
                       <h3 className="text-lg font-bold tracking-[0.06em] uppercase" style={{ fontFamily: "'Inter', sans-serif", color: COLORS.emerald }}>
-                        Ma Tillawah
+                        Ma Tilawah
                       </h3>
                       <p className="text-sm mt-1" style={{ color: COLORS.sage }}>Définir mon objectif de lecture</p>
                     </div>
