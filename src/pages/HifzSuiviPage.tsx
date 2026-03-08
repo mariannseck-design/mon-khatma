@@ -381,7 +381,7 @@ export default function HifzSuiviPage() {
                         className="rounded-xl px-4 py-3 text-center"
                         style={{ background: '#F0F7F4' }}
                       >
-                        <p className="text-xs" style={{ color: 'rgba(28,36,33,0.45)' }}>Aucune révision prévue aujourd'hui ✨</p>
+                        <p className="text-xs font-medium" style={{ color: 'rgba(28,36,33,0.6)' }}>Aucune révision prévue aujourd'hui ✨</p>
                       </div>
                     )}
                   </div>
