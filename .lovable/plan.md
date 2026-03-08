@@ -1,21 +1,20 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Citation du Jour sur le Dashboard
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Nouveau fichier : `src/lib/dailyQuotes.ts`
+Tableau de 20 phrases classées par thème (Constance, Répétition, Ascension, Patience). Fonction `getTodayQuote()` qui sélectionne une phrase basée sur le jour de l'année (`dayOfYear % 20`), garantissant un changement à minuit et un cycle complet.
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Nouveau composant : `src/components/accueil/DailyQuote.tsx`
+Encadré élégant avec :
+- Fond légèrement teinté émeraude (`emerald` à 6% opacité), bordure fine or
+- Icône `Sparkles` couleur or à gauche
+- Texte en italique, couleur or (`#D4AF37`)
+- Animation d'entrée douce via framer-motion
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+### Modification : `src/pages/AccueilPage.tsx`
+Insérer `<DailyQuote />` juste après le greeting (ligne 203), avant l'en-tête fondateur. Import du composant ajouté en haut du fichier.
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
-
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+### Détail des phrases
+Les 20 phrases fournies seront stockées avec leur thème (emoji inclus). Les honorifiques `(عز وجل)` et `(عليه السلام)` seront stylés avec la police Amiri en gras conformément à la charte.
 
