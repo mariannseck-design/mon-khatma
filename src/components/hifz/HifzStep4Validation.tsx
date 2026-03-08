@@ -224,7 +224,7 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
             )}
           </div>
           {!showText && (
-            <p className="text-white/30 text-xs text-center pb-3">Maintiens appuyé pour vérifier</p>
+            <p style={{ color: tc.textFaint }} className="text-xs text-center pb-3">Maintiens appuyé pour vérifier</p>
           )}
         </div>
 
