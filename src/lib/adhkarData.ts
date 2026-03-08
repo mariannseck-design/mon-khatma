@@ -789,6 +789,7 @@ export const OMRA_DUAS: DhikrItem[] = [
   },
   {
     title: "Du'â entre As-Safâ et Al-Marwah",
+    readOnly: true,
     arabic: 'رَبِّ اغْفِرْ وَارْحَمْ، إِنَّكَ أَنْتَ الْأَعَزُّ الْأَكْرَمُ',
     phonetic: "Rabbi-ghfir wa-rham, innaka Anta-l-A'azzu-l-Akram.",
     french: "Seigneur, pardonne et fais miséricorde, Tu es certes le Plus Puissant, le Plus Généreux.",
