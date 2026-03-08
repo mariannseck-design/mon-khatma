@@ -1,21 +1,30 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Ajouter une option "Réinitialiser mon parcours Hifz" dans la page Paramètres
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Ce que ça fait
+Un bouton dans la page Paramètres (ou Profil) permet de remettre à zéro tout le parcours Hifz : diagnostic, objectifs, sessions, versets mémorisés et streaks. Avec une confirmation en deux étapes pour éviter les erreurs.
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Modifications
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+**`src/pages/ParametresPage.tsx`** — Ajouter une section "Zone dangereuse" en bas :
+- Carte avec icône ⚠️ et bouton "Réinitialiser mon parcours Hifz"
+- Au clic : AlertDialog de confirmation avec texte explicite ("Cette action supprimera toutes tes données de mémorisation")
+- Deuxième confirmation : saisir "RÉINITIALISER" pour valider
+- Au confirm : supprimer les données des tables suivantes pour l'utilisateur connecté :
+  - `hifz_sessions` (toutes les sessions)
+  - `hifz_memorized_verses` (versets mémorisés)
+  - `hifz_streaks` (séries)
+  - `hifz_goals` (objectifs)
+  - Remettre `profiles.onboarding_completed` à `false`
+  - Nettoyer le localStorage (`hifz_active_session`)
+- Toast de succès + redirection vers `/hifz` (qui relancera le diagnostic)
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+### Tables impactées
+Aucune migration nécessaire — on utilise les DELETE RLS existants (tous autorisent `auth.uid() = user_id`). Le UPDATE sur `profiles` est aussi autorisé.
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+### UX
+- Section visuellement distincte (bordure rouge/orange)
+- Double confirmation pour éviter les suppressions accidentelles
+- Accessible uniquement aux utilisateurs connectés
 
