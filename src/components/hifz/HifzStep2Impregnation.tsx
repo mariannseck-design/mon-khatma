@@ -422,7 +422,7 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
             </div>
           ))}
         </div>
-        <p className="text-white/40 text-xs">
+        <p style={{ color: tc.textMuted }} className="text-xs">
           Écoute {listenCount}/3{listenCount > 3 ? ` (${listenCount} au total)` : ''}
         </p>
 
