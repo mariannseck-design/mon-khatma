@@ -18,6 +18,7 @@ import DefisCommunityCounter from '@/components/defis/DefisCommunityCounter';
 import FavoriteVersesSection from '@/components/favoris/FavoriteVersesSection';
 import { useDailyNotification } from '@/hooks/useDailyNotification';
 import { usePushSubscription } from '@/hooks/usePushSubscription';
+import DailyQuote from '@/components/accueil/DailyQuote';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { toast } from 'sonner';
 
@@ -200,6 +201,11 @@ export default function AccueilPage() {
         {/* Greeting */}
         <motion.div className="text-center pt-2 pb-2" variants={itemVariants}>
           <p className="text-muted-foreground text-base mt-1">{greeting()}</p>
+        </motion.div>
+
+        {/* Citation du jour */}
+        <motion.div variants={itemVariants}>
+          <DailyQuote />
         </motion.div>
 
         {/* EN-TÊTE FONDATEUR — Pages lues + Ma Tillawah fusionnées */}
