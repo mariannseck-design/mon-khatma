@@ -86,8 +86,8 @@ const CATEGORY_DATA: Record<string, { title: string; items: DhikrItem[]; intro?:
   louanges: { title: 'Louanges & Istighfar', items: LOUANGES_ISTIGHFAR },
   anytime: { title: 'Toute occasion', items: ANYTIME_ADHKAR },
   sujud: { title: 'Sujud Tilawah', items: SUJUD_TILAWAH_ADHKAR },
-  omra: { title: 'Duas Omra', items: OMRA_DUAS },
-  hajj: { title: 'Duas Hajj', items: HAJJ_DUAS },
+  omra: { title: 'Duas Omra', items: OMRA_DUAS, intro: OMRA_INTRO },
+  hajj: { title: 'Duas Hajj', items: HAJJ_DUAS, intro: HAJJ_INTRO },
   istikharah: { title: 'Istikharah', items: ISTIKHARAH_DUAS, intro: ISTIKHARAH_INTRO },
 };
 
