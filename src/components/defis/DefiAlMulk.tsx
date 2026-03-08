@@ -183,7 +183,7 @@ export default function DefiAlMulk({ disabled = false }: { disabled?: boolean })
               La communauté s'illumine grâce à tes efforts. Qu'Allah accepte ta constance. 🤲
             </DialogDescription>
           </DialogHeader>
-          <Button onClick={() => setShowCelebration(false)} className="mt-3 w-full" style={{ background: COLORS.goldAccent, color: '#1b4332' }}>
+          <Button onClick={() => setShowCelebration(false)} className="mt-3 w-full" style={{ background: '#fff', color: '#1b4332' }}>
             Alhamdulillah ✨
           </Button>
         </DialogContent>

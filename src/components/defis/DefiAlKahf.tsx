@@ -213,7 +213,7 @@ export default function DefiAlKahf({ disabled = false }: { disabled?: boolean })
               <button
                 onClick={handleValidate}
                 className="w-full rounded-xl py-3 text-sm font-semibold transition-all active:scale-95"
-                style={{ background: COLORS.sand, color: COLORS.cave }}
+                style={{ background: '#fff', color: COLORS.cave }}
               >
                 Valider ma lecture d'Al-Kahf 📖
               </button>
@@ -244,7 +244,7 @@ export default function DefiAlKahf({ disabled = false }: { disabled?: boolean })
                 : "Qu'Allah accepte ta lecture et te couvre de Sa lumière. 🤲"}
             </DialogDescription>
           </DialogHeader>
-          <Button onClick={() => setShowCelebration(false)} className="mt-3 w-full" style={{ background: COLORS.sand, color: COLORS.cave }}>
+          <Button onClick={() => setShowCelebration(false)} className="mt-3 w-full" style={{ background: '#fff', color: COLORS.cave }}>
             Alhamdulillah ✨
           </Button>
         </DialogContent>

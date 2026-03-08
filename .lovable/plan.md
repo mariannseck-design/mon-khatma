@@ -1,22 +1,21 @@
 
 
-## Mettre les boutons de validation des défis en blanc
+# Diagnostic : 404 sur /quran-reader
 
-### Changements
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-**`src/components/defis/DefiAlKahf.tsx`** :
-- Bouton "Valider ma lecture d'Al-Kahf" : `background: '#fff'`, `color: COLORS.cave`
-- État validé "Lecture validée cette semaine" : `background: 'rgba(255,255,255,0.15)'`, `color: '#fff'`
-- Texte "Disponible jeudi soir..." : `color: 'rgba(255,255,255,0.6)'`
-- Bouton célébration "Alhamdulillah" : `background: '#fff'`, `color: COLORS.cave`
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-**`src/components/defis/DefiAlMulk.tsx`** :
-- Bouton célébration "Alhamdulillah" : `background: '#fff'`, `color: '#1b4332'`
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-**`src/components/defis/DefiAlBaqara.tsx`** :
-- Bouton "Lancer le défi" : `background: '#fff'`, `color: COLORS.emerald`
-- Bouton "Valider ma lecture du jour" (non coché) : `background: 'rgba(255,255,255,0.9)'`, `color: COLORS.emerald`
-- Bouton "Lecture du jour validée" (coché) : `background: '#fff'`, `color: COLORS.emerald`
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-Tous les boutons d'action passent en fond blanc avec texte de la couleur thématique de chaque carte.
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
