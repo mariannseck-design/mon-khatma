@@ -1183,6 +1183,7 @@ export const HAJJ_DUAS: DhikrItem[] = [
   },
   {
     title: "Du'â en buvant Zamzam",
+    readOnly: true,
     arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْمًا نَافِعًا وَرِزْقًا وَاسِعًا وَشِفَاءً مِنْ كُلِّ دَاءٍ",
     phonetic: "Allâhumma innî as'aluka 'ilman nâfi'an wa rizqan wâsi'an wa shifâ'an min kulli dâ'.",
     french: "Ô Allah (عز وجل), je Te demande une science bénéfique, une subsistance abondante et la guérison de toute maladie. (À réciter en buvant l'eau de Zamzam.)",
