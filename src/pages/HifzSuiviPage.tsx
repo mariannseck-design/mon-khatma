@@ -35,24 +35,24 @@ function CircularGauge({ value, max, label }: { value: number; max: number; labe
   return (
     <div className="flex flex-col items-center gap-1">
       <svg width="96" height="96" viewBox="0 0 96 96">
-        <circle cx="48" cy="48" r={r} fill="none" stroke="#E6F0ED" strokeWidth="5" />
+        <circle cx="48" cy="48" r={r} fill="none" stroke="var(--p-track)" strokeWidth="5" />
         <motion.circle
           cx="48" cy="48" r={r} fill="none"
-          stroke="#065F46" strokeWidth="5" strokeLinecap="round"
+          stroke="var(--p-primary)" strokeWidth="5" strokeLinecap="round"
           strokeDasharray={circ} strokeDashoffset={offset}
           transform="rotate(-90 48 48)"
           initial={{ strokeDashoffset: circ }}
           animate={{ strokeDashoffset: offset }}
           transition={{ duration: 1.2, ease: 'easeOut' }}
         />
-        <text x="48" y="44" textAnchor="middle" fill="#065F46" fontSize="18" fontWeight="bold" fontFamily="Inter, sans-serif">
+        <text x="48" y="44" textAnchor="middle" fill="var(--p-primary)" fontSize="18" fontWeight="bold" fontFamily="Inter, sans-serif">
           {value}
         </text>
-        <text x="48" y="60" textAnchor="middle" fill="rgba(6,95,70,0.7)" fontSize="9" fontWeight="600">
+        <text x="48" y="60" textAnchor="middle" fill="var(--p-text-60)" fontSize="9" fontWeight="600">
           / {max}
         </text>
       </svg>
-      <span className="text-xs font-medium" style={{ color: 'rgba(28,36,33,0.65)' }}>{label}</span>
+      <span className="text-xs font-medium" style={{ color: 'var(--p-text-65)' }}>{label}</span>
     </div>
   );
 }
@@ -172,12 +172,12 @@ export default function HifzSuiviPage() {
   if (showGoalEdit) {
     return (
       <AppLayout title="Mon Suivi Hifz">
-        <div className="max-w-md mx-auto px-4 py-6" style={{ backgroundColor: '#FDFBF7', minHeight: '100vh' }}>
+        <div className="max-w-md mx-auto px-4 py-6" style={{ backgroundColor: 'var(--p-bg)', minHeight: '100vh' }}>
           <div
             className="min-h-[60vh] rounded-[2rem] p-6"
             style={{
-              background: 'linear-gradient(135deg, #065F46 0%, #044E3B 100%)',
-              border: '2px solid #D4AF37',
+              background: 'var(--p-gradient-bg)',
+              border: '2px solid var(--p-accent)',
             }}
           >
             <HifzGoalOnboarding
@@ -198,18 +198,18 @@ export default function HifzSuiviPage() {
 
   return (
     <AppLayout title="Mon Suivi Hifz">
-      <div className="max-w-md mx-auto px-4 py-6 space-y-6" style={{ backgroundColor: '#FDFBF7', minHeight: '100vh' }}>
+      <div className="max-w-md mx-auto px-4 py-6 space-y-6" style={{ backgroundColor: 'var(--p-bg)', minHeight: '100vh' }}>
         {/* Greeting */}
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-center space-y-1">
-          <h1 className="text-xl font-bold" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#065F46' }}>
+          <h1 className="text-xl font-bold" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-primary)' }}>
             {greeting} 🌙
           </h1>
-          <p className="text-sm font-medium" style={{ color: 'rgba(28,36,33,0.65)' }}>{motivation}</p>
+          <p className="text-sm font-medium" style={{ color: 'var(--p-text-65)' }}>{motivation}</p>
         </motion.div>
 
         {loading ? (
           <div className="flex justify-center py-16">
-            <div className="w-8 h-8 border-4 rounded-full animate-spin" style={{ borderColor: '#065F46', borderTopColor: 'transparent' }} />
+            <div className="w-8 h-8 border-4 rounded-full animate-spin" style={{ borderColor: 'var(--p-primary)', borderTopColor: 'transparent' }} />
           </div>
         ) : (
           <>
@@ -221,46 +221,46 @@ export default function HifzSuiviPage() {
                 transition={{ delay: 0.05 }}
                 className="rounded-2xl p-5"
                 style={{
-                  background: '#FFFFFF',
-                  border: '1px solid #E6F0ED',
-                  boxShadow: '0 4px 20px rgba(6,95,70,0.06)',
+                  background: 'var(--p-card)',
+                  border: '1px solid var(--p-border)',
+                  boxShadow: 'var(--p-card-shadow)',
                 }}
               >
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <Target className="h-4 w-4" style={{ color: '#D4AF37' }} />
-                    <span className="text-sm font-semibold" style={{ color: '#1C2421' }}>
+                    <Target className="h-4 w-4" style={{ color: 'var(--p-accent)' }} />
+                    <span className="text-sm font-semibold" style={{ color: 'var(--p-text)' }}>
                       Objectif {goal.goal_period === 'daily' ? 'du jour' : 'de la semaine'}
                     </span>
                   </div>
                   <button
                     onClick={() => setShowGoalEdit(true)}
                     className="p-1.5 rounded-lg transition-colors"
-                    style={{ background: '#F0F7F4' }}
+                    style={{ background: 'var(--p-card-active)' }}
                   >
-                    <Settings2 className="h-3.5 w-3.5" style={{ color: '#065F46' }} />
+                    <Settings2 className="h-3.5 w-3.5" style={{ color: 'var(--p-primary)' }} />
                   </button>
                 </div>
 
                 <div className="space-y-2">
                   <div className="flex justify-between items-end">
-                    <span className="text-2xl font-bold" style={{ color: '#D4AF37' }}>
+                    <span className="text-2xl font-bold" style={{ color: 'var(--p-accent)' }}>
                       {goal.goal_unit === 'pages' ? periodProgress.toFixed(1) : periodProgress}
                     </span>
-                     <span className="text-sm font-medium" style={{ color: 'rgba(28,36,33,0.6)' }}>
-                       / {goalLabel} {periodLabel}
-                     </span>
+                    <span className="text-sm font-medium" style={{ color: 'var(--p-text-60)' }}>
+                      / {goalLabel} {periodLabel}
+                    </span>
                   </div>
-                  <div className="w-full h-2.5 rounded-full overflow-hidden" style={{ background: '#E6F0ED' }}>
+                  <div className="w-full h-2.5 rounded-full overflow-hidden" style={{ background: 'var(--p-track)' }}>
                     <motion.div
                       className="h-full rounded-full"
-                      style={{ background: 'linear-gradient(90deg, #065F46, #044E3B)' }}
+                      style={{ background: 'var(--p-gradient-fill)' }}
                       animate={{ width: `${progressPct}%` }}
                       transition={{ duration: 0.6 }}
                     />
                   </div>
                   {progressPct >= 100 && (
-                    <p className="text-xs text-center" style={{ color: '#D4AF37' }}>
+                    <p className="text-xs text-center" style={{ color: 'var(--p-accent)' }}>
                       ✨ Objectif atteint, ma shaa Allah !
                     </p>
                   )}
@@ -276,12 +276,12 @@ export default function HifzSuiviPage() {
                 onClick={() => setShowGoalEdit(true)}
                 className="w-full rounded-2xl p-5 text-center"
                 style={{
-                  background: '#F0F7F4',
-                  border: '1px dashed #D4AF37',
+                  background: 'var(--p-card-active)',
+                  border: '1px dashed var(--p-accent)',
                 }}
               >
-                <Target className="h-6 w-6 mx-auto mb-2" style={{ color: '#D4AF37' }} />
-                <p className="text-sm font-medium" style={{ color: 'rgba(28,36,33,0.75)' }}>Définis ton objectif de mémorisation</p>
+                <Target className="h-6 w-6 mx-auto mb-2" style={{ color: 'var(--p-accent)' }} />
+                <p className="text-sm font-medium" style={{ color: 'var(--p-text-75)' }}>Définis ton objectif de mémorisation</p>
               </motion.button>
             )}
 
@@ -298,32 +298,32 @@ export default function HifzSuiviPage() {
                     <div
                       className="rounded-2xl p-5"
                       style={{
-                        background: '#F0F7F4',
-                        border: '1px solid #E6F0ED',
+                        background: 'var(--p-card-active)',
+                        border: '1px solid var(--p-border)',
                       }}
                     >
                       <div className="flex items-center gap-3 mb-3">
                         <div
                           className="w-10 h-10 rounded-xl flex items-center justify-center"
-                          style={{ background: '#FFFFFF', border: '1px solid #E6F0ED', boxShadow: '0 2px 8px rgba(6,95,70,0.04)' }}
+                          style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', boxShadow: 'var(--p-card-shadow)' }}
                         >
-                          <BookOpen className="h-5 w-5" style={{ color: '#D4AF37' }} />
+                          <BookOpen className="h-5 w-5" style={{ color: 'var(--p-accent)' }} />
                         </div>
                         <div>
-                          <h3 className="text-sm font-bold" style={{ color: '#1C2421' }}>Programme du jour</h3>
-                          <p className="text-[10px] font-medium uppercase tracking-wider" style={{ color: 'rgba(28,36,33,0.6)' }}>Nouvelle mémorisation</p>
+                          <h3 className="text-sm font-bold" style={{ color: 'var(--p-text)' }}>Programme du jour</h3>
+                          <p className="text-[10px] font-medium uppercase tracking-wider" style={{ color: 'var(--p-text-60)' }}>Nouvelle mémorisation</p>
                         </div>
                       </div>
                       <div
                         className="rounded-xl px-4 py-3"
-                        style={{ background: '#FFFFFF', border: '1px solid #E6F0ED' }}
+                        style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)' }}
                       >
-                        <p className="text-sm font-semibold" style={{ color: '#065F46' }}>
+                        <p className="text-sm font-semibold" style={{ color: 'var(--p-primary)' }}>
                           {nextPoint.surahName}
                         </p>
-                         <p className="text-xs font-medium" style={{ color: 'rgba(28,36,33,0.6)' }}>
-                           Versets {nextPoint.startVerse} → {nextPoint.endVerse}
-                         </p>
+                        <p className="text-xs font-medium" style={{ color: 'var(--p-text-60)' }}>
+                          Versets {nextPoint.startVerse} → {nextPoint.endVerse}
+                        </p>
                       </div>
                     </div>
                   </Link>
@@ -340,21 +340,21 @@ export default function HifzSuiviPage() {
                   <div
                     className="rounded-2xl p-5"
                     style={{
-                      background: '#FFFFFF',
-                      border: '1px solid #E6F0ED',
-                      boxShadow: '0 4px 20px rgba(6,95,70,0.06)',
+                      background: 'var(--p-card)',
+                      border: '1px solid var(--p-border)',
+                      boxShadow: 'var(--p-card-shadow)',
                     }}
                   >
                     <div className="flex items-center gap-3 mb-3">
                       <div
                         className="w-10 h-10 rounded-xl flex items-center justify-center"
-                        style={{ background: '#F0F7F4', border: '1px solid #E6F0ED' }}
+                        style={{ background: 'var(--p-card-active)', border: '1px solid var(--p-border)' }}
                       >
-                        <RefreshCw className="h-5 w-5" style={{ color: '#D4AF37' }} />
+                        <RefreshCw className="h-5 w-5" style={{ color: 'var(--p-accent)' }} />
                       </div>
                       <div>
-                        <h3 className="text-sm font-bold" style={{ color: '#1C2421' }}>Révision du jour</h3>
-                        <p className="text-[10px] font-medium uppercase tracking-wider" style={{ color: 'rgba(28,36,33,0.6)' }}>Acquis à consolider</p>
+                        <h3 className="text-sm font-bold" style={{ color: 'var(--p-text)' }}>Révision du jour</h3>
+                        <p className="text-[10px] font-medium uppercase tracking-wider" style={{ color: 'var(--p-text-60)' }}>Acquis à consolider</p>
                       </div>
                     </div>
                     {todayRevisions.length > 0 ? (
@@ -365,23 +365,23 @@ export default function HifzSuiviPage() {
                             <div
                               key={i}
                               className="rounded-lg px-3 py-2 flex items-center justify-between"
-                              style={{ background: '#F0F7F4', border: '1px solid #E6F0ED' }}
+                              style={{ background: 'var(--p-card-active)', border: '1px solid var(--p-border)' }}
                             >
-                               <span className="text-xs font-semibold" style={{ color: '#1C2421' }}>{surah?.name || `Sourate ${rev.surah_number}`}</span>
-                               <span className="text-[10px] font-medium" style={{ color: 'rgba(28,36,33,0.6)' }}>v.{rev.verse_start}-{rev.verse_end}</span>
+                              <span className="text-xs font-semibold" style={{ color: 'var(--p-text)' }}>{surah?.name || `Sourate ${rev.surah_number}`}</span>
+                              <span className="text-[10px] font-medium" style={{ color: 'var(--p-text-60)' }}>v.{rev.verse_start}-{rev.verse_end}</span>
                             </div>
                           );
                         })}
                         {todayRevisions.length > 4 && (
-                          <p className="text-[10px] font-medium text-center" style={{ color: 'rgba(28,36,33,0.6)' }}>+{todayRevisions.length - 4} autres portions</p>
+                          <p className="text-[10px] font-medium text-center" style={{ color: 'var(--p-text-60)' }}>+{todayRevisions.length - 4} autres portions</p>
                         )}
                       </div>
                     ) : (
                       <div
                         className="rounded-xl px-4 py-3 text-center"
-                        style={{ background: '#F0F7F4' }}
+                        style={{ background: 'var(--p-card-active)' }}
                       >
-                        <p className="text-xs font-medium" style={{ color: 'rgba(28,36,33,0.6)' }}>Aucune révision prévue aujourd'hui ✨</p>
+                        <p className="text-xs font-medium" style={{ color: 'var(--p-text-60)' }}>Aucune révision prévue aujourd'hui ✨</p>
                       </div>
                     )}
                   </div>
@@ -394,18 +394,18 @@ export default function HifzSuiviPage() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
                 className="rounded-2xl p-4 flex flex-col items-center gap-2"
-                style={{ background: '#FFFFFF', border: '1px solid #E6F0ED', boxShadow: '0 4px 20px rgba(6,95,70,0.06)' }}
+                style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', boxShadow: 'var(--p-card-shadow)' }}
               >
-                <Flame className="h-5 w-5" style={{ color: '#D4AF37' }} />
-                <span className="text-2xl font-bold" style={{ color: '#065F46' }}>{streak.current}</span>
-                 <span className="text-[10px] font-medium text-center leading-tight" style={{ color: 'rgba(28,36,33,0.65)' }}>Jours consécutifs</span>
-                 <span className="text-[9px] font-medium" style={{ color: 'rgba(28,36,33,0.55)' }}>Record : {streak.longest}</span>
+                <Flame className="h-5 w-5" style={{ color: 'var(--p-accent)' }} />
+                <span className="text-2xl font-bold" style={{ color: 'var(--p-primary)' }}>{streak.current}</span>
+                <span className="text-[10px] font-medium text-center leading-tight" style={{ color: 'var(--p-text-65)' }}>Jours consécutifs</span>
+                <span className="text-[9px] font-medium" style={{ color: 'var(--p-text-55)' }}>Record : {streak.longest}</span>
               </motion.div>
 
               <motion.div
                 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
                 className="rounded-2xl p-3 flex flex-col items-center"
-                style={{ background: '#FFFFFF', border: '1px solid #E6F0ED', boxShadow: '0 4px 20px rgba(6,95,70,0.06)' }}
+                style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', boxShadow: 'var(--p-card-shadow)' }}
               >
                 <CircularGauge value={totalVerses} max={Math.max(totalVerses, 50)} label="Versets ancrés" />
               </motion.div>
@@ -413,11 +413,11 @@ export default function HifzSuiviPage() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
                 className="rounded-2xl p-4 flex flex-col items-center gap-2"
-                style={{ background: '#FFFFFF', border: '1px solid #E6F0ED', boxShadow: '0 4px 20px rgba(6,95,70,0.06)' }}
+                style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', boxShadow: 'var(--p-card-shadow)' }}
               >
-                <RotateCcw className="h-5 w-5" style={{ color: '#D4AF37' }} />
-                <span className="text-2xl font-bold" style={{ color: '#065F46' }}>{streak.tours}</span>
-                <span className="text-[10px] font-medium text-center leading-tight" style={{ color: 'rgba(28,36,33,0.65)' }}>Cycles terminés</span>
+                <RotateCcw className="h-5 w-5" style={{ color: 'var(--p-accent)' }} />
+                <span className="text-2xl font-bold" style={{ color: 'var(--p-primary)' }}>{streak.tours}</span>
+                <span className="text-[10px] font-medium text-center leading-tight" style={{ color: 'var(--p-text-65)' }}>Cycles terminés</span>
               </motion.div>
             </div>
 
@@ -425,18 +425,18 @@ export default function HifzSuiviPage() {
             <motion.div
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
               className="rounded-2xl p-5"
-              style={{ background: '#FFFFFF', border: '1px solid #E6F0ED', boxShadow: '0 4px 20px rgba(6,95,70,0.06)' }}
+              style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', boxShadow: 'var(--p-card-shadow)' }}
             >
-              <h3 className="text-sm font-bold mb-4" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#065F46' }}>
+              <h3 className="text-sm font-bold mb-4" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-primary)' }}>
                 Activité des 7 derniers jours
               </h3>
               <ResponsiveContainer width="100%" height={140}>
                 <BarChart data={weeklyData} barCategoryGap="30%">
-                  <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: 'rgba(28,36,33,0.65)', fontSize: 11, fontWeight: 500 }} />
+                  <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: 'var(--p-text-65)', fontSize: 11, fontWeight: 500 }} />
                   <YAxis hide allowDecimals={false} />
                   <Bar dataKey="count" radius={[6, 6, 0, 0]} maxBarSize={28}>
                     {weeklyData.map((entry, i) => (
-                      <Cell key={i} fill={entry.count > 0 ? 'rgba(212,175,55,0.85)' : '#E6F0ED'} />
+                      <Cell key={i} fill={entry.count > 0 ? 'var(--p-accent)' : 'var(--p-track)'} />
                     ))}
                   </Bar>
                 </BarChart>
@@ -447,12 +447,12 @@ export default function HifzSuiviPage() {
             {totalVerses === 0 && streak.current === 0 && (
               <div
                 className="rounded-2xl p-6 text-center"
-                style={{ background: 'linear-gradient(135deg, #065F46, #044E3B)', border: '1px solid #D4AF37' }}
+                style={{ background: 'var(--p-gradient-bg)', border: '1px solid var(--p-accent)' }}
               >
-                <BookOpenCheck className="h-8 w-8 mx-auto mb-3" style={{ color: '#D4AF37' }} />
-                 <p className="text-sm font-medium" style={{ color: 'rgba(253,251,247,0.95)' }}>
-                   Ton tableau de bord se remplira dès ta première session de Hifz in shaa Allah !
-                 </p>
+                <BookOpenCheck className="h-8 w-8 mx-auto mb-3" style={{ color: 'var(--p-accent)' }} />
+                <p className="text-sm font-medium" style={{ color: 'var(--p-on-dark)' }}>
+                  Ton tableau de bord se remplira dès ta première session de Hifz in shaa Allah !
+                </p>
               </div>
             )}
           </>
