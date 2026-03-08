@@ -34,21 +34,45 @@ export default function HifzPage() {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [hasGoal, setHasGoal] = useState<boolean | null>(null); // null = loading
   const [showGoalOnboarding, setShowGoalOnboarding] = useState(false);
+  const [restoringSession, setRestoringSession] = useState(true);
 
-  // Check if user has an active goal
+  // Restore in-progress session + check goal on mount
   useEffect(() => {
-    if (!user) { setHasGoal(true); return; } // skip for non-auth
-    const check = async () => {
-      const { data } = await supabase
+    if (!user) { setHasGoal(true); setRestoringSession(false); return; }
+    const init = async () => {
+      // Check goal
+      const { data: goalData } = await supabase
         .from('hifz_goals')
         .select('id')
         .eq('user_id', user.id)
         .eq('is_active', true)
         .maybeSingle();
-      setHasGoal(!!data);
-      if (!data) setShowGoalOnboarding(true);
+      setHasGoal(!!goalData);
+      if (!goalData) setShowGoalOnboarding(true);
+
+      // Restore last in-progress session (not completed)
+      const { data: activeSession } = await supabase
+        .from('hifz_sessions')
+        .select('*')
+        .eq('user_id', user.id)
+        .is('completed_at', null)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (activeSession) {
+        setSession({
+          surahNumber: activeSession.surah_number,
+          startVerse: activeSession.start_verse,
+          endVerse: activeSession.end_verse,
+          repetitionLevel: activeSession.repetition_level,
+        });
+        setSessionId(activeSession.id);
+        setStep(activeSession.current_step);
+      }
+      setRestoringSession(false);
     };
-    check();
+    init();
   }, [user]);
 
   const startSession = useCallback(async (config: HifzSession) => {
