@@ -14,6 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
+      allowed_emails: {
+        Row: {
+          created_at: string | null
+          email: string
+          id: string
+          label: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          id?: string
+          label?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          id?: string
+          label?: string | null
+        }
+        Relationships: []
+      }
       challenge_baqara: {
         Row: {
           checked_days: string[]
@@ -922,6 +943,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_allowed_email: { Args: { _email: string }; Returns: boolean }
     }
     Enums: {
       app_role: "admin" | "user"
