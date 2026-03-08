@@ -1,8 +1,8 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BookOpen, CheckCircle2, Sparkles, ArrowRight, ArrowLeft, Layers } from 'lucide-react';
+import { BookOpen, CheckCircle2, Sparkles, ArrowLeft, Layers, Plus, X, ChevronDown, ChevronUp } from 'lucide-react';
 import { SURAHS } from '@/lib/surahData';
-import { surahsToVerseBlocks, pageRangeToVerseBlocks, injectMemorizedVerses, COMMON_SURAH_GROUPS, JUZ_AMMA_SURAHS } from '@/lib/hifzUtils';
+import { surahsToVerseBlocks, pageRangeToVerseBlocks, injectMemorizedVerses } from '@/lib/hifzUtils';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
@@ -12,16 +12,127 @@ interface HifzDiagnosticProps {
   onSkip: () => void;
 }
 
-type Mode = 'choice' | 'surahs' | 'pages' | 'confirming' | 'done';
+type TabId = 'pages' | 'juz' | 'surahs';
+type Mode = 'main' | 'confirming' | 'done';
+
+interface PageInterval {
+  id: string;
+  start: number;
+  end: number;
+}
+
+interface SurahSelection {
+  selected: boolean;
+  verseStart?: number;
+  verseEnd?: number;
+}
+
+// Juz data: approximate page ranges for each Juz
+const JUZ_DATA = Array.from({ length: 30 }, (_, i) => ({
+  number: i + 1,
+  label: `Juz ${i + 1}`,
+  startPage: Math.ceil((i / 30) * 604) + 1,
+  endPage: Math.ceil(((i + 1) / 30) * 604),
+}));
+
+// More accurate Juz start pages
+const JUZ_START_PAGES = [
+  1, 22, 42, 62, 82, 102, 121, 142, 162, 182,
+  201, 222, 242, 262, 282, 302, 322, 342, 362, 382,
+  402, 422, 442, 462, 482, 502, 522, 542, 562, 582
+];
+JUZ_DATA.forEach((juz, i) => {
+  juz.startPage = JUZ_START_PAGES[i];
+  juz.endPage = (i < 29 ? JUZ_START_PAGES[i + 1] - 1 : 604);
+});
+
+const TABS: { id: TabId; label: string; icon: string }[] = [
+  { id: 'pages', label: 'Par Pages', icon: '📄' },
+  { id: 'juz', label: 'Par Juz', icon: '📚' },
+  { id: 'surahs', label: 'Par Sourates', icon: '📖' },
+];
+
+const goldColor = '#d4af37';
+const goldBg = 'rgba(212,175,55,0.15)';
+const goldBorder = 'rgba(212,175,55,0.3)';
+const goldBorderActive = 'rgba(212,175,55,0.6)';
+const glassBg = 'rgba(255,255,255,0.08)';
+const glassBorder = 'rgba(255,255,255,0.12)';
 
 export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticProps) {
   const { user } = useAuth();
-  const [mode, setMode] = useState<Mode>('choice');
-  const [selectedSurahs, setSelectedSurahs] = useState<Set<number>>(new Set());
-  const [pageStart, setPageStart] = useState(1);
-  const [pageEnd, setPageEnd] = useState(20);
+  const [mode, setMode] = useState<Mode>('main');
+  const [activeTab, setActiveTab] = useState<TabId>('pages');
   const [saving, setSaving] = useState(false);
+
+  // Pages state
+  const [pageIntervals, setPageIntervals] = useState<PageInterval[]>([
+    { id: '1', start: 1, end: 20 },
+  ]);
+
+  // Juz state
+  const [selectedJuz, setSelectedJuz] = useState<Set<number>>(new Set());
+
+  // Surahs state
+  const [surahSelections, setSurahSelections] = useState<Map<number, SurahSelection>>(new Map());
+  const [expandedSurah, setExpandedSurah] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+
+  // ─── Page intervals logic ───
+  const addInterval = () => {
+    const lastEnd = pageIntervals[pageIntervals.length - 1]?.end || 0;
+    setPageIntervals(prev => [...prev, {
+      id: Date.now().toString(),
+      start: Math.min(lastEnd + 1, 604),
+      end: Math.min(lastEnd + 20, 604),
+    }]);
+  };
+
+  const removeInterval = (id: string) => {
+    if (pageIntervals.length <= 1) return;
+    setPageIntervals(prev => prev.filter(i => i.id !== id));
+  };
+
+  const updateInterval = (id: string, field: 'start' | 'end', value: number) => {
+    setPageIntervals(prev => prev.map(i =>
+      i.id === id ? { ...i, [field]: value } : i
+    ));
+  };
+
+  // ─── Juz logic ───
+  const toggleJuz = (num: number) => {
+    setSelectedJuz(prev => {
+      const next = new Set(prev);
+      next.has(num) ? next.delete(num) : next.add(num);
+      return next;
+    });
+  };
+
+  // ─── Surahs logic ───
+  const toggleSurah = (num: number) => {
+    setSurahSelections(prev => {
+      const next = new Map(prev);
+      const existing = next.get(num);
+      if (existing?.selected) {
+        next.delete(num);
+      } else {
+        const surah = SURAHS.find(s => s.number === num);
+        next.set(num, { selected: true, verseStart: 1, verseEnd: surah?.versesCount || 1 });
+      }
+      return next;
+    });
+  };
+
+  const updateSurahVerses = (num: number, field: 'verseStart' | 'verseEnd', value: number) => {
+    setSurahSelections(prev => {
+      const next = new Map(prev);
+      const existing = next.get(num);
+      if (existing) {
+        next.set(num, { ...existing, [field]: value });
+      }
+      return next;
+    });
+  };
 
   const filteredSurahs = useMemo(() => {
     if (!searchQuery.trim()) return SURAHS;
@@ -31,70 +142,82 @@ export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticPro
     );
   }, [searchQuery]);
 
-  const toggleSurah = (num: number) => {
-    setSelectedSurahs(prev => {
-      const next = new Set(prev);
-      if (next.has(num)) next.delete(num);
-      else next.add(num);
-      return next;
-    });
-  };
-
-  const toggleGroup = (surahNums: number[]) => {
-    setSelectedSurahs(prev => {
-      const next = new Set(prev);
-      const allSelected = surahNums.every(n => next.has(n));
-      if (allSelected) {
-        surahNums.forEach(n => next.delete(n));
-      } else {
-        surahNums.forEach(n => next.add(n));
-      }
-      return next;
-    });
-  };
-
-  const totalVersesSelected = useMemo(() => {
-    if (mode === 'surahs' || mode === 'confirming') {
-      return Array.from(selectedSurahs).reduce((sum, num) => {
-        const s = SURAHS.find(s => s.number === num);
-        return sum + (s?.versesCount || 0);
+  // ─── Summary calculations ───
+  const totalPages = useMemo(() => {
+    if (activeTab === 'pages') {
+      return pageIntervals.reduce((sum, i) => sum + Math.max(0, i.end - i.start + 1), 0);
+    }
+    if (activeTab === 'juz') {
+      return Array.from(selectedJuz).reduce((sum, j) => {
+        const juz = JUZ_DATA[j - 1];
+        return sum + (juz ? juz.endPage - juz.startPage + 1 : 0);
       }, 0);
     }
-    // Pages mode: approximate
-    return (pageEnd - pageStart + 1) * 15;
-  }, [selectedSurahs, pageStart, pageEnd, mode]);
+    // Surahs: estimate pages from verse count
+    let totalVerses = 0;
+    surahSelections.forEach((sel, num) => {
+      if (sel.selected) {
+        totalVerses += (sel.verseEnd || 0) - (sel.verseStart || 1) + 1;
+      }
+    });
+    return Math.ceil(totalVerses / 15);
+  }, [activeTab, pageIntervals, selectedJuz, surahSelections]);
 
+  const totalSurahs = useMemo(() => {
+    return Array.from(surahSelections.values()).filter(s => s.selected).length;
+  }, [surahSelections]);
+
+  const hasSelection = useMemo(() => {
+    if (activeTab === 'pages') return pageIntervals.some(i => i.end >= i.start);
+    if (activeTab === 'juz') return selectedJuz.size > 0;
+    return totalSurahs > 0;
+  }, [activeTab, pageIntervals, selectedJuz, totalSurahs]);
+
+  // ─── Build blocks for confirmation ───
+  const buildBlocks = useCallback(() => {
+    if (activeTab === 'pages') {
+      const allBlocks: { surahNumber: number; verseStart: number; verseEnd: number }[] = [];
+      for (const interval of pageIntervals) {
+        allBlocks.push(...pageRangeToVerseBlocks(interval.start, interval.end));
+      }
+      return allBlocks;
+    }
+    if (activeTab === 'juz') {
+      const allBlocks: { surahNumber: number; verseStart: number; verseEnd: number }[] = [];
+      for (const juzNum of Array.from(selectedJuz).sort((a, b) => a - b)) {
+        const juz = JUZ_DATA[juzNum - 1];
+        if (juz) allBlocks.push(...pageRangeToVerseBlocks(juz.startPage, juz.endPage));
+      }
+      return allBlocks;
+    }
+    // Surahs
+    const blocks: { surahNumber: number; verseStart: number; verseEnd: number }[] = [];
+    surahSelections.forEach((sel, num) => {
+      if (sel.selected) {
+        blocks.push({
+          surahNumber: num,
+          verseStart: sel.verseStart || 1,
+          verseEnd: sel.verseEnd || SURAHS.find(s => s.number === num)?.versesCount || 1,
+        });
+      }
+    });
+    return blocks.sort((a, b) => a.surahNumber - b.surahNumber);
+  }, [activeTab, pageIntervals, selectedJuz, surahSelections]);
+
+  // ─── Confirm handler ───
   const handleConfirm = async () => {
     if (!user) return;
     setSaving(true);
-
     try {
-      let blocks;
-      if (selectedSurahs.size > 0) {
-        blocks = surahsToVerseBlocks(Array.from(selectedSurahs).sort((a, b) => a - b));
-      } else {
-        blocks = pageRangeToVerseBlocks(pageStart, pageEnd);
-      }
-
+      const blocks = buildBlocks();
       const result = await injectMemorizedVerses(user.id, blocks);
-
-      // Mark diagnostic as completed
-      await supabase
-        .from('profiles')
-        .update({ onboarding_completed: true })
-        .eq('user_id', user.id);
-
+      await supabase.from('profiles').update({ onboarding_completed: true }).eq('user_id', user.id);
       setMode('done');
-
-      toast({
-        title: 'Acquis enregistrés ✨',
-        description: `${result.count} blocs ajoutés à ton programme de révision.`,
-      });
-
+      toast({ title: 'Acquis enregistrés ✨', description: `${result.count} blocs ajoutés à votre programme de révision.` });
       setTimeout(() => onComplete(), 2000);
     } catch (err) {
       console.error('Diagnostic error:', err);
-      toast({ title: 'Erreur', description: 'Impossible de sauvegarder tes acquis.', variant: 'destructive' });
+      toast({ title: 'Erreur', description: 'Impossible de sauvegarder vos acquis.', variant: 'destructive' });
     } finally {
       setSaving(false);
     }
@@ -102,362 +225,437 @@ export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticPro
 
   const handleSkip = async () => {
     if (user) {
-      await supabase
-        .from('profiles')
-        .update({ onboarding_completed: true })
-        .eq('user_id', user.id);
+      await supabase.from('profiles').update({ onboarding_completed: true }).eq('user_id', user.id);
     }
     onSkip();
   };
 
-  // ─── Animations ───
   const pageAnim = {
-    initial: { opacity: 0, x: 40 },
-    animate: { opacity: 1, x: 0 },
-    exit: { opacity: 0, x: -40 },
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -20 },
     transition: { duration: 0.3 },
   };
 
-  // ─── CHOICE SCREEN ───
-  if (mode === 'choice') {
+  // ─── DONE SCREEN ───
+  if (mode === 'done') {
     return (
-      <motion.div {...pageAnim} className="space-y-6">
-        <div className="text-center space-y-3">
-          <div className="flex justify-center">
-            <div
-              className="w-16 h-16 rounded-full flex items-center justify-center"
-              style={{ background: 'rgba(212,175,55,0.15)', border: '1px solid rgba(212,175,55,0.3)' }}
-            >
-              <BookOpen className="h-8 w-8" style={{ color: '#d4af37' }} />
-            </div>
-          </div>
-          <h2
-            className="text-xl font-bold"
-            style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#d4af37' }}
-          >
-            Qu'avez-vous déjà mémorisé ?
-          </h2>
-          <p className="text-sm text-white/70 leading-relaxed max-w-xs mx-auto">
-            Ce diagnostic nous permet d'adapter votre programme de révision et de démarrer votre Hifz au bon endroit.
-          </p>
-        </div>
-
-        <div className="space-y-3">
-          <motion.button
-            whileTap={{ scale: 0.97 }}
-            onClick={() => setMode('surahs')}
-            className="w-full rounded-2xl p-5 text-left transition-all"
-            style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(212,175,55,0.3)' }}
-          >
-            <div className="flex items-center gap-4">
-              <div className="text-3xl">📖</div>
-              <div className="flex-1">
-                <p className="font-semibold text-white">Par Sourates</p>
-                <p className="text-xs text-white/50 mt-0.5">Sélectionnez les sourates que vous connaissez</p>
-              </div>
-              <ArrowRight className="h-5 w-5 text-white/30" />
-            </div>
-          </motion.button>
-
-          <motion.button
-            whileTap={{ scale: 0.97 }}
-            onClick={() => setMode('pages')}
-            className="w-full rounded-2xl p-5 text-left transition-all"
-            style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(212,175,55,0.3)' }}
-          >
-            <div className="flex items-center gap-4">
-              <div className="text-3xl">📄</div>
-              <div className="flex-1">
-                <p className="font-semibold text-white">Par Pages</p>
-                <p className="text-xs text-white/50 mt-0.5">Indiquez une plage de pages du Mushaf</p>
-              </div>
-              <ArrowRight className="h-5 w-5 text-white/30" />
-            </div>
-          </motion.button>
-        </div>
-
-        <button
-          onClick={handleSkip}
-          className="w-full text-center text-sm text-white/40 py-3 transition-colors hover:text-white/60"
-        >
-          Je n'ai encore rien mémorisé →
-        </button>
-      </motion.div>
-    );
-  }
-
-  // ─── SURAHS SELECTION ───
-  if (mode === 'surahs') {
-    return (
-      <motion.div {...pageAnim} className="space-y-4">
-        <div className="flex items-center gap-3">
-          <button onClick={() => setMode('choice')} className="p-2 rounded-xl" style={{ background: 'rgba(255,255,255,0.1)' }}>
-            <ArrowLeft className="h-4 w-4 text-white/70" />
-          </button>
-          <h2 className="text-lg font-bold" style={{ color: '#d4af37', fontFamily: "'Playfair Display', serif" }}>
-            Sourates mémorisées
-          </h2>
-        </div>
-
-        {/* Quick groups */}
-        <div className="space-y-2">
-          <p className="text-xs text-white/50 uppercase tracking-wider">Sélection rapide</p>
-          <div className="flex flex-wrap gap-2">
-            {COMMON_SURAH_GROUPS.map(g => {
-              const allSelected = g.surahs.every(n => selectedSurahs.has(n));
-              return (
-                <button
-                  key={g.label}
-                  onClick={() => toggleGroup(g.surahs)}
-                  className="rounded-xl px-3 py-2 text-xs font-medium transition-all"
-                  style={{
-                    background: allSelected ? 'rgba(212,175,55,0.25)' : 'rgba(255,255,255,0.06)',
-                    border: `1px solid ${allSelected ? 'rgba(212,175,55,0.5)' : 'rgba(255,255,255,0.1)'}`,
-                    color: allSelected ? '#d4af37' : 'rgba(255,255,255,0.7)',
-                  }}
-                >
-                  {g.icon} {g.label}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Search */}
-        <input
-          type="text"
-          placeholder="Rechercher une sourate..."
-          value={searchQuery}
-          onChange={e => setSearchQuery(e.target.value)}
-          className="w-full rounded-xl px-4 py-2.5 text-sm outline-none"
-          style={{
-            background: 'rgba(255,255,255,0.08)',
-            border: '1px solid rgba(255,255,255,0.15)',
-            color: 'white',
-            fontSize: '16px',
-          }}
-        />
-
-        {/* Surah list */}
-        <div
-          className="rounded-2xl max-h-[40vh] overflow-y-auto space-y-0.5"
-          style={{ background: 'rgba(0,0,0,0.2)' }}
-        >
-          {filteredSurahs.map(s => {
-            const isSelected = selectedSurahs.has(s.number);
-            return (
-              <button
-                key={s.number}
-                onClick={() => toggleSurah(s.number)}
-                className="w-full text-left px-4 py-3 flex items-center gap-3 transition-colors"
-                style={{
-                  background: isSelected ? 'rgba(212,175,55,0.1)' : 'transparent',
-                }}
-              >
-                <div
-                  className="w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0"
-                  style={{
-                    background: isSelected ? '#d4af37' : 'rgba(255,255,255,0.1)',
-                    border: `1px solid ${isSelected ? '#d4af37' : 'rgba(255,255,255,0.2)'}`,
-                  }}
-                >
-                  {isSelected && <CheckCircle2 className="h-3.5 w-3.5 text-[#1a2e1a]" />}
-                </div>
-                <span className="text-white/40 text-xs w-6 text-right">{s.number}</span>
-                <div className="flex-1">
-                  <span className="text-white text-sm">{s.name}</span>
-                  <span className="text-white/40 text-xs ml-2">({s.versesCount}v)</span>
-                </div>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Footer */}
-        <div className="space-y-3">
-          {selectedSurahs.size > 0 && (
-            <p className="text-center text-xs" style={{ color: '#d4af37' }}>
-              {selectedSurahs.size} sourate{selectedSurahs.size > 1 ? 's' : ''} · ~{totalVersesSelected} versets
-            </p>
-          )}
-          <motion.button
-            whileTap={{ scale: 0.97 }}
-            onClick={() => setMode('confirming')}
-            disabled={selectedSurahs.size === 0}
-            className="w-full rounded-xl py-4 font-bold text-base transition-all"
-            style={{
-              background: selectedSurahs.size > 0 ? 'linear-gradient(135deg, #d4af37, #c4a030)' : 'rgba(255,255,255,0.1)',
-              color: selectedSurahs.size > 0 ? '#1a2e1a' : 'rgba(255,255,255,0.3)',
-              opacity: selectedSurahs.size > 0 ? 1 : 0.5,
-            }}
-          >
-            Valider mes acquis
-          </motion.button>
-        </div>
-      </motion.div>
-    );
-  }
-
-  // ─── PAGES SELECTION ───
-  if (mode === 'pages') {
-    return (
-      <motion.div {...pageAnim} className="space-y-6">
-        <div className="flex items-center gap-3">
-          <button onClick={() => setMode('choice')} className="p-2 rounded-xl" style={{ background: 'rgba(255,255,255,0.1)' }}>
-            <ArrowLeft className="h-4 w-4 text-white/70" />
-          </button>
-          <h2 className="text-lg font-bold" style={{ color: '#d4af37', fontFamily: "'Playfair Display', serif" }}>
-            Pages mémorisées
-          </h2>
-        </div>
-
-        <p className="text-sm text-white/60 leading-relaxed">
-          Indiquez la plage de pages du Mushaf que vous avez déjà mémorisées (1 à 604).
+      <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+        className="flex flex-col items-center justify-center min-h-[50vh] text-center space-y-4">
+        <Sparkles className="h-12 w-12" style={{ color: goldColor }} />
+        <h2 className="text-xl font-bold" style={{ color: goldColor, fontFamily: "'Playfair Display', serif" }}>
+          Acquis enregistrés !
+        </h2>
+        <p className="text-sm text-white/70 max-w-xs">
+          Votre programme de révision a été créé. Les révisions seront réparties progressivement sur 14 jours.
         </p>
-
-        <div className="grid grid-cols-2 gap-3">
-          <div
-            className="rounded-2xl p-4"
-            style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(212,175,55,0.3)' }}
-          >
-            <p className="text-white/50 text-xs uppercase tracking-wider mb-2">Page début</p>
-            <input
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              value={pageStart === 0 ? '' : pageStart}
-              onChange={e => {
-                const val = e.target.value.replace(/\D/g, '');
-                setPageStart(val === '' ? 0 : Math.min(604, parseInt(val)));
-              }}
-              onBlur={() => setPageStart(prev => Math.max(1, prev))}
-              className="w-full bg-transparent text-white text-2xl font-bold outline-none text-center [appearance:textfield]"
-              style={{ fontSize: '16px' }}
-            />
-          </div>
-          <div
-            className="rounded-2xl p-4"
-            style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(212,175,55,0.3)' }}
-          >
-            <p className="text-white/50 text-xs uppercase tracking-wider mb-2">Page fin</p>
-            <input
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              value={pageEnd === 0 ? '' : pageEnd}
-              onChange={e => {
-                const val = e.target.value.replace(/\D/g, '');
-                setPageEnd(val === '' ? 0 : Math.min(604, parseInt(val)));
-              }}
-              onBlur={() => setPageEnd(prev => Math.max(pageStart, prev))}
-              className="w-full bg-transparent text-white text-2xl font-bold outline-none text-center [appearance:textfield]"
-              style={{ fontSize: '16px' }}
-            />
-          </div>
-        </div>
-
-        <div
-          className="rounded-xl p-3 text-center"
-          style={{ background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.2)' }}
-        >
-          <p className="text-xs" style={{ color: '#d4af37' }}>
-            ≈ {pageEnd - pageStart + 1} pages · ~{(pageEnd - pageStart + 1) * 15} versets
-          </p>
-        </div>
-
-        <motion.button
-          whileTap={{ scale: 0.97 }}
-          onClick={() => {
-            // Convert pages to surah blocks for confirmation
-            setMode('confirming');
-          }}
-          className="w-full rounded-xl py-4 font-bold text-base"
-          style={{
-            background: 'linear-gradient(135deg, #d4af37, #c4a030)',
-            color: '#1a2e1a',
-          }}
-        >
-          Valider mes acquis
-        </motion.button>
       </motion.div>
     );
   }
 
-  // ─── CONFIRMATION ───
+  // ─── CONFIRMATION SCREEN ───
   if (mode === 'confirming') {
-    const summaryItems = selectedSurahs.size > 0
-      ? Array.from(selectedSurahs).sort((a, b) => a - b).map(num => {
-          const s = SURAHS.find(s => s.number === num);
-          return s ? `${s.name} (${s.versesCount}v)` : '';
-        }).filter(Boolean)
-      : [`Pages ${pageStart} → ${pageEnd}`];
+    const blocks = buildBlocks();
+    const summaryItems = blocks.map(b => {
+      const s = SURAHS.find(s => s.number === b.surahNumber);
+      return `${s?.name || `S.${b.surahNumber}`} — v.${b.verseStart}→${b.verseEnd}`;
+    });
 
     return (
       <motion.div {...pageAnim} className="space-y-6">
         <div className="flex items-center gap-3">
-          <button
-            onClick={() => setMode(selectedSurahs.size > 0 ? 'surahs' : 'pages')}
-            className="p-2 rounded-xl"
-            style={{ background: 'rgba(255,255,255,0.1)' }}
-          >
+          <button onClick={() => setMode('main')} className="p-2 rounded-xl" style={{ background: glassBg }}>
             <ArrowLeft className="h-4 w-4 text-white/70" />
           </button>
-          <h2 className="text-lg font-bold" style={{ color: '#d4af37', fontFamily: "'Playfair Display', serif" }}>
+          <h2 className="text-lg font-bold" style={{ color: goldColor, fontFamily: "'Playfair Display', serif" }}>
             Confirmation
           </h2>
         </div>
 
         <div className="text-center space-y-2">
-          <Layers className="h-10 w-10 mx-auto" style={{ color: '#d4af37' }} />
-          <p className="text-white/80 text-sm">
-            Ces acquis seront ajoutés à votre programme de révision avec des dates étalées sur 14 jours.
+          <Layers className="h-10 w-10 mx-auto" style={{ color: goldColor }} />
+          <p className="text-white/80 text-sm leading-relaxed">
+            Ces acquis seront ajoutés à votre programme de révision avec des dates étalées sur <strong style={{ color: goldColor }}>14 jours</strong>.
           </p>
         </div>
 
-        <div
-          className="rounded-2xl p-4 max-h-[30vh] overflow-y-auto space-y-1"
-          style={{ background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(212,175,55,0.15)' }}
-        >
+        <div className="rounded-2xl p-4 max-h-[35vh] overflow-y-auto space-y-1"
+          style={{ background: 'rgba(0,0,0,0.2)', border: `1px solid ${goldBorder}` }}>
           {summaryItems.map((item, i) => (
             <p key={i} className="text-sm text-white/70 flex items-center gap-2">
-              <CheckCircle2 className="h-3.5 w-3.5 flex-shrink-0" style={{ color: '#d4af37' }} />
+              <CheckCircle2 className="h-3.5 w-3.5 flex-shrink-0" style={{ color: goldColor }} />
               {item}
             </p>
           ))}
         </div>
 
-        <div className="space-y-3">
-          <motion.button
-            whileTap={{ scale: 0.97 }}
-            onClick={handleConfirm}
-            disabled={saving}
-            className="w-full rounded-xl py-4 font-bold text-base"
-            style={{
-              background: 'linear-gradient(135deg, #d4af37, #c4a030)',
-              color: '#1a2e1a',
-            }}
-          >
-            {saving ? 'Enregistrement...' : '✨ Confirmer et continuer'}
-          </motion.button>
+        <div className="rounded-xl p-3 text-center" style={{ background: goldBg, border: `1px solid ${goldBorder}` }}>
+          <p className="text-xs" style={{ color: goldColor }}>
+            ≈ {totalPages} pages · {blocks.length} blocs de révision
+          </p>
         </div>
+
+        <motion.button whileTap={{ scale: 0.97 }} onClick={handleConfirm} disabled={saving}
+          className="w-full rounded-xl py-4 font-bold text-base"
+          style={{ background: `linear-gradient(135deg, ${goldColor}, #c4a030)`, color: '#1a2e1a' }}>
+          {saving ? 'Enregistrement...' : '✨ Confirmer et continuer'}
+        </motion.button>
       </motion.div>
     );
   }
 
-  // ─── DONE ───
+  // ─── MAIN SCREEN ───
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      className="flex flex-col items-center justify-center min-h-[50vh] text-center space-y-4"
-    >
-      <Sparkles className="h-12 w-12" style={{ color: '#d4af37' }} />
-      <h2 className="text-xl font-bold" style={{ color: '#d4af37', fontFamily: "'Playfair Display', serif" }}>
-        Acquis enregistrés !
-      </h2>
-      <p className="text-sm text-white/70 max-w-xs">
-        Votre programme de révision a été créé. Les révisions seront réparties progressivement.
+    <motion.div {...pageAnim} className="flex flex-col min-h-[75vh]">
+      {/* Header */}
+      <div className="text-center space-y-3 mb-5">
+        <div className="flex justify-center">
+          <motion.div
+            initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: 'spring' }}
+            className="w-14 h-14 rounded-full flex items-center justify-center"
+            style={{ background: goldBg, border: `1px solid ${goldBorder}` }}>
+            <BookOpen className="h-7 w-7" style={{ color: goldColor }} />
+          </motion.div>
+        </div>
+        <h2 className="text-lg font-bold leading-snug"
+          style={{ fontFamily: "'Playfair Display', Georgia, serif", color: goldColor }}>
+          Faisons le point sur votre parcours
+        </h2>
+        <p className="text-xs text-white/60 leading-relaxed max-w-[300px] mx-auto">
+          Sélectionnez ce que vous avez déjà mémorisé par la grâce d'Allah (عز وجل). Nous nous occupons de planifier vos révisions.
+        </p>
+      </div>
+
+      {/* Tabs */}
+      <div className="flex rounded-2xl p-1 mb-4" style={{ background: 'rgba(0,0,0,0.25)', border: `1px solid ${glassBorder}` }}>
+        {TABS.map(tab => {
+          const isActive = activeTab === tab.id;
+          return (
+            <motion.button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className="flex-1 py-2.5 rounded-xl text-xs font-semibold transition-all relative"
+              style={{
+                background: isActive ? goldBg : 'transparent',
+                color: isActive ? goldColor : 'rgba(255,255,255,0.5)',
+                border: isActive ? `1px solid ${goldBorder}` : '1px solid transparent',
+              }}
+              whileTap={{ scale: 0.97 }}
+            >
+              <span className="mr-1">{tab.icon}</span> {tab.label}
+            </motion.button>
+          );
+        })}
+      </div>
+
+      {/* Tab content */}
+      <div className="flex-1 overflow-y-auto pb-32">
+        <AnimatePresence mode="wait">
+          {activeTab === 'pages' && <PagesTab key="pages" intervals={pageIntervals} onAdd={addInterval} onRemove={removeInterval} onUpdate={updateInterval} />}
+          {activeTab === 'juz' && <JuzTab key="juz" selected={selectedJuz} onToggle={toggleJuz} />}
+          {activeTab === 'surahs' && (
+            <SurahsTab key="surahs"
+              surahs={filteredSurahs}
+              selections={surahSelections}
+              expandedSurah={expandedSurah}
+              searchQuery={searchQuery}
+              onSearch={setSearchQuery}
+              onToggle={toggleSurah}
+              onExpand={setExpandedSurah}
+              onUpdateVerses={updateSurahVerses}
+            />
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* Sticky footer */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-5 pt-3"
+        style={{ background: 'linear-gradient(to top, rgba(13,115,119,0.98) 70%, transparent)' }}>
+        <div className="max-w-lg mx-auto space-y-2">
+          {hasSelection && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+              className="rounded-xl px-4 py-2 text-center"
+              style={{ background: goldBg, border: `1px solid ${goldBorder}` }}>
+              <p className="text-xs font-medium" style={{ color: goldColor }}>
+                Total sélectionné : <strong>≈ {totalPages} pages</strong>
+                {totalSurahs > 0 && <> · <strong>{totalSurahs} sourate{totalSurahs > 1 ? 's' : ''}</strong></>}
+                {selectedJuz.size > 0 && <> · <strong>{selectedJuz.size} juz</strong></>}
+              </p>
+            </motion.div>
+          )}
+
+          <motion.button whileTap={{ scale: 0.97 }}
+            onClick={() => hasSelection ? setMode('confirming') : undefined}
+            disabled={!hasSelection}
+            className="w-full rounded-xl py-4 font-bold text-sm transition-all"
+            style={{
+              background: hasSelection ? `linear-gradient(135deg, ${goldColor}, #c4a030)` : 'rgba(255,255,255,0.1)',
+              color: hasSelection ? '#1a2e1a' : 'rgba(255,255,255,0.3)',
+              boxShadow: hasSelection ? '0 4px 20px rgba(212,175,55,0.3)' : 'none',
+            }}>
+            Sauvegarder mes acquis et commencer mon Hifz
+          </motion.button>
+
+          <button onClick={handleSkip}
+            className="w-full text-center text-xs text-white/40 py-1 transition-colors hover:text-white/60">
+            Je n'ai encore rien mémorisé →
+          </button>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+// ─── PAGES TAB ───
+function PagesTab({ intervals, onAdd, onRemove, onUpdate }: {
+  intervals: PageInterval[];
+  onAdd: () => void;
+  onRemove: (id: string) => void;
+  onUpdate: (id: string, field: 'start' | 'end', value: number) => void;
+}) {
+  return (
+    <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}
+      className="space-y-3">
+      <p className="text-xs text-white/50 leading-relaxed">
+        Indiquez les plages de pages du Mushaf que vous avez mémorisées (1 à 604).
       </p>
+
+      {intervals.map((interval, idx) => (
+        <motion.div key={interval.id}
+          initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+          className="rounded-2xl p-4" style={{ background: glassBg, border: `1px solid ${goldBorder}` }}>
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xs font-medium text-white/50">Intervalle {idx + 1}</span>
+            {intervals.length > 1 && (
+              <button onClick={() => onRemove(interval.id)} className="p-1 rounded-lg hover:bg-white/10 transition-colors">
+                <X className="h-3.5 w-3.5 text-white/40" />
+              </button>
+            )}
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <p className="text-white/40 text-[10px] uppercase tracking-wider mb-1.5">De la page</p>
+              <input
+                type="text" inputMode="numeric" pattern="[0-9]*"
+                value={interval.start === 0 ? '' : interval.start}
+                onChange={e => {
+                  const val = e.target.value.replace(/\D/g, '');
+                  onUpdate(interval.id, 'start', val === '' ? 0 : Math.min(604, parseInt(val)));
+                }}
+                onBlur={() => onUpdate(interval.id, 'start', Math.max(1, interval.start))}
+                onFocus={e => e.target.select()}
+                className="w-full bg-transparent text-white text-xl font-bold outline-none text-center [appearance:textfield] rounded-xl py-2"
+                style={{ background: 'rgba(0,0,0,0.2)', border: `1px solid ${glassBorder}`, fontSize: '16px' }}
+              />
+            </div>
+            <div>
+              <p className="text-white/40 text-[10px] uppercase tracking-wider mb-1.5">À la page</p>
+              <input
+                type="text" inputMode="numeric" pattern="[0-9]*"
+                value={interval.end === 0 ? '' : interval.end}
+                onChange={e => {
+                  const val = e.target.value.replace(/\D/g, '');
+                  onUpdate(interval.id, 'end', val === '' ? 0 : Math.min(604, parseInt(val)));
+                }}
+                onBlur={() => onUpdate(interval.id, 'end', Math.max(interval.start, interval.end))}
+                onFocus={e => e.target.select()}
+                className="w-full bg-transparent text-white text-xl font-bold outline-none text-center [appearance:textfield] rounded-xl py-2"
+                style={{ background: 'rgba(0,0,0,0.2)', border: `1px solid ${glassBorder}`, fontSize: '16px' }}
+              />
+            </div>
+          </div>
+          <p className="text-center text-[10px] mt-2" style={{ color: goldColor }}>
+            ≈ {Math.max(0, interval.end - interval.start + 1)} pages
+          </p>
+        </motion.div>
+      ))}
+
+      <motion.button whileTap={{ scale: 0.97 }} onClick={onAdd}
+        className="w-full rounded-xl py-3 flex items-center justify-center gap-2 text-xs font-medium transition-all"
+        style={{ background: glassBg, border: `1px dashed ${goldBorder}`, color: 'rgba(255,255,255,0.6)' }}>
+        <Plus className="h-3.5 w-3.5" /> Ajouter un autre intervalle
+      </motion.button>
+    </motion.div>
+  );
+}
+
+// ─── JUZ TAB ───
+function JuzTab({ selected, onToggle }: { selected: Set<number>; onToggle: (n: number) => void }) {
+  return (
+    <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}
+      className="space-y-3">
+      <p className="text-xs text-white/50 leading-relaxed">
+        Sélectionnez les Juz (parties) que vous avez déjà mémorisés.
+      </p>
+
+      <div className="grid grid-cols-5 gap-2">
+        {JUZ_DATA.map(juz => {
+          const isSelected = selected.has(juz.number);
+          return (
+            <motion.button
+              key={juz.number}
+              whileTap={{ scale: 0.9 }}
+              onClick={() => onToggle(juz.number)}
+              className="aspect-square rounded-xl flex flex-col items-center justify-center transition-all relative overflow-hidden"
+              style={{
+                background: isSelected
+                  ? 'linear-gradient(135deg, rgba(212,175,55,0.25), rgba(212,175,55,0.1))'
+                  : glassBg,
+                border: `1.5px solid ${isSelected ? goldBorderActive : glassBorder}`,
+                boxShadow: isSelected ? '0 2px 12px rgba(212,175,55,0.2)' : 'none',
+              }}
+            >
+              {isSelected && (
+                <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}
+                  className="absolute top-1 right-1">
+                  <CheckCircle2 className="h-3 w-3" style={{ color: goldColor }} />
+                </motion.div>
+              )}
+              <span className="text-base font-bold" style={{ color: isSelected ? goldColor : 'rgba(255,255,255,0.7)' }}>
+                {juz.number}
+              </span>
+              <span className="text-[8px] mt-0.5" style={{ color: isSelected ? 'rgba(212,175,55,0.7)' : 'rgba(255,255,255,0.3)' }}>
+                p.{juz.startPage}
+              </span>
+            </motion.button>
+          );
+        })}
+      </div>
+
+      {/* Quick select buttons */}
+      <div className="flex gap-2 flex-wrap">
+        <QuickButton label="Juz Amma (30)" onClick={() => { if (!selected.has(30)) onToggle(30); }} active={selected.has(30)} />
+        <QuickButton label="Juz Tabarak (29)" onClick={() => { if (!selected.has(29)) onToggle(29); }} active={selected.has(29)} />
+        <QuickButton label="Tout sélectionner" onClick={() => {
+          for (let i = 1; i <= 30; i++) { if (!selected.has(i)) onToggle(i); }
+        }} active={selected.size === 30} />
+      </div>
+    </motion.div>
+  );
+}
+
+function QuickButton({ label, onClick, active }: { label: string; onClick: () => void; active: boolean }) {
+  return (
+    <motion.button whileTap={{ scale: 0.95 }} onClick={onClick}
+      className="rounded-xl px-3 py-2 text-[10px] font-medium transition-all"
+      style={{
+        background: active ? goldBg : glassBg,
+        border: `1px solid ${active ? goldBorder : glassBorder}`,
+        color: active ? goldColor : 'rgba(255,255,255,0.6)',
+      }}>
+      {label}
+    </motion.button>
+  );
+}
+
+// ─── SURAHS TAB ───
+function SurahsTab({ surahs, selections, expandedSurah, searchQuery, onSearch, onToggle, onExpand, onUpdateVerses }: {
+  surahs: typeof SURAHS;
+  selections: Map<number, SurahSelection>;
+  expandedSurah: number | null;
+  searchQuery: string;
+  onSearch: (q: string) => void;
+  onToggle: (n: number) => void;
+  onExpand: (n: number | null) => void;
+  onUpdateVerses: (n: number, field: 'verseStart' | 'verseEnd', value: number) => void;
+}) {
+  return (
+    <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}
+      className="space-y-3">
+      {/* Search */}
+      <input
+        type="text" placeholder="Rechercher une sourate..."
+        value={searchQuery} onChange={e => onSearch(e.target.value)}
+        className="w-full rounded-xl px-4 py-2.5 text-sm outline-none"
+        style={{ background: glassBg, border: `1px solid ${glassBorder}`, color: 'white', fontSize: '16px' }}
+      />
+
+      {/* Surah list (accordion) */}
+      <div className="rounded-2xl overflow-hidden" style={{ background: 'rgba(0,0,0,0.15)' }}>
+        {surahs.map(s => {
+          const sel = selections.get(s.number);
+          const isSelected = !!sel?.selected;
+          const isExpanded = expandedSurah === s.number && isSelected;
+
+          return (
+            <div key={s.number} style={{ borderBottom: `1px solid ${glassBorder}` }}>
+              {/* Main row */}
+              <div className="flex items-center px-3 py-2.5 gap-2"
+                style={{ background: isSelected ? 'rgba(212,175,55,0.06)' : 'transparent' }}>
+                {/* Checkbox */}
+                <motion.button whileTap={{ scale: 0.85 }} onClick={() => onToggle(s.number)}
+                  className="w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors"
+                  style={{
+                    background: isSelected ? goldColor : 'rgba(255,255,255,0.08)',
+                    border: `1.5px solid ${isSelected ? goldColor : 'rgba(255,255,255,0.2)'}`,
+                  }}>
+                  {isSelected && <CheckCircle2 className="h-3.5 w-3.5 text-[#1a2e1a]" />}
+                </motion.button>
+
+                {/* Surah info */}
+                <div className="flex-1 min-w-0" onClick={() => onToggle(s.number)}>
+                  <div className="flex items-center gap-2">
+                    <span className="text-white/30 text-[10px] w-5 text-right">{s.number}</span>
+                    <span className="text-white text-sm truncate">{s.name}</span>
+                    <span className="text-white/30 text-[10px]">({s.versesCount}v)</span>
+                  </div>
+                </div>
+
+                {/* Expand button (only if selected) */}
+                {isSelected && (
+                  <button onClick={() => onExpand(isExpanded ? null : s.number)}
+                    className="p-1.5 rounded-lg transition-colors" style={{ background: 'rgba(255,255,255,0.06)' }}>
+                    {isExpanded ? <ChevronUp className="h-3.5 w-3.5 text-white/40" /> : <ChevronDown className="h-3.5 w-3.5 text-white/40" />}
+                  </button>
+                )}
+              </div>
+
+              {/* Expanded verse range */}
+              <AnimatePresence>
+                {isExpanded && sel && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
+                    className="overflow-hidden">
+                    <div className="px-4 pb-3 pt-1">
+                      <p className="text-[10px] text-white/40 mb-2">Plage de versets mémorisés :</p>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="rounded-lg p-2" style={{ background: 'rgba(0,0,0,0.2)' }}>
+                          <p className="text-[9px] text-white/30 uppercase mb-1">Du verset</p>
+                          <input type="text" inputMode="numeric" pattern="[0-9]*"
+                            value={sel.verseStart || ''}
+                            onChange={e => {
+                              const val = e.target.value.replace(/\D/g, '');
+                              onUpdateVerses(s.number, 'verseStart', val === '' ? 0 : Math.min(s.versesCount, parseInt(val)));
+                            }}
+                            onBlur={() => onUpdateVerses(s.number, 'verseStart', Math.max(1, sel.verseStart || 1))}
+                            onFocus={e => e.target.select()}
+                            className="w-full bg-transparent text-white text-sm font-bold outline-none text-center [appearance:textfield]"
+                            style={{ fontSize: '16px' }}
+                          />
+                        </div>
+                        <div className="rounded-lg p-2" style={{ background: 'rgba(0,0,0,0.2)' }}>
+                          <p className="text-[9px] text-white/30 uppercase mb-1">Au verset</p>
+                          <input type="text" inputMode="numeric" pattern="[0-9]*"
+                            value={sel.verseEnd || ''}
+                            onChange={e => {
+                              const val = e.target.value.replace(/\D/g, '');
+                              onUpdateVerses(s.number, 'verseEnd', val === '' ? 0 : Math.min(s.versesCount, parseInt(val)));
+                            }}
+                            onBlur={() => onUpdateVerses(s.number, 'verseEnd', Math.max(sel.verseStart || 1, sel.verseEnd || 1))}
+                            onFocus={e => e.target.select()}
+                            className="w-full bg-transparent text-white text-sm font-bold outline-none text-center [appearance:textfield]"
+                            style={{ fontSize: '16px' }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          );
+        })}
+      </div>
     </motion.div>
   );
 }
