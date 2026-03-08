@@ -12,7 +12,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { MoodDuaCard } from '@/components/emotions/MoodDuaCard';
-import FavoriteVersesSection from '@/components/favoris/FavoriteVersesSection';
+import FavoriteDouasSection from '@/components/favoris/FavoriteDouasSection';
 import {
   DropdownMenu,
   DropdownMenuContent,
