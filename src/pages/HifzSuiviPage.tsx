@@ -138,7 +138,7 @@ export default function HifzSuiviPage() {
         (sum, s) => sum + (s.end_verse - s.start_verse + 1), 0
       );
       if (goalData.goal_unit === 'pages') {
-        setPeriodProgress(Math.round((versesCompleted / 15) * 10) / 10);
+        setPeriodProgress(Math.round((versesCompleted / 10.3) * 10) / 10);
       } else {
         setPeriodProgress(versesCompleted);
       }
