@@ -262,7 +262,7 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 28, dark
       .catch(() => setTranslations(new Map()));
   }, [page, showTranslation, translationEdition]);
 
-  useEffect(() => { setSelectedAyah(null); }, [page]);
+  useEffect(() => { setSelectedAyah(null); containerRef.current?.scrollTo(0, 0); }, [page]);
 
   const grouped = useMemo(() => {
     const groups: { surahName: string; surahNumber: number; ayahs: AyahWithAnnotations[] }[] = [];
