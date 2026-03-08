@@ -19,16 +19,16 @@ export const ChapeletIcon: React.FC<ChapeletIconProps> = ({ size = 24, className
     className={className}
   >
     {/* String/thread arc */}
-    <path d="M12 3C7.5 3 4 7 4 12c0 3 1.5 5.5 3.5 7" />
+    <path d="M12 2.5C7.5 2.5 4 6.5 4 11c0 2.8 1.4 5.2 3.3 6.5" />
     {/* Beads along the arc */}
-    <circle cx="12" cy="3.5" r="1.5" fill={color} stroke="none" />
-    <circle cx="8" cy="5" r="1.5" fill={color} stroke="none" />
-    <circle cx="5.2" cy="8" r="1.5" fill={color} stroke="none" />
-    <circle cx="4.2" cy="11.5" r="1.5" fill={color} stroke="none" />
-    <circle cx="5" cy="15" r="1.5" fill={color} stroke="none" />
-    <circle cx="7" cy="18" r="1.5" fill={color} stroke="none" />
+    <circle cx="12" cy="3" r="1.5" fill={color} stroke="none" />
+    <circle cx="8" cy="4.5" r="1.5" fill={color} stroke="none" />
+    <circle cx="5.2" cy="7.5" r="1.5" fill={color} stroke="none" />
+    <circle cx="4.2" cy="11" r="1.5" fill={color} stroke="none" />
+    <circle cx="5" cy="14.5" r="1.5" fill={color} stroke="none" />
+    <circle cx="7" cy="17" r="1.5" fill={color} stroke="none" />
     {/* Tassel / pendant */}
-    <line x1="7" y1="18" x2="7" y2="22" />
-    <circle cx="7" cy="22.5" r="1" fill={color} stroke="none" />
+    <line x1="7" y1="17" x2="7" y2="21" />
+    <circle cx="7" cy="22" r="1" fill={color} stroke="none" />
   </svg>
 );
