@@ -1,18 +1,21 @@
 
 
-## Supprimer les compteurs pour Omra et Hajj
+# Diagnostic : 404 sur /quran-reader
 
-Les duas d'Omra et Hajj sont des invocations de référence à lire, pas à compter. On va ajouter un mode "lecture seule" au `DhikrCounter`.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Approche
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-1. **`DhikrItem` interface** — ajouter un champ optionnel `readOnly?: boolean`
-2. **`DhikrCounter.tsx`** — quand `item.readOnly` est `true` :
-   - Masquer le cercle compteur et le texte "Appuie pour compter"
-   - Afficher un bouton "Suivant ➜" à la place pour passer au dhikr suivant
-3. **`adhkarData.ts`** — ajouter `readOnly: true` à chaque item de `OMRA_DUAS` et `HAJJ_DUAS`
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-### Fichiers modifiés
-- `src/components/dhikr/DhikrCounter.tsx`
-- `src/lib/adhkarData.ts`
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

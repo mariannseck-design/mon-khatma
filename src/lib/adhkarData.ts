@@ -733,6 +733,7 @@ export const SUJUD_TILAWAH_ADHKAR: DhikrItem[] = [
 export const OMRA_DUAS: DhikrItem[] = [
   {
     title: "Talbiyah",
+    readOnly: true,
     arabic: 'لَبَّيْكَ اللَّهُمَّ لَبَّيْكَ، لَبَّيْكَ لَا شَرِيكَ لَكَ لَبَّيْكَ، إِنَّ الْحَمْدَ وَالنِّعْمَةَ لَكَ وَالْمُلْكَ، لَا شَرِيكَ لَكَ',
     phonetic: "Labbayka-llâhumma labbayk, labbayka lâ sharîka laka labbayk, inna-l-hamda wa-n-ni'mata laka wa-l-mulk, lâ sharîka lak.",
     french: "Me voici, ô Allah (عز وجل), me voici. Me voici, Tu n'as pas d'associé, me voici. La louange, la grâce et la royauté T'appartiennent, Tu n'as pas d'associé.",
@@ -740,6 +741,7 @@ export const OMRA_DUAS: DhikrItem[] = [
   },
   {
     title: "Du'â en voyant la Ka'bah",
+    readOnly: true,
     arabic: 'اللَّهُمَّ زِدْ هَذَا الْبَيْتَ تَشْرِيفًا وَتَعْظِيمًا وَتَكْرِيمًا وَمَهَابَةً، وَزِدْ مَنْ شَرَّفَهُ وَكَرَّمَهُ مِمَّنْ حَجَّهُ أَوِ اعْتَمَرَهُ تَشْرِيفًا وَتَكْرِيمًا وَتَعْظِيمًا وَبِرًّا',
     phonetic: "Allâhumma zid hâdhâ-l-bayta tashrîfan wa ta'zîman wa takrîman wa mahâbah, wa zid man sharrafahu wa karramahu mimman hajjahu awi-'tamarahu tashrîfan wa takrîman wa ta'zîman wa birra.",
     french: "Ô Allah (عز وجل), augmente cette Maison en noblesse, en grandeur, en honneur et en majesté. Et augmente ceux qui l'honorent parmi les pèlerins en noblesse, en honneur, en grandeur et en piété.",
@@ -747,6 +749,7 @@ export const OMRA_DUAS: DhikrItem[] = [
   },
   {
     title: "Du'â au début du Tawâf (Pierre Noire)",
+    readOnly: true,
     arabic: 'بِسْمِ اللهِ، اللهُ أَكْبَرُ',
     phonetic: "Bismi-llâh, Allâhu Akbar.",
     french: "Au nom d'Allah (عز وجل), Allah (عز وجل) est le Plus Grand. (À dire à chaque passage devant la Pierre Noire)",
@@ -754,6 +757,7 @@ export const OMRA_DUAS: DhikrItem[] = [
   },
   {
     title: "Du'â entre le Rukn Yamânî et la Pierre Noire",
+    readOnly: true,
     arabic: 'رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ',
     phonetic: "Rabbanâ âtinâ fî-d-dunyâ hasanatan wa fî-l-âkhirati hasanatan wa qinâ 'adhâba-n-nâr.",
     french: "Notre Seigneur, accorde-nous une belle part ici-bas et une belle part dans l'au-delà, et protège-nous du châtiment du Feu.",
@@ -761,6 +765,7 @@ export const OMRA_DUAS: DhikrItem[] = [
   },
   {
     title: "Du'â après le Tawâf (Maqâm Ibrâhîm)",
+    readOnly: true,
     arabic: 'وَاتَّخِذُوا مِنْ مَقَامِ إِبْرَاهِيمَ مُصَلًّى',
     phonetic: "Wa-ttakhidhû min maqâmi Ibrâhîma musallâ.",
     french: "Et prenez la station d'Ibrâhîm comme lieu de prière. (Puis prier 2 rak'ât derrière le Maqâm)",
@@ -768,6 +773,7 @@ export const OMRA_DUAS: DhikrItem[] = [
   },
   {
     title: "Du'â sur As-Safâ",
+    readOnly: true,
     arabic: 'إِنَّ الصَّفَا وَالْمَرْوَةَ مِنْ شَعَائِرِ اللهِ ۚ أَبْدَأُ بِمَا بَدَأَ اللهُ بِهِ',
     phonetic: "Inna-s-Safâ wa-l-Marwata min sha'â'iri-llâh. Abda'u bi-mâ bada'a-llâhu bih.",
     french: "As-Safâ et Al-Marwah font partie des rites d'Allah (عز وجل). Je commence par ce par quoi Allah (عز وجل) a commencé. (À dire au début du Sa'î)",
@@ -775,6 +781,7 @@ export const OMRA_DUAS: DhikrItem[] = [
   },
   {
     title: "Dhikr sur As-Safâ et Al-Marwah",
+    readOnly: true,
     arabic: 'اللهُ أَكْبَرُ، اللهُ أَكْبَرُ، اللهُ أَكْبَرُ، لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ، أَنْجَزَ وَعْدَهُ، وَنَصَرَ عَبْدَهُ، وَهَزَمَ الْأَحْزَابَ وَحْدَهُ',
     phonetic: "Allâhu Akbar, Allâhu Akbar, Allâhu Akbar. Lâ ilâha illa-llâhu wahdahu lâ sharîka lah, lahu-l-mulku wa lahu-l-hamd, wa huwa 'alâ kulli shay'in qadîr. Lâ ilâha illa-llâhu wahdah, anjaza wa'dah, wa nasara 'abdah, wa hazama-l-ahzâba wahdah.",
     french: "Allah (عز وجل) est le Plus Grand (3×). Il n'y a de divinité qu'Allah (عز وجل), Seul sans associé. À Lui la royauté, à Lui la louange, et Il est Omnipotent. Il n'y a de divinité qu'Allah (عز وجل) Seul. Il a réalisé Sa promesse, secouru Son serviteur et défait les coalisés Seul.",
@@ -782,6 +789,7 @@ export const OMRA_DUAS: DhikrItem[] = [
   },
   {
     title: "Du'â entre As-Safâ et Al-Marwah",
+    readOnly: true,
     arabic: 'رَبِّ اغْفِرْ وَارْحَمْ، إِنَّكَ أَنْتَ الْأَعَزُّ الْأَكْرَمُ',
     phonetic: "Rabbi-ghfir wa-rham, innaka Anta-l-A'azzu-l-Akram.",
     french: "Seigneur, pardonne et fais miséricorde, Tu es certes le Plus Puissant, le Plus Généreux.",
@@ -789,6 +797,7 @@ export const OMRA_DUAS: DhikrItem[] = [
   },
   {
     title: "Du'â en buvant Zamzam",
+    readOnly: true,
     arabic: 'اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْمًا نَافِعًا، وَرِزْقًا وَاسِعًا، وَشِفَاءً مِنْ كُلِّ دَاءٍ',
     phonetic: "Allâhumma innî as'aluka 'ilman nâfi'an, wa rizqan wâsi'an, wa shifâ'an min kulli dâ'.",
     french: "Ô Allah (عز وجل), je Te demande une science bénéfique, une subsistance abondante et une guérison de toute maladie.",
@@ -796,6 +805,7 @@ export const OMRA_DUAS: DhikrItem[] = [
   },
   {
     title: "Du'â général pendant la Omra",
+    readOnly: true,
     arabic: 'اللَّهُمَّ إِنِّي أَسْأَلُكَ الْجَنَّةَ وَأَعُوذُ بِكَ مِنَ النَّارِ',
     phonetic: "Allâhumma innî as'aluka-l-jannata wa a'ûdhu bika mina-n-nâr.",
     french: "Ô Allah (عز وجل), je Te demande le Paradis et je cherche refuge auprès de Toi contre le Feu.",
@@ -1101,6 +1111,7 @@ export const CHIFA_SERENITE: DhikrItem[] = [
 export const HAJJ_DUAS: DhikrItem[] = [
   {
     title: "Talbiya",
+    readOnly: true,
     arabic: "لَبَّيْكَ اللَّهُمَّ لَبَّيْكَ، لَبَّيْكَ لَا شَرِيكَ لَكَ لَبَّيْكَ، إِنَّ الْحَمْدَ وَالنِّعْمَةَ لَكَ وَالْمُلْكَ، لَا شَرِيكَ لَكَ",
     phonetic: "Labbayka-llâhumma labbayk, labbayka lâ sharîka laka labbayk, inna-l-hamda wa n-ni'mata laka wa-l-mulk, lâ sharîka lak.",
     french: "Me voici, ô Allah (عز وجل), me voici ! Me voici, Tu n'as point d'associé, me voici ! La louange, la grâce et la royauté T'appartiennent. Tu n'as point d'associé.",
@@ -1108,6 +1119,7 @@ export const HAJJ_DUAS: DhikrItem[] = [
   },
   {
     title: "Du'â du Tawâf (Pierre Noire)",
+    readOnly: true,
     arabic: "بِسْمِ اللَّهِ وَاللَّهُ أَكْبَرُ، اللَّهُمَّ إِيمَانًا بِكَ وَتَصْدِيقًا بِكِتَابِكَ وَوَفَاءً بِعَهْدِكَ وَاتِّبَاعًا لِسُنَّةِ نَبِيِّكَ مُحَمَّدٍ ﷺ",
     phonetic: "Bismi-llâhi wa-llâhu Akbar. Allâhumma îmânan bika wa tasdîqan bi-kitâbika wa wafâ'an bi-'ahdika wa-ttibâ'an li-sunnati nabiyyika Muhammadin ﷺ.",
     french: "Au nom d'Allah (عز وجل), Allah (عز وجل) est le plus Grand. Ô Allah (عز وجل), par foi en Toi, en confirmation de Ton Livre, en respect de Ton pacte, et en suivant la tradition de Ton Prophète Muhammad ﷺ.",
@@ -1115,6 +1127,7 @@ export const HAJJ_DUAS: DhikrItem[] = [
   },
   {
     title: "Entre les deux coins (Tawâf)",
+    readOnly: true,
     arabic: "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
     phonetic: "Rabbanâ âtinâ fî d-dunyâ hasanatan wa fî-l-âkhirati hasanatan wa qinâ 'adhâba n-nâr.",
     french: "Seigneur ! Accorde-nous une belle part dans ce monde, et une belle part dans l'au-delà, et protège-nous du châtiment du Feu. (Al-Baqarah, 201)",
@@ -1122,6 +1135,7 @@ export const HAJJ_DUAS: DhikrItem[] = [
   },
   {
     title: "Du'â du Sa'î (Safâ & Marwa)",
+    readOnly: true,
     arabic: "إِنَّ الصَّفَا وَالْمَرْوَةَ مِن شَعَائِرِ اللَّهِ ۖ أَبْدَأُ بِمَا بَدَأَ اللَّهُ بِهِ",
     phonetic: "Inna s-Safâ wa-l-Marwata min sha'â'iri-llâh. Abda'u bi-mâ bada'a-llâhu bih.",
     french: "Safâ et Marwa sont parmi les rites d'Allah (عز وجل). Je commence par ce par quoi Allah (عز وجل) a commencé. (Rapporté par Muslim)",
@@ -1129,6 +1143,7 @@ export const HAJJ_DUAS: DhikrItem[] = [
   },
   {
     title: "Du'â sur le mont Safâ",
+    readOnly: true,
     arabic: "اللَّهُ أَكْبَرُ، اللَّهُ أَكْبَرُ، اللَّهُ أَكْبَرُ، لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ",
     phonetic: "Allâhu Akbar, Allâhu Akbar, Allâhu Akbar. Lâ ilâha illâ-llâhu wahdahu lâ sharîka lah, lahu-l-mulku wa lahu-l-hamdu wa huwa 'alâ kulli shay'in qadîr.",
     french: "Allah (عز وجل) est le plus Grand (3 fois). Il n'y a de divinité qu'Allah (عز وجل), Seul sans associé. À Lui la royauté, à Lui la louange. Il est Omnipotent.",
@@ -1136,6 +1151,7 @@ export const HAJJ_DUAS: DhikrItem[] = [
   },
   {
     title: "Du'â du jour de 'Arafât",
+    readOnly: true,
     arabic: "خَيْرُ الدُّعَاءِ دُعَاءُ يَوْمِ عَرَفَةَ، وَخَيْرُ مَا قُلْتُ أَنَا وَالنَّبِيُّونَ مِنْ قَبْلِي: لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
     phonetic: "Khayru d-du'â'i du'â'u yawmi 'Arafah, wa khayru mâ qultu anâ wa n-nabiyyûna min qablî: Lâ ilâha illâ-llâhu wahdahu lâ sharîka lah, lahu-l-mulku wa lahu-l-hamdu wa huwa 'alâ kulli shay'in qadîr.",
     french: "La meilleure invocation est celle du jour de 'Arafât, et la meilleure parole que j'ai dite, moi et les Prophètes (عليهم السلام) avant moi : Il n'y a de divinité qu'Allah (عز وجل), Seul sans associé. À Lui la royauté, à Lui la louange. Il est Omnipotent. (Rapporté par At-Tirmidhî)",
@@ -1143,6 +1159,7 @@ export const HAJJ_DUAS: DhikrItem[] = [
   },
   {
     title: "Du'â de Muzdalifah",
+    readOnly: true,
     arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ بِأَنَّكَ أَنتَ اللَّهُ لَا إِلَٰهَ إِلَّا أَنتَ الْأَحَدُ الصَّمَدُ الَّذِي لَمْ يَلِدْ وَلَمْ يُولَدْ وَلَمْ يَكُن لَّهُ كُفُوًا أَحَدٌ",
     phonetic: "Allâhumma innî as'aluka bi-annaka anta-llâhu lâ ilâha illâ anta-l-Ahadu s-Samadu-lladhî lam yalid wa lam yûlad wa lam yakun lahu kufuwan ahad.",
     french: "Ô Allah (عز وجل), je T'implore car Tu es Allah (عز وجل), il n'y a de divinité que Toi, l'Unique, le Seul imploré, qui n'a jamais engendré et n'a pas été engendré, et nul n'est égal à Lui.",
@@ -1150,6 +1167,7 @@ export const HAJJ_DUAS: DhikrItem[] = [
   },
   {
     title: "Lapidation (Jamarat)",
+    readOnly: true,
     arabic: "اللَّهُ أَكْبَرُ",
     phonetic: "Allâhu Akbar.",
     french: "Allah (عز وجل) est le plus Grand. (À chaque lancer de caillou lors de la lapidation des stèles à Minâ.)",
@@ -1157,6 +1175,7 @@ export const HAJJ_DUAS: DhikrItem[] = [
   },
   {
     title: "Du'â après le sacrifice",
+    readOnly: true,
     arabic: "بِسْمِ اللَّهِ وَاللَّهُ أَكْبَرُ، اللَّهُمَّ مِنْكَ وَلَكَ، اللَّهُمَّ تَقَبَّلْ مِنِّي",
     phonetic: "Bismi-llâhi wa-llâhu Akbar. Allâhumma minka wa lak. Allâhumma taqabbal minnî.",
     french: "Au nom d'Allah (عز وجل), Allah (عز وجل) est le plus Grand. Ô Allah (عز وجل), cela vient de Toi et c'est pour Toi. Ô Allah (عز وجل), accepte de moi.",
@@ -1164,6 +1183,7 @@ export const HAJJ_DUAS: DhikrItem[] = [
   },
   {
     title: "Du'â en buvant Zamzam",
+    readOnly: true,
     arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْمًا نَافِعًا وَرِزْقًا وَاسِعًا وَشِفَاءً مِنْ كُلِّ دَاءٍ",
     phonetic: "Allâhumma innî as'aluka 'ilman nâfi'an wa rizqan wâsi'an wa shifâ'an min kulli dâ'.",
     french: "Ô Allah (عز وجل), je Te demande une science bénéfique, une subsistance abondante et la guérison de toute maladie. (À réciter en buvant l'eau de Zamzam.)",
@@ -1171,6 +1191,7 @@ export const HAJJ_DUAS: DhikrItem[] = [
   },
   {
     title: "Takbîr des jours de Tachrîq",
+    readOnly: true,
     arabic: "اللَّهُ أَكْبَرُ اللَّهُ أَكْبَرُ، لَا إِلَهَ إِلَّا اللَّهُ، وَاللَّهُ أَكْبَرُ اللَّهُ أَكْبَرُ وَلِلَّهِ الْحَمْدُ",
     phonetic: "Allâhu Akbar, Allâhu Akbar, lâ ilâha illâ-llâh, wa-llâhu Akbar, Allâhu Akbar, wa li-llâhi-l-hamd.",
     french: "Allah (عز وجل) est le plus Grand, Allah (عز وجل) est le plus Grand. Nulle divinité à part Allah (عز وجل). Allah (عز وجل) est le plus Grand, Allah (عز وجل) est le plus Grand. Et à Allah (عز وجل) la louange. (Du 9 au 13 Dhû-l-Hijja)",
@@ -1178,6 +1199,7 @@ export const HAJJ_DUAS: DhikrItem[] = [
   },
   {
     title: "Du'â du retour de voyage",
+    readOnly: true,
     arabic: "اللَّهُ أَكْبَرُ، اللَّهُ أَكْبَرُ، اللَّهُ أَكْبَرُ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، آيِبُونَ تَائِبُونَ عَابِدُونَ لِرَبِّنَا حَامِدُونَ",
     phonetic: "Allâhu Akbar (3 fois). Lâ ilâha illâ-llâhu wahdahu lâ sharîka lah, lahu-l-mulku wa lahu-l-hamdu wa huwa 'alâ kulli shay'in qadîr. Âyibûna tâ'ibûna 'âbidûna li-Rabbinâ hâmidûn.",
     french: "Allah (عز وجل) est le plus Grand (3 fois). Nulle divinité à part Allah (عز وجل), Seul sans associé. À Lui la royauté, à Lui la louange. Il est Omnipotent. Nous voilà de retour, repentants, adorateurs de notre Seigneur et Le louant. (Rapporté par Muslim)",
