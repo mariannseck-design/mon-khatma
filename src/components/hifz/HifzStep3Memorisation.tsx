@@ -109,9 +109,6 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
     const saved = localStorage.getItem(storageKey);
     return saved ? Math.min(parseInt(saved, 10) || 0, tikrarTarget) : 0;
   });
-  const [displayMode, setDisplayMode] = useState<'text' | 'mushaf'>(() => {
-    return (localStorage.getItem('hifz_display_mode') as 'text' | 'mushaf') || 'text';
-  });
   const [ayahs, setAyahs] = useState<AyahWithAnnotations[]>([]);
   const [loading, setLoading] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
