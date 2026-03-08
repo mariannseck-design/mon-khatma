@@ -90,3 +90,12 @@ export async function getVersesByRange(surahNumber: number, startVerse: number, 
   }
   return result;
 }
+
+/**
+ * Get the exact Mushaf page for a specific verse from the local bundled data.
+ */
+export async function getExactVersePage(surahNumber: number, verseNumber: number): Promise<number> {
+  await ensureLoaded();
+  const ayah = surahIndex!.get(surahNumber)?.get(verseNumber);
+  return ayah?.page ?? 1;
+}

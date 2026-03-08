@@ -140,15 +140,10 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
 
   const zoomConfig = { small: { width: '75%', maxH: 280 }, medium: { width: '100%', maxH: 400 }, large: { width: '130%', maxH: 520 } };
 
-  // Mushaf page number
-  const mushafPage = useMemo(() => {
-    const surah = SURAHS.find(s => s.number === surahNumber);
-    if (!surah) return 1;
-    // Estimate page offset based on verse position
-    const verseFraction = (startVerse - 1) / (surah.versesCount || 1);
-    const nextSurah = SURAHS.find(s => s.number === surahNumber + 1);
-    const totalPages = nextSurah ? nextSurah.startPage - surah.startPage : 2;
-    return surah.startPage + Math.floor(verseFraction * totalPages);
+  // Exact Mushaf page from local data
+  const [mushafPage, setMushafPage] = useState(1);
+  useEffect(() => {
+    getExactVersePage(surahNumber, startVerse).then(setMushafPage);
   }, [surahNumber, startVerse]);
 
   // Load local text + tajweed
