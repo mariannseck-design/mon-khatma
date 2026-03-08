@@ -398,7 +398,7 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
         {/* Counter */}
         <div className="relative w-32 h-32 mx-auto">
           <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="44" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="6" />
+            <circle cx="50" cy="50" r="44" fill="none" stroke={tc.progressTrack} strokeWidth="6" />
             <circle
               cx="50" cy="50" r="44" fill="none"
               stroke={isComplete ? '#d4af37' : phaseInfo.color}
