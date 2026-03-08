@@ -79,7 +79,7 @@ export default function DhikrSession({ title, items, onBack }: DhikrSessionProps
                 <Check className="w-8 h-8" style={{ color: 'var(--p-primary)' }} strokeWidth={3} />
               </motion.div>
               <p className="text-lg font-semibold" style={{ color: 'var(--p-primary)' }}>
-                Bârak Allâhu fîk
+                Qu'Allah <span className="honorific">(عز وجل)</span> accepte, Amine
               </p>
               <p className="text-sm" style={{ color: 'var(--p-text-60)' }}>
                 Session terminée
