@@ -192,6 +192,12 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
             Votre mémorisation est scellée<br />par la grâce d'Allah (عز وجل)
           </p>
           <p className="text-sm" style={{ color: '#065F46' }}>3 récitations parfaites sans aide</p>
+          <div className="flex justify-center gap-4 text-xs" style={{ color: 'rgba(6,95,70,0.6)' }}>
+            <span>{totalAttempts} tentative{totalAttempts > 1 ? 's' : ''}</span>
+            <span>·</span>
+            <span>{totalErrors} erreur{totalErrors > 1 ? 's' : ''}</span>
+            {peekCount > 0 && <><span>·</span><span>{peekCount} peek{peekCount > 1 ? 's' : ''}</span></>}
+          </div>
 
           <motion.button
             whileTap={{ scale: 0.97 }}
