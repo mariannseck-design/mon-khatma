@@ -296,7 +296,7 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
 
           <div
             className="rounded-xl overflow-auto max-h-72 px-4 py-4"
-            style={{ border: '1px solid rgba(212,175,55,0.25)' }}
+            style={{ background: 'linear-gradient(135deg, #0d7377, #14919b, #0d7377)', border: '1px solid rgba(212,175,55,0.3)' }}
             dir="rtl"
           >
             {versesLoading ? (
@@ -304,7 +304,7 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
                 <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: '#d4af37', borderTopColor: 'transparent' }} />
               </div>
             ) : (
-              <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '12px', padding: '16px', border: '1px solid rgba(212,175,55,0.15)' }}>
+              <div style={{ background: 'rgba(255,255,255,0.08)', borderRadius: '12px', padding: '16px', border: '1px solid rgba(255,255,255,0.15)' }}>
                 {startVerse === 1 && surahNumber !== 1 && surahNumber !== 9 && (
                   <p
                     className="text-center mb-3"

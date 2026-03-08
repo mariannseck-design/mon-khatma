@@ -1,16 +1,21 @@
 
 
-## Changer le fond du bloc coranique à l'étape 2 du Hifz
+# Diagnostic : 404 sur /quran-reader
 
-L'image de référence montre un fond **vert turquoise/teal** (style Mushaf) pour la zone d'affichage du texte arabe, au lieu du fond sombre transparent actuel.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Modification dans `HifzStep2Impregnation.tsx`
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-Changer le style du conteneur du texte arabe (lignes 297-300 et 307) :
-- **Fond extérieur** : passer de transparent à un dégradé teal similaire au lecteur Mushaf (`linear-gradient(135deg, #0d7377, #14919b, #0d7377)`)
-- **Fond intérieur** : remplacer `rgba(255,255,255,0.03)` par un teal légèrement plus clair (`rgba(255,255,255,0.08)`) pour le contraste
-- **Bordure** : adapter en bordure teal/or assortie
-- **Couleur du texte** : garder `#e8e0d0` (crème) qui contraste bien sur le teal, comme dans la capture
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-Un seul fichier impacté : `src/components/hifz/HifzStep2Impregnation.tsx`.
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
