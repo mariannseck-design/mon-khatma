@@ -363,16 +363,24 @@ export default function AccueilPage() {
                       className="w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0"
                       style={{ background: `${COLORS.gold}22`, border: `1px solid ${COLORS.gold}35` }}
                     >
-                      <BookOpen className="h-8 w-8" style={{ color: COLORS.goldAccent }} />
+                      {activeHifzSession ? (
+                        <Play className="h-8 w-8" style={{ color: COLORS.goldAccent }} />
+                      ) : (
+                        <BookOpen className="h-8 w-8" style={{ color: COLORS.goldAccent }} />
+                      )}
                     </div>
                     <div className="flex-1">
                       <h3
                         className="text-xl font-bold tracking-[0.08em] uppercase"
                         style={{ fontFamily: "'Inter', sans-serif", color: COLORS.goldAccent }}
                       >
-                        Espace Hifz
+                        {activeHifzSession ? '▶️ Continuer ma session' : 'Espace Hifz'}
                       </h3>
-                      <p className="text-white/70 text-sm mt-1">Mémoriser le Noble Coran</p>
+                      <p className="text-white/70 text-sm mt-1">
+                        {activeHifzSession
+                          ? `${activeHifzSession.surahName} — ${activeHifzSession.stepName}`
+                          : 'Mémoriser le Noble Coran'}
+                      </p>
                     </div>
                   </div>
                 </motion.div>
