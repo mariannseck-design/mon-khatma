@@ -1,15 +1,21 @@
 
 
-## Rendre le bouton de confirmation plus explicite
+# Diagnostic : 404 sur /quran-reader
 
-Modifier la ligne 630 de `HifzDiagnostic.tsx` pour afficher le détail par catégorie au lieu du total brut.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-**Avant** : `✨ Confirmer mes 3 blocs`
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-**Après** (exemples dynamiques) :
-- Si les deux catégories ont des blocs : `✨ Confirmer (2 solides + 1 récent)`
-- Si seulement solides : `✨ Confirmer mes 2 blocs solides`
-- Si seulement récents : `✨ Confirmer mon 1 bloc récent`
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-Un seul fichier modifié, une seule ligne.
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
