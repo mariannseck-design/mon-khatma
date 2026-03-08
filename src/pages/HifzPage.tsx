@@ -201,14 +201,24 @@ export default function HifzPage() {
   }, [user]);
 
   const updateStep = useCallback(async (newStep: number) => {
+    // Record time spent on current step
+    const elapsedSeconds = Math.floor((Date.now() - stepStartRef.current) / 1000);
+    if (step >= 0) {
+      stepTimesRef.current[`step_${step}_time`] = elapsedSeconds;
+    }
+    stepStartRef.current = Date.now();
     setStep(newStep);
+
     if (sessionId && user) {
       await supabase.from('hifz_sessions').update({
         current_step: newStep,
-        step_status: { [`step_${newStep}`]: 'in_progress' },
+        step_status: {
+          ...stepTimesRef.current,
+          [`step_${newStep}`]: 'in_progress',
+        },
       }).eq('id', sessionId);
     }
-  }, [sessionId, user]);
+  }, [sessionId, user, step]);
 
   const completeSession = useCallback(async (difficulty: string) => {
     // Clean up localStorage
