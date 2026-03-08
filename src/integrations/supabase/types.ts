@@ -244,6 +244,8 @@ export type Database = {
           created_at: string
           id: string
           last_reviewed_at: string | null
+          liaison_start_date: string | null
+          liaison_status: string
           memorized_at: string
           next_review_date: string
           sm2_ease_factor: number
@@ -258,6 +260,8 @@ export type Database = {
           created_at?: string
           id?: string
           last_reviewed_at?: string | null
+          liaison_start_date?: string | null
+          liaison_status?: string
           memorized_at?: string
           next_review_date?: string
           sm2_ease_factor?: number
@@ -272,6 +276,8 @@ export type Database = {
           created_at?: string
           id?: string
           last_reviewed_at?: string | null
+          liaison_start_date?: string | null
+          liaison_status?: string
           memorized_at?: string
           next_review_date?: string
           sm2_ease_factor?: number
