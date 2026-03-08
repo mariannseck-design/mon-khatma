@@ -410,7 +410,7 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <span className="text-3xl font-bold" style={{ color: '#d4af37' }}>{ancrage}</span>
-            <span className="text-white/40 text-xs">/ {tikrarTarget}</span>
+            <span style={{ color: tc.textMuted }} className="text-xs">/ {tikrarTarget}</span>
           </div>
         </div>
 
