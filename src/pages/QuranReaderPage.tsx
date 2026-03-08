@@ -513,6 +513,56 @@ export default function QuranReaderPage() {
         onClose={() => setSelectedVerse(null)}
         onNavigate={(vk) => setSelectedVerse(vk)}
       />
+
+      {/* Welcome intro modal — shown once */}
+      <AnimatePresence>
+        {showIntro && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[60] flex items-center justify-center px-6"
+            style={{ background: 'rgba(0,0,0,0.5)' }}
+            onClick={dismissIntro}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              className="w-full max-w-sm rounded-2xl p-6 text-center"
+              style={{
+                background: 'linear-gradient(135deg, #f7f3eb, #e8dcc8)',
+                border: '1px solid rgba(212,175,55,0.3)',
+                boxShadow: '0 20px 60px rgba(0,0,0,0.2)',
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="text-3xl mb-3">📖</div>
+              <h3 className="text-lg font-bold mb-2" style={{ color: '#6b5417', fontFamily: "'Playfair Display', serif" }}>
+                Bienvenue dans le Lecteur
+              </h3>
+              <p className="text-sm mb-4 leading-relaxed" style={{ color: '#5a4a2a' }}>
+                Tu peux lire le Coran en <strong>mode Mushaf</strong> (images avec tajwid en couleur) ou en <strong>mode Texte</strong> (avec traduction et tajwid).
+              </p>
+              <p className="text-xs mb-5 opacity-70" style={{ color: '#5a4a2a' }}>
+                Change de mode à tout moment via l'icône ⚙️ en bas de l'écran.
+              </p>
+              <button
+                onClick={dismissIntro}
+                className="w-full py-2.5 rounded-xl text-sm font-semibold transition-all"
+                style={{
+                  background: 'linear-gradient(135deg, #4a9a9a, #5ab8b8)',
+                  color: '#f7f3eb',
+                  boxShadow: '0 4px 15px rgba(74,154,154,0.3)',
+                }}
+              >
+                J'ai compris ✨
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
