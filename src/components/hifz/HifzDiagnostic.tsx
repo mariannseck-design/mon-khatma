@@ -267,7 +267,7 @@ export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticPro
       await supabase.from('profiles').update({ onboarding_completed: true }).eq('user_id', user.id);
       setStep('done');
       const totalCount = solidBlocks.length + recentBlocks.length;
-      toast({ title: 'Acquis enregistrés ✨', description: `${totalCount} blocs ajoutés à votre programme.` });
+      toast({ title: 'Acquis enregistrés ✨', description: `${totalCount} passages ajoutés à votre programme.` });
       setTimeout(() => onComplete(), 2000);
     } catch (err) {
       console.error('Diagnostic error:', err);
