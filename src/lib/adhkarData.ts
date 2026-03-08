@@ -13,6 +13,7 @@ export const MORNING_ADHKAR: DhikrItem[] = [
   {
     title: 'Sourate Al-Ikhlâs',
     source: 'Coran 112:1-4 — Al-Bukhârî n°5017',
+    fadl: 'Les trois Qul (Al-Ikhlâs, Al-Falaq, An-Nâs) récitées 3 fois matin et soir te suffisent contre toute chose. (Abû Dâwûd n°5082)',
     arabic: 'بِسْمِ اللهِ الرَّحْمنِ الرَّحِيم\nقُلْ هُوَ ٱللَّهُ أَحَدٌ ۝ ٱللَّهُ ٱلصَّمَدُ ۝ لَمْ يَلِدْ وَلَمْ يُولَدْ ۝ وَلَمْ يَكُن لَّهُۥ كُفُوًا أَحَدٌ',
     phonetic: "Bismi-llâhi r-Rahmâni r-Rahîm. Qul huwa-llâhu Ahad. Allâhu s-Samad. Lam yalid wa lam yûlad. Wa lam yakun lahu kufuwan ahad.",
     french: "Dis : «Il est Allah, Unique. Allah, Le Seul à être imploré pour ce que nous désirons. Il n'a jamais engendré, n'a pas été engendré non plus. Et nul n'est égal à Lui.»",
