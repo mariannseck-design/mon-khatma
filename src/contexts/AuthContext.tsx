@@ -138,17 +138,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { error: error as Error | null };
   };
 
-  return (
-    <AuthContext.Provider value={{ 
-      user, 
-      session, 
-      loading, 
-      isAdmin,
-      signUp, 
-      signIn, 
-      signOut,
-      resendConfirmation
-    }}>
+    const hasFullAccess = isAdmin || (user?.email ? ALLOWED_EMAILS.includes(user.email) : false);
+
+    return (
+      <AuthContext.Provider value={{ 
+        user, 
+        session, 
+        loading, 
+        isAdmin,
+        hasFullAccess,
+        signUp, 
+        signIn, 
+        signOut,
+        resendConfirmation
+      }}>
       {children}
     </AuthContext.Provider>
   );
