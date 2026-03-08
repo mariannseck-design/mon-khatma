@@ -861,6 +861,7 @@ export const CHIFA_SERENITE: DhikrItem[] = [
   // ── Protection générale ──
   {
     title: "🛡️ Sourate Al-Fâtiha",
+    source: "Coran 1:1-7 — Al-Bukhârî n°5007",
     arabic: "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ ۝ الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ ۝ الرَّحْمَٰنِ الرَّحِيمِ ۝ مَالِكِ يَوْمِ الدِّينِ ۝ إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ ۝ اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ ۝ صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ",
     phonetic: "Bismi-llâhi r-Rahmâni r-Rahîm. Al-hamdu li-llâhi Rabbi-l-'âlamîn. Ar-Rahmâni r-Rahîm. Mâliki yawmi d-dîn. Iyyâka na'budu wa iyyâka nasta'în. Ihdinâ s-sirâta-l-mustaqîm. Sirâta-lladhîna an'amta 'alayhim, ghayri-l-maghdûbi 'alayhim wa lâ d-dâllîn.",
     french: "Au nom d'Allah (عز وجل), le Tout Miséricordieux, le Très Miséricordieux. Louange à Allah (عز وجل), Seigneur de l'univers. Le Tout Miséricordieux, le Très Miséricordieux. Maître du Jour de la rétribution. C'est Toi seul que nous adorons, et c'est Toi seul dont nous implorons secours. Guide-nous dans le droit chemin. Le chemin de ceux que Tu as comblés de faveurs, non pas de ceux qui ont encouru Ta colère, ni des égarés.",
