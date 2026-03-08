@@ -1,5 +1,7 @@
 import { useState, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+
+const SWIPE_THRESHOLD = 50;
 import { ArrowLeft, Check, Share2, Heart } from 'lucide-react';
 import DhikrCounter, { type DhikrItem } from '@/components/dhikr/DhikrCounter';
 import { toast } from 'sonner';
