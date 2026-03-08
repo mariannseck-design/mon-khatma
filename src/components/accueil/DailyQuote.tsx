@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, PenLine } from 'lucide-react';
 import { getTodayQuote } from '@/lib/dailyQuotes';
 import { useMemo } from 'react';
 
@@ -19,6 +19,7 @@ function renderWithHonorifics(text: string) {
 
 export default function DailyQuote() {
   const quote = useMemo(() => getTodayQuote(), []);
+  const Icon = quote.type === 'doua' ? Sparkles : PenLine;
 
   return (
     <motion.div
@@ -28,11 +29,11 @@ export default function DailyQuote() {
       className="flex items-start gap-3 rounded-2xl px-4 py-3.5"
       style={{
         background: 'rgba(6, 95, 70, 0.06)',
-        border: '1px solid rgba(212, 175, 55, 0.25)',
+        border: '1px solid rgba(45, 106, 79, 0.2)',
       }}
     >
-      <Sparkles className="shrink-0 mt-0.5" size={18} style={{ color: '#D4AF37' }} />
-      <p className="text-sm italic leading-relaxed" style={{ color: '#D4AF37' }}>
+      <Icon className="shrink-0 mt-0.5" size={18} style={{ color: '#52796f' }} />
+      <p className="text-sm italic leading-relaxed" style={{ color: '#2d6a4f' }}>
         {renderWithHonorifics(quote.text)}
       </p>
     </motion.div>

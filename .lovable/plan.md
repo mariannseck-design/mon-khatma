@@ -1,22 +1,21 @@
 
 
-## Plan : Sagesse & Invocation du Jour (Citations + Douas)
+# Diagnostic : 404 sur /quran-reader
 
-### 1. `src/lib/dailyQuotes.ts`
-- Ajouter un champ `type: 'citation' | 'doua'` à l'interface
-- Ajouter les 10 douas (thème `🤲`) à la liste existante (total 30 éléments)
-- Corriger la typo `(عz وجl)` → `(عز وجل)` dans le 3e doua
-- La fonction `getTodayQuote()` reste identique (`dayOfYear % 30`)
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### 2. `src/components/accueil/DailyQuote.tsx`
-- **Icône conditionnelle** : `Sparkles` pour les douas, `PenLine` pour les citations
-- **Couleurs** : remplacer le doré `#D4AF37` par les couleurs émeraude/sage du Dashboard :
-  - Texte : `#2d6a4f` (emerald)
-  - Icône : `#52796f` (sage)
-  - Bordure : `rgba(45, 106, 79, 0.2)` (emerald subtil)
-  - Fond : `rgba(6, 95, 70, 0.06)` (inchangé, déjà émeraude)
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-### Fichiers modifiés
-- `src/lib/dailyQuotes.ts`
-- `src/components/accueil/DailyQuote.tsx`
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
+
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
