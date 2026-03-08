@@ -7,8 +7,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 
 const COLORS = {
-  cave: '#C2A062',
-  caveLight: '#D9C08E',
+  cave: '#B8943F',
+  caveLight: '#D4B86A',
   sand: '#F5E6C8',
   sandLight: '#FDF3E0',
 };
