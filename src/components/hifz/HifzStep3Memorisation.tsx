@@ -314,7 +314,7 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
 
 
         {/* Guide */}
-        <div className="rounded-xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>
+        <div className="rounded-xl overflow-hidden" style={{ background: tc.cardBg, border: `1px solid ${tc.cardBorder}` }}>
           <button
             onClick={() => setShowGuide(!showGuide)}
             className="w-full flex items-center justify-between px-4 py-2.5 text-xs font-medium transition-all"
