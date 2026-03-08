@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Shield, Moon } from 'lucide-react';
+import { Shield, Moon, BookOpen } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
@@ -33,6 +34,7 @@ function isSundayEvening() {
 
 export default function DefiAlMulk({ disabled = false }: { disabled?: boolean }) {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const weekKey = getWeekKey();
   const [days, setDays] = useState<boolean[]>(Array(7).fill(false));
   const [showCelebration, setShowCelebration] = useState(false);
@@ -167,6 +169,19 @@ export default function DefiAlMulk({ disabled = false }: { disabled?: boolean })
               );
             })}
           </div>
+
+          <button
+            onClick={() => navigate('/quran-reader?page=562')}
+            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl transition-all text-xs font-medium mt-3"
+            style={{
+              background: 'rgba(255,255,255,0.1)',
+              color: 'rgba(255,255,255,0.7)',
+              border: '1px solid rgba(255,255,255,0.12)',
+            }}
+          >
+            <BookOpen className="h-3.5 w-3.5" />
+            Lire Al-Mulk 📖
+          </button>
         </div>
       </motion.div>
 
