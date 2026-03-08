@@ -37,14 +37,14 @@ const moods = [
 ];
 
 const dhikrCards = [
-  { title: 'Zikr du matin', icon: Sunrise, bg: '#e8d5a3', text: '#1b4332', border: '', enabled: true, route: '/dhikr' },
-  { title: 'Zikr du soir', icon: Moon, bg: '#1a1a2e', text: '#ffffff', border: '', enabled: false, route: '' },
-  { title: 'Après la prière', icon: BookOpen, bg: '#c8d5c0', text: '#1b4332', border: '', enabled: false, route: '' },
-  { title: 'Toute occasion', icon: Heart, bg: '#f0ebe3', text: '#1b4332', border: '', enabled: false, route: '' },
-  { title: 'Sujud Tilawah', icon: ChevronDown, bg: '#c67a5c', text: '#ffffff', border: '', enabled: false, route: '' },
-  { title: 'Duas Omra', icon: MapPin, bg: '#faf8f5', text: '#1b4332', border: '#b5942e', enabled: false, route: '' },
-  { title: 'Duas Hajj', icon: Landmark, bg: '#2d6a4f', text: '#b5942e', border: '', enabled: false, route: '' },
-  { title: 'Istikharah', icon: Sparkles, bg: '#dce8f0', text: '#1b4332', border: '', enabled: false, route: '' },
+  { id: 'morning', title: 'Zikr du matin', icon: Sunrise, bg: '#e8d5a3', text: '#1b4332', border: '', enabled: true },
+  { id: 'evening', title: 'Zikr du soir', icon: Moon, bg: '#1a1a2e', text: '#ffffff', border: '', enabled: true },
+  { id: 'prayer', title: 'Après la prière', icon: BookOpen, bg: '#c8d5c0', text: '#1b4332', border: '', enabled: true },
+  { id: 'anytime', title: 'Toute occasion', icon: Heart, bg: '#f0ebe3', text: '#1b4332', border: '', enabled: false },
+  { id: 'sujud', title: 'Sujud Tilawah', icon: ChevronDown, bg: '#c67a5c', text: '#ffffff', border: '', enabled: false },
+  { id: 'omra', title: 'Duas Omra', icon: MapPin, bg: '#faf8f5', text: '#1b4332', border: '#b5942e', enabled: false },
+  { id: 'louanges', title: 'Louanges & Istighfar', icon: Sparkles, bg: '#2d6a4f', text: '#d4af37', border: '', enabled: true },
+  { id: 'istikharah', title: 'Istikharah', icon: Sparkles, bg: '#dce8f0', text: '#1b4332', border: '', enabled: false },
 ];
 
 const containerVariants = {
