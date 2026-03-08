@@ -3,18 +3,8 @@ import { AppLayout } from '@/components/layout/AppLayout';
 import { Sunrise, Moon, BookOpen, Heart, ChevronDown, MapPin, Landmark, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import DhikrSession from '@/components/dhikr/DhikrSession';
+import { MORNING_ADHKAR } from '@/lib/adhkarData';
 import type { DhikrItem } from '@/components/dhikr/DhikrCounter';
-
-/* ── Test data ── */
-const TEST_MORNING_DHIKRS: DhikrItem[] = [
-  {
-    arabic: 'بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ',
-    phonetic: "Bismi l-lâhi l-ladhî lâ yadurru ma'a smihi shay'un fî-l-ardi wa lâ fî s-samâ'i wa huwa s-samî'u l-'alîm",
-    french: "Au nom d'Allah, celui dont le nom protège de tout mal sur terre et dans les cieux. Il est l'Audient, l'Omniscient.",
-    target: 3,
-    title: 'La Protection',
-  },
-];
 
 /* ── Card config ── */
 const dhikrCards = [
@@ -29,7 +19,7 @@ const dhikrCards = [
 ];
 
 const CATEGORY_DATA: Record<string, { title: string; items: DhikrItem[] }> = {
-  morning: { title: 'Zikr du matin', items: TEST_MORNING_DHIKRS },
+  morning: { title: 'Zikr du matin', items: MORNING_ADHKAR },
 };
 
 const containerVariants = {
