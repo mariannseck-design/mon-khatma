@@ -897,7 +897,8 @@ export const LOUANGES_ISTIGHFAR: DhikrItem[] = [
     title: 'Subhân Allâhi wa bi-Hamdih',
     arabic: 'سُبْحَانَ اللهِ وَبِحَمْدِهِ',
     phonetic: "Subhân Allâhi wa bi-Hamdih.",
-    french: "Gloire et louange à Allah. Le Prophète ﷺ a dit : « Quiconque dit cela 100 fois par jour, ses péchés seront effacés, fussent-ils comme l'écume de la mer. »",
+    french: "Gloire et louange à Allah.",
+    fadl: 'Quiconque le dit 100 fois par jour, ses péchés seront effacés, fussent-ils comme l\'écume de la mer. (Al-Bukhârî)',
     target: 33,
   },
   {
