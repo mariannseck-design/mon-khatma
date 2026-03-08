@@ -187,6 +187,34 @@ export default function ReaderSettingsPanel({
                 </div>
               )}
 
+              {/* Translation Toggle — only in text mode */}
+              {!textModeDisabled && viewMode === 'text' && onTranslationChange && (
+                <div className="mb-4">
+                  <button
+                    onClick={() => onTranslationChange(!translationEnabled)}
+                    className="w-full flex items-center justify-between py-2.5 px-4 rounded-xl text-sm font-medium transition-all"
+                    style={{ background: nightMode ? 'rgba(90,180,180,0.08)' : 'rgba(255,255,255,0.15)' }}
+                  >
+                    <span className="flex items-center gap-2">
+                      <Languages className="h-4 w-4" style={{ color: translationEnabled ? '#4a9a9a' : (nightMode ? '#4a9a9a' : '#8a6d1b') }} />
+                      Traduction (Hamidullah)
+                    </span>
+                    <div
+                      className="w-10 h-6 rounded-full relative transition-colors"
+                      style={{ background: translationEnabled ? '#4a9a9a' : 'rgba(255,255,255,0.3)' }}
+                    >
+                      <div
+                        className="w-4 h-4 rounded-full absolute top-1 transition-all"
+                        style={{
+                          background: translationEnabled ? '#f7f3eb' : '#6b5417',
+                          left: translationEnabled ? '22px' : '4px',
+                        }}
+                      />
+                    </div>
+                  </button>
+                </div>
+              )}
+
               {/* Text Size (only when text mode active and not disabled) */}
               {!textModeDisabled && viewMode === 'text' && (
                 <div className="mb-4">

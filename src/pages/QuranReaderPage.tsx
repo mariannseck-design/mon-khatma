@@ -485,6 +485,8 @@ export default function QuranReaderPage() {
             isOffline={!isOnline}
             tajweedEnabled={tajweedEnabled}
             onTajweedChange={handleTajweedChange}
+            translationEnabled={translationEnabled}
+            onTranslationChange={handleTranslationChange}
           />
         </div>
       </div>
