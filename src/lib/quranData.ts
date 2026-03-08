@@ -20,6 +20,8 @@ export interface LocalAyah {
 
 // In-memory cache: page number → ayahs
 let pageIndex: Map<number, LocalAyah[]> | null = null;
+// In-memory cache: surah number → ayahs (indexed by numberInSurah)
+let surahIndex: Map<number, Map<number, LocalAyah>> | null = null;
 let loadPromise: Promise<Map<number, LocalAyah[]>> | null = null;
 
 async function buildPageIndex(): Promise<Map<number, LocalAyah[]>> {
