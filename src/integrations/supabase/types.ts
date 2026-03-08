@@ -44,6 +44,30 @@ export type Database = {
         }
         Relationships: []
       }
+      challenge_kahf: {
+        Row: {
+          completed: boolean | null
+          created_at: string | null
+          id: string
+          user_id: string
+          week_key: string
+        }
+        Insert: {
+          completed?: boolean | null
+          created_at?: string | null
+          id?: string
+          user_id: string
+          week_key: string
+        }
+        Update: {
+          completed?: boolean | null
+          created_at?: string | null
+          id?: string
+          user_id?: string
+          week_key?: string
+        }
+        Relationships: []
+      }
       challenge_mulk: {
         Row: {
           created_at: string

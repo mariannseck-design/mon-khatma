@@ -13,6 +13,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { DailyReminderBanner } from '@/components/notifications/DailyReminderBanner';
 import RamadanWeeklyReport from '@/components/ramadan/RamadanWeeklyReport';
 import DefiAlMulk from '@/components/defis/DefiAlMulk';
+import DefiAlKahf from '@/components/defis/DefiAlKahf';
 import DefiAlBaqara from '@/components/defis/DefiAlBaqara';
 import DefisCommunityCounter from '@/components/defis/DefisCommunityCounter';
 import HifzCommunityCounter from '@/components/hifz/HifzCommunityCounter';
@@ -563,6 +564,7 @@ export default function AccueilPage() {
                   </p>
                 )}
                 <DefiAlMulk disabled={!isAdmin} />
+                <DefiAlKahf disabled={!isAdmin} />
                 <DefiAlBaqara disabled={!isAdmin} />
                 <DefisCommunityCounter />
               </div>
