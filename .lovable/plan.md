@@ -1,21 +1,21 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Ajout de confetti dans MurajaCelebration
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+Ajouter une animation de confetti (particules colorées qui tombent) dans le composant `MurajaCelebration` quand il s'ouvre, en utilisant Framer Motion (déjà installé).
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Changements dans `src/components/muraja/MurajaCelebration.tsx`
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+1. **Générer ~30 particules confetti** au montage du modal : positions X aléatoires, couleurs variées (or, émeraude, vert clair, blanc), tailles et délais aléatoires.
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+2. **Animer chaque particule** avec `motion.div` :
+   - Départ en haut (`y: -20`), chute vers le bas (`y: window height`)
+   - Rotation aléatoire
+   - Léger mouvement horizontal sinusoïdal (`x` oscillant)
+   - Fondu en sortie
+   - Durée ~2-3s avec délais échelonnés
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+3. **Placer les confetti** dans le overlay (au-dessus du fond sombre, en `pointer-events-none`), visibles dès l'ouverture du modal pour les deux types (daily et cycle).
+
+Un seul fichier modifié, purement visuel.
 
