@@ -1119,6 +1119,7 @@ export const HAJJ_DUAS: DhikrItem[] = [
   },
   {
     title: "Du'â du Tawâf (Pierre Noire)",
+    readOnly: true,
     arabic: "بِسْمِ اللَّهِ وَاللَّهُ أَكْبَرُ، اللَّهُمَّ إِيمَانًا بِكَ وَتَصْدِيقًا بِكِتَابِكَ وَوَفَاءً بِعَهْدِكَ وَاتِّبَاعًا لِسُنَّةِ نَبِيِّكَ مُحَمَّدٍ ﷺ",
     phonetic: "Bismi-llâhi wa-llâhu Akbar. Allâhumma îmânan bika wa tasdîqan bi-kitâbika wa wafâ'an bi-'ahdika wa-ttibâ'an li-sunnati nabiyyika Muhammadin ﷺ.",
     french: "Au nom d'Allah (عز وجل), Allah (عز وجل) est le plus Grand. Ô Allah (عز وجل), par foi en Toi, en confirmation de Ton Livre, en respect de Ton pacte, et en suivant la tradition de Ton Prophète Muhammad ﷺ.",
