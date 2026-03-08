@@ -158,12 +158,11 @@ export default function DefiAlKahf({ disabled = false }: { disabled?: boolean })
               <Mountain className="h-5 w-5" style={{ color: COLORS.sand }} strokeWidth={1.5} />
             </div>
             <div>
-              <h4 className="font-bold text-white tracking-wide leading-tight" style={{ fontFamily: "'Inter', sans-serif" }}>
-                <span className="text-sm">La Lumière</span>
-                <br />
-                <span className="text-[10px] font-medium text-white/60">du Vendredi</span>
+              <h4 className="text-sm font-bold text-white tracking-wide" style={{ fontFamily: "'Inter', sans-serif" }}>
+                La Lumière du Vendredi
               </h4>
-              <p className="text-xs text-white/50">Sourate Al-Kahf</p>
+              <p className="text-xs text-white/70">Sourate Al-Kahf</p>
+            </div>
             </div>
             {streak > 0 && (
               <span
