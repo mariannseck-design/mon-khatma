@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Headphones, Check, Play, Pause, RotateCcw, ZoomIn, ZoomOut, BookOpen, ChevronDown } from 'lucide-react';
 import HifzStepWrapper from './HifzStepWrapper';
 import { RECITERS, getAyahAudioUrl } from '@/hooks/useQuranAudio';
-import { SURAHS, getApproxVersePage } from '@/lib/surahData';
+import { SURAHS } from '@/lib/surahData';
+import { getExactVersePage } from '@/lib/quranData';
 
 interface Props {
   surahNumber: number;
@@ -70,9 +71,12 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
     fetchTranslation();
   }, [surahNumber, startVerse, endVerse]);
 
-  // Calculate exact Mushaf page from surah + verse number
-  const mushafPage = getApproxVersePage(surahNumber, startVerse);
-  const mushafImageUrl = `https://cdn.jsdelivr.net/gh/QuranHub/quran-pages-images@main/easyquran.com/hafs-tajweed/${mushafPage}.jpg`;
+  // Exact Mushaf page from local data
+  const [mushafPage, setMushafPage] = useState<number | null>(null);
+  useEffect(() => {
+    getExactVersePage(surahNumber, startVerse).then(setMushafPage);
+  }, [surahNumber, startVerse]);
+  const mushafImageUrl = mushafPage ? `https://cdn.jsdelivr.net/gh/QuranHub/quran-pages-images@main/easyquran.com/hafs-tajweed/${mushafPage}.jpg` : '';
 
   const fetchAudio = useCallback(async () => {
     try {

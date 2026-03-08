@@ -15,6 +15,7 @@ export interface LocalAyah {
   number: number;
   text: string;
   numberInSurah: number;
+  page: number;
   surah: { name: string; number: number };
 }
 
@@ -42,6 +43,7 @@ async function buildIndexes(): Promise<{ pages: Map<number, LocalAyah[]>; surahs
         number: ayah.number,
         text: ayah.text,
         numberInSurah: ayah.numberInSurah,
+        page: ayah.page as number,
         surah: { name: surah.name, number: surah.number },
       };
       if (!pages.has(page)) {
@@ -87,4 +89,13 @@ export async function getVersesByRange(surahNumber: number, startVerse: number, 
     if (ayah) result.push(ayah);
   }
   return result;
+}
+
+/**
+ * Get the exact Mushaf page for a specific verse from the local bundled data.
+ */
+export async function getExactVersePage(surahNumber: number, verseNumber: number): Promise<number> {
+  await ensureLoaded();
+  const ayah = surahIndex!.get(surahNumber)?.get(verseNumber);
+  return ayah?.page ?? 1;
 }
