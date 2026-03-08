@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, Trash2, BookOpen } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { SURAHS, getApproxVersePage } from '@/lib/surahData';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface FavoriteVerse {
   id: string;
@@ -31,7 +32,6 @@ export default function FavoriteVersesSection() {
   const { user } = useAuth();
   const [verses, setVerses] = useState<FavoriteVerse[]>([]);
   const [loading, setLoading] = useState(true);
-  const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
     if (!user) { setLoading(false); return; }
@@ -55,8 +55,6 @@ export default function FavoriteVersesSection() {
 
   if (!user || loading) return null;
 
-  const displayedVerses = expanded ? verses : verses.slice(0, 3);
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
@@ -69,6 +67,7 @@ export default function FavoriteVersesSection() {
         boxShadow: `0 4px 20px -6px ${COLORS.gold}15`,
       }}
     >
+      {/* Header — always visible */}
       <div className="flex items-center gap-3 mb-4">
         <div
           className="w-10 h-10 rounded-xl flex items-center justify-center"
@@ -94,65 +93,57 @@ export default function FavoriteVersesSection() {
           </p>
         </div>
       ) : (
-        <div className="space-y-2.5">
-          <AnimatePresence>
-            {displayedVerses.map((v) => (
-              <motion.div
-                key={v.id}
-                layout
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, x: -50 }}
-                className="relative rounded-xl p-3"
-                style={{ background: 'rgba(255,255,255,0.7)', border: `1px solid ${COLORS.gold}18` }}
-              >
-                <div className="flex items-start justify-between gap-2 mb-1.5">
-                  <button
-                    onClick={() => {
-                      const page = getApproxVersePage(v.surah_number, v.verse_number);
-                      localStorage.setItem('quran_reader_page', String(page));
-                      navigate('/quran-reader');
-                    }}
-                    className="text-[10px] font-semibold px-2 py-0.5 rounded-full flex items-center gap-1 active:scale-95 transition-transform"
-                    style={{ background: `${COLORS.gold}15`, color: COLORS.gold }}
-                  >
-                    <BookOpen className="h-3 w-3" />
-                    {getSurahName(v.surah_number)} : {v.verse_number}
-                  </button>
-                  <button
-                    onClick={() => removeFavorite(v.id)}
-                    className="w-6 h-6 rounded-full flex items-center justify-center shrink-0"
-                    style={{ background: 'rgba(220,38,38,0.08)' }}
-                  >
-                    <Trash2 className="h-3 w-3 text-red-400" />
-                  </button>
-                </div>
-                {v.arabic_text && (
-                  <p className="text-right leading-relaxed mb-1.5 font-arabic text-sm"
-                    style={{ color: '#1a1a1a', fontFamily: "'Scheherazade New', 'Amiri', serif" }}
-                    dir="rtl">
-                    {v.arabic_text}
-                  </p>
-                )}
-                {v.translation_text && (
-                  <p className="text-[11px] leading-relaxed" style={{ color: `${COLORS.emerald}90` }}>
-                    {v.translation_text}
-                  </p>
-                )}
-              </motion.div>
-            ))}
-          </AnimatePresence>
-
-          {verses.length > 3 && (
-            <button
-              onClick={() => setExpanded(!expanded)}
-              className="w-full text-center text-xs font-semibold py-2 rounded-xl transition-colors"
-              style={{ color: COLORS.gold, background: `${COLORS.gold}08` }}
-            >
-              {expanded ? 'Voir moins' : `Voir tout (${verses.length})`}
-            </button>
-          )}
-        </div>
+        <ScrollArea className="max-h-[300px] w-full pr-1">
+          <div className="space-y-2.5">
+            <AnimatePresence>
+              {verses.map((v) => (
+                <motion.div
+                  key={v.id}
+                  layout
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, x: -50 }}
+                  className="relative rounded-xl p-3"
+                  style={{ background: 'rgba(255,255,255,0.7)', border: `1px solid ${COLORS.gold}18` }}
+                >
+                  <div className="flex items-start justify-between gap-2 mb-1.5">
+                    <button
+                      onClick={() => {
+                        const page = getApproxVersePage(v.surah_number, v.verse_number);
+                        localStorage.setItem('quran_reader_page', String(page));
+                        navigate('/quran-reader');
+                      }}
+                      className="text-[10px] font-semibold px-2 py-0.5 rounded-full flex items-center gap-1 active:scale-95 transition-transform"
+                      style={{ background: `${COLORS.gold}15`, color: COLORS.gold }}
+                    >
+                      <BookOpen className="h-3 w-3" />
+                      {getSurahName(v.surah_number)} : {v.verse_number}
+                    </button>
+                    <button
+                      onClick={() => removeFavorite(v.id)}
+                      className="w-6 h-6 rounded-full flex items-center justify-center shrink-0"
+                      style={{ background: 'rgba(220,38,38,0.08)' }}
+                    >
+                      <Trash2 className="h-3 w-3 text-red-400" />
+                    </button>
+                  </div>
+                  {v.arabic_text && (
+                    <p className="text-right leading-relaxed mb-1.5 font-arabic text-sm"
+                      style={{ color: '#1a1a1a', fontFamily: "'Scheherazade New', 'Amiri', serif" }}
+                      dir="rtl">
+                      {v.arabic_text}
+                    </p>
+                  )}
+                  {v.translation_text && (
+                    <p className="text-[11px] leading-relaxed" style={{ color: `${COLORS.emerald}90` }}>
+                      {v.translation_text}
+                    </p>
+                  )}
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+        </ScrollArea>
       )}
     </motion.div>
   );
