@@ -28,6 +28,7 @@ import HifzSuiviPage from "./pages/HifzSuiviPage";
 
 import DhikrPage from "./pages/DhikrPage";
 import SourcesDeLumierePage from "./pages/SourcesDeLumierePage";
+import DouasPage from "./pages/DouasPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -93,6 +94,7 @@ function AppRoutes() {
       <Route path="/muraja" element={<ProtectedRoute><ComingSoonGate title="Muraja'a" icon={RefreshCw} description="Consolide ta mémorisation grâce à la répétition espacée." hideNav>{<MurjaPage />}</ComingSoonGate></ProtectedRoute>} />
       <Route path="/hifz-suivi" element={<ProtectedRoute><ComingSoonGate title="Mon Suivi Hifz" icon={BarChart3} description="Consulte ta constance, tes versets ancrés et tes cycles.">{<HifzSuiviPage />}</ComingSoonGate></ProtectedRoute>} />
       <Route path="/sources-de-lumiere" element={<ProtectedRoute><SourcesDeLumierePage /></ProtectedRoute>} />
+      <Route path="/douas" element={<ProtectedRoute><DouasPage /></ProtectedRoute>} />
       
       <Route path="*" element={<NotFound />} />
     </Routes>
