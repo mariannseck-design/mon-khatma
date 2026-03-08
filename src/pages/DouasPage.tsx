@@ -17,7 +17,10 @@ const GOLD = '#D4AF37';
 type View = 'categories' | 'subthemes' | 'session' | 'favorites' | 'fav-session';
 
 export default function DouasPage() {
-  const [view, setView] = useState<View>('categories');
+  const [searchParams] = useSearchParams();
+  const [view, setView] = useState<View>(() => {
+    return searchParams.get('view') === 'favorites' ? 'favorites' : 'categories';
+  });
   const [selectedCategory, setSelectedCategory] = useState<DouaCategory | null>(null);
   const [selectedSubtheme, setSelectedSubtheme] = useState<DouaSubtheme | null>(null);
   const [favSessionItems, setFavSessionItems] = useState<DhikrItem[]>([]);
