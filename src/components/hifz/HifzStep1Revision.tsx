@@ -42,7 +42,7 @@ export default function HifzStep1Revision({ onNext, onBack, onPause }: Props) {
   const secs = timer % 60;
 
   return (
-    <HifzStepWrapper stepNumber={1} stepTitle="Le Réveil de la Veille" onBack={onBack}>
+    <HifzStepWrapper stepNumber={1} stepTitle="Le Réveil de la Veille" onBack={onBack} onPause={onPause}>
       <div className="text-center space-y-6">
         <button
           onClick={handleReset}
