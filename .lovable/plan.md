@@ -1,21 +1,22 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Désactiver les boutons "Lire le Coran" quand `disabled=true`
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Problème
+Les boutons "Lire Al-Mulk 📖", "Lire Al-Kahf 📖" et "Continuer ma lecture 📖" dans les 3 composants de défis ne sont pas désactivés quand `disabled=true`. Ils restent cliquables et redirigent vers le lecteur de Coran.
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Correction
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+Dans les 3 fichiers, envelopper le bouton "Lire" dans le même bloc `disabled` que le reste, ou ajouter une condition `disabled` directement sur le bouton.
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+**`src/components/defis/DefiAlMulk.tsx`** (ligne ~173)
+- Ajouter `pointer-events-none opacity-50` quand `disabled`, et bloquer le `onClick`
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+**`src/components/defis/DefiAlKahf.tsx`** (ligne ~232)
+- Idem
+
+**`src/components/defis/DefiAlBaqara.tsx`** (ligne ~287)
+- Idem
+
+Concrètement, pour chaque bouton : `onClick={() => { if (!disabled) navigate(...) }}` + classe conditionnelle `disabled ? 'opacity-50 pointer-events-none' : ''`.
 
