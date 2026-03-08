@@ -14,7 +14,7 @@ const ENCOURAGEMENTS = [
   },
   {
     title: 'Une nouvelle chance',
-    text: "La mémorisation est un chemin de patience. Cette erreur t'aide à mieux ancrer le verset. Regardez le texte si besoin et reprenez la série pour bien ancrer. Recommençons en plaçant notre confiance en Allah (عز وجل).",
+    text: "La mémorisation est un chemin de patience. Cette erreur t'aide à mieux ancrer le verset. Regardez le texte si besoin et reprenez la série pour bien ancrer. Recommençons en plaçant notre confiance en Allah.",
     button: 'Essayer à nouveau',
   },
   {
