@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import type { Easing } from 'framer-motion';
-import { BookOpen, Target, Users, Download, Moon, Sun, Sunrise, Share2, BookOpenCheck, RefreshCw, BarChart3 } from 'lucide-react';
+import { BookOpen, Target, Users, Download, Moon, Sun, Sunrise, Share2, BookOpenCheck, RefreshCw, BarChart3, Shield } from 'lucide-react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { SamsungBanner } from '@/components/layout/SamsungBanner';
 import { useAuth } from '@/contexts/AuthContext';
@@ -363,6 +363,40 @@ export default function AccueilPage() {
                         Muraja'a
                       </h3>
                       <p className="text-white/70 text-sm mt-1">Réviser et consolider</p>
+                    </div>
+                  </div>
+                </motion.div>
+              </Link>
+            </motion.div>
+
+            {/* ENTRETIEN & RÉVISION */}
+            <motion.div variants={itemVariants}>
+              <Link to="/revision" className="block">
+                <motion.div
+                  className="relative overflow-hidden rounded-[2rem] p-6 group"
+                  style={{
+                    background: COLORS.beige,
+                    border: `2px solid ${COLORS.gold}30`,
+                    boxShadow: `0 4px 20px -6px ${COLORS.gold}15`,
+                  }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <div className="relative z-10 flex items-center gap-4">
+                    <div
+                      className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0"
+                      style={{ background: `${COLORS.gold}18`, border: `1px solid ${COLORS.gold}30` }}
+                    >
+                      <Shield className="h-7 w-7" style={{ color: COLORS.goldAccent }} />
+                    </div>
+                    <div className="flex-1">
+                      <h3
+                        className="text-lg font-bold tracking-[0.06em] uppercase"
+                        style={{ fontFamily: "'Inter', sans-serif", color: COLORS.emerald }}
+                      >
+                        Entretien & Révision
+                      </h3>
+                      <p className="text-sm mt-1" style={{ color: COLORS.sage }}>Liaison & révision espacée</p>
                     </div>
                   </div>
                 </motion.div>

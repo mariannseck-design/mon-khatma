@@ -8,8 +8,6 @@ const STEP_LABELS: Record<number, string> = {
   2: 'Imprégnation',
   3: 'Tikrar',
   4: 'Validation',
-  5: 'Liaison',
-  6: 'Le Tour',
 };
 
 function formatDuration(seconds: number): string {
@@ -26,12 +24,11 @@ interface Props {
 export default function HifzSuccess({ stepTimes }: Props) {
   const navigate = useNavigate();
 
-  // Extract step times from the record
   const times: { step: number; label: string; seconds: number }[] = [];
   let totalSeconds = 0;
 
   if (stepTimes) {
-    for (let i = 0; i <= 6; i++) {
+    for (let i = 0; i <= 4; i++) {
       const key = `step_${i}_time`;
       const val = stepTimes[key];
       if (typeof val === 'number' && val > 0) {
@@ -79,9 +76,8 @@ export default function HifzSuccess({ stepTimes }: Props) {
       </h1>
 
       <p className="text-white/80 text-sm leading-relaxed px-4">
-        Félicitations ! Tu as terminé tes répétitions avec succès.
-        Que cette portion du Noble Coran reste gravée dans ton cœur,
-        tout comme le message porté par les prophètes (aleyhi salam).
+        Félicitations ! Tu as terminé ta session de mémorisation avec succès.
+        Pense à consolider tes acquis en accédant à l'espace Entretien & Révision.
       </p>
 
       {/* Time recap */}
@@ -126,6 +122,20 @@ export default function HifzSuccess({ stepTimes }: Props) {
           </div>
         </motion.div>
       )}
+
+      {/* CTA: Go to revision */}
+      <motion.button
+        whileTap={{ scale: 0.97 }}
+        onClick={() => navigate('/revision')}
+        className="mx-auto px-6 py-3 rounded-2xl flex items-center gap-2 font-semibold text-sm"
+        style={{
+          background: 'rgba(255,255,255,0.1)',
+          color: '#d4af37',
+          border: '1px solid rgba(212,175,55,0.3)',
+        }}
+      >
+        📖 Entretien & Révision
+      </motion.button>
 
       <motion.button
         whileTap={{ scale: 0.97 }}

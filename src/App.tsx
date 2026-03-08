@@ -25,6 +25,7 @@ import ParametresPage from "./pages/ParametresPage";
 import HifzPage from "./pages/HifzPage";
 import MurjaPage from "./pages/MurjaPage";
 import HifzSuiviPage from "./pages/HifzSuiviPage";
+import RevisionPage from "./pages/RevisionPage";
 import DhikrPage from "./pages/DhikrPage";
 import NotFound from "./pages/NotFound";
 
@@ -90,6 +91,7 @@ function AppRoutes() {
       <Route path="/hifz" element={<ProtectedRoute><ComingSoonGate title="Espace Hifz" icon={BookOpenCheck} description="Mémorise le Coran étape par étape avec un parcours guidé." hideNav>{<HifzPage />}</ComingSoonGate></ProtectedRoute>} />
       <Route path="/muraja" element={<ProtectedRoute><ComingSoonGate title="Muraja'a" icon={RefreshCw} description="Consolide ta mémorisation grâce à la répétition espacée." hideNav>{<MurjaPage />}</ComingSoonGate></ProtectedRoute>} />
       <Route path="/hifz-suivi" element={<ProtectedRoute><ComingSoonGate title="Mon Suivi Hifz" icon={BarChart3} description="Consulte ta constance, tes versets ancrés et tes cycles.">{<HifzSuiviPage />}</ComingSoonGate></ProtectedRoute>} />
+      <Route path="/revision" element={<ProtectedRoute><RevisionPage /></ProtectedRoute>} />
       
       <Route path="*" element={<NotFound />} />
     </Routes>
