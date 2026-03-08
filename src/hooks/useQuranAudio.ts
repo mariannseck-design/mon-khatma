@@ -211,6 +211,15 @@ export function useQuranAudio(page: number, onPageFinished?: () => void, startVe
     }
   }, [reciter]);
 
+  // Re-filter on verse range change
+  useEffect(() => {
+    if (isPlaying) {
+      stopAudio();
+      ayahsRef.current = [];
+      fetchAndPlay(page, reciter);
+    }
+  }, [startVerse, endVerse]);
+
   // Cleanup on unmount
   useEffect(() => {
     return () => {

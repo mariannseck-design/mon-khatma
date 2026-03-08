@@ -237,8 +237,7 @@ export default function ReaderSettingsPanel({
                     style={{ background: nightMode ? 'rgba(90,180,180,0.08)' : 'rgba(255,255,255,0.15)' }}
                   >
                     <span className="flex items-center gap-2">
-                      <Palette className="h-4 w-4" style={{ color: tajweedEnabled ? '#d63031' : (nightMode ? '#4a9a9a' : '#8a6d1b') }} />
-                      Couleurs Tajwid
+                      Tajwid
                     </span>
                     <div
                       className="w-10 h-6 rounded-full relative transition-colors"

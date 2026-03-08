@@ -26,9 +26,18 @@ const FONT_FAMILY = "'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
 // Raw Basmala words for zero-normalization detection
 const BASMALA_WORDS = ['بِسْمِ', 'ٱللَّهِ', 'ٱلرَّحْمَٰنِ', 'ٱلرَّحِيمِ'];
 
+// Strip all Arabic diacritics, control characters and tatweel for comparison
+function normalizeForComparison(s: string): string {
+  return s
+    .replace(/[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED\u0640\u06DD\u06DE\u06E9\u06DA\u06DB\u06DC\u200E\u200F\u061C\u200B-\u200D\uFEFF]/gu, '')
+    .trim();
+}
+
+// Normalized Basmala words for comparison
+const BASMALA_NORMALIZED = BASMALA_WORDS.map(normalizeForComparison);
+
 function stripLeadingBasmala(text: string): { stripped: string; offset: number } {
   const trimmed = text.trimStart();
-  const leadingWhitespace = text.length - trimmed.length;
   if (!trimmed) return { stripped: trimmed, offset: 0 };
 
   // Check for single Basmala ligature character
@@ -39,15 +48,14 @@ function stripLeadingBasmala(text: string): { stripped: string; offset: number }
 
   // Check if the first 4 words match known Basmala patterns
   const words = trimmed.split(/\s+/u);
-  if (words.length < 4) return { stripped: trimmed, offset: leadingWhitespace };
+  if (words.length < 4) return { stripped: trimmed, offset: text.length - trimmed.length };
 
   const first4 = words.slice(0, 4);
   const isBasmala = first4.every((word, i) => {
-    const clean = word.replace(/[\u06DD\u06DE\u06E9\u06DA\u06DB\u06DC\u200E\u200F\u061C]/gu, '');
-    return clean === BASMALA_WORDS[i];
+    return normalizeForComparison(word) === BASMALA_NORMALIZED[i];
   });
 
-  if (!isBasmala) return { stripped: trimmed, offset: leadingWhitespace };
+  if (!isBasmala) return { stripped: trimmed, offset: text.length - trimmed.length };
 
   if (words.length <= 4) return { stripped: '', offset: text.length };
   const remaining = words.slice(4).join(' ').trimStart();
