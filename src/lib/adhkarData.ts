@@ -704,6 +704,7 @@ export const ANYTIME_ADHKAR: DhikrItem[] = [
   },
   {
     title: 'Sayyid al-Istighfâr',
+    fadl: 'Celui qui le dit avec certitude le matin et meurt ce jour-là entrera au Paradis. (Al-Bukhârî)',
     arabic: 'اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ، أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ وَأَبُوءُ بِذَنْبِي فَاغْفِرْ لِي فَإِنَّهُ لَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ',
     phonetic: "Allâhumma Anta Rabbî, lâ ilâha illâ Ant, khalaqtanî wa anâ 'abduk, wa anâ 'alâ 'ahdika wa wa'dika ma-stata't, a'ûdhu bika min sharri mâ sana't, abû'u laka bi-ni'matika 'alayya wa abû'u bi-dhanbî, fa-ghfir lî fa-innahu lâ yaghfiru dh-dhunûba illâ Ant.",
     french: "Ô Allah, Tu es mon Seigneur, il n'y a de divinité que Toi. Tu m'as créé et je suis Ton serviteur. Je suis fidèle à Ton pacte et à Ta promesse autant que je le peux. Je cherche refuge auprès de Toi contre le mal que j'ai commis. Je reconnais Tes bienfaits sur moi et je reconnais mon péché. Pardonne-moi, car nul ne pardonne les péchés si ce n'est Toi.",
