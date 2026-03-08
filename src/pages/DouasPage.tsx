@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ChevronRight, Moon, MapPin, Heart, Sparkles } from 'lucide-react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { DOUAS_CATEGORIES, type DouaCategory, type DouaSubtheme } from '@/lib/douasData';
-import DhikrSession from '@/components/dhikr/DhikrSession';
+import SourcesSession from '@/components/sources-lumiere/SourcesSession';
 
 const ICON_MAP: Record<string, React.ComponentType<any>> = {
   Moon, MapPin, Heart, Sparkles,
