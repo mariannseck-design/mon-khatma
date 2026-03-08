@@ -326,7 +326,11 @@ export default function MurjaPage() {
                     Progression du jour
                   </span>
                   <span className="font-bold" style={{ color: 'var(--p-accent)' }}>
-                    {checkedCount}/{totalBlocks} blocs
+                    {checkedCount >= totalBlocks
+                      ? 'Bravo, tu as tout révisé !'
+                      : checkedCount === 0
+                        ? "C'est parti !"
+                        : `Plus que ${totalBlocks - checkedCount} étape${totalBlocks - checkedCount > 1 ? 's' : ''} !`}
                   </span>
                 </div>
                 <div className="w-full h-2.5 rounded-full overflow-hidden" style={{ background: 'var(--p-track)' }}>
@@ -341,7 +345,7 @@ export default function MurjaPage() {
             )}
 
             {/* Section Ar-Rabt */}
-            <div className="space-y-3">
+            <div className="space-y-4">
               <div className="flex items-center gap-2">
                  <h2
                    className="text-base font-bold"
@@ -354,20 +358,9 @@ export default function MurjaPage() {
                  </span>
                  <MurajaMethodModal defaultTab="rabt" />
               </div>
-               <p className="text-[11px] font-medium -mt-1" style={{ color: 'var(--p-text-65)' }}>
-                 Récitation quotidienne obligatoire — {rabtVerses.length > 0 && (() => {
-                   const remaining = rabtVerses.map(v => getLiaisonRemaining(v)).filter(r => r !== null);
-                   const maxRemaining = remaining.length > 0 ? Math.max(...remaining) : 0;
-                   return `max ${maxRemaining}j restants`;
-                 })()}
+               <p className="text-[11px] font-medium -mt-2" style={{ color: 'var(--p-text-65)' }}>
+                 Récitation quotidienne
                </p>
-               <div
-                 className="rounded-lg px-3 py-2 text-[11px] leading-relaxed"
-                 style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', color: 'var(--p-text-65)' }}
-               >
-                 <strong style={{ color: 'var(--p-primary)' }}>Ar-Rabt</strong> (La Liaison) : Récitation quotidienne obligatoire pendant 30 jours pour transformer ta mémoire immédiate en un ancrage solide par la grâce d'<strong>Allah</strong>{' '}
-                 <span style={{ fontFamily: "'Amiri', serif", fontWeight: 'bold', fontSize: '1.1em' }}>(عز وجل)</span>.
-               </div>
               <MurajaChecklist
                 items={rabtVerses}
                 section="rabt"
@@ -376,75 +369,23 @@ export default function MurjaPage() {
               />
             </div>
 
-            {/* Maturity Bar — Mes ancrages en cours */}
-            {rabtVerses.length > 0 && (
-              <div className="space-y-3">
-                <h2
-                  className="text-base font-bold"
-                  style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-text)' }}
-                >
-                  Mes ancrages en cours (La Liaison)
-                </h2>
-                <div className="space-y-2">
-                  {rabtVerses.map((verse) => {
-                    const start = verse.liaison_start_date ? new Date(verse.liaison_start_date + 'T00:00:00') : new Date(verse.memorized_at);
-                    const daysPassed = Math.min(30, Math.max(0, Math.floor((Date.now() - start.getTime()) / 86400000)));
-                    const surahName = SURAHS.find(s => s.number === verse.surah_number)?.name || `Sourate ${verse.surah_number}`;
-                    return (
-                      <motion.div
-                        key={verse.id}
-                        initial={{ opacity: 0, y: 8 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="rounded-xl px-4 py-3 space-y-2"
-                        style={{ background: '#FFFFFF', border: '1px solid #E6F0ED' }}
-                      >
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm font-semibold" style={{ color: '#1C2421' }}>
-                            {surahName} ({verse.verse_start}-{verse.verse_end})
-                          </span>
-                          <span className="text-xs font-bold" style={{ color: '#065F46' }}>
-                            Jour {daysPassed} / 30
-                          </span>
-                        </div>
-                        <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: '#E6F0ED' }}>
-                          <motion.div
-                            className="h-full rounded-full"
-                            style={{ background: 'linear-gradient(90deg, #065F46, #10B981)' }}
-                            initial={{ width: 0 }}
-                            animate={{ width: `${(daysPassed / 30) * 100}%` }}
-                            transition={{ duration: 0.6 }}
-                          />
-                        </div>
-                      </motion.div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
             {/* Section Le Tour */}
-            <div className="space-y-3">
+            <div className="space-y-4">
               <div className="flex items-center gap-2">
                  <h2
                    className="text-base font-bold"
                    style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-text)' }}
                  >
-                   L'Entretien Continu (Le Tour)
+                   Le Tour — Révision intelligente
                  </h2>
                  <span className="text-[10px] font-medium px-2 py-0.5 rounded-full" style={{ background: 'var(--p-card-active)', color: 'var(--p-primary)' }}>
                    {tourVerses.length}
                  </span>
                  <MurajaMethodModal defaultTab="sm2" />
               </div>
-               <p className="text-[11px] font-medium -mt-1" style={{ color: 'var(--p-text-65)' }}>
-                 Anciens acquis — auto-évaluation après chaque bloc
+               <p className="text-[11px] font-medium -mt-2" style={{ color: 'var(--p-text-65)' }}>
+                 Anciens acquis — auto-évaluation
                </p>
-               <div
-                 className="rounded-lg px-3 py-2 text-[11px] leading-relaxed"
-                 style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', color: 'var(--p-text-65)' }}
-               >
-                 Ton programme de révision intelligent (<strong style={{ color: 'var(--p-primary)' }}>Algorithme SM-2</strong>). Il s'adapte naturellement à ta mémoire pour te proposer de réviser chaque verset au moment parfait, préservant ainsi ton trésor de l'oubli.
-               </div>
               <MurajaChecklist
                 items={tourVerses}
                 section="tour"
@@ -492,9 +433,11 @@ export default function MurjaPage() {
                       }}>
                         {s.status === 'liaison' ? 'Liaison' : 'Tour'}
                       </span>
-                      <span className="flex items-center gap-0.5">
+                     <span className="flex items-center gap-0.5">
                         <CalendarDays className="h-2.5 w-2.5" />
-                        {formatDate(s.nextReview)}
+                        {s.status === 'liaison'
+                          ? `Ancré le ${formatDate(s.nextReview)}`
+                          : `Prochaine : ${formatDate(s.nextReview)}`}
                       </span>
                     </div>
                   </div>
