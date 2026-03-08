@@ -352,6 +352,7 @@ export default function QuranReaderPage() {
             highlightAyah={currentAyahNumber}
             fontSize={TEXT_SIZES[textSizeIndex].value}
             darkMode={nightMode}
+            tajweedEnabled={tajweedEnabled}
           />
         )}
       </div>
