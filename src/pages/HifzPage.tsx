@@ -5,6 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import HifzConfig from '@/components/hifz/HifzConfig';
 import HifzGoalOnboarding from '@/components/hifz/HifzGoalOnboarding';
+import HifzDiagnostic from '@/components/hifz/HifzDiagnostic';
 import HifzStep0Intention from '@/components/hifz/HifzStep0Intention';
 import HifzStep1Revision from '@/components/hifz/HifzStep1Revision';
 import HifzStep2Impregnation from '@/components/hifz/HifzStep2Impregnation';
@@ -70,6 +71,7 @@ export default function HifzPage() {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [hasGoal, setHasGoal] = useState<boolean | null>(null);
   const [showGoalOnboarding, setShowGoalOnboarding] = useState(false);
+  const [showDiagnostic, setShowDiagnostic] = useState(false);
   const [restoringSession, setRestoringSession] = useState(true);
   const [showResumePrompt, setShowResumePrompt] = useState(false);
   const [pendingResume, setPendingResume] = useState<{ session: HifzSession; step: number; sessionId: string | null } | null>(null);
@@ -98,6 +100,19 @@ export default function HifzPage() {
   useEffect(() => {
     if (!user) { setHasGoal(true); setRestoringSession(false); return; }
     const init = async () => {
+      // Check if diagnostic was completed
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('onboarding_completed')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (!profileData?.onboarding_completed) {
+        setShowDiagnostic(true);
+        setRestoringSession(false);
+        return;
+      }
+
       // Check goal
       const { data: goalData } = await supabase
         .from('hifz_goals')
@@ -261,11 +276,42 @@ export default function HifzPage() {
   );
 
   // Loading state
-  if (hasGoal === null || restoringSession) {
+  if ((hasGoal === null && !showDiagnostic) || restoringSession) {
     return (
       <AppLayout title="Espace Hifz" hideNav>
         <div className="min-h-[80vh] flex items-center justify-center">
           <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+        </div>
+      </AppLayout>
+    );
+  }
+
+  // Diagnostic onboarding (first time)
+  if (showDiagnostic) {
+    return (
+      <AppLayout title="Espace Hifz" hideNav>
+        <div className="min-h-[80vh] rounded-[2rem] p-6 mx-[-4px]" style={GRADIENT_STYLE}>
+          <HifzDiagnostic
+            onComplete={() => {
+              setShowDiagnostic(false);
+              // Now check for goal
+              if (user) {
+                supabase.from('hifz_goals').select('id').eq('user_id', user.id).eq('is_active', true).maybeSingle().then(({ data }) => {
+                  setHasGoal(!!data);
+                  if (!data) setShowGoalOnboarding(true);
+                });
+              }
+            }}
+            onSkip={() => {
+              setShowDiagnostic(false);
+              if (user) {
+                supabase.from('hifz_goals').select('id').eq('user_id', user.id).eq('is_active', true).maybeSingle().then(({ data }) => {
+                  setHasGoal(!!data);
+                  if (!data) setShowGoalOnboarding(true);
+                });
+              }
+            }}
+          />
         </div>
       </AppLayout>
     );

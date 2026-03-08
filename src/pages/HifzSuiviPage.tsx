@@ -1,12 +1,15 @@
 import { useState, useEffect, useMemo } from 'react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { motion } from 'framer-motion';
-import { Flame, BookOpenCheck, RotateCcw, Target, Settings2 } from 'lucide-react';
+import { Flame, BookOpenCheck, RotateCcw, Target, Settings2, BookOpen, RefreshCw } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { Progress } from '@/components/ui/progress';
 import HifzGoalOnboarding from '@/components/hifz/HifzGoalOnboarding';
+import { findNextStartingPoint, getTodayRevisions } from '@/lib/hifzUtils';
+import { SURAHS } from '@/lib/surahData';
+import { Link } from 'react-router-dom';
 
 function getGreeting(): string {
   const h = new Date().getHours();
@@ -72,6 +75,8 @@ export default function HifzSuiviPage() {
   const [goal, setGoal] = useState<HifzGoal | null>(null);
   const [periodProgress, setPeriodProgress] = useState(0);
   const [showGoalEdit, setShowGoalEdit] = useState(false);
+  const [nextPoint, setNextPoint] = useState<{ surahNumber: number; startVerse: number; endVerse: number; surahName: string } | null>(null);
+  const [todayRevisions, setTodayRevisions] = useState<{ surah_number: number; verse_start: number; verse_end: number }[]>([]);
 
   const greeting = useMemo(() => getGreeting(), []);
   const motivation = useMemo(() => MOTIVATIONS[Math.floor(Math.random() * MOTIVATIONS.length)], []);
@@ -163,6 +168,15 @@ export default function HifzSuiviPage() {
       chartData.push({ day: label, count: dayCounts[key] || 0 });
     }
     setWeeklyData(chartData);
+
+    // Fetch next starting point & today's revisions
+    const [point, revisions] = await Promise.all([
+      findNextStartingPoint(user.id),
+      getTodayRevisions(user.id),
+    ]);
+    setNextPoint(point);
+    setTodayRevisions(revisions);
+
     setLoading(false);
   };
 
@@ -278,6 +292,109 @@ export default function HifzSuiviPage() {
                 <p className="text-sm text-white/70">Définis ton objectif de mémorisation</p>
               </motion.button>
             )}
+
+            {/* ═══ SPLIT DASHBOARD ═══ */}
+            <div className="grid grid-cols-1 gap-3">
+              {/* Programme du jour (Hifz) */}
+              {nextPoint && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.05 }}
+                >
+                  <Link to="/hifz" className="block">
+                    <div
+                      className="rounded-2xl p-5"
+                      style={{
+                        background: 'linear-gradient(135deg, rgba(13,115,119,0.2), rgba(20,145,155,0.12))',
+                        border: '1px solid rgba(212,175,55,0.25)',
+                      }}
+                    >
+                      <div className="flex items-center gap-3 mb-3">
+                        <div
+                          className="w-10 h-10 rounded-xl flex items-center justify-center"
+                          style={{ background: 'rgba(212,175,55,0.15)', border: '1px solid rgba(212,175,55,0.3)' }}
+                        >
+                          <BookOpen className="h-5 w-5" style={{ color: '#d4af37' }} />
+                        </div>
+                        <div>
+                          <h3 className="text-sm font-bold text-white">Programme du jour</h3>
+                          <p className="text-[10px] text-white/50 uppercase tracking-wider">Nouvelle mémorisation</p>
+                        </div>
+                      </div>
+                      <div
+                        className="rounded-xl px-4 py-3"
+                        style={{ background: 'rgba(0,0,0,0.15)', border: '1px solid rgba(212,175,55,0.15)' }}
+                      >
+                        <p className="text-sm font-semibold" style={{ color: '#d4af37' }}>
+                          {nextPoint.surahName}
+                        </p>
+                        <p className="text-xs text-white/60">
+                          Versets {nextPoint.startVerse} → {nextPoint.endVerse}
+                        </p>
+                      </div>
+                    </div>
+                  </Link>
+                </motion.div>
+              )}
+
+              {/* Révision du jour (Acquis) */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+              >
+                <Link to="/muraja" className="block">
+                  <div
+                    className="rounded-2xl p-5"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(82,121,111,0.2), rgba(116,168,146,0.1))',
+                      border: '1px solid rgba(212,175,55,0.2)',
+                    }}
+                  >
+                    <div className="flex items-center gap-3 mb-3">
+                      <div
+                        className="w-10 h-10 rounded-xl flex items-center justify-center"
+                        style={{ background: 'rgba(212,175,55,0.12)', border: '1px solid rgba(212,175,55,0.25)' }}
+                      >
+                        <RefreshCw className="h-5 w-5" style={{ color: '#d4af37' }} />
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-bold text-white">Révision du jour</h3>
+                        <p className="text-[10px] text-white/50 uppercase tracking-wider">Acquis à consolider</p>
+                      </div>
+                    </div>
+                    {todayRevisions.length > 0 ? (
+                      <div className="space-y-1.5">
+                        {todayRevisions.slice(0, 4).map((rev, i) => {
+                          const surah = SURAHS.find(s => s.number === rev.surah_number);
+                          return (
+                            <div
+                              key={i}
+                              className="rounded-lg px-3 py-2 flex items-center justify-between"
+                              style={{ background: 'rgba(0,0,0,0.12)', border: '1px solid rgba(255,255,255,0.06)' }}
+                            >
+                              <span className="text-xs text-white/80">{surah?.name || `Sourate ${rev.surah_number}`}</span>
+                              <span className="text-[10px] text-white/40">v.{rev.verse_start}-{rev.verse_end}</span>
+                            </div>
+                          );
+                        })}
+                        {todayRevisions.length > 4 && (
+                          <p className="text-[10px] text-center text-white/40">+{todayRevisions.length - 4} autres portions</p>
+                        )}
+                      </div>
+                    ) : (
+                      <div
+                        className="rounded-xl px-4 py-3 text-center"
+                        style={{ background: 'rgba(0,0,0,0.12)' }}
+                      >
+                        <p className="text-xs text-white/50">Aucune révision prévue aujourd'hui ✨</p>
+                      </div>
+                    )}
+                  </div>
+                </Link>
+              </motion.div>
+            </div>
 
             {/* 3 KPI Cards */}
             <div className="grid grid-cols-3 gap-3">
