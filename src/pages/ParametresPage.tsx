@@ -156,7 +156,7 @@ export default function ParametresPage() {
                   <AlertDialogFooter>
                     <AlertDialogCancel>Annuler</AlertDialogCancel>
                     <AlertDialogAction
-                      disabled={confirmText !== 'RÉINITIALISER' || isResetting}
+                      disabled={confirmText !== 'REINITIALISER' || isResetting}
                       className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                       onClick={async (e) => {
                         e.preventDefault();
