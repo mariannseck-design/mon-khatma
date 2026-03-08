@@ -262,7 +262,7 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
             onClick={() => setShowAdvice(prev => !prev)}
             className="w-full flex items-center justify-between px-4 py-2.5 text-left"
           >
-            <span className="text-xs font-medium" style={{ color: 'rgba(212,175,55,0.7)' }}>Conseil spirituel</span>
+            <span className="text-xs font-medium" style={{ color: 'rgba(212,175,55,0.7)' }}>Conseil</span>
             <motion.div animate={{ rotate: showAdvice ? 180 : 0 }} transition={{ duration: 0.2 }}>
               <ChevronDown className="h-3.5 w-3.5" style={{ color: 'rgba(212,175,55,0.5)' }} />
             </motion.div>
