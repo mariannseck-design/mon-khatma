@@ -1,29 +1,21 @@
 
 
-## Mise à jour de l'en-tête "Le Tour" → "Muraja'a (Consolidation)"
+# Diagnostic : 404 sur /quran-reader
 
-### Fichier : `src/pages/MurjaPage.tsx`
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-**Titre de section (ligne ~375-380)** : Remplacer `Le Tour — Révision intelligente` par un titre en deux parties :
-- "Muraja'a" en gras/plus grand
-- "(Consolidation)" en taille normale
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-**Sous-titre (ligne ~386-388)** : Remplacer `Anciens acquis — auto-évaluation` par `Entretien de tes anciens acquis pour un ancrage éternel inshaa Allah.`
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-**Icône Lamp / Tooltip** : Remplacer le `MurajaMethodModal` par un Tooltip Radix (déjà disponible) sur l'icône Lamp avec le texte demandé : *« La Muraja'a est la clé de la préservation. Ce programme intelligent organise ta consolidation pour que chaque verset reste vivant dans ton cœur par la grâce d'Allah (عز وجل). »*
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-On garde aussi le `MurajaMethodModal` accessible mais on ajoute le tooltip au survol/tap sur l'icône Lamp.
-
-### Approche pour le tooltip mobile-friendly
-Utiliser `TooltipProvider` + `Tooltip` de Radix avec `delayDuration={0}` pour que le tap fonctionne sur mobile. L'icône Lamp ouvrira le tooltip au tap, et un second tap ou tap ailleurs le fermera. Le `MurajaMethodModal` restera accessible via un lien dans le tooltip ou sera conservé séparément.
-
-**Alternative plus simple** : Transformer l'icône Lamp en tooltip uniquement (pas de modal) pour cette section, puisque le modal SM2 est déjà accessible depuis la section Tour. On wrap l'icône Lamp dans un `Tooltip` Radix affichant le texte demandé.
-
-### Résumé des changements
-
-| Fichier | Modification |
-|---|---|
-| `src/pages/MurjaPage.tsx` | Titre "Muraja'a (Consolidation)", sous-titre mis à jour, ajout Tooltip sur icône Lamp |
-
-Un seul fichier, modifications cosmétiques et textuelles.
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

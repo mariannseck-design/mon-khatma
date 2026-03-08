@@ -1,7 +1,8 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { AppLayout } from '@/components/layout/AppLayout';
-import { RefreshCw, RotateCcw, TrendingUp, CalendarDays, PartyPopper } from 'lucide-react';
+import { RefreshCw, RotateCcw, TrendingUp, CalendarDays, PartyPopper, Lamp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { supabase } from '@/integrations/supabase/client';
@@ -369,22 +370,32 @@ export default function MurjaPage() {
               />
             </div>
 
-            {/* Section Le Tour */}
+            {/* Section Muraja'a (Consolidation) */}
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                 <h2
-                   className="text-base font-bold"
-                   style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-text)' }}
-                 >
-                   Le Tour — Révision intelligente
+                 <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+                   <span className="text-lg font-extrabold" style={{ color: 'var(--p-primary)' }}>Muraja'a</span>{' '}
+                   <span className="text-sm font-medium" style={{ color: 'var(--p-text-75)' }}>(Consolidation)</span>
                  </h2>
                  <span className="text-[10px] font-medium px-2 py-0.5 rounded-full" style={{ background: 'var(--p-card-active)', color: 'var(--p-primary)' }}>
                    {tourVerses.length}
                  </span>
+                 <TooltipProvider delayDuration={0}>
+                   <Tooltip>
+                     <TooltipTrigger asChild>
+                       <button className="inline-flex items-center justify-center" aria-label="Info Muraja'a">
+                         <Lamp className="h-4 w-4" style={{ color: 'var(--p-primary)' }} />
+                       </button>
+                     </TooltipTrigger>
+                     <TooltipContent side="bottom" className="max-w-[260px] text-xs leading-relaxed">
+                       La Muraja'a est la clé de la préservation. Ce programme intelligent organise ta consolidation pour que chaque verset reste vivant dans ton cœur par la grâce d'Allah (عز وجل).
+                     </TooltipContent>
+                   </Tooltip>
+                 </TooltipProvider>
                  <MurajaMethodModal defaultTab="sm2" />
               </div>
                <p className="text-[11px] font-medium -mt-2" style={{ color: 'var(--p-text-65)' }}>
-                 Anciens acquis — auto-évaluation
+                 Entretien de tes anciens acquis pour un ancrage éternel inshaa Allah.
                </p>
               <MurajaChecklist
                 items={tourVerses}
