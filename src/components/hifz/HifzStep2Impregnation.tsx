@@ -19,6 +19,7 @@ const MUSHAF_CONTAINER_HEIGHTS = ['max-h-48', 'max-h-72', 'max-h-[500px]'];
 
 export default function HifzStep2Impregnation({ surahNumber, startVerse, endVerse, onNext, onBack }: Props) {
   const storageKey = `hifz_listen_${surahNumber}_${startVerse}_${endVerse}`;
+  const surahName = SURAHS.find(s => s.number === surahNumber)?.name || '';
 
   const [listenCount, setListenCount] = useState(() => {
     const saved = localStorage.getItem(storageKey);
@@ -27,7 +28,10 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
   const [isPlaying, setIsPlaying] = useState(false);
   const [reciter, setReciter] = useState('ar.alafasy');
   const [currentAyahIndex, setCurrentAyahIndex] = useState(-1);
-  const [mushafZoom, setMushafZoom] = useState(1); // 0=Petit, 1=Moyen, 2=Grand
+  const [mushafZoom, setMushafZoom] = useState(1);
+  const [translation, setTranslation] = useState<string[]>([]);
+  const [translationLoading, setTranslationLoading] = useState(true);
+  const [showTranslation, setShowTranslation] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const ayahsRef = useRef<{ audio: string; numberInSurah: number }[]>([]);
   const indexRef = useRef(0);
