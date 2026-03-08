@@ -122,6 +122,56 @@ export default function ReaderSettingsPanel({
                 </button>
               </div>
 
+              {/* Verse range selection — moved above surah selector */}
+              {onAudioStartVerseChange && onAudioEndVerseChange && (
+                <div className="mb-4 flex items-center gap-2">
+                  <div className="flex-1">
+                    <label className="text-[10px] opacity-60 mb-0.5 block">Du verset</label>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      placeholder="Début"
+                      value={audioStartVerse ?? ''}
+                      onChange={(e) => {
+                        const raw = e.target.value.replace(/[^0-9]/g, '');
+                        const v = raw ? parseInt(raw) : undefined;
+                        onAudioStartVerseChange(v && v > 0 ? v : undefined);
+                      }}
+                      onFocus={(e) => e.target.select()}
+                      onClick={(e) => e.stopPropagation()}
+                      className="w-full py-1.5 px-2 rounded-lg text-sm border-0 outline-none text-center"
+                      style={{
+                        background: nightMode ? 'rgba(90,180,180,0.08)' : 'rgba(255,255,255,0.2)',
+                        color: 'inherit',
+                        fontSize: '16px',
+                      }}
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <label className="text-[10px] opacity-60 mb-0.5 block">Au verset</label>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      placeholder="Fin"
+                      value={audioEndVerse ?? ''}
+                      onChange={(e) => {
+                        const raw = e.target.value.replace(/[^0-9]/g, '');
+                        const v = raw ? parseInt(raw) : undefined;
+                        onAudioEndVerseChange(v && v > 0 ? v : undefined);
+                      }}
+                      onFocus={(e) => e.target.select()}
+                      onClick={(e) => e.stopPropagation()}
+                      className="w-full py-1.5 px-2 rounded-lg text-sm border-0 outline-none text-center"
+                      style={{
+                        background: nightMode ? 'rgba(90,180,180,0.08)' : 'rgba(255,255,255,0.2)',
+                        color: 'inherit',
+                        fontSize: '16px',
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
+
               {/* Surah Selector */}
               {onShowSurahDrawer && (
                 <div className="mb-4">
