@@ -6,11 +6,12 @@ import {
   Bell
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { ChapeletIcon } from '@/components/icons/ChapeletIcon';
 
-const navItems: { path: string; icon: typeof Home; label: string; glow?: boolean }[] = [
+const navItems: { path: string; icon: React.FC<any>; label: string; glow?: boolean }[] = [
   { path: '/accueil', icon: Home, label: 'Accueil' },
   { path: '/ramadan', icon: Moon, label: 'Ramadan', glow: true },
-  { path: '/emotions', icon: Moon, label: 'Dhikr' },
+  { path: '/emotions', icon: ChapeletIcon, label: 'Dhikr' },
   { path: '/rappels', icon: Bell, label: 'Rappels' },
 ];
 
