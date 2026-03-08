@@ -417,7 +417,7 @@ export default function HifzSuiviPage() {
               >
                 <RotateCcw className="h-5 w-5" style={{ color: '#D4AF37' }} />
                 <span className="text-2xl font-bold" style={{ color: '#065F46' }}>{streak.tours}</span>
-                <span className="text-[10px] text-center leading-tight" style={{ color: 'rgba(28,36,33,0.5)' }}>Cycles terminés</span>
+                <span className="text-[10px] font-medium text-center leading-tight" style={{ color: 'rgba(28,36,33,0.65)' }}>Cycles terminés</span>
               </motion.div>
             </div>
 
