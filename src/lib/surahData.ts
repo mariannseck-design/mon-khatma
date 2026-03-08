@@ -116,6 +116,25 @@ export const SURAHS = [
   { number: 114, name: "An-Nas", nameFr: "Les Hommes", startPage: 604, versesCount: 6 },
 ];
 
+/**
+ * Estimate the Mushaf page for a given surah + verse number.
+ * Uses linear interpolation based on surah page ranges and verse counts.
+ * For exact page data, use getExactVersePage() from quranData.ts.
+ */
+export function getApproxVersePage(surahNumber: number, verseNumber: number): number {
+  const surah = SURAHS.find(s => s.number === surahNumber);
+  if (!surah) return 1;
+
+  const nextSurah = SURAHS.find(s => s.number === surahNumber + 1);
+  const surahEndPage = nextSurah ? nextSurah.startPage - 1 : 604;
+  const surahTotalPages = surahEndPage - surah.startPage;
+
+  if (surahTotalPages <= 0 || surah.versesCount <= 1) return surah.startPage;
+
+  const ratio = (verseNumber - 1) / surah.versesCount;
+  return Math.min(604, surah.startPage + Math.floor(ratio * (surahTotalPages + 1)));
+}
+
 // Fonction pour trouver la sourate actuelle basée sur le numéro de page
 export function getSurahByPage(pageNumber: number): { name: string; nameFr: string; number: number } | null {
   if (pageNumber < 1 || pageNumber > 604) return null;
