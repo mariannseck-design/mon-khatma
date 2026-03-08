@@ -219,7 +219,7 @@ export default function DefiAlKahf({ disabled = false }: { disabled?: boolean })
       </motion.div>
 
       <Dialog open={showCelebration} onOpenChange={setShowCelebration}>
-        <DialogContent className="sm:max-w-sm text-center border-none" style={{ background: `linear-gradient(135deg, ${COLORS.navy}, ${COLORS.navyLight})` }}>
+        <DialogContent className="sm:max-w-sm text-center border-none" style={{ background: `linear-gradient(135deg, ${COLORS.cave}, ${COLORS.caveLight})` }}>
           <DialogHeader className="space-y-3">
             <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', duration: 0.6 }} className="mx-auto text-5xl">
               🕌
