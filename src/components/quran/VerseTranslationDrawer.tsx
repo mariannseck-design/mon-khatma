@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getAyahAudioUrl } from '@/hooks/useQuranAudio';
-import { X, ChevronRight, ChevronLeft, Loader2, Play, Pause, Heart } from 'lucide-react';
+import { X, ChevronRight, ChevronLeft, Loader2, Play, Pause, Heart, Globe } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import type { VerseLineInfo } from './ImageVerseOverlay';
@@ -10,6 +10,13 @@ interface TranslationData {
   arabic: string;
   translation: string;
 }
+
+type TranslationLang = 'fr' | 'en';
+
+const TRANSLATION_EDITIONS: Record<TranslationLang, { label: string; edition: string }> = {
+  fr: { label: 'FR', edition: 'fr.hamidullah' },
+  en: { label: 'EN', edition: 'en.sahih' },
+};
 
 interface Props {
   verseKey: string | null;
@@ -25,6 +32,9 @@ export default function VerseTranslationDrawer({ verseKey, allVerses, onClose, o
   const [error, setError] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
   const [favLoading, setFavLoading] = useState(false);
+  const [lang, setLang] = useState<TranslationLang>(() => {
+    return (localStorage.getItem('quran_translation_lang') as TranslationLang) || 'fr';
+  });
 
   // Audio state
   const [audioPlaying, setAudioPlaying] = useState(false);
@@ -88,6 +98,11 @@ export default function VerseTranslationDrawer({ verseKey, allVerses, onClose, o
     }
   }, [verseKey, audioPlaying, stopAudio, reciter]);
 
+  const handleLangChange = (newLang: TranslationLang) => {
+    setLang(newLang);
+    localStorage.setItem('quran_translation_lang', newLang);
+  };
+
   useEffect(() => {
     if (!verseKey) { setData(null); return; }
     let cancelled = false;
@@ -97,21 +112,22 @@ export default function VerseTranslationDrawer({ verseKey, allVerses, onClose, o
     const fetchTranslation = async () => {
       try {
         const [surah, ayah] = verseKey!.split(':');
+        const edition = TRANSLATION_EDITIONS[lang].edition;
 
-        // Fetch Arabic and French translation from the same source as inline text
-        const [arRes, frRes] = await Promise.all([
+        // Fetch Arabic and translation from the same source as inline text
+        const [arRes, trRes] = await Promise.all([
           fetch(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/ar.alafasy`),
-          fetch(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/fr.hamidullah`),
+          fetch(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/${edition}`),
         ]);
-        if (!arRes.ok || !frRes.ok) throw new Error('API error');
-        const [arJson, frJson] = await Promise.all([arRes.json(), frRes.json()]);
+        if (!arRes.ok || !trRes.ok) throw new Error('API error');
+        const [arJson, trJson] = await Promise.all([arRes.json(), trRes.json()]);
         if (cancelled) return;
 
-        if (arJson.code !== 200 || frJson.code !== 200) throw new Error('API error');
+        if (arJson.code !== 200 || trJson.code !== 200) throw new Error('API error');
 
         setData({
           arabic: arJson.data.text,
-          translation: frJson.data.text,
+          translation: trJson.data.text,
         });
       } catch {
         if (!cancelled) setError(true);
@@ -122,7 +138,7 @@ export default function VerseTranslationDrawer({ verseKey, allVerses, onClose, o
 
     fetchTranslation();
     return () => { cancelled = true; };
-  }, [verseKey]);
+  }, [verseKey, lang]);
 
   // Check if verse is favorited
   useEffect(() => {
@@ -219,6 +235,22 @@ export default function VerseTranslationDrawer({ verseKey, allVerses, onClose, o
               </button>
             </div>
             <div className="flex items-center gap-1">
+              {/* Language toggle */}
+              <div className="flex rounded-full overflow-hidden" style={{ border: '1px solid rgba(181,148,46,0.3)' }}>
+                {(Object.keys(TRANSLATION_EDITIONS) as TranslationLang[]).map((key) => (
+                  <button
+                    key={key}
+                    onClick={() => handleLangChange(key)}
+                    className="px-2 py-1 text-[10px] font-bold transition-colors"
+                    style={{
+                      background: lang === key ? '#b5942e' : 'transparent',
+                      color: lang === key ? '#fff' : '#1a1a1a',
+                    }}
+                  >
+                    {TRANSLATION_EDITIONS[key].label}
+                  </button>
+                ))}
+              </div>
               {/* Play button */}
               <button
                 onClick={playVerse}
