@@ -28,6 +28,7 @@ import HifzSuiviPage from "./pages/HifzSuiviPage";
 
 import DhikrPage from "./pages/DhikrPage";
 import SourcesDeLumierePage from "./pages/SourcesDeLumierePage";
+import DouasPage from "./pages/DouasPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
