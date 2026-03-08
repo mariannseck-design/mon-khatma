@@ -1,16 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { BookOpen, Check } from 'lucide-react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
+import { Mountain, Check } from 'lucide-react';
 
 const COLORS = {
-  navy: '#1a2744',
-  navyLight: '#243556',
-  goldAccent: '#d4af37',
-  gold: '#b5942e',
+  cave: '#3B2F1E',
+  caveLight: '#5C4A32',
+  sand: '#C2A66B',
+  sandLight: '#D4BF8A',
 };
 
 function getWeekKey() {
