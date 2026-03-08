@@ -204,7 +204,7 @@ export default function HifzSuiviPage() {
           <h1 className="text-xl font-bold" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#065F46' }}>
             {greeting} 🌙
           </h1>
-          <p className="text-sm" style={{ color: 'rgba(28,36,33,0.5)' }}>{motivation}</p>
+          <p className="text-sm font-medium" style={{ color: 'rgba(28,36,33,0.65)' }}>{motivation}</p>
         </motion.div>
 
         {loading ? (
