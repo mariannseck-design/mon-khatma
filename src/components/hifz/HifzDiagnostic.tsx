@@ -644,7 +644,7 @@ export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticPro
             </div>
           </div>
           <p className="text-[11px] text-white/60 leading-relaxed pl-[52px]">
-            Ces sourates sont bien ancrées. Elles seront révisées par l'algorithme de répétition espacée (Le Tour).
+            Ces sourates sont bien ancrées. Elles seront révisées par l'algorithme de répétition espacée.
           </p>
         </motion.button>
 
