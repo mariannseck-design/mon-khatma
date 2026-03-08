@@ -455,6 +455,7 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 28, dark
                     onClick={(e) => {
                       e.stopPropagation();
                       setSelectedAyah(prev => prev === ayah.number ? null : ayah.number);
+                      onVerseSelect?.(`${ayah.surah.number}:${ayah.numberInSurah}`, ayah.surah.number, ayah.numberInSurah);
                     }}
                     className="cursor-pointer"
                     style={{
