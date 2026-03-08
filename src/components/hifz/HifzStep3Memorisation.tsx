@@ -391,16 +391,20 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
                   <p className="text-xs font-semibold" style={{ color: '#d4af37' }}>Mode d'emploi de votre progression :</p>
 
                   <div className="space-y-2">
-                    <div className="flex items-start gap-2 rounded-lg px-3 py-2" style={{ background: ancrage < 10 ? 'rgba(78,205,196,0.15)' : 'transparent', border: ancrage < 10 ? '1px solid rgba(78,205,196,0.3)' : '1px solid transparent' }}>
-                      <span className="text-xs mt-0.5 whitespace-nowrap" style={{ color: '#4ecdc4', fontWeight: ancrage < 10 ? 700 : 400 }}>1 à 10</span>
-                      <p className="text-xs text-white/70">📖 Texte Tajwid visible + audio. Imprégnation visuelle et auditive.</p>
+                    <div className="flex items-start gap-2 rounded-lg px-3 py-2" style={{ background: phaseInfo.phase === 1 ? 'rgba(78,205,196,0.15)' : 'transparent', border: phaseInfo.phase === 1 ? '1px solid rgba(78,205,196,0.3)' : '1px solid transparent' }}>
+                      <span className="text-xs mt-0.5 whitespace-nowrap" style={{ color: '#4ecdc4', fontWeight: phaseInfo.phase === 1 ? 700 : 400 }}>1 à {quarters.q1End}</span>
+                      <p className="text-xs text-white/70">📖 Texte Tajwid + audio actif. Écoute, lecture et répétition simultanée.</p>
                     </div>
-                    <div className="flex items-start gap-2 rounded-lg px-3 py-2" style={{ background: ancrage >= 10 && ancrage < 15 ? 'rgba(240,208,96,0.15)' : 'transparent', border: ancrage >= 10 && ancrage < 15 ? '1px solid rgba(240,208,96,0.3)' : '1px solid transparent' }}>
-                      <span className="text-xs mt-0.5 whitespace-nowrap" style={{ color: '#f0d060', fontWeight: ancrage >= 10 && ancrage < 15 ? 700 : 400 }}>11 à 15</span>
-                      <p className="text-xs text-white/70">📖 Texte visible, audio désactivé. Autonomie visuelle.</p>
+                    <div className="flex items-start gap-2 rounded-lg px-3 py-2" style={{ background: phaseInfo.phase === 2 ? 'rgba(69,183,170,0.15)' : 'transparent', border: phaseInfo.phase === 2 ? '1px solid rgba(69,183,170,0.3)' : '1px solid transparent' }}>
+                      <span className="text-xs mt-0.5 whitespace-nowrap" style={{ color: '#45b7aa', fontWeight: phaseInfo.phase === 2 ? 700 : 400 }}>{quarters.q1End + 1} à {quarters.q2End}</span>
+                      <p className="text-xs text-white/70">📖 Texte visible + audio discret. Lecture autonome avec aide audio.</p>
                     </div>
-                    <div className="flex items-start gap-2 rounded-lg px-3 py-2" style={{ background: ancrage >= 15 ? 'rgba(212,175,55,0.15)' : 'transparent', border: ancrage >= 15 ? '1px solid rgba(212,175,55,0.3)' : '1px solid transparent' }}>
-                      <span className="text-xs mt-0.5 whitespace-nowrap" style={{ color: '#d4af37', fontWeight: ancrage >= 15 ? 700 : 400 }}>Dès la 16ème</span>
+                    <div className="flex items-start gap-2 rounded-lg px-3 py-2" style={{ background: phaseInfo.phase === 3 ? 'rgba(240,208,96,0.15)' : 'transparent', border: phaseInfo.phase === 3 ? '1px solid rgba(240,208,96,0.3)' : '1px solid transparent' }}>
+                      <span className="text-xs mt-0.5 whitespace-nowrap" style={{ color: '#f0d060', fontWeight: phaseInfo.phase === 3 ? 700 : 400 }}>{quarters.q2End + 1} à {quarters.q3End}</span>
+                      <p className="text-xs text-white/70">📖 Texte visible, sans audio. Autonomie visuelle complète.</p>
+                    </div>
+                    <div className="flex items-start gap-2 rounded-lg px-3 py-2" style={{ background: phaseInfo.phase === 4 ? 'rgba(212,175,55,0.15)' : 'transparent', border: phaseInfo.phase === 4 ? '1px solid rgba(212,175,55,0.3)' : '1px solid transparent' }}>
+                      <span className="text-xs mt-0.5 whitespace-nowrap" style={{ color: '#d4af37', fontWeight: phaseInfo.phase === 4 ? 700 : 400 }}>Dès la {quarters.q3End + 1}ème</span>
                       <p className="text-xs text-white/70">🧠 Texte masqué. Récitation de mémoire. Bouton « Vérifier » disponible.</p>
                     </div>
                   </div>
