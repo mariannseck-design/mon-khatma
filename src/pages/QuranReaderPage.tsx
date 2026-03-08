@@ -204,7 +204,7 @@ export default function QuranReaderPage() {
   const surah = getSurahByPage(page);
   const juz = Math.ceil(page / 20);
 
-  useEffect(() => { localStorage.setItem('quran_reader_page', page.toString()); setPageInput(page.toString()); }, [page]);
+  useEffect(() => { localStorage.setItem('quran_reader_page', page.toString()); setPageInput(page.toString()); setSearchParams({ page: page.toString() }, { replace: true }); }, [page, setSearchParams]);
 
   // Preload adjacent pages (image mode)
   useEffect(() => {
