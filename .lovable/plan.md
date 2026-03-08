@@ -1,21 +1,46 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : 3 corrections pour le lecteur Coran
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### 1. Déplacer les champs "Du verset / Au verset" au-dessus de "Choisir une sourate"
+**Fichier** : `src/components/quran/ReaderSettingsPanel.tsx`
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+Les inputs de plage de versets sont actuellement en bas dans la section Audio (lignes 338-393). Les déplacer juste après le Header (ligne 123) et avant le bouton "Choisir une sourate" (ligne 126). Garder le même style mais les rendre indépendants de la section audio.
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+### 2. Corriger l'audio de Ghamidi
+**Fichier** : `src/hooks/useQuranAudio.ts`
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+Le dossier `Sa3d_Al-Ghamidi/128kbps` n'existe pas sur everyayah.com. Le vrai dossier est `Ghamadi_40kbps`. Corriger la ligne 13 :
+```ts
+{ id: 'ea.ghamidi', name: 'Saad Al-Ghamidi', source: 'everyayah', folder: 'Ghamadi_40kbps' }
+```
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+### 3. Persister le viewMode dans localStorage
+**Fichier** : `src/pages/QuranReaderPage.tsx`
+
+Le `viewMode` est initialisé en dur à `'image'` (ligne 45). Il faut :
+- Lire depuis `localStorage.getItem('quran_view_mode')` au démarrage
+- Sauvegarder dans localStorage à chaque changement via un wrapper `handleViewModeChange`
+
+```ts
+const [viewMode, setViewMode] = useState<'image' | 'text'>(() => {
+  const saved = localStorage.getItem('quran_view_mode');
+  return saved === 'text' ? 'text' : 'image';
+});
+
+const handleViewModeChange = (mode: 'image' | 'text') => {
+  setViewMode(mode);
+  localStorage.setItem('quran_view_mode', mode);
+};
+```
+
+Passer `handleViewModeChange` au lieu de `setViewMode` dans les props de `ReaderSettingsPanel`.
+
+### Fichiers modifiés
+
+| Fichier | Action |
+|---|---|
+| `src/components/quran/ReaderSettingsPanel.tsx` | Déplacer verse range inputs en haut |
+| `src/hooks/useQuranAudio.ts` | Fix dossier Ghamidi → `Ghamadi_40kbps` |
+| `src/pages/QuranReaderPage.tsx` | Persister viewMode dans localStorage |
 
