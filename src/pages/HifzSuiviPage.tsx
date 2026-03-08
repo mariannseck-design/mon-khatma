@@ -75,6 +75,8 @@ export default function HifzSuiviPage() {
   const [goal, setGoal] = useState<HifzGoal | null>(null);
   const [periodProgress, setPeriodProgress] = useState(0);
   const [showGoalEdit, setShowGoalEdit] = useState(false);
+  const [nextPoint, setNextPoint] = useState<{ surahNumber: number; startVerse: number; endVerse: number; surahName: string } | null>(null);
+  const [todayRevisions, setTodayRevisions] = useState<{ surah_number: number; verse_start: number; verse_end: number }[]>([]);
 
   const greeting = useMemo(() => getGreeting(), []);
   const motivation = useMemo(() => MOTIVATIONS[Math.floor(Math.random() * MOTIVATIONS.length)], []);
