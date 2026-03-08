@@ -1,21 +1,20 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Ajouter une 3ème carte "Mes Favoris" dans la grille Bien-Être
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Modification
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+**`src/pages/EmotionsPage.tsx`** :
+- Importer `Heart` (déjà importé) et `FavoriteVersesSection` n'est pas nécessaire ici — la carte sera un lien
+- Passer la grille de `grid-cols-2` à `grid-cols-3` 
+- Ajouter une 3ème carte **"Mes Favoris"** avec l'icône `Heart`, qui redirige vers la section favoris sur l'accueil ou qui affiche les favoris directement en dessous (comme pour Émotions)
+- Puisque `FavoriteVersesSection` existe déjà comme composant autonome, la carte scrollera vers une nouvelle section favoris ajoutée sous la section Émotions, avec le composant `FavoriteVersesSection` intégré
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+### Détail
+- Grille : `grid-cols-3 gap-3`, retirer `aspect-[4/3]` pour un ratio plus compact adapté à 3 colonnes
+- Carte "Mes Favoris" : icône Heart rouge, scrolle vers `favorisSectionRef` en bas de page
+- Ajouter `FavoriteVersesSection` importé depuis `@/components/favoris/FavoriteVersesSection` dans une nouvelle section entre la section Émotions et la réflexion du mois
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
-
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+### Fichier modifié
+- `src/pages/EmotionsPage.tsx`
 
