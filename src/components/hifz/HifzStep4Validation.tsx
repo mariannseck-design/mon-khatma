@@ -262,7 +262,7 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
             onClick={() => setShowAdvice(prev => !prev)}
             className="w-full flex items-center justify-between px-4 py-2.5 text-left"
           >
-            <span className="text-xs font-medium" style={{ color: 'rgba(212,175,55,0.7)' }}>Conseil spirituel</span>
+            <span className="text-xs font-medium" style={{ color: 'rgba(212,175,55,0.7)' }}>Conseil</span>
             <motion.div animate={{ rotate: showAdvice ? 180 : 0 }} transition={{ duration: 0.2 }}>
               <ChevronDown className="h-3.5 w-3.5" style={{ color: 'rgba(212,175,55,0.5)' }} />
             </motion.div>
@@ -275,9 +275,15 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
                 exit={{ height: 0, opacity: 0 }}
                 transition={{ duration: 0.2 }}
               >
-                <p className="text-xs leading-relaxed italic text-center px-4 pb-3" style={{ color: 'rgba(255,255,255,0.6)' }}>
+                <p className="text-xs leading-relaxed italic text-center px-4 pb-2" style={{ color: 'rgba(255,255,255,0.6)' }}>
                   « Si vous éprouvez le moindre doute lors de la récitation, c'est le signe que l'ancrage n'est pas encore solide. Regardez le texte, puis recommencez votre série de 3 à zéro. Cette rigueur est le secret d'une mémoire inaltérable. »
                 </p>
+                <div className="flex items-center justify-center gap-1.5 pb-3">
+                  <Lock className="h-2.5 w-2.5" style={{ color: 'rgba(255,255,255,0.3)' }} />
+                  <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.3)' }}>
+                    Tes enregistrements restent sur ton appareil et sont supprimés automatiquement
+                  </p>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
@@ -388,13 +394,6 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
             <p className="text-xs" style={{ color: 'rgba(255,255,255,0.35)' }}>
               {isRecording ? 'Appuie pour arrêter' : 'Appuie pour enregistrer'}
             </p>
-            {/* Privacy note */}
-            <div className="flex items-center justify-center gap-1.5 pt-1">
-              <Lock className="h-3 w-3" style={{ color: 'rgba(255,255,255,0.25)' }} />
-              <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.25)' }}>
-                Tes enregistrements restent sur ton appareil et sont supprimés automatiquement
-              </p>
-            </div>
           </div>
         ) : (
           <div className="space-y-4">
@@ -433,13 +432,6 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
               </motion.button>
             </div>
 
-            {/* Privacy note */}
-            <div className="flex items-center justify-center gap-1.5">
-              <Lock className="h-3 w-3" style={{ color: 'rgba(255,255,255,0.25)' }} />
-              <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.25)' }}>
-                Tes enregistrements restent sur ton appareil et sont supprimés automatiquement
-              </p>
-            </div>
 
             {/* Bonus mode: button to finalize */}
             {bonusMode && (

@@ -1,15 +1,21 @@
 
 
-## Plan : 3 petites modifications textuelles
+# Diagnostic : 404 sur /quran-reader
 
-### Fichiers modifiés
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-**1. `src/components/hifz/HifzStepWrapper.tsx` (ligne 90)**
-- Remplacer `Pause — revenir à l'accueil` par simplement `Pause`
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-**2. `src/components/hifz/HifzStep4Validation.tsx`**
-- Ligne 265 : Remplacer `Conseil spirituel` par `Conseil`
-- La note privacy (Lock + texte) sous le dictaphone : la masquer par défaut (`showAdvice` style), ou plus simplement la supprimer du rendu visible et la déplacer dans le bloc collapsible "Conseil". Non — l'utilisatrice demande de **cacher le texte sous l'audio**. En regardant les screenshots, le texte "Tes enregistrements restent sur ton appareil..." apparaît visible en permanence. Il faut le cacher par défaut, avec un petit bouton discret pour l'afficher (ou le mettre dans le collapsible Conseil).
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-→ Approche : retirer les deux instances de la note privacy (sous le micro et sous les boutons Parfait/Erreur) et les remplacer par un unique petit lien discret "🔒 Confidentialité" qui, au clic, affiche le texte en toggle.
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
