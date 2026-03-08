@@ -79,7 +79,49 @@ export default function AccueilPage() {
       fetchProgress();
       fetchReadingGoal();
     }
+    // Check for active hifz session (localStorage first, then DB)
+    detectActiveHifzSession();
   }, [user]);
+
+  const detectActiveHifzSession = async () => {
+    try {
+      const raw = localStorage.getItem('hifz_active_session');
+      if (raw) {
+        const data = JSON.parse(raw);
+        if (data.session && typeof data.step === 'number' && data.step >= 0 && data.step <= 4) {
+          if (Date.now() - (data.ts || 0) < 24 * 60 * 60 * 1000) {
+            const surahData = await import('@/lib/surahData');
+            const surah = surahData.SURAHS.find((s: any) => s.number === data.session.surahNumber);
+            setActiveHifzSession({
+              surahName: surah?.name || `Sourate ${data.session.surahNumber}`,
+              stepName: STEP_NAMES[data.step] || `Étape ${data.step}`,
+            });
+            return;
+          }
+        }
+      }
+      if (user) {
+        const { data: dbSession } = await supabase
+          .from('hifz_sessions')
+          .select('surah_number, current_step')
+          .eq('user_id', user.id)
+          .is('completed_at', null)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        if (dbSession && dbSession.current_step >= 0 && dbSession.current_step <= 4) {
+          const surahData = await import('@/lib/surahData');
+          const surah = surahData.SURAHS.find((s: any) => s.number === dbSession.surah_number);
+          setActiveHifzSession({
+            surahName: surah?.name || `Sourate ${dbSession.surah_number}`,
+            stepName: STEP_NAMES[dbSession.current_step] || `Étape ${dbSession.current_step}`,
+          });
+        }
+      }
+    } catch {
+      // ignore
+    }
+  };
 
   const fetchReadingGoal = async () => {
     if (!user) return;
