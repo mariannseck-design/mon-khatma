@@ -15,6 +15,7 @@ import RamadanWeeklyReport from '@/components/ramadan/RamadanWeeklyReport';
 import DefiAlMulk from '@/components/defis/DefiAlMulk';
 import DefiAlBaqara from '@/components/defis/DefiAlBaqara';
 import DefisCommunityCounter from '@/components/defis/DefisCommunityCounter';
+import HifzCommunityCounter from '@/components/hifz/HifzCommunityCounter';
 import FavoriteVersesSection from '@/components/favoris/FavoriteVersesSection';
 import { useDailyNotification } from '@/hooks/useDailyNotification';
 import { usePushSubscription } from '@/hooks/usePushSubscription';
@@ -408,6 +409,11 @@ export default function AccueilPage() {
                   </div>
                 </motion.div>
               </Link>
+            </motion.div>
+
+            {/* Hifz Community Counter */}
+            <motion.div variants={itemVariants} className="flex justify-center -mt-1 -mb-1">
+              <HifzCommunityCounter />
             </motion.div>
 
             {/* MURAJA'A — Unified card with badge */}

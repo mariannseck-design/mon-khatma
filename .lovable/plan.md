@@ -1,28 +1,21 @@
 
 
-## Plan : Compteur communautaire Hifz
+# Diagnostic : 404 sur /quran-reader
 
-Ajouter un compteur communautaire pour le Hifz, comme ceux existants pour la Tilawah et les Défis.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### 1. Fonction RPC sécurisée (migration)
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-Créer `get_hifz_collective_stats` (SECURITY DEFINER) qui retourne :
-- **`active_memorizers`** : nombre d'utilisatrices distinctes ayant complété une session Hifz dans les 7 derniers jours
-- **`total_verses_memorized`** : somme globale des versets mémorisés par toute la communauté (via `hifz_memorized_verses`)
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-### 2. Composant `HifzCommunityCounter`
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-Créer `src/components/hifz/HifzCommunityCounter.tsx` — petit badge compact (même style que `DefisCommunityCounter`) affichant :
-- Nombre de mémorisatrices actives
-- Total de versets mémorisés collectivement
-- Polling toutes les 30s
-
-### 3. Intégration dans AccueilPage
-
-Ajouter le compteur sous la carte "Espace Hifz" dans l'onglet Principal, entre le bloc Hifz et le bloc Muraja'a.
-
-### Fichiers concernés
-- **Migration SQL** : nouvelle fonction `get_hifz_collective_stats`
-- **`src/components/hifz/HifzCommunityCounter.tsx`** : nouveau composant
-- **`src/pages/AccueilPage.tsx`** : import et placement du compteur
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
