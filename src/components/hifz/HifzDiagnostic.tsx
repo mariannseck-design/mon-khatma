@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BookOpen, CheckCircle2, Sparkles, ArrowLeft, Layers, Plus, X, ChevronDown, ChevronUp } from 'lucide-react';
+import { BookOpen, CheckCircle2, Sparkles, ArrowLeft, Layers, Plus, X, ChevronDown, ChevronUp, Building2, Sprout, Clock } from 'lucide-react';
 import { SURAHS } from '@/lib/surahData';
 import { surahsToVerseBlocks, pageRangeToVerseBlocks, injectMemorizedVerses } from '@/lib/hifzUtils';
 import { useAuth } from '@/contexts/AuthContext';
@@ -13,7 +13,8 @@ interface HifzDiagnosticProps {
 }
 
 type TabId = 'pages' | 'juz' | 'surahs';
-type Mode = 'main' | 'confirming' | 'done';
+type DiagnosticStep = 'choose-category' | 'solid-entry' | 'recent-entry' | 'recent-days' | 'confirming' | 'done';
+type Category = 'solid' | 'recent';
 
 interface PageInterval {
   id: string;
@@ -27,15 +28,22 @@ interface SurahSelection {
   verseEnd?: number;
 }
 
-// Juz data: approximate page ranges for each Juz
+interface BlockWithMeta {
+  surahNumber: number;
+  verseStart: number;
+  verseEnd: number;
+  category: Category;
+  daysAlreadyDone?: number;
+}
+
+// Juz data
 const JUZ_DATA = Array.from({ length: 30 }, (_, i) => ({
   number: i + 1,
   label: `Juz ${i + 1}`,
-  startPage: Math.ceil((i / 30) * 604) + 1,
-  endPage: Math.ceil(((i + 1) / 30) * 604),
+  startPage: 1,
+  endPage: 604,
 }));
 
-// More accurate Juz start pages
 const JUZ_START_PAGES = [
   1, 22, 42, 62, 82, 102, 121, 142, 162, 182,
   201, 222, 242, 262, 282, 302, 322, 342, 362, 382,
@@ -61,14 +69,17 @@ const glassBorder = 'rgba(255,255,255,0.12)';
 
 export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticProps) {
   const { user } = useAuth();
-  const [mode, setMode] = useState<Mode>('main');
+  const [step, setStep] = useState<DiagnosticStep>('choose-category');
   const [activeTab, setActiveTab] = useState<TabId>('pages');
   const [saving, setSaving] = useState(false);
 
+  // Accumulated blocks from both categories
+  const [solidBlocks, setSolidBlocks] = useState<BlockWithMeta[]>([]);
+  const [recentBlocks, setRecentBlocks] = useState<BlockWithMeta[]>([]);
+  const [recentDaysMap, setRecentDaysMap] = useState<Map<number, number>>(new Map()); // index -> days
+
   // Pages state
-  const [pageIntervals, setPageIntervals] = useState<PageInterval[]>([
-    { id: '1', start: 1, end: 20 },
-  ]);
+  const [pageIntervals, setPageIntervals] = useState<PageInterval[]>([{ id: '1', start: 1, end: 20 }]);
 
   // Juz state
   const [selectedJuz, setSelectedJuz] = useState<Set<number>>(new Set());
@@ -77,6 +88,16 @@ export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticPro
   const [surahSelections, setSurahSelections] = useState<Map<number, SurahSelection>>(new Map());
   const [expandedSurah, setExpandedSurah] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+
+  // ─── Reset entry form ───
+  const resetEntryForm = () => {
+    setPageIntervals([{ id: '1', start: 1, end: 20 }]);
+    setSelectedJuz(new Set());
+    setSurahSelections(new Map());
+    setExpandedSurah(null);
+    setSearchQuery('');
+    setActiveTab('pages');
+  };
 
   // ─── Page intervals logic ───
   const addInterval = () => {
@@ -94,12 +115,9 @@ export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticPro
   };
 
   const updateInterval = (id: string, field: 'start' | 'end', value: number) => {
-    setPageIntervals(prev => prev.map(i =>
-      i.id === id ? { ...i, [field]: value } : i
-    ));
+    setPageIntervals(prev => prev.map(i => i.id === id ? { ...i, [field]: value } : i));
   };
 
-  // ─── Juz logic ───
   const toggleJuz = (num: number) => {
     setSelectedJuz(prev => {
       const next = new Set(prev);
@@ -108,7 +126,6 @@ export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticPro
     });
   };
 
-  // ─── Surahs logic ───
   const toggleSurah = (num: number) => {
     setSurahSelections(prev => {
       const next = new Map(prev);
@@ -127,9 +144,7 @@ export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticPro
     setSurahSelections(prev => {
       const next = new Map(prev);
       const existing = next.get(num);
-      if (existing) {
-        next.set(num, { ...existing, [field]: value });
-      }
+      if (existing) next.set(num, { ...existing, [field]: value });
       return next;
     });
   };
@@ -142,78 +157,88 @@ export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticPro
     );
   }, [searchQuery]);
 
-  // ─── Summary calculations ───
-  const totalPages = useMemo(() => {
+  // ─── Build blocks from current form ───
+  const buildCurrentBlocks = useCallback((category: Category): BlockWithMeta[] => {
+    let rawBlocks: { surahNumber: number; verseStart: number; verseEnd: number }[] = [];
     if (activeTab === 'pages') {
-      return pageIntervals.reduce((sum, i) => sum + Math.max(0, i.end - i.start + 1), 0);
-    }
-    if (activeTab === 'juz') {
-      return Array.from(selectedJuz).reduce((sum, j) => {
-        const juz = JUZ_DATA[j - 1];
-        return sum + (juz ? juz.endPage - juz.startPage + 1 : 0);
-      }, 0);
-    }
-    // Surahs: estimate pages from verse count
-    let totalVerses = 0;
-    surahSelections.forEach((sel, num) => {
-      if (sel.selected) {
-        totalVerses += (sel.verseEnd || 0) - (sel.verseStart || 1) + 1;
+      for (const interval of pageIntervals) {
+        rawBlocks.push(...pageRangeToVerseBlocks(interval.start, interval.end));
       }
-    });
-    return Math.ceil(totalVerses / 15);
+    } else if (activeTab === 'juz') {
+      for (const juzNum of Array.from(selectedJuz).sort((a, b) => a - b)) {
+        const juz = JUZ_DATA[juzNum - 1];
+        if (juz) rawBlocks.push(...pageRangeToVerseBlocks(juz.startPage, juz.endPage));
+      }
+    } else {
+      surahSelections.forEach((sel, num) => {
+        if (sel.selected) {
+          rawBlocks.push({
+            surahNumber: num,
+            verseStart: sel.verseStart || 1,
+            verseEnd: sel.verseEnd || SURAHS.find(s => s.number === num)?.versesCount || 1,
+          });
+        }
+      });
+      rawBlocks.sort((a, b) => a.surahNumber - b.surahNumber);
+    }
+    return rawBlocks.map(b => ({ ...b, category }));
   }, [activeTab, pageIntervals, selectedJuz, surahSelections]);
-
-  const totalSurahs = useMemo(() => {
-    return Array.from(surahSelections.values()).filter(s => s.selected).length;
-  }, [surahSelections]);
 
   const hasSelection = useMemo(() => {
     if (activeTab === 'pages') return pageIntervals.some(i => i.end >= i.start);
     if (activeTab === 'juz') return selectedJuz.size > 0;
-    return totalSurahs > 0;
-  }, [activeTab, pageIntervals, selectedJuz, totalSurahs]);
-
-  // ─── Build blocks for confirmation ───
-  const buildBlocks = useCallback(() => {
-    if (activeTab === 'pages') {
-      const allBlocks: { surahNumber: number; verseStart: number; verseEnd: number }[] = [];
-      for (const interval of pageIntervals) {
-        allBlocks.push(...pageRangeToVerseBlocks(interval.start, interval.end));
-      }
-      return allBlocks;
-    }
-    if (activeTab === 'juz') {
-      const allBlocks: { surahNumber: number; verseStart: number; verseEnd: number }[] = [];
-      for (const juzNum of Array.from(selectedJuz).sort((a, b) => a - b)) {
-        const juz = JUZ_DATA[juzNum - 1];
-        if (juz) allBlocks.push(...pageRangeToVerseBlocks(juz.startPage, juz.endPage));
-      }
-      return allBlocks;
-    }
-    // Surahs
-    const blocks: { surahNumber: number; verseStart: number; verseEnd: number }[] = [];
-    surahSelections.forEach((sel, num) => {
-      if (sel.selected) {
-        blocks.push({
-          surahNumber: num,
-          verseStart: sel.verseStart || 1,
-          verseEnd: sel.verseEnd || SURAHS.find(s => s.number === num)?.versesCount || 1,
-        });
-      }
-    });
-    return blocks.sort((a, b) => a.surahNumber - b.surahNumber);
+    return Array.from(surahSelections.values()).some(s => s.selected);
   }, [activeTab, pageIntervals, selectedJuz, surahSelections]);
+
+  // ─── Save entry for a category ───
+  const saveCurrentEntry = (category: Category) => {
+    const blocks = buildCurrentBlocks(category);
+    if (category === 'solid') {
+      setSolidBlocks(prev => [...prev, ...blocks]);
+      resetEntryForm();
+      setStep('choose-category');
+    } else {
+      setRecentBlocks(prev => [...prev, ...blocks]);
+      // Initialize days map for new blocks
+      setRecentDaysMap(prev => {
+        const next = new Map(prev);
+        const startIdx = recentBlocks.length;
+        blocks.forEach((_, i) => {
+          if (!next.has(startIdx + i)) next.set(startIdx + i, 1);
+        });
+        return next;
+      });
+      resetEntryForm();
+      setStep('recent-days');
+    }
+  };
 
   // ─── Confirm handler ───
   const handleConfirm = async () => {
     if (!user) return;
     setSaving(true);
     try {
-      const blocks = buildBlocks();
-      const result = await injectMemorizedVerses(user.id, blocks);
+      // Inject solid blocks
+      if (solidBlocks.length > 0) {
+        await injectMemorizedVerses(user.id, solidBlocks, { category: 'solid' });
+      }
+      // Inject recent blocks with their respective days
+      if (recentBlocks.length > 0) {
+        // Group by daysAlreadyDone for batch injection
+        const byDays = new Map<number, BlockWithMeta[]>();
+        recentBlocks.forEach((b, i) => {
+          const days = recentDaysMap.get(i) || 1;
+          if (!byDays.has(days)) byDays.set(days, []);
+          byDays.get(days)!.push(b);
+        });
+        for (const [days, blocks] of byDays) {
+          await injectMemorizedVerses(user.id, blocks, { category: 'recent', daysAlreadyDone: days });
+        }
+      }
       await supabase.from('profiles').update({ onboarding_completed: true }).eq('user_id', user.id);
-      setMode('done');
-      toast({ title: 'Acquis enregistrés ✨', description: `${result.count} blocs ajoutés à votre programme de révision.` });
+      setStep('done');
+      const totalCount = solidBlocks.length + recentBlocks.length;
+      toast({ title: 'Acquis enregistrés ✨', description: `${totalCount} blocs ajoutés à votre programme.` });
       setTimeout(() => onComplete(), 2000);
     } catch (err) {
       console.error('Diagnostic error:', err);
@@ -238,7 +263,7 @@ export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticPro
   };
 
   // ─── DONE SCREEN ───
-  if (mode === 'done') {
+  if (step === 'done') {
     return (
       <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
         className="flex flex-col items-center justify-center min-h-[50vh] text-center space-y-4">
@@ -247,24 +272,20 @@ export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticPro
           Acquis enregistrés !
         </h2>
         <p className="text-sm text-white/70 max-w-xs">
-          Votre programme de révision a été créé. Les révisions seront réparties progressivement sur 14 jours.
+          Votre programme de révision a été créé.
+          {solidBlocks.length > 0 && ` ${solidBlocks.length} blocs en Tour (SM-2).`}
+          {recentBlocks.length > 0 && ` ${recentBlocks.length} blocs en Liaison quotidienne.`}
         </p>
       </motion.div>
     );
   }
 
   // ─── CONFIRMATION SCREEN ───
-  if (mode === 'confirming') {
-    const blocks = buildBlocks();
-    const summaryItems = blocks.map(b => {
-      const s = SURAHS.find(s => s.number === b.surahNumber);
-      return `${s?.name || `S.${b.surahNumber}`} — v.${b.verseStart}→${b.verseEnd}`;
-    });
-
+  if (step === 'confirming') {
     return (
       <motion.div {...pageAnim} className="space-y-6">
         <div className="flex items-center gap-3">
-          <button onClick={() => setMode('main')} className="p-2 rounded-xl" style={{ background: glassBg }}>
+          <button onClick={() => setStep('choose-category')} className="p-2 rounded-xl" style={{ background: glassBg }}>
             <ArrowLeft className="h-4 w-4 text-white/70" />
           </button>
           <h2 className="text-lg font-bold" style={{ color: goldColor, fontFamily: "'Playfair Display', serif" }}>
@@ -275,25 +296,66 @@ export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticPro
         <div className="text-center space-y-2">
           <Layers className="h-10 w-10 mx-auto" style={{ color: goldColor }} />
           <p className="text-white/80 text-sm leading-relaxed">
-            Ces acquis seront ajoutés à votre programme de révision avec des dates étalées sur <strong style={{ color: goldColor }}>14 jours</strong>.
+            Vos acquis seront répartis selon leur ancienneté.
           </p>
         </div>
 
-        <div className="rounded-2xl p-4 max-h-[35vh] overflow-y-auto space-y-1"
-          style={{ background: 'rgba(0,0,0,0.2)', border: `1px solid ${goldBorder}` }}>
-          {summaryItems.map((item, i) => (
-            <p key={i} className="text-sm text-white/70 flex items-center gap-2">
-              <CheckCircle2 className="h-3.5 w-3.5 flex-shrink-0" style={{ color: goldColor }} />
-              {item}
+        {/* Solid blocks */}
+        {solidBlocks.length > 0 && (
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <Building2 className="h-4 w-4" style={{ color: goldColor }} />
+              <h3 className="text-sm font-bold" style={{ color: goldColor }}>Acquis Solides — Le Tour</h3>
+            </div>
+            <div className="rounded-2xl p-3 max-h-[20vh] overflow-y-auto space-y-1"
+              style={{ background: 'rgba(0,0,0,0.2)', border: `1px solid ${goldBorder}` }}>
+              {solidBlocks.map((b, i) => {
+                const s = SURAHS.find(s => s.number === b.surahNumber);
+                return (
+                  <p key={i} className="text-sm text-white/70 flex items-center gap-2">
+                    <CheckCircle2 className="h-3.5 w-3.5 flex-shrink-0" style={{ color: goldColor }} />
+                    {s?.name || `S.${b.surahNumber}`} — v.{b.verseStart}→{b.verseEnd}
+                  </p>
+                );
+              })}
+            </div>
+            <p className="text-[10px] text-white/50 italic">
+              Révision SM-2 étalée sur 14 jours
             </p>
-          ))}
-        </div>
+          </div>
+        )}
 
-        <div className="rounded-xl p-3 text-center" style={{ background: goldBg, border: `1px solid ${goldBorder}` }}>
-          <p className="text-xs" style={{ color: goldColor }}>
-            ≈ {totalPages} pages · {blocks.length} blocs de révision
-          </p>
-        </div>
+        {/* Recent blocks */}
+        {recentBlocks.length > 0 && (
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <Sprout className="h-4 w-4" style={{ color: '#4ade80' }} />
+              <h3 className="text-sm font-bold" style={{ color: '#4ade80' }}>Mémorisations Récentes — Liaison</h3>
+            </div>
+            <div className="rounded-2xl p-3 max-h-[20vh] overflow-y-auto space-y-1"
+              style={{ background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(74,222,128,0.3)' }}>
+              {recentBlocks.map((b, i) => {
+                const s = SURAHS.find(s => s.number === b.surahNumber);
+                const days = recentDaysMap.get(i) || 1;
+                const remaining = 30 - days;
+                return (
+                  <p key={i} className="text-sm text-white/70 flex items-center justify-between">
+                    <span className="flex items-center gap-2">
+                      <Clock className="h-3.5 w-3.5 flex-shrink-0" style={{ color: '#4ade80' }} />
+                      {s?.name || `S.${b.surahNumber}`} — v.{b.verseStart}→{b.verseEnd}
+                    </span>
+                    <span className="text-[10px] font-medium" style={{ color: '#4ade80' }}>
+                      {remaining}j restants
+                    </span>
+                  </p>
+                );
+              })}
+            </div>
+            <p className="text-[10px] text-white/50 italic">
+              Récitation quotidienne obligatoire jusqu'à 30 jours
+            </p>
+          </div>
+        )}
 
         <motion.button whileTap={{ scale: 0.97 }} onClick={handleConfirm} disabled={saving}
           className="w-full rounded-xl py-4 font-bold text-base"
@@ -304,11 +366,181 @@ export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticPro
     );
   }
 
-  // ─── MAIN SCREEN ───
+  // ─── RECENT DAYS SCREEN ───
+  if (step === 'recent-days') {
+    return (
+      <motion.div {...pageAnim} className="space-y-6">
+        <div className="flex items-center gap-3">
+          <button onClick={() => setStep('choose-category')} className="p-2 rounded-xl" style={{ background: glassBg }}>
+            <ArrowLeft className="h-4 w-4 text-white/70" />
+          </button>
+          <h2 className="text-lg font-bold" style={{ color: '#4ade80', fontFamily: "'Playfair Display', serif" }}>
+            Durée de liaison
+          </h2>
+        </div>
+
+        <p className="text-xs text-white/60 leading-relaxed">
+          Pour chaque bloc récent, indiquez depuis combien de jours vous le récitez quotidiennement. L'application calculera le reliquat de Liaison.
+        </p>
+
+        <div className="space-y-3 max-h-[50vh] overflow-y-auto">
+          {recentBlocks.map((b, i) => {
+            const s = SURAHS.find(s => s.number === b.surahNumber);
+            const days = recentDaysMap.get(i) || 1;
+            const remaining = 30 - days;
+            return (
+              <div key={i} className="rounded-2xl p-4 space-y-3"
+                style={{ background: glassBg, border: '1px solid rgba(74,222,128,0.2)' }}>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-bold text-white">
+                    {s?.name || `S.${b.surahNumber}`} — v.{b.verseStart}→{b.verseEnd}
+                  </span>
+                </div>
+                <div>
+                  <p className="text-[10px] text-white/50 mb-2">
+                    Depuis combien de jours récitez-vous ce bloc ?
+                  </p>
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="range" min={1} max={29} value={days}
+                      onChange={e => {
+                        const val = parseInt(e.target.value);
+                        setRecentDaysMap(prev => {
+                          const next = new Map(prev);
+                          next.set(i, val);
+                          return next;
+                        });
+                      }}
+                      className="flex-1 accent-[#4ade80]"
+                    />
+                    <span className="text-sm font-bold w-8 text-center" style={{ color: '#4ade80' }}>{days}j</span>
+                  </div>
+                </div>
+                <div className="rounded-lg px-3 py-1.5 text-center" style={{ background: 'rgba(74,222,128,0.1)', border: '1px solid rgba(74,222,128,0.2)' }}>
+                  <p className="text-[11px] font-medium" style={{ color: '#4ade80' }}>
+                    ➜ {remaining} jour{remaining > 1 ? 's' : ''} de Liaison restant{remaining > 1 ? 's' : ''}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <motion.button whileTap={{ scale: 0.97 }}
+          onClick={() => setStep('choose-category')}
+          className="w-full rounded-xl py-3 font-bold text-sm"
+          style={{ background: 'rgba(74,222,128,0.15)', border: '1px solid rgba(74,222,128,0.3)', color: '#4ade80' }}>
+          ✓ Valider les durées
+        </motion.button>
+      </motion.div>
+    );
+  }
+
+  // ─── ENTRY SCREEN (shared for solid & recent) ───
+  if (step === 'solid-entry' || step === 'recent-entry') {
+    const category: Category = step === 'solid-entry' ? 'solid' : 'recent';
+    const accentColor = category === 'solid' ? goldColor : '#4ade80';
+    const accentBg = category === 'solid' ? goldBg : 'rgba(74,222,128,0.15)';
+    const accentBorder = category === 'solid' ? goldBorder : 'rgba(74,222,128,0.3)';
+
+    const totalPages = (() => {
+      if (activeTab === 'pages') return pageIntervals.reduce((sum, i) => sum + Math.max(0, i.end - i.start + 1), 0);
+      if (activeTab === 'juz') return Array.from(selectedJuz).reduce((sum, j) => {
+        const juz = JUZ_DATA[j - 1];
+        return sum + (juz ? juz.endPage - juz.startPage + 1 : 0);
+      }, 0);
+      let totalVerses = 0;
+      surahSelections.forEach((sel) => {
+        if (sel.selected) totalVerses += (sel.verseEnd || 0) - (sel.verseStart || 1) + 1;
+      });
+      return Math.ceil(totalVerses / 15);
+    })();
+
+    return (
+      <motion.div {...pageAnim} className="flex flex-col min-h-[75vh]">
+        {/* Header */}
+        <div className="flex items-center gap-3 mb-4">
+          <button onClick={() => { resetEntryForm(); setStep('choose-category'); }} className="p-2 rounded-xl" style={{ background: glassBg }}>
+            <ArrowLeft className="h-4 w-4 text-white/70" />
+          </button>
+          <div>
+            <h2 className="text-base font-bold" style={{ color: accentColor, fontFamily: "'Playfair Display', serif" }}>
+              {category === 'solid' ? '🏛️ Acquis Solides' : '🌱 Mémorisations Récentes'}
+            </h2>
+            <p className="text-[10px] text-white/50">
+              {category === 'solid' ? 'Appris il y a plus d\'un mois' : 'Appris durant les 30 derniers jours'}
+            </p>
+          </div>
+        </div>
+
+        {/* Tabs */}
+        <div className="flex rounded-2xl p-1 mb-4" style={{ background: 'rgba(0,0,0,0.25)', border: `1px solid ${glassBorder}` }}>
+          {TABS.map(tab => {
+            const isActive = activeTab === tab.id;
+            return (
+              <motion.button key={tab.id} onClick={() => setActiveTab(tab.id)}
+                className="flex-1 py-2.5 rounded-xl text-xs font-semibold transition-all"
+                style={{
+                  background: isActive ? accentBg : 'transparent',
+                  color: isActive ? accentColor : 'rgba(255,255,255,0.5)',
+                  border: isActive ? `1px solid ${accentBorder}` : '1px solid transparent',
+                }}
+                whileTap={{ scale: 0.97 }}>
+                <span className="mr-1">{tab.icon}</span> {tab.label}
+              </motion.button>
+            );
+          })}
+        </div>
+
+        {/* Tab content */}
+        <div className="flex-1 overflow-y-auto pb-32">
+          <AnimatePresence mode="wait">
+            {activeTab === 'pages' && <PagesTab key="pages" intervals={pageIntervals} onAdd={addInterval} onRemove={removeInterval} onUpdate={updateInterval} />}
+            {activeTab === 'juz' && <JuzTab key="juz" selected={selectedJuz} onToggle={toggleJuz} />}
+            {activeTab === 'surahs' && (
+              <SurahsTab key="surahs" surahs={filteredSurahs} selections={surahSelections}
+                expandedSurah={expandedSurah} searchQuery={searchQuery} onSearch={setSearchQuery}
+                onToggle={toggleSurah} onExpand={setExpandedSurah} onUpdateVerses={updateSurahVerses} />
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Sticky footer */}
+        <div className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-5 pt-3"
+          style={{ background: 'linear-gradient(to top, rgba(13,115,119,0.98) 70%, transparent)' }}>
+          <div className="max-w-lg mx-auto space-y-2">
+            {hasSelection && (
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                className="rounded-xl px-4 py-2 text-center"
+                style={{ background: accentBg, border: `1px solid ${accentBorder}` }}>
+                <p className="text-xs font-medium" style={{ color: accentColor }}>
+                  ≈ <strong>{totalPages} pages</strong> sélectionnées
+                </p>
+              </motion.div>
+            )}
+
+            <motion.button whileTap={{ scale: 0.97 }}
+              onClick={() => hasSelection ? saveCurrentEntry(category) : undefined}
+              disabled={!hasSelection}
+              className="w-full rounded-xl py-4 font-bold text-sm transition-all"
+              style={{
+                background: hasSelection ? `linear-gradient(135deg, ${accentColor}, ${category === 'solid' ? '#c4a030' : '#22c55e'})` : 'rgba(255,255,255,0.1)',
+                color: hasSelection ? '#1a2e1a' : 'rgba(255,255,255,0.3)',
+                boxShadow: hasSelection ? `0 4px 20px ${category === 'solid' ? 'rgba(212,175,55,0.3)' : 'rgba(74,222,128,0.3)'}` : 'none',
+              }}>
+              Ajouter ces acquis
+            </motion.button>
+          </div>
+        </div>
+      </motion.div>
+    );
+  }
+
+  // ─── CATEGORY CHOICE SCREEN ───
   return (
     <motion.div {...pageAnim} className="flex flex-col min-h-[75vh]">
       {/* Header */}
-      <div className="text-center space-y-3 mb-5">
+      <div className="text-center space-y-3 mb-6">
         <div className="flex justify-center">
           <motion.div
             initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: 'spring' }}
@@ -322,85 +554,87 @@ export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticPro
           Faisons le point sur votre parcours
         </h2>
         <p className="text-xs text-white/60 leading-relaxed max-w-[300px] mx-auto">
-          Sélectionnez ce que vous avez déjà mémorisé par la grâce d'Allah (عز وجل). Nous nous occupons de planifier vos révisions.
+          Classez vos acquis selon leur ancienneté pour un programme de révision adapté.
         </p>
       </div>
 
-      {/* Tabs */}
-      <div className="flex rounded-2xl p-1 mb-4" style={{ background: 'rgba(0,0,0,0.25)', border: `1px solid ${glassBorder}` }}>
-        {TABS.map(tab => {
-          const isActive = activeTab === tab.id;
-          return (
-            <motion.button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className="flex-1 py-2.5 rounded-xl text-xs font-semibold transition-all relative"
-              style={{
-                background: isActive ? goldBg : 'transparent',
-                color: isActive ? goldColor : 'rgba(255,255,255,0.5)',
-                border: isActive ? `1px solid ${goldBorder}` : '1px solid transparent',
-              }}
-              whileTap={{ scale: 0.97 }}
-            >
-              <span className="mr-1">{tab.icon}</span> {tab.label}
-            </motion.button>
-          );
-        })}
-      </div>
-
-      {/* Tab content */}
-      <div className="flex-1 overflow-y-auto pb-32">
-        <AnimatePresence mode="wait">
-          {activeTab === 'pages' && <PagesTab key="pages" intervals={pageIntervals} onAdd={addInterval} onRemove={removeInterval} onUpdate={updateInterval} />}
-          {activeTab === 'juz' && <JuzTab key="juz" selected={selectedJuz} onToggle={toggleJuz} />}
-          {activeTab === 'surahs' && (
-            <SurahsTab key="surahs"
-              surahs={filteredSurahs}
-              selections={surahSelections}
-              expandedSurah={expandedSurah}
-              searchQuery={searchQuery}
-              onSearch={setSearchQuery}
-              onToggle={toggleSurah}
-              onExpand={setExpandedSurah}
-              onUpdateVerses={updateSurahVerses}
-            />
+      {/* Accumulated summary */}
+      {(solidBlocks.length > 0 || recentBlocks.length > 0) && (
+        <div className="rounded-2xl p-4 mb-4 space-y-2" style={{ background: 'rgba(0,0,0,0.2)', border: `1px solid ${goldBorder}` }}>
+          <p className="text-xs font-bold text-center" style={{ color: goldColor }}>
+            Acquis enregistrés
+          </p>
+          {solidBlocks.length > 0 && (
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] text-white/60">🏛️ Acquis Solides</span>
+              <span className="text-[11px] font-bold" style={{ color: goldColor }}>{solidBlocks.length} blocs</span>
+            </div>
           )}
-        </AnimatePresence>
-      </div>
-
-      {/* Sticky footer */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-5 pt-3"
-        style={{ background: 'linear-gradient(to top, rgba(13,115,119,0.98) 70%, transparent)' }}>
-        <div className="max-w-lg mx-auto space-y-2">
-          {hasSelection && (
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-              className="rounded-xl px-4 py-2 text-center"
-              style={{ background: goldBg, border: `1px solid ${goldBorder}` }}>
-              <p className="text-xs font-medium" style={{ color: goldColor }}>
-                Total sélectionné : <strong>≈ {totalPages} pages</strong>
-                {totalSurahs > 0 && <> · <strong>{totalSurahs} sourate{totalSurahs > 1 ? 's' : ''}</strong></>}
-                {selectedJuz.size > 0 && <> · <strong>{selectedJuz.size} juz</strong></>}
-              </p>
-            </motion.div>
+          {recentBlocks.length > 0 && (
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] text-white/60">🌱 Récents (Liaison)</span>
+              <span className="text-[11px] font-bold" style={{ color: '#4ade80' }}>{recentBlocks.length} blocs</span>
+            </div>
           )}
-
-          <motion.button whileTap={{ scale: 0.97 }}
-            onClick={() => hasSelection ? setMode('confirming') : undefined}
-            disabled={!hasSelection}
-            className="w-full rounded-xl py-4 font-bold text-sm transition-all"
-            style={{
-              background: hasSelection ? `linear-gradient(135deg, ${goldColor}, #c4a030)` : 'rgba(255,255,255,0.1)',
-              color: hasSelection ? '#1a2e1a' : 'rgba(255,255,255,0.3)',
-              boxShadow: hasSelection ? '0 4px 20px rgba(212,175,55,0.3)' : 'none',
-            }}>
-            Sauvegarder mes acquis et commencer mon Hifz
-          </motion.button>
-
-          <button onClick={handleSkip}
-            className="w-full text-center text-xs text-white/40 py-1 transition-colors hover:text-white/60">
-            Je n'ai encore rien mémorisé →
-          </button>
         </div>
+      )}
+
+      {/* Category cards */}
+      <div className="space-y-4 flex-1">
+        {/* Solid card */}
+        <motion.button whileTap={{ scale: 0.97 }}
+          onClick={() => { resetEntryForm(); setStep('solid-entry'); }}
+          className="w-full rounded-2xl p-5 text-left space-y-2 transition-all"
+          style={{ background: glassBg, border: `1.5px solid ${goldBorder}` }}>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: goldBg }}>
+              <Building2 className="h-5 w-5" style={{ color: goldColor }} />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold" style={{ color: goldColor }}>Mes Acquis Solides</h3>
+              <p className="text-[10px] text-white/50">Appris il y a plus d'un mois</p>
+            </div>
+          </div>
+          <p className="text-[11px] text-white/60 leading-relaxed pl-[52px]">
+            Ces sourates sont bien ancrées. Elles seront révisées par l'algorithme de répétition espacée (Le Tour).
+          </p>
+        </motion.button>
+
+        {/* Recent card */}
+        <motion.button whileTap={{ scale: 0.97 }}
+          onClick={() => { resetEntryForm(); setStep('recent-entry'); }}
+          className="w-full rounded-2xl p-5 text-left space-y-2 transition-all"
+          style={{ background: glassBg, border: '1.5px solid rgba(74,222,128,0.3)' }}>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'rgba(74,222,128,0.15)' }}>
+              <Sprout className="h-5 w-5" style={{ color: '#4ade80' }} />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold" style={{ color: '#4ade80' }}>Mes Mémorisations Récentes</h3>
+              <p className="text-[10px] text-white/50">Appris durant les 30 derniers jours</p>
+            </div>
+          </div>
+          <p className="text-[11px] text-white/60 leading-relaxed pl-[52px]">
+            Ces acquis récents nécessitent encore une récitation quotidienne (Liaison) avant d'être autonomes.
+          </p>
+        </motion.button>
+      </div>
+
+      {/* Footer buttons */}
+      <div className="mt-6 space-y-2">
+        {(solidBlocks.length > 0 || recentBlocks.length > 0) && (
+          <motion.button whileTap={{ scale: 0.97 }} onClick={() => setStep('confirming')}
+            className="w-full rounded-xl py-4 font-bold text-sm"
+            style={{ background: `linear-gradient(135deg, ${goldColor}, #c4a030)`, color: '#1a2e1a',
+              boxShadow: '0 4px 20px rgba(212,175,55,0.3)' }}>
+            ✨ Confirmer mes {solidBlocks.length + recentBlocks.length} blocs
+          </motion.button>
+        )}
+
+        <button onClick={handleSkip}
+          className="w-full text-center text-xs text-white/40 py-2 transition-colors hover:text-white/60">
+          Je n'ai encore rien mémorisé →
+        </button>
       </div>
     </motion.div>
   );
@@ -435,8 +669,7 @@ function PagesTab({ intervals, onAdd, onRemove, onUpdate }: {
           <div className="grid grid-cols-2 gap-3">
             <div>
               <p className="text-white/40 text-[10px] uppercase tracking-wider mb-1.5">De la page</p>
-              <input
-                type="text" inputMode="numeric" pattern="[0-9]*"
+              <input type="text" inputMode="numeric" pattern="[0-9]*"
                 value={interval.start === 0 ? '' : interval.start}
                 onChange={e => {
                   const val = e.target.value.replace(/\D/g, '');
@@ -450,8 +683,7 @@ function PagesTab({ intervals, onAdd, onRemove, onUpdate }: {
             </div>
             <div>
               <p className="text-white/40 text-[10px] uppercase tracking-wider mb-1.5">À la page</p>
-              <input
-                type="text" inputMode="numeric" pattern="[0-9]*"
+              <input type="text" inputMode="numeric" pattern="[0-9]*"
                 value={interval.end === 0 ? '' : interval.end}
                 onChange={e => {
                   const val = e.target.value.replace(/\D/g, '');
@@ -492,22 +724,16 @@ function JuzTab({ selected, onToggle }: { selected: Set<number>; onToggle: (n: n
         {JUZ_DATA.map(juz => {
           const isSelected = selected.has(juz.number);
           return (
-            <motion.button
-              key={juz.number}
-              whileTap={{ scale: 0.9 }}
+            <motion.button key={juz.number} whileTap={{ scale: 0.9 }}
               onClick={() => onToggle(juz.number)}
               className="aspect-square rounded-xl flex flex-col items-center justify-center transition-all relative overflow-hidden"
               style={{
-                background: isSelected
-                  ? 'linear-gradient(135deg, rgba(212,175,55,0.25), rgba(212,175,55,0.1))'
-                  : glassBg,
+                background: isSelected ? 'linear-gradient(135deg, rgba(212,175,55,0.25), rgba(212,175,55,0.1))' : glassBg,
                 border: `1.5px solid ${isSelected ? goldBorderActive : glassBorder}`,
                 boxShadow: isSelected ? '0 2px 12px rgba(212,175,55,0.2)' : 'none',
-              }}
-            >
+              }}>
               {isSelected && (
-                <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}
-                  className="absolute top-1 right-1">
+                <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute top-1 right-1">
                   <CheckCircle2 className="h-3 w-3" style={{ color: goldColor }} />
                 </motion.div>
               )}
@@ -522,7 +748,6 @@ function JuzTab({ selected, onToggle }: { selected: Set<number>; onToggle: (n: n
         })}
       </div>
 
-      {/* Quick select buttons */}
       <div className="flex gap-2 flex-wrap">
         <QuickButton label="Juz Amma (30)" onClick={() => { if (!selected.has(30)) onToggle(30); }} active={selected.has(30)} />
         <QuickButton label="Juz Tabarak (29)" onClick={() => { if (!selected.has(29)) onToggle(29); }} active={selected.has(29)} />
@@ -562,15 +787,12 @@ function SurahsTab({ surahs, selections, expandedSurah, searchQuery, onSearch, o
   return (
     <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}
       className="space-y-3">
-      {/* Search */}
-      <input
-        type="text" placeholder="Rechercher une sourate..."
+      <input type="text" placeholder="Rechercher une sourate..."
         value={searchQuery} onChange={e => onSearch(e.target.value)}
         className="w-full rounded-xl px-4 py-2.5 text-sm outline-none"
         style={{ background: glassBg, border: `1px solid ${glassBorder}`, color: 'white', fontSize: '16px' }}
       />
 
-      {/* Surah list (accordion) */}
       <div className="rounded-2xl overflow-hidden" style={{ background: 'rgba(0,0,0,0.15)' }}>
         {surahs.map(s => {
           const sel = selections.get(s.number);
@@ -579,10 +801,8 @@ function SurahsTab({ surahs, selections, expandedSurah, searchQuery, onSearch, o
 
           return (
             <div key={s.number} style={{ borderBottom: `1px solid ${glassBorder}` }}>
-              {/* Main row */}
               <div className="flex items-center px-3 py-2.5 gap-2"
                 style={{ background: isSelected ? 'rgba(212,175,55,0.06)' : 'transparent' }}>
-                {/* Checkbox */}
                 <motion.button whileTap={{ scale: 0.85 }} onClick={() => onToggle(s.number)}
                   className="w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors"
                   style={{
@@ -591,8 +811,6 @@ function SurahsTab({ surahs, selections, expandedSurah, searchQuery, onSearch, o
                   }}>
                   {isSelected && <CheckCircle2 className="h-3.5 w-3.5 text-[#1a2e1a]" />}
                 </motion.button>
-
-                {/* Surah info */}
                 <div className="flex-1 min-w-0" onClick={() => onToggle(s.number)}>
                   <div className="flex items-center gap-2">
                     <span className="text-white/30 text-[10px] w-5 text-right">{s.number}</span>
@@ -600,8 +818,6 @@ function SurahsTab({ surahs, selections, expandedSurah, searchQuery, onSearch, o
                     <span className="text-white/30 text-[10px]">({s.versesCount}v)</span>
                   </div>
                 </div>
-
-                {/* Expand button (only if selected) */}
                 {isSelected && (
                   <button onClick={() => onExpand(isExpanded ? null : s.number)}
                     className="p-1.5 rounded-lg transition-colors" style={{ background: 'rgba(255,255,255,0.06)' }}>
@@ -610,11 +826,9 @@ function SurahsTab({ surahs, selections, expandedSurah, searchQuery, onSearch, o
                 )}
               </div>
 
-              {/* Expanded verse range */}
               <AnimatePresence>
                 {isExpanded && sel && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
+                  <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
                     className="overflow-hidden">
                     <div className="px-4 pb-3 pt-1">
                       <p className="text-[10px] text-white/40 mb-2">Plage de versets mémorisés :</p>

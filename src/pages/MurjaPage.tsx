@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { SURAHS } from '@/lib/surahData';
+import { graduateLiaisonBlocks } from '@/lib/hifzUtils';
 import MurajaCountdown from '@/components/muraja/MurajaCountdown';
 import MurajaChecklist from '@/components/muraja/MurajaChecklist';
 import MurajaCelebration from '@/components/muraja/MurajaCelebration';
@@ -24,6 +25,8 @@ interface MemorizedVerse {
   sm2_interval: number;
   sm2_ease_factor: number;
   sm2_repetitions: number;
+  liaison_status?: string;
+  liaison_start_date?: string | null;
 }
 
 function computeSM2(quality: number, repetitions: number, easeFactor: number, interval: number) {
@@ -79,6 +82,8 @@ export default function MurjaPage() {
     if (!user) return;
     const fetchVerses = async () => {
       setLoading(true);
+      // Auto-graduate liaison blocks that have completed 30 days
+      await graduateLiaisonBlocks(user.id);
       const { data } = await supabase
         .from('hifz_memorized_verses')
         .select('*')
@@ -90,18 +95,16 @@ export default function MurjaPage() {
     fetchVerses();
   }, [user, refreshKey]);
 
+  // Rabt: blocks with liaison_status = 'liaison' (daily mandatory review)
   const rabtVerses = useMemo(() => {
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-    return allVerses.filter(v => new Date(v.memorized_at) >= thirtyDaysAgo);
+    return allVerses.filter(v => v.liaison_status === 'liaison');
   }, [allVerses]);
 
+  // Tour: blocks with liaison_status = 'tour' AND due today or earlier
   const { tourVerses, isCapActive, totalDueCount } = useMemo(() => {
     const today = getTodayKey();
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
     const allDue = allVerses.filter(
-      v => new Date(v.memorized_at) < thirtyDaysAgo && v.next_review_date <= today
+      v => (v.liaison_status === 'tour' || !v.liaison_status) && v.next_review_date <= today
     );
     return {
       tourVerses: allDue.slice(0, MAX_TOUR_BLOCKS_PER_DAY),
@@ -117,7 +120,7 @@ export default function MurjaPage() {
 
   const { totalVersesCount, surahSummary } = useMemo(() => {
     const total = allVerses.reduce((sum, v) => sum + (v.verse_end - v.verse_start + 1), 0);
-    const map = new Map<number, { name: string; versesCount: number; nextReview: string }>();
+    const map = new Map<number, { name: string; versesCount: number; nextReview: string; status: string }>();
     for (const v of allVerses) {
       const existing = map.get(v.surah_number);
       const count = v.verse_end - v.verse_start + 1;
@@ -126,7 +129,7 @@ export default function MurjaPage() {
         if (v.next_review_date < existing.nextReview) existing.nextReview = v.next_review_date;
       } else {
         const surahName = SURAHS.find(s => s.number === v.surah_number)?.name || `Sourate ${v.surah_number}`;
-        map.set(v.surah_number, { name: surahName, versesCount: count, nextReview: v.next_review_date });
+        map.set(v.surah_number, { name: surahName, versesCount: count, nextReview: v.next_review_date, status: v.liaison_status || 'tour' });
       }
     }
     return {
@@ -138,6 +141,15 @@ export default function MurjaPage() {
   const formatDate = (dateStr: string) => {
     const d = new Date(dateStr + 'T00:00:00');
     return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+  };
+
+  // Compute remaining liaison days for rabt items
+  const getLiaisonRemaining = (verse: MemorizedVerse) => {
+    if (!verse.liaison_start_date) return null;
+    const start = new Date(verse.liaison_start_date + 'T00:00:00');
+    const now = new Date();
+    const daysPassed = Math.floor((now.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+    return Math.max(0, 30 - daysPassed);
   };
 
   const handleRabtCheck = useCallback(async (id: string) => {
@@ -332,7 +344,11 @@ export default function MurjaPage() {
                  </span>
               </div>
                <p className="text-[11px] font-medium -mt-1" style={{ color: 'var(--p-text-65)' }}>
-                 Acquis récents (30 derniers jours) — révision quotidienne sans plafond
+                 Récitation quotidienne obligatoire — {rabtVerses.length > 0 && (() => {
+                   const remaining = rabtVerses.map(v => getLiaisonRemaining(v)).filter(r => r !== null);
+                   const maxRemaining = remaining.length > 0 ? Math.max(...remaining) : 0;
+                   return `max ${maxRemaining}j restants`;
+                 })()}
                </p>
               <MurajaChecklist
                 items={rabtVerses}
@@ -399,6 +415,12 @@ export default function MurjaPage() {
                      </span>
                      <div className="flex items-center gap-2 text-[10px] font-medium" style={{ color: 'var(--p-text-65)' }}>
                       <span>{s.versesCount} v.</span>
+                      <span className="px-1.5 py-0.5 rounded text-[9px]" style={{
+                        background: s.status === 'liaison' ? 'rgba(74,222,128,0.15)' : 'var(--p-card)',
+                        color: s.status === 'liaison' ? '#4ade80' : 'var(--p-text-65)',
+                      }}>
+                        {s.status === 'liaison' ? 'Liaison' : 'Tour'}
+                      </span>
                       <span className="flex items-center gap-0.5">
                         <CalendarDays className="h-2.5 w-2.5" />
                         {formatDate(s.nextReview)}

@@ -82,19 +82,40 @@ export function pageRangeToVerseBlocks(startPage: number, endPage: number) {
 export async function injectMemorizedVerses(
   userId: string,
   blocks: { surahNumber: number; verseStart: number; verseEnd: number }[],
-  spreadDays = 14
+  options: {
+    spreadDays?: number;
+    category?: 'solid' | 'recent';
+    daysAlreadyDone?: number;
+  } = {}
 ) {
+  const { spreadDays = 14, category = 'solid', daysAlreadyDone = 0 } = options;
   if (blocks.length === 0) return { success: true, count: 0 };
 
   const now = new Date();
-  const today = now.toISOString().split('T')[0];
 
-  // Stagger: distribute blocks evenly over spreadDays
   const rows = blocks.map((block, index) => {
+    if (category === 'recent') {
+      // Liaison: daily review, liaison_start_date = today - daysAlreadyDone
+      const liaisonStart = new Date(now);
+      liaisonStart.setDate(liaisonStart.getDate() - daysAlreadyDone);
+      return {
+        user_id: userId,
+        surah_number: block.surahNumber,
+        verse_start: block.verseStart,
+        verse_end: block.verseEnd,
+        memorized_at: now.toISOString(),
+        next_review_date: now.toISOString().split('T')[0],
+        sm2_interval: 1,
+        sm2_ease_factor: 2.5,
+        sm2_repetitions: 0,
+        liaison_status: 'liaison',
+        liaison_start_date: liaisonStart.toISOString().split('T')[0],
+      };
+    }
+    // Solid: stagger SM-2 over spreadDays (existing behavior)
     const dayOffset = Math.floor((index / blocks.length) * spreadDays);
     const reviewDate = new Date(now);
     reviewDate.setDate(reviewDate.getDate() + dayOffset);
-
     return {
       user_id: userId,
       surah_number: block.surahNumber,
@@ -102,9 +123,11 @@ export async function injectMemorizedVerses(
       verse_end: block.verseEnd,
       memorized_at: now.toISOString(),
       next_review_date: reviewDate.toISOString().split('T')[0],
-      sm2_interval: Math.max(dayOffset, 1), // interval matches stagger
+      sm2_interval: Math.max(dayOffset, 1),
       sm2_ease_factor: 2.5,
-      sm2_repetitions: 1, // treated as already reviewed once
+      sm2_repetitions: 1,
+      liaison_status: 'tour',
+      liaison_start_date: null,
     };
   });
 
@@ -116,13 +139,12 @@ export async function injectMemorizedVerses(
     const batch = rows.slice(i, i + batchSize);
     const { error } = await supabase
       .from('hifz_memorized_verses')
-      .upsert(batch, { onConflict: 'user_id,surah_number,verse_start,verse_end' });
+      .upsert(batch as any, { onConflict: 'user_id,surah_number,verse_start,verse_end' });
 
     if (error) {
       console.error('Error inserting memorized verses batch:', error);
-      // Try individual inserts as fallback
       for (const row of batch) {
-        await supabase.from('hifz_memorized_verses').upsert(row, {
+        await supabase.from('hifz_memorized_verses').upsert(row as any, {
           onConflict: 'user_id,surah_number,verse_start,verse_end',
         });
         insertedCount++;
@@ -133,6 +155,42 @@ export async function injectMemorizedVerses(
   }
 
   return { success: true, count: insertedCount };
+}
+
+/**
+ * Graduate liaison blocks that have completed 30 days into tour status
+ */
+export async function graduateLiaisonBlocks(userId: string) {
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  const cutoffDate = thirtyDaysAgo.toISOString().split('T')[0];
+
+  const { data: liaisonBlocks } = await supabase
+    .from('hifz_memorized_verses')
+    .select('id, liaison_start_date')
+    .eq('user_id', userId)
+    .eq('liaison_status', 'liaison')
+    .lte('liaison_start_date', cutoffDate);
+
+  if (!liaisonBlocks || liaisonBlocks.length === 0) return 0;
+
+  let graduated = 0;
+  for (const block of liaisonBlocks) {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    await supabase
+      .from('hifz_memorized_verses')
+      .update({
+        liaison_status: 'tour',
+        sm2_interval: 1,
+        sm2_ease_factor: 2.5,
+        sm2_repetitions: 1,
+        next_review_date: tomorrow.toISOString().split('T')[0],
+      } as any)
+      .eq('id', block.id);
+    graduated++;
+  }
+  return graduated;
 }
 
 /**
