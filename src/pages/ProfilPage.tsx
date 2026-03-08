@@ -7,16 +7,18 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { User, Mail, Save } from 'lucide-react';
+import { User, Mail, Save, Bell, ChevronRight } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { Switch } from '@/components/ui/switch';
 import { useDevMode } from '@/hooks/useDevMode';
+import { useNavigate } from 'react-router-dom';
 
 export default function ProfilPage() {
   const { user, isAdmin } = useAuth();
   const [displayName, setDisplayName] = useState('');
   const [loading, setLoading] = useState(false);
   const { isDevMode, toggleDevMode } = useDevMode();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (user) fetchProfile();
@@ -93,6 +95,24 @@ export default function ProfilPage() {
               <Save className="h-4 w-4 mr-2" />
               {loading ? 'Enregistrement...' : 'Enregistrer'}
             </Button>
+          </CardContent>
+        </Card>
+
+        <Card 
+          className="rounded-2xl cursor-pointer hover-lift" 
+          onClick={() => navigate('/rappels')}
+        >
+          <CardContent className="flex items-center justify-between pt-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-full bg-primary/10">
+                <Bell className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <p className="font-semibold text-sm">Mes Rappels</p>
+                <p className="text-xs text-muted-foreground">Gérer mes notifications</p>
+              </div>
+            </div>
+            <ChevronRight className="h-5 w-5 text-muted-foreground" />
           </CardContent>
         </Card>
 
