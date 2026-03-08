@@ -147,10 +147,16 @@ export default function HifzSuiviPage() {
     }
 
     const dayCounts: Record<string, number> = {};
-    const allSessions = [...(murajaSessions || []), ...(hifzSessions || [])];
-    for (const s of allSessions) {
+    for (const s of (hifzSessions || [])) {
       const dateKey = s.created_at.split('T')[0];
-      dayCounts[dateKey] = (dayCounts[dateKey] || 0) + 1;
+      const verses = (s.end_verse - s.start_verse + 1);
+      dayCounts[dateKey] = (dayCounts[dateKey] || 0) + verses;
+    }
+    for (const s of (murajaSessions || [])) {
+      const dateKey = s.created_at.split('T')[0];
+      const reviewed = Array.isArray(s.verses_reviewed) ? s.verses_reviewed : [];
+      const verses = reviewed.reduce((sum: number, r: any) => sum + ((r.verse_end || r.end_verse || 0) - (r.verse_start || r.start_verse || 0) + 1), 0);
+      dayCounts[dateKey] = (dayCounts[dateKey] || 0) + (verses > 0 ? verses : 1);
     }
 
     const chartData: { day: string; count: number }[] = [];
