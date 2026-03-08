@@ -87,7 +87,7 @@ export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBac
             }}
           >
             <Pause className="h-3.5 w-3.5" />
-            Pause — revenir à l'accueil
+            Pause
           </button>
         </motion.div>
       )}
