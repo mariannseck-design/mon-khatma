@@ -50,6 +50,9 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
   const [isPlayingBack, setIsPlayingBack] = useState(false);
   const [showPeek, setShowPeek] = useState(false);
   const [peekCount, setPeekCount] = useState(0);
+  const [totalAttempts, setTotalAttempts] = useState(0);
+  const [totalSuccesses, setTotalSuccesses] = useState(0);
+  const [totalErrors, setTotalErrors] = useState(0);
   const [showEncouragement, setShowEncouragement] = useState(false);
   const [encourageIdx, setEncourageIdx] = useState(0);
   const [validated, setValidated] = useState(false);
