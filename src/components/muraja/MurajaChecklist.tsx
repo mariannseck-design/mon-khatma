@@ -88,6 +88,11 @@ export default function MurajaChecklist({
             ? 'Aucun acquis récent (< 30 jours)'
             : "Aucune révision planifiée aujourd'hui"}
         </p>
+        {section === 'tour' && (
+          <p className="text-xs mt-1.5" style={{ color: 'var(--p-text-50)' }}>
+            Tes blocs mémorisés arriveront ici après 30 jours de liaison (Ar-Rabt).
+          </p>
+        )}
       </div>
     );
   }
