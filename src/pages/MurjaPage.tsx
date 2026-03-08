@@ -379,10 +379,18 @@ export default function MurjaPage() {
                  <span className="text-[10px] font-medium px-2 py-0.5 rounded-full" style={{ background: 'var(--p-card-active)', color: 'var(--p-primary)' }}>
                    {tourVerses.length}
                  </span>
+                 <MurajaMethodModal defaultTab="sm2" />
               </div>
                <p className="text-[11px] font-medium -mt-1" style={{ color: 'var(--p-text-65)' }}>
                  Anciens acquis — auto-évaluation après chaque bloc
                </p>
+               <div
+                 className="rounded-lg px-3 py-2 text-[11px] leading-relaxed"
+                 style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', color: 'var(--p-text-65)' }}
+               >
+                 <strong style={{ color: 'var(--p-primary)' }}>SM-2</strong> (SuperMemo-2) : Algorithme de révision espacée qui calcule ton taux d'oubli pour te proposer de réviser au moment parfait. C'est la clé pour préserver le dépôt des Prophètes{' '}
+                 <span style={{ fontFamily: "'Amiri', serif", fontWeight: 'bold', fontSize: '1.1em' }}>(عليهم السلام)</span> toute ta vie.
+               </div>
               <MurajaChecklist
                 items={tourVerses}
                 section="tour"
