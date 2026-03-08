@@ -100,6 +100,19 @@ export default function HifzPage() {
   useEffect(() => {
     if (!user) { setHasGoal(true); setRestoringSession(false); return; }
     const init = async () => {
+      // Check if diagnostic was completed
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('onboarding_completed')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (!profileData?.onboarding_completed) {
+        setShowDiagnostic(true);
+        setRestoringSession(false);
+        return;
+      }
+
       // Check goal
       const { data: goalData } = await supabase
         .from('hifz_goals')
