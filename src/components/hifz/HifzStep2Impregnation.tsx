@@ -379,9 +379,9 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
           onChange={e => { setReciter(e.target.value); audioRef.current?.pause(); setIsPlaying(false); }}
           className="w-full rounded-xl px-4 py-3 text-sm outline-none"
           style={{
-            background: 'rgba(255,255,255,0.08)',
-            border: '1px solid rgba(212,175,55,0.2)',
-            color: 'white',
+            background: tc.selectBg,
+            border: `1px solid ${tc.selectBorder}`,
+            color: tc.selectColor,
             fontSize: '16px',
           }}
         >
