@@ -201,6 +201,7 @@ export default function HifzPage() {
   return (
     <AppLayout title="Espace Hifz" hideNav>
       <div className="min-h-[80vh] rounded-[2rem] p-6 mx-[-4px]" style={GRADIENT_STYLE}>
+        {isDevMode && <div className="mb-3 flex justify-center"><span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold tracking-wide" style={{ background: 'rgba(212,175,55,0.2)', color: '#d4af37', border: '1px solid rgba(212,175,55,0.4)' }}>🛠 Mode Testeur actif</span></div>}
         {step === 0 && <HifzStep0Intention surahNumber={session.surahNumber} startVerse={session.startVerse} endVerse={session.endVerse} onNext={() => updateStep(1)} onBack={() => setStep(-1)} />}
         {step === 1 && <HifzStep1Revision onNext={() => updateStep(2)} onBack={() => setStep(0)} />}
         {step === 2 && <HifzStep2Impregnation surahNumber={session.surahNumber} startVerse={session.startVerse} endVerse={session.endVerse} onNext={() => updateStep(3)} onBack={() => setStep(1)} />}
