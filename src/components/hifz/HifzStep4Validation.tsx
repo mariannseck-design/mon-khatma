@@ -291,9 +291,10 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
             )}
             <motion.button
               whileTap={{ scale: 0.9 }}
-              onClick={isRecording ? stopRecording : startRecording}
+              onPointerDown={isRecording ? stopRecording : startRecording}
               className="w-20 h-20 rounded-full mx-auto flex items-center justify-center relative"
               style={{
+                touchAction: 'manipulation',
                 background: isRecording ? 'rgba(220,50,50,0.2)' : 'rgba(6,95,70,0.2)',
                 border: `3px solid ${isRecording ? '#dc3232' : '#065F46'}`,
               }}
