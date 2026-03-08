@@ -76,6 +76,7 @@ export default function HifzSuiviPage() {
   const [loading, setLoading] = useState(true);
   const [goal, setGoal] = useState<HifzGoal | null>(null);
   const [periodProgress, setPeriodProgress] = useState(0);
+  const [periodVerses, setPeriodVerses] = useState(0);
   const [showGoalEdit, setShowGoalEdit] = useState(false);
   const [nextPoint, setNextPoint] = useState<{ surahNumber: number; startVerse: number; endVerse: number; surahName: string } | null>(null);
   const [todayRevisions, setTodayRevisions] = useState<{ surah_number: number; verse_start: number; verse_end: number }[]>([]);
@@ -137,6 +138,7 @@ export default function HifzSuiviPage() {
       const versesCompleted = relevantSessions.reduce(
         (sum, s) => sum + (s.end_verse - s.start_verse + 1), 0
       );
+      setPeriodVerses(versesCompleted);
       if (goalData.goal_unit === 'pages') {
         setPeriodProgress(Math.round((versesCompleted / 15) * 10) / 10);
       } else {
@@ -270,7 +272,7 @@ export default function HifzSuiviPage() {
                     />
                   </div>
                   <p className="text-[11px] text-center mt-1" style={{ color: 'var(--p-text-55)' }}>
-                    ≈ {goal.goal_unit === 'pages' ? Math.round(periodProgress * 15) : periodProgress} verset{(goal.goal_unit === 'pages' ? Math.round(periodProgress * 15) : periodProgress) > 1 ? 's' : ''} mémorisé{(goal.goal_unit === 'pages' ? Math.round(periodProgress * 15) : periodProgress) > 1 ? 's' : ''}
+                    ≈ {periodVerses} verset{periodVerses > 1 ? 's' : ''} mémorisé{periodVerses > 1 ? 's' : ''}
                   </p>
                   {progressPct >= 100 && (
                     <p className="text-xs text-center" style={{ color: 'var(--p-accent)' }}>
