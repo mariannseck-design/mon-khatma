@@ -228,6 +228,19 @@ export default function DefiAlKahf({ disabled = false }: { disabled?: boolean })
               </div>
             )}
           </div>
+
+          <button
+            onClick={() => navigate('/quran-reader?page=293')}
+            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl transition-all text-xs font-medium mt-3"
+            style={{
+              background: 'rgba(255,255,255,0.1)',
+              color: 'rgba(255,255,255,0.7)',
+              border: '1px solid rgba(255,255,255,0.12)',
+            }}
+          >
+            <BookOpen className="h-3.5 w-3.5" />
+            Lire Al-Kahf 📖
+          </button>
         </div>
       </motion.div>
 
