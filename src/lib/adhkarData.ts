@@ -660,6 +660,7 @@ export const ANYTIME_ADHKAR: DhikrItem[] = [
     arabic: 'اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى نَبِيِّنَا مُحَمَّدٍ',
     phonetic: "Allâhumma salli wa sallim 'alâ nabiyyinâ Muhammad",
     french: "Ô Allah, prie et accorde le salut sur notre prophète Muhammad ﷺ.",
+    fadl: 'Quiconque prie sur moi une fois, Allah prie sur lui dix fois. (Muslim)',
     target: 10,
   },
   {
