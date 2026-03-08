@@ -16,7 +16,7 @@ const difficultDuas: Dua[] = [
   {
     arabic: 'اللَّهُمَّ إِنِّي عَبْدُكَ ابْنُ عَبْدِكَ ابْنُ أَمَتِكَ نَاصِيَتِي بِيَدِكَ... أنْ تَجْعَلَ القُرْآنَ رَبِيعَ قَلْبِي',
     phonetic: "Allâhumma innî 'abduka bnu 'abdika bnu amatik... an taj'ala-l-qurâna rabî'a qalbî.",
-    french: "Ô Allah (عز وجل) ! Je suis Ton serviteur... fais en sorte que le Coran soit le printemps de mon cœur, la lumière de ma poitrine, qu'il dissipe ma tristesse et mette fin à mes soucis.",
+    french: "Ô Allah ! Je suis Ton serviteur... fais en sorte que le Coran soit le printemps de mon cœur, la lumière de ma poitrine, qu'il dissipe ma tristesse et mette fin à mes soucis.",
   },
   {
     arabic: 'اللهم لا سهل إلا ما جعلته سهلا وأنت تجعل الحزن إذا شئت سهلا',
