@@ -741,6 +741,7 @@ export const OMRA_DUAS: DhikrItem[] = [
   },
   {
     title: "Du'â en voyant la Ka'bah",
+    readOnly: true,
     arabic: 'اللَّهُمَّ زِدْ هَذَا الْبَيْتَ تَشْرِيفًا وَتَعْظِيمًا وَتَكْرِيمًا وَمَهَابَةً، وَزِدْ مَنْ شَرَّفَهُ وَكَرَّمَهُ مِمَّنْ حَجَّهُ أَوِ اعْتَمَرَهُ تَشْرِيفًا وَتَكْرِيمًا وَتَعْظِيمًا وَبِرًّا',
     phonetic: "Allâhumma zid hâdhâ-l-bayta tashrîfan wa ta'zîman wa takrîman wa mahâbah, wa zid man sharrafahu wa karramahu mimman hajjahu awi-'tamarahu tashrîfan wa takrîman wa ta'zîman wa birra.",
     french: "Ô Allah (عز وجل), augmente cette Maison en noblesse, en grandeur, en honneur et en majesté. Et augmente ceux qui l'honorent parmi les pèlerins en noblesse, en honneur, en grandeur et en piété.",
