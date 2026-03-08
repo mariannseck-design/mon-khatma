@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, Trash2, BookOpen, Sparkles } from 'lucide-react';
+import { Heart, Trash2, BookOpen, Sparkles, ExternalLink } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { SURAHS, getApproxVersePage } from '@/lib/surahData';
+import { SURAHS } from '@/lib/surahData';
+import { getExactVersePage } from '@/lib/quranData';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface FavoriteVerse {
