@@ -781,6 +781,7 @@ export const OMRA_DUAS: DhikrItem[] = [
   },
   {
     title: "Dhikr sur As-Safâ et Al-Marwah",
+    readOnly: true,
     arabic: 'اللهُ أَكْبَرُ، اللهُ أَكْبَرُ، اللهُ أَكْبَرُ، لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ، أَنْجَزَ وَعْدَهُ، وَنَصَرَ عَبْدَهُ، وَهَزَمَ الْأَحْزَابَ وَحْدَهُ',
     phonetic: "Allâhu Akbar, Allâhu Akbar, Allâhu Akbar. Lâ ilâha illa-llâhu wahdahu lâ sharîka lah, lahu-l-mulku wa lahu-l-hamd, wa huwa 'alâ kulli shay'in qadîr. Lâ ilâha illa-llâhu wahdah, anjaza wa'dah, wa nasara 'abdah, wa hazama-l-ahzâba wahdah.",
     french: "Allah (عز وجل) est le Plus Grand (3×). Il n'y a de divinité qu'Allah (عز وجل), Seul sans associé. À Lui la royauté, à Lui la louange, et Il est Omnipotent. Il n'y a de divinité qu'Allah (عز وجل) Seul. Il a réalisé Sa promesse, secouru Son serviteur et défait les coalisés Seul.",
