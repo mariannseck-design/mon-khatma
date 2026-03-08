@@ -1,20 +1,21 @@
 
 
-## Ajouter le swipe horizontal entre les duas dans les sessions Sources de Lumière
+# Diagnostic : 404 sur /quran-reader
 
-### Problème
-Dans les sessions (Sunna Sacrée, Salawât, Coran), on ne peut passer d'une dua à l'autre qu'en complétant le compteur. Il n'y a aucun geste de swipe pour naviguer entre les duas.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Solution
-Ajouter la détection de swipe gauche/droite dans `SourcesSession.tsx` pour permettre de glisser d'une dua à la suivante (ou revenir à la précédente).
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-### Fichier modifié
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-**`src/components/sources-lumiere/SourcesSession.tsx`** :
-- Ajouter des handlers `onTouchStart` / `onTouchEnd` sur le conteneur principal
-- Swipe gauche → dua suivante (si pas la dernière)
-- Swipe droite → dua précédente (si pas la première)
-- Seuil de 50px, uniquement si le swipe horizontal est dominant (pas vertical)
-- Réinitialiser le compteur du DhikrCounter/SalawatCounter lors du changement de dua par swipe
-- Le compteur existant (tap) continue de fonctionner normalement en parallèle
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

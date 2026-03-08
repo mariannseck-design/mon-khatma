@@ -1,9 +1,11 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Check, Share2 } from 'lucide-react';
 import DhikrCounter, { type DhikrItem } from '@/components/dhikr/DhikrCounter';
 import SalawatCounter from './SalawatCounter';
 import { toast } from 'sonner';
+
+const SWIPE_THRESHOLD = 50;
 
 interface SourcesSessionProps {
   title: string;
@@ -15,14 +17,38 @@ interface SourcesSessionProps {
 export default function SourcesSession({ title, items, onBack, useSalawatCounter = false }: SourcesSessionProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [sessionComplete, setSessionComplete] = useState(false);
+  const [swipeDir, setSwipeDir] = useState<'left' | 'right'>('left');
+  const touchStartX = useRef(0);
+  const touchStartY = useRef(0);
 
   const handleComplete = useCallback(() => {
     if (currentIndex < items.length - 1) {
+      setSwipeDir('left');
       setCurrentIndex(prev => prev + 1);
     } else {
       setSessionComplete(true);
     }
   }, [currentIndex, items.length]);
+
+  const onTouchStart = useCallback((e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  }, []);
+
+  const onTouchEnd = useCallback((e: React.TouchEvent) => {
+    const deltaX = e.changedTouches[0].clientX - touchStartX.current;
+    const deltaY = e.changedTouches[0].clientY - touchStartY.current;
+    if (Math.abs(deltaX) < SWIPE_THRESHOLD || Math.abs(deltaY) > Math.abs(deltaX)) return;
+    if (sessionComplete) return;
+
+    if (deltaX < 0 && currentIndex < items.length - 1) {
+      setSwipeDir('left');
+      setCurrentIndex(prev => prev + 1);
+    } else if (deltaX > 0 && currentIndex > 0) {
+      setSwipeDir('right');
+      setCurrentIndex(prev => prev - 1);
+    }
+  }, [currentIndex, items.length, sessionComplete]);
 
   const progressPercent = sessionComplete ? 100 : (currentIndex / items.length) * 100;
 
@@ -40,7 +66,7 @@ export default function SourcesSession({ title, items, onBack, useSalawatCounter
   };
 
   return (
-    <div className="flex flex-col min-h-[60vh]" style={{ background: 'var(--p-bg)' }}>
+    <div className="flex flex-col min-h-[60vh]" style={{ background: 'var(--p-bg)' }} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
       {/* Header */}
       <div className="flex items-center gap-3 px-4 py-3">
         <button onClick={onBack} className="p-2 rounded-full" style={{ color: '#D4AF37' }} aria-label="Retour">
