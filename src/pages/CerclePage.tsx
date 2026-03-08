@@ -196,20 +196,9 @@ export default function CerclePage() {
         }
 
         {/* Membership Status */}
-        {circle &&
+        {circle && !membership &&
         <Card className="pastel-card p-6">
-            {membership ?
-          <div className="text-center">
-                <div className="w-16 h-16 rounded-full bg-success/20 flex items-center justify-center mx-auto mb-4">
-                  <Check className="h-8 w-8 text-success" />
-                </div>
-                <h3 className="font-display text-lg text-foreground mb-2">Tu fais partie du Cercle!</h3>
-                <p className="text-muted-foreground text-sm">
-                  Qu'Allah t'accorde la constance dans ta lecture.
-                </p>
-              </div> :
-
-          <div className="text-center">
+            <div className="text-center">
                 <Heart className="h-12 w-12 text-peach mx-auto mb-4" />
                 <h3 className="font-display text-lg text-foreground mb-2">Rejoins le Cercle</h3>
                 <p className="text-muted-foreground text-sm mb-4">
@@ -218,11 +207,24 @@ export default function CerclePage() {
                 <Button
               onClick={joinCircle}
               className="bg-primary text-primary-foreground hover-lift">
-
                   Rejoindre le Cercle
                 </Button>
               </div>
-          }
+          </Card>
+        }
+
+        {/* Welcome card - only shown for 48h after joining */}
+        {circle && isNewMember &&
+        <Card className="pastel-card p-6">
+            <div className="text-center">
+                <div className="w-16 h-16 rounded-full bg-success/20 flex items-center justify-center mx-auto mb-4">
+                  <Check className="h-8 w-8 text-success" />
+                </div>
+                <h3 className="font-display text-lg text-foreground mb-2">Tu fais partie du Cercle!</h3>
+                <p className="text-muted-foreground text-sm">
+                  Qu'Allah t'accorde la constance dans ta lecture.
+                </p>
+              </div>
           </Card>
         }
 
