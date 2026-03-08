@@ -140,7 +140,14 @@ export default function DefiAlKahf({ disabled = false }: { disabled?: boolean })
           boxShadow: `0 4px 20px -6px ${COLORS.cave}60`,
         }}
       >
-        <div className="absolute -top-8 -right-8 w-28 h-28 rounded-full blur-2xl" style={{ background: `${COLORS.sand}12` }} />
+        {/* Sand texture overlay */}
+        <div className="absolute inset-0 opacity-[0.07]" style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E")`,
+          backgroundSize: '150px 150px',
+        }} />
+        {/* Warm glow */}
+        <div className="absolute -top-8 -right-8 w-28 h-28 rounded-full blur-2xl" style={{ background: `${COLORS.sand}20` }} />
+        <div className="absolute -bottom-10 -left-10 w-32 h-32 rounded-full blur-3xl" style={{ background: `${COLORS.sand}10` }} />
 
         <div className="relative z-10">
           <div className="flex items-center gap-3 mb-4">
