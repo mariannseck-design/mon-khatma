@@ -918,6 +918,7 @@ export const LOUANGES_ISTIGHFAR: DhikrItem[] = [
   },
   {
     title: 'Sayyid al-Istighfâr',
+    fadl: 'Quiconque le dit avec conviction le matin et meurt ce jour-là entrera au Paradis. (Al-Bukhârî)',
     arabic: 'اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَٰهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ، أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ وَأَبُوءُ بِذَنْبِي فَاغْفِرْ لِي فَإِنَّهُ لَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ',
     phonetic: "Allâhumma Anta Rabbî, lâ ilâha illâ Ant, khalaqtanî wa ana 'abduk, wa ana 'alâ 'ahdika wa wa'dika mâ-stata't, a'ûdhu bika min sharri mâ sana't, abû'u laka bi-ni'matika 'alayya wa abû'u bi-dhanbî, fa-ghfir lî fa-innahu lâ yaghfiru dh-dhunûba illâ Ant.",
     french: "Ô Allah, Tu es mon Seigneur, il n'y a de divinité que Toi. Tu m'as créé et je suis Ton serviteur. Je suis fidèle à Ton pacte et à Ta promesse autant que je le peux. Je cherche refuge auprès de Toi contre le mal que j'ai commis. Je reconnais Tes bienfaits envers moi et je reconnais mes péchés. Pardonne-moi car nul ne pardonne les péchés hormis Toi. (Maître de l'Istighfâr — quiconque le dit avec conviction le matin et meurt dans la journée entre au Paradis.)",
