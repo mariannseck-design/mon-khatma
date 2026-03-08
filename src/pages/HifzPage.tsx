@@ -221,6 +221,12 @@ export default function HifzPage() {
   }, [sessionId, user, step]);
 
   const completeSession = useCallback(async (difficulty: string) => {
+    // Record time for last step
+    const elapsedSeconds = Math.floor((Date.now() - stepStartRef.current) / 1000);
+    if (step >= 0) {
+      stepTimesRef.current[`step_${step}_time`] = elapsedSeconds;
+    }
+
     // Clean up localStorage
     clearLocalSession();
 
@@ -228,6 +234,7 @@ export default function HifzPage() {
       await supabase.from('hifz_sessions').update({
         current_step: 6,
         completed_at: new Date().toISOString(),
+        step_status: { ...stepTimesRef.current, completed: true },
       }).eq('id', sessionId);
 
       if (session) {
