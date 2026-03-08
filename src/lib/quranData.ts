@@ -15,6 +15,7 @@ export interface LocalAyah {
   number: number;
   text: string;
   numberInSurah: number;
+  page: number;
   surah: { name: string; number: number };
 }
 
