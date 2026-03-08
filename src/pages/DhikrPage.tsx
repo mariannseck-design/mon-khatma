@@ -36,6 +36,7 @@ const itemVariants = {
 };
 
 export default function DhikrPage() {
+  const { isAdmin } = useAuth();
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
   const categoryData = activeCategory ? CATEGORY_DATA[activeCategory] : null;
