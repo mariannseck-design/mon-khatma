@@ -15,6 +15,7 @@ import HifzSuccess from '@/components/hifz/HifzSuccess';
 import DevSkipButton from '@/components/hifz/DevSkipButton';
 import { SURAHS } from '@/lib/surahData';
 import { motion } from 'framer-motion';
+import { type HifzTheme, getContainerStyle } from '@/lib/hifzTheme';
 
 interface HifzSession {
   surahNumber: number;
