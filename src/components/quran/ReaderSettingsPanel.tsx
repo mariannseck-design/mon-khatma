@@ -50,6 +50,7 @@ export default function ReaderSettingsPanel({
   audioEndVerse,
   onAudioStartVerseChange,
   onAudioEndVerseChange,
+  isOffline,
 }: ReaderSettingsPanelProps) {
   const [open, setOpen] = useState(false);
 
@@ -125,14 +126,16 @@ export default function ReaderSettingsPanel({
                   <p className="text-xs font-medium mb-2 opacity-70">Mode d'affichage</p>
                   <div className="flex gap-2">
                     <button
-                      onClick={() => onViewModeChange('image')}
+                      onClick={() => !isOffline && onViewModeChange('image')}
                       className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium transition-all"
                       style={{
                         background: viewMode === 'image' ? (nightMode ? 'rgba(90,180,180,0.2)' : 'rgba(255,255,255,0.35)') : (nightMode ? 'rgba(90,180,180,0.05)' : 'rgba(255,255,255,0.15)'),
                         border: viewMode === 'image' ? `1.5px solid ${nightMode ? 'rgba(90,180,180,0.4)' : 'rgba(180,150,60,0.5)'}` : '1.5px solid transparent',
+                        opacity: isOffline ? 0.4 : 1,
+                        cursor: isOffline ? 'not-allowed' : 'pointer',
                       }}
                     >
-                      <Image className="h-4 w-4" /> Mushaf
+                      <Image className="h-4 w-4" /> {isOffline ? 'Mushaf (hors-ligne)' : 'Mushaf'}
                     </button>
                     <button
                       onClick={() => onViewModeChange('text')}
@@ -202,11 +205,13 @@ export default function ReaderSettingsPanel({
               </div>
 
               {/* Audio */}
-              <div>
-                <p className="text-xs font-medium mb-2 opacity-70">Récitation audio</p>
+              <div style={{ opacity: isOffline ? 0.4 : 1, pointerEvents: isOffline ? 'none' : 'auto' }}>
+                <p className="text-xs font-medium mb-2 opacity-70">
+                  Récitation audio {isOffline && <span className="text-[10px]">(hors-ligne)</span>}
+                </p>
                 <div className="flex items-center gap-3 mb-3">
                   <button
-                    onClick={(e) => { e.stopPropagation(); onTogglePlay(); }}
+                    onClick={(e) => { e.stopPropagation(); if (!isOffline) onTogglePlay(); }}
                     className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0"
                     style={{ background: isPlaying ? '#4a9a9a' : (nightMode ? 'rgba(90,180,180,0.15)' : 'rgba(255,255,255,0.25)') }}
                   >
