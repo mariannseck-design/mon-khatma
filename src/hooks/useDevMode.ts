@@ -3,14 +3,12 @@ import { useAuth } from '@/contexts/AuthContext';
 
 export function useDevMode() {
   const { isAdmin } = useAuth();
-  const [isDevMode, setIsDevMode] = useState(false);
+  const [isDevMode, setIsDevMode] = useState(() => localStorage.getItem('dev_mode') === 'true');
 
   useEffect(() => {
     if (!isAdmin) {
       setIsDevMode(false);
-      return;
     }
-    setIsDevMode(localStorage.getItem('dev_mode') === 'true');
   }, [isAdmin]);
 
   const toggleDevMode = useCallback((nextValue?: boolean) => {

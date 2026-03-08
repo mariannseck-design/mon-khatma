@@ -360,7 +360,7 @@ export default function HifzPage() {
         {step === 6 && <HifzStep6Tour onComplete={completeSession} onBack={() => setStep(5)} />}
         {step === 7 && <HifzSuccess />}
         {step >= 0 && step <= 6 && (
-          <DevSkipButton onSkip={() => {
+          <DevSkipButton isDevMode={isDevMode} onSkip={() => {
             if (step < 6) { updateStep(step + 1); }
             else { completeSession('easy'); }
           }} />

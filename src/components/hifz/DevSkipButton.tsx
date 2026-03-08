@@ -1,11 +1,9 @@
-import { useDevMode } from '@/hooks/useDevMode';
-
 interface Props {
   onSkip: () => void;
+  isDevMode: boolean;
 }
 
-export default function DevSkipButton({ onSkip }: Props) {
-  const { isDevMode } = useDevMode();
+export default function DevSkipButton({ onSkip, isDevMode }: Props) {
   if (!isDevMode) return null;
 
   return (
