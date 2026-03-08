@@ -374,6 +374,52 @@ export default function MurjaPage() {
               />
             </div>
 
+            {/* Maturity Bar — Mes ancrages en cours */}
+            {rabtVerses.length > 0 && (
+              <div className="space-y-3">
+                <h2
+                  className="text-base font-bold"
+                  style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-text)' }}
+                >
+                  Mes ancrages en cours (La Liaison)
+                </h2>
+                <div className="space-y-2">
+                  {rabtVerses.map((verse) => {
+                    const start = verse.liaison_start_date ? new Date(verse.liaison_start_date + 'T00:00:00') : new Date(verse.memorized_at);
+                    const daysPassed = Math.min(30, Math.max(0, Math.floor((Date.now() - start.getTime()) / 86400000)));
+                    const surahName = SURAHS.find(s => s.number === verse.surah_number)?.name || `Sourate ${verse.surah_number}`;
+                    return (
+                      <motion.div
+                        key={verse.id}
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="rounded-xl px-4 py-3 space-y-2"
+                        style={{ background: '#FFFFFF', border: '1px solid #E6F0ED' }}
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-semibold" style={{ color: '#1C2421' }}>
+                            {surahName} ({verse.verse_start}-{verse.verse_end})
+                          </span>
+                          <span className="text-xs font-bold" style={{ color: '#065F46' }}>
+                            Jour {daysPassed} / 30
+                          </span>
+                        </div>
+                        <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: '#E6F0ED' }}>
+                          <motion.div
+                            className="h-full rounded-full"
+                            style={{ background: 'linear-gradient(90deg, #065F46, #10B981)' }}
+                            initial={{ width: 0 }}
+                            animate={{ width: `${(daysPassed / 30) * 100}%` }}
+                            transition={{ duration: 0.6 }}
+                          />
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             {/* Section Le Tour */}
             <div className="space-y-3">
               <div className="flex items-center gap-2">
