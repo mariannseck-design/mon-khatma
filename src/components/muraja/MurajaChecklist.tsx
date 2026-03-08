@@ -129,15 +129,17 @@ export default function MurajaChecklist({
               whileTap={isChecked ? {} : { scale: 0.98 }}
             >
               {/* Checkbox */}
-              <div
+              <motion.div
                 className="w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 transition-all"
                 style={{
-                  background: isChecked ? 'var(--p-accent)' : 'transparent',
-                  border: `2px solid ${isChecked ? 'var(--p-accent)' : 'var(--p-checkbox-border)'}`,
+                  background: isChecked ? '#D4AF37' : 'transparent',
+                  border: `2px solid ${isChecked ? '#D4AF37' : 'var(--p-checkbox-border)'}`,
                 }}
+                animate={isChecked ? { scale: [1, 1.25, 1] } : {}}
+                transition={{ type: 'spring', stiffness: 400, damping: 15 }}
               >
                 {isChecked && <Check className="h-3.5 w-3.5" style={{ color: '#FFFFFF' }} />}
-              </div>
+              </motion.div>
 
               {/* Label */}
               <div className="flex-1 min-w-0">
