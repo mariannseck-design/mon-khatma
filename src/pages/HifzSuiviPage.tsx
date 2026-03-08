@@ -427,7 +427,7 @@ export default function HifzSuiviPage() {
               className="rounded-2xl p-5"
               style={{ background: '#FFFFFF', border: '1px solid #E6F0ED', boxShadow: '0 4px 20px rgba(6,95,70,0.06)' }}
             >
-              <h3 className="text-sm font-semibold mb-4" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#065F46' }}>
+              <h3 className="text-sm font-bold mb-4" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#065F46' }}>
                 Activité des 7 derniers jours
               </h3>
               <ResponsiveContainer width="100%" height={140}>
