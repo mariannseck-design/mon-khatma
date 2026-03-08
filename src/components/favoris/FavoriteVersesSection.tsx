@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, Trash2, BookOpen } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { SURAHS } from '@/lib/surahData';
+import { SURAHS, getApproxVersePage } from '@/lib/surahData';
 
 interface FavoriteVerse {
   id: string;
