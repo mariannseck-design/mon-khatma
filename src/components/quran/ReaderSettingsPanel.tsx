@@ -45,8 +45,12 @@ export default function ReaderSettingsPanel({
   onTranslationChange,
   translationEdition,
   onTranslationEditionChange,
+  currentPage,
+  onGoToPage,
 }: ReaderSettingsPanelProps) {
   const [open, setOpen] = useState(false);
+  const [pageInput, setPageInput] = useState('');
+  const [juzInput, setJuzInput] = useState('');
 
   const activeSizes = textSizes || FONT_SIZE_PRESETS;
   const activeIndex = textSizeIndex ?? activeSizes.findIndex(s => s.value === fontSize);
