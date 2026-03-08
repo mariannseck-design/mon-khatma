@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Bookmark, BookmarkCheck, Play, Pause, Loader2, Settings, WifiOff } from 'lucide-react';
 import { toast } from 'sonner';
 import { getSurahByPage } from '@/lib/surahData';
+import { getExactVersePage } from '@/lib/quranData';
 import { useOnlineStatus } from '@/hooks/useOnlineStatus';
 import SurahDrawer from '@/components/quran/SurahDrawer';
 import QuranTextView from '@/components/quran/QuranTextView';
