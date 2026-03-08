@@ -1,30 +1,21 @@
 
 
-## Plan : Bouton "Tout effacer" sur l'écran du diagnostic
+# Diagnostic : 404 sur /quran-reader
 
-### Objectif
-Ajouter un bouton de réinitialisation sur l'écran principal du diagnostic (étape `choose-category`) pour que l'utilisatrice puisse effacer toutes ses saisies (acquis solides + récents) si elle s'est trompée, sans devoir passer par les Paramètres.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Changement dans `src/components/hifz/HifzDiagnostic.tsx`
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-Dans le bloc "Acquis enregistrés" (lignes 591-609), ajouter un bouton "Tout effacer" (icône `RotateCcw`) en haut à droite du résumé. Au clic :
-- Vider `solidBlocks`, `recentBlocks`, `solidLabels`, `recentLabels`, `recentDaysMap`
-- Appeler `resetEntryForm()`
-- Afficher un petit toast de confirmation
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-Le bouton sera discret (texte rouge/destructif, petite taille) pour ne pas gêner le flux normal mais rester accessible.
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-```text
-┌─────────────────────────────────────┐
-│  Acquis enregistrés        [↺ Tout  │
-│                             effacer]│
-│  🏛️ Acquis Solides    p.1-10       │
-│  🌱 Récents           Juz 30       │
-└─────────────────────────────────────┘
-```
-
-### Détails
-- Import `RotateCcw` (déjà disponible dans lucide-react)
-- Bouton stylé : `text-[10px] text-red-400/70 hover:text-red-400` avec icône 3x3
-- `window.confirm()` avant d'effacer pour éviter les clics accidentels
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
