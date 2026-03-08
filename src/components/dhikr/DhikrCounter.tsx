@@ -14,6 +14,7 @@ export interface DhikrItem {
 interface DhikrCounterProps {
   item: DhikrItem;
   onComplete: () => void;
+  arabicFontSize?: string;
 }
 
 export default function DhikrCounter({ item, onComplete }: DhikrCounterProps) {
