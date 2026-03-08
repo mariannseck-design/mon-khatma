@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BookOpen, ChevronDown, Play } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { SURAHS } from '@/lib/surahData';
+import { findNextStartingPoint } from '@/lib/hifzUtils';
+import { useAuth } from '@/contexts/AuthContext';
 
 const REPETITION_LEVELS = [
   { value: 15, label: 'Hifz 15', subtitle: 'Niveau Découverte', desc: 'Un rythme doux, idéal pour débuter ou pour les journées très chargées.' },
@@ -17,11 +19,26 @@ interface HifzConfigProps {
 }
 
 export default function HifzConfig({ onStart }: HifzConfigProps) {
+  const { user } = useAuth();
   const [surahNumber, setSurahNumber] = useState(114);
   const [startVerse, setStartVerse] = useState(1);
   const [endVerse, setEndVerse] = useState(6);
   const [repetitionLevel, setRepetitionLevel] = useState(20);
   const [showSurahList, setShowSurahList] = useState(false);
+  const [suggestedPoint, setSuggestedPoint] = useState<string | null>(null);
+
+  // Auto-suggest starting point based on memorized verses
+  useEffect(() => {
+    if (!user) return;
+    findNextStartingPoint(user.id).then(point => {
+      if (point) {
+        setSurahNumber(point.surahNumber);
+        setStartVerse(point.startVerse);
+        setEndVerse(point.endVerse);
+        setSuggestedPoint(point.surahName);
+      }
+    });
+  }, [user]);
 
   const selectedSurah = SURAHS.find(s => s.number === surahNumber);
   const maxVerse = selectedSurah?.versesCount ?? 999;
