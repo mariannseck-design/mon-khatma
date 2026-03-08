@@ -56,6 +56,9 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
   const [showEncouragement, setShowEncouragement] = useState(false);
   const [encourageIdx, setEncourageIdx] = useState(0);
   const [validated, setValidated] = useState(false);
+  const [bonusMode, setBonusMode] = useState(false);
+  const [bonusCount, setBonusCount] = useState(0);
+  const [showAdvice, setShowAdvice] = useState(true);
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
