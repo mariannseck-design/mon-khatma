@@ -741,3 +741,41 @@ export const OMRA_DUAS: DhikrItem[] = [
     target: 3,
   },
 ];
+
+export const ISTIKHARAH_DUAS: DhikrItem[] = [
+  {
+    title: "Du'â al-Istikhârah",
+    arabic: 'اللَّهُمَّ إِنِّي أَسْتَخِيرُكَ بِعِلْمِكَ، وَأَسْتَقْدِرُكَ بِقُدْرَتِكَ، وَأَسْأَلُكَ مِنْ فَضْلِكَ الْعَظِيمِ، فَإِنَّكَ تَقْدِرُ وَلَا أَقْدِرُ، وَتَعْلَمُ وَلَا أَعْلَمُ، وَأَنْتَ عَلَّامُ الْغُيُوبِ، اللَّهُمَّ إِنْ كُنْتَ تَعْلَمُ أَنَّ هَذَا الْأَمْرَ خَيْرٌ لِي فِي دِينِي وَمَعَاشِي وَعَاقِبَةِ أَمْرِي فَاقْدُرْهُ لِي وَيَسِّرْهُ لِي ثُمَّ بَارِكْ لِي فِيهِ، وَإِنْ كُنْتَ تَعْلَمُ أَنَّ هَذَا الْأَمْرَ شَرٌّ لِي فِي دِينِي وَمَعَاشِي وَعَاقِبَةِ أَمْرِي فَاصْرِفْهُ عَنِّي وَاصْرِفْنِي عَنْهُ وَاقْدُرْ لِيَ الْخَيْرَ حَيْثُ كَانَ ثُمَّ أَرْضِنِي بِهِ',
+    phonetic: "Allâhumma innî astakhîruka bi-'ilmik, wa astaqdiruka bi-qudratik, wa as'aluka min fadlika-l-'azîm. Fa-innaka taqdiru wa lâ aqdir, wa ta'lamu wa lâ a'lam, wa Anta 'allâmu-l-ghuyûb. Allâhumma in kunta ta'lamu anna hâdhâ-l-amra khayrun lî fî dînî wa ma'âshî wa 'âqibati amrî fa-qdurhu lî wa yassirhu lî thumma bârik lî fîh. Wa in kunta ta'lamu anna hâdhâ-l-amra sharrun lî fî dînî wa ma'âshî wa 'âqibati amrî fa-srifhu 'annî wa-srifnî 'anhu wa-qdur liya-l-khayra haythu kâna thumma ardinî bih.",
+    french: "Ô Allah (عز وجل), je Te consulte par Ta science, je Te demande de m'accorder la capacité par Ta puissance, et je Te demande de Ta grâce immense. Car Tu es capable et je ne le suis pas, Tu sais et je ne sais pas, et Tu es le Grand Connaisseur de l'invisible. Ô Allah (عز وجل), si Tu sais que cette affaire est un bien pour moi dans ma religion, ma vie et mon devenir, alors décrète-la pour moi, facilite-la moi puis bénis-la moi. Et si Tu sais que cette affaire est un mal pour moi dans ma religion, ma vie et mon devenir, alors écarte-la de moi et écarte-moi d'elle, et décrète pour moi le bien où qu'il se trouve, puis rends-moi satisfait de ce choix.",
+    target: 1,
+  },
+  {
+    title: "Du'â de guidance",
+    arabic: 'اللَّهُمَّ اهْدِنِي وَسَدِّدْنِي',
+    phonetic: "Allâhumma-hdinî wa saddidnî.",
+    french: "Ô Allah (عز وجل), guide-moi et dirige-moi sur le droit chemin.",
+    target: 7,
+  },
+  {
+    title: "Demande de facilité",
+    arabic: 'اللَّهُمَّ لَا سَهْلَ إِلَّا مَا جَعَلْتَهُ سَهْلًا، وَأَنْتَ تَجْعَلُ الْحَزْنَ إِذَا شِئْتَ سَهْلًا',
+    phonetic: "Allâhumma lâ sahla illâ mâ ja'altahu sahlan, wa Anta taj'alu-l-hazna idhâ shi'ta sahla.",
+    french: "Ô Allah (عز وجل), il n'y a de facilité que ce que Tu rends facile, et Tu rends l'affliction facile quand Tu le veux.",
+    target: 3,
+  },
+  {
+    title: "Remise à Allah (عز وجل)",
+    arabic: 'تَوَكَّلْتُ عَلَى اللهِ، لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللهِ',
+    phonetic: "Tawakkaltu 'alâ-llâh, lâ hawla wa lâ quwwata illâ bi-llâh.",
+    french: "Je place ma confiance en Allah (عز وجل). Il n'y a de force ni de puissance qu'en Allah (عز وجل).",
+    target: 7,
+  },
+  {
+    title: "Salât 'alâ n-Nabî ﷺ (avant et après)",
+    arabic: 'اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ كَمَا صَلَّيْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ إِنَّكَ حَمِيدٌ مَجِيدٌ، اللَّهُمَّ بَارِكْ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ كَمَا بَارَكْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ إِنَّكَ حَمِيدٌ مَجِيدٌ',
+    phonetic: "Allâhumma salli 'alâ Muhammadin wa 'alâ âli Muhammadin kamâ sallayta 'alâ Ibrâhîma wa 'alâ âli Ibrâhîm, innaka Hamîdun Majîd. Allâhumma bârik 'alâ Muhammadin wa 'alâ âli Muhammadin kamâ bârakta 'alâ Ibrâhîma wa 'alâ âli Ibrâhîm, innaka Hamîdun Majîd.",
+    french: "Ô Allah (عز وجل), prie sur Muhammad et sur la famille de Muhammad comme Tu as prié sur Ibrâhîm et la famille d'Ibrâhîm, Tu es certes Digne de louange et de gloire. Ô Allah (عز وجل), bénis Muhammad et la famille de Muhammad comme Tu as béni Ibrâhîm et la famille d'Ibrâhîm, Tu es certes Digne de louange et de gloire. (À réciter avant et après le du'â al-Istikharah)",
+    target: 1,
+  },
+];
