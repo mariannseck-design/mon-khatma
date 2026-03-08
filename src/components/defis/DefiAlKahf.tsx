@@ -7,10 +7,10 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 
 const COLORS = {
-  cave: '#3B2F1E',
-  caveLight: '#5C4A32',
-  sand: '#C2A66B',
-  sandLight: '#D4BF8A',
+  cave: '#7A5C2E',
+  caveLight: '#A07D45',
+  sand: '#F5D87A',
+  sandLight: '#FBE9A0',
 };
 
 function getWeekKey() {
@@ -151,8 +151,10 @@ export default function DefiAlKahf({ disabled = false }: { disabled?: boolean })
               <Mountain className="h-5 w-5" style={{ color: COLORS.sand }} strokeWidth={1.5} />
             </div>
             <div>
-              <h4 className="text-sm font-bold text-white tracking-wide" style={{ fontFamily: "'Inter', sans-serif" }}>
-                La Lumière du Vendredi
+              <h4 className="font-bold text-white tracking-wide leading-tight" style={{ fontFamily: "'Inter', sans-serif" }}>
+                <span className="text-sm">La Lumière</span>
+                <br />
+                <span className="text-[10px] font-medium text-white/60">du Vendredi</span>
               </h4>
               <p className="text-xs text-white/50">Sourate Al-Kahf</p>
             </div>

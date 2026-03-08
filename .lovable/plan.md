@@ -1,29 +1,21 @@
 
 
-## Adoucir la palette et renommer le titre
+# Diagnostic : 404 sur /quran-reader
 
-### 1. Palette — tons soleil/ambre au lieu du brun foncé
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-```
-COLORS = {
-  cave: '#7A5C2E',        // brun doré chaud (fond)
-  caveLight: '#A07D45',   // ambre moyen
-  sand: '#F5D87A',        // jaune soleil
-  sandLight: '#FBE9A0',   // jaune clair
-}
-```
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-### 2. Titre — reformater
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-Actuellement : `La Lumière du Vendredi`
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-Nouveau rendu :
-- Ligne 1 : **La Lumière** (taille actuelle, bold)
-- Ligne 2 : `du Vendredi` en plus petit (`text-xs`) et opacité réduite
-
-### 3. Gradient mis à jour
-
-`linear-gradient(135deg, #7A5C2E 0%, #A07D45 100%)` — plus lumineux, évoquant le soleil couchant.
-
-Fichier modifié : `src/components/defis/DefiAlKahf.tsx`
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
