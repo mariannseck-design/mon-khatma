@@ -211,7 +211,7 @@ export default function AccueilPage() {
         {/* Greeting */}
         <motion.div className="text-center pt-2 pb-2" variants={itemVariants}>
           {displayName && (
-            <p className="text-foreground font-semibold text-lg">Bonjour {displayName} 🤍</p>
+            <p className="text-foreground font-semibold text-lg">{(() => { const h = new Date().getHours(); return h < 12 ? 'Bonjour' : h < 18 ? 'Bon après-midi' : 'Bonsoir'; })()} {displayName} 🤍</p>
           )}
           <p className="text-muted-foreground text-base mt-1">{greeting()}</p>
         </motion.div>
