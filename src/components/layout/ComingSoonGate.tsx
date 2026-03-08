@@ -9,12 +9,13 @@ interface ComingSoonGateProps {
   icon: LucideIcon;
   description: string;
   hideNav?: boolean;
+  adminOnly?: boolean;
 }
 
-export default function ComingSoonGate({ children, title, icon: Icon, description, hideNav }: ComingSoonGateProps) {
-  const { hasFullAccess } = useAuth();
+export default function ComingSoonGate({ children, title, icon: Icon, description, hideNav, adminOnly }: ComingSoonGateProps) {
+  const { hasFullAccess, isAdmin } = useAuth();
 
-  if (hasFullAccess) return <>{children}</>;
+  if (adminOnly ? isAdmin : hasFullAccess) return <>{children}</>;
 
   return (
     <AppLayout title={title} hideNav={hideNav}>
