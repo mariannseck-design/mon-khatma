@@ -69,9 +69,16 @@ export default function QuranReaderPage() {
   const [translationEnabled, setTranslationEnabled] = useState(() => {
     return localStorage.getItem('quran_translation') === 'true';
   });
+  const [translationEdition, setTranslationEdition] = useState(() => {
+    return localStorage.getItem('quran_translation_edition') || 'fr.hamidullah';
+  });
   const handleTranslationChange = (enabled: boolean) => {
     setTranslationEnabled(enabled);
     localStorage.setItem('quran_translation', String(enabled));
+  };
+  const handleTranslationEditionChange = (edition: string) => {
+    setTranslationEdition(edition);
+    localStorage.setItem('quran_translation_edition', edition);
   };
 
   // Force text mode when offline
