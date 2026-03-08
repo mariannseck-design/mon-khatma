@@ -239,7 +239,12 @@ export default function EmotionsPage() {
           {/* Carte Mes Émotions — en bas */}
           <motion.button
             variants={itemVariants}
-            onClick={() => moodSectionRef.current?.scrollIntoView({ behavior: 'smooth' })}
+            onClick={() => {
+              setShowEmotions(prev => !prev);
+              if (!showEmotions) {
+                setTimeout(() => moodSectionRef.current?.scrollIntoView({ behavior: 'smooth' }), 150);
+              }
+            }}
             className="relative overflow-hidden rounded-2xl p-5 flex flex-col items-center justify-center text-center aspect-[4/3]"
             style={{
               background: '#f0ebe3',
