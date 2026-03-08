@@ -434,7 +434,7 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
               }
             }}
             className="flex items-center justify-center gap-1.5 mx-auto px-3 py-1.5 rounded-lg text-xs transition-all active:scale-95"
-            style={{ color: 'rgba(255,255,255,0.4)' }}
+            style={{ color: tc.textMuted }}
           >
             <RotateCcw className="h-3 w-3" />
             Recommencer
