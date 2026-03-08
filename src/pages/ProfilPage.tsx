@@ -95,6 +95,18 @@ export default function ProfilPage() {
             </Button>
           </CardContent>
         </Card>
+
+        {isAdmin && (
+          <Card className="rounded-2xl border-dashed border-yellow-500/30">
+            <CardContent className="flex items-center justify-between pt-6">
+              <div>
+                <p className="font-semibold text-sm">Mode Testeur (Dev)</p>
+                <p className="text-xs text-muted-foreground">Bouton Skip sur les étapes Hifz</p>
+              </div>
+              <Switch checked={isDevMode} onCheckedChange={toggleDevMode} />
+            </CardContent>
+          </Card>
+        )}
       </div>
     </AppLayout>
   );

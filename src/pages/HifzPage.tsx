@@ -182,6 +182,12 @@ export default function HifzPage() {
         {step === 5 && <HifzStep5Liaison onNext={() => updateStep(6)} onBack={() => setStep(4)} />}
         {step === 6 && <HifzStep6Tour onComplete={completeSession} onBack={() => setStep(5)} />}
         {step === 7 && <HifzSuccess />}
+        {step >= 0 && step <= 6 && (
+          <DevSkipButton onSkip={() => {
+            if (step < 6) { updateStep(step + 1); }
+            else { completeSession('easy'); }
+          }} />
+        )}
       </div>
     </AppLayout>
   );
