@@ -53,6 +53,7 @@ export default function EmotionsPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const moodSectionRef = useRef<HTMLDivElement>(null);
+  const favorisSectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (user) {
