@@ -1,21 +1,33 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Choix du mode d'affichage dans le Tikrar (Image Mushaf vs Texte Tajwid)
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Objectif
+Ajouter un sélecteur en haut du Step 3 (Tikrar) permettant à l'utilisatrice de choisir entre :
+- **Mode Mushaf** : Image Tajwid du Mushaf (comme dans Step 2 — CDN hafs-tajweed)
+- **Mode Texte** : Texte local Tanzil avec couleurs Tajwid (implémentation actuelle)
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+Le choix est persisté en localStorage et s'applique dynamiquement pendant toute la session Tikrar.
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+### Changements
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+#### `src/components/hifz/HifzStep3Memorisation.tsx`
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+1. **Nouvel état `displayMode`** : `'text' | 'mushaf'`, persisté dans localStorage (`hifz_display_mode`)
+
+2. **Sélecteur visuel** : Deux boutons style toggle placés juste sous le titre "L'ancrage d'acier", avant le guide :
+   - 📖 **Texte Tajwid** (icône `BookOpen`)
+   - 🖼️ **Mushaf Image** (icône `Image`)
+   - Style cohérent avec le thème émeraude/or existant
+
+3. **Mode Mushaf** : Quand sélectionné, afficher l'image du Mushaf (même source CDN que Step 2) dans un conteneur scrollable zoomable, à la place du texte Tanzil. Les 3 phases du Tikrar s'appliquent de la même façon :
+   - Phase 1-10 : Image visible + audio
+   - Phase 11-15 : Image visible, audio discret
+   - Phase 16+ : Image masquée, bouton "Vérifier" pour aperçu temporaire
+
+4. **Calcul de la page Mushaf** : Utiliser `SURAHS[surahNumber].startPage` (même logique que Step 2)
+
+5. **Import** : Ajouter `Image` de lucide-react et `SURAHS` de surahData
+
+Aucun autre fichier à modifier — tout est contenu dans Step 3.
 
