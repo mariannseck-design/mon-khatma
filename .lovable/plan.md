@@ -1,22 +1,21 @@
 
 
-## Fix: Dhikr categories blocked by "Bientôt disponible"
+# Diagnostic : 404 sur /quran-reader
 
-### Problem
-When you tap a dhikr card (e.g. "Après la prière") on the hub page (`/emotions`), it navigates to `/dhikr?category=prayer`. But the `/dhikr` route is wrapped in `ComingSoonGate`, which blocks all non-admin users with a "Bientôt disponible" screen.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Solution
-Remove the `ComingSoonGate` wrapper from the `/dhikr` route in `App.tsx`. The DhikrPage already handles its own access control internally (each card has an `enabled` flag + admin check).
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-### File changed
-- **`src/App.tsx`** (line ~93): Change the `/dhikr` route from:
-  ```
-  <ComingSoonGate ...>{<DhikrPage />}</ComingSoonGate>
-  ```
-  to just:
-  ```
-  <DhikrPage />
-  ```
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-This will allow all authenticated users to access the dhikr categories that are marked `enabled: true` in the EmotionsPage (matin, soir, prière, chifâ, louanges), while DhikrPage's own `enabled` flags + admin check still gate the "coming soon" cards.
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
