@@ -57,6 +57,10 @@ export default function QuranReaderPage() {
     setShowIntro(false);
     localStorage.setItem('quran_reader_intro_seen', 'true');
   };
+
+  // Exit prompt — ask to bookmark before leaving
+  const [showExitPrompt, setShowExitPrompt] = useState(false);
+
   const handleTajweedChange = (enabled: boolean) => {
     setTajweedEnabled(enabled);
     localStorage.setItem('quran_tajweed', String(enabled));
