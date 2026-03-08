@@ -9,13 +9,14 @@ interface AppLayoutProps {
   children: ReactNode;
   title?: string;
   hideNav?: boolean;
+  bgClassName?: string;
 }
 
-export function AppLayout({ children, title, hideNav = false }: AppLayoutProps) {
+export function AppLayout({ children, title, hideNav = false, bgClassName = 'bg-gradient-warm' }: AppLayoutProps) {
   const { onTouchStart, onTouchEnd, isSwipeable } = useSwipeNavigation();
 
   return (
-    <div className="min-h-screen bg-gradient-warm">
+    <div className={`min-h-screen ${bgClassName}`}>
       <InstallBanner />
       <Header title={title} />
       <main
