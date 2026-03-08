@@ -194,15 +194,40 @@ export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticPro
     return Array.from(surahSelections.values()).some(s => s.selected);
   }, [activeTab, pageIntervals, selectedJuz, surahSelections]);
 
+  // ─── Build a human-readable label from current form ───
+  const buildEntryLabel = (): string => {
+    if (activeTab === 'pages') {
+      return pageIntervals.map(i => `p.${i.start}-${i.end}`).join(', ');
+    } else if (activeTab === 'juz') {
+      const nums = Array.from(selectedJuz).sort((a, b) => a - b);
+      return nums.map(n => `Juz ${n}`).join(', ');
+    } else {
+      const selected = Array.from(surahSelections.entries())
+        .filter(([, sel]) => sel.selected)
+        .sort(([a], [b]) => a - b);
+      return selected.map(([num]) => {
+        const s = SURAHS.find(s => s.number === num);
+        return s ? s.name : `S.${num}`;
+      }).join(', ');
+    }
+  };
+
+  // ─── Compute total pages from labels ───
+  const countPagesFromIntervals = (intervals: PageInterval[]) =>
+    intervals.reduce((sum, i) => sum + Math.max(0, i.end - i.start + 1), 0);
+
   // ─── Save entry for a category ───
   const saveCurrentEntry = (category: Category) => {
     const blocks = buildCurrentBlocks(category);
+    const label = buildEntryLabel();
     if (category === 'solid') {
       setSolidBlocks(prev => [...prev, ...blocks]);
+      setSolidLabels(prev => [...prev, label]);
       resetEntryForm();
       setStep('choose-category');
     } else {
       setRecentBlocks(prev => [...prev, ...blocks]);
+      setRecentLabels(prev => [...prev, label]);
       // Initialize days map for new blocks
       setRecentDaysMap(prev => {
         const next = new Map(prev);
