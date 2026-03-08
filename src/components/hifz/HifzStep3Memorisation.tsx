@@ -445,11 +445,20 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
               </button>
             )}
 
-            {/* Content container — Text */}
+            {/* Mushaf mode toggle */}
+            {textVisible && (
+              <div className="mb-3">
+                <HifzMushafToggle mode={mushafMode} onChange={(m) => { setMushafModeState(m); setMushafMode(m); }} />
+              </div>
+            )}
+
+            {/* Content container — Image or Text */}
             {loading ? (
               <div className="flex items-center justify-center py-8">
                 <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: '#d4af37', borderTopColor: 'transparent' }} />
               </div>
+            ) : textVisible && mushafMode === 'image' ? (
+              <HifzMushafImage surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse} maxHeight="320px" />
             ) : (
               <div
                 style={{ display: textVisible ? 'block' : 'none' }}
@@ -457,7 +466,6 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
                 dir="rtl"
               >
                 <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '12px', padding: '16px', border: '1px solid rgba(212,175,55,0.15)' }}>
-                  {/* Basmala header for first verse */}
                   {startVerse === 1 && surahNumber !== 1 && surahNumber !== 9 && (
                     <p
                       className="text-center mb-3"
