@@ -52,6 +52,10 @@ export default function DouasSession({
   const handleToggleFav = () => {
     if (!currentItem) return;
     onToggleFavorite(currentId, currentItem);
+    if (!isCurrentFav) {
+      setHeartPulse(true);
+      setTimeout(() => setHeartPulse(false), 600);
+    }
     toast.success(isCurrentFav ? 'Retiré des favoris' : 'Ajouté aux favoris ❤️');
   };
 
