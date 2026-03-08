@@ -10,7 +10,7 @@ interface ReciterEntry {
 
 export const RECITERS: readonly ReciterEntry[] = [
   { id: 'ar.alafasy', name: 'Mishary Al-Afasy', source: 'alquran' },
-  { id: 'ea.ghamidi', name: 'Saad Al-Ghamidi', source: 'everyayah', folder: 'Sa3d_Al-Ghamidi/128kbps' },
+  { id: 'ea.ghamidi', name: 'Saad Al-Ghamidi', source: 'everyayah', folder: 'Ghamadi_40kbps' },
   { id: 'ea.yasserdossari', name: 'Yasser Al-Dosari', source: 'everyayah', folder: 'Yasser_Ad-Dussary_128kbps' },
   { id: 'ea.nasserqatami', name: 'Nasser Al-Qatami', source: 'everyayah', folder: 'Nasser_Alqatami_128kbps' },
   { id: 'ea.mahermuaiqly', name: 'Maher Al-Muaiqly', source: 'everyayah', folder: 'MaherAlMuaiqly128kbps' },

@@ -42,7 +42,14 @@ export default function QuranReaderPage() {
   const retriesRef = useRef(0);
 
   // Text mode now uses local bundled data — no network dependency
-  const [viewMode, setViewMode] = useState<'image' | 'text'>('image');
+  const [viewMode, setViewModeState] = useState<'image' | 'text'>(() => {
+    const saved = localStorage.getItem('quran_view_mode');
+    return saved === 'text' ? 'text' : 'image';
+  });
+  const handleViewModeChange = (mode: 'image' | 'text') => {
+    setViewModeState(mode);
+    localStorage.setItem('quran_view_mode', mode);
+  };
   const textModeDisabled = false;
 
   const [tajweedEnabled, setTajweedEnabled] = useState(() => {
@@ -84,7 +91,7 @@ export default function QuranReaderPage() {
   // Force text mode when offline
   useEffect(() => {
     if (!isOnline && viewMode === 'image') {
-      setViewMode('text');
+      handleViewModeChange('text');
     }
   }, [isOnline, viewMode]);
   const [nightMode, setNightMode] = useState(() => {
@@ -109,7 +116,7 @@ export default function QuranReaderPage() {
   });
   useEffect(() => { localStorage.setItem('quran_text_size_index', textSizeIndex.toString()); }, [textSizeIndex]);
 
-  useEffect(() => { localStorage.setItem('quran_view_mode', viewMode); }, [viewMode]);
+  
 
   const [bookmark, setBookmark] = useState<number | null>(() => {
     const saved = localStorage.getItem('quran_bookmark');
@@ -488,7 +495,7 @@ export default function QuranReaderPage() {
           {/* Settings */}
           <ReaderSettingsPanel
             viewMode={viewMode}
-            onViewModeChange={setViewMode}
+            onViewModeChange={handleViewModeChange}
             nightMode={nightMode}
             onNightModeChange={handleNightModeChange}
             fontSize={TEXT_SIZES[textSizeIndex].value}
