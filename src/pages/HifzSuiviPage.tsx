@@ -28,33 +28,33 @@ const MOTIVATIONS = [
 
 function CircularGauge({ value, max, label, hideMax }: { value: number; max: number; label: string; hideMax?: boolean }) {
   const pct = max > 0 ? Math.min(value / max, 1) : 0;
-  const r = 38;
+  const r = 32;
   const circ = 2 * Math.PI * r;
   const offset = circ * (1 - pct);
 
   return (
     <div className="flex flex-col items-center gap-1">
-      <svg width="96" height="96" viewBox="0 0 96 96">
-        <circle cx="48" cy="48" r={r} fill="none" stroke="var(--p-track)" strokeWidth="5" />
+      <svg width="80" height="80" viewBox="0 0 80 80">
+        <circle cx="40" cy="40" r={r} fill="none" stroke="var(--p-track)" strokeWidth="5" />
         <motion.circle
-          cx="48" cy="48" r={r} fill="none"
+          cx="40" cy="40" r={r} fill="none"
           stroke="var(--p-primary)" strokeWidth="5" strokeLinecap="round"
           strokeDasharray={circ} strokeDashoffset={offset}
-          transform="rotate(-90 48 48)"
+          transform="rotate(-90 40 40)"
           initial={{ strokeDashoffset: circ }}
           animate={{ strokeDashoffset: offset }}
           transition={{ duration: 1.2, ease: 'easeOut' }}
         />
-        <text x="48" y={hideMax ? 52 : 44} textAnchor="middle" fill="var(--p-primary)" fontSize="18" fontWeight="bold" fontFamily="Inter, sans-serif">
+        <text x="40" y={hideMax ? 44 : 38} textAnchor="middle" fill="var(--p-primary)" fontSize="16" fontWeight="bold" fontFamily="Inter, sans-serif">
           {value}
         </text>
         {!hideMax && (
-          <text x="48" y="60" textAnchor="middle" fill="var(--p-text-60)" fontSize="9" fontWeight="600">
+          <text x="40" y="52" textAnchor="middle" fill="var(--p-text-60)" fontSize="8" fontWeight="600">
             / {max}
           </text>
         )}
       </svg>
-      <span className="text-xs font-medium" style={{ color: 'var(--p-text-65)' }}>{label}</span>
+      <span className="text-[10px] font-medium" style={{ color: 'var(--p-text-65)' }}>{label}</span>
     </div>
   );
 }
