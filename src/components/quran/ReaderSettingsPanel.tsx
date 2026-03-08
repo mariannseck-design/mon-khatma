@@ -27,6 +27,8 @@ interface ReaderSettingsPanelProps {
   isOffline?: boolean;
   tajweedEnabled?: boolean;
   onTajweedChange?: (enabled: boolean) => void;
+  translationEnabled?: boolean;
+  onTranslationChange?: (enabled: boolean) => void;
 }
 
 const FONT_SIZE_PRESETS = [
