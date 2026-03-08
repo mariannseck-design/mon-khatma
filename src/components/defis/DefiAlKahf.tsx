@@ -142,9 +142,9 @@ export default function DefiAlKahf({ disabled = false }: { disabled?: boolean })
           <div className="flex items-center gap-3 mb-4">
             <div
               className="w-10 h-10 rounded-xl flex items-center justify-center"
-              style={{ background: `${COLORS.goldAccent}22`, border: `1px solid ${COLORS.goldAccent}35` }}
+              style={{ background: `${COLORS.sand}22`, border: `1px solid ${COLORS.sand}35` }}
             >
-              <BookOpen className="h-5 w-5" style={{ color: COLORS.goldAccent }} strokeWidth={1.5} />
+              <Mountain className="h-5 w-5" style={{ color: COLORS.sand }} strokeWidth={1.5} />
             </div>
             <div>
               <h4 className="text-sm font-bold text-white tracking-wide" style={{ fontFamily: "'Inter', sans-serif" }}>
