@@ -2,16 +2,15 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
   Home, 
-  Smile, 
-  Bell,
-  Moon
+  Moon, 
+  Bell
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navItems: { path: string; icon: typeof Home; label: string; glow?: boolean }[] = [
   { path: '/accueil', icon: Home, label: 'Accueil' },
   { path: '/ramadan', icon: Moon, label: 'Ramadan', glow: true },
-  { path: '/emotions', icon: Smile, label: 'Émotions' },
+  { path: '/emotions', icon: Moon, label: 'Dhikr' },
   { path: '/rappels', icon: Bell, label: 'Rappels' },
 ];
 

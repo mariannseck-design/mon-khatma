@@ -1,52 +1,21 @@
 
 
-## Plan : Restructurer la page en "Mon Dhikr Quotidien"
+# Diagnostic : 404 sur /quran-reader
 
-### Concept
-La page `/emotions` devient la page **"Mon Dhikr Quotidien"**. Elle affiche une grille de cartes (style DhikrPage actuel) incluant les 8 cartes dhikr existantes + "Mes Émotions" + "Mes Favoris". Le contenu émotions/favoris reste en dessous, accessible par scroll.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Modifications
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-#### 1. `src/components/layout/Navigation.tsx`
-- Label : `'Émotions'` → `'Dhikr'`
-- Icône : `Smile` → `Moon` (ou garder cohérent)
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-#### 2. `src/pages/EmotionsPage.tsx`
-- `AppLayout title` → `"Mon Dhikr Quotidien"`
-- Header h1 → "Mon Dhikr Quotidien" (style émeraude, uppercase, comme DhikrPage)
-- Remplacer la grille de 3 cartes par une grille `grid-cols-2` contenant :
-  - **Carte "Mes Émotions"** (Flower2 icon, scrolle vers section émotions) — style carte dhikr (fond `#f0ebe3`, texte `#1b4332`)
-  - **Carte "Mes Favoris"** (Heart icon, scrolle vers section favoris) — style carte dhikr
-  - **Les 8 cartes dhikr** (Zikr du matin, soir, etc. avec badge "Bientôt disponible") — copier le tableau `dhikrCards` depuis DhikrPage
-- Sections émotions + favoris + réflexion restent en dessous de la grille
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-#### 3. `src/pages/DhikrPage.tsx`
-- Peut être conservé comme route `/dhikr` ou supprimé (les cartes sont maintenant dans EmotionsPage)
-- Option : rediriger `/dhikr` vers `/emotions`
-
-### Layout résultat
-
-```text
-┌──────────────────────────┐
-│   MON DHIKR QUOTIDIEN    │
-├────────────┬─────────────┤
-│ Mes        │ Mes         │
-│ Émotions   │ Favoris     │
-├────────────┼─────────────┤
-│ Zikr du    │ Zikr du     │
-│ matin      │ soir        │
-├────────────┼─────────────┤
-│ Après la   │ Toute       │
-│ prière     │ occasion    │
-│ ...        │ ...         │
-├────────────┴─────────────┤
-│ [Section Émotions]       │
-│ [Section Favoris]        │
-│ [Réflexion du mois]      │
-└──────────────────────────┘
-```
-
-### Fichiers modifiés
-- `src/components/layout/Navigation.tsx` — label + icône
-- `src/pages/EmotionsPage.tsx` — header + grille fusionnée avec cartes dhikr
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Smile, Frown, Meh, Heart, Cloud, Sun, Sparkles, Trash2, Edit3, Calendar, MoreVertical, Flower2, Moon } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Smile, Frown, Meh, Heart, Cloud, Sun, Sparkles, Trash2, Edit3, Calendar, MoreVertical, Flower2, Moon, Sunrise, BookOpen, ChevronDown, MapPin, Landmark } from 'lucide-react';
 import FavoriteVersesSection from '@/components/favoris/FavoriteVersesSection';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { Card } from '@/components/ui/card';
@@ -20,14 +19,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-const COLORS = {
-  emerald: '#065F46',
-  gold: '#D4AF37',
-  goldAccent: '#B5942E',
-  greenMist: '#F0F7F4',
-  sage: 'rgba(6,95,70,0.55)',
-};
-
 interface MoodEntry {
   id: string;
   mood_value: number;
@@ -44,6 +35,27 @@ const moods = [
   { icon: Cloud, label: 'Fatiguée', value: 2, color: 'bg-gradient-lavender' },
   { icon: Frown, label: 'Difficile', value: 1, color: 'bg-gradient-peach' },
 ];
+
+const dhikrCards = [
+  { title: 'Zikr du matin', icon: Sunrise, bg: '#e8d5a3', text: '#1b4332', border: '' },
+  { title: 'Zikr du soir', icon: Moon, bg: '#1a1a2e', text: '#ffffff', border: '' },
+  { title: 'Après la prière', icon: BookOpen, bg: '#c8d5c0', text: '#1b4332', border: '' },
+  { title: 'Toute occasion', icon: Heart, bg: '#f0ebe3', text: '#1b4332', border: '' },
+  { title: 'Sujud Tilawah', icon: ChevronDown, bg: '#c67a5c', text: '#ffffff', border: '' },
+  { title: 'Duas Omra', icon: MapPin, bg: '#faf8f5', text: '#1b4332', border: '#b5942e' },
+  { title: 'Duas Hajj', icon: Landmark, bg: '#2d6a4f', text: '#b5942e', border: '' },
+  { title: 'Istikharah', icon: Sparkles, bg: '#dce8f0', text: '#1b4332', border: '' },
+];
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.06 } },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 12 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
+};
 
 export default function EmotionsPage() {
   const { user } = useAuth();
@@ -88,7 +100,6 @@ export default function EmotionsPage() {
     const moodData = moods.find(m => m.value === selectedMood);
 
     if (editingId) {
-      // Update existing entry
       const { error } = await supabase
         .from('mood_entries')
         .update({
@@ -107,7 +118,6 @@ export default function EmotionsPage() {
         fetchEntries();
       }
     } else {
-      // Create new entry
       const { error } = await supabase
         .from('mood_entries')
         .insert({
@@ -140,7 +150,7 @@ export default function EmotionsPage() {
     setSelectedMood(entry.mood_value);
     setGratitude(entry.gratitude || '');
     setEditingId(entry.id);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    moodSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const handleDelete = async (id: string) => {
@@ -169,243 +179,254 @@ export default function EmotionsPage() {
   };
 
   return (
-    <AppLayout title="Bien-Être">
+    <AppLayout title="Mon Dhikr Quotidien">
       <div className="section-spacing">
         {/* Header */}
-        <div className="zen-header">
-          <h1>🌿 Mon Espace Bien-Être</h1>
-          <p className="text-muted-foreground">
-            Prends soin de toi, avec l'aide d'Allah <span className="honorific">(عز وجل)</span>
-          </p>
-        </div>
+        <h1
+          className="text-xl font-bold tracking-[0.06em] uppercase text-center"
+          style={{ fontFamily: "'Inter', sans-serif", color: '#2d6a4f' }}
+        >
+          Mon Dhikr Quotidien
+        </h1>
 
-        {/* Grille de blocs */}
-        <div className="grid grid-cols-3 gap-3">
-          {/* Bloc Mes Émotions */}
+        {/* Grille unifiée */}
+        <motion.div
+          className="grid grid-cols-2 gap-4"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          {/* Carte Mes Émotions */}
           <motion.button
+            variants={itemVariants}
             onClick={() => moodSectionRef.current?.scrollIntoView({ behavior: 'smooth' })}
-            className="relative overflow-hidden rounded-2xl p-4 flex flex-col items-center justify-center text-center"
+            className="relative overflow-hidden rounded-2xl p-5 flex flex-col items-center justify-center text-center aspect-[4/3]"
             style={{
-              background: COLORS.greenMist,
-              border: `1.5px solid ${COLORS.emerald}15`,
+              background: '#f0ebe3',
+              border: '1px solid rgba(0,0,0,0.06)',
+              boxShadow: '0 2px 12px -2px rgba(0,0,0,0.08)',
             }}
-            whileTap={{ scale: 0.97 }}
           >
-            <div
-              className="w-10 h-10 rounded-xl flex items-center justify-center mb-2"
-              style={{ background: `${COLORS.gold}12`, border: `1px solid ${COLORS.gold}18` }}
-            >
-              <Flower2 className="h-5 w-5" style={{ color: COLORS.goldAccent }} />
-            </div>
-            <h4
-              className="text-xs font-bold tracking-[0.06em] uppercase"
-              style={{ fontFamily: "'Inter', sans-serif", color: COLORS.emerald }}
+            <Flower2
+              className="h-7 w-7 mb-2 opacity-80"
+              strokeWidth={1.5}
+              style={{ color: '#1b4332' }}
+            />
+            <h3
+              className="text-sm font-semibold leading-tight"
+              style={{ color: '#1b4332', fontFamily: "'Inter', sans-serif" }}
             >
               Mes Émotions
-            </h4>
-            <p className="text-[10px] mt-0.5" style={{ color: COLORS.sage }}>Humeur & gratitude</p>
+            </h3>
           </motion.button>
 
-          {/* Bloc Mon Dhikr Quotidien */}
-          <Link to="/dhikr" className="block">
-            <motion.div
-              className="relative overflow-hidden rounded-2xl p-4 flex flex-col items-center justify-center text-center h-full"
-              style={{
-                background: COLORS.greenMist,
-                border: `1.5px solid ${COLORS.emerald}15`,
-              }}
-              whileTap={{ scale: 0.97 }}
-            >
-              <div
-                className="w-10 h-10 rounded-xl flex items-center justify-center mb-2"
-                style={{ background: `${COLORS.gold}12`, border: `1px solid ${COLORS.gold}18` }}
-              >
-                <Moon className="h-5 w-5" style={{ color: COLORS.goldAccent }} />
-              </div>
-              <h4
-                className="text-xs font-bold tracking-[0.06em] uppercase"
-                style={{ fontFamily: "'Inter', sans-serif", color: COLORS.emerald }}
-              >
-                Mon Dhikr
-              </h4>
-              <p className="text-[10px] mt-0.5" style={{ color: COLORS.sage }}>Adhkâr & invocations</p>
-            </motion.div>
-          </Link>
-
-          {/* Bloc Mes Favoris */}
+          {/* Carte Mes Favoris */}
           <motion.button
+            variants={itemVariants}
             onClick={() => favorisSectionRef.current?.scrollIntoView({ behavior: 'smooth' })}
-            className="relative overflow-hidden rounded-2xl p-4 flex flex-col items-center justify-center text-center"
+            className="relative overflow-hidden rounded-2xl p-5 flex flex-col items-center justify-center text-center aspect-[4/3]"
             style={{
-              background: COLORS.greenMist,
-              border: `1.5px solid ${COLORS.emerald}15`,
+              background: '#faf8f5',
+              border: '1.5px solid #b5942e',
+              boxShadow: '0 2px 12px -2px rgba(0,0,0,0.08)',
             }}
-            whileTap={{ scale: 0.97 }}
           >
-            <div
-              className="w-10 h-10 rounded-xl flex items-center justify-center mb-2"
-              style={{ background: 'rgba(220,38,38,0.08)', border: '1px solid rgba(220,38,38,0.15)' }}
-            >
-              <Heart className="h-5 w-5 text-red-500" strokeWidth={1.5} fill="rgba(220,38,38,0.3)" />
-            </div>
-            <h4
-              className="text-xs font-bold tracking-[0.06em] uppercase"
-              style={{ fontFamily: "'Inter', sans-serif", color: COLORS.emerald }}
+            <Heart
+              className="h-7 w-7 mb-2 text-red-500 opacity-80"
+              strokeWidth={1.5}
+              fill="rgba(220,38,38,0.3)"
+            />
+            <h3
+              className="text-sm font-semibold leading-tight"
+              style={{ color: '#1b4332', fontFamily: "'Inter', sans-serif" }}
             >
               Mes Favoris
-            </h4>
-            <p className="text-[10px] mt-0.5" style={{ color: COLORS.sage }}>Versets sauvegardés</p>
+            </h3>
           </motion.button>
-        </div>
+
+          {/* 8 cartes Dhikr */}
+          {dhikrCards.map((card) => {
+            const Icon = card.icon;
+            return (
+              <motion.div
+                key={card.title}
+                variants={itemVariants}
+                className="relative overflow-hidden rounded-2xl p-5 flex flex-col items-center justify-center text-center aspect-[4/3]"
+                style={{
+                  background: card.bg,
+                  border: card.border ? `1.5px solid ${card.border}` : '1px solid rgba(0,0,0,0.06)',
+                  boxShadow: '0 2px 12px -2px rgba(0,0,0,0.08)',
+                }}
+              >
+                <span
+                  className="absolute top-2 right-2 text-[9px] font-medium px-2 py-0.5 rounded-full backdrop-blur-sm"
+                  style={{
+                    background: 'rgba(255,255,255,0.35)',
+                    color: card.text,
+                    border: '1px solid rgba(255,255,255,0.25)',
+                  }}
+                >
+                  Bientôt
+                </span>
+                <Icon
+                  className="h-7 w-7 mb-2 opacity-80"
+                  strokeWidth={1.5}
+                  style={{ color: card.text }}
+                />
+                <h3
+                  className="text-sm font-semibold leading-tight"
+                  style={{ color: card.text, fontFamily: "'Inter', sans-serif" }}
+                >
+                  {card.title}
+                </h3>
+              </motion.div>
+            );
+          })}
+        </motion.div>
 
         {/* Section Émotions */}
         <div ref={moodSectionRef}>
-        {/* Mood Selection */}
-        <Card className="pastel-card p-6">
-          <h3 className="font-display text-lg mb-4 text-center">
-            {editingId ? 'Modifier mon humeur' : 'Mon humeur aujourd\'hui'}
-          </h3>
-          
-          <div className="flex justify-center gap-3">
-            {moods.map((mood) => {
-              const Icon = mood.icon;
-              const isSelected = selectedMood === mood.value;
-              
-              return (
-                <motion.button
-                  key={mood.value}
-                  onClick={() => setSelectedMood(mood.value)}
-                  className={`flex flex-col items-center gap-2 p-3 rounded-2xl transition-all ${
-                    isSelected 
-                      ? `${mood.color} scale-110 shadow-lg` 
-                      : 'bg-muted hover:bg-muted/80'
-                  }`}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Icon className={`h-8 w-8 ${isSelected ? 'text-foreground' : 'text-muted-foreground'}`} />
-                  <span className={`text-xs ${isSelected ? 'text-foreground font-medium' : 'text-muted-foreground'}`}>
-                    {mood.label}
-                  </span>
-                </motion.button>
-              );
-            })}
-          </div>
-        </Card>
-
-        {/* Dua based on mood */}
-        {selectedMood && <MoodDuaCard moodValue={selectedMood} />}
-
-        {/* Gratitude */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-        >
           <Card className="pastel-card p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <Heart className="h-5 w-5 text-peach" />
-              <h3 className="font-display text-lg">Gratitude</h3>
+            <h3 className="font-display text-lg mb-4 text-center">
+              {editingId ? 'Modifier mon humeur' : 'Mon humeur aujourd\'hui'}
+            </h3>
+            
+            <div className="flex justify-center gap-3">
+              {moods.map((mood) => {
+                const Icon = mood.icon;
+                const isSelected = selectedMood === mood.value;
+                
+                return (
+                  <motion.button
+                    key={mood.value}
+                    onClick={() => setSelectedMood(mood.value)}
+                    className={`flex flex-col items-center gap-2 p-3 rounded-2xl transition-all ${
+                      isSelected 
+                        ? `${mood.color} scale-110 shadow-lg` 
+                        : 'bg-muted hover:bg-muted/80'
+                    }`}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Icon className={`h-8 w-8 ${isSelected ? 'text-foreground' : 'text-muted-foreground'}`} />
+                    <span className={`text-xs ${isSelected ? 'text-foreground font-medium' : 'text-muted-foreground'}`}>
+                      {mood.label}
+                    </span>
+                  </motion.button>
+                );
+              })}
             </div>
-            
-            <p className="text-sm text-muted-foreground mb-3">
-              Pour quoi es-tu reconnaissante aujourd'hui?
-            </p>
-            
-            <Textarea
-              placeholder="Alhamdulillah pour..."
-              value={gratitude}
-              onChange={(e) => setGratitude(e.target.value)}
-              className="min-h-[100px] rounded-xl resize-none"
-            />
           </Card>
-        </motion.div>
 
-        {/* Save Button */}
-        <div className="flex gap-2">
-          {editingId && (
-            <Button 
-              onClick={resetForm}
-              variant="outline"
-              className="flex-1 h-12 rounded-xl"
-            >
-              Annuler
-            </Button>
-          )}
-          <Button 
-            onClick={handleSave}
-            disabled={isLoading || !selectedMood}
-            className={`bg-primary text-primary-foreground hover-lift h-12 rounded-xl ${editingId ? 'flex-1' : 'w-full'}`}
+          {selectedMood && <MoodDuaCard moodValue={selectedMood} />}
+
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
           >
-            <Sparkles className="h-4 w-4 mr-2" />
-            {editingId ? 'Mettre à jour' : 'Enregistrer mon moment'}
-          </Button>
-        </div>
-
-        {/* History */}
-        {entries.length > 0 && (
-          <div className="space-y-3">
-            <h2 className="font-display text-lg text-foreground">Mes moments précédents</h2>
-            
-            {entries.map((entry, index) => {
-              const MoodIcon = getMoodIcon(entry.mood_value);
+            <Card className="pastel-card p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <Heart className="h-5 w-5 text-peach" />
+                <h3 className="font-display text-lg">Gratitude</h3>
+              </div>
               
-              return (
-                <motion.div
-                  key={entry.id}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.05 }}
-                >
-                  <Card className="pastel-card p-4">
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex items-start gap-3 flex-1 min-w-0">
-                        <div className={`w-10 h-10 rounded-xl ${getMoodColor(entry.mood_value)} flex items-center justify-center shrink-0`}>
-                          <MoodIcon className="h-5 w-5 text-foreground" />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="font-medium text-foreground">{entry.mood_label}</span>
-                            <span className="text-xs text-muted-foreground flex items-center gap-1">
-                              <Calendar className="h-3 w-3" />
-                              {format(new Date(entry.entry_date), 'd MMM yyyy', { locale: fr })}
-                            </span>
-                          </div>
-                          {entry.gratitude && (
-                            <p className="text-sm text-muted-foreground line-clamp-2">
-                              {entry.gratitude}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                      
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0">
-                            <MoreVertical className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => handleEdit(entry)}>
-                            <Edit3 className="h-4 w-4 mr-2" />
-                            Modifier
-                          </DropdownMenuItem>
-                          <DropdownMenuItem 
-                            onClick={() => handleDelete(entry.id)}
-                            className="text-destructive focus:text-destructive"
-                          >
-                            <Trash2 className="h-4 w-4 mr-2" />
-                            Supprimer
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </div>
-                  </Card>
-                </motion.div>
-              );
-            })}
+              <p className="text-sm text-muted-foreground mb-3">
+                Pour quoi es-tu reconnaissante aujourd'hui?
+              </p>
+              
+              <Textarea
+                placeholder="Alhamdulillah pour..."
+                value={gratitude}
+                onChange={(e) => setGratitude(e.target.value)}
+                className="min-h-[100px] rounded-xl resize-none"
+              />
+            </Card>
+          </motion.div>
+
+          <div className="flex gap-2">
+            {editingId && (
+              <Button 
+                onClick={resetForm}
+                variant="outline"
+                className="flex-1 h-12 rounded-xl"
+              >
+                Annuler
+              </Button>
+            )}
+            <Button 
+              onClick={handleSave}
+              disabled={isLoading || !selectedMood}
+              className={`bg-primary text-primary-foreground hover-lift h-12 rounded-xl ${editingId ? 'flex-1' : 'w-full'}`}
+            >
+              <Sparkles className="h-4 w-4 mr-2" />
+              {editingId ? 'Mettre à jour' : 'Enregistrer mon moment'}
+            </Button>
           </div>
-        )}
-        </div>{/* end moodSectionRef */}
+
+          {entries.length > 0 && (
+            <div className="space-y-3">
+              <h2 className="font-display text-lg text-foreground">Mes moments précédents</h2>
+              
+              {entries.map((entry, index) => {
+                const MoodIcon = getMoodIcon(entry.mood_value);
+                
+                return (
+                  <motion.div
+                    key={entry.id}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                  >
+                    <Card className="pastel-card p-4">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-start gap-3 flex-1 min-w-0">
+                          <div className={`w-10 h-10 rounded-xl ${getMoodColor(entry.mood_value)} flex items-center justify-center shrink-0`}>
+                            <MoodIcon className="h-5 w-5 text-foreground" />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="font-medium text-foreground">{entry.mood_label}</span>
+                              <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                <Calendar className="h-3 w-3" />
+                                {format(new Date(entry.entry_date), 'd MMM yyyy', { locale: fr })}
+                              </span>
+                            </div>
+                            {entry.gratitude && (
+                              <p className="text-sm text-muted-foreground line-clamp-2">
+                                {entry.gratitude}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0">
+                              <MoreVertical className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => handleEdit(entry)}>
+                              <Edit3 className="h-4 w-4 mr-2" />
+                              Modifier
+                            </DropdownMenuItem>
+                            <DropdownMenuItem 
+                              onClick={() => handleDelete(entry.id)}
+                              className="text-destructive focus:text-destructive"
+                            >
+                              <Trash2 className="h-4 w-4 mr-2" />
+                              Supprimer
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
+                    </Card>
+                  </motion.div>
+                );
+              })}
+            </div>
+          )}
+        </div>
 
         {/* Section Favoris */}
         <div ref={favorisSectionRef}>
