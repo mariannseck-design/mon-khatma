@@ -307,7 +307,7 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
                 <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: '#d4af37', borderTopColor: 'transparent' }} />
               </div>
             ) : (
-              <div style={{ background: 'rgba(255,255,255,0.08)', borderRadius: '12px', padding: '16px', border: '1px solid rgba(255,255,255,0.15)' }}>
+              <div style={{ background: tc.quranInnerBg, borderRadius: '12px', padding: '16px', border: tc.quranInnerBorder }}>
                 {startVerse === 1 && surahNumber !== 1 && surahNumber !== 9 && (
                   <p
                     className="text-center mb-3"
