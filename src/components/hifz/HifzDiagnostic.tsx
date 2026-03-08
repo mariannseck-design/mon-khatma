@@ -302,8 +302,8 @@ export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticPro
         </h2>
         <p className="text-sm text-white/70 max-w-xs">
           Votre programme de révision a été créé.
-          {solidBlocks.length > 0 && ` ${solidBlocks.length} blocs en Tour (SM-2).`}
-          {recentBlocks.length > 0 && ` ${recentBlocks.length} blocs en Liaison quotidienne.`}
+          {solidBlocks.length > 0 && ` ${solidBlocks.length} portion${solidBlocks.length > 1 ? 's' : ''} en révision espacée.`}
+          {recentBlocks.length > 0 && ` ${recentBlocks.length} portion${recentBlocks.length > 1 ? 's' : ''} en liaison quotidienne.`}
         </p>
       </motion.div>
     );
@@ -334,7 +334,7 @@ export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticPro
           <div className="space-y-2">
             <div className="flex items-center gap-2">
               <Building2 className="h-4 w-4" style={{ color: goldColor }} />
-              <h3 className="text-sm font-bold" style={{ color: goldColor }}>Acquis Solides — Le Tour</h3>
+              <h3 className="text-sm font-bold" style={{ color: goldColor }}>Acquis Solides — Révision espacée</h3>
             </div>
             <div className="rounded-2xl p-3 max-h-[20vh] overflow-y-auto space-y-1"
               style={{ background: 'rgba(0,0,0,0.2)', border: `1px solid ${goldBorder}` }}>
@@ -349,7 +349,7 @@ export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticPro
               })}
             </div>
             <p className="text-[10px] text-white/50 italic">
-              Révision SM-2 étalée sur 14 jours
+              Révision espacée étalée sur 14 jours
             </p>
           </div>
         )}
@@ -644,7 +644,7 @@ export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticPro
             </div>
           </div>
           <p className="text-[11px] text-white/60 leading-relaxed pl-[52px]">
-            Ces sourates sont bien ancrées. Elles seront révisées par l'algorithme de répétition espacée (Le Tour).
+            Ces sourates sont bien ancrées. Elles seront révisées par l'algorithme de répétition espacée.
           </p>
         </motion.button>
 
