@@ -2,11 +2,16 @@ import { createContext, useContext, useEffect, useState, ReactNode } from 'react
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 
+const ALLOWED_EMAILS: string[] = [
+  // Ajouter ici les emails autorisés
+];
+
 interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
   isAdmin: boolean;
+  hasFullAccess: boolean;
   signUp: (email: string, password: string, displayName?: string) => Promise<{ error: Error | null }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
@@ -133,17 +138,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { error: error as Error | null };
   };
 
-  return (
-    <AuthContext.Provider value={{ 
-      user, 
-      session, 
-      loading, 
-      isAdmin,
-      signUp, 
-      signIn, 
-      signOut,
-      resendConfirmation
-    }}>
+    const hasFullAccess = isAdmin || (user?.email ? ALLOWED_EMAILS.includes(user.email) : false);
+
+    return (
+      <AuthContext.Provider value={{ 
+        user, 
+        session, 
+        loading, 
+        isAdmin,
+        hasFullAccess,
+        signUp, 
+        signIn, 
+        signOut,
+        resendConfirmation
+      }}>
       {children}
     </AuthContext.Provider>
   );
@@ -159,6 +167,7 @@ export function useAuth() {
       session: null,
       loading: true,
       isAdmin: false,
+      hasFullAccess: false,
       signUp: async () => ({ error: new Error('Auth not initialized') }),
       signIn: async () => ({ error: new Error('Auth not initialized') }),
       signOut: async () => {},
