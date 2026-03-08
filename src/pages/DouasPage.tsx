@@ -141,7 +141,7 @@ export default function DouasPage() {
             exit={{ opacity: 0, x: -40 }}
             transition={{ duration: 0.25 }}
           >
-            <DhikrSession
+            <SourcesSession
               title={`${selectedCategory.title} — ${selectedSubtheme.title}`}
               items={selectedSubtheme.items}
               onBack={goBack}
