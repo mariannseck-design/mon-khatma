@@ -26,7 +26,7 @@ const MOTIVATIONS = [
   "Qu'Allah (عز وجل) te facilite ce chemin.",
 ];
 
-function CircularGauge({ value, max, label }: { value: number; max: number; label: string }) {
+function CircularGauge({ value, max, label, hideMax }: { value: number; max: number; label: string; hideMax?: boolean }) {
   const pct = max > 0 ? Math.min(value / max, 1) : 0;
   const r = 38;
   const circ = 2 * Math.PI * r;
@@ -45,12 +45,14 @@ function CircularGauge({ value, max, label }: { value: number; max: number; labe
           animate={{ strokeDashoffset: offset }}
           transition={{ duration: 1.2, ease: 'easeOut' }}
         />
-        <text x="48" y="44" textAnchor="middle" fill="var(--p-primary)" fontSize="18" fontWeight="bold" fontFamily="Inter, sans-serif">
+        <text x="48" y={hideMax ? 52 : 44} textAnchor="middle" fill="var(--p-primary)" fontSize="18" fontWeight="bold" fontFamily="Inter, sans-serif">
           {value}
         </text>
-        <text x="48" y="60" textAnchor="middle" fill="var(--p-text-60)" fontSize="9" fontWeight="600">
-          / {max}
-        </text>
+        {!hideMax && (
+          <text x="48" y="60" textAnchor="middle" fill="var(--p-text-60)" fontSize="9" fontWeight="600">
+            / {max}
+          </text>
+        )}
       </svg>
       <span className="text-xs font-medium" style={{ color: 'var(--p-text-65)' }}>{label}</span>
     </div>
