@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Mic, Square, Play, Pause, Check, X, Eye } from 'lucide-react';
 import HifzStepWrapper from './HifzStepWrapper';
 import { SURAHS } from '@/lib/surahData';
+import { type HifzTheme, getThemeColors } from '@/lib/hifzTheme';
 
 const ENCOURAGEMENTS = [
   {
@@ -28,6 +29,7 @@ interface Props {
   endVerse: number;
   onNext: () => void;
   onBack: () => void;
+  theme?: HifzTheme;
 }
 
 export default function HifzStep4Validation({ surahNumber, startVerse, endVerse, onNext, onBack }: Props) {
