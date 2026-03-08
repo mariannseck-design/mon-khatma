@@ -98,6 +98,9 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
     const saved = localStorage.getItem(storageKey);
     return saved ? Math.min(parseInt(saved, 10) || 0, tikrarTarget) : 0;
   });
+  const [displayMode, setDisplayMode] = useState<'text' | 'mushaf'>(() => {
+    return (localStorage.getItem('hifz_display_mode') as 'text' | 'mushaf') || 'text';
+  });
   const [ayahs, setAyahs] = useState<AyahWithAnnotations[]>([]);
   const [loading, setLoading] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -111,6 +114,22 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
   const reciter = localStorage.getItem('quran_reciter') || 'ar.alafasy';
 
   const phaseInfo = getPhaseInfo(ancrage);
+
+  // Persist display mode
+  useEffect(() => {
+    localStorage.setItem('hifz_display_mode', displayMode);
+  }, [displayMode]);
+
+  // Mushaf page number
+  const mushafPage = useMemo(() => {
+    const surah = SURAHS.find(s => s.number === surahNumber);
+    if (!surah) return 1;
+    // Estimate page offset based on verse position
+    const verseFraction = (startVerse - 1) / (surah.versesCount || 1);
+    const nextSurah = SURAHS.find(s => s.number === surahNumber + 1);
+    const totalPages = nextSurah ? nextSurah.startPage - surah.startPage : 2;
+    return surah.startPage + Math.floor(verseFraction * totalPages);
+  }, [surahNumber, startVerse]);
 
   // Load local text + tajweed
   useEffect(() => {
