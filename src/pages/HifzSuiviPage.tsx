@@ -367,8 +367,8 @@ export default function HifzSuiviPage() {
                               className="rounded-lg px-3 py-2 flex items-center justify-between"
                               style={{ background: '#F0F7F4', border: '1px solid #E6F0ED' }}
                             >
-                              <span className="text-xs" style={{ color: '#1C2421' }}>{surah?.name || `Sourate ${rev.surah_number}`}</span>
-                              <span className="text-[10px]" style={{ color: 'rgba(28,36,33,0.4)' }}>v.{rev.verse_start}-{rev.verse_end}</span>
+                               <span className="text-xs font-semibold" style={{ color: '#1C2421' }}>{surah?.name || `Sourate ${rev.surah_number}`}</span>
+                               <span className="text-[10px] font-medium" style={{ color: 'rgba(28,36,33,0.6)' }}>v.{rev.verse_start}-{rev.verse_end}</span>
                             </div>
                           );
                         })}
