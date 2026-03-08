@@ -427,7 +427,7 @@ export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticPro
                 </div>
                 <div>
                   <p className="text-[10px] text-white/50 mb-2">
-                    Depuis combien de jours récitez-vous ce bloc ?
+                    Depuis combien de jours récitez-vous ce passage ?
                   </p>
                   <div className="flex items-center gap-3">
                     <input
