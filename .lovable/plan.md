@@ -1,21 +1,24 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Clarifier l'affichage des blocs dans le résumé
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Problème
+L'utilisatrice saisit "pages 1 à 10" et voit "2 blocs" sans comprendre pourquoi. En interne, le système découpe par sourate (Al-Fatiha + Al-Baqara = 2 blocs), mais ce détail technique n'a pas à être exposé.
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Solution
+Remplacer le comptage de "blocs" par un affichage centré sur ce que l'utilisatrice a saisi : les **pages**.
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+Dans le résumé de confirmation et le bouton :
+- **Avant** : `🏛 Acquis Solides — 2 blocs`
+- **Après** : `🏛 Acquis Solides — Pages 1-10`
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+### Changements dans `HifzDiagnostic.tsx`
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+1. **Section résumé "Acquis enregistrés"** : Afficher les plages de pages saisies (ex: `Pages 1-10, 50-55`) au lieu du nombre de blocs techniques.
+
+2. **Bouton de confirmation** : Remplacer le décompte de blocs par le nombre de pages total. Ex : `✨ Confirmer (10 pages solides + 5 pages récentes)` au lieu de `✨ Confirmer (2 solides + 1 récent)`.
+
+3. **Stocker les plages de pages saisies** dans l'état du composant (elles le sont déjà via `solidPageRanges` / `recentPageRanges`) pour les réafficher dans le résumé.
+
+Un seul fichier modifié : `src/components/hifz/HifzDiagnostic.tsx`.
 
