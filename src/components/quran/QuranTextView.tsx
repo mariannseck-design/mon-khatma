@@ -1,12 +1,8 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { SURAHS } from '@/lib/surahData';
+import { getPageAyahs, type LocalAyah } from '@/lib/quranData';
 
-interface Ayah {
-  number: number;
-  text: string;
-  numberInSurah: number;
-  surah: { name: string; number: number };
-}
+type Ayah = LocalAyah;
 
 interface QuranTextViewProps {
   page: number;
