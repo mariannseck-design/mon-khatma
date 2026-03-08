@@ -82,6 +82,7 @@ export const MORNING_ADHKAR: DhikrItem[] = [
   {
     title: 'Tawakkul — La confiance',
     source: 'Coran 9:129 — Abû Dâwûd n°5081',
+    fadl: 'Quiconque le dit 7 fois matin et soir, Allah lui suffit pour tout ce qui le préoccupe. (Abû Dâwûd, Ibn as-Sunnî)',
     arabic: 'حَسْبِـيَ اللّهُ لا إلهَ إلاّ هُوَ عَلَـيهِ تَوَكَّـلتُ وَهُوَ رَبُّ العَرْشِ العَظـيم',
     phonetic: "Hasbiya-llâhu lâ ilâha illâ huwa, 'alayhi tawakkaltu wa huwa Rabbu-l-'arshi-l-'azîm.",
     french: "Allah me suffit, il n'y a de divinité que Lui. C'est en Lui que je place ma confiance et Il est le Seigneur du Trône immense.",
