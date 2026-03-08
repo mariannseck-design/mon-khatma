@@ -70,9 +70,10 @@ interface AyahWithAnnotations extends LocalAyah {
   tajweed?: TajweedAnnotation[];
 }
 
-export default function HifzStep2Impregnation({ surahNumber, startVerse, endVerse, onNext, onBack }: Props) {
+export default function HifzStep2Impregnation({ surahNumber, startVerse, endVerse, onNext, onBack, theme = 'teal' }: Props) {
   const storageKey = `hifz_listen_${surahNumber}_${startVerse}_${endVerse}`;
   const surahName = SURAHS.find(s => s.number === surahNumber)?.name || '';
+  const tc = getThemeColors(theme);
 
   const [listenCount, setListenCount] = useState(() => {
     const saved = localStorage.getItem(storageKey);
