@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useDevMode } from '@/hooks/useDevMode';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { useAuth } from '@/contexts/AuthContext';
@@ -12,6 +13,7 @@ import HifzStep2Impregnation from '@/components/hifz/HifzStep2Impregnation';
 import HifzStep3Memorisation from '@/components/hifz/HifzStep3Memorisation';
 import HifzStep4Validation from '@/components/hifz/HifzStep4Validation';
 import HifzSuccess from '@/components/hifz/HifzSuccess';
+import HifzBreathingPause from '@/components/hifz/HifzBreathingPause';
 import DevSkipButton from '@/components/hifz/DevSkipButton';
 import { SURAHS } from '@/lib/surahData';
 import { motion } from 'framer-motion';
