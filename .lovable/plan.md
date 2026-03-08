@@ -1,19 +1,21 @@
 
 
-## Probleme identifie et correction
+# Diagnostic : 404 sur /quran-reader
 
-Le clic sur un verset favori fonctionne mais de maniere peu intuitive :
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-1. **Zone cliquable trop petite** : Seul le petit bouton "Al-Ma'ida : 18" en haut a gauche navigue vers le Mushaf. Le reste de la carte (texte arabe, traduction) n'est pas cliquable. L'utilisatrice clique probablement sur le texte du verset sans effet.
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-2. **Page approximative** : Le code utilise `getApproxVersePage` (interpolation lineaire) au lieu de `getExactVersePage` (donnees exactes du Mushaf). Cela peut amener a la mauvaise page.
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-### Corrections
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-**`src/components/favoris/FavoriteVersesSection.tsx`**
-
-1. Rendre **toute la carte cliquable** (pas seulement le petit bouton surah:verse) pour naviguer vers le Mushaf.
-2. Utiliser `getExactVersePage` (async, depuis `quranData.ts`) au lieu de `getApproxVersePage` pour obtenir la page exacte du verset.
-3. Garder le bouton surah:verse comme indicateur visuel, mais aussi rendre le contenu (arabe + traduction) cliquable avec un feedback visuel (cursor pointer, hover).
-4. Ajouter un petit indicateur visuel ("Toucher pour ouvrir dans le Mushaf") pour guider l'utilisatrice.
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

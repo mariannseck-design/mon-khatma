@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, Trash2, BookOpen, Sparkles } from 'lucide-react';
+import { Heart, Trash2, BookOpen, Sparkles, ExternalLink } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { SURAHS, getApproxVersePage } from '@/lib/surahData';
+import { SURAHS } from '@/lib/surahData';
+import { getExactVersePage } from '@/lib/quranData';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface FavoriteVerse {
@@ -151,11 +152,16 @@ export default function FavoriteVersesSection() {
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, x: -50 }}
-                    className="relative rounded-xl overflow-hidden"
+                    className="relative rounded-xl overflow-hidden cursor-pointer group"
                     style={{
                       background: COLORS.warmWhite,
                       border: `1px solid ${COLORS.gold}18`,
                       boxShadow: '0 2px 8px -2px rgba(0,0,0,0.04)',
+                    }}
+                    onClick={async () => {
+                      const page = await getExactVersePage(v.surah_number, v.verse_number);
+                      localStorage.setItem('quran_reader_page', String(page));
+                      navigate('/quran-reader');
                     }}
                   >
                     {/* Verse header */}
@@ -163,25 +169,23 @@ export default function FavoriteVersesSection() {
                       className="flex items-center justify-between px-3.5 py-2"
                       style={{ background: `${COLORS.gold}08`, borderBottom: `1px solid ${COLORS.gold}12` }}
                     >
-                      <button
-                        onClick={() => {
-                          const page = getApproxVersePage(v.surah_number, v.verse_number);
-                          localStorage.setItem('quran_reader_page', String(page));
-                          navigate('/quran-reader');
-                        }}
-                        className="text-[11px] font-semibold px-2.5 py-1 rounded-lg flex items-center gap-1.5 active:scale-95 transition-transform"
+                      <span
+                        className="text-[11px] font-semibold px-2.5 py-1 rounded-lg flex items-center gap-1.5"
                         style={{ background: `${COLORS.gold}15`, color: COLORS.gold }}
                       >
                         <BookOpen className="h-3 w-3" />
                         {getSurahName(v.surah_number)} : {v.verse_number}
-                      </button>
-                      <button
-                        onClick={() => removeFavorite(v.id)}
-                        className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 active:scale-90 transition-transform"
-                        style={{ background: 'rgba(220,38,38,0.08)' }}
-                      >
-                        <Trash2 className="h-3.5 w-3.5 text-red-400" />
-                      </button>
+                      </span>
+                      <div className="flex items-center gap-1">
+                        <ExternalLink className="h-3 w-3 opacity-0 group-hover:opacity-50 transition-opacity" style={{ color: COLORS.gold }} />
+                        <button
+                          onClick={(e) => { e.stopPropagation(); removeFavorite(v.id); }}
+                          className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 active:scale-90 transition-transform"
+                          style={{ background: 'rgba(220,38,38,0.08)' }}
+                        >
+                          <Trash2 className="h-3.5 w-3.5 text-red-400" />
+                        </button>
+                      </div>
                     </div>
 
                     {/* Verse content */}
@@ -207,6 +211,9 @@ export default function FavoriteVersesSection() {
                           {v.translation_text}
                         </p>
                       )}
+                      <p className="text-[10px] mt-2 opacity-40 text-center" style={{ color: COLORS.gold }}>
+                        Toucher pour ouvrir dans le Mushaf
+                      </p>
                     </div>
                   </motion.div>
                 ))}
