@@ -37,6 +37,24 @@ export default function DouasSession({
     }
   }, [currentIndex, items.length]);
 
+  const onTouchStart = useCallback((e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  }, []);
+
+  const onTouchEnd = useCallback((e: React.TouchEvent) => {
+    const deltaX = e.changedTouches[0].clientX - touchStartX.current;
+    const deltaY = e.changedTouches[0].clientY - touchStartY.current;
+    if (Math.abs(deltaX) < SWIPE_THRESHOLD || Math.abs(deltaY) > Math.abs(deltaX)) return;
+    if (sessionComplete) return;
+
+    if (deltaX < 0 && currentIndex < items.length - 1) {
+      setCurrentIndex(prev => prev + 1);
+    } else if (deltaX > 0 && currentIndex > 0) {
+      setCurrentIndex(prev => prev - 1);
+    }
+  }, [currentIndex, items.length, sessionComplete]);
+
   const progressPercent = sessionComplete ? 100 : (currentIndex / items.length) * 100;
   const currentItem = items[currentIndex];
   const currentId = currentItem ? makeId(currentItem.title) : '';
