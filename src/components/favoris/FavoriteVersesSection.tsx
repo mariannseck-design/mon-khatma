@@ -109,11 +109,9 @@ export default function FavoriteVersesSection() {
                 <div className="flex items-start justify-between gap-2 mb-1.5">
                   <button
                     onClick={() => {
-                      const surah = SURAHS.find(s => s.number === v.surah_number);
-                      if (surah) {
-                        localStorage.setItem('quran_reader_page', String(surah.startPage));
-                        navigate('/quran-reader');
-                      }
+                      const page = getApproxVersePage(v.surah_number, v.verse_number);
+                      localStorage.setItem('quran_reader_page', String(page));
+                      navigate('/quran-reader');
                     }}
                     className="text-[10px] font-semibold px-2 py-0.5 rounded-full flex items-center gap-1 active:scale-95 transition-transform"
                     style={{ background: `${COLORS.gold}15`, color: COLORS.gold }}
