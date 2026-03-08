@@ -1,38 +1,21 @@
 
 
-## Plan : 3 corrections pour le lecteur Coran
+# Diagnostic : 404 sur /quran-reader
 
-### 1. Tajwid activé par défaut
-**Fichier** : `src/pages/QuranReaderPage.tsx` (ligne 49)
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-Actuellement : `localStorage.getItem('quran_tajweed') === 'true'` → `false` quand aucune valeur n'est stockée.
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-Correction : inverser la logique — par défaut `true` sauf si explicitement désactivé :
-```ts
-localStorage.getItem('quran_tajweed') !== 'false'
-```
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-### 2. Versets début/fin fonctionnels dans les paramètres
-**Fichier** : `src/components/quran/ReaderSettingsPanel.tsx` (lignes 306-349)
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-Les inputs "Du verset" / "Au verset" existent et sont câblés aux props `audioStartVerse`/`audioEndVerse` qui contrôlent la plage audio. Le problème est probablement que les inputs ne réagissent pas visuellement ou que le type `number` pose problème sur mobile. Correction :
-- Passer les inputs en `type="text"` + `inputMode="numeric"` (comme dans HifzConfig) pour éviter le bug mobile
-- Ajouter `onFocus` pour sélectionner le texte au tap
-- Ajouter `fontSize: 16px` pour éviter le zoom iOS
-
-### 3. Message de bienvenue première visite
-**Fichier** : `src/pages/QuranReaderPage.tsx`
-
-Ajouter un pop-up élégant affiché une seule fois (clé localStorage `quran_reader_intro_seen`) qui informe l'utilisatrice :
-- Qu'elle peut choisir entre le **Mushaf image** (Tajwid couleur) et le **mode Texte**
-- Qu'elle peut changer à tout moment via l'icône ⚙️ Paramètres en bas à droite
-- Bouton "J'ai compris" pour fermer et ne plus afficher
-
-Style : modal centré, fond semi-transparent, esthétique crème/dorée cohérente avec le thème.
-
-### Fichiers modifiés
-| Fichier | Action |
-|---|---|
-| `src/pages/QuranReaderPage.tsx` | Tajwid défaut `true` + pop-up bienvenue |
-| `src/components/quran/ReaderSettingsPanel.tsx` | Fix inputs versets mobile |
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
