@@ -398,8 +398,8 @@ export default function HifzSuiviPage() {
               >
                 <Flame className="h-5 w-5" style={{ color: '#D4AF37' }} />
                 <span className="text-2xl font-bold" style={{ color: '#065F46' }}>{streak.current}</span>
-                <span className="text-[10px] text-center leading-tight" style={{ color: 'rgba(28,36,33,0.5)' }}>Jours consécutifs</span>
-                <span className="text-[9px]" style={{ color: 'rgba(28,36,33,0.35)' }}>Record : {streak.longest}</span>
+                 <span className="text-[10px] font-medium text-center leading-tight" style={{ color: 'rgba(28,36,33,0.65)' }}>Jours consécutifs</span>
+                 <span className="text-[9px] font-medium" style={{ color: 'rgba(28,36,33,0.55)' }}>Record : {streak.longest}</span>
               </motion.div>
 
               <motion.div
