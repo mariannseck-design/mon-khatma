@@ -69,6 +69,9 @@ export default function AccueilPage() {
   const [todayProgress, setTodayProgress] = useState(0);
   const [weeklyStreak, setWeeklyStreak] = useState(0);
   const [readingGoal, setReadingGoal] = useState<{ first_name: string; daily_pages: number } | null>(null);
+  const [activeHifzSession, setActiveHifzSession] = useState<{ surahName: string; stepName: string } | null>(null);
+
+  const STEP_NAMES = ['Intention', 'Réveil', 'Imprégnation', 'Ancrage (Tikrar)', 'Validation'];
 
   useEffect(() => {
     if (user) {
