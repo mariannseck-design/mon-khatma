@@ -247,47 +247,47 @@ export default function MurjaPage() {
 
   return (
     <AppLayout title="Muraja'a" hideNav>
-      <div className="max-w-md mx-auto px-4 py-6 space-y-6" style={{ backgroundColor: '#FDFBF7', minHeight: '100vh' }}>
+      <div className="max-w-md mx-auto px-4 py-6 space-y-6" style={{ backgroundColor: 'var(--p-bg)', minHeight: '100vh' }}>
         {/* Header */}
         <div className="text-center space-y-1">
           <div
             className="w-12 h-12 rounded-xl mx-auto mb-2 flex items-center justify-center"
             style={{
-              background: '#F0F7F4',
-              border: '1px solid #065F46',
+              background: 'var(--p-card-active)',
+              border: '1px solid var(--p-primary)',
             }}
           >
-            <RefreshCw className="h-6 w-6" style={{ color: '#065F46' }} />
+            <RefreshCw className="h-6 w-6" style={{ color: 'var(--p-primary)' }} />
           </div>
           <h1
             className="text-xl font-bold tracking-[0.08em] uppercase"
-            style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#065F46' }}
+            style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-primary)' }}
           >
             Muraja'a
           </h1>
-          <p className="text-xs font-medium" style={{ color: 'rgba(28,36,33,0.75)' }}>
+          <p className="text-xs font-medium" style={{ color: 'var(--p-text-75)' }}>
             Consolide ta mémorisation — reset à minuit
           </p>
         </div>
 
         {loading ? (
           <div className="flex justify-center py-12">
-            <div className="w-8 h-8 border-4 rounded-full animate-spin" style={{ borderColor: '#065F46', borderTopColor: 'transparent' }} />
+            <div className="w-8 h-8 border-4 rounded-full animate-spin" style={{ borderColor: 'var(--p-primary)', borderTopColor: 'transparent' }} />
           </div>
         ) : allVerses.length === 0 ? (
           <div
             className="rounded-2xl p-8 text-center"
             style={{
-              background: 'linear-gradient(135deg, #065F46 0%, #044E3B 100%)',
-              border: '2px solid #D4AF37',
+              background: 'var(--p-gradient-bg)',
+              border: '2px solid var(--p-accent)',
               boxShadow: '0 8px 32px -8px rgba(6,95,70,0.4)',
             }}
           >
-            <RotateCcw className="h-10 w-10 mx-auto mb-4" style={{ color: '#D4AF37' }} />
-            <p className="text-base font-medium leading-relaxed" style={{ color: 'rgba(253,251,247,0.9)' }}>
+            <RotateCcw className="h-10 w-10 mx-auto mb-4" style={{ color: 'var(--p-accent)' }} />
+            <p className="text-base font-medium leading-relaxed" style={{ color: 'var(--p-on-dark)' }}>
               Tu n'as pas encore de versets mémorisés.
             </p>
-            <p className="text-sm font-medium mt-2" style={{ color: 'rgba(253,251,247,0.7)' }}>
+            <p className="text-sm font-medium mt-2" style={{ color: 'var(--p-on-dark-muted)' }}>
               Commence par le module Hifz pour ancrer tes premiers versets !
             </p>
           </div>
@@ -300,17 +300,17 @@ export default function MurjaPage() {
             {totalBlocks > 0 && (
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between text-xs">
-                   <span className="font-bold" style={{ color: '#065F46' }}>
+                   <span className="font-bold" style={{ color: 'var(--p-primary)' }}>
                     Progression du jour
                   </span>
-                  <span className="font-bold" style={{ color: '#D4AF37' }}>
+                  <span className="font-bold" style={{ color: 'var(--p-accent)' }}>
                     {checkedCount}/{totalBlocks} blocs
                   </span>
                 </div>
-                <div className="w-full h-2.5 rounded-full overflow-hidden" style={{ background: '#E6F0ED' }}>
+                <div className="w-full h-2.5 rounded-full overflow-hidden" style={{ background: 'var(--p-track)' }}>
                   <motion.div
                     className="h-full rounded-full"
-                    style={{ background: 'linear-gradient(90deg, #065F46, #044E3B)' }}
+                    style={{ background: 'var(--p-gradient-fill)' }}
                     animate={{ width: `${totalBlocks > 0 ? (checkedCount / totalBlocks) * 100 : 0}%` }}
                     transition={{ duration: 0.5 }}
                   />
@@ -323,15 +323,15 @@ export default function MurjaPage() {
               <div className="flex items-center gap-2">
                  <h2
                    className="text-base font-bold"
-                   style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#1C2421' }}
+                   style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-text)' }}
                  >
                    Ar-Rabt — Liaison du jour
                  </h2>
-                 <span className="text-[10px] font-medium px-2 py-0.5 rounded-full" style={{ background: '#F0F7F4', color: '#065F46' }}>
+                 <span className="text-[10px] font-medium px-2 py-0.5 rounded-full" style={{ background: 'var(--p-card-active)', color: 'var(--p-primary)' }}>
                    {rabtVerses.length}
                  </span>
               </div>
-               <p className="text-[11px] font-medium -mt-1" style={{ color: 'rgba(28,36,33,0.65)' }}>
+               <p className="text-[11px] font-medium -mt-1" style={{ color: 'var(--p-text-65)' }}>
                  Acquis récents (30 derniers jours) — révision quotidienne sans plafond
                </p>
               <MurajaChecklist
@@ -347,15 +347,15 @@ export default function MurjaPage() {
               <div className="flex items-center gap-2">
                  <h2
                    className="text-base font-bold"
-                   style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#1C2421' }}
+                   style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-text)' }}
                  >
                    Le Tour — Révision SM-2
                  </h2>
-                 <span className="text-[10px] font-medium px-2 py-0.5 rounded-full" style={{ background: '#F0F7F4', color: '#065F46' }}>
+                 <span className="text-[10px] font-medium px-2 py-0.5 rounded-full" style={{ background: 'var(--p-card-active)', color: 'var(--p-primary)' }}>
                    {tourVerses.length}
                  </span>
               </div>
-               <p className="text-[11px] font-medium -mt-1" style={{ color: 'rgba(28,36,33,0.65)' }}>
+               <p className="text-[11px] font-medium -mt-1" style={{ color: 'var(--p-text-65)' }}>
                  Anciens acquis — auto-évaluation après chaque bloc
                </p>
               <MurajaChecklist
@@ -373,16 +373,16 @@ export default function MurjaPage() {
             <div
               className="rounded-2xl p-5 space-y-3"
               style={{
-                background: '#FFFFFF',
-                border: '1px solid #E6F0ED',
-                boxShadow: '0 4px 20px rgba(6,95,70,0.06)',
+                background: 'var(--p-card)',
+                border: '1px solid var(--p-border)',
+                boxShadow: 'var(--p-card-shadow)',
               }}
             >
               <div className="flex items-center gap-2">
-                <BookOpen className="h-4 w-4" style={{ color: '#D4AF37' }} />
+                <BookOpen className="h-4 w-4" style={{ color: 'var(--p-accent)' }} />
                 <h3
                    className="text-sm font-bold"
-                   style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#065F46' }}
+                   style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-primary)' }}
                  >
                   Mon trésor — {totalVersesCount} verset{totalVersesCount > 1 ? 's' : ''}
                 </h3>
@@ -392,12 +392,12 @@ export default function MurjaPage() {
                   <div
                     key={s.name}
                     className="flex items-center justify-between px-3 py-2 rounded-lg"
-                    style={{ background: '#F0F7F4' }}
+                    style={{ background: 'var(--p-card-active)' }}
                   >
-                     <span className="text-xs font-bold" style={{ color: '#065F46' }}>
+                     <span className="text-xs font-bold" style={{ color: 'var(--p-primary)' }}>
                        {s.name}
                      </span>
-                     <div className="flex items-center gap-2 text-[10px] font-medium" style={{ color: 'rgba(28,36,33,0.65)' }}>
+                     <div className="flex items-center gap-2 text-[10px] font-medium" style={{ color: 'var(--p-text-65)' }}>
                       <span>{s.versesCount} v.</span>
                       <span className="flex items-center gap-0.5">
                         <CalendarDays className="h-2.5 w-2.5" />
@@ -415,7 +415,7 @@ export default function MurjaPage() {
                 variant="ghost"
                 onClick={refresh}
                 className="text-xs gap-1.5"
-                style={{ color: '#065F46' }}
+                style={{ color: 'var(--p-primary)' }}
               >
                 <RefreshCw className="h-3 w-3" />
                 Actualiser
