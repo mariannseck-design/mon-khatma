@@ -1,21 +1,23 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Remplacer "Duas Hajj" par "Louanges à Allah & Istighfar"
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Changements
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+**1. `src/lib/adhkarData.ts`** — Ajouter un nouveau tableau `LOUANGES_ISTIGHFAR`
+- Formules de louange : Alhamdulillah, Subhanallah, La ilaha illallah, Allahu Akbar, etc.
+- Formules d'Istighfar : Astaghfirullah, Sayyid al-Istighfar, etc.
+- ~8-10 items avec texte arabe, translittération, traduction et nombre de répétitions
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+**2. `src/pages/DhikrPage.tsx`**
+- Remplacer la carte `hajj` par une nouvelle carte `louanges` :
+  - Titre : "Louanges & Istighfar"
+  - Icône : remplacer `Landmark` par une icône adaptée (ex: `Sparkles` ou `Star`)
+  - Garder un style visuel similaire (fond vert foncé)
+- Importer `LOUANGES_ISTIGHFAR` et l'ajouter dans `CATEGORY_DATA`
+- Supprimer la référence à `hajj`
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
-
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+### Fichiers modifiés
+- `src/lib/adhkarData.ts` (~50 lignes ajoutées)
+- `src/pages/DhikrPage.tsx` (~5 lignes modifiées)
 
