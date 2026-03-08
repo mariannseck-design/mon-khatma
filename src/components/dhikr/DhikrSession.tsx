@@ -20,9 +20,11 @@ interface DhikrSessionProps {
   items: DhikrItem[];
   onBack: () => void;
   intro?: IntroSection;
+  categoryId?: string;
 }
 
-export default function DhikrSession({ title, items, onBack, intro }: DhikrSessionProps) {
+export default function DhikrSession({ title, items, onBack, intro, categoryId = 'dhikr' }: DhikrSessionProps) {
+  const { isFavorite, toggleFavorite } = useDouaFavorites();
   const sessionKey = `dhikr-session-${title}`;
   const [showIntro, setShowIntro] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(() => {
