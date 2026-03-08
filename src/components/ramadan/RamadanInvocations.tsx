@@ -7,21 +7,21 @@ const invocations = [
     emoji: '🌙',
     arabic: 'الله أَكْـبَر اللّهُمَّ أَهِلَّـهُ عَلَيْـنا بِالأمْـنِ وَالإيمـان والسَّلامَـةِ والإسْلام، وَالتَّـوْفيـقِ لِما تُحِـبُّ رَبَّنـا وَتَـرْضـى رَبُّنـا وَرَبُّكَ الله',
     phonetic: "Allahu Akbar, Allahumma ahillu 'aleynâ bî-l-amni wâ-l-Îmân, wâ-s-salâmati wâ-l-Islâm wa-t-Tawfîq limâ tuhibbu Rabbana wa tarDa Rabbunâ wa Rabbuka-l-lah.",
-    translation: "Allah (عز وجل) est le Plus Grand ! Ô Seigneur ! Apporte-nous avec cette nouvelle lune la sécurité et la foi, le salut et l'Islam ainsi que la réussite dans tout ce que Tu aimes et que Tu agrées.",
+    translation: "Allah est le Plus Grand ! Ô Seigneur ! Apporte-nous avec cette nouvelle lune la sécurité et la foi, le salut et l'Islam ainsi que la réussite dans tout ce que Tu aimes et que Tu agrées.",
   },
   {
     title: "Rupture du jeûne (Al-Iftar)",
     emoji: '📅',
     arabic: 'ذَهَبَ الظَّمَأُ وَابْتَلَّتِ الْعُرُوقُ، وَثَبَتَ الأَجْرُ إِنْ شَاءَ الله',
     phonetic: "Thahabadh-dhama'u wabtallatil-'urooqu, wa thabatal-'ajru 'inshaa'Allaah.",
-    translation: "La soif est dissipée, les veines sont abreuvées et la récompense est assurée si Allah (عز وجل) le veut.",
+    translation: "La soif est dissipée, les veines sont abreuvées et la récompense est assurée si Allah le veut.",
   },
   {
     title: "Nuit du Destin (Laylatul-Qadr)",
     emoji: '⭐',
     arabic: 'اللَّهُمَّ إِنَّكَ عَفُوٌّ تُحِبُّ الْعَفْوَ فَاعْفُ عَنِّي',
     phonetic: "Allahumma innaka 'Afuwwun tuhibbu-l-'afwa, fâ'fu 'annî.",
-    translation: "Ô Allah (عز وجل), Tu es certes Pardonneur, Tu aimes le pardon, alors pardonne-moi.",
+    translation: "Ô Allah, Tu es certes Pardonneur, Tu aimes le pardon, alors pardonne-moi.",
   },
   {
     title: "En route vers la prière de l'Aïd",
@@ -35,7 +35,7 @@ const invocations = [
     emoji: '❤️',
     arabic: 'تقبل الله منا ومنكم',
     phonetic: "Taqabala-l-lahu minâ wa minkum.",
-    translation: "Qu'Allah (عز وجل) agrée nos bonnes actions et les vôtres.",
+    translation: "Qu'Allah agrée nos bonnes actions et les vôtres.",
   },
 ];
 

@@ -11,21 +11,21 @@ const difficultDuas: Dua[] = [
   {
     arabic: 'اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الهَمِّ وَ الْحَـزَنِ، والعَجْـزِ والكَسَلِ، والبُخْلِ والجُبْنِ، وضَلَعِ الدَّيْنِ وغَلَبَةِ الرِّجَالِ',
     phonetic: "Allâhoumma innî a'oûdhou bika mina-l-hammi wa-l-hazani, wa-l-'ajzi wa-l-kasali, wa-l-boukhli wa-l-joubni, wa dala'i d-dayni wa ghalabati r-rijâl.",
-    french: "Ô Allah (عز وجل), je me mets sous Ta protection contre les soucis et la tristesse, contre l'incapacité et la paresse, contre l'avarice et la lâcheté, contre le poids de la dette et la domination des hommes.",
+    french: "Ô Allah, je me mets sous Ta protection contre les soucis et la tristesse, contre l'incapacité et la paresse, contre l'avarice et la lâcheté, contre le poids de la dette et la domination des hommes.",
   },
   {
     arabic: 'اللَّهُمَّ إِنِّي عَبْدُكَ ابْنُ عَبْدِكَ ابْنُ أَمَتِكَ نَاصِيَتِي بِيَدِكَ... أنْ تَجْعَلَ القُرْآنَ رَبِيعَ قَلْبِي',
     phonetic: "Allâhumma innî 'abduka bnu 'abdika bnu amatik... an taj'ala-l-qurâna rabî'a qalbî.",
-    french: "Ô Allah (عز وجل) ! Je suis Ton serviteur... fais en sorte que le Coran soit le printemps de mon cœur, la lumière de ma poitrine, qu'il dissipe ma tristesse et mette fin à mes soucis.",
+    french: "Ô Allah ! Je suis Ton serviteur... fais en sorte que le Coran soit le printemps de mon cœur, la lumière de ma poitrine, qu'il dissipe ma tristesse et mette fin à mes soucis.",
   },
   {
     arabic: 'اللهم لا سهل إلا ما جعلته سهلا وأنت تجعل الحزن إذا شئت سهلا',
     phonetic: "Allâhoumma La Sahla illa ma ja'altahu sahlan wa anta taj'all al hazan idha chitta sahlan.",
-    french: "Ô Allah (عز وجل), rien n'est facile, sauf ce que Tu as rendu facile, et Tu es Celui qui, selon Ton vouloir, rend facile le chagrin.",
+    french: "Ô Allah, rien n'est facile, sauf ce que Tu as rendu facile, et Tu es Celui qui, selon Ton vouloir, rend facile le chagrin.",
   },
 ];
 
-const HADITH_DIFFICILE = "Tout ce qui touche le croyant comme fatigue, comme maladie, comme soucis, comme tristesse, comme gêne, comme angoisse, même une épine qui le pique est une expiation d'Allah (عز وجل) de ses péchés.";
+const HADITH_DIFFICILE = "Tout ce qui touche le croyant comme fatigue, comme maladie, comme soucis, comme tristesse, comme gêne, comme angoisse, même une épine qui le pique est une expiation d'Allah de ses péchés.";
 
 interface MoodDuaCardProps {
   moodValue: number;
@@ -49,7 +49,7 @@ export function MoodDuaCard({ moodValue }: MoodDuaCardProps) {
             Alhamdu lillaahi 'alaa kulli haall
           </p>
           <p className="text-center text-sm text-muted-foreground mt-2">
-            Louanges à Allah <span className="honorific font-bold" style={{ fontSize: '1.1em' }}>(عز وجل)</span> en toute situation.
+            Louanges à Allah en toute situation.
           </p>
         </Card>
       </motion.div>

@@ -1,6 +1,5 @@
 /**
  * Messages quotidiens pour les notifications à 08:00
- * Règle: Toujours inclure (عز وجل) après "Allah"
  */
 
 export interface DailyMessage {
@@ -18,7 +17,7 @@ export const dailyMessages: DailyMessage[] = [
   {
     day: 1, // Lundi
     dayName: 'Lundi',
-    message: "Une nouvelle semaine avec la grâce d'Allah (عز وجل). On ouvre le Planificateur ?"
+    message: "Une nouvelle semaine avec la grâce d'Allah. On ouvre le Planificateur ?"
   },
   {
     day: 2, // Mardi
@@ -33,7 +32,7 @@ export const dailyMessages: DailyMessage[] = [
   {
     day: 4, // Jeudi
     dayName: 'Jeudi',
-    message: "Un pas de plus vers Allah (عز وجل). Belle lecture aujourd'hui."
+    message: "Un pas de plus vers Allah. Belle lecture aujourd'hui."
   },
   {
     day: 5, // Vendredi

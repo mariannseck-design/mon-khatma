@@ -125,7 +125,7 @@ export default function DouasSession({
                 <Check className="w-8 h-8" style={{ color: GOLD }} strokeWidth={3} />
               </motion.div>
               <p className="text-lg font-semibold" style={{ color: GOLD }}>
-                Qu'Allah <span className="honorific">(عز وجل)</span> accepte, Amine
+                Qu'Allah accepte, Amine
               </p>
               <p className="text-sm" style={{ color: 'var(--p-text-60)' }}>Session terminée</p>
               <button

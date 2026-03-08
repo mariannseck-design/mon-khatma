@@ -21,9 +21,9 @@ function getGreeting(): string {
 
 const MOTIVATIONS = [
   "Prête pour ton ancrage aujourd'hui ?",
-  "Chaque verset compte auprès d'Allah (عز وجل).",
+  "Chaque verset compte auprès d'Allah.",
   "La constance est la clé de la mémorisation.",
-  "Qu'Allah (عز وجل) te facilite ce chemin.",
+  "Qu'Allah te facilite ce chemin.",
 ];
 
 function CircularGauge({ value, max, label, hideMax }: { value: number; max: number; label: string; hideMax?: boolean }) {
