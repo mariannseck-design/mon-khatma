@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BookOpen, Check, Eye, EyeOff, RotateCcw, Volume2, Star, ChevronDown, ChevronUp, Image, ZoomIn, ZoomOut, Minus } from 'lucide-react';
+import { BookOpen, Check, Eye, EyeOff, RotateCcw, Volume2, Star, ChevronDown, ChevronUp } from 'lucide-react';
 import HifzStepWrapper from './HifzStepWrapper';
-import { getVersesByRange, getExactVersePage, type LocalAyah } from '@/lib/quranData';
+import { getVersesByRange, type LocalAyah } from '@/lib/quranData';
 import { SURAHS } from '@/lib/surahData';
 import {
   getTajweedAnnotations,
@@ -109,9 +109,6 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
     const saved = localStorage.getItem(storageKey);
     return saved ? Math.min(parseInt(saved, 10) || 0, tikrarTarget) : 0;
   });
-  const [displayMode, setDisplayMode] = useState<'text' | 'mushaf'>(() => {
-    return (localStorage.getItem('hifz_display_mode') as 'text' | 'mushaf') || 'text';
-  });
   const [ayahs, setAyahs] = useState<AyahWithAnnotations[]>([]);
   const [loading, setLoading] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -120,9 +117,6 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
   const [showGuide, setShowGuide] = useState(true);
   const [showCelebration, setShowCelebration] = useState(false);
   const [peekMode, setPeekMode] = useState(false);
-  const [mushafZoom, setMushafZoom] = useState<'small' | 'medium' | 'large'>(() => {
-    return (localStorage.getItem('hifz_tikrar_zoom') as 'small' | 'medium' | 'large') || 'medium';
-  });
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const ayahAudiosRef = useRef<{ audio: string }[]>([]);
   const reciter = localStorage.getItem('quran_reciter') || 'ar.alafasy';
@@ -130,21 +124,6 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
   const phaseInfo = getPhaseInfo(ancrage, tikrarTarget);
   const quarters = getPhaseBreaks(tikrarTarget);
 
-  // Persist display mode & zoom
-  useEffect(() => {
-    localStorage.setItem('hifz_display_mode', displayMode);
-  }, [displayMode]);
-  useEffect(() => {
-    localStorage.setItem('hifz_tikrar_zoom', mushafZoom);
-  }, [mushafZoom]);
-
-  const zoomConfig = { small: { width: '75%', maxH: 280 }, medium: { width: '100%', maxH: 400 }, large: { width: '130%', maxH: 520 } };
-
-  // Exact Mushaf page from local data
-  const [mushafPage, setMushafPage] = useState(1);
-  useEffect(() => {
-    getExactVersePage(surahNumber, startVerse).then(setMushafPage);
-  }, [surahNumber, startVerse]);
 
   // Load local text + tajweed
   useEffect(() => {
@@ -330,33 +309,6 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
           <p className="text-white/50 text-xs">(Objectif {tikrarTarget} répétitions)</p>
         </div>
 
-        {/* Display mode toggle */}
-        <div className="flex items-center justify-center gap-2">
-          <button
-            onClick={() => setDisplayMode('text')}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all"
-            style={{
-              background: displayMode === 'text' ? 'rgba(212,175,55,0.2)' : 'rgba(255,255,255,0.05)',
-              border: displayMode === 'text' ? '1px solid rgba(212,175,55,0.5)' : '1px solid rgba(255,255,255,0.1)',
-              color: displayMode === 'text' ? '#d4af37' : 'rgba(255,255,255,0.5)',
-            }}
-          >
-            <BookOpen className="h-3.5 w-3.5" />
-            Texte Tajwid
-          </button>
-          <button
-            onClick={() => setDisplayMode('mushaf')}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all"
-            style={{
-              background: displayMode === 'mushaf' ? 'rgba(212,175,55,0.2)' : 'rgba(255,255,255,0.05)',
-              border: displayMode === 'mushaf' ? '1px solid rgba(212,175,55,0.5)' : '1px solid rgba(255,255,255,0.1)',
-              color: displayMode === 'mushaf' ? '#d4af37' : 'rgba(255,255,255,0.5)',
-            }}
-          >
-            <Image className="h-3.5 w-3.5" />
-            Mushaf Image
-          </button>
-        </div>
 
         {/* Guide */}
         <div className="rounded-xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>
@@ -489,48 +441,10 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
               </button>
             )}
 
-            {/* Content container — Text or Mushaf */}
-            {loading && displayMode === 'text' ? (
+            {/* Content container — Text */}
+            {loading ? (
               <div className="flex items-center justify-center py-8">
                 <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: '#d4af37', borderTopColor: 'transparent' }} />
-              </div>
-            ) : displayMode === 'mushaf' ? (
-              <div
-                style={{ display: textVisible ? 'block' : 'none' }}
-                className="space-y-2"
-              >
-                {/* Zoom controls */}
-                <div className="flex items-center justify-center gap-1.5">
-                  {(['small', 'medium', 'large'] as const).map((z) => (
-                    <button
-                      key={z}
-                      onClick={() => setMushafZoom(z)}
-                      className="px-2.5 py-1 rounded-md text-[10px] font-medium transition-all"
-                      style={{
-                        background: mushafZoom === z ? 'rgba(212,175,55,0.2)' : 'rgba(255,255,255,0.05)',
-                        border: mushafZoom === z ? '1px solid rgba(212,175,55,0.5)' : '1px solid rgba(255,255,255,0.1)',
-                        color: mushafZoom === z ? '#d4af37' : 'rgba(255,255,255,0.4)',
-                      }}
-                    >
-                      {z === 'small' ? 'Petit' : z === 'medium' ? 'Moyen' : 'Grand'}
-                    </button>
-                  ))}
-                </div>
-                <div
-                  className="rounded-xl overflow-auto mx-auto"
-                  style={{ maxHeight: `${zoomConfig[mushafZoom].maxH}px` }}
-                >
-                  <img
-                    src={`https://cdn.jsdelivr.net/gh/QuranHub/quran-pages-images@main/easyquran.com/hafs-tajweed/${mushafPage}.jpg`}
-                    alt={`Mushaf page ${mushafPage}`}
-                    className="rounded-lg mx-auto"
-                    style={{
-                      width: zoomConfig[mushafZoom].width,
-                      border: '1px solid rgba(212,175,55,0.15)',
-                    }}
-                    loading="eager"
-                  />
-                </div>
               </div>
             ) : (
               <div

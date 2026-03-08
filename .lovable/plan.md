@@ -1,26 +1,21 @@
 
 
-## Afficher uniquement les versets à mémoriser (texte arabe) au lieu de la page complète
+# Diagnostic : 404 sur /quran-reader
 
-### Constat
-Actuellement, les étapes 2 et 3 affichent une **image entière de la page Mushaf** via une URL CDN. Si l'utilisateur ne mémorise que 3-4 versets sur une page de 15, il voit tout le reste inutilement.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Solution
-Remplacer l'image Mushaf par un **rendu texte arabe** des versets sélectionnés uniquement, avec le style tajweed coloré — exactement comme le mode "Texte Tajwid" qui existe déjà dans l'étape 3.
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-### Modifications
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-**1. `src/components/hifz/HifzStep2Impregnation.tsx`**
-- Charger les versets locaux via `getVersesByRange(surahNumber, startVerse, endVerse)` + annotations tajweed
-- Remplacer le bloc image Mushaf (lignes 157-190) par un rendu texte arabe avec numéros de versets en pastilles vertes et couleurs tajweed
-- Supprimer le zoom image (plus nécessaire), conserver un zoom de taille de police à la place
-- Ajouter la Basmala en en-tête si `startVerse === 1`
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-**2. `src/components/hifz/HifzStep3Memorisation.tsx`**
-- Supprimer le mode "Mushaf Image" du toggle (lignes 334-358) — ne garder que le mode texte tajweed
-- Supprimer le code de rendu de l'image Mushaf (lignes 497-534)
-- Simplifier le composant en retirant les états `displayMode` et `mushafZoom`
-
-### Résultat
-L'utilisateur ne verra que ses versets ciblés, rendus en arabe avec tajweed coloré, dans les deux étapes — plus compact, plus focalisé, plus efficace pour la mémorisation.
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
