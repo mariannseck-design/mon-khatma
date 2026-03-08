@@ -18,7 +18,8 @@ function formatTime(seconds: number): string {
   return `${m}:${s.toString().padStart(2, '0')}`;
 }
 
-export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBack, totalSteps = 7 }: HifzStepWrapperProps) {
+export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBack, totalSteps = 7, theme = 'teal' }: HifzStepWrapperProps) {
+  const light = isLightTheme(theme);
   const [elapsed, setElapsed] = useState(0);
   const startRef = useRef(Date.now());
 
