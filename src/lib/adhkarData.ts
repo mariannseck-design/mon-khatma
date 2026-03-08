@@ -765,6 +765,7 @@ export const OMRA_DUAS: DhikrItem[] = [
   },
   {
     title: "Du'â après le Tawâf (Maqâm Ibrâhîm)",
+    readOnly: true,
     arabic: 'وَاتَّخِذُوا مِنْ مَقَامِ إِبْرَاهِيمَ مُصَلًّى',
     phonetic: "Wa-ttakhidhû min maqâmi Ibrâhîma musallâ.",
     french: "Et prenez la station d'Ibrâhîm comme lieu de prière. (Puis prier 2 rak'ât derrière le Maqâm)",
