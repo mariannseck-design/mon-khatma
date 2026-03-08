@@ -393,7 +393,14 @@ export default function QuranReaderPage() {
       >
         {/* Back */}
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => {
+            // If no bookmark set, ask user if they want to mark this page
+            if (bookmark === null) {
+              setShowExitPrompt(true);
+            } else {
+              navigate(-1);
+            }
+          }}
           className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
           style={{ color: nightMode ? '#f0e6c8' : '#1a3a3a' }}
         >
