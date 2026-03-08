@@ -192,7 +192,7 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
             </div>
           ))}
         </div>
-        <p className="text-white/40 text-xs text-center">Essai {attempt + 1}/3</p>
+        <p style={{ color: tc.textMuted }} className="text-xs text-center">Essai {attempt + 1}/3</p>
 
         {/* Blurred Mushaf image */}
         <div
