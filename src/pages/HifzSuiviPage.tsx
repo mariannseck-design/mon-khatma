@@ -296,7 +296,7 @@ export default function HifzSuiviPage() {
             )}
 
             {/* ═══ DUAL CIRCLES ═══ */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-5">
               {/* Programme du jour */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -305,7 +305,7 @@ export default function HifzSuiviPage() {
               >
                 <Link to="/hifz" className="block">
                   <div
-                    className="w-full aspect-square rounded-full flex flex-col items-center justify-center text-center p-4"
+                    className="w-full aspect-square rounded-full flex flex-col items-center justify-center text-center p-5 transition-transform hover:scale-[1.03]"
                     style={{
                       background: 'linear-gradient(145deg, var(--p-card), var(--p-card-active))',
                       border: '2px solid rgba(16, 185, 129, 0.3)',
@@ -313,25 +313,25 @@ export default function HifzSuiviPage() {
                     }}
                   >
                     <div
-                      className="w-10 h-10 rounded-full flex items-center justify-center mb-2"
+                      className="w-11 h-11 rounded-full flex items-center justify-center mb-2"
                       style={{ background: 'linear-gradient(135deg, #065F46, #10B981)', boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)' }}
                     >
-                      <BookOpen className="h-5 w-5 text-white" />
+                      <BookOpen className="h-[22px] w-[22px] text-white" />
                     </div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider mb-1" style={{ color: 'var(--p-text-60)' }}>
+                    <span className="text-[11px] font-bold uppercase tracking-wider mb-1" style={{ color: 'var(--p-text-60)' }}>
                       Programme
                     </span>
                     {nextPoint ? (
                       <>
-                        <span className="text-xs font-semibold leading-tight" style={{ color: 'var(--p-primary)' }}>
+                        <span className="text-sm font-semibold leading-tight" style={{ color: 'var(--p-primary)' }}>
                           {nextPoint.surahName}
                         </span>
-                        <span className="text-[10px] font-medium" style={{ color: 'var(--p-text-60)' }}>
+                        <span className="text-xs font-medium" style={{ color: 'var(--p-text-60)' }}>
                           v. {nextPoint.startVerse} → {nextPoint.endVerse}
                         </span>
                       </>
                     ) : (
-                      <span className="text-[10px] font-medium" style={{ color: 'var(--p-text-60)' }}>
+                      <span className="text-xs font-medium" style={{ color: 'var(--p-text-60)' }}>
                         Aucun pour l'instant
                       </span>
                     )}
@@ -347,7 +347,7 @@ export default function HifzSuiviPage() {
               >
                 <Link to="/muraja" className="block">
                   <div
-                    className="w-full aspect-square rounded-full flex flex-col items-center justify-center text-center p-4"
+                    className="w-full aspect-square rounded-full flex flex-col items-center justify-center text-center p-5 transition-transform hover:scale-[1.03]"
                     style={{
                       background: 'linear-gradient(145deg, var(--p-card), var(--p-card-active))',
                       border: '2px solid rgba(212, 175, 55, 0.3)',
@@ -355,25 +355,25 @@ export default function HifzSuiviPage() {
                     }}
                   >
                     <div
-                      className="w-10 h-10 rounded-full flex items-center justify-center mb-2"
+                      className="w-11 h-11 rounded-full flex items-center justify-center mb-2"
                       style={{ background: 'linear-gradient(135deg, #B8960C, #D4AF37)', boxShadow: '0 4px 12px rgba(212, 175, 55, 0.3)' }}
                     >
-                      <RefreshCw className="h-5 w-5 text-white" />
+                      <RefreshCw className="h-[22px] w-[22px] text-white" />
                     </div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider mb-1" style={{ color: 'var(--p-text-60)' }}>
+                    <span className="text-[11px] font-bold uppercase tracking-wider mb-1" style={{ color: 'var(--p-text-60)' }}>
                       Révision
                     </span>
                     {todayRevisions.length > 0 ? (
                       <>
-                        <span className="text-lg font-bold" style={{ color: 'var(--p-primary)' }}>
+                        <span className="text-xl font-bold" style={{ color: 'var(--p-primary)' }}>
                           {todayRevisions.length}
                         </span>
-                        <span className="text-[10px] font-medium" style={{ color: 'var(--p-text-60)' }}>
+                        <span className="text-xs font-medium" style={{ color: 'var(--p-text-60)' }}>
                           portion{todayRevisions.length > 1 ? 's' : ''} à réviser
                         </span>
                       </>
                     ) : (
-                      <span className="text-[10px] font-medium" style={{ color: 'var(--p-text-60)' }}>
+                      <span className="text-xs font-medium" style={{ color: 'var(--p-text-60)' }}>
                         Aucune révision ✨
                       </span>
                     )}

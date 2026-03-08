@@ -1,23 +1,21 @@
 
 
-## Plan : Ajuster le style des cercles Programme / Révision
+# Diagnostic : 404 sur /quran-reader
 
-Les cercles actuels fonctionnent mais sont un peu serrés avec le texte trop petit. Ajustements proposés :
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Changements dans `src/pages/HifzSuiviPage.tsx` (lignes 298-385)
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-**1. Augmenter le gap entre les cercles** : `gap-4` → `gap-5`
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-**2. Augmenter le padding interne** : `p-4` → `p-5` sur les deux cercles
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-**3. Agrandir les icônes centrales** : `w-10 h-10` → `w-11 h-11`, icônes `h-5 w-5` → `h-5.5 w-5.5`
-
-**4. Augmenter légèrement les tailles de texte** :
-- Label "PROGRAMME" / "RÉVISION" : `text-[10px]` → `text-[11px]`
-- Nom de sourate : `text-xs` → `text-sm`
-- Versets : `text-[10px]` → `text-xs`
-- Nombre de portions : `text-lg` → `text-xl`
-- Label "portion(s) à réviser" : `text-[10px]` → `text-xs`
-
-**5. Ajouter un léger effet hover** pour rendre le côté cliquable plus évident : `transition-transform hover:scale-[1.03]` sur chaque cercle
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
