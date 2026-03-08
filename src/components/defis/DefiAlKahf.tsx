@@ -7,10 +7,10 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 
 const COLORS = {
-  cave: '#B8943F',
-  caveLight: '#D4AD4E',
-  sand: '#FBDF6B',
-  sandLight: '#FDE99A',
+  cave: '#C2A062',
+  caveLight: '#D9C08E',
+  sand: '#F5E6C8',
+  sandLight: '#FDF3E0',
 };
 
 function getWeekKey() {
