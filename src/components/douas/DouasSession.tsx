@@ -23,6 +23,7 @@ export default function DouasSession({
 }: DouasSessionProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [sessionComplete, setSessionComplete] = useState(false);
+  const [heartPulse, setHeartPulse] = useState(false);
 
   const handleComplete = useCallback(() => {
     if (currentIndex < items.length - 1) {
