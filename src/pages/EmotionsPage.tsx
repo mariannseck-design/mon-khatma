@@ -192,151 +192,165 @@ export default function EmotionsPage() {
           Mon Dhikr Quotidien
         </h1>
 
-        {/* Sources de Lumière */}
         <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-4">
-          <motion.div variants={itemVariants}>
-            <Link to="/sources-de-lumiere" className="block">
-              <motion.div
-                className="relative overflow-hidden rounded-2xl p-6 group"
-                style={{
-                  background: 'linear-gradient(135deg, #faf8f5 0%, #f5e6c8 100%)',
-                  border: '3px solid #b5942e',
-                  boxShadow: '0 8px 32px -8px rgba(181,148,46,0.25)',
-                }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <div className="relative z-10 flex items-center gap-5">
-                  <div
-                    className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0"
-                    style={{ background: 'rgba(181,148,46,0.12)', border: '1.5px solid rgba(181,148,46,0.25)' }}
-                  >
-                    <Sparkles className="h-7 w-7" style={{ color: '#b5942e' }} />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-lg font-bold tracking-[0.06em]" style={{ fontFamily: "'Inter', sans-serif", color: '#b5942e' }}>
-                      Les Sources de Lumière
-                    </h3>
-                    <p className="text-sm mt-0.5" style={{ color: '#2d6a4f' }}>
-                      Coran · Sunna · Salawât
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-            </Link>
-          </motion.div>
-
-          {/* Mes Douas */}
-          <motion.div variants={itemVariants}>
-            <Link to="/douas" className="block">
-              <motion.div
-                className="relative overflow-hidden rounded-2xl p-6 group"
-                style={{
-                  background: '#faf8f5',
-                  border: '2px solid rgba(181,148,46,0.4)',
-                  boxShadow: '0 6px 24px -8px rgba(181,148,46,0.15)',
-                }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <div className="relative z-10 flex items-center gap-5">
-                  <div
-                    className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0"
-                    style={{ background: 'rgba(181,148,46,0.1)', border: '1.5px solid rgba(181,148,46,0.2)' }}
-                  >
-                    <BookHeart className="h-7 w-7" style={{ color: '#b5942e' }} />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-lg font-bold tracking-[0.06em]" style={{ fontFamily: "'Inter', sans-serif", color: '#b5942e' }}>
-                      Mes Douas
-                    </h3>
-                    <p className="text-sm mt-0.5" style={{ color: '#2d6a4f' }}>
-                      Aube · Passages · Quotidien · Réconfort
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-            </Link>
-          </motion.div>
-        </motion.div>
-
-        {/* Grille unifiée */}
-        <motion.div
-          className="grid grid-cols-2 gap-4"
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-        >
-          {/* 8 cartes Dhikr d'abord */}
-          {dhikrCards.map((card) => {
-            const Icon = card.icon;
+          {/* Après la prière — pleine largeur */}
+          {(() => {
+            const prayer = dhikrCards.find(c => c.id === 'prayer')!;
+            const PrayerIcon = prayer.icon;
             return (
               <motion.div
-                key={card.title}
                 variants={itemVariants}
-                className={`relative overflow-hidden rounded-2xl p-5 flex flex-col items-center justify-center text-center aspect-[4/3] ${(card.enabled || isAdmin) ? 'cursor-pointer' : ''}`}
+                className="relative overflow-hidden rounded-2xl p-5 flex flex-col items-center justify-center text-center cursor-pointer"
                 style={{
-                  background: card.bg,
-                  border: card.border ? `1.5px solid ${card.border}` : '1px solid rgba(0,0,0,0.06)',
+                  background: prayer.bg,
+                  border: '1px solid rgba(0,0,0,0.06)',
                   boxShadow: '0 2px 12px -2px rgba(0,0,0,0.08)',
+                  minHeight: '100px',
                 }}
-                onClick={() => (card.enabled || isAdmin) && navigate(`/dhikr?category=${card.id}`)}
-                whileTap={(card.enabled || isAdmin) ? { scale: 0.96 } : {}}
+                onClick={() => navigate(`/dhikr?category=${prayer.id}`)}
+                whileTap={{ scale: 0.96 }}
               >
-                {!card.enabled && !isAdmin && (
-                  <span
-                    className="absolute top-2 right-2 text-[9px] font-medium px-2 py-0.5 rounded-full backdrop-blur-sm"
-                    style={{
-                      background: 'rgba(255,255,255,0.35)',
-                      color: card.text,
-                      border: '1px solid rgba(255,255,255,0.25)',
-                    }}
-                  >
-                    Bientôt
-                  </span>
-                )}
-                <Icon
-                  className="h-7 w-7 mb-2 opacity-80"
-                  strokeWidth={1.5}
-                  style={{ color: card.text }}
-                />
-                <h3
-                  className="text-sm font-semibold leading-tight"
-                  style={{ color: card.text, fontFamily: "'Inter', sans-serif" }}
-                >
-                  {card.title}
+                <PrayerIcon className="h-7 w-7 mb-2 opacity-80" strokeWidth={1.5} style={{ color: prayer.text }} />
+                <h3 className="text-sm font-semibold leading-tight" style={{ color: prayer.text, fontFamily: "'Inter', sans-serif" }}>
+                  {prayer.title}
                 </h3>
               </motion.div>
             );
-          })}
+          })()}
 
-          {/* Carte Mes Émotions — en bas */}
-          <motion.button
-            variants={itemVariants}
-            onClick={() => {
-              setShowEmotions(prev => !prev);
-              if (!showEmotions) {
-                setTimeout(() => moodSectionRef.current?.scrollIntoView({ behavior: 'smooth' }), 150);
-              }
-            }}
-            className="relative overflow-hidden rounded-2xl p-5 flex flex-col items-center justify-center text-center aspect-[4/3]"
-            style={{
-              background: '#f0ebe3',
-              border: '1px solid rgba(0,0,0,0.06)',
-              boxShadow: '0 2px 12px -2px rgba(0,0,0,0.08)',
-            }}
-          >
-            <Flower2
-              className="h-7 w-7 mb-2 opacity-80"
-              strokeWidth={1.5}
-              style={{ color: '#1b4332' }}
-            />
-            <h3
-              className="text-sm font-semibold leading-tight"
-              style={{ color: '#1b4332', fontFamily: "'Inter', sans-serif" }}
+          {/* Zikr du matin & du soir — côte à côte */}
+          <div className="grid grid-cols-2 gap-4">
+            {dhikrCards.filter(c => c.id === 'morning' || c.id === 'evening').map((card) => {
+              const Icon = card.icon;
+              return (
+                <motion.div
+                  key={card.id}
+                  variants={itemVariants}
+                  className="relative overflow-hidden rounded-2xl p-5 flex flex-col items-center justify-center text-center aspect-[4/3] cursor-pointer"
+                  style={{
+                    background: card.bg,
+                    border: '1px solid rgba(0,0,0,0.06)',
+                    boxShadow: '0 2px 12px -2px rgba(0,0,0,0.08)',
+                  }}
+                  onClick={() => navigate(`/dhikr?category=${card.id}`)}
+                  whileTap={{ scale: 0.96 }}
+                >
+                  <Icon className="h-7 w-7 mb-2 opacity-80" strokeWidth={1.5} style={{ color: card.text }} />
+                  <h3 className="text-sm font-semibold leading-tight" style={{ color: card.text, fontFamily: "'Inter', sans-serif" }}>
+                    {card.title}
+                  </h3>
+                </motion.div>
+              );
+            })}
+          </div>
+
+          {/* Sources de Lumière & Mes Douas — empilées, taille réduite */}
+          <div className="space-y-2">
+            <Link to="/sources-de-lumiere" className="block">
+              <motion.div
+                variants={itemVariants}
+                className="relative overflow-hidden rounded-xl p-3.5"
+                style={{
+                  background: 'linear-gradient(135deg, #faf8f5 0%, #f5e6c8 100%)',
+                  border: '2px solid #b5942e',
+                  boxShadow: '0 4px 16px -4px rgba(181,148,46,0.2)',
+                }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                    style={{ background: 'rgba(181,148,46,0.12)', border: '1px solid rgba(181,148,46,0.25)' }}>
+                    <Sparkles className="h-5 w-5" style={{ color: '#b5942e' }} />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-base font-bold tracking-[0.04em]" style={{ fontFamily: "'Inter', sans-serif", color: '#b5942e' }}>
+                      Les Sources de Lumière
+                    </h3>
+                    <p className="text-xs mt-0.5" style={{ color: '#2d6a4f' }}>Coran · Sunna · Salawât</p>
+                  </div>
+                </div>
+              </motion.div>
+            </Link>
+            <Link to="/douas" className="block">
+              <motion.div
+                variants={itemVariants}
+                className="relative overflow-hidden rounded-xl p-3.5"
+                style={{
+                  background: '#faf8f5',
+                  border: '1.5px solid rgba(181,148,46,0.4)',
+                  boxShadow: '0 3px 12px -4px rgba(181,148,46,0.12)',
+                }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                    style={{ background: 'rgba(181,148,46,0.1)', border: '1px solid rgba(181,148,46,0.2)' }}>
+                    <BookHeart className="h-5 w-5" style={{ color: '#b5942e' }} />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-base font-bold tracking-[0.04em]" style={{ fontFamily: "'Inter', sans-serif", color: '#b5942e' }}>
+                      Mes Douas
+                    </h3>
+                    <p className="text-xs mt-0.5" style={{ color: '#2d6a4f' }}>Aube · Passages · Quotidien · Réconfort</p>
+                  </div>
+                </div>
+              </motion.div>
+            </Link>
+          </div>
+
+          {/* Reste des cartes en grille 2 colonnes */}
+          <div className="grid grid-cols-2 gap-4">
+            {dhikrCards.filter(c => !['prayer', 'morning', 'evening'].includes(c.id)).map((card) => {
+              const Icon = card.icon;
+              return (
+                <motion.div
+                  key={card.id}
+                  variants={itemVariants}
+                  className={`relative overflow-hidden rounded-2xl p-5 flex flex-col items-center justify-center text-center aspect-[4/3] ${(card.enabled || isAdmin) ? 'cursor-pointer' : ''}`}
+                  style={{
+                    background: card.bg,
+                    border: card.border ? `1.5px solid ${card.border}` : '1px solid rgba(0,0,0,0.06)',
+                    boxShadow: '0 2px 12px -2px rgba(0,0,0,0.08)',
+                  }}
+                  onClick={() => (card.enabled || isAdmin) && navigate(`/dhikr?category=${card.id}`)}
+                  whileTap={(card.enabled || isAdmin) ? { scale: 0.96 } : {}}
+                >
+                  {!card.enabled && !isAdmin && (
+                    <span className="absolute top-2 right-2 text-[9px] font-medium px-2 py-0.5 rounded-full backdrop-blur-sm"
+                      style={{ background: 'rgba(255,255,255,0.35)', color: card.text, border: '1px solid rgba(255,255,255,0.25)' }}>
+                      Bientôt
+                    </span>
+                  )}
+                  <Icon className="h-7 w-7 mb-2 opacity-80" strokeWidth={1.5} style={{ color: card.text }} />
+                  <h3 className="text-sm font-semibold leading-tight" style={{ color: card.text, fontFamily: "'Inter', sans-serif" }}>
+                    {card.title}
+                  </h3>
+                </motion.div>
+              );
+            })}
+
+            {/* Carte Mes Émotions */}
+            <motion.button
+              variants={itemVariants}
+              onClick={() => {
+                setShowEmotions(prev => !prev);
+                if (!showEmotions) {
+                  setTimeout(() => moodSectionRef.current?.scrollIntoView({ behavior: 'smooth' }), 150);
+                }
+              }}
+              className="relative overflow-hidden rounded-2xl p-5 flex flex-col items-center justify-center text-center aspect-[4/3]"
+              style={{
+                background: '#f0ebe3',
+                border: '1px solid rgba(0,0,0,0.06)',
+                boxShadow: '0 2px 12px -2px rgba(0,0,0,0.08)',
+              }}
             >
-              Mes Émotions
-            </h3>
-          </motion.button>
-
+              <Flower2 className="h-7 w-7 mb-2 opacity-80" strokeWidth={1.5} style={{ color: '#1b4332' }} />
+              <h3 className="text-sm font-semibold leading-tight" style={{ color: '#1b4332', fontFamily: "'Inter', sans-serif" }}>
+                Mes Émotions
+              </h3>
+            </motion.button>
+          </div>
         </motion.div>
 
         {/* Section Émotions */}
