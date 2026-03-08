@@ -282,7 +282,7 @@ export default function AccueilPage() {
                 style={{ background: `${COLORS.emerald}08`, border: `1px solid ${COLORS.emerald}15` }}
               >
                 <Target className="h-5 w-5" style={{ color: COLORS.goldAccent }} />
-                <span className="text-sm font-semibold" style={{ color: COLORS.emerald }}>Ma Tilawah <span className="font-normal text-xs" style={{ color: COLORS.sage }}>(Définir mon objectif)</span></span>
+                <span className="text-sm font-semibold" style={{ color: COLORS.emerald }}>Ma Khatma <span className="font-normal text-xs" style={{ color: COLORS.sage }}>(Mon objectif)</span></span>
               </div>
             </Link>
           </div>
