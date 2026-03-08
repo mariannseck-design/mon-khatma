@@ -1,21 +1,15 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Remplacer "bloc" par "passage" dans les textes affichés
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+3 modifications de texte utilisateur uniquement (pas les noms de variables) :
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+| Fichier | Ligne | Avant | Après |
+|---------|-------|-------|-------|
+| `HifzDiagnostic.tsx` | 270 | `${totalCount} blocs ajoutés à votre programme.` | `${totalCount} passages ajoutés à votre programme.` |
+| `HifzDiagnostic.tsx` | 412 | `Pour chaque bloc récent, indiquez depuis combien de jours...` | `Pour chaque passage récent, indiquez depuis combien de jours...` |
+| `HifzDiagnostic.tsx` | 430 | `Depuis combien de jours récitez-vous ce bloc ?` | `Depuis combien de jours récitez-vous ce passage ?` |
+| `HifzStep6Tour.tsx` | 135 | `Récite le bloc ci-dessous de mémoire` | `Récite le passage ci-dessous de mémoire` |
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
-
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
-
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+Aucun changement de logique ni de noms de variables.
 
