@@ -349,7 +349,7 @@ export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticPro
               })}
             </div>
             <p className="text-[10px] text-white/50 italic">
-              Révision SM-2 étalée sur 14 jours
+              Révision espacée étalée sur 14 jours
             </p>
           </div>
         )}
