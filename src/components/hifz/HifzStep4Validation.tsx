@@ -256,11 +256,31 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
           Si tu regardes, le compteur se réinitialise.
         </p>
 
-        {/* Message d'exigence spirituel */}
-        <div className="rounded-xl px-4 py-3 mx-1" style={{ background: 'rgba(212,175,55,0.06)', border: '1px solid rgba(212,175,55,0.2)' }}>
-          <p className="text-xs leading-relaxed italic text-center" style={{ color: 'rgba(255,255,255,0.6)' }}>
-            « Si vous éprouvez le moindre doute lors de la récitation, c'est le signe que l'ancrage n'est pas encore solide. Regardez le texte, puis recommencez votre série de 3 à zéro. Cette rigueur est le secret d'une mémoire inaltérable. »
-          </p>
+        {/* Message d'exigence spirituel — collapsible */}
+        <div className="rounded-xl mx-1 overflow-hidden" style={{ background: 'rgba(212,175,55,0.06)', border: '1px solid rgba(212,175,55,0.2)' }}>
+          <button
+            onClick={() => setShowAdvice(prev => !prev)}
+            className="w-full flex items-center justify-between px-4 py-2.5 text-left"
+          >
+            <span className="text-xs font-medium" style={{ color: 'rgba(212,175,55,0.7)' }}>Conseil spirituel</span>
+            <motion.div animate={{ rotate: showAdvice ? 180 : 0 }} transition={{ duration: 0.2 }}>
+              <ChevronDown className="h-3.5 w-3.5" style={{ color: 'rgba(212,175,55,0.5)' }} />
+            </motion.div>
+          </button>
+          <AnimatePresence>
+            {showAdvice && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <p className="text-xs leading-relaxed italic text-center px-4 pb-3" style={{ color: 'rgba(255,255,255,0.6)' }}>
+                  « Si vous éprouvez le moindre doute lors de la récitation, c'est le signe que l'ancrage n'est pas encore solide. Regardez le texte, puis recommencez votre série de 3 à zéro. Cette rigueur est le secret d'une mémoire inaltérable. »
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* ── Badges 1-2-3 ── */}
