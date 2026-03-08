@@ -36,6 +36,7 @@ export default function HifzPage() {
   const [hasGoal, setHasGoal] = useState<boolean | null>(null); // null = loading
   const [showGoalOnboarding, setShowGoalOnboarding] = useState(false);
   const [restoringSession, setRestoringSession] = useState(true);
+  const { isDevMode } = useDevMode();
 
   // Restore in-progress session + check goal on mount
   useEffect(() => {
