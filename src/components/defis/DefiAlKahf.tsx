@@ -233,7 +233,7 @@ export default function DefiAlKahf({ disabled = false }: { disabled?: boolean })
                 : "Qu'Allah accepte ta lecture et te couvre de Sa lumière. 🤲"}
             </DialogDescription>
           </DialogHeader>
-          <Button onClick={() => setShowCelebration(false)} className="mt-3 w-full" style={{ background: COLORS.goldAccent, color: COLORS.navy }}>
+          <Button onClick={() => setShowCelebration(false)} className="mt-3 w-full" style={{ background: COLORS.sand, color: COLORS.cave }}>
             Alhamdulillah ✨
           </Button>
         </DialogContent>
