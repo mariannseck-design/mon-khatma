@@ -388,23 +388,23 @@ export default function HifzSuiviPage() {
             </div>
 
             {/* 3 KPI Cards */}
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-3 gap-2">
               <motion.div
                 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-                className="rounded-2xl p-4 flex flex-col items-center gap-2"
+                className="rounded-2xl p-3 flex flex-col items-center gap-1.5"
                 style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', boxShadow: 'var(--p-card-shadow)' }}
               >
-                <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #D97706, #F59E0B)', boxShadow: '0 4px 10px rgba(245, 158, 11, 0.3)' }}>
-                  <Flame className="h-4.5 w-4.5 text-white" />
+                <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #D97706, #F59E0B)', boxShadow: '0 4px 10px rgba(245, 158, 11, 0.3)' }}>
+                  <Flame className="h-4 w-4 text-white" />
                 </div>
-                <span className="text-2xl font-bold" style={{ color: 'var(--p-primary)' }}>{streak.current}</span>
+                <span className="text-xl font-bold" style={{ color: 'var(--p-primary)' }}>{streak.current}</span>
                 <span className="text-[10px] font-medium text-center leading-tight" style={{ color: 'var(--p-text-65)' }}>Jours consécutifs</span>
                 <span className="text-[9px] font-medium" style={{ color: 'var(--p-text-55)' }}>Record : {streak.longest}</span>
               </motion.div>
 
               <motion.div
                 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                className="rounded-2xl p-3 flex flex-col items-center"
+                className="rounded-2xl p-2 flex flex-col items-center justify-center"
                 style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', boxShadow: 'var(--p-card-shadow)' }}
               >
                 <CircularGauge value={totalVerses} max={6236} label="Versets ancrés" hideMax />
@@ -412,13 +412,13 @@ export default function HifzSuiviPage() {
 
               <motion.div
                 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-                className="rounded-2xl p-4 flex flex-col items-center gap-2"
+                className="rounded-2xl p-3 flex flex-col items-center gap-1.5"
                 style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', boxShadow: 'var(--p-card-shadow)' }}
               >
-                <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #065F46, #10B981)', boxShadow: '0 4px 10px rgba(16, 185, 129, 0.3)' }}>
-                  <RotateCcw className="h-4.5 w-4.5 text-white" />
+                <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #065F46, #10B981)', boxShadow: '0 4px 10px rgba(16, 185, 129, 0.3)' }}>
+                  <RotateCcw className="h-4 w-4 text-white" />
                 </div>
-                <span className="text-2xl font-bold" style={{ color: 'var(--p-primary)' }}>{streak.tours}</span>
+                <span className="text-xl font-bold" style={{ color: 'var(--p-primary)' }}>{streak.tours}</span>
                 <span className="text-[10px] font-medium text-center leading-tight" style={{ color: 'var(--p-text-65)' }}>Cycles terminés</span>
               </motion.div>
             </div>
