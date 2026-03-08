@@ -14,7 +14,7 @@ const invocations = [
     emoji: '📅',
     arabic: 'ذَهَبَ الظَّمَأُ وَابْتَلَّتِ الْعُرُوقُ، وَثَبَتَ الأَجْرُ إِنْ شَاءَ الله',
     phonetic: "Thahabadh-dhama'u wabtallatil-'urooqu, wa thabatal-'ajru 'inshaa'Allaah.",
-    translation: "La soif est dissipée, les veines sont abreuvées et la récompense est assurée si Allah (عز وجل) le veut.",
+    translation: "La soif est dissipée, les veines sont abreuvées et la récompense est assurée si Allah le veut.",
   },
   {
     title: "Nuit du Destin (Laylatul-Qadr)",
