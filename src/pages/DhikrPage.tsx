@@ -22,7 +22,26 @@ const dhikrCards = [
   { id: 'istikharah', title: 'Istikharah', icon: Sparkles, bg: '#dce8f0', text: '#1b4332', border: '', enabled: false },
 ];
 
-const CATEGORY_DATA: Record<string, { title: string; items: DhikrItem[] }> = {
+const ISTIKHARAH_INTRO = {
+  title: 'Comment faire la prière de consultation (Istikhârah) ?',
+  steps: [
+    "Faire ses ablutions (wudû').",
+    "Prier deux unités de prière (rak'atayn) surérogatoires, en dehors des prières obligatoires.",
+    "Après le salâm, lever les mains et invoquer Allah (عز وجل) avec sincérité et humilité.",
+    "Commencer par la louange d'Allah (عز وجل) et la prière sur le Prophète ﷺ (as-salât 'alâ n-Nabî).",
+    "Réciter le du'â al-Istikhârah (ci-dessous). Au passage « hâdhâ-l-amr » (cette affaire), mentionner dans son cœur ou à voix basse l'affaire concernée.",
+    "Conclure par la prière sur le Prophète ﷺ à nouveau.",
+    "S'en remettre à Allah (عز وجل) avec confiance (tawakkul) et agir selon ce qu'Allah facilite."
+  ],
+  notes: [
+    "Il n'est pas nécessaire de voir un rêve ou un signe. On observe la facilitation ou les obstacles qu'Allah met sur le chemin.",
+    "On peut répéter l'Istikhârah plusieurs jours si le cœur n'est pas apaisé.",
+    "Elle se fait pour tout choix licite où l'on hésite, pas pour les obligations religieuses."
+  ],
+  source: "Sahîh al-Bukhârî, hadith n°1162 — Jâbir ibn 'Abdillâh (رضي الله عنه)"
+};
+
+const CATEGORY_DATA: Record<string, { title: string; items: DhikrItem[]; intro?: typeof ISTIKHARAH_INTRO }> = {
   morning: { title: 'Zikr du matin', items: MORNING_ADHKAR },
   evening: { title: 'Zikr du soir', items: EVENING_ADHKAR },
   prayer: { title: 'Après la prière', items: POST_PRAYER_ADHKAR },
@@ -32,7 +51,7 @@ const CATEGORY_DATA: Record<string, { title: string; items: DhikrItem[] }> = {
   sujud: { title: 'Sujud Tilawah', items: SUJUD_TILAWAH_ADHKAR },
   omra: { title: 'Duas Omra', items: OMRA_DUAS },
   hajj: { title: 'Duas Hajj', items: HAJJ_DUAS },
-  istikharah: { title: 'Istikharah', items: ISTIKHARAH_DUAS },
+  istikharah: { title: 'Istikharah', items: ISTIKHARAH_DUAS, intro: ISTIKHARAH_INTRO },
 };
 
 const containerVariants = {
