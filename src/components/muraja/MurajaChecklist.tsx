@@ -122,22 +122,25 @@ export default function MurajaChecklist({
               className="w-full flex items-center gap-3 rounded-xl px-4 py-3.5 text-left transition-all"
               style={{
                 background: isChecked ? 'var(--p-card-active)' : 'var(--p-card)',
-                border: `1px solid ${isChecked ? 'var(--p-accent)' : 'var(--p-border)'}`,
+                border: `1px solid ${isChecked ? '#D4AF37' : 'var(--p-border)'}`,
+                borderLeft: section === 'rabt' ? '3px solid #D4AF37' : undefined,
                 opacity: isChecked ? 0.8 : 1,
                 boxShadow: isChecked ? 'none' : 'var(--p-card-shadow)',
               }}
               whileTap={isChecked ? {} : { scale: 0.98 }}
             >
               {/* Checkbox */}
-              <div
+              <motion.div
                 className="w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 transition-all"
                 style={{
-                  background: isChecked ? 'var(--p-accent)' : 'transparent',
-                  border: `2px solid ${isChecked ? 'var(--p-accent)' : 'var(--p-checkbox-border)'}`,
+                  background: isChecked ? '#D4AF37' : 'transparent',
+                  border: `2px solid ${isChecked ? '#D4AF37' : 'var(--p-checkbox-border)'}`,
                 }}
+                animate={isChecked ? { scale: [1, 1.25, 1] } : {}}
+                transition={{ type: 'spring', stiffness: 400, damping: 15 }}
               >
                 {isChecked && <Check className="h-3.5 w-3.5" style={{ color: '#FFFFFF' }} />}
-              </div>
+              </motion.div>
 
               {/* Label */}
               <div className="flex-1 min-w-0">
@@ -162,7 +165,7 @@ export default function MurajaChecklist({
 
                 {/* Mini progress bar for rabt */}
                 {section === 'rabt' && item.liaison_start_date && (
-                  <div className="w-full h-1.5 rounded-full overflow-hidden mt-1.5" style={{ background: '#E6F0ED' }}>
+                  <div className="w-full h-2 rounded-full overflow-hidden mt-1.5" style={{ background: 'var(--p-track)' }}>
                     <motion.div
                       className="h-full rounded-full"
                       style={{ background: 'linear-gradient(90deg, #065F46, #10B981)' }}
@@ -189,7 +192,7 @@ export default function MurajaChecklist({
                       <button
                         key={key}
                         onClick={() => handleRate(quality, key)}
-                        className="flex-1 flex items-center justify-center gap-1.5 rounded-lg px-2 py-2.5 text-xs font-bold transition-all"
+                        className="flex-1 flex items-center justify-center gap-1.5 rounded-xl px-3 py-3 text-xs font-bold transition-all"
                         style={{
                           background: `color-mix(in srgb, var(${colorVar}) 12%, transparent)`,
                           color: `var(${colorVar})`,

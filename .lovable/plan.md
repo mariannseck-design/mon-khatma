@@ -1,20 +1,21 @@
 
 
-## Embellir le Countdown et la Checklist Rabt
+# Diagnostic : 404 sur /quran-reader
 
-### 1. Countdown (MurajaCountdown.tsx)
-- Agrandir légèrement le cercle (w-40 h-40) et épaissir le trait SVG (strokeWidth 4→5)
-- Ajouter un **glow subtil** autour du cercle intérieur (`box-shadow: 0 0 20px rgba(6,95,70,0.12)`)
-- Texte du compteur plus grand (text-2xl) avec un léger letter-spacing
-- Ajouter un dégradé SVG (émeraude → vert clair) sur l'arc de progression au lieu d'une couleur plate
-- Fond intérieur avec un très léger dégradé radial (blanc vers vert d'eau)
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### 2. Checklist items (MurajaChecklist.tsx)
-- **Checkbox dorée** pour les items cochés (background `#D4AF37` au lieu de `var(--p-accent)`) — cohérence avec la charte Or
-- Barre de progression Rabt un peu plus épaisse (h-2 au lieu de h-1.5) avec coins mieux arrondis
-- Ajouter une **bordure dorée subtile** sur les items Rabt (`border-left: 3px solid #D4AF37`)
-- Items cochés : animation check plus satisfaisante (scale spring)
-- Boutons de rating Tour : coins plus arrondis (rounded-xl) et padding légèrement augmenté
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-Deux fichiers modifiés, purement cosmétique.
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
+
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
