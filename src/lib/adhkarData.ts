@@ -500,6 +500,7 @@ export const EVENING_ADHKAR: DhikrItem[] = [
   {
     title: 'Tasbîh',
     source: 'Al-Bukhârî n°6405, Muslim n°2692',
+    fadl: 'Ses péchés seront effacés, fussent-ils comme l\'écume de la mer. (Al-Bukhârî, Muslim)',
     arabic: 'سُبْحـانَ اللهِ وَبِحَمْـدِهِ',
     phonetic: "Subhâna-llâhi wa bi-hamdih.",
     french: "Gloire et louange à Allah.",
