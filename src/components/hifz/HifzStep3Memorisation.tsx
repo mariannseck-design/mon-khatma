@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BookOpen, Check, Eye, EyeOff, RotateCcw, Volume2, Star, ChevronDown, ChevronUp, Image } from 'lucide-react';
+import { BookOpen, Check, Eye, EyeOff, RotateCcw, Volume2, Star, ChevronDown, ChevronUp, Image, ZoomIn, ZoomOut, Minus } from 'lucide-react';
 import HifzStepWrapper from './HifzStepWrapper';
 import { getVersesByRange, type LocalAyah } from '@/lib/quranData';
 import { SURAHS } from '@/lib/surahData';
@@ -109,16 +109,24 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
   const [showGuide, setShowGuide] = useState(true);
   const [showCelebration, setShowCelebration] = useState(false);
   const [peekMode, setPeekMode] = useState(false);
+  const [mushafZoom, setMushafZoom] = useState<'small' | 'medium' | 'large'>(() => {
+    return (localStorage.getItem('hifz_tikrar_zoom') as 'small' | 'medium' | 'large') || 'medium';
+  });
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const ayahAudiosRef = useRef<{ audio: string }[]>([]);
   const reciter = localStorage.getItem('quran_reciter') || 'ar.alafasy';
 
   const phaseInfo = getPhaseInfo(ancrage);
 
-  // Persist display mode
+  // Persist display mode & zoom
   useEffect(() => {
     localStorage.setItem('hifz_display_mode', displayMode);
   }, [displayMode]);
+  useEffect(() => {
+    localStorage.setItem('hifz_tikrar_zoom', mushafZoom);
+  }, [mushafZoom]);
+
+  const zoomConfig = { small: { width: '75%', maxH: 280 }, medium: { width: '100%', maxH: 400 }, large: { width: '130%', maxH: 520 } };
 
   // Mushaf page number
   const mushafPage = useMemo(() => {
@@ -478,15 +486,40 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
             ) : displayMode === 'mushaf' ? (
               <div
                 style={{ display: textVisible ? 'block' : 'none' }}
-                className="rounded-xl overflow-auto max-h-[400px] flex items-center justify-center"
+                className="space-y-2"
               >
-                <img
-                  src={`https://tajweed.me/hafs-tajweed/p${mushafPage}.png`}
-                  alt={`Mushaf page ${mushafPage}`}
-                  className="w-full rounded-lg"
-                  style={{ border: '1px solid rgba(212,175,55,0.15)' }}
-                  loading="eager"
-                />
+                {/* Zoom controls */}
+                <div className="flex items-center justify-center gap-1.5">
+                  {(['small', 'medium', 'large'] as const).map((z) => (
+                    <button
+                      key={z}
+                      onClick={() => setMushafZoom(z)}
+                      className="px-2.5 py-1 rounded-md text-[10px] font-medium transition-all"
+                      style={{
+                        background: mushafZoom === z ? 'rgba(212,175,55,0.2)' : 'rgba(255,255,255,0.05)',
+                        border: mushafZoom === z ? '1px solid rgba(212,175,55,0.5)' : '1px solid rgba(255,255,255,0.1)',
+                        color: mushafZoom === z ? '#d4af37' : 'rgba(255,255,255,0.4)',
+                      }}
+                    >
+                      {z === 'small' ? 'Petit' : z === 'medium' ? 'Moyen' : 'Grand'}
+                    </button>
+                  ))}
+                </div>
+                <div
+                  className="rounded-xl overflow-auto mx-auto"
+                  style={{ maxHeight: `${zoomConfig[mushafZoom].maxH}px` }}
+                >
+                  <img
+                    src={`https://tajweed.me/hafs-tajweed/p${mushafPage}.png`}
+                    alt={`Mushaf page ${mushafPage}`}
+                    className="rounded-lg mx-auto"
+                    style={{
+                      width: zoomConfig[mushafZoom].width,
+                      border: '1px solid rgba(212,175,55,0.15)',
+                    }}
+                    loading="eager"
+                  />
+                </div>
               </div>
             ) : (
               <div
