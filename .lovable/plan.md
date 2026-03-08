@@ -1,21 +1,24 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Ajouter le bouton favoris en mode texte du Coran
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Problème
+En mode texte, quand l'utilisateur clique sur un verset :
+- **Sans traduction** : le `VerseTranslationDrawer` s'ouvre (avec le bouton ❤️) — fonctionne
+- **Avec traduction** : seul le highlight s'applique, `onVerseSelect` n'est pas appelé → le drawer ne s'ouvre jamais → pas de bouton favori
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Correction : `src/components/quran/QuranTextView.tsx`
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+Dans le bloc `showTranslation` (lignes ~415-419), ajouter l'appel à `onVerseSelect` dans le `onClick`, identique au mode sans traduction :
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+```tsx
+onClick={(e) => {
+  e.stopPropagation();
+  setSelectedAyah(prev => prev === ayah.number ? null : ayah.number);
+  onVerseSelect?.(`${ayah.surah.number}:${ayah.numberInSurah}`, ayah.surah.number, ayah.numberInSurah);
+}}
+```
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+### Fichier modifié
+- `src/components/quran/QuranTextView.tsx` — une seule ligne ajoutée dans le handler onClick du mode traduction
 
