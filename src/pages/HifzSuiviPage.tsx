@@ -435,7 +435,7 @@ export default function HifzSuiviPage() {
             >
               <div className="flex items-center gap-2 mb-4">
                 <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #6D28D9, #8B5CF6)', boxShadow: '0 3px 8px rgba(109, 40, 217, 0.25)' }}>
-                  <BarChart className="h-3.5 w-3.5 text-white" />
+                  <BarChart3 className="h-3.5 w-3.5 text-white" />
                 </div>
                 <h3 className="text-sm font-bold" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-primary)' }}>
                   Activité des 7 derniers jours
