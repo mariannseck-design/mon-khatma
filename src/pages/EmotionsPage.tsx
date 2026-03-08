@@ -407,6 +407,11 @@ export default function EmotionsPage() {
         )}
         </div>{/* end moodSectionRef */}
 
+        {/* Section Favoris */}
+        <div ref={favorisSectionRef}>
+          <FavoriteVersesSection />
+        </div>
+
         {/* Reflection Card */}
         <Card className="pastel-card p-6">
           <h3 className="font-display text-lg mb-3">💭 Réflexion du mois</h3>
