@@ -343,6 +343,7 @@ export default function MurjaPage() {
                  <span className="text-[10px] font-medium px-2 py-0.5 rounded-full" style={{ background: 'var(--p-card-active)', color: 'var(--p-primary)' }}>
                    {rabtVerses.length}
                  </span>
+                 <MurajaMethodModal defaultTab="rabt" />
               </div>
                <p className="text-[11px] font-medium -mt-1" style={{ color: 'var(--p-text-65)' }}>
                  Récitation quotidienne obligatoire — {rabtVerses.length > 0 && (() => {
@@ -351,6 +352,13 @@ export default function MurjaPage() {
                    return `max ${maxRemaining}j restants`;
                  })()}
                </p>
+               <div
+                 className="rounded-lg px-3 py-2 text-[11px] leading-relaxed"
+                 style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', color: 'var(--p-text-65)' }}
+               >
+                 <strong style={{ color: 'var(--p-primary)' }}>Ar-Rabt</strong> (La Liaison) : Récitation quotidienne obligatoire pendant 30 jours pour transformer ta mémoire immédiate en un ancrage solide par la grâce d'<strong>Allah</strong>{' '}
+                 <span style={{ fontFamily: "'Amiri', serif", fontWeight: 'bold', fontSize: '1.1em' }}>(عز وجل)</span>.
+               </div>
               <MurajaChecklist
                 items={rabtVerses}
                 section="rabt"
