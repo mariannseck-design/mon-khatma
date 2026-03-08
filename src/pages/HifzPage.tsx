@@ -252,6 +252,7 @@ export default function HifzPage() {
 
       if (session) {
         try {
+          const today = new Date().toISOString().split('T')[0];
           const { error: upsertError } = await supabase.from('hifz_memorized_verses').upsert({
             user_id: user.id,
             surah_number: session.surahNumber,
@@ -259,6 +260,11 @@ export default function HifzPage() {
             verse_end: session.endVerse,
             memorized_at: new Date().toISOString(),
             next_review_date: new Date(Date.now() + 86400000).toISOString().split('T')[0],
+            liaison_status: 'liaison',
+            liaison_start_date: today,
+            sm2_interval: 1,
+            sm2_ease_factor: 2.5,
+            sm2_repetitions: 0,
           }, { onConflict: 'user_id,surah_number,verse_start,verse_end' });
 
           if (upsertError) {
