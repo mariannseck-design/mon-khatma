@@ -112,7 +112,7 @@ export default function RamadanDhikrSection({ dateStr }: RamadanDhikrSectionProp
       {/* Introductory Reminder */}
       <Card className="pastel-card p-5 bg-gradient-to-br from-accent/20 to-accent/5">
         <p className="text-sm text-foreground/80 leading-relaxed">
-          Le Prophète Mouhamed <span className="honorific font-bold" style={{ fontSize: '1.1em' }}>(ﷺ)</span> a dit : <em>« Celui qui mentionne son Seigneur et celui qui ne Le mentionne pas sont semblables au vivant et au mort. »</em> Le zikr apaise le cœur, efface les péchés et rapproche de la satisfaction d'<span className="font-semibold">Allah</span> <span className="honorific font-bold" style={{ fontSize: '1.1em' }}>(عز وجل)</span>.
+          Le Prophète Mouhamed <span className="honorific font-bold" style={{ fontSize: '1.1em' }}>(ﷺ)</span> a dit : <em>« Celui qui mentionne son Seigneur et celui qui ne Le mentionne pas sont semblables au vivant et au mort. »</em> Le zikr apaise le cœur, efface les péchés et rapproche de la satisfaction d'<span className="font-semibold">Allah</span>.
         </p>
       </Card>
 

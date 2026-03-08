@@ -8,7 +8,7 @@ const NOTIFICATION_STORAGE_KEY = 'makhatma_last_notification_date';
 const REMINDER_STORAGE_PREFIX = 'makhatma_reminder_shown_';
 
 const FALLBACK_TITLE = '🌙 Rappel Makhatma';
-const FALLBACK_MESSAGE = 'Assalamou aleykoum ! C\'est le moment de ta lecture pour rester régulière avec le Livre d\'Allah (عز وجل). Prête pour tes pages du jour ?';
+const FALLBACK_MESSAGE = 'Assalamou aleykoum ! C\'est le moment de ta lecture pour rester régulière avec le Livre d\'Allah. Prête pour tes pages du jour ?';
 
 interface NotificationState {
   hasPermission: boolean;

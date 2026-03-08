@@ -267,7 +267,7 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
           </div>
 
           <p className="text-lg font-bold" style={{ color: '#1C2421', fontFamily: "'Playfair Display', Georgia, serif" }}>
-            Votre mémorisation est scellée<br />par la grâce d'Allah <span style={{ fontFamily: "'Amiri'", fontWeight: 'bold', fontSize: '1.1em' }}>(عز وجل)</span>
+            Votre mémorisation est scellée<br />par la grâce d'Allah
           </p>
           <p className="text-sm" style={{ color: '#065F46' }}>
             3{bonusCount > 0 ? ` + ${bonusCount}` : ''} récitation{(3 + bonusCount) > 1 ? 's' : ''} parfaite{(3 + bonusCount) > 1 ? 's' : ''} sans aide

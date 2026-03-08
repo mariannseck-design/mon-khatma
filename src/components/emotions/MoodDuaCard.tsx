@@ -49,7 +49,7 @@ export function MoodDuaCard({ moodValue }: MoodDuaCardProps) {
             Alhamdu lillaahi 'alaa kulli haall
           </p>
           <p className="text-center text-sm text-muted-foreground mt-2">
-            Louanges à Allah <span className="honorific font-bold" style={{ fontSize: '1.1em' }}>(عز وجل)</span> en toute situation.
+            Louanges à Allah en toute situation.
           </p>
         </Card>
       </motion.div>

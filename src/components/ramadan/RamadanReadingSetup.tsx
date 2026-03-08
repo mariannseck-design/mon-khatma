@@ -117,7 +117,7 @@ export default function RamadanReadingSetup({ onSetupComplete }: RamadanReadingS
             >
               <Sparkles className="h-10 w-10 text-primary mx-auto mb-3" />
               <p className="text-foreground leading-relaxed">
-                Qu'Allah <span className="honorific font-bold" style={{ fontSize: '1.1em' }}>(عز وجل)</span> accepte
+                Qu'Allah accepte
                 ta dévotion, <strong>{savedName}</strong> ! Ton objectif de{' '}
                 <strong>{savedPages} page{savedPages > 1 ? 's' : ''}</strong> par jour est un
                 magnifique engagement pour ce Ramadan. 🤲

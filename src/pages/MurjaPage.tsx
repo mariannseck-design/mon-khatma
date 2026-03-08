@@ -392,7 +392,7 @@ export default function MurjaPage() {
                        </button>
                      </TooltipTrigger>
                      <TooltipContent side="bottom" className="max-w-[260px] text-xs leading-relaxed">
-                       La Muraja'a est la clé de la préservation. Ce programme intelligent organise ta consolidation pour que chaque verset reste vivant dans ton cœur par la grâce d'Allah (عز وجل).
+                       La Muraja'a est la clé de la préservation. Ce programme intelligent organise ta consolidation pour que chaque verset reste vivant dans ton cœur par la grâce d'Allah.
                      </TooltipContent>
                    </Tooltip>
                  </TooltipProvider>

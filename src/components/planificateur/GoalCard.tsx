@@ -36,7 +36,7 @@ export function GoalCard({ goalType, targetValue, todayPages, goalProgress }: Go
 
           {/* Subtitle with honorific */}
           <p className="text-sm text-primary-foreground/80 mb-4 italic">
-            Cheminez vers la constance à votre rythme, avec l'aide d'Allah <span className="honorific">(عز وجل)</span>
+            Cheminez vers la constance à votre rythme, avec l'aide d'Allah
           </p>
 
           {/* Progress text */}

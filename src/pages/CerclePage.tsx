@@ -337,7 +337,7 @@ export default function CerclePage() {
                 onClick={acceptCharter}
                 className="w-full bg-primary text-primary-foreground mt-4">
 
-                Je rejoins le Cercle avec l'aide d'Allah <span className="honorific ml-1">(عز وجل)</span>
+                Je rejoins le Cercle avec l'aide d'Allah
               </Button>
             </div>
           </DialogDescription>
