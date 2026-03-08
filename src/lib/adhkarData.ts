@@ -46,6 +46,7 @@ export const MORNING_ADHKAR: DhikrItem[] = [
   {
     title: 'Sayyid al-Istighfâr',
     source: 'Al-Bukhârî n°6306',
+    fadl: 'Celui qui le récite avec certitude le matin et meurt dans la journée sera parmi les gens du Paradis. De même s\'il le dit le soir. (Al-Bukhârî)',
     arabic: 'اللّهـمَّ أَنْتَ رَبِّـي لا إلهَ إلاّ أَنْتَ، خَلَقْتَنـي وَأَنا عَبْـدُك، وَأَنا عَلـى عَهْـدِكَ وَوَعْـدِكَ ما اسْتَـطَعْـت، أَعـوذُ بِكَ مِنْ شَـرِّ ما صَنَـعْت، أَبـوءُ لَـكَ بِنِعْـمَتِـكَ عَلَـيَّ وَأَبـوءُ بِذَنْـبي فَاغْفـِرْ لي فَإِنَّـهُ لا يَغْـفِرُ الذُّنـوبَ إِلاّ أَنْتَ',
     phonetic: "Allâhumma anta Rabbî, lâ ilâha illâ ant, khalaqtanî wa ana 'abduk, wa ana 'alâ 'ahdika wa wa'dika mâ-stata't, a'ûdhu bika min sharri mâ sana't, abû'u laka bi-ni'matika 'alayya wa abû'u bi-dhanbî, fa-ghfir lî fa-innahu lâ yaghfiru dh-dhunûba illâ ant.",
     french: "Ô Allah, Tu es mon Seigneur, il n'y a de divinité que Toi. Tu m'as créé et je suis Ton serviteur. Je suis fidèle à mon engagement et à ma promesse envers Toi autant que je le peux. Je cherche refuge auprès de Toi contre le mal que j'ai fait. Je reconnais devant Toi Tes bienfaits sur moi et je reconnais mes péchés. Pardonne-moi, car nul ne pardonne les péchés à part Toi.",
