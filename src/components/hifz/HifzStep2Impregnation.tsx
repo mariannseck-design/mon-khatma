@@ -386,7 +386,7 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
           }}
         >
           {RECITERS.map(r => (
-            <option key={r.id} value={r.id} style={{ background: '#0d4f4f' }}>{r.name}</option>
+            <option key={r.id} value={r.id} style={{ background: tc.selectOptionBg }}>{r.name}</option>
           ))}
         </select>
 
