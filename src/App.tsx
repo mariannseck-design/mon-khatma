@@ -82,7 +82,7 @@ function AppRoutes() {
       <Route path="/planificateur" element={<ProtectedRoute><PlanificateurPage /></ProtectedRoute>} />
       <Route path="/cercle" element={<ProtectedRoute><CerclePage /></ProtectedRoute>} />
       
-      <Route path="/quran-reader" element={<ProtectedRoute><QuranReaderPage /></ProtectedRoute>} />
+      <Route path="/quran-reader" element={<ProtectedRoute><ComingSoonGate title="Le Noble Coran" icon={BookOpen} description="Lis et médite le Coran avec un Mushaf interactif." hideNav adminOnly>{<QuranReaderPage />}</ComingSoonGate></ProtectedRoute>} />
       
       <Route path="/emotions" element={<ProtectedRoute><EmotionsPage /></ProtectedRoute>} />
       <Route path="/rappels" element={<ProtectedRoute><RappelsPage /></ProtectedRoute>} />

@@ -30,7 +30,7 @@ function getSurahName(num: number) {
 
 export default function FavorisPage() {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   const [verses, setVerses] = useState<FavoriteVerse[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -49,6 +49,10 @@ export default function FavorisPage() {
   }, [user]);
 
   const openInMushaf = async (v: FavoriteVerse) => {
+    if (!isAdmin) {
+      toast({ title: 'Bientôt disponible', description: 'Le Mushaf sera accessible prochainement in shaa Allah 🤲' });
+      return;
+    }
     const page = await getExactVersePage(v.surah_number, v.verse_number);
     localStorage.setItem('quran_reader_page', String(page));
     navigate('/quran-reader');
@@ -103,8 +107,11 @@ export default function FavorisPage() {
               Ouvre le Mushaf et touche le ❤️ sur un verset pour le sauvegarder ici.
             </p>
             <button
-              onClick={() => navigate('/quran-reader')}
-              className="px-5 py-2.5 rounded-xl text-sm font-semibold bg-primary text-primary-foreground active:scale-95 transition-transform"
+              onClick={() => {
+                if (isAdmin) navigate('/quran-reader');
+                else toast({ title: 'Bientôt disponible', description: 'Le Mushaf sera accessible prochainement in shaa Allah 🤲' });
+              }}
+              className={`px-5 py-2.5 rounded-xl text-sm font-semibold bg-primary text-primary-foreground active:scale-95 transition-transform ${!isAdmin ? 'opacity-50' : ''}`}
             >
               Ouvrir le Mushaf
             </button>
