@@ -5,6 +5,7 @@ import HifzStepWrapper from './HifzStepWrapper';
 import HifzMushafToggle, { getMushafMode, setMushafMode, type MushafMode } from './HifzMushafToggle';
 import HifzMushafImage from './HifzMushafImage';
 import { getVersesByRange, type LocalAyah } from '@/lib/quranData';
+import { RECITERS, getAyahAudioUrl } from '@/hooks/useQuranAudio';
 import { SURAHS } from '@/lib/surahData';
 import {
   getTajweedAnnotations,
@@ -122,7 +123,7 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
   const [peekMode, setPeekMode] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const ayahAudiosRef = useRef<{ audio: string }[]>([]);
-  const reciter = localStorage.getItem('quran_reciter') || 'ar.alafasy';
+  const [reciter, setReciter] = useState(() => localStorage.getItem('quran_reciter') || 'ar.alafasy');
   const [mushafMode, setMushafModeState] = useState<MushafMode>(getMushafMode);
 
   const phaseInfo = getPhaseInfo(ancrage, tikrarTarget);
@@ -149,6 +150,15 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
   useEffect(() => {
     const fetchAudio = async () => {
       try {
+        const testUrl = getAyahAudioUrl(reciter, surahNumber, startVerse);
+        if (testUrl) {
+          const audios = [];
+          for (let v = startVerse; v <= endVerse; v++) {
+            audios.push({ audio: getAyahAudioUrl(reciter, surahNumber, v)! });
+          }
+          ayahAudiosRef.current = audios;
+          return;
+        }
         const res = await fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}/${reciter}`);
         const data = await res.json();
         if (data.code === 200) {
@@ -520,6 +530,31 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
             <RotateCcw className="h-3 w-3" />
             Recommencer
           </button>
+        )}
+
+        {/* Reciter selector — visible in phases 1 & 2 */}
+        {!isComplete && (phaseInfo.audioProminent || ('audioAvailable' in phaseInfo && phaseInfo.audioAvailable)) && (
+          <select
+            value={reciter}
+            onChange={e => {
+              setReciter(e.target.value);
+              localStorage.setItem('quran_reciter', e.target.value);
+              audioRef.current?.pause();
+              isPlayingRef.current = false;
+              setIsPlaying(false);
+            }}
+            className="w-full rounded-xl px-4 py-3 text-sm outline-none"
+            style={{
+              background: 'rgba(255,255,255,0.08)',
+              border: '1px solid rgba(212,175,55,0.2)',
+              color: 'white',
+              fontSize: '16px',
+            }}
+          >
+            {RECITERS.map(r => (
+              <option key={r.id} value={r.id} style={{ background: '#0d4f4f' }}>{r.name}</option>
+            ))}
+          </select>
         )}
 
         {/* Controls */}

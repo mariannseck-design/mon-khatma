@@ -1,26 +1,21 @@
 
 
-## Ajout du sélecteur de récitateur à l'étape 3 (Tikrar)
+# Diagnostic : 404 sur /quran-reader
 
-### Constat
-- L'étape 2 (Imprégnation) a déjà un sélecteur de récitateur avec la liste complète `RECITERS`.
-- L'étape 3 (Mémorisation) lit le récitateur depuis `localStorage` (`quran_reciter`) mais n'offre aucune UI pour le changer. De plus, l'étape 2 ne persiste pas son choix dans `localStorage`, donc les deux étapes sont désynchronisées.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Changements
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-**1. `src/components/hifz/HifzStep2Impregnation.tsx`**
-- Initialiser `reciter` depuis `localStorage` (`quran_reciter`) au lieu de `'ar.alafasy'` en dur.
-- Persister le choix dans `localStorage` quand il change.
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-**2. `src/components/hifz/HifzStep3Memorisation.tsx`**
-- Importer `RECITERS` et `getAyahAudioUrl` depuis `useQuranAudio`.
-- Transformer `reciter` en état React (au lieu d'une simple lecture localStorage).
-- Ajouter un `<select>` de récitateur, visible uniquement quand l'audio est disponible (phases 1 et 2).
-- Persister le choix dans `localStorage`.
-- Adapter le chargement audio pour utiliser `getAyahAudioUrl` (everyayah) comme fallback, comme le fait déjà l'étape 2.
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-### UI du sélecteur (étape 3)
-Même style que l'étape 2 : un `<select>` natif stylé avec fond semi-transparent, placé sous les contrôles audio (phases 1-2 uniquement).
-
-Deux fichiers modifiés.
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
