@@ -112,7 +112,6 @@ export function useQuranAudio(page: number, onPageFinished?: () => void, startVe
       const config = getReciterConfig(targetReciter);
 
       if (config.source === 'everyayah' && config.folder) {
-        // Use local page data + everyayah.com direct URLs
         const localAyahs = await getPageAyahs(targetPage);
         let ayahs: AyahAudio[] = localAyahs.map(a => ({
           number: a.number,
@@ -134,7 +133,6 @@ export function useQuranAudio(page: number, onPageFinished?: () => void, startVe
         setIsPlaying(true);
         playAyah(0);
       } else {
-        // Use alquran.cloud API
         const res = await fetch(`https://api.alquran.cloud/v1/page/${targetPage}/${targetReciter}`);
         const data = await res.json();
         if (data.code === 200) {
@@ -162,7 +160,7 @@ export function useQuranAudio(page: number, onPageFinished?: () => void, startVe
     } finally {
       setLoading(false);
     }
-  }, [playAyah]);
+  }, [playAyah, startVerse, endVerse]);
 
   const play = useCallback(() => {
     if (ayahsRef.current.length > 0 && indexRef.current < ayahsRef.current.length) {
