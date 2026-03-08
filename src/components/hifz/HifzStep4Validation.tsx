@@ -222,6 +222,13 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
           Si tu regardes, le compteur se réinitialise.
         </p>
 
+        {/* Message d'exigence spirituel */}
+        <div className="rounded-xl px-4 py-3 mx-1" style={{ background: 'rgba(212,175,55,0.06)', border: '1px solid rgba(212,175,55,0.2)' }}>
+          <p className="text-xs leading-relaxed italic text-center" style={{ color: 'rgba(255,255,255,0.6)' }}>
+            « Si vous éprouvez le moindre doute lors de la récitation, c'est le signe que l'ancrage n'est pas encore solide. Regardez le texte, puis recommencez votre série de 3 à zéro. Cette rigueur est le secret d'une mémoire inaltérable. »
+          </p>
+        </div>
+
         {/* ── Badges 1-2-3 ── */}
         <div className="flex items-center justify-center gap-4">
           {[0, 1, 2].map(i => {
