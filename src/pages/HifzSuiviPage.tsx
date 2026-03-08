@@ -446,7 +446,7 @@ export default function HifzSuiviPage() {
                     <BarChart3 className="h-3.5 w-3.5 text-white" />
                   </div>
                   <h3 className="text-sm font-bold" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-primary)' }}>
-                    Activité des 7 derniers jours
+                    Versets travaillés (7 jours)
                   </h3>
                 </div>
                 <span className="text-[11px] font-medium capitalize" style={{ color: 'var(--p-text-55)' }}>
