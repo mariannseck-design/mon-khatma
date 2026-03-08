@@ -160,7 +160,7 @@ export default function HifzPage() {
   }, [sessionId, user, session]);
 
   // Loading state
-  if (hasGoal === null) {
+  if (hasGoal === null || restoringSession) {
     return (
       <AppLayout title="Espace Hifz" hideNav>
         <div className="min-h-[80vh] flex items-center justify-center">
