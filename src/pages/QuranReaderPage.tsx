@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Bookmark, BookmarkCheck, Play, Pause, Loader2, Settings, WifiOff } from 'lucide-react';
 import { toast } from 'sonner';
@@ -23,10 +23,14 @@ const IMAGE_SOURCES = [
 
 export default function QuranReaderPage() {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const isOnline = useOnlineStatus();
   const [page, setPage] = useState(() => {
-    const saved = localStorage.getItem('quran_reader_page');
-    return saved ? Math.min(Math.max(parseInt(saved), 1), TOTAL_PAGES) : 1;
+    const urlPage = parseInt(searchParams.get('page') || '');
+    if (!isNaN(urlPage) && urlPage >= 1 && urlPage <= TOTAL_PAGES) return urlPage;
+    const saved = parseInt(localStorage.getItem('quran_reader_page') || '');
+    if (!isNaN(saved) && saved >= 1 && saved <= TOTAL_PAGES) return saved;
+    return 1;
   });
   const [direction, setDirection] = useState(0);
   const [showSurahDrawer, setShowSurahDrawer] = useState(false);
@@ -200,7 +204,7 @@ export default function QuranReaderPage() {
   const surah = getSurahByPage(page);
   const juz = Math.ceil(page / 20);
 
-  useEffect(() => { localStorage.setItem('quran_reader_page', page.toString()); setPageInput(page.toString()); }, [page]);
+  useEffect(() => { localStorage.setItem('quran_reader_page', page.toString()); setPageInput(page.toString()); setSearchParams({ page: page.toString() }, { replace: true }); }, [page, setSearchParams]);
 
   // Preload adjacent pages (image mode)
   useEffect(() => {

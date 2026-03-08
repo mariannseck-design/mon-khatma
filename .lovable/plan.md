@@ -1,33 +1,21 @@
 
 
-## Problème : la page du lecteur revient au début après actualisation
+# Diagnostic : 404 sur /quran-reader
 
-### Diagnostic
-Le code sauvegarde bien la page dans `localStorage` (ligne 28-29, 203), mais si `parseInt` renvoie `NaN` (valeur corrompue), `Math.min(Math.max(NaN, 1), 604)` donne `NaN` et non `1`. De plus, la page n'est pas reflétée dans l'URL — un refresh du navigateur repose uniquement sur `localStorage`.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Correction
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-**Fichier : `src/pages/QuranReaderPage.tsx`**
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-1. **Sécuriser la lecture localStorage** : ajouter un fallback si `parseInt` retourne `NaN`
-2. **Synchroniser la page dans l'URL** via `useSearchParams` pour que la page survive aux rafraîchissements et aux navigations :
-   - Lire `?page=X` au montage (priorité sur localStorage)
-   - Mettre à jour l'URL sans rechargement quand la page change (`replace`)
-   - Continuer à sauvegarder dans localStorage comme fallback
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-```text
-Montage:
-  URL ?page=X  →  utiliser X
-  sinon localStorage  →  utiliser valeur sauvée
-  sinon  →  page 1
-
-Changement de page:
-  → localStorage.setItem(...)
-  → setSearchParams({ page: N }, { replace: true })
-```
-
-### Impact
-- 1 fichier modifié : `src/pages/QuranReaderPage.tsx`
-- Ajout de `useSearchParams` de `react-router-dom`
-- La page sera visible dans l'URL : `/quran-reader?page=123`
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
