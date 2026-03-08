@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Smile, Frown, Meh, Heart, Cloud, Sun, Sparkles, Trash2, Edit3, Calendar, MoreVertical } from 'lucide-react';
+import { Smile, Frown, Meh, Heart, Cloud, Sun, Sparkles, Trash2, Edit3, Calendar, MoreVertical, Flower2, Moon } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -17,6 +18,14 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+
+const COLORS = {
+  emerald: '#065F46',
+  gold: '#D4AF37',
+  goldAccent: '#B5942E',
+  greenMist: '#F0F7F4',
+  sage: 'rgba(6,95,70,0.55)',
+};
 
 interface MoodEntry {
   id: string;
@@ -42,6 +51,7 @@ export default function EmotionsPage() {
   const [entries, setEntries] = useState<MoodEntry[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const moodSectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (user) {
@@ -157,16 +167,72 @@ export default function EmotionsPage() {
   };
 
   return (
-    <AppLayout title="Émotions">
+    <AppLayout title="Bien-Être">
       <div className="section-spacing">
         {/* Header */}
         <div className="zen-header">
-          <h1>🌸 Comment te sens-tu?</h1>
+          <h1>🌿 Mon Espace Bien-Être</h1>
           <p className="text-muted-foreground">
-            Prends un moment pour toi, avec l'aide d'Allah <span className="honorific">(عز وجل)</span>
+            Prends soin de toi, avec l'aide d'Allah <span className="honorific">(عز وجل)</span>
           </p>
         </div>
 
+        {/* Grille de blocs */}
+        <div className="grid grid-cols-2 gap-3">
+          {/* Bloc Mes Émotions */}
+          <motion.button
+            onClick={() => moodSectionRef.current?.scrollIntoView({ behavior: 'smooth' })}
+            className="relative overflow-hidden rounded-2xl p-5 aspect-[4/3] flex flex-col items-center justify-center text-center"
+            style={{
+              background: COLORS.greenMist,
+              border: `1.5px solid ${COLORS.emerald}15`,
+            }}
+            whileTap={{ scale: 0.97 }}
+          >
+            <div
+              className="w-12 h-12 rounded-xl flex items-center justify-center mb-3"
+              style={{ background: `${COLORS.gold}12`, border: `1px solid ${COLORS.gold}18` }}
+            >
+              <Flower2 className="h-6 w-6" style={{ color: COLORS.goldAccent }} />
+            </div>
+            <h4
+              className="text-sm font-bold tracking-[0.06em] uppercase"
+              style={{ fontFamily: "'Inter', sans-serif", color: COLORS.emerald }}
+            >
+              Mes Émotions
+            </h4>
+            <p className="text-xs mt-1" style={{ color: COLORS.sage }}>Humeur & gratitude</p>
+          </motion.button>
+
+          {/* Bloc Mon Dhikr Quotidien */}
+          <Link to="/dhikr" className="block">
+            <motion.div
+              className="relative overflow-hidden rounded-2xl p-5 aspect-[4/3] flex flex-col items-center justify-center text-center"
+              style={{
+                background: COLORS.greenMist,
+                border: `1.5px solid ${COLORS.emerald}15`,
+              }}
+              whileTap={{ scale: 0.97 }}
+            >
+              <div
+                className="w-12 h-12 rounded-xl flex items-center justify-center mb-3"
+                style={{ background: `${COLORS.gold}12`, border: `1px solid ${COLORS.gold}18` }}
+              >
+                <Moon className="h-6 w-6" style={{ color: COLORS.goldAccent }} />
+              </div>
+              <h4
+                className="text-sm font-bold tracking-[0.06em] uppercase"
+                style={{ fontFamily: "'Inter', sans-serif", color: COLORS.emerald }}
+              >
+                Mon Dhikr Quotidien
+              </h4>
+              <p className="text-xs mt-1" style={{ color: COLORS.sage }}>Adhkâr & invocations</p>
+            </motion.div>
+          </Link>
+        </div>
+
+        {/* Section Émotions */}
+        <div ref={moodSectionRef}>
         {/* Mood Selection */}
         <Card className="pastel-card p-6">
           <h3 className="font-display text-lg mb-4 text-center">
@@ -312,6 +378,7 @@ export default function EmotionsPage() {
             })}
           </div>
         )}
+        </div>{/* end moodSectionRef */}
 
         {/* Reflection Card */}
         <Card className="pastel-card p-6">

@@ -470,57 +470,34 @@ export default function AccueilPage() {
               </Link>
             </motion.div>
 
-            {/* GRILLE SECONDAIRE — Mon Suivi + Espace Dhikr */}
-            <motion.div variants={itemVariants} className="grid grid-cols-2 gap-3">
-              {/* Mon Suivi */}
+            {/* Mon Suivi Hifz — pleine largeur */}
+            <motion.div variants={itemVariants}>
               <Link to="/hifz-suivi" className="block">
                 <motion.div
-                  className="relative overflow-hidden rounded-2xl p-5 aspect-square flex flex-col items-center justify-center text-center group"
+                  className="relative overflow-hidden rounded-2xl p-5 flex items-center gap-4 group"
                   style={{
                     background: COLORS.greenMist,
                     border: `1.5px solid ${COLORS.emerald}20`,
                   }}
-                  whileHover={{ scale: 1.03 }}
+                  whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.97 }}
                 >
                   <div
-                    className="w-12 h-12 rounded-xl flex items-center justify-center mb-3"
+                    className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
                     style={{ background: `${COLORS.gold}18`, border: `1px solid ${COLORS.gold}25` }}
                   >
                     <BarChart3 className="h-6 w-6" style={{ color: COLORS.goldAccent }} />
                   </div>
-                  <h4
-                    className="text-sm font-bold tracking-[0.06em] uppercase"
-                    style={{ fontFamily: "'Inter', sans-serif", color: COLORS.emerald }}
-                  >
-                    Mon Suivi Hifz
-                  </h4>
-                </motion.div>
-              </Link>
-
-              {/* Mon Dhikr Quotidien */}
-              <Link to="/dhikr" className="block">
-                <div
-                  className="relative overflow-hidden rounded-2xl p-5 aspect-square flex flex-col items-center justify-center text-center"
-                  style={{
-                    background: COLORS.greenMist,
-                    border: `1.5px solid ${COLORS.emerald}15`,
-                  }}
-                >
-                  <div
-                    className="w-12 h-12 rounded-xl flex items-center justify-center mb-3"
-                    style={{ background: `${COLORS.gold}12`, border: `1px solid ${COLORS.gold}18` }}
-                  >
-                    <Moon className="h-6 w-6" style={{ color: COLORS.goldAccent }} />
+                  <div>
+                    <h4
+                      className="text-sm font-bold tracking-[0.06em] uppercase"
+                      style={{ fontFamily: "'Inter', sans-serif", color: COLORS.emerald }}
+                    >
+                      Mon Suivi Hifz
+                    </h4>
+                    <p className="text-xs mt-0.5" style={{ color: COLORS.sage }}>Statistiques & progression</p>
                   </div>
-                  <h4
-                    className="text-sm font-bold tracking-[0.06em] uppercase"
-                    style={{ fontFamily: "'Inter', sans-serif", color: COLORS.emerald }}
-                  >
-                    Mon Dhikr Quotidien
-                  </h4>
-                  <p className="text-xs mt-1" style={{ color: COLORS.sage }}>Adhkâr & invocations</p>
-                </div>
+                </motion.div>
               </Link>
             </motion.div>
           </motion.div>
