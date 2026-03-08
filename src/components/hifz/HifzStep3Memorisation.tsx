@@ -150,6 +150,15 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
   useEffect(() => {
     const fetchAudio = async () => {
       try {
+        const testUrl = getAyahAudioUrl(reciter, surahNumber, startVerse);
+        if (testUrl) {
+          const audios = [];
+          for (let v = startVerse; v <= endVerse; v++) {
+            audios.push({ audio: getAyahAudioUrl(reciter, surahNumber, v)! });
+          }
+          ayahAudiosRef.current = audios;
+          return;
+        }
         const res = await fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}/${reciter}`);
         const data = await res.json();
         if (data.code === 200) {
