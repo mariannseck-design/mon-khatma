@@ -78,6 +78,10 @@ export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticPro
   const [recentBlocks, setRecentBlocks] = useState<BlockWithMeta[]>([]);
   const [recentDaysMap, setRecentDaysMap] = useState<Map<number, number>>(new Map()); // index -> days
 
+  // Human-readable labels for what the user entered (e.g. "Pages 1-10, 50-55")
+  const [solidLabels, setSolidLabels] = useState<string[]>([]);
+  const [recentLabels, setRecentLabels] = useState<string[]>([]);
+
   // Pages state
   const [pageIntervals, setPageIntervals] = useState<PageInterval[]>([{ id: '1', start: 1, end: 20 }]);
 
