@@ -129,6 +129,7 @@ export default function DhikrPage() {
               title={categoryData.title}
               items={categoryData.items}
               intro={categoryData.intro}
+              categoryId={activeCategory!}
               onBack={() => setActiveCategory(null)}
             />
           </motion.div>

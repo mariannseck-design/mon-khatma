@@ -148,6 +148,23 @@ export default function DhikrSession({ title, items, onBack, intro, categoryId =
           <ChevronRight className="w-5 h-5" />
         </button>
 
+        {/* Favorite button */}
+        {!sessionComplete && (() => {
+          const currentItem = items[currentIndex];
+          const favId = makeDouaId(categoryId, '', currentItem.title);
+          const isFav = isFavorite(favId);
+          return (
+            <button
+              onClick={() => toggleFavorite(favId, title, '', currentItem)}
+              className="p-1.5 rounded-full transition-all"
+              style={{ color: isFav ? '#e74c3c' : 'var(--p-text-55)' }}
+              aria-label={isFav ? 'Retirer des favoris' : 'Ajouter aux favoris'}
+            >
+              <Heart className="w-5 h-5" fill={isFav ? '#e74c3c' : 'none'} />
+            </button>
+          );
+        })()}
+
         {/* Arabic size control */}
         <div className="flex items-center gap-1 ml-1">
           <button
