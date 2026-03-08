@@ -1,21 +1,35 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Moderniser la barre de navigation + remplacer Rappels par Profil
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### 1. Navigation visuelle modernisée
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+**`src/components/layout/Navigation.tsx`** :
+- **État actif** : Remplacer le carré arrondi vert par un **cercle** avec dégradé émeraude (`bg-gradient-to-br from-[#065F46] to-[#044E3B]`) + ombre interne (`shadow-inner`) + ombre externe douce
+- **Icônes inactives** : Trait plus fin via `strokeWidth={1.5}`, couleur gris anthracite doux (`text-[var(--p-text-55)]`)
+- **Icône active** : Blanc (`text-white`)
+- **Labels** : Taille réduite (`text-[10px]`), espacement lettres (`tracking-wider`)
+- **Backdrop blur** : Déjà en place (`backdrop-blur-xl`), renforcer avec `bg-card/80` pour plus de transparence
+- **Forme du motion indicator** : `rounded-full` au lieu de `rounded-2xl`
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+### 2. Remplacer Rappels par Profil
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+**`src/components/layout/Navigation.tsx`** :
+- Remplacer l'item `{ path: '/rappels', icon: Bell, label: 'Rappels' }` par `{ path: '/profil', icon: User, label: 'Profil' }`
+- Importer `User` de lucide-react, retirer `Bell`
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+**`src/hooks/useSwipeNavigation.ts`** :
+- Mettre à jour `SWIPE_PAGES` : remplacer `/rappels` par `/profil`
+
+### 3. Ajouter accès Rappels depuis Profil
+
+**`src/pages/ProfilPage.tsx`** :
+- Ajouter une carte/bouton "Mes Rappels" avec icône `Bell` qui navigue vers `/rappels`
+- Placé juste après la carte Informations
+
+### Fichiers modifiés
+- `src/components/layout/Navigation.tsx` — refonte visuelle + Profil remplace Rappels
+- `src/hooks/useSwipeNavigation.ts` — mise à jour swipe pages
+- `src/pages/ProfilPage.tsx` — ajout bouton Rappels
+- `src/components/icons/ChapeletIcon.tsx` — ajuster `strokeWidth` pour cohérence avec les autres icônes
 
