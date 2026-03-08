@@ -12,6 +12,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { MoodDuaCard } from '@/components/emotions/MoodDuaCard';
+import FavoriteVersesSection from '@/components/favoris/FavoriteVersesSection';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -352,6 +353,9 @@ export default function EmotionsPage() {
             </motion.button>
           </div>
         </motion.div>
+
+        {/* Mes Versets Favoris */}
+        <FavoriteVersesSection />
 
         {/* Section Émotions */}
         <AnimatePresence>
