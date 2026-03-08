@@ -205,7 +205,7 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
           onMouseLeave={() => setShowText(false)}
         >
           <div className="flex items-center justify-between px-4 pt-3 pb-1">
-            <p className="text-white/40 text-xs uppercase tracking-wider">AYAT</p>
+            <p style={{ color: tc.textMuted }} className="text-xs uppercase tracking-wider">AYAT</p>
             <Eye className="h-4 w-4 text-white/30" />
           </div>
           <div
