@@ -129,7 +129,7 @@ export default function MurajaChecklist({
                   className="text-sm truncate"
                   style={{
                     color: isChecked ? '#065F46' : '#1C2421',
-                    fontWeight: isChecked ? 700 : 600,
+                    fontWeight: isChecked ? 800 : 700,
                   }}
                 >
                   {getSurahName(item.surah_number)}
