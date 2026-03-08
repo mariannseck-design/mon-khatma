@@ -524,8 +524,20 @@ export default function QuranReaderPage() {
             textModeDisabled={textModeDisabled}
             audioStartVerse={audioStartVerse}
             audioEndVerse={audioEndVerse}
-            onAudioStartVerseChange={setAudioStartVerse}
-            onAudioEndVerseChange={setAudioEndVerse}
+            onAudioStartVerseChange={(v) => {
+              setAudioStartVerse(v);
+              if (v && v > 0 && surah) {
+                getExactVersePage(surah.number, v).then(goToPage);
+              }
+            }}
+            onAudioEndVerseChange={(v) => {
+              setAudioEndVerse(v);
+              if (v && v > 0 && surah) {
+                getExactVersePage(surah.number, v).then(goToPage);
+              }
+            }}
+            currentPage={page}
+            onGoToPage={goToPage}
             isOffline={!isOnline}
             tajweedEnabled={tajweedEnabled}
             onTajweedChange={handleTajweedChange}
