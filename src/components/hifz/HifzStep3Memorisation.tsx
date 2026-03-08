@@ -118,10 +118,15 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
 
   const phaseInfo = getPhaseInfo(ancrage);
 
-  // Persist display mode
+  // Persist display mode & zoom
   useEffect(() => {
     localStorage.setItem('hifz_display_mode', displayMode);
   }, [displayMode]);
+  useEffect(() => {
+    localStorage.setItem('hifz_tikrar_zoom', mushafZoom);
+  }, [mushafZoom]);
+
+  const zoomConfig = { small: { width: '75%', maxH: 280 }, medium: { width: '100%', maxH: 400 }, large: { width: '130%', maxH: 520 } };
 
   // Mushaf page number
   const mushafPage = useMemo(() => {
