@@ -262,6 +262,23 @@ export default function QuranReaderPage() {
       className="fixed inset-0 flex flex-col z-50"
       style={{ background: bgColor }}
     >
+      {/* Offline banner */}
+      <AnimatePresence>
+        {!isOnline && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="relative z-30 flex items-center justify-center gap-2 py-1.5 text-xs font-medium overflow-hidden"
+            style={{ background: 'hsl(35, 80%, 55%)', color: 'hsl(35, 50%, 15%)' }}
+          >
+            <WifiOff className="h-3 w-3" />
+            Mode hors-ligne · Texte uniquement
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Night mode filter for image mode */}
       {nightMode && viewMode === 'image' && (
         <div className="absolute inset-0 z-10 pointer-events-none" style={{ background: 'rgba(10, 20, 10, 0.35)', mixBlendMode: 'multiply' }} />
@@ -396,11 +413,12 @@ export default function QuranReaderPage() {
         <div className="flex items-center gap-1">
           {/* Audio play/pause */}
           <button
-            onClick={(e) => { e.stopPropagation(); togglePlay(); }}
+            onClick={(e) => { e.stopPropagation(); if (isOnline) togglePlay(); }}
             className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
             style={{
               background: isPlaying ? 'rgba(180,150,60,0.25)' : 'transparent',
               color: nightMode ? '#f0e6c8' : '#1a3a3a',
+              opacity: isOnline ? 1 : 0.35,
             }}
           >
             {audioLoading ? (
@@ -446,6 +464,7 @@ export default function QuranReaderPage() {
             audioEndVerse={audioEndVerse}
             onAudioStartVerseChange={setAudioStartVerse}
             onAudioEndVerseChange={setAudioEndVerse}
+            isOffline={!isOnline}
           />
         </div>
       </div>
