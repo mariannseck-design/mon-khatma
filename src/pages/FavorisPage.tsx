@@ -49,6 +49,10 @@ export default function FavorisPage() {
   }, [user]);
 
   const openInMushaf = async (v: FavoriteVerse) => {
+    if (!isAdmin) {
+      toast({ title: 'Bientôt disponible', description: 'Le Mushaf sera accessible prochainement in shaa Allah 🤲' });
+      return;
+    }
     const page = await getExactVersePage(v.surah_number, v.verse_number);
     localStorage.setItem('quran_reader_page', String(page));
     navigate('/quran-reader');
