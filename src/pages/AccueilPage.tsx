@@ -474,7 +474,7 @@ export default function AccueilPage() {
                       </h3>
                       <p className="text-white/70 text-sm mt-1">
                         {pendingReviews > 0
-                          ? `${pendingReviews} bloc${pendingReviews > 1 ? 's' : ''} à réviser`
+                          ? `${pendingReviews} portion${pendingReviews > 1 ? 's' : ''} à réviser`
                           : 'Réviser et consolider'}
                       </p>
                     </div>
