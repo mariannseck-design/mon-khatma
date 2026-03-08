@@ -12,6 +12,7 @@ import HifzStep4Validation from '@/components/hifz/HifzStep4Validation';
 import HifzStep5Liaison from '@/components/hifz/HifzStep5Liaison';
 import HifzStep6Tour from '@/components/hifz/HifzStep6Tour';
 import HifzSuccess from '@/components/hifz/HifzSuccess';
+import DevSkipButton from '@/components/hifz/DevSkipButton';
 
 interface HifzSession {
   surahNumber: number;
