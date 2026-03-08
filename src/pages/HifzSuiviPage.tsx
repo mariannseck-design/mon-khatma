@@ -160,7 +160,7 @@ export default function HifzSuiviPage() {
       const dayName = DAY_LABELS[jsDay === 0 ? 6 : jsDay - 1];
       const dayNum = d.getDate();
       const month = String(d.getMonth() + 1).padStart(2, '0');
-      const label = `${dayName} ${dayNum}/${month}`;
+      const label = `${dayName} ${dayNum}`;
       chartData.push({ day: label, count: dayCounts[key] || 0 });
     }
     setWeeklyData(chartData);
