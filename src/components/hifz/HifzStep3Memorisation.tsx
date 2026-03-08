@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BookOpen, Check, Eye, EyeOff, RotateCcw, Volume2, Star, ChevronDown, ChevronUp } from 'lucide-react';
+import { BookOpen, Check, Eye, EyeOff, RotateCcw, Volume2, Star, ChevronDown, ChevronUp, Image } from 'lucide-react';
 import HifzStepWrapper from './HifzStepWrapper';
 import { getVersesByRange, type LocalAyah } from '@/lib/quranData';
+import { SURAHS } from '@/lib/surahData';
 import {
   getTajweedAnnotations,
   TAJWEED_COLORS,
@@ -97,6 +98,9 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
     const saved = localStorage.getItem(storageKey);
     return saved ? Math.min(parseInt(saved, 10) || 0, tikrarTarget) : 0;
   });
+  const [displayMode, setDisplayMode] = useState<'text' | 'mushaf'>(() => {
+    return (localStorage.getItem('hifz_display_mode') as 'text' | 'mushaf') || 'text';
+  });
   const [ayahs, setAyahs] = useState<AyahWithAnnotations[]>([]);
   const [loading, setLoading] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -110,6 +114,22 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
   const reciter = localStorage.getItem('quran_reciter') || 'ar.alafasy';
 
   const phaseInfo = getPhaseInfo(ancrage);
+
+  // Persist display mode
+  useEffect(() => {
+    localStorage.setItem('hifz_display_mode', displayMode);
+  }, [displayMode]);
+
+  // Mushaf page number
+  const mushafPage = useMemo(() => {
+    const surah = SURAHS.find(s => s.number === surahNumber);
+    if (!surah) return 1;
+    // Estimate page offset based on verse position
+    const verseFraction = (startVerse - 1) / (surah.versesCount || 1);
+    const nextSurah = SURAHS.find(s => s.number === surahNumber + 1);
+    const totalPages = nextSurah ? nextSurah.startPage - surah.startPage : 2;
+    return surah.startPage + Math.floor(verseFraction * totalPages);
+  }, [surahNumber, startVerse]);
 
   // Load local text + tajweed
   useEffect(() => {
@@ -295,6 +315,34 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
           <p className="text-white/50 text-xs">(Objectif {tikrarTarget} répétitions)</p>
         </div>
 
+        {/* Display mode toggle */}
+        <div className="flex items-center justify-center gap-2">
+          <button
+            onClick={() => setDisplayMode('text')}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all"
+            style={{
+              background: displayMode === 'text' ? 'rgba(212,175,55,0.2)' : 'rgba(255,255,255,0.05)',
+              border: displayMode === 'text' ? '1px solid rgba(212,175,55,0.5)' : '1px solid rgba(255,255,255,0.1)',
+              color: displayMode === 'text' ? '#d4af37' : 'rgba(255,255,255,0.5)',
+            }}
+          >
+            <BookOpen className="h-3.5 w-3.5" />
+            Texte Tajwid
+          </button>
+          <button
+            onClick={() => setDisplayMode('mushaf')}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all"
+            style={{
+              background: displayMode === 'mushaf' ? 'rgba(212,175,55,0.2)' : 'rgba(255,255,255,0.05)',
+              border: displayMode === 'mushaf' ? '1px solid rgba(212,175,55,0.5)' : '1px solid rgba(255,255,255,0.1)',
+              color: displayMode === 'mushaf' ? '#d4af37' : 'rgba(255,255,255,0.5)',
+            }}
+          >
+            <Image className="h-3.5 w-3.5" />
+            Mushaf Image
+          </button>
+        </div>
+
         {/* Guide */}
         <div className="rounded-xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>
           <button
@@ -422,10 +470,23 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
               </button>
             )}
 
-            {/* Text container */}
-            {loading ? (
+            {/* Content container — Text or Mushaf */}
+            {loading && displayMode === 'text' ? (
               <div className="flex items-center justify-center py-8">
                 <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: '#d4af37', borderTopColor: 'transparent' }} />
+              </div>
+            ) : displayMode === 'mushaf' ? (
+              <div
+                style={{ display: textVisible ? 'block' : 'none' }}
+                className="rounded-xl overflow-auto max-h-[400px] flex items-center justify-center"
+              >
+                <img
+                  src={`https://tajweed.me/hafs-tajweed/p${mushafPage}.png`}
+                  alt={`Mushaf page ${mushafPage}`}
+                  className="w-full rounded-lg"
+                  style={{ border: '1px solid rgba(212,175,55,0.15)' }}
+                  loading="eager"
+                />
               </div>
             ) : (
               <div
