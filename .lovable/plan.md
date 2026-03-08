@@ -1,21 +1,21 @@
 
 
-## Ajouter la traduction Hamidullah à l'étape 2 (Imprégnation)
+# Diagnostic : 404 sur /quran-reader
 
-L'étape 0 (Intention) affiche déjà la traduction Hamidullah, mais l'étape 2 (Imprégnation & Sens) ne montre que l'image Mushaf et l'audio sans traduction. Le plan est d'ajouter un bloc de traduction sous l'image Mushaf dans `HifzStep2Impregnation.tsx`.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Modifications
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-**`src/components/hifz/HifzStep2Impregnation.tsx`** :
-- Ajouter un état `translation` et un `useEffect` qui fetch `https://api.alquran.cloud/v1/surah/{surahNumber}/fr.hamidullah` (même logique que Step0)
-- Filtrer les versets par `startVerse` → `endVerse`
-- Afficher un bloc dépliable (collapsible) sous l'image Mushaf avec le titre "Traduction — Hamidullah" et les versets traduits
-- Style cohérent : fond semi-transparent, bordure dorée, texte `text-white/70`
-- Le bloc sera fermé par défaut pour ne pas surcharger l'écran, avec un bouton "Voir la traduction" pour l'ouvrir
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-### Détails techniques
-- Fetch API identique à `HifzStep0Intention` : `fr.hamidullah` via alquran.cloud
-- État toggle `showTranslation` pour afficher/masquer
-- Spinner de chargement pendant le fetch
-- Zone scrollable `max-h-48` pour les longues plages de versets
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

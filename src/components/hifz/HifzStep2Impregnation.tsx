@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { motion } from 'framer-motion';
-import { Headphones, Check, Play, Pause, RotateCcw, ZoomIn, ZoomOut } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Headphones, Check, Play, Pause, RotateCcw, ZoomIn, ZoomOut, BookOpen, ChevronDown } from 'lucide-react';
 import HifzStepWrapper from './HifzStepWrapper';
 import { RECITERS, getAyahAudioUrl } from '@/hooks/useQuranAudio';
 import { SURAHS, getApproxVersePage } from '@/lib/surahData';
@@ -19,6 +19,7 @@ const MUSHAF_CONTAINER_HEIGHTS = ['max-h-48', 'max-h-72', 'max-h-[500px]'];
 
 export default function HifzStep2Impregnation({ surahNumber, startVerse, endVerse, onNext, onBack }: Props) {
   const storageKey = `hifz_listen_${surahNumber}_${startVerse}_${endVerse}`;
+  const surahName = SURAHS.find(s => s.number === surahNumber)?.name || '';
 
   const [listenCount, setListenCount] = useState(() => {
     const saved = localStorage.getItem(storageKey);
@@ -27,7 +28,10 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
   const [isPlaying, setIsPlaying] = useState(false);
   const [reciter, setReciter] = useState('ar.alafasy');
   const [currentAyahIndex, setCurrentAyahIndex] = useState(-1);
-  const [mushafZoom, setMushafZoom] = useState(1); // 0=Petit, 1=Moyen, 2=Grand
+  const [mushafZoom, setMushafZoom] = useState(1);
+  const [translation, setTranslation] = useState<string[]>([]);
+  const [translationLoading, setTranslationLoading] = useState(true);
+  const [showTranslation, setShowTranslation] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const ayahsRef = useRef<{ audio: string; numberInSurah: number }[]>([]);
   const indexRef = useRef(0);
@@ -43,6 +47,28 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
       localStorage.removeItem(storageKey);
     }
   }, [listenCount, storageKey]);
+
+  // Fetch Hamidullah translation
+  useEffect(() => {
+    const fetchTranslation = async () => {
+      setTranslationLoading(true);
+      try {
+        const res = await fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}/fr.hamidullah`);
+        const data = await res.json();
+        if (data.code === 200) {
+          const ayahs = data.data.ayahs
+            .filter((a: any) => a.numberInSurah >= startVerse && a.numberInSurah <= endVerse)
+            .map((a: any) => `${a.numberInSurah}. ${a.text}`);
+          setTranslation(ayahs);
+        }
+      } catch {
+        setTranslation(['Traduction non disponible.']);
+      } finally {
+        setTranslationLoading(false);
+      }
+    };
+    fetchTranslation();
+  }, [surahNumber, startVerse, endVerse]);
 
   // Calculate exact Mushaf page from surah + verse number
   const mushafPage = getApproxVersePage(surahNumber, startVerse);
@@ -157,6 +183,51 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
               loading="eager"
             />
           </div>
+        </div>
+
+        {/* Hamidullah Translation - collapsible */}
+        <div
+          className="rounded-2xl overflow-hidden"
+          style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(212,175,55,0.15)' }}
+        >
+          <button
+            onClick={() => setShowTranslation(v => !v)}
+            className="w-full flex items-center justify-between px-4 py-3 text-left transition-all active:scale-[0.99]"
+          >
+            <span className="flex items-center gap-2 text-sm" style={{ color: 'rgba(255,255,255,0.7)' }}>
+              <BookOpen className="h-4 w-4" style={{ color: '#d4af37' }} />
+              Traduction — {surahName} (v.{startVerse}-{endVerse})
+            </span>
+            <ChevronDown
+              className="h-4 w-4 transition-transform duration-200"
+              style={{ color: 'rgba(255,255,255,0.4)', transform: showTranslation ? 'rotate(180deg)' : 'rotate(0deg)' }}
+            />
+          </button>
+          <AnimatePresence>
+            {showTranslation && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="overflow-hidden"
+              >
+                <div className="px-4 pb-4">
+                  {translationLoading ? (
+                    <div className="flex items-center justify-center py-6">
+                      <div className="w-6 h-6 border-2 border-white/20 border-t-white/60 rounded-full animate-spin" />
+                    </div>
+                  ) : (
+                    <div className="space-y-2 max-h-48 overflow-y-auto text-left">
+                      {translation.map((verse, i) => (
+                        <p key={i} className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.65)' }}>{verse}</p>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Reciter selector */}
