@@ -1,21 +1,44 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Ajouter les références précises sous chaque invocation Chifâ & Sérénité
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### 1. Ajouter un champ `source` au type `DhikrItem`
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+Dans `src/components/dhikr/DhikrCounter.tsx`, ajouter un champ optionnel `source?: string` à l'interface `DhikrItem`.
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+### 2. Afficher la source dans le compteur
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+Dans le même composant, afficher `item.source` sous la traduction française — petit texte discret en italique, couleur atténuée.
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+### 3. Ajouter les références dans `src/lib/adhkarData.ts`
+
+Ajouter le champ `source` à chaque élément de `CHIFA_SERENITE` avec les références précises :
+
+| Invocation | Source |
+|---|---|
+| Al-Fâtiha | Coran 1:1-7 — Al-Bukhârî n°5007 |
+| Âyat al-Kursî | Coran 2:255 — Al-Bukhârî n°5010 |
+| Al-Baqarah v.285 | Coran 2:285 — Muslim n°810 |
+| Al-Baqarah v.286 | Coran 2:286 — Muslim n°810 |
+| Al-Ikhlâs | Coran 112:1-4 — Al-Bukhârî n°5017 |
+| Al-Falaq | Coran 113:1-5 — Al-Bukhârî n°5017 |
+| An-Nâs | Coran 114:1-6 — Al-Bukhârî n°5017 |
+| Du'â d'Ayyûb | Coran 21:83 — At-Tirmidhî n°3505 |
+| Sérénité du cœur | Coran 13:28 |
+| Du'â de Yûnus | Coran 21:87 — At-Tirmidhî n°3505 |
+| Contre l'angoisse | Al-Bukhârî n°6369 |
+| En cas de détresse | Abû Dâwûd n°5090 — Sahîh |
+| Confiance en Allah | Coran 3:173 — Al-Bukhârî n°4563 |
+| Ruqyah du malade | Al-Bukhârî n°5675, Muslim n°2191 |
+| Poser la main | Muslim n°2202 |
+| Demande de guérison 7x | Abû Dâwûd n°3106, At-Tirmidhî n°2083 |
+| Mu'awwidhat | Al-Bukhârî n°5016 |
+| Contre le mauvais œil | Al-Bukhârî n°3371 |
+| Guérison par le Coran | Coran 17:82 |
+| Visite du malade | Al-Bukhârî n°3616 |
+| Ash-Shu'arâ' v.80 | Coran 26:80 |
+
+### Fichiers modifiés
+- `src/components/dhikr/DhikrCounter.tsx` — ajouter `source?` au type + affichage
+- `src/lib/adhkarData.ts` — ajouter `source` à chaque item de `CHIFA_SERENITE`
 
