@@ -14,6 +14,8 @@ import HifzStep5Liaison from '@/components/hifz/HifzStep5Liaison';
 import HifzStep6Tour from '@/components/hifz/HifzStep6Tour';
 import HifzSuccess from '@/components/hifz/HifzSuccess';
 import DevSkipButton from '@/components/hifz/DevSkipButton';
+import { SURAHS } from '@/lib/surahData';
+import { motion } from 'framer-motion';
 
 interface HifzSession {
   surahNumber: number;
@@ -28,17 +30,71 @@ const GRADIENT_STYLE = {
   boxShadow: '0 8px 32px -8px rgba(13,115,119,0.4)',
 };
 
+const LOCAL_KEY = 'hifz_active_session';
+
+function saveLocalSession(session: HifzSession, step: number, sessionId: string | null) {
+  localStorage.setItem(LOCAL_KEY, JSON.stringify({ session, step, sessionId, ts: Date.now() }));
+}
+
+function loadLocalSession(): { session: HifzSession; step: number; sessionId: string | null } | null {
+  try {
+    const raw = localStorage.getItem(LOCAL_KEY);
+    if (!raw) return null;
+    const data = JSON.parse(raw);
+    if (!data.session || typeof data.step !== 'number' || data.step < 0) return null;
+    // Expire after 24h
+    if (Date.now() - (data.ts || 0) > 24 * 60 * 60 * 1000) {
+      localStorage.removeItem(LOCAL_KEY);
+      return null;
+    }
+    return data;
+  } catch {
+    localStorage.removeItem(LOCAL_KEY);
+    return null;
+  }
+}
+
+function clearLocalSession() {
+  localStorage.removeItem(LOCAL_KEY);
+}
+
+const STEP_NAMES = [
+  'Intention', 'Réveil', 'Imprégnation', 'Ancrage (Tikrar)',
+  'Validation', 'Liaison (Ar-Rabt)', 'Le Tour',
+];
+
 export default function HifzPage() {
   const { user } = useAuth();
   const [step, setStep] = useState<number>(-1);
   const [session, setSession] = useState<HifzSession | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
-  const [hasGoal, setHasGoal] = useState<boolean | null>(null); // null = loading
+  const [hasGoal, setHasGoal] = useState<boolean | null>(null);
   const [showGoalOnboarding, setShowGoalOnboarding] = useState(false);
   const [restoringSession, setRestoringSession] = useState(true);
+  const [showResumePrompt, setShowResumePrompt] = useState(false);
+  const [pendingResume, setPendingResume] = useState<{ session: HifzSession; step: number; sessionId: string | null } | null>(null);
   const { isDevMode } = useDevMode();
 
-  // Restore in-progress session + check goal on mount
+  // Persist session state to localStorage on every change
+  useEffect(() => {
+    if (session && step >= 0 && step <= 6) {
+      saveLocalSession(session, step, sessionId);
+    }
+  }, [session, step, sessionId]);
+
+  // Handle visibility change (mobile sleep/wake)
+  useEffect(() => {
+    const handler = () => {
+      if (document.visibilityState === 'visible' && session && step >= 0 && step <= 6) {
+        // Re-save to keep timestamp fresh
+        saveLocalSession(session, step, sessionId);
+      }
+    };
+    document.addEventListener('visibilitychange', handler);
+    return () => document.removeEventListener('visibilitychange', handler);
+  }, [session, step, sessionId]);
+
+  // Restore session on mount
   useEffect(() => {
     if (!user) { setHasGoal(true); setRestoringSession(false); return; }
     const init = async () => {
@@ -52,7 +108,16 @@ export default function HifzPage() {
       setHasGoal(!!goalData);
       if (!goalData) setShowGoalOnboarding(true);
 
-      // Restore last in-progress session (not completed)
+      // Try localStorage first (instant, survives mobile wake-up)
+      const local = loadLocalSession();
+      if (local && local.step >= 0 && local.step <= 6) {
+        setPendingResume(local);
+        setShowResumePrompt(true);
+        setRestoringSession(false);
+        return;
+      }
+
+      // Fallback: restore from DB
       const { data: activeSession } = await supabase
         .from('hifz_sessions')
         .select('*')
@@ -62,20 +127,43 @@ export default function HifzPage() {
         .limit(1)
         .maybeSingle();
 
-      if (activeSession) {
-        setSession({
-          surahNumber: activeSession.surah_number,
-          startVerse: activeSession.start_verse,
-          endVerse: activeSession.end_verse,
-          repetitionLevel: activeSession.repetition_level,
-        });
-        setSessionId(activeSession.id);
-        setStep(activeSession.current_step);
+      if (activeSession && activeSession.current_step >= 0 && activeSession.current_step <= 6) {
+        const restored = {
+          session: {
+            surahNumber: activeSession.surah_number,
+            startVerse: activeSession.start_verse,
+            endVerse: activeSession.end_verse,
+            repetitionLevel: activeSession.repetition_level,
+          },
+          step: activeSession.current_step,
+          sessionId: activeSession.id,
+        };
+        setPendingResume(restored);
+        setShowResumePrompt(true);
       }
       setRestoringSession(false);
     };
     init();
   }, [user]);
+
+  const handleResume = () => {
+    if (pendingResume) {
+      setSession(pendingResume.session);
+      setStep(pendingResume.step);
+      setSessionId(pendingResume.sessionId);
+    }
+    setShowResumePrompt(false);
+    setPendingResume(null);
+  };
+
+  const handleRestart = () => {
+    clearLocalSession();
+    setShowResumePrompt(false);
+    setPendingResume(null);
+    setSession(null);
+    setStep(-1);
+    setSessionId(null);
+  };
 
   const startSession = useCallback(async (config: HifzSession) => {
     setSession(config);
@@ -104,6 +192,9 @@ export default function HifzPage() {
   }, [sessionId, user]);
 
   const completeSession = useCallback(async (difficulty: string) => {
+    // Clean up localStorage
+    clearLocalSession();
+
     if (sessionId && user) {
       await supabase.from('hifz_sessions').update({
         current_step: 6,
@@ -161,12 +252,70 @@ export default function HifzPage() {
     setStep(7);
   }, [sessionId, user, session]);
 
+  const devModeBadge = isDevMode && (
+    <div className="mb-3 flex justify-center">
+      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold tracking-wide" style={{ background: 'rgba(212,175,55,0.2)', color: '#d4af37', border: '1px solid rgba(212,175,55,0.4)' }}>
+        🛠 Mode Testeur actif
+      </span>
+    </div>
+  );
+
   // Loading state
   if (hasGoal === null || restoringSession) {
     return (
       <AppLayout title="Espace Hifz" hideNav>
         <div className="min-h-[80vh] flex items-center justify-center">
           <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+        </div>
+      </AppLayout>
+    );
+  }
+
+  // Resume prompt
+  if (showResumePrompt && pendingResume) {
+    const surah = SURAHS.find(s => s.number === pendingResume.session.surahNumber);
+    const stepName = STEP_NAMES[pendingResume.step] || `Étape ${pendingResume.step}`;
+    return (
+      <AppLayout title="Espace Hifz" hideNav>
+        <div className="min-h-[80vh] rounded-[2rem] p-6 mx-[-4px]" style={GRADIENT_STYLE}>
+          {devModeBadge}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-6"
+          >
+            <div className="text-4xl">📖</div>
+            <h2 className="text-xl font-bold" style={{ color: '#f0e6c8', fontFamily: "'Playfair Display', serif" }}>
+              Session en cours
+            </h2>
+            <div className="rounded-2xl p-4 space-y-2" style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(212,175,55,0.3)' }}>
+              <p className="text-sm font-semibold" style={{ color: '#d4af37' }}>
+                {surah?.name || `Sourate ${pendingResume.session.surahNumber}`}
+              </p>
+              <p className="text-xs" style={{ color: 'rgba(240,230,200,0.7)' }}>
+                Versets {pendingResume.session.startVerse} → {pendingResume.session.endVerse}
+              </p>
+              <p className="text-xs" style={{ color: 'rgba(240,230,200,0.7)' }}>
+                Étape : <span className="font-semibold" style={{ color: '#f0e6c8' }}>{stepName}</span>
+              </p>
+            </div>
+            <div className="flex flex-col gap-3 w-full max-w-xs">
+              <button
+                onClick={handleResume}
+                className="w-full py-3 rounded-xl font-bold text-sm transition-all active:scale-95"
+                style={{ background: 'linear-gradient(135deg, #d4af37, #c9a030)', color: '#1a2e1a', boxShadow: '0 4px 15px rgba(212,175,55,0.3)' }}
+              >
+                ▶️ Reprendre ma session
+              </button>
+              <button
+                onClick={handleRestart}
+                className="w-full py-3 rounded-xl font-bold text-sm transition-all active:scale-95"
+                style={{ background: 'rgba(255,255,255,0.1)', color: 'rgba(240,230,200,0.8)', border: '1px solid rgba(240,230,200,0.2)' }}
+              >
+                🔄 Recommencer une nouvelle session
+              </button>
+            </div>
+          </motion.div>
         </div>
       </AppLayout>
     );
@@ -190,7 +339,7 @@ export default function HifzPage() {
     return (
       <AppLayout title="Espace Hifz" hideNav>
         <div className="min-h-[80vh] rounded-[2rem] p-6 mx-[-4px]" style={GRADIENT_STYLE}>
-          {isDevMode && <div className="mb-3 flex justify-center"><span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold tracking-wide" style={{ background: 'rgba(212,175,55,0.2)', color: '#d4af37', border: '1px solid rgba(212,175,55,0.4)' }}>🛠 Mode Testeur actif</span></div>}
+          {devModeBadge}
           <HifzConfig onStart={startSession} />
         </div>
       </AppLayout>
@@ -201,7 +350,7 @@ export default function HifzPage() {
   return (
     <AppLayout title="Espace Hifz" hideNav>
       <div className="min-h-[80vh] rounded-[2rem] p-6 mx-[-4px]" style={GRADIENT_STYLE}>
-        {isDevMode && <div className="mb-3 flex justify-center"><span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold tracking-wide" style={{ background: 'rgba(212,175,55,0.2)', color: '#d4af37', border: '1px solid rgba(212,175,55,0.4)' }}>🛠 Mode Testeur actif</span></div>}
+        {devModeBadge}
         {step === 0 && <HifzStep0Intention surahNumber={session.surahNumber} startVerse={session.startVerse} endVerse={session.endVerse} onNext={() => updateStep(1)} onBack={() => setStep(-1)} />}
         {step === 1 && <HifzStep1Revision onNext={() => updateStep(2)} onBack={() => setStep(0)} />}
         {step === 2 && <HifzStep2Impregnation surahNumber={session.surahNumber} startVerse={session.startVerse} endVerse={session.endVerse} onNext={() => updateStep(3)} onBack={() => setStep(1)} />}
