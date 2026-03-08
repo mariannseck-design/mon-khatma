@@ -154,7 +154,8 @@ export default function HifzSuiviPage() {
       const jsDay = d.getDay();
       const dayName = DAY_LABELS[jsDay === 0 ? 6 : jsDay - 1];
       const dayNum = d.getDate();
-      const label = `${dayName} ${dayNum}`;
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const label = `${dayName} ${dayNum}/${month}`;
       chartData.push({ day: label, count: dayCounts[key] || 0 });
     }
     setWeeklyData(chartData);
