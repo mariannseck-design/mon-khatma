@@ -104,8 +104,7 @@ export default function HifzGoalOnboarding({ onGoalSet, existingGoal }: HifzGoal
           Choisis ton rythme d'ancrage
         </h2>
         <p className="text-sm text-white/70 leading-relaxed max-w-xs mx-auto">
-          Ce rythme est un engagement sur la voie tracée par le Prophète Muhammad (ﷺ).
-          Choisis ce que tu peux tenir avec constance.
+          Un rythme que tu peux tenir avec persévérance, marche après marche, pour progresser avec constance par la grâce d'Allah <span style={{ fontFamily: "'Amiri'", fontWeight: 'bold', fontSize: '1.1em' }}>(عز وجل)</span>.
         </p>
       </div>
 
