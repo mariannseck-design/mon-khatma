@@ -1,24 +1,21 @@
 
 
-## Plan : Arranger l'affichage mobile de la page Mon Suivi Hifz
+# Diagnostic : 404 sur /quran-reader
 
-En regardant les screenshots, les problèmes principaux sur mobile sont :
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-1. **Les 3 cartes KPI** (Jours consécutifs, Versets ancrés, Cycles terminés) sont trop serrées en `grid-cols-3` — le texte déborde et les éléments sont écrasés
-2. **Le graphique hebdomadaire** — les labels de l'axe X sont trop longs et se chevauchent sur petit écran
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-### Changements dans `src/pages/HifzSuiviPage.tsx`
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-**1. Réduire la jauge CircularGauge pour qu'elle rentre mieux**
-- Réduire le SVG de `96x96` à `80x80`, le rayon de 38 à 32, ajuster le texte
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-**2. Cartes KPI — réduire le padding et les tailles**
-- Padding `p-4` → `p-3` sur les cartes latérales
-- Icônes `w-9 h-9` → `w-8 h-8`
-- Nombre `text-2xl` → `text-xl`
-- Gap `gap-3` → `gap-2`
-
-**3. Graphique — raccourcir les labels de l'axe X**
-- Afficher seulement le jour abrégé + numéro (ex: `Lun 4`) au lieu de `Lun 04/03` pour éviter le chevauchement
-- Réduire la taille de police des ticks à `9px`
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

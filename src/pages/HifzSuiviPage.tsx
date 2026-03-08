@@ -28,33 +28,33 @@ const MOTIVATIONS = [
 
 function CircularGauge({ value, max, label, hideMax }: { value: number; max: number; label: string; hideMax?: boolean }) {
   const pct = max > 0 ? Math.min(value / max, 1) : 0;
-  const r = 38;
+  const r = 32;
   const circ = 2 * Math.PI * r;
   const offset = circ * (1 - pct);
 
   return (
     <div className="flex flex-col items-center gap-1">
-      <svg width="96" height="96" viewBox="0 0 96 96">
-        <circle cx="48" cy="48" r={r} fill="none" stroke="var(--p-track)" strokeWidth="5" />
+      <svg width="80" height="80" viewBox="0 0 80 80">
+        <circle cx="40" cy="40" r={r} fill="none" stroke="var(--p-track)" strokeWidth="5" />
         <motion.circle
-          cx="48" cy="48" r={r} fill="none"
+          cx="40" cy="40" r={r} fill="none"
           stroke="var(--p-primary)" strokeWidth="5" strokeLinecap="round"
           strokeDasharray={circ} strokeDashoffset={offset}
-          transform="rotate(-90 48 48)"
+          transform="rotate(-90 40 40)"
           initial={{ strokeDashoffset: circ }}
           animate={{ strokeDashoffset: offset }}
           transition={{ duration: 1.2, ease: 'easeOut' }}
         />
-        <text x="48" y={hideMax ? 52 : 44} textAnchor="middle" fill="var(--p-primary)" fontSize="18" fontWeight="bold" fontFamily="Inter, sans-serif">
+        <text x="40" y={hideMax ? 44 : 38} textAnchor="middle" fill="var(--p-primary)" fontSize="16" fontWeight="bold" fontFamily="Inter, sans-serif">
           {value}
         </text>
         {!hideMax && (
-          <text x="48" y="60" textAnchor="middle" fill="var(--p-text-60)" fontSize="9" fontWeight="600">
+          <text x="40" y="52" textAnchor="middle" fill="var(--p-text-60)" fontSize="8" fontWeight="600">
             / {max}
           </text>
         )}
       </svg>
-      <span className="text-xs font-medium" style={{ color: 'var(--p-text-65)' }}>{label}</span>
+      <span className="text-[10px] font-medium" style={{ color: 'var(--p-text-65)' }}>{label}</span>
     </div>
   );
 }
@@ -160,7 +160,7 @@ export default function HifzSuiviPage() {
       const dayName = DAY_LABELS[jsDay === 0 ? 6 : jsDay - 1];
       const dayNum = d.getDate();
       const month = String(d.getMonth() + 1).padStart(2, '0');
-      const label = `${dayName} ${dayNum}/${month}`;
+      const label = `${dayName} ${dayNum}`;
       chartData.push({ day: label, count: dayCounts[key] || 0 });
     }
     setWeeklyData(chartData);
@@ -388,23 +388,23 @@ export default function HifzSuiviPage() {
             </div>
 
             {/* 3 KPI Cards */}
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-3 gap-2">
               <motion.div
                 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-                className="rounded-2xl p-4 flex flex-col items-center gap-2"
+                className="rounded-2xl p-3 flex flex-col items-center gap-1.5"
                 style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', boxShadow: 'var(--p-card-shadow)' }}
               >
-                <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #D97706, #F59E0B)', boxShadow: '0 4px 10px rgba(245, 158, 11, 0.3)' }}>
-                  <Flame className="h-4.5 w-4.5 text-white" />
+                <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #D97706, #F59E0B)', boxShadow: '0 4px 10px rgba(245, 158, 11, 0.3)' }}>
+                  <Flame className="h-4 w-4 text-white" />
                 </div>
-                <span className="text-2xl font-bold" style={{ color: 'var(--p-primary)' }}>{streak.current}</span>
+                <span className="text-xl font-bold" style={{ color: 'var(--p-primary)' }}>{streak.current}</span>
                 <span className="text-[10px] font-medium text-center leading-tight" style={{ color: 'var(--p-text-65)' }}>Jours consécutifs</span>
                 <span className="text-[9px] font-medium" style={{ color: 'var(--p-text-55)' }}>Record : {streak.longest}</span>
               </motion.div>
 
               <motion.div
                 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                className="rounded-2xl p-3 flex flex-col items-center"
+                className="rounded-2xl p-2 flex flex-col items-center justify-center"
                 style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', boxShadow: 'var(--p-card-shadow)' }}
               >
                 <CircularGauge value={totalVerses} max={6236} label="Versets ancrés" hideMax />
@@ -412,13 +412,13 @@ export default function HifzSuiviPage() {
 
               <motion.div
                 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-                className="rounded-2xl p-4 flex flex-col items-center gap-2"
+                className="rounded-2xl p-3 flex flex-col items-center gap-1.5"
                 style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', boxShadow: 'var(--p-card-shadow)' }}
               >
-                <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #065F46, #10B981)', boxShadow: '0 4px 10px rgba(16, 185, 129, 0.3)' }}>
-                  <RotateCcw className="h-4.5 w-4.5 text-white" />
+                <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #065F46, #10B981)', boxShadow: '0 4px 10px rgba(16, 185, 129, 0.3)' }}>
+                  <RotateCcw className="h-4 w-4 text-white" />
                 </div>
-                <span className="text-2xl font-bold" style={{ color: 'var(--p-primary)' }}>{streak.tours}</span>
+                <span className="text-xl font-bold" style={{ color: 'var(--p-primary)' }}>{streak.tours}</span>
                 <span className="text-[10px] font-medium text-center leading-tight" style={{ color: 'var(--p-text-65)' }}>Cycles terminés</span>
               </motion.div>
             </div>
@@ -439,7 +439,7 @@ export default function HifzSuiviPage() {
               </div>
               <ResponsiveContainer width="100%" height={140}>
                 <BarChart data={weeklyData} barCategoryGap="30%">
-                  <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: 'var(--p-text-65)', fontSize: 10, fontWeight: 500 }} />
+                  <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: 'var(--p-text-65)', fontSize: 9, fontWeight: 500 }} />
                   <YAxis hide allowDecimals={false} />
                   <Bar dataKey="count" radius={[6, 6, 0, 0]} maxBarSize={28}>
                     {weeklyData.map((entry, i) => (
