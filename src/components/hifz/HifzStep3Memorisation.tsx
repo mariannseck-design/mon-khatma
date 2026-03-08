@@ -9,7 +9,6 @@ import {
   TAJWEED_COLORS,
   type TajweedAnnotation,
 } from '@/lib/tajweedData';
-import { type HifzTheme, getThemeColors } from '@/lib/hifzTheme';
 
 interface Props {
   surahNumber: number;
@@ -18,7 +17,6 @@ interface Props {
   repetitionLevel: number;
   onNext: () => void;
   onBack: () => void;
-  theme?: HifzTheme;
 }
 
 const FONT_FAMILY = "'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
@@ -103,10 +101,9 @@ function getPhaseInfo(ancrage: number, target: number) {
   return { phase: 4, emoji: '🧠', label: 'Récitez de mémoire — Ancrage d\'acier', showText: false, audioProminent: false, audioAvailable: false, color: '#d4af37' };
 }
 
-export default function HifzStep3Memorisation({ surahNumber, startVerse, endVerse, repetitionLevel, onNext, onBack, theme = 'teal' }: Props) {
+export default function HifzStep3Memorisation({ surahNumber, startVerse, endVerse, repetitionLevel, onNext, onBack }: Props) {
   const tikrarTarget = repetitionLevel || 40;
   const storageKey = getStorageKey(surahNumber, startVerse, endVerse);
-  const tc = getThemeColors(theme);
 
   const [ancrage, setAncrage] = useState(() => {
     const saved = localStorage.getItem(storageKey);
@@ -241,7 +238,7 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
           lineHeight: '52px',
           textAlign: 'justify',
           textAlignLast: 'center',
-          color: tc.text,
+          color: '#e8e0d0',
           wordSpacing: '0.12em',
           fontVariantLigatures: 'common-ligatures',
           fontFeatureSettings: '"liga" 1, "calt" 1, "kern" 1',
@@ -296,7 +293,7 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
   }, [ayahs, surahNumber]);
 
   return (
-    <HifzStepWrapper stepNumber={3} stepTitle="Tikrar" onBack={onBack} theme={theme}>
+    <HifzStepWrapper stepNumber={3} stepTitle="Tikrar" onBack={onBack}>
       <div className="text-center space-y-4">
         {/* Icon */}
         <div
@@ -309,12 +306,12 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
         {/* Subtitle */}
         <div>
           <p className="text-sm font-semibold" style={{ color: '#d4af37' }}>L'ancrage d'acier</p>
-          <p style={{ color: tc.textMuted }} className="text-xs">(Objectif {tikrarTarget} répétitions)</p>
+          <p className="text-white/50 text-xs">(Objectif {tikrarTarget} répétitions)</p>
         </div>
 
 
         {/* Guide */}
-        <div className="rounded-xl overflow-hidden" style={{ background: tc.cardBg, border: `1px solid ${tc.cardBorder}` }}>
+        <div className="rounded-xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>
           <button
             onClick={() => setShowGuide(!showGuide)}
             className="w-full flex items-center justify-between px-4 py-2.5 text-xs font-medium transition-all"
@@ -398,7 +395,7 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
         {/* Counter */}
         <div className="relative w-32 h-32 mx-auto">
           <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="44" fill="none" stroke={tc.progressTrack} strokeWidth="6" />
+            <circle cx="50" cy="50" r="44" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="6" />
             <circle
               cx="50" cy="50" r="44" fill="none"
               stroke={isComplete ? '#d4af37' : phaseInfo.color}
@@ -410,7 +407,7 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <span className="text-3xl font-bold" style={{ color: '#d4af37' }}>{ancrage}</span>
-            <span style={{ color: tc.textMuted }} className="text-xs">/ {tikrarTarget}</span>
+            <span className="text-white/40 text-xs">/ {tikrarTarget}</span>
           </div>
         </div>
 
@@ -455,7 +452,7 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
                 className="rounded-xl overflow-auto max-h-72 px-4 py-4"
                 dir="rtl"
               >
-                <div style={{ background: tc.innerBg, borderRadius: '12px', padding: '16px', border: `1px solid ${tc.innerBorder}` }}>
+                <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '12px', padding: '16px', border: '1px solid rgba(212,175,55,0.15)' }}>
                   {/* Basmala header for first verse */}
                   {startVerse === 1 && surahNumber !== 1 && surahNumber !== 9 && (
                     <p
