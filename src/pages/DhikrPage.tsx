@@ -4,6 +4,7 @@ import { Sunrise, Moon, BookOpen, Heart, ChevronDown, MapPin, Landmark, Sparkles
 import { motion, AnimatePresence } from 'framer-motion';
 import DhikrSession from '@/components/dhikr/DhikrSession';
 import { MORNING_ADHKAR } from '@/lib/adhkarData';
+import type { DhikrItem } from '@/components/dhikr/DhikrCounter';
 
 /* ── Card config ── */
 const dhikrCards = [
@@ -18,7 +19,7 @@ const dhikrCards = [
 ];
 
 const CATEGORY_DATA: Record<string, { title: string; items: DhikrItem[] }> = {
-  morning: { title: 'Zikr du matin', items: TEST_MORNING_DHIKRS },
+  morning: { title: 'Zikr du matin', items: MORNING_ADHKAR },
 };
 
 const containerVariants = {
