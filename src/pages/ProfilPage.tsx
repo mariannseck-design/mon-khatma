@@ -127,6 +127,18 @@ export default function ProfilPage() {
             </CardContent>
           </Card>
         )}
+
+        <Button
+          variant="outline"
+          className="w-full rounded-xl border-destructive/30 text-destructive hover:bg-destructive/10"
+          onClick={async () => {
+            await supabase.auth.signOut();
+            navigate('/');
+          }}
+        >
+          <LogOut className="h-4 w-4 mr-2" />
+          Se déconnecter
+        </Button>
       </div>
     </AppLayout>
   );
