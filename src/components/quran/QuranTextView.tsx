@@ -233,6 +233,25 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 28, dark
       .finally(() => setLoading(false));
   }, [page, tajweedEnabled]);
 
+  // Load translations when enabled
+  useEffect(() => {
+    if (!showTranslation) { setTranslations(new Map()); return; }
+    if (translationCache.has(page)) { setTranslations(translationCache.get(page)!); return; }
+    fetch(`https://api.alquran.cloud/v1/page/${page}/fr.hamidullah`)
+      .then(res => res.json())
+      .then(data => {
+        const map = new Map<string, string>();
+        if (data.code === 200) {
+          for (const ayah of data.data.ayahs) {
+            map.set(`${ayah.surah.number}:${ayah.numberInSurah}`, ayah.text);
+          }
+        }
+        translationCache.set(page, map);
+        setTranslations(map);
+      })
+      .catch(() => setTranslations(new Map()));
+  }, [page, showTranslation]);
+
   useEffect(() => { setSelectedAyah(null); }, [page]);
 
   const grouped = useMemo(() => {
