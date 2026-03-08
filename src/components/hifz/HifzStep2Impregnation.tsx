@@ -88,6 +88,7 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
   const [showTranslation, setShowTranslation] = useState(false);
   const [ayahs, setAyahs] = useState<AyahWithAnnotations[]>([]);
   const [versesLoading, setVersesLoading] = useState(true);
+  const [mushafMode, setMushafModeState] = useState<MushafMode>(getMushafMode);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const ayahsRef = useRef<{ audio: string; numberInSurah: number }[]>([]);
   const indexRef = useRef(0);
