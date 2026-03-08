@@ -124,21 +124,6 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
   const phaseInfo = getPhaseInfo(ancrage, tikrarTarget);
   const quarters = getPhaseBreaks(tikrarTarget);
 
-  // Persist display mode & zoom
-  useEffect(() => {
-    localStorage.setItem('hifz_display_mode', displayMode);
-  }, [displayMode]);
-  useEffect(() => {
-    localStorage.setItem('hifz_tikrar_zoom', mushafZoom);
-  }, [mushafZoom]);
-
-  const zoomConfig = { small: { width: '75%', maxH: 280 }, medium: { width: '100%', maxH: 400 }, large: { width: '130%', maxH: 520 } };
-
-  // Exact Mushaf page from local data
-  const [mushafPage, setMushafPage] = useState(1);
-  useEffect(() => {
-    getExactVersePage(surahNumber, startVerse).then(setMushafPage);
-  }, [surahNumber, startVerse]);
 
   // Load local text + tajweed
   useEffect(() => {
