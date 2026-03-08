@@ -180,11 +180,11 @@ export default function DefiAlKahf({ disabled = false }: { disabled?: boolean })
             <div
               className="w-5 h-5 rounded-full flex items-center justify-center"
               style={{
-                background: completed ? `${COLORS.goldAccent}30` : 'rgba(255,255,255,0.08)',
-                border: `1.5px solid ${completed ? COLORS.goldAccent : COLORS.goldAccent + '60'}`,
+                background: completed ? `${COLORS.sand}30` : 'rgba(255,255,255,0.08)',
+                border: `1.5px solid ${completed ? COLORS.sand : COLORS.sand + '60'}`,
               }}
             >
-              {completed && <Check className="h-3 w-3" style={{ color: COLORS.goldAccent }} />}
+              {completed && <Check className="h-3 w-3" style={{ color: COLORS.sand }} />}
             </div>
           </div>
 
