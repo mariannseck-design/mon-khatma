@@ -354,7 +354,7 @@ export default function HifzSuiviPage() {
                       </div>
                       <div>
                         <h3 className="text-sm font-bold" style={{ color: '#1C2421' }}>Révision du jour</h3>
-                        <p className="text-[10px] uppercase tracking-wider" style={{ color: 'rgba(28,36,33,0.4)' }}>Acquis à consolider</p>
+                        <p className="text-[10px] font-medium uppercase tracking-wider" style={{ color: 'rgba(28,36,33,0.6)' }}>Acquis à consolider</p>
                       </div>
                     </div>
                     {todayRevisions.length > 0 ? (
