@@ -1151,6 +1151,7 @@ export const HAJJ_DUAS: DhikrItem[] = [
   },
   {
     title: "Du'â du jour de 'Arafât",
+    readOnly: true,
     arabic: "خَيْرُ الدُّعَاءِ دُعَاءُ يَوْمِ عَرَفَةَ، وَخَيْرُ مَا قُلْتُ أَنَا وَالنَّبِيُّونَ مِنْ قَبْلِي: لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
     phonetic: "Khayru d-du'â'i du'â'u yawmi 'Arafah, wa khayru mâ qultu anâ wa n-nabiyyûna min qablî: Lâ ilâha illâ-llâhu wahdahu lâ sharîka lah, lahu-l-mulku wa lahu-l-hamdu wa huwa 'alâ kulli shay'in qadîr.",
     french: "La meilleure invocation est celle du jour de 'Arafât, et la meilleure parole que j'ai dite, moi et les Prophètes (عليهم السلام) avant moi : Il n'y a de divinité qu'Allah (عز وجل), Seul sans associé. À Lui la royauté, à Lui la louange. Il est Omnipotent. (Rapporté par At-Tirmidhî)",
