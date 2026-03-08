@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Smile, Frown, Meh, Heart, Cloud, Sun, Sparkles, Trash2, Edit3, Calendar, MoreVertical, Flower2, Moon } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import FavoriteVersesSection from '@/components/favoris/FavoriteVersesSection';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -52,6 +53,7 @@ export default function EmotionsPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const moodSectionRef = useRef<HTMLDivElement>(null);
+  const favorisSectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (user) {
@@ -178,11 +180,11 @@ export default function EmotionsPage() {
         </div>
 
         {/* Grille de blocs */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-3 gap-3">
           {/* Bloc Mes Émotions */}
           <motion.button
             onClick={() => moodSectionRef.current?.scrollIntoView({ behavior: 'smooth' })}
-            className="relative overflow-hidden rounded-2xl p-5 aspect-[4/3] flex flex-col items-center justify-center text-center"
+            className="relative overflow-hidden rounded-2xl p-4 flex flex-col items-center justify-center text-center"
             style={{
               background: COLORS.greenMist,
               border: `1.5px solid ${COLORS.emerald}15`,
@@ -190,24 +192,24 @@ export default function EmotionsPage() {
             whileTap={{ scale: 0.97 }}
           >
             <div
-              className="w-12 h-12 rounded-xl flex items-center justify-center mb-3"
+              className="w-10 h-10 rounded-xl flex items-center justify-center mb-2"
               style={{ background: `${COLORS.gold}12`, border: `1px solid ${COLORS.gold}18` }}
             >
-              <Flower2 className="h-6 w-6" style={{ color: COLORS.goldAccent }} />
+              <Flower2 className="h-5 w-5" style={{ color: COLORS.goldAccent }} />
             </div>
             <h4
-              className="text-sm font-bold tracking-[0.06em] uppercase"
+              className="text-xs font-bold tracking-[0.06em] uppercase"
               style={{ fontFamily: "'Inter', sans-serif", color: COLORS.emerald }}
             >
               Mes Émotions
             </h4>
-            <p className="text-xs mt-1" style={{ color: COLORS.sage }}>Humeur & gratitude</p>
+            <p className="text-[10px] mt-0.5" style={{ color: COLORS.sage }}>Humeur & gratitude</p>
           </motion.button>
 
           {/* Bloc Mon Dhikr Quotidien */}
           <Link to="/dhikr" className="block">
             <motion.div
-              className="relative overflow-hidden rounded-2xl p-5 aspect-[4/3] flex flex-col items-center justify-center text-center"
+              className="relative overflow-hidden rounded-2xl p-4 flex flex-col items-center justify-center text-center h-full"
               style={{
                 background: COLORS.greenMist,
                 border: `1.5px solid ${COLORS.emerald}15`,
@@ -215,20 +217,45 @@ export default function EmotionsPage() {
               whileTap={{ scale: 0.97 }}
             >
               <div
-                className="w-12 h-12 rounded-xl flex items-center justify-center mb-3"
+                className="w-10 h-10 rounded-xl flex items-center justify-center mb-2"
                 style={{ background: `${COLORS.gold}12`, border: `1px solid ${COLORS.gold}18` }}
               >
-                <Moon className="h-6 w-6" style={{ color: COLORS.goldAccent }} />
+                <Moon className="h-5 w-5" style={{ color: COLORS.goldAccent }} />
               </div>
               <h4
-                className="text-sm font-bold tracking-[0.06em] uppercase"
+                className="text-xs font-bold tracking-[0.06em] uppercase"
                 style={{ fontFamily: "'Inter', sans-serif", color: COLORS.emerald }}
               >
-                Mon Dhikr Quotidien
+                Mon Dhikr
               </h4>
-              <p className="text-xs mt-1" style={{ color: COLORS.sage }}>Adhkâr & invocations</p>
+              <p className="text-[10px] mt-0.5" style={{ color: COLORS.sage }}>Adhkâr & invocations</p>
             </motion.div>
           </Link>
+
+          {/* Bloc Mes Favoris */}
+          <motion.button
+            onClick={() => favorisSectionRef.current?.scrollIntoView({ behavior: 'smooth' })}
+            className="relative overflow-hidden rounded-2xl p-4 flex flex-col items-center justify-center text-center"
+            style={{
+              background: COLORS.greenMist,
+              border: `1.5px solid ${COLORS.emerald}15`,
+            }}
+            whileTap={{ scale: 0.97 }}
+          >
+            <div
+              className="w-10 h-10 rounded-xl flex items-center justify-center mb-2"
+              style={{ background: 'rgba(220,38,38,0.08)', border: '1px solid rgba(220,38,38,0.15)' }}
+            >
+              <Heart className="h-5 w-5 text-red-500" strokeWidth={1.5} fill="rgba(220,38,38,0.3)" />
+            </div>
+            <h4
+              className="text-xs font-bold tracking-[0.06em] uppercase"
+              style={{ fontFamily: "'Inter', sans-serif", color: COLORS.emerald }}
+            >
+              Mes Favoris
+            </h4>
+            <p className="text-[10px] mt-0.5" style={{ color: COLORS.sage }}>Versets sauvegardés</p>
+          </motion.button>
         </div>
 
         {/* Section Émotions */}
@@ -379,6 +406,11 @@ export default function EmotionsPage() {
           </div>
         )}
         </div>{/* end moodSectionRef */}
+
+        {/* Section Favoris */}
+        <div ref={favorisSectionRef}>
+          <FavoriteVersesSection />
+        </div>
 
         {/* Reflection Card */}
         <Card className="pastel-card p-6">
