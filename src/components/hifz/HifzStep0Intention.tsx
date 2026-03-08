@@ -10,9 +10,10 @@ interface Props {
   endVerse: number;
   onNext: () => void;
   onBack: () => void;
+  onPause?: () => void;
 }
 
-export default function HifzStep0Intention({ surahNumber, startVerse, endVerse, onNext, onBack }: Props) {
+export default function HifzStep0Intention({ surahNumber, startVerse, endVerse, onNext, onBack, onPause }: Props) {
   const [translation, setTranslation] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const surahName = SURAHS.find(s => s.number === surahNumber)?.name || '';
