@@ -313,13 +313,13 @@ export default function HifzSuiviPage() {
                     }}
                   >
                     <div
-                      className="w-11 h-11 rounded-full flex items-center justify-center mb-2"
+                      className="w-9 h-9 rounded-full flex items-center justify-center mb-1.5"
                       style={{ background: 'linear-gradient(135deg, #065F46, #10B981)', boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)' }}
                     >
-                      <BookOpen className="h-[22px] w-[22px] text-white" />
+                      <BookOpen className="h-[18px] w-[18px] text-white" />
                     </div>
-                    <span className="text-[11px] font-bold uppercase tracking-wider mb-1" style={{ color: 'var(--p-text-60)' }}>
-                      Programme
+                    <span className="text-[10px] font-bold uppercase tracking-wider mb-1 leading-tight" style={{ color: 'var(--p-text-60)' }}>
+                      Programme de mémorisation
                     </span>
                     {nextPoint ? (
                       <>
@@ -355,22 +355,27 @@ export default function HifzSuiviPage() {
                     }}
                   >
                     <div
-                      className="w-11 h-11 rounded-full flex items-center justify-center mb-2"
+                      className="w-9 h-9 rounded-full flex items-center justify-center mb-1.5"
                       style={{ background: 'linear-gradient(135deg, #B8960C, #D4AF37)', boxShadow: '0 4px 12px rgba(212, 175, 55, 0.3)' }}
                     >
-                      <RefreshCw className="h-[22px] w-[22px] text-white" />
+                      <RefreshCw className="h-[18px] w-[18px] text-white" />
                     </div>
-                    <span className="text-[11px] font-bold uppercase tracking-wider mb-1" style={{ color: 'var(--p-text-60)' }}>
-                      Révision
+                    <span className="text-[10px] font-bold uppercase tracking-wider mb-1" style={{ color: 'var(--p-text-60)' }}>
+                      À réviser
                     </span>
                     {todayRevisions.length > 0 ? (
                       <>
-                        <span className="text-xl font-bold" style={{ color: 'var(--p-primary)' }}>
-                          {todayRevisions.length}
+                        <span className="text-sm font-semibold leading-tight" style={{ color: 'var(--p-primary)' }}>
+                          {SURAHS.find(s => s.number === todayRevisions[0].surah_number)?.name || `Sourate ${todayRevisions[0].surah_number}`}
                         </span>
                         <span className="text-xs font-medium" style={{ color: 'var(--p-text-60)' }}>
-                          portion{todayRevisions.length > 1 ? 's' : ''} à réviser
+                          v. {todayRevisions[0].verse_start} → {todayRevisions[0].verse_end}
                         </span>
+                        {todayRevisions.length > 1 && (
+                          <span className="text-[10px] font-medium mt-0.5" style={{ color: 'var(--p-accent)' }}>
+                            +{todayRevisions.length - 1} autre{todayRevisions.length > 2 ? 's' : ''}
+                          </span>
+                        )}
                       </>
                     ) : (
                       <span className="text-xs font-medium" style={{ color: 'var(--p-text-60)' }}>
