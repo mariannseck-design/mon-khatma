@@ -101,7 +101,7 @@ export default function MurajaMethodModal({ defaultTab = 'rabt', trigger }: Mura
           <TabsContent value="sm2" className="space-y-4 mt-4">
             <div className="space-y-3">
               <h3 className="text-sm font-bold text-white">
-                🧠 Le Tour : Révision intelligente
+                🧠 Muraja'a (Consolidation) : Révision intelligente
               </h3>
               <p className="text-xs leading-relaxed text-white/90">
                 Une fois la période de liaison terminée, comment entretenir ce dépôt sacré sans s'épuiser ?
