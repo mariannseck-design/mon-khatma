@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { RefreshCw, RotateCcw, TrendingUp, CalendarDays, PartyPopper } from 'lucide-react';
 import { Button } from '@/components/ui/button';
