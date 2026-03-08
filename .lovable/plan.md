@@ -1,21 +1,14 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Mise à jour du texte dans HifzGoalOnboarding
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+Modification d'une seule ligne dans `src/components/hifz/HifzGoalOnboarding.tsx` (ligne 97) :
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+**Avant :**
+> Ce rythme est un engagement sur la voie tracée par le Prophète Muhammad (ﷺ). Choisis ce que tu peux tenir avec constance.
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+**Après :**
+> Un rythme que tu peux tenir avec persévérance, marche après marche, pour progresser avec constance par la grâce d'Allah <span style="font-family:'Amiri'; font-weight:bold; font-size:1.1em">(عز وجل)</span>.
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
-
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+L'honorifique (عز وجل) après Allah sera stylé avec la police Amiri, en gras et 1.1em conformément aux règles du projet.
 
