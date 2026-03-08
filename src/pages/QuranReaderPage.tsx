@@ -515,6 +515,8 @@ export default function QuranReaderPage() {
             onTajweedChange={handleTajweedChange}
             translationEnabled={translationEnabled}
             onTranslationChange={handleTranslationChange}
+            translationEdition={translationEdition}
+            onTranslationEditionChange={handleTranslationEditionChange}
           />
         </div>
       </div>
