@@ -1,21 +1,24 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Navigation swipe + flèches et contrôle taille arabe dans DhikrSession
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Changements
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+**`src/components/dhikr/DhikrSession.tsx`**
+1. **Flèches gauche/droite** : Ajouter des boutons `ChevronLeft` / `ChevronRight` dans le header pour naviguer manuellement entre les dhikrs (précédent/suivant), désactivés aux extrémités.
+2. **Swipe horizontal** : Ajouter des handlers `onTouchStart`/`onTouchEnd` sur le conteneur principal pour détecter un swipe gauche (→ dhikr suivant) ou droite (→ dhikr précédent), avec un seuil de 50px et vérification que le swipe est bien horizontal.
+3. **Contrôle taille arabe** : Ajouter un mini contrôle `AArrowUp`/`AArrowDown` (ou `ZoomIn`/`ZoomOut`) dans le header. L'état `arabicSize` (3 niveaux : petit/normal/grand) est stocké en `localStorage` et passé en prop à `DhikrCounter`.
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+**`src/components/dhikr/DhikrCounter.tsx`**
+1. Accepter une nouvelle prop `arabicFontSize` (nombre en rem ou px).
+2. Appliquer cette taille au paragraphe du texte arabe (ligne 80) via `fontSize: arabicFontSize`.
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+### Détails techniques
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+| Élément | Implémentation |
+|---------|---------------|
+| Swipe | `touchStartX/Y` refs, seuil 50px, horizontal dominant |
+| Flèches | `ChevronLeft`/`ChevronRight` dans le header, `setCurrentIndex` |
+| Taille arabe | 3 niveaux `[1.3, 1.7, 2.2]` rem, persisté `localStorage('dhikr-arabic-size')` |
+| Navigation | Reset du compteur via changement de `currentIndex` (déjà géré par `key={currentIndex}`) |
 
