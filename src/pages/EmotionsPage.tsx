@@ -192,6 +192,72 @@ export default function EmotionsPage() {
           Mon Dhikr Quotidien
         </h1>
 
+        {/* Sources de Lumière */}
+        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-4">
+          <motion.div variants={itemVariants}>
+            <Link to="/sources-de-lumiere" className="block">
+              <motion.div
+                className="relative overflow-hidden rounded-2xl p-6 group"
+                style={{
+                  background: 'linear-gradient(135deg, #faf8f5 0%, #f5e6c8 100%)',
+                  border: '3px solid #b5942e',
+                  boxShadow: '0 8px 32px -8px rgba(181,148,46,0.25)',
+                }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <div className="relative z-10 flex items-center gap-5">
+                  <div
+                    className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0"
+                    style={{ background: 'rgba(181,148,46,0.12)', border: '1.5px solid rgba(181,148,46,0.25)' }}
+                  >
+                    <Sparkles className="h-7 w-7" style={{ color: '#b5942e' }} />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-lg font-bold tracking-[0.06em]" style={{ fontFamily: "'Inter', sans-serif", color: '#b5942e' }}>
+                      Les Sources de Lumière
+                    </h3>
+                    <p className="text-sm mt-0.5" style={{ color: '#2d6a4f' }}>
+                      Coran · Sunna · Salawât
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            </Link>
+          </motion.div>
+
+          {/* Mes Douas */}
+          <motion.div variants={itemVariants}>
+            <Link to="/douas" className="block">
+              <motion.div
+                className="relative overflow-hidden rounded-2xl p-6 group"
+                style={{
+                  background: '#faf8f5',
+                  border: '2px solid rgba(181,148,46,0.4)',
+                  boxShadow: '0 6px 24px -8px rgba(181,148,46,0.15)',
+                }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <div className="relative z-10 flex items-center gap-5">
+                  <div
+                    className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0"
+                    style={{ background: 'rgba(181,148,46,0.1)', border: '1.5px solid rgba(181,148,46,0.2)' }}
+                  >
+                    <BookHeart className="h-7 w-7" style={{ color: '#b5942e' }} />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-lg font-bold tracking-[0.06em]" style={{ fontFamily: "'Inter', sans-serif", color: '#b5942e' }}>
+                      Mes Douas
+                    </h3>
+                    <p className="text-sm mt-0.5" style={{ color: '#2d6a4f' }}>
+                      Aube · Passages · Quotidien · Réconfort
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            </Link>
+          </motion.div>
+        </motion.div>
+
         {/* Grille unifiée */}
         <motion.div
           className="grid grid-cols-2 gap-4"
