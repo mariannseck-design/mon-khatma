@@ -99,6 +99,13 @@ export default function AccueilPage() {
         .eq('user_id', user.id)
         .lte('next_review_date', today);
       setPendingReviews(count || 0);
+
+      // Check if user has any memorized verses at all
+      const { count: totalCount } = await supabase
+        .from('hifz_memorized_verses')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id);
+      setHasStartedHifz((totalCount || 0) > 0);
     } catch {
       // ignore
     }
