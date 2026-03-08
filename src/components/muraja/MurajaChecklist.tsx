@@ -134,7 +134,7 @@ export default function MurajaChecklist({
                 >
                   {getSurahName(item.surah_number)}
                 </p>
-                <p className="text-xs" style={{ color: 'rgba(28,36,33,0.45)' }}>
+                <p className="text-xs font-medium" style={{ color: 'rgba(28,36,33,0.6)' }}>
                   v. {item.verse_start} → {item.verse_end}
                   {section === 'tour' && item.sm2_interval != null && (
                     <span className="ml-2 opacity-60">· {item.sm2_interval}j</span>
