@@ -421,7 +421,7 @@ export default function MurjaPage() {
                    className="text-sm font-bold"
                    style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-primary)' }}
                  >
-                  Mes Escaliers — {totalVersesCount} marche{totalVersesCount > 1 ? 's' : ''} gravie{totalVersesCount > 1 ? 's' : ''}
+                  Mes Escaliers — {totalVersesCount} Ayat{totalVersesCount > 1 ? 's' : ''} mémorisée{totalVersesCount > 1 ? 's' : ''}
                 </h3>
               </div>
               <div className="space-y-1.5">
