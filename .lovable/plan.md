@@ -1,31 +1,21 @@
 
 
-## Plan : Navigation par page/juz/sourate + application automatique des versets
+# Diagnostic : 404 sur /quran-reader
 
-### Probleme 1 : Pas de navigation par page ou juz dans les parametres
-Actuellement, le panneau Parametres ne propose que "Choisir une sourate" via le SurahDrawer. Il manque la navigation par numero de page et par juz.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Probleme 2 : Les versets debut/fin ne naviguent pas automatiquement
-Quand l'utilisateur saisit un verset debut/fin, rien ne se passe visuellement. Il faudrait naviguer automatiquement vers la page Mushaf correspondante.
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-### Modifications
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-#### 1. `src/components/quran/ReaderSettingsPanel.tsx`
-- Ajouter deux nouveaux champs de navigation dans le bloc groupe (sourate + versets) :
-  - **Input "Page"** : champ numerique (1-604) qui appelle un nouveau callback `onGoToPage`
-  - **Input "Juz"** : champ numerique (1-30) qui calcule la page de debut du juz (page = (juz-1)*20 + 1 approximativement, ou utiliser un mapping precis) et appelle `onGoToPage`
-- Layout : une rangee avec 2 colonnes "Page" et "Juz" au-dessus du bouton sourate
-- Nouveaux props : `onGoToPage: (page: number) => void`, `currentPage: number`
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-#### 2. `src/pages/QuranReaderPage.tsx`
-- Passer `onGoToPage={goToPage}` et `currentPage={page}` au ReaderSettingsPanel
-- Ajouter un callback `onAudioStartVerseChange` et `onAudioEndVerseChange` enrichi qui, apres la mise a jour du verset, appelle `getExactVersePage(surahNumber, verse)` pour naviguer automatiquement vers la bonne page Mushaf
-- Utiliser `getExactVersePage` de `src/lib/quranData.ts` pour obtenir la page exacte
-
-#### 3. Mapping Juz → Page
-Utiliser un tableau statique des 30 juz avec leur page de debut (donnee standard du Mushaf de Medine) directement dans le composant ou dans un utilitaire.
-
-### Fichiers modifies
-- `src/components/quran/ReaderSettingsPanel.tsx` — ajouter inputs page/juz + props
-- `src/pages/QuranReaderPage.tsx` — passer props + auto-navigation sur changement de verset
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

@@ -8,6 +8,21 @@ export const TRANSLATION_EDITIONS = [
   { id: 'en.sahih', label: 'English (Sahih Int.)', lang: '🇬🇧' },
 ];
 
+// Juz → starting page (Mushaf al-Madinah standard)
+const JUZ_START_PAGES = [
+  1, 22, 42, 62, 82, 102, 121, 142, 162, 182,
+  201, 222, 242, 262, 282, 302, 322, 342, 362, 382,
+  402, 422, 442, 462, 482, 502, 522, 542, 562, 582,
+];
+
+const FONT_SIZE_PRESETS = [
+  { label: 'Petit', value: 16 },
+  { label: 'Moyen', value: 22 },
+  { label: 'Grand', value: 28 },
+  { label: 'Très Grand', value: 36 },
+  { label: 'Mushaf', value: 42 },
+];
+
 interface ReaderSettingsPanelProps {
   viewMode: 'image' | 'text';
   onViewModeChange: (mode: 'image' | 'text') => void;
@@ -36,15 +51,9 @@ interface ReaderSettingsPanelProps {
   onTranslationChange?: (enabled: boolean) => void;
   translationEdition?: string;
   onTranslationEditionChange?: (edition: string) => void;
+  currentPage?: number;
+  onGoToPage?: (page: number) => void;
 }
-
-const FONT_SIZE_PRESETS = [
-  { label: 'Petit', value: 16 },
-  { label: 'Moyen', value: 22 },
-  { label: 'Grand', value: 28 },
-  { label: 'Très Grand', value: 36 },
-  { label: 'Mushaf', value: 42 },
-];
 
 export default function ReaderSettingsPanel({
   viewMode, onViewModeChange,
@@ -68,8 +77,12 @@ export default function ReaderSettingsPanel({
   onTranslationChange,
   translationEdition,
   onTranslationEditionChange,
+  currentPage,
+  onGoToPage,
 }: ReaderSettingsPanelProps) {
   const [open, setOpen] = useState(false);
+  const [pageInput, setPageInput] = useState('');
+  const [juzInput, setJuzInput] = useState('');
 
   const activeSizes = textSizes || FONT_SIZE_PRESETS;
   const activeIndex = textSizeIndex ?? activeSizes.findIndex(s => s.value === fontSize);
@@ -123,6 +136,64 @@ export default function ReaderSettingsPanel({
 
               {/* Scrollable Content */}
               <div className="overflow-y-auto px-5 pb-8 flex-1" style={{ WebkitOverflowScrolling: 'touch' }}>
+
+              {/* Navigation: Page + Juz */}
+              {onGoToPage && (
+                <div className="mb-4 flex items-center gap-2">
+                  <div className="flex-1">
+                    <label className="text-[10px] opacity-60 mb-0.5 block">Page (1-604)</label>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      placeholder={String(currentPage || 1)}
+                      value={pageInput}
+                      onChange={(e) => {
+                        const raw = e.target.value.replace(/[^0-9]/g, '');
+                        setPageInput(raw);
+                        const v = parseInt(raw);
+                        if (!isNaN(v) && v >= 1 && v <= 604) {
+                          onGoToPage(v);
+                        }
+                      }}
+                      onFocus={(e) => { setPageInput(String(currentPage || 1)); e.target.select(); }}
+                      onBlur={() => setPageInput('')}
+                      onClick={(e) => e.stopPropagation()}
+                      className="w-full py-1.5 px-2 rounded-lg text-sm border-0 outline-none text-center"
+                      style={{
+                        background: nightMode ? 'rgba(90,180,180,0.08)' : 'rgba(255,255,255,0.2)',
+                        color: 'inherit',
+                        fontSize: '16px',
+                      }}
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <label className="text-[10px] opacity-60 mb-0.5 block">Juz (1-30)</label>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      placeholder={String(currentPage ? Math.ceil(currentPage / 20) : 1)}
+                      value={juzInput}
+                      onChange={(e) => {
+                        const raw = e.target.value.replace(/[^0-9]/g, '');
+                        setJuzInput(raw);
+                        const v = parseInt(raw);
+                        if (!isNaN(v) && v >= 1 && v <= 30) {
+                          onGoToPage(JUZ_START_PAGES[v - 1]);
+                        }
+                      }}
+                      onFocus={(e) => { setJuzInput(String(currentPage ? Math.ceil(currentPage / 20) : 1)); e.target.select(); }}
+                      onBlur={() => setJuzInput('')}
+                      onClick={(e) => e.stopPropagation()}
+                      className="w-full py-1.5 px-2 rounded-lg text-sm border-0 outline-none text-center"
+                      style={{
+                        background: nightMode ? 'rgba(90,180,180,0.08)' : 'rgba(255,255,255,0.2)',
+                        color: 'inherit',
+                        fontSize: '16px',
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
 
               {/* Grouped: Sourate + Versets */}
               {(onShowSurahDrawer || (onAudioStartVerseChange && onAudioEndVerseChange)) && (

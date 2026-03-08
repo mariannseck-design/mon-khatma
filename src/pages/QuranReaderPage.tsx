@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Bookmark, BookmarkCheck, Play, Pause, Loader2, Settings, WifiOff } from 'lucide-react';
 import { toast } from 'sonner';
 import { getSurahByPage } from '@/lib/surahData';
+import { getExactVersePage } from '@/lib/quranData';
 import { useOnlineStatus } from '@/hooks/useOnlineStatus';
 import SurahDrawer from '@/components/quran/SurahDrawer';
 import QuranTextView from '@/components/quran/QuranTextView';
@@ -523,8 +524,20 @@ export default function QuranReaderPage() {
             textModeDisabled={textModeDisabled}
             audioStartVerse={audioStartVerse}
             audioEndVerse={audioEndVerse}
-            onAudioStartVerseChange={setAudioStartVerse}
-            onAudioEndVerseChange={setAudioEndVerse}
+            onAudioStartVerseChange={(v) => {
+              setAudioStartVerse(v);
+              if (v && v > 0 && surah) {
+                getExactVersePage(surah.number, v).then(goToPage);
+              }
+            }}
+            onAudioEndVerseChange={(v) => {
+              setAudioEndVerse(v);
+              if (v && v > 0 && surah) {
+                getExactVersePage(surah.number, v).then(goToPage);
+              }
+            }}
+            currentPage={page}
+            onGoToPage={goToPage}
             isOffline={!isOnline}
             tajweedEnabled={tajweedEnabled}
             onTajweedChange={handleTajweedChange}
