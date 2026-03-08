@@ -88,7 +88,7 @@ function getPhaseBreaks(target: number) {
 }
 
 function getPhaseInfo(ancrage: number, target: number) {
-  const { q1End, q2End, q3End } = getQuarters(target);
+  const { q1End, q2End, q3End } = getPhaseBreaks(target);
   if (ancrage < q1End) {
     return { phase: 1, emoji: '📖', label: 'Texte + Audio — Écoute, lecture et répétition', showText: true, audioProminent: true, color: '#4ecdc4' };
   }
