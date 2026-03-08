@@ -90,6 +90,7 @@ export default function DhikrPage() {
             <DhikrSession
               title={categoryData.title}
               items={categoryData.items}
+              intro={categoryData.intro}
               onBack={() => setActiveCategory(null)}
             />
           </motion.div>
