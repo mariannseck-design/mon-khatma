@@ -304,31 +304,14 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
             animate={{ opacity: 1, y: 0 }}
             whileTap={{ scale: 0.97 }}
             onClick={onNext}
-            className={`w-full rounded-2xl py-4 font-semibold ${listenCount >= 3 ? 'flex items-center justify-center gap-2' : 'flex flex-col items-center justify-center gap-1'}`}
+            className="w-full rounded-2xl py-4 font-semibold flex items-center justify-center gap-2"
             style={{
-              background: listenCount >= 3
-                ? 'linear-gradient(135deg, #d4af37, #b8962e)'
-                : 'rgba(212,175,55,0.2)',
-              color: listenCount >= 3 ? '#1a2e1a' : '#d4af37',
-              border: listenCount < 3 ? '1px solid rgba(212,175,55,0.3)' : 'none',
+              background: 'linear-gradient(135deg, #d4af37, #b8962e)',
+              color: '#1a2e1a',
             }}
           >
-            {listenCount >= 3 ? (
-              <>
-                <Check className="h-5 w-5" />
-                Passer à la mémorisation
-              </>
-            ) : (
-              <>
-                <span className="flex items-center gap-2">
-                  <Check className="h-5 w-5" />
-                  Passer quand même ({listenCount}/3)
-                </span>
-                <span className="text-xs font-normal" style={{ color: 'rgba(212,175,55,0.6)' }}>
-                  L'écoute c'est 3 fois minimum 🤲
-                </span>
-              </>
-            )}
+            <Check className="h-5 w-5" />
+            Passer à la mémorisation
           </motion.button>
         )}
       </div>
