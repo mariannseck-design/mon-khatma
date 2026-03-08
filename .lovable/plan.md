@@ -1,14 +1,21 @@
 
 
-## Ajustement sémantique final — "Ta prochaine récitation"
+# Diagnostic : 404 sur /quran-reader
 
-### Changements
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-| Fichier | Ligne(s) | Modification |
-|---|---|---|
-| `src/pages/MurjaPage.tsx` | 291 | Sous-titre → « Consolide ta mémorisation — Ton programme se renouvelle à minuit » |
-| `src/components/muraja/MurajaCountdown.tsx` | 38 | Label → « TA PROCHAINE RÉCITATION DANS » |
-| `src/components/muraja/MurajaMethodModal.tsx` | ~48-49+ | Ajouter dans le contenu du modal (ou en intro) le texte : « À minuit, ton programme est mis à jour. Prépare ton cœur pour ta prochaine récitation afin d'ancrer durablement la Parole Sacrée, par la grâce d'Allah (عز وجل). » |
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-3 fichiers, 3 remplacements de texte simples.
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
+
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
