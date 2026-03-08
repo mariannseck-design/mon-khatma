@@ -1,7 +1,11 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Check } from 'lucide-react';
+import { ArrowLeft, Check, ChevronLeft, ChevronRight, Minus, Plus } from 'lucide-react';
 import DhikrCounter, { type DhikrItem } from './DhikrCounter';
+
+const ARABIC_SIZES = ['1.3rem', '1.7rem', '2.2rem'];
+const ARABIC_LABELS = ['ا', 'ا', 'ا'];
+const SWIPE_THRESHOLD = 50;
 
 interface DhikrSessionProps {
   title: string;
@@ -12,6 +16,13 @@ interface DhikrSessionProps {
 export default function DhikrSession({ title, items, onBack }: DhikrSessionProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [sessionComplete, setSessionComplete] = useState(false);
+  const [arabicSizeIndex, setArabicSizeIndex] = useState(() => {
+    const saved = localStorage.getItem('dhikr-arabic-size');
+    return saved ? parseInt(saved, 10) : 1;
+  });
+
+  const touchStartX = useRef(0);
+  const touchStartY = useRef(0);
 
   const handleComplete = useCallback(() => {
     if (currentIndex < items.length - 1) {
@@ -21,14 +32,52 @@ export default function DhikrSession({ title, items, onBack }: DhikrSessionProps
     }
   }, [currentIndex, items.length]);
 
+  const goTo = useCallback((index: number) => {
+    if (index >= 0 && index < items.length) {
+      setCurrentIndex(index);
+      setSessionComplete(false);
+    }
+  }, [items.length]);
+
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  }, []);
+
+  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
+    if (sessionComplete) return;
+    const dx = e.changedTouches[0].clientX - touchStartX.current;
+    const dy = e.changedTouches[0].clientY - touchStartY.current;
+    if (Math.abs(dx) < SWIPE_THRESHOLD || Math.abs(dy) > Math.abs(dx)) return;
+
+    if (dx < 0 && currentIndex < items.length - 1) {
+      goTo(currentIndex + 1);
+    } else if (dx > 0 && currentIndex > 0) {
+      goTo(currentIndex - 1);
+    }
+  }, [sessionComplete, currentIndex, items.length, goTo]);
+
+  const changeArabicSize = useCallback((delta: number) => {
+    setArabicSizeIndex((prev) => {
+      const next = Math.max(0, Math.min(ARABIC_SIZES.length - 1, prev + delta));
+      localStorage.setItem('dhikr-arabic-size', next.toString());
+      return next;
+    });
+  }, []);
+
   const progressPercent = sessionComplete
     ? 100
     : (currentIndex / items.length) * 100;
 
   return (
-    <div className="flex flex-col min-h-[60vh]" style={{ background: 'var(--p-bg)' }}>
+    <div
+      className="flex flex-col min-h-[60vh]"
+      style={{ background: 'var(--p-bg)' }}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
       {/* Header */}
-      <div className="flex items-center gap-3 px-4 py-3">
+      <div className="flex items-center gap-2 px-3 py-3">
         <button
           onClick={onBack}
           className="p-2 rounded-full"
@@ -37,13 +86,67 @@ export default function DhikrSession({ title, items, onBack }: DhikrSessionProps
         >
           <ArrowLeft className="w-5 h-5" />
         </button>
-        <div className="flex-1">
+
+        {/* Nav arrows */}
+        <button
+          onClick={() => goTo(currentIndex - 1)}
+          disabled={currentIndex === 0 || sessionComplete}
+          className="p-1.5 rounded-full disabled:opacity-25 transition-opacity"
+          style={{ color: 'var(--p-primary)' }}
+          aria-label="Précédent"
+        >
+          <ChevronLeft className="w-5 h-5" />
+        </button>
+
+        <div className="flex-1 text-center">
           <p className="text-sm font-semibold" style={{ color: 'var(--p-text)' }}>
             {title}
           </p>
           <p className="text-xs" style={{ color: 'var(--p-text-55)' }}>
             {sessionComplete ? 'Terminé' : `${currentIndex + 1} / ${items.length}`}
           </p>
+        </div>
+
+        <button
+          onClick={() => goTo(currentIndex + 1)}
+          disabled={currentIndex >= items.length - 1 || sessionComplete}
+          className="p-1.5 rounded-full disabled:opacity-25 transition-opacity"
+          style={{ color: 'var(--p-primary)' }}
+          aria-label="Suivant"
+        >
+          <ChevronRight className="w-5 h-5" />
+        </button>
+
+        {/* Arabic size control */}
+        <div className="flex items-center gap-1 ml-1">
+          <button
+            onClick={() => changeArabicSize(-1)}
+            disabled={arabicSizeIndex === 0}
+            className="p-1.5 rounded-full disabled:opacity-25 transition-opacity"
+            style={{ color: 'var(--p-accent)' }}
+            aria-label="Réduire le texte arabe"
+          >
+            <Minus className="w-4 h-4" />
+          </button>
+          <span
+            className="font-bold select-none"
+            style={{
+              color: 'var(--p-primary)',
+              fontFamily: "'Scheherazade New', serif",
+              fontSize: '1rem',
+            }}
+          >
+            ا
+          </span>
+          <button
+            onClick={() => changeArabicSize(1)}
+            disabled={arabicSizeIndex === ARABIC_SIZES.length - 1}
+            className="p-1.5 rounded-full disabled:opacity-25 transition-opacity"
+            style={{ color: 'var(--p-accent)' }}
+            aria-label="Agrandir le texte arabe"
+          >
+            <Plus className="w-4 h-4" />
+          </button>
         </div>
       </div>
 
@@ -100,6 +203,7 @@ export default function DhikrSession({ title, items, onBack }: DhikrSessionProps
               key={currentIndex}
               item={items[currentIndex]}
               onComplete={handleComplete}
+              arabicFontSize={ARABIC_SIZES[arabicSizeIndex]}
             />
           )}
         </AnimatePresence>

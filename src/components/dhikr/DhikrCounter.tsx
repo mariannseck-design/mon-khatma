@@ -14,9 +14,10 @@ export interface DhikrItem {
 interface DhikrCounterProps {
   item: DhikrItem;
   onComplete: () => void;
+  arabicFontSize?: string;
 }
 
-export default function DhikrCounter({ item, onComplete }: DhikrCounterProps) {
+export default function DhikrCounter({ item, onComplete, arabicFontSize = '1.7rem' }: DhikrCounterProps) {
   const [count, setCount] = useState(0);
   const [completed, setCompleted] = useState(false);
   const [tapped, setTapped] = useState(false);
@@ -77,12 +78,13 @@ export default function DhikrCounter({ item, onComplete }: DhikrCounterProps) {
 
       {/* Arabic text */}
       <p
-        className="text-2xl font-bold leading-relaxed text-center px-2"
+        className="font-bold leading-relaxed text-center px-2"
         style={{
           color: 'var(--p-primary)',
           fontFamily: "'Scheherazade New', 'Traditional Arabic', serif",
           direction: 'rtl',
           lineHeight: '2.2',
+          fontSize: arabicFontSize,
         }}
       >
         {item.arabic}
