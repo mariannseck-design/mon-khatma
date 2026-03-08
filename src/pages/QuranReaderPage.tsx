@@ -392,7 +392,7 @@ export default function QuranReaderPage() {
             translationEdition={translationEdition}
             onVerseSelect={(vk, surahNum, verseNum) => {
               setSelectedVerse(vk);
-              setPageVerses([{ verseKey: vk, surahNumber: surahNum, verseNumber: verseNum, topPercent: 0, bottomPercent: 100 }]);
+              setPageVerses([{ verseKey: vk, surahNumber: surahNum, verseNumber: verseNum }]);
             }}
           />
         )}
