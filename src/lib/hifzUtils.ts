@@ -1,5 +1,6 @@
 import { SURAHS } from '@/lib/surahData';
 import { supabase } from '@/integrations/supabase/client';
+import { getExactVersePage, getPageAyahs } from '@/lib/quranData';
 
 /**
  * Groups of commonly memorized surahs for quick selection
