@@ -132,8 +132,8 @@ export default function DefiAlKahf({ disabled = false }: { disabled?: boolean })
         transition={{ duration: 0.4 }}
         className="relative overflow-hidden rounded-2xl p-5"
         style={{
-          background: `linear-gradient(135deg, ${COLORS.navy} 0%, ${COLORS.navyLight} 100%)`,
-          boxShadow: `0 4px 20px -6px ${COLORS.navy}60`,
+          background: `linear-gradient(135deg, ${COLORS.cave} 0%, ${COLORS.caveLight} 100%)`,
+          boxShadow: `0 4px 20px -6px ${COLORS.cave}60`,
         }}
       >
         <div className="absolute -top-8 -right-8 w-28 h-28 rounded-full blur-2xl" style={{ background: `${COLORS.goldAccent}12` }} />
