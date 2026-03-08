@@ -51,6 +51,7 @@ interface Membership {
   id: string;
   circle_id: string;
   accepted_charter: boolean;
+  joined_at: string;
 }
 
 type SectionType = 'inspirations' | 'entraide' | 'rappels';
