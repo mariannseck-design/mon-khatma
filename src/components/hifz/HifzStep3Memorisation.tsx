@@ -117,9 +117,6 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
   const [showGuide, setShowGuide] = useState(true);
   const [showCelebration, setShowCelebration] = useState(false);
   const [peekMode, setPeekMode] = useState(false);
-  const [mushafZoom, setMushafZoom] = useState<'small' | 'medium' | 'large'>(() => {
-    return (localStorage.getItem('hifz_tikrar_zoom') as 'small' | 'medium' | 'large') || 'medium';
-  });
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const ayahAudiosRef = useRef<{ audio: string }[]>([]);
   const reciter = localStorage.getItem('quran_reciter') || 'ar.alafasy';
