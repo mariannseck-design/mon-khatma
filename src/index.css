@@ -86,6 +86,29 @@
     --sidebar-accent-foreground: 260 40% 25%;
     --sidebar-border: 220 15% 92%;
     --sidebar-ring: 158 45% 70%;
+
+    /* Premium Emerald/Gold Palette */
+    --p-bg: #FDFBF7;
+    --p-card: #FFFFFF;
+    --p-card-active: #F0F7F4;
+    --p-primary: #065F46;
+    --p-primary-deep: #044E3B;
+    --p-accent: #D4AF37;
+    --p-text: #1C2421;
+    --p-text-75: rgba(28,36,33,0.75);
+    --p-text-65: rgba(28,36,33,0.65);
+    --p-text-60: rgba(28,36,33,0.6);
+    --p-text-55: rgba(28,36,33,0.55);
+    --p-track: #E6F0ED;
+    --p-border: #E6F0ED;
+    --p-card-shadow: 0 4px 20px rgba(6,95,70,0.06);
+    --p-hard: #9B1C31;
+    --p-medium: #D97706;
+    --p-on-dark: rgba(253,251,247,0.95);
+    --p-on-dark-muted: rgba(253,251,247,0.7);
+    --p-checkbox-border: #065F46;
+    --p-gradient-fill: linear-gradient(90deg, #065F46, #044E3B);
+    --p-gradient-bg: linear-gradient(135deg, #065F46 0%, #044E3B 100%);
   }
 
   .dark {
@@ -142,6 +165,29 @@
     --sidebar-accent-foreground: 260 50% 90%;
     --sidebar-border: 220 15% 20%;
     --sidebar-ring: 158 40% 55%;
+
+    /* Premium Emerald/Gold — Dark Mode */
+    --p-bg: #0C1410;
+    --p-card: #14221A;
+    --p-card-active: #1A2E22;
+    --p-primary: #34D399;
+    --p-primary-deep: #10B981;
+    --p-accent: #E5C44B;
+    --p-text: #E8EDE9;
+    --p-text-75: rgba(232,237,233,0.8);
+    --p-text-65: rgba(232,237,233,0.7);
+    --p-text-60: rgba(232,237,233,0.6);
+    --p-text-55: rgba(232,237,233,0.55);
+    --p-track: #1A2E22;
+    --p-border: #243D2E;
+    --p-card-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    --p-hard: #F87171;
+    --p-medium: #FBBF24;
+    --p-on-dark: rgba(232,237,233,0.95);
+    --p-on-dark-muted: rgba(232,237,233,0.6);
+    --p-checkbox-border: #34D399;
+    --p-gradient-fill: linear-gradient(90deg, #34D399, #10B981);
+    --p-gradient-bg: linear-gradient(135deg, #14221A 0%, #0C1410 100%);
   }
 }
 

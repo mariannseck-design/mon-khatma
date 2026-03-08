@@ -33,7 +33,7 @@ export default function MurajaCountdown() {
     <div className="flex flex-col items-center gap-3">
       <p
         className="text-xs font-medium tracking-widest uppercase"
-        style={{ color: '#D4AF37' }}
+        style={{ color: 'var(--p-accent)' }}
       >
         Reset dans
       </p>
@@ -44,13 +44,13 @@ export default function MurajaCountdown() {
           <circle
             cx="80" cy="80" r={radius}
             fill="none"
-            stroke="#E6F0ED"
+            stroke="var(--p-track)"
             strokeWidth="3"
           />
           <motion.circle
             cx="80" cy="80" r={radius}
             fill="none"
-            stroke="#065F46"
+            stroke="var(--p-primary)"
             strokeWidth="3"
             strokeLinecap="round"
             strokeDasharray={circumference}
@@ -63,18 +63,18 @@ export default function MurajaCountdown() {
         <div
           className="w-28 h-28 rounded-full flex flex-col items-center justify-center"
           style={{
-            background: '#FFFFFF',
-            border: '2px solid #065F46',
-            boxShadow: '0 4px 20px rgba(6,95,70,0.06)',
+            background: 'var(--p-card)',
+            border: '2px solid var(--p-primary)',
+            boxShadow: 'var(--p-card-shadow)',
           }}
         >
           <span
             className="text-xl font-bold tabular-nums"
-            style={{ fontFamily: "'Inter', sans-serif", color: '#065F46' }}
+            style={{ fontFamily: "'Inter', sans-serif", color: 'var(--p-primary)' }}
           >
             {pad(hours)}:{pad(minutes)}
           </span>
-          <span className="text-[10px] tabular-nums" style={{ color: 'rgba(28,36,33,0.4)' }}>
+          <span className="text-[10px] tabular-nums" style={{ color: 'var(--p-text-60)' }}>
             :{pad(seconds)}
           </span>
         </div>
