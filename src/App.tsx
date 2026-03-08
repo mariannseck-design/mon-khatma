@@ -25,6 +25,7 @@ import ParametresPage from "./pages/ParametresPage";
 import HifzPage from "./pages/HifzPage";
 import MurjaPage from "./pages/MurjaPage";
 import HifzSuiviPage from "./pages/HifzSuiviPage";
+import RevisionPage from "./pages/RevisionPage";
 import DhikrPage from "./pages/DhikrPage";
 import NotFound from "./pages/NotFound";
 
