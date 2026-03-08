@@ -381,9 +381,9 @@ export default function MurjaPage() {
               <div className="flex items-center gap-2">
                 <BookOpen className="h-4 w-4" style={{ color: '#D4AF37' }} />
                 <h3
-                  className="text-sm font-semibold"
-                  style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#065F46' }}
-                >
+                   className="text-sm font-bold"
+                   style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#065F46' }}
+                 >
                   Mon trésor — {totalVersesCount} verset{totalVersesCount > 1 ? 's' : ''}
                 </h3>
               </div>
