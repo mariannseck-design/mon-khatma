@@ -71,6 +71,7 @@ export default function HifzPage() {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [hasGoal, setHasGoal] = useState<boolean | null>(null);
   const [showGoalOnboarding, setShowGoalOnboarding] = useState(false);
+  const [showDiagnostic, setShowDiagnostic] = useState(false);
   const [restoringSession, setRestoringSession] = useState(true);
   const [showResumePrompt, setShowResumePrompt] = useState(false);
   const [pendingResume, setPendingResume] = useState<{ session: HifzSession; step: number; sessionId: string | null } | null>(null);
