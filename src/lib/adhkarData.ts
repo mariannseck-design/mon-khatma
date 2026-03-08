@@ -574,7 +574,7 @@ export const ANYTIME_ADHKAR: DhikrItem[] = [
     target: 100,
   },
   {
-    title: 'Salât 'alâ n-Nabî ﷺ',
+    title: "Salât 'alâ n-Nabî ﷺ",
     arabic: 'اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى نَبِيِّنَا مُحَمَّدٍ',
     phonetic: "Allâhumma salli wa sallim 'alâ nabiyyinâ Muhammad",
     french: "Ô Allah (عز وجل), prie et accorde le salut sur notre prophète Muhammad ﷺ.",
