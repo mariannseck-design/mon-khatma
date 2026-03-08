@@ -48,7 +48,7 @@ function CircularGauge({ value, max, label }: { value: number; max: number; labe
         <text x="48" y="44" textAnchor="middle" fill="#065F46" fontSize="18" fontWeight="bold" fontFamily="Inter, sans-serif">
           {value}
         </text>
-        <text x="48" y="60" textAnchor="middle" fill="rgba(6,95,70,0.5)" fontSize="9">
+        <text x="48" y="60" textAnchor="middle" fill="rgba(6,95,70,0.7)" fontSize="9" fontWeight="600">
           / {max}
         </text>
       </svg>
