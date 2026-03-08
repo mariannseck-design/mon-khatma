@@ -474,7 +474,23 @@ export default function HifzSuiviPage() {
                   <Bar dataKey="hifz" stackId="a" fill="var(--p-accent)" maxBarSize={28} radius={[0, 0, 0, 0]} />
                   <Bar dataKey="muraja" stackId="a" fill="var(--p-primary)" maxBarSize={28} radius={[6, 6, 0, 0]} />
                 </BarChart>
-              </ResponsiveContainer>
+               </ResponsiveContainer>
+              {/* Total hebdomadaire */}
+              {(() => {
+                const totalHifz = weeklyData.reduce((s, d) => s + d.hifz, 0);
+                const totalMuraja = weeklyData.reduce((s, d) => s + d.muraja, 0);
+                const total = totalHifz + totalMuraja;
+                return total > 0 ? (
+                  <div className="mt-3 pt-3 flex items-center justify-center gap-3 text-[11px]" style={{ borderTop: '1px solid var(--p-border)' }}>
+                    <span style={{ color: 'var(--p-text-65)' }}>Cette semaine :</span>
+                    <span className="font-bold" style={{ color: 'var(--p-accent)' }}>{totalHifz} hifz</span>
+                    <span style={{ color: 'var(--p-text-55)' }}>·</span>
+                    <span className="font-bold" style={{ color: 'var(--p-primary)' }}>{totalMuraja} muraja'a</span>
+                    <span style={{ color: 'var(--p-text-55)' }}>·</span>
+                    <span className="font-semibold" style={{ color: 'var(--p-on-dark)' }}>{total} total</span>
+                  </div>
+                ) : null;
+              })()}
             </motion.div>
 
             {/* Révisions du jour */}
