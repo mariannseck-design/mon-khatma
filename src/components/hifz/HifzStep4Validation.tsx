@@ -426,13 +426,6 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
               </motion.button>
             </div>
 
-            {/* Privacy note */}
-            <div className="flex items-center justify-center gap-1.5">
-              <Lock className="h-3 w-3" style={{ color: 'rgba(255,255,255,0.25)' }} />
-              <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.25)' }}>
-                Tes enregistrements restent sur ton appareil et sont supprimés automatiquement
-              </p>
-            </div>
 
             {/* Bonus mode: button to finalize */}
             {bonusMode && (
