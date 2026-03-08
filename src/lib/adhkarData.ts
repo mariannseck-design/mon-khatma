@@ -779,3 +779,76 @@ export const ISTIKHARAH_DUAS: DhikrItem[] = [
     target: 1,
   },
 ];
+
+export const LOUANGES_ISTIGHFAR: DhikrItem[] = [
+  {
+    title: 'Subhân Allâh',
+    arabic: 'سُبْحَانَ اللهِ',
+    phonetic: "Subhân Allâh.",
+    french: "Gloire à Allah (عز وجل). Le Prophète ﷺ a dit : « Deux paroles légères sur la langue, lourdes dans la balance, aimées du Tout Miséricordieux : Subhân Allâhi wa bi-Hamdih, Subhân Allâhi-l-'Azîm. »",
+    target: 33,
+  },
+  {
+    title: 'Al-Hamdulillâh',
+    arabic: 'الْحَمْدُ لِلَّهِ',
+    phonetic: "Al-Hamdulillâh.",
+    french: "Louange à Allah (عز وجل). Le Prophète ﷺ a dit : « Al-Hamdulillâh remplit la balance. »",
+    target: 33,
+  },
+  {
+    title: 'Allâhu Akbar',
+    arabic: 'اللهُ أَكْبَرُ',
+    phonetic: "Allâhu Akbar.",
+    french: "Allah (عز وجل) est le Plus Grand.",
+    target: 33,
+  },
+  {
+    title: 'Lâ ilâha illa-llâh',
+    arabic: 'لَا إِلَٰهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ',
+    phonetic: "Lâ ilâha illa-llâhu wahdahu lâ sharîka lah, lahu-l-mulku wa lahu-l-hamdu wa huwa 'alâ kulli shay'in Qadîr.",
+    french: "Il n'y a de divinité digne d'adoration qu'Allah (عز وجل), Seul sans associé. À Lui la royauté, à Lui la louange et Il est Omnipotent. Quiconque dit cela 100 fois par jour a la récompense de l'affranchissement de 10 esclaves.",
+    target: 10,
+  },
+  {
+    title: 'Subhân Allâhi wa bi-Hamdih',
+    arabic: 'سُبْحَانَ اللهِ وَبِحَمْدِهِ',
+    phonetic: "Subhân Allâhi wa bi-Hamdih.",
+    french: "Gloire et louange à Allah (عز وجل). Le Prophète ﷺ a dit : « Quiconque dit cela 100 fois par jour, ses péchés seront effacés, fussent-ils comme l'écume de la mer. »",
+    target: 33,
+  },
+  {
+    title: "Subhân Allâhi-l-'Azîm wa bi-Hamdih",
+    arabic: 'سُبْحَانَ اللهِ الْعَظِيمِ وَبِحَمْدِهِ',
+    phonetic: "Subhân Allâhi-l-'Azîm wa bi-Hamdih.",
+    french: "Gloire à Allah (عز وجل) le Très Grand et louange à Lui. Deux paroles légères sur la langue, lourdes dans la balance, aimées du Tout Miséricordieux.",
+    target: 33,
+  },
+  {
+    title: 'Astaghfiru-llâh',
+    arabic: 'أَسْتَغْفِرُ اللهَ',
+    phonetic: "Astaghfiru-llâh.",
+    french: "Je demande pardon à Allah (عز وجل). Le Prophète ﷺ demandait pardon à Allah plus de 70 fois par jour.",
+    target: 33,
+  },
+  {
+    title: 'Sayyid al-Istighfâr',
+    arabic: 'اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَٰهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ، أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ وَأَبُوءُ بِذَنْبِي فَاغْفِرْ لِي فَإِنَّهُ لَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ',
+    phonetic: "Allâhumma Anta Rabbî, lâ ilâha illâ Ant, khalaqtanî wa ana 'abduk, wa ana 'alâ 'ahdika wa wa'dika mâ-stata't, a'ûdhu bika min sharri mâ sana't, abû'u laka bi-ni'matika 'alayya wa abû'u bi-dhanbî, fa-ghfir lî fa-innahu lâ yaghfiru dh-dhunûba illâ Ant.",
+    french: "Ô Allah (عز وجل), Tu es mon Seigneur, il n'y a de divinité que Toi. Tu m'as créé et je suis Ton serviteur. Je suis fidèle à Ton pacte et à Ta promesse autant que je le peux. Je cherche refuge auprès de Toi contre le mal que j'ai commis. Je reconnais Tes bienfaits envers moi et je reconnais mes péchés. Pardonne-moi car nul ne pardonne les péchés hormis Toi. (Maître de l'Istighfâr — quiconque le dit avec conviction le matin et meurt dans la journée entre au Paradis.)",
+    target: 3,
+  },
+  {
+    title: 'Astaghfiru-llâh wa atûbu ilayh',
+    arabic: 'أَسْتَغْفِرُ اللهَ وَأَتُوبُ إِلَيْهِ',
+    phonetic: "Astaghfiru-llâha wa atûbu ilayh.",
+    french: "Je demande pardon à Allah (عز وجل) et je me repens à Lui. Le Prophète ﷺ a dit : « Par Allah, je demande pardon à Allah et je me repens à Lui plus de 70 fois par jour. »",
+    target: 33,
+  },
+  {
+    title: 'Lâ hawla wa lâ quwwata illâ bi-llâh',
+    arabic: 'لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللهِ',
+    phonetic: "Lâ hawla wa lâ quwwata illâ bi-llâh.",
+    french: "Il n'y a de force ni de puissance qu'en Allah (عز وجل). Le Prophète ﷺ a dit : « C'est un trésor parmi les trésors du Paradis. »",
+    target: 10,
+  },
+];
