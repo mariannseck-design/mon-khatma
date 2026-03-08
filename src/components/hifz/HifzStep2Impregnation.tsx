@@ -299,7 +299,7 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
 
           <div
             className="rounded-xl overflow-auto max-h-72 px-4 py-4"
-            style={{ background: 'linear-gradient(135deg, #0d7377, #14919b, #0d7377)', border: '1px solid rgba(212,175,55,0.3)' }}
+            style={{ background: tc.quranBlockBg, border: tc.quranBlockBorder }}
             dir="rtl"
           >
             {versesLoading ? (
