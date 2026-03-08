@@ -1,38 +1,21 @@
 
 
-## Plan : Tikrar avec texte Tanzil + Tajwid
+# Diagnostic : 404 sur /quran-reader
 
-### Objectif
-Remplacer l'image Mushaf dans HifzStep3Memorisation par le texte local Tanzil avec couleurs Tajwid, et adapter la logique Tikrar au niveau de répétition choisi (15/20/25/30/35/40).
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Changements
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-#### 1. `src/lib/quranData.ts` — Ajouter lookup par sourate/versets
-Ajouter une fonction `getVersesByRange(surah, startVerse, endVerse)` qui retourne les ayahs depuis le JSON local (même cache mémoire). Nécessaire car le loader actuel n'indexe que par page.
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-#### 2. `src/components/hifz/HifzStep3Memorisation.tsx` — Refonte majeure
-- **Remplacer l'image Mushaf** par un bloc de texte arabe local avec Tajweed
-- Charger les versets via `getVersesByRange()` + annotations Tajweed via `getTajweedAnnotations()`
-- **Utiliser `repetitionLevel`** (prop existante mais ignorée — actuellement hardcodé à 40) comme cible du compteur
-- **3 phases dynamiques basées sur le compteur** :
-  - **1-10** : Texte + Tajwid visible, audio activé (bouton speaker proéminent)
-  - **11-15** : Texte + Tajwid visible, audio masqué (aide discrète)
-  - **16+** : Texte masqué, message d'encouragement, bouton "Vérifier" (affiche brièvement le texte)
-- **Verrouillage** : bouton "Étape suivante" désactivé tant que `ancrage < repetitionLevel`
-- **Persistance** : localStorage (déjà en place, conserver)
-- **Célébration** : message enrichi avec la citation demandée
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-#### 3. Rendu du texte dans Step3
-Réutiliser les fonctions existantes de `QuranTextView.tsx` :
-- `renderTajweedText()` pour le coloriage
-- `stripLeadingBasmala()` pour le verset 1
-- Style identique (Amiri Quran, ligatures, justifié RTL)
-
-Le texte sera affiché dans un conteneur scrollable avec fond semi-transparent adapté au thème émeraude du Hifz.
-
-### Fichiers modifiés
-| Fichier | Action |
-|---|---|
-| `src/lib/quranData.ts` | Ajouter `getVersesByRange()` + index par sourate |
-| `src/components/hifz/HifzStep3Memorisation.tsx` | Refonte : texte Tanzil+Tajwid au lieu d'image Mushaf, `repetitionLevel` comme cible |
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

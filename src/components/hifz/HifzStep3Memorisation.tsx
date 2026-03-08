@@ -1,8 +1,13 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BookOpen, Check, Eye, EyeOff, RotateCcw, Volume2, Star, ChevronDown, ChevronUp, ZoomIn, ZoomOut } from 'lucide-react';
+import { BookOpen, Check, Eye, EyeOff, RotateCcw, Volume2, Star, ChevronDown, ChevronUp } from 'lucide-react';
 import HifzStepWrapper from './HifzStepWrapper';
-import { SURAHS } from '@/lib/surahData';
+import { getVersesByRange, type LocalAyah } from '@/lib/quranData';
+import {
+  getTajweedAnnotations,
+  TAJWEED_COLORS,
+  type TajweedAnnotation,
+} from '@/lib/tajweedData';
 
 interface Props {
   surahNumber: number;
@@ -13,7 +18,62 @@ interface Props {
   onBack: () => void;
 }
 
-const TIKRAR_TARGET = 40;
+const FONT_FAMILY = "'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
+const BASMALA_WORDS = ['بِسْمِ', 'ٱللَّهِ', 'ٱلرَّحْمَٰنِ', 'ٱلرَّحِيمِ'];
+
+function stripLeadingBasmala(text: string): { stripped: string; offset: number } {
+  const trimmed = text.trimStart();
+  if (!trimmed) return { stripped: trimmed, offset: 0 };
+  if (trimmed.startsWith('﷽')) {
+    const after = trimmed.slice(1).trimStart();
+    return { stripped: after, offset: text.length - after.length };
+  }
+  const words = trimmed.split(/\s+/u);
+  if (words.length < 4) return { stripped: trimmed, offset: text.length - trimmed.length };
+  const first4 = words.slice(0, 4);
+  const isBasmala = first4.every((word, i) => {
+    const clean = word.replace(/[\u06DD\u06DE\u06E9\u06DA\u06DB\u06DC\u200E\u200F\u061C]/gu, '');
+    return clean === BASMALA_WORDS[i];
+  });
+  if (!isBasmala) return { stripped: trimmed, offset: text.length - trimmed.length };
+  if (words.length <= 4) return { stripped: '', offset: text.length };
+  const remaining = words.slice(4).join(' ').trimStart();
+  return { stripped: remaining, offset: text.length - remaining.length };
+}
+
+function renderTajweedText(
+  text: string,
+  annotations: TajweedAnnotation[],
+  charOffset: number = 0,
+): React.ReactNode[] {
+  if (!annotations.length) return [text];
+  const colors = TAJWEED_COLORS;
+  const segments: React.ReactNode[] = [];
+  let pos = 0;
+  for (const ann of annotations) {
+    const start = ann.start - charOffset;
+    const end = ann.end - charOffset;
+    if (end <= 0 || start >= text.length) continue;
+    const effectiveStart = Math.max(start, 0);
+    const effectiveEnd = Math.min(end, text.length);
+    if (effectiveStart > pos) segments.push(text.slice(pos, effectiveStart));
+    const color = colors[ann.rule];
+    if (color) {
+      segments.push(
+        <span key={`${ann.rule}-${effectiveStart}`} style={{ color }}>{text.slice(effectiveStart, effectiveEnd)}</span>
+      );
+    } else {
+      segments.push(text.slice(effectiveStart, effectiveEnd));
+    }
+    pos = effectiveEnd;
+  }
+  if (pos < text.length) segments.push(text.slice(pos));
+  return segments;
+}
+
+interface AyahWithAnnotations extends LocalAyah {
+  tajweed?: TajweedAnnotation[];
+}
 
 function getStorageKey(surah: number, start: number, end: number) {
   return `hifz_ancrage_${surah}_${start}_${end}`;
@@ -21,60 +81,67 @@ function getStorageKey(surah: number, start: number, end: number) {
 
 function getPhaseInfo(ancrage: number) {
   if (ancrage < 10) {
-    return {
-      phase: 1,
-      emoji: '📖',
-      label: 'Regardez le Mushaf et récitez avec le récitant',
-      showMushafDefault: true,
-      audioEnabled: true,
-      color: '#4ecdc4',
-    };
+    return { phase: 1, emoji: '📖', label: 'Récitez avec le texte Tajwid et l\'audio', showText: true, audioProminent: true, color: '#4ecdc4' };
   }
   if (ancrage < 15) {
-    return {
-      phase: 2,
-      emoji: '📖',
-      label: 'Regardez le Mushaf, récitez sans le récitant',
-      showMushafDefault: true,
-      audioEnabled: false,
-      color: '#f0d060',
-    };
+    return { phase: 2, emoji: '📖', label: 'Récitez avec le texte, sans audio', showText: true, audioProminent: false, color: '#f0d060' };
   }
-  return {
-    phase: 3,
-    emoji: '🧠',
-    label: 'Récitez de mémoire, sans Mushaf ni audio',
-    showMushafDefault: false,
-    audioEnabled: false,
-    color: '#d4af37',
-  };
+  return { phase: 3, emoji: '🧠', label: 'Récitez de mémoire — Ancrage d\'acier', showText: false, audioProminent: false, color: '#d4af37' };
 }
 
-const MUSHAF_ZOOM_LEVELS = ['Petit', 'Moyen', 'Grand'] as const;
-const MUSHAF_SCALES = [1, 1.5, 2.2];
-const MUSHAF_CONTAINER_HEIGHTS = ['max-h-48', 'max-h-72', 'max-h-[500px]'];
-
-export default function HifzStep3Memorisation({ surahNumber, startVerse, endVerse, onNext, onBack }: Props) {
+export default function HifzStep3Memorisation({ surahNumber, startVerse, endVerse, repetitionLevel, onNext, onBack }: Props) {
+  const tikrarTarget = repetitionLevel || 40;
   const storageKey = getStorageKey(surahNumber, startVerse, endVerse);
 
   const [ancrage, setAncrage] = useState(() => {
     const saved = localStorage.getItem(storageKey);
-    return saved ? Math.min(parseInt(saved, 10) || 0, TIKRAR_TARGET) : 0;
+    return saved ? Math.min(parseInt(saved, 10) || 0, tikrarTarget) : 0;
   });
+  const [ayahs, setAyahs] = useState<AyahWithAnnotations[]>([]);
+  const [loading, setLoading] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
   const isPlayingRef = useRef(false);
-  const [showMushaf, setShowMushaf] = useState(false);
+  const [showText, setShowText] = useState(true);
   const [showGuide, setShowGuide] = useState(true);
   const [showCelebration, setShowCelebration] = useState(false);
+  const [peekMode, setPeekMode] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const ayahsRef = useRef<{ audio: string }[]>([]);
-  const indexRef = useRef(0);
-  const [mushafZoom, setMushafZoom] = useState(1);
+  const ayahAudiosRef = useRef<{ audio: string }[]>([]);
   const reciter = localStorage.getItem('quran_reciter') || 'ar.alafasy';
 
   const phaseInfo = getPhaseInfo(ancrage);
-  const mushafPage = SURAHS.find(s => s.number === surahNumber)?.startPage ?? 1;
-  const mushafImageUrl = `https://cdn.jsdelivr.net/gh/QuranHub/quran-pages-images@main/easyquran.com/hafs-tajweed/${mushafPage}.jpg`;
+
+  // Load local text + tajweed
+  useEffect(() => {
+    setLoading(true);
+    getVersesByRange(surahNumber, startVerse, endVerse)
+      .then(async (data) => {
+        const withAnnotations = await Promise.all(
+          data.map(async (ayah) => {
+            const tajweed = await getTajweedAnnotations(ayah.surah.number, ayah.numberInSurah);
+            return { ...ayah, tajweed };
+          })
+        );
+        setAyahs(withAnnotations);
+      })
+      .finally(() => setLoading(false));
+  }, [surahNumber, startVerse, endVerse]);
+
+  // Load audio URLs
+  useEffect(() => {
+    const fetchAudio = async () => {
+      try {
+        const res = await fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}/${reciter}`);
+        const data = await res.json();
+        if (data.code === 200) {
+          ayahAudiosRef.current = data.data.ayahs
+            .filter((a: any) => a.numberInSurah >= startVerse && a.numberInSurah <= endVerse)
+            .map((a: any) => ({ audio: a.audio }));
+        }
+      } catch { /* ignore */ }
+    };
+    fetchAudio();
+  }, [surahNumber, startVerse, endVerse, reciter]);
 
   // Persist ancrage
   useEffect(() => {
@@ -82,74 +149,47 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
   }, [ancrage, storageKey]);
 
   useEffect(() => {
-    if (ancrage >= TIKRAR_TARGET) {
+    if (ancrage >= tikrarTarget) {
       localStorage.removeItem(storageKey);
       setShowCelebration(true);
     }
-  }, [ancrage, storageKey]);
+  }, [ancrage, tikrarTarget, storageKey]);
 
-  // Auto-show/hide mushaf based on phase
+  // Auto-show/hide text based on phase
   useEffect(() => {
-    setShowMushaf(phaseInfo.showMushafDefault);
+    setShowText(phaseInfo.showText);
+    setPeekMode(false);
   }, [phaseInfo.phase]);
 
-  useEffect(() => {
-    const fetchAyahs = async () => {
-      try {
-        const res = await fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}/${reciter}`);
-        const data = await res.json();
-        if (data.code === 200) {
-          ayahsRef.current = data.data.ayahs
-            .filter((a: any) => a.numberInSurah >= startVerse && a.numberInSurah <= endVerse)
-            .map((a: any) => ({ audio: a.audio }));
-        }
-      } catch { /* ignore */ }
-    };
-    fetchAyahs();
-  }, [surahNumber, startVerse, endVerse, reciter]);
-
   const playNextAyah = useCallback((idx: number) => {
-    if (!isPlayingRef.current && idx > 0) return; // Stopped by user
-    if (idx >= ayahsRef.current.length) {
-      // Passage terminé : incrémenter le compteur
+    if (!isPlayingRef.current && idx > 0) return;
+    if (idx >= ayahAudiosRef.current.length) {
       setAncrage(prev => {
-        const next = Math.min(prev + 1, TIKRAR_TARGET);
+        const next = Math.min(prev + 1, tikrarTarget);
         try { navigator?.vibrate?.(40); } catch {}
-        if (next >= TIKRAR_TARGET) {
+        if (next >= tikrarTarget) {
           isPlayingRef.current = false;
           setIsPlaying(false);
           return next;
         }
-        // Boucler : relancer le passage depuis le début
-        setTimeout(() => {
-          if (isPlayingRef.current) playNextAyah(0);
-        }, 600);
+        setTimeout(() => { if (isPlayingRef.current) playNextAyah(0); }, 600);
         return next;
       });
-      indexRef.current = 0;
       return;
     }
-    indexRef.current = idx;
-    const audio = new Audio(ayahsRef.current[idx].audio);
+    const audio = new Audio(ayahAudiosRef.current[idx].audio);
     audioRef.current = audio;
-    audio.onended = () => {
-      if (isPlayingRef.current) playNextAyah(idx + 1);
-    };
-    audio.onerror = () => {
-      if (isPlayingRef.current) playNextAyah(idx + 1);
-    };
-    audio.play().catch(() => {
-      isPlayingRef.current = false;
-      setIsPlaying(false);
-    });
-  }, []);
+    audio.onended = () => { if (isPlayingRef.current) playNextAyah(idx + 1); };
+    audio.onerror = () => { if (isPlayingRef.current) playNextAyah(idx + 1); };
+    audio.play().catch(() => { isPlayingRef.current = false; setIsPlaying(false); });
+  }, [tikrarTarget]);
 
   const toggleAudioHelp = () => {
     if (isPlayingRef.current) {
       isPlayingRef.current = false;
       audioRef.current?.pause();
       setIsPlaying(false);
-    } else if (ayahsRef.current.length > 0) {
+    } else if (ayahAudiosRef.current.length > 0) {
       isPlayingRef.current = true;
       setIsPlaying(true);
       playNextAyah(0);
@@ -160,9 +200,83 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
     return () => { isPlayingRef.current = false; audioRef.current?.pause(); };
   }, []);
 
+  // Peek timeout
+  useEffect(() => {
+    if (peekMode) {
+      const timer = setTimeout(() => setPeekMode(false), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [peekMode]);
 
-  const progress = Math.min((ancrage / TIKRAR_TARGET) * 100, 100);
-  const isComplete = ancrage >= TIKRAR_TARGET;
+  const progress = Math.min((ancrage / tikrarTarget) * 100, 100);
+  const isComplete = ancrage >= tikrarTarget;
+  const textVisible = showText || peekMode;
+
+  // Render the Quran text block
+  const renderedText = useMemo(() => {
+    if (!ayahs.length) return null;
+    return (
+      <div
+        dir="rtl"
+        style={{
+          fontFamily: FONT_FAMILY,
+          fontSize: '24px',
+          lineHeight: '52px',
+          textAlign: 'justify',
+          textAlignLast: 'center',
+          color: '#e8e0d0',
+          wordSpacing: '0.12em',
+          fontVariantLigatures: 'common-ligatures',
+          fontFeatureSettings: '"liga" 1, "calt" 1, "kern" 1',
+          textRendering: 'optimizeLegibility',
+        }}
+      >
+        {ayahs.map((ayah) => {
+          const needsStrip = ayah.numberInSurah === 1 && surahNumber !== 1 && surahNumber !== 9;
+          let displayText = ayah.text;
+          let charOffset = 0;
+          if (needsStrip) {
+            const result = stripLeadingBasmala(ayah.text);
+            displayText = result.stripped;
+            charOffset = result.offset;
+          }
+          const textContent = ayah.tajweed?.length
+            ? renderTajweedText(displayText, ayah.tajweed, charOffset)
+            : displayText;
+
+          return (
+            <span key={ayah.number}>
+              {textContent}
+              {' '}
+              <span
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '18px',
+                  height: '18px',
+                  borderRadius: '50%',
+                  backgroundColor: '#2E7D32',
+                  color: '#ffffff',
+                  fontSize: '10px',
+                  fontFamily: 'system-ui, sans-serif',
+                  fontWeight: 700,
+                  lineHeight: 1,
+                  verticalAlign: 'middle',
+                  margin: '0 3px',
+                  userSelect: 'none',
+                  flexShrink: 0,
+                }}
+              >
+                {ayah.numberInSurah}
+              </span>
+              {' '}
+            </span>
+          );
+        })}
+      </div>
+    );
+  }, [ayahs, surahNumber]);
 
   return (
     <HifzStepWrapper stepNumber={3} stepTitle="Tikrar" onBack={onBack}>
@@ -178,10 +292,10 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
         {/* Subtitle */}
         <div>
           <p className="text-sm font-semibold" style={{ color: '#d4af37' }}>L'ancrage d'acier</p>
-          <p className="text-white/50 text-xs">(Objectif 40 répétitions)</p>
+          <p className="text-white/50 text-xs">(Objectif {tikrarTarget} répétitions)</p>
         </div>
 
-        {/* Guide introductif */}
+        {/* Guide */}
         <div className="rounded-xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>
           <button
             onClick={() => setShowGuide(!showGuide)}
@@ -203,7 +317,7 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
                   <p className="text-xs text-white/70 leading-relaxed">
                     Pour graver ce passage dans votre cœur par la grâce d'Allah{' '}
                     <span style={{ fontFamily: "'Amiri', serif", fontWeight: 'bold', fontSize: '1.1em' }}>(عز وجل)</span>
-                    , nous vous suggérons un minimum de 15 répétitions pour la première séance. À titre de référence, l'école Tikrar de Médine préconise 40 répétitions pour une maîtrise parfaite.
+                    , nous vous suggérons un minimum de 15 répétitions. Votre objectif : <strong style={{ color: '#d4af37' }}>{tikrarTarget} répétitions</strong>.
                   </p>
 
                   <p className="text-xs font-semibold" style={{ color: '#d4af37' }}>Mode d'emploi de votre progression :</p>
@@ -211,26 +325,21 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
                   <div className="space-y-2">
                     <div className="flex items-start gap-2 rounded-lg px-3 py-2" style={{ background: ancrage < 10 ? 'rgba(78,205,196,0.15)' : 'transparent', border: ancrage < 10 ? '1px solid rgba(78,205,196,0.3)' : '1px solid transparent' }}>
                       <span className="text-xs mt-0.5 whitespace-nowrap" style={{ color: '#4ecdc4', fontWeight: ancrage < 10 ? 700 : 400 }}>1 à 10</span>
-                      <p className="text-xs text-white/70">📖 Regardez le Mushaf et récitez avec le récitant pour maîtriser le Tajwid.</p>
+                      <p className="text-xs text-white/70">📖 Texte Tajwid visible + audio. Imprégnation visuelle et auditive.</p>
                     </div>
                     <div className="flex items-start gap-2 rounded-lg px-3 py-2" style={{ background: ancrage >= 10 && ancrage < 15 ? 'rgba(240,208,96,0.15)' : 'transparent', border: ancrage >= 10 && ancrage < 15 ? '1px solid rgba(240,208,96,0.3)' : '1px solid transparent' }}>
                       <span className="text-xs mt-0.5 whitespace-nowrap" style={{ color: '#f0d060', fontWeight: ancrage >= 10 && ancrage < 15 ? 700 : 400 }}>11 à 15</span>
-                      <p className="text-xs text-white/70">📖 Regardez le Mushaf et récitez sans le récitant (audio désactivé).</p>
+                      <p className="text-xs text-white/70">📖 Texte visible, audio désactivé. Autonomie visuelle.</p>
                     </div>
                     <div className="flex items-start gap-2 rounded-lg px-3 py-2" style={{ background: ancrage >= 15 ? 'rgba(212,175,55,0.15)' : 'transparent', border: ancrage >= 15 ? '1px solid rgba(212,175,55,0.3)' : '1px solid transparent' }}>
                       <span className="text-xs mt-0.5 whitespace-nowrap" style={{ color: '#d4af37', fontWeight: ancrage >= 15 ? 700 : 400 }}>Dès la 16ème</span>
-                      <p className="text-xs text-white/70">🧠 Récitez exclusivement de mémoire, sans Mushaf et sans audio.</p>
+                      <p className="text-xs text-white/70">🧠 Texte masqué. Récitation de mémoire. Bouton « Vérifier » disponible.</p>
                     </div>
                   </div>
 
-                  <p className="text-xs text-white/50 italic leading-relaxed">
-                    En cas de doute (oubli ou Tajwid), cliquez sur l'icône du haut-parleur 🔊 ou jetez un bref coup d'œil au Mushaf.
-                  </p>
-
                   <p className="text-xs text-white/70 leading-relaxed">
-                    Prenez le temps nécessaire. Votre persévérance honore le message transmis par le Prophète Mouhamed{' '}
-                    <span style={{ fontFamily: "'Amiri', serif", fontWeight: 'bold', fontSize: '1.1em' }}>(ﷺ)</span>
-                    . Bismillah !
+                    Bismillah, prenez le temps nécessaire. Votre persévérance honore le Prophète{' '}
+                    <span style={{ fontFamily: "'Amiri', serif", fontWeight: 'bold', fontSize: '1.1em' }}>(ﷺ)</span>.
                   </p>
                 </div>
               </motion.div>
@@ -238,7 +347,7 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
           </AnimatePresence>
         </div>
 
-        {/* Celebration overlay */}
+        {/* Celebration */}
         <AnimatePresence>
           {showCelebration && (
             <motion.div
@@ -249,26 +358,22 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
             >
               <div className="flex justify-center gap-1">
                 {[...Array(5)].map((_, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ y: -20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: i * 0.1 }}
-                  >
+                  <motion.div key={i} initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: i * 0.1 }}>
                     <Star className="h-5 w-5 fill-current" style={{ color: '#d4af37' }} />
                   </motion.div>
                 ))}
               </div>
               <p className="text-white text-sm leading-relaxed">
-                Félicitations ! Votre ancrage Tikrar est terminé. Par la grâce d'Allah{' '}
-                <span style={{ fontFamily: "'Amiri', serif", fontWeight: 'bold', fontSize: '1.1em' }}>(عز وجل)</span>
-                , vous avez honoré ce dépôt sacré.
+                Félicitations ! Votre ancrage est terminé par la grâce d'Allah{' '}
+                <span style={{ fontFamily: "'Amiri', serif", fontWeight: 'bold', fontSize: '1.1em' }}>(عز وجل)</span>.
+                Vous suivez avec succès la voie des Prophètes{' '}
+                <span style={{ fontFamily: "'Amiri', serif", fontWeight: 'bold', fontSize: '1.1em' }}>(عليهم السلام)</span>.
               </p>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Big counter */}
+        {/* Counter */}
         <div className="relative w-32 h-32 mx-auto">
           <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
             <circle cx="50" cy="50" r="44" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="6" />
@@ -283,7 +388,7 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <span className="text-3xl font-bold" style={{ color: '#d4af37' }}>{ancrage}</span>
-            <span className="text-white/40 text-xs">/ {TIKRAR_TARGET}</span>
+            <span className="text-white/40 text-xs">/ {tikrarTarget}</span>
           </div>
         </div>
 
@@ -302,30 +407,76 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
           </motion.div>
         )}
 
-        {/* Benevolence message (phase 3) */}
-        {ancrage >= 15 && ancrage < TIKRAR_TARGET && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="rounded-xl px-4 py-3 mx-auto max-w-xs text-left"
-            style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}
-          >
-            <p className="text-white/70 text-xs italic leading-relaxed">
-              N'ayez aucune crainte si vous devez jeter un coup d'œil furtif au Mushaf après la 15ème répétition. 
-              Le cerveau apprend aussi par la correction. Ce n'est pas un échec, mais une étape vers la maîtrise parfaite. 
-              L'essentiel est la sincérité de votre effort pour plaire à Allah{' '}
-              <span style={{ fontFamily: "'Amiri', serif", fontWeight: 'bold', fontSize: '1.1em' }}>(عز وجل)</span>
-              , à l'image de la persévérance des Prophètes{' '}
-              <span style={{ fontFamily: "'Amiri', serif", fontWeight: 'bold', fontSize: '1.1em' }}>(عليهم السلام)</span>.
-            </p>
-          </motion.div>
+        {/* Quran text block */}
+        {!isComplete && (
+          <div className="relative">
+            {/* Phase 3: Verify button */}
+            {!phaseInfo.showText && (
+              <button
+                onClick={() => setPeekMode(p => !p)}
+                className="flex items-center justify-center gap-2 mx-auto px-4 py-2 rounded-xl text-sm font-medium transition-all active:scale-95 mb-3"
+                style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(212,175,55,0.2)', color: '#d4af37' }}
+              >
+                {peekMode ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                {peekMode ? 'Masquer' : 'Vérifier'}
+              </button>
+            )}
+
+            {/* Text container */}
+            {loading ? (
+              <div className="flex items-center justify-center py-8">
+                <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: '#d4af37', borderTopColor: 'transparent' }} />
+              </div>
+            ) : (
+              <div
+                style={{ display: textVisible ? 'block' : 'none' }}
+                className="rounded-xl overflow-auto max-h-72 px-4 py-4"
+                dir="rtl"
+              >
+                <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '12px', padding: '16px', border: '1px solid rgba(212,175,55,0.15)' }}>
+                  {/* Basmala header for first verse */}
+                  {startVerse === 1 && surahNumber !== 1 && surahNumber !== 9 && (
+                    <p
+                      className="text-center mb-3"
+                      style={{
+                        fontFamily: FONT_FAMILY,
+                        color: '#6a9a6a',
+                        fontSize: '22px',
+                        lineHeight: '40px',
+                        fontWeight: 'bold',
+                      }}
+                    >
+                      بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
+                    </p>
+                  )}
+                  {renderedText}
+                </div>
+              </div>
+            )}
+
+            {/* Phase 3: Encouragement */}
+            {!phaseInfo.showText && !peekMode && !loading && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="rounded-xl px-4 py-3 mx-auto max-w-xs text-left"
+                style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}
+              >
+                <p className="text-white/70 text-xs italic leading-relaxed">
+                  Fermez les yeux et récitez de mémoire. En cas de doute, appuyez sur « Vérifier » pour un bref aperçu.
+                  L'essentiel est la sincérité de votre effort pour plaire à Allah{' '}
+                  <span style={{ fontFamily: "'Amiri', serif", fontWeight: 'bold', fontSize: '1.1em' }}>(عز وجل)</span>.
+                </p>
+              </motion.div>
+            )}
+          </div>
         )}
 
-        {/* Reset button */}
+        {/* Reset */}
         {ancrage > 0 && !isComplete && (
           <button
             onClick={() => {
-              if (window.confirm('Réinitialiser le compteur d\'ancrage ? Ta progression sera perdue.')) {
+              if (window.confirm('Réinitialiser le compteur d\'ancrage ? Votre progression sera perdue.')) {
                 setAncrage(0);
                 localStorage.removeItem(storageKey);
                 audioRef.current?.pause();
@@ -340,60 +491,14 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
           </button>
         )}
 
-        {/* Mushaf toggle + view */}
-        <div className="relative">
-          <button
-            onClick={() => setShowMushaf(!showMushaf)}
-            className="flex items-center justify-center gap-2 mx-auto px-4 py-2 rounded-xl text-sm font-medium transition-all active:scale-95 mb-3"
-            style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(212,175,55,0.2)', color: '#d4af37' }}
-          >
-            {showMushaf ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-            {showMushaf ? 'Masquer le passage' : 'Voir le passage'}
-          </button>
-
-          <div style={{ display: showMushaf ? 'block' : 'none' }} className="space-y-2">
-            <div className="flex items-center justify-end gap-1.5 px-1">
-              <button
-                onClick={() => setMushafZoom(z => Math.max(0, z - 1))}
-                disabled={mushafZoom === 0}
-                className="w-8 h-8 rounded-lg flex items-center justify-center disabled:opacity-30 transition-all active:scale-95"
-                style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(212,175,55,0.15)' }}
-              >
-                <ZoomOut className="h-3.5 w-3.5" style={{ color: '#d4af37' }} />
-              </button>
-              <span className="text-xs px-2" style={{ color: 'rgba(255,255,255,0.5)' }}>{MUSHAF_ZOOM_LEVELS[mushafZoom]}</span>
-              <button
-                onClick={() => setMushafZoom(z => Math.min(2, z + 1))}
-                disabled={mushafZoom === 2}
-                className="w-8 h-8 rounded-lg flex items-center justify-center disabled:opacity-30 transition-all active:scale-95"
-                style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(212,175,55,0.15)' }}
-              >
-                <ZoomIn className="h-3.5 w-3.5" style={{ color: '#d4af37' }} />
-              </button>
-            </div>
-            <div
-              className={`${MUSHAF_CONTAINER_HEIGHTS[mushafZoom]} overflow-auto w-full rounded-xl transition-all duration-300`}
-              style={{ border: '1px solid rgba(212,175,55,0.25)' }}
-            >
-              <img
-                src={mushafImageUrl}
-                alt={`Page ${mushafPage} du Mushaf`}
-                className="h-auto origin-top-left transition-all duration-300"
-                style={{ width: `${MUSHAF_SCALES[mushafZoom] * 100}%` }}
-                loading="eager"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Audio controls — manual +1 for all phases + speaker for help */}
+        {/* Controls */}
         {!isComplete && (
           <div className="space-y-3">
             <div className="flex items-center justify-center">
               <motion.button
                 whileTap={{ scale: 0.85 }}
                 onClick={() => {
-                  setAncrage(prev => Math.min(prev + 1, TIKRAR_TARGET));
+                  setAncrage(prev => Math.min(prev + 1, tikrarTarget));
                   try { navigator?.vibrate?.(40); } catch {}
                 }}
                 className="w-20 h-20 rounded-full flex items-center justify-center"
@@ -405,27 +510,29 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
                 <span className="text-2xl font-bold" style={{ color: '#d4af37' }}>+1</span>
               </motion.button>
 
-              {ancrage < 10 && (
+              {/* Audio: prominent in phase 1 */}
+              {phaseInfo.audioProminent && (
                 <button
                   onClick={toggleAudioHelp}
                   className="w-12 h-12 rounded-full flex items-center justify-center transition-all active:scale-95 ml-4"
-                  style={{ 
-                    background: isPlaying ? 'rgba(212,175,55,0.15)' : 'rgba(255,255,255,0.08)', 
-                    border: isPlaying ? '1px solid rgba(212,175,55,0.4)' : '1px solid rgba(255,255,255,0.15)' 
+                  style={{
+                    background: isPlaying ? 'rgba(212,175,55,0.15)' : 'rgba(255,255,255,0.08)',
+                    border: isPlaying ? '1px solid rgba(212,175,55,0.4)' : '1px solid rgba(255,255,255,0.15)',
                   }}
-                  title={isPlaying ? 'Arrêter l\'audio' : 'Écouter le passage complet'}
+                  title={isPlaying ? 'Arrêter l\'audio' : 'Écouter le passage'}
                 >
                   <Volume2 className="h-5 w-5" style={{ color: isPlaying ? '#d4af37' : 'rgba(255,255,255,0.5)' }} />
                 </button>
               )}
             </div>
 
-            {ancrage >= 10 && (
+            {/* Audio: discreet help in phases 2-3 */}
+            {!phaseInfo.audioProminent && (
               <button
                 onClick={toggleAudioHelp}
                 className="flex items-center justify-center gap-1.5 mx-auto px-3 py-1.5 rounded-lg text-xs transition-all active:scale-95"
                 style={{ color: 'rgba(255,255,255,0.3)' }}
-                title={isPlaying ? 'Arrêter l\'audio' : 'Aide audio (en cas de doute)'}
+                title={isPlaying ? 'Arrêter' : 'Aide audio'}
               >
                 <Volume2 className="h-3 w-3" style={{ color: isPlaying ? '#d4af37' : 'rgba(255,255,255,0.3)' }} />
                 <span style={{ color: isPlaying ? '#d4af37' : undefined }}>
@@ -436,7 +543,7 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
           </div>
         )}
 
-        {/* Next button — only when 40/40 reached */}
+        {/* Next — locked until target reached */}
         {isComplete && (
           <motion.button
             initial={{ opacity: 0, y: 10 }}
