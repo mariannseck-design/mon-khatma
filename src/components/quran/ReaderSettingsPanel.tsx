@@ -8,35 +8,12 @@ export const TRANSLATION_EDITIONS = [
   { id: 'en.sahih', label: 'English (Sahih Int.)', lang: '🇬🇧' },
 ];
 
-interface ReaderSettingsPanelProps {
-  viewMode: 'image' | 'text';
-  onViewModeChange: (mode: 'image' | 'text') => void;
-  nightMode: boolean;
-  onNightModeChange: (on: boolean) => void;
-  fontSize: number;
-  onFontSizeChange: (size: number) => void;
-  isPlaying: boolean;
-  audioLoading: boolean;
-  onTogglePlay: () => void;
-  reciter: string;
-  onReciterChange: (id: string) => void;
-  onShowSurahDrawer?: () => void;
-  textSizeIndex?: number;
-  textSizes?: Array<{ label: string; value: number }>;
-  onTextSizeIndexChange?: (index: number) => void;
-  textModeDisabled?: boolean;
-  audioStartVerse?: number;
-  audioEndVerse?: number;
-  onAudioStartVerseChange?: (v: number | undefined) => void;
-  onAudioEndVerseChange?: (v: number | undefined) => void;
-  isOffline?: boolean;
-  tajweedEnabled?: boolean;
-  onTajweedChange?: (enabled: boolean) => void;
-  translationEnabled?: boolean;
-  onTranslationChange?: (enabled: boolean) => void;
-  translationEdition?: string;
-  onTranslationEditionChange?: (edition: string) => void;
-}
+// Juz → starting page (Mushaf al-Madinah standard)
+const JUZ_START_PAGES = [
+  1, 22, 42, 62, 82, 102, 121, 142, 162, 182,
+  201, 222, 242, 262, 282, 302, 322, 342, 362, 382,
+  402, 422, 442, 462, 482, 502, 522, 542, 562, 582,
+];
 
 const FONT_SIZE_PRESETS = [
   { label: 'Petit', value: 16 },
