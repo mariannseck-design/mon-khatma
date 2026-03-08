@@ -139,17 +139,37 @@ export default function ProfilPage() {
           </Card>
         )}
 
-        <Button
-          variant="outline"
-          className="w-full rounded-xl border-destructive/30 text-destructive hover:bg-destructive/10"
-          onClick={async () => {
-            await supabase.auth.signOut();
-            navigate('/');
-          }}
-        >
-          <LogOut className="h-4 w-4 mr-2" />
-          Se déconnecter
-        </Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              variant="outline"
+              className="w-full rounded-xl border-destructive/30 text-destructive hover:bg-destructive/10"
+            >
+              <LogOut className="h-4 w-4 mr-2" />
+              Se déconnecter
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent className="rounded-2xl">
+            <AlertDialogHeader>
+              <AlertDialogTitle>Te déconnecter ?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Tu devras te reconnecter pour accéder à ton compte.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel className="rounded-xl">Annuler</AlertDialogCancel>
+              <AlertDialogAction
+                className="rounded-xl bg-destructive hover:bg-destructive/90"
+                onClick={async () => {
+                  await supabase.auth.signOut();
+                  navigate('/');
+                }}
+              >
+                Se déconnecter
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </AppLayout>
   );
