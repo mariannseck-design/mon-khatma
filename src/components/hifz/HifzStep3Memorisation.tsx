@@ -80,15 +80,15 @@ function getStorageKey(surah: number, start: number, end: number) {
   return `hifz_ancrage_${surah}_${start}_${end}`;
 }
 
-function getQuarters(target: number) {
-  const q1End = Math.max(Math.floor(target / 4), 1);
-  const q2End = Math.max(Math.floor(target / 2), q1End + 1);
-  const q3End = Math.max(Math.floor(target * 3 / 4), q2End + 1);
+function getPhaseBreaks(target: number) {
+  const q1End = Math.max(Math.floor(target / 5), 1);
+  const q2End = Math.max(Math.floor(target * 2 / 5), q1End + 1);
+  const q3End = Math.max(Math.floor(target * 3 / 5), q2End + 1);
   return { q1End, q2End, q3End };
 }
 
 function getPhaseInfo(ancrage: number, target: number) {
-  const { q1End, q2End, q3End } = getQuarters(target);
+  const { q1End, q2End, q3End } = getPhaseBreaks(target);
   if (ancrage < q1End) {
     return { phase: 1, emoji: '📖', label: 'Texte + Audio — Écoute, lecture et répétition', showText: true, audioProminent: true, color: '#4ecdc4' };
   }
@@ -128,7 +128,7 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
   const reciter = localStorage.getItem('quran_reciter') || 'ar.alafasy';
 
   const phaseInfo = getPhaseInfo(ancrage, tikrarTarget);
-  const quarters = getQuarters(tikrarTarget);
+  const quarters = getPhaseBreaks(tikrarTarget);
 
   // Persist display mode & zoom
   useEffect(() => {

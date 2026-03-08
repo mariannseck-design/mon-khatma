@@ -1,26 +1,21 @@
 
 
-## Changer la répartition des phases Tikrar : de 4 quarts à 5 cinquièmes
+# Diagnostic : 404 sur /quran-reader
 
-### Problème actuel
-Les 4 phases sont réparties en **quarts égaux** (25% chacune). La phase 4 (texte masqué) ne représente que 1/4 des répétitions.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Nouvelle répartition (basée sur la capture)
-Diviser le total en **cinquièmes** : les 3 premières phases occupent chacune 1/5, et la phase 4 (mémoire) occupe les **2/5 restants**.
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-Exemple avec Hifz 30 : 1→6, 7→12, 13→18, dès la 19ème.
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-### Modification dans `src/components/hifz/HifzStep3Memorisation.tsx`
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-**Fonction `getQuarters`** (lignes 83-88) — renommer en `getPhaseBreaks` et recalculer :
-```typescript
-function getPhaseBreaks(target: number) {
-  const q1End = Math.max(Math.floor(target / 5), 1);
-  const q2End = Math.max(Math.floor(target * 2 / 5), q1End + 1);
-  const q3End = Math.max(Math.floor(target * 3 / 5), q2End + 1);
-  return { q1End, q2End, q3End };
-}
-```
-
-Mettre à jour toutes les références de `getQuarters` → `getPhaseBreaks` (lignes 91, 131).
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
