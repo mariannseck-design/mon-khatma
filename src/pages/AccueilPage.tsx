@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import type { Easing } from 'framer-motion';
-import { BookOpen, Target, Users, Download, Moon, Sun, Sunrise, Share2, BookOpenCheck, RefreshCw, BarChart3, Shield, Play } from 'lucide-react';
+import { BookOpen, Target, Users, Download, Moon, Sun, Sunrise, Share2, BookOpenCheck, RefreshCw, BarChart3, Play } from 'lucide-react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { SamsungBanner } from '@/components/layout/SamsungBanner';
 import { useAuth } from '@/contexts/AuthContext';
@@ -404,7 +404,7 @@ export default function AccueilPage() {
               </Link>
             </motion.div>
 
-            {/* MURAJA'A */}
+            {/* MURAJA'A — Unified card with badge */}
             <motion.div variants={itemVariants}>
               <Link to="/muraja" className="block">
                 <motion.div
@@ -419,46 +419,12 @@ export default function AccueilPage() {
                 >
                   <div className="absolute -bottom-4 -right-4 w-32 h-32 rounded-full blur-xl" style={{ background: `${COLORS.gold}10` }} />
                   <div className="relative z-10 flex items-center gap-5">
-                    <div
-                      className="w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0"
-                      style={{ background: `${COLORS.gold}22`, border: `1px solid ${COLORS.gold}35` }}
-                    >
-                      <RefreshCw className="h-8 w-8" style={{ color: COLORS.goldAccent }} />
-                    </div>
-                    <div className="flex-1">
-                      <h3
-                        className="text-xl font-bold tracking-[0.08em] uppercase"
-                        style={{ fontFamily: "'Inter', sans-serif", color: COLORS.goldAccent }}
-                      >
-                        Muraja'a
-                      </h3>
-                      <p className="text-white/70 text-sm mt-1">Réviser et consolider</p>
-                    </div>
-                  </div>
-                </motion.div>
-              </Link>
-            </motion.div>
-
-            {/* ENTRETIEN & RÉVISION */}
-            <motion.div variants={itemVariants}>
-              <Link to="/revision" className="block">
-                <motion.div
-                  className="relative overflow-hidden rounded-[2rem] p-6 group"
-                  style={{
-                    background: COLORS.beige,
-                    border: `2px solid ${COLORS.gold}30`,
-                    boxShadow: `0 4px 20px -6px ${COLORS.gold}15`,
-                  }}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <div className="relative z-10 flex items-center gap-4">
                     <div className="relative">
                       <div
-                        className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0"
-                        style={{ background: `${COLORS.gold}18`, border: `1px solid ${COLORS.gold}30` }}
+                        className="w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0"
+                        style={{ background: `${COLORS.gold}22`, border: `1px solid ${COLORS.gold}35` }}
                       >
-                        <Shield className="h-7 w-7" style={{ color: COLORS.goldAccent }} />
+                        <RefreshCw className="h-8 w-8" style={{ color: COLORS.goldAccent }} />
                       </div>
                       {pendingReviews > 0 && (
                         <span
@@ -466,7 +432,7 @@ export default function AccueilPage() {
                           style={{
                             background: 'linear-gradient(135deg, #d4af37, #b8962e)',
                             color: '#1a2e1a',
-                            border: '2px solid #faf8f5',
+                            border: '2px solid white',
                             boxShadow: '0 2px 6px rgba(212,175,55,0.4)',
                           }}
                         >
@@ -476,15 +442,15 @@ export default function AccueilPage() {
                     </div>
                     <div className="flex-1">
                       <h3
-                        className="text-lg font-bold tracking-[0.06em] uppercase"
-                        style={{ fontFamily: "'Inter', sans-serif", color: COLORS.emerald }}
+                        className="text-xl font-bold tracking-[0.08em] uppercase"
+                        style={{ fontFamily: "'Inter', sans-serif", color: COLORS.goldAccent }}
                       >
-                        Entretien & Révision
+                        Muraja'a
                       </h3>
-                      <p className="text-sm mt-1" style={{ color: COLORS.sage }}>
+                      <p className="text-white/70 text-sm mt-1">
                         {pendingReviews > 0
-                          ? `${pendingReviews} bloc${pendingReviews > 1 ? 's' : ''} à réviser aujourd'hui`
-                          : 'Liaison & révision espacée'}
+                          ? `${pendingReviews} bloc${pendingReviews > 1 ? 's' : ''} à réviser`
+                          : 'Réviser et consolider'}
                       </p>
                     </div>
                   </div>
