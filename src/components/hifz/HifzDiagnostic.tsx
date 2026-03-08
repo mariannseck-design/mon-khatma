@@ -590,9 +590,28 @@ export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticPro
       {/* Accumulated summary */}
       {(solidBlocks.length > 0 || recentBlocks.length > 0) && (
         <div className="rounded-2xl p-4 mb-4 space-y-2" style={{ background: 'rgba(0,0,0,0.2)', border: `1px solid ${goldBorder}` }}>
-          <p className="text-xs font-bold text-center" style={{ color: goldColor }}>
-            Acquis enregistrés
-          </p>
+          <div className="flex items-center justify-between">
+            <p className="text-xs font-bold" style={{ color: goldColor }}>
+              Acquis enregistrés
+            </p>
+            <button
+              onClick={() => {
+                if (window.confirm('Effacer tous les acquis enregistrés ?')) {
+                  setSolidBlocks([]);
+                  setRecentBlocks([]);
+                  setSolidLabels([]);
+                  setRecentLabels([]);
+                  setRecentDaysMap(new Map());
+                  resetEntryForm();
+                  toast({ title: 'Acquis effacés', description: 'Vous pouvez recommencer votre saisie.' });
+                }
+              }}
+              className="flex items-center gap-1 text-[10px] text-red-400/70 hover:text-red-400 transition-colors"
+            >
+              <RotateCcw className="h-3 w-3" />
+              Tout effacer
+            </button>
+          </div>
           {solidBlocks.length > 0 && (
             <div className="flex items-center justify-between">
               <span className="text-[11px] text-white/60">🏛️ Acquis Solides</span>
