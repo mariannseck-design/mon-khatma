@@ -23,7 +23,38 @@ const FONT_SIZE_PRESETS = [
   { label: 'Mushaf', value: 42 },
 ];
 
-export default function ReaderSettingsPanel({
+interface ReaderSettingsPanelProps {
+  viewMode: 'image' | 'text';
+  onViewModeChange: (mode: 'image' | 'text') => void;
+  nightMode: boolean;
+  onNightModeChange: (on: boolean) => void;
+  fontSize: number;
+  onFontSizeChange: (size: number) => void;
+  isPlaying: boolean;
+  audioLoading: boolean;
+  onTogglePlay: () => void;
+  reciter: string;
+  onReciterChange: (id: string) => void;
+  onShowSurahDrawer?: () => void;
+  textSizeIndex?: number;
+  textSizes?: Array<{ label: string; value: number }>;
+  onTextSizeIndexChange?: (index: number) => void;
+  textModeDisabled?: boolean;
+  audioStartVerse?: number;
+  audioEndVerse?: number;
+  onAudioStartVerseChange?: (v: number | undefined) => void;
+  onAudioEndVerseChange?: (v: number | undefined) => void;
+  isOffline?: boolean;
+  tajweedEnabled?: boolean;
+  onTajweedChange?: (enabled: boolean) => void;
+  translationEnabled?: boolean;
+  onTranslationChange?: (enabled: boolean) => void;
+  translationEdition?: string;
+  onTranslationEditionChange?: (edition: string) => void;
+  currentPage?: number;
+  onGoToPage?: (page: number) => void;
+}
+
   viewMode, onViewModeChange,
   nightMode, onNightModeChange,
   fontSize, onFontSizeChange,
