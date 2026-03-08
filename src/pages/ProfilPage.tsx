@@ -98,6 +98,24 @@ export default function ProfilPage() {
           </CardContent>
         </Card>
 
+        <Card 
+          className="rounded-2xl cursor-pointer hover-lift" 
+          onClick={() => navigate('/rappels')}
+        >
+          <CardContent className="flex items-center justify-between pt-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-full bg-primary/10">
+                <Bell className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <p className="font-semibold text-sm">Mes Rappels</p>
+                <p className="text-xs text-muted-foreground">Gérer mes notifications</p>
+              </div>
+            </div>
+            <ChevronRight className="h-5 w-5 text-muted-foreground" />
+          </CardContent>
+        </Card>
+
         {isAdmin && (
           <Card className="rounded-2xl border-dashed border-yellow-500/30">
             <CardContent className="flex items-center justify-between pt-6">

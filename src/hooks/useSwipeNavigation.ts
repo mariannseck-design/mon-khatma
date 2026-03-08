@@ -1,7 +1,7 @@
 import { useRef, useState, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-const SWIPE_PAGES = ['/accueil', '/ramadan', '/emotions', '/rappels'];
+const SWIPE_PAGES = ['/accueil', '/ramadan', '/emotions', '/profil'];
 const SWIPE_THRESHOLD = 50;
 
 export function useSwipeNavigation() {
