@@ -430,7 +430,9 @@ export default function MurjaPage() {
               }}
             >
               <div className="flex items-center gap-2">
-                <TrendingUp className="h-4 w-4" style={{ color: 'var(--p-primary)' }} />
+                <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg, #6D28D9, #8B5CF6)', boxShadow: '0 3px 10px -2px rgba(139, 92, 246, 0.4)' }}>
+                  <TrendingUp className="h-3.5 w-3.5 text-white" />
+                </div>
                 <h3
                    className="text-sm font-bold"
                    style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-primary)' }}
