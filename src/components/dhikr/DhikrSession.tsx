@@ -163,7 +163,7 @@ export default function DhikrSession({ title, items, onBack }: DhikrSessionProps
       </div>
 
       {/* Content */}
-      <div className="flex-1 flex items-center justify-center">
+      <div className="flex-1 flex flex-col items-center justify-center">
         <AnimatePresence mode="wait">
           {sessionComplete ? (
             <motion.div
@@ -207,6 +207,30 @@ export default function DhikrSession({ title, items, onBack }: DhikrSessionProps
             />
           )}
         </AnimatePresence>
+
+        {/* Dot indicators */}
+        {!sessionComplete && items.length > 1 && (
+          <div className="flex items-center justify-center gap-1.5 py-3 flex-wrap max-w-[280px]">
+            {items.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => goTo(i)}
+                aria-label={`Aller au dhikr ${i + 1}`}
+                className="rounded-full transition-all duration-300"
+                style={{
+                  width: i === currentIndex ? 18 : 7,
+                  height: 7,
+                  background: i === currentIndex
+                    ? 'var(--p-accent)'
+                    : i < currentIndex
+                      ? 'var(--p-primary)'
+                      : 'var(--p-track)',
+                  opacity: i === currentIndex ? 1 : i < currentIndex ? 0.6 : 0.4,
+                }}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
