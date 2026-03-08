@@ -17,6 +17,7 @@ interface Props {
   repetitionLevel: number;
   onNext: () => void;
   onBack: () => void;
+  onPause?: () => void;
 }
 
 const FONT_FAMILY = "'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
