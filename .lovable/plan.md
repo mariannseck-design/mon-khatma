@@ -1,25 +1,21 @@
 
 
-## Plan : Diagramme d'activité plus précis
+# Diagnostic : 404 sur /quran-reader
 
-### Problème
-Le diagramme compte uniquement le **nombre de sessions** par jour (1 session = 1 barre). Ce n'est pas précis : une session de 3 versets et une de 20 versets ont le même poids.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Solution
-Compter le **nombre de versets** travaillés par jour (mémorisation + révision) au lieu du nombre de sessions.
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-### Modification : `src/pages/HifzSuiviPage.tsx`
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-1. **Requêtes enrichies** (lignes 112-113) : récupérer `start_verse, end_verse, created_at` pour `hifz_sessions` et `surah_number, verse_start, verse_end, created_at` pour `muraja_sessions` (au lieu de juste `created_at`)
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-2. **Calcul par versets** (lignes 149-167) : au lieu d'incrémenter `+1` par session, additionner `(end_verse - start_verse + 1)` pour chaque session du jour
-
-3. **Axe Y visible** : afficher l'axe Y avec le nombre de versets pour plus de lisibilité
-
-4. **Tooltip** : ajouter un Tooltip Recharts pour afficher "X versets" au survol/tap
-
-5. **Label** : mettre à jour le titre ou ajouter un sous-titre "versets travaillés" pour clarifier l'unité
-
-### Fichier modifié
-- `src/pages/HifzSuiviPage.tsx`
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

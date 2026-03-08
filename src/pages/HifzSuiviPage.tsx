@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { motion } from 'framer-motion';
 import { Flame, BookOpenCheck, RotateCcw, Target, Settings2, BookOpen, RefreshCw, BarChart3 } from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell, Tooltip } from 'recharts';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { Progress } from '@/components/ui/progress';
@@ -109,8 +109,8 @@ export default function HifzSuiviPage() {
       supabase.from('hifz_streaks').select('*').eq('user_id', user.id).maybeSingle(),
       supabase.from('hifz_memorized_verses').select('verse_start, verse_end').eq('user_id', user.id),
       supabase.from('hifz_goals').select('*').eq('user_id', user.id).eq('is_active', true).maybeSingle(),
-      supabase.from('muraja_sessions').select('created_at').eq('user_id', user.id).gte('created_at', sevenDaysAgo.toISOString()),
-      supabase.from('hifz_sessions').select('created_at').eq('user_id', user.id).gte('created_at', sevenDaysAgo.toISOString()),
+      supabase.from('muraja_sessions').select('verses_reviewed, created_at').eq('user_id', user.id).gte('created_at', sevenDaysAgo.toISOString()),
+      supabase.from('hifz_sessions').select('start_verse, end_verse, created_at').eq('user_id', user.id).gte('created_at', sevenDaysAgo.toISOString()),
       supabase.from('hifz_sessions')
         .select('start_verse, end_verse, completed_at')
         .eq('user_id', user.id)
@@ -147,10 +147,16 @@ export default function HifzSuiviPage() {
     }
 
     const dayCounts: Record<string, number> = {};
-    const allSessions = [...(murajaSessions || []), ...(hifzSessions || [])];
-    for (const s of allSessions) {
+    for (const s of (hifzSessions || [])) {
       const dateKey = s.created_at.split('T')[0];
-      dayCounts[dateKey] = (dayCounts[dateKey] || 0) + 1;
+      const verses = (s.end_verse - s.start_verse + 1);
+      dayCounts[dateKey] = (dayCounts[dateKey] || 0) + verses;
+    }
+    for (const s of (murajaSessions || [])) {
+      const dateKey = s.created_at.split('T')[0];
+      const reviewed = Array.isArray(s.verses_reviewed) ? s.verses_reviewed as any[] : [];
+      const verses = reviewed.reduce((sum: number, r: any) => sum + (Number(r.verse_end || r.end_verse || 0) - Number(r.verse_start || r.start_verse || 0) + 1), 0);
+      dayCounts[dateKey] = (dayCounts[dateKey] || 0) + (Number(verses) > 0 ? Number(verses) : 1);
     }
 
     const chartData: { day: string; count: number }[] = [];
@@ -440,7 +446,7 @@ export default function HifzSuiviPage() {
                     <BarChart3 className="h-3.5 w-3.5 text-white" />
                   </div>
                   <h3 className="text-sm font-bold" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-primary)' }}>
-                    Activité des 7 derniers jours
+                    Versets travaillés (7 jours)
                   </h3>
                 </div>
                 <span className="text-[11px] font-medium capitalize" style={{ color: 'var(--p-text-55)' }}>
@@ -450,7 +456,13 @@ export default function HifzSuiviPage() {
               <ResponsiveContainer width="100%" height={140}>
                 <BarChart data={weeklyData} barCategoryGap="30%">
                   <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: 'var(--p-text-65)', fontSize: 9, fontWeight: 500 }} />
-                  <YAxis hide allowDecimals={false} />
+                  <YAxis axisLine={false} tickLine={false} allowDecimals={false} tick={{ fill: 'var(--p-text-55)', fontSize: 9 }} width={28} />
+                  <Tooltip
+                    cursor={false}
+                    contentStyle={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', borderRadius: 8, fontSize: 12 }}
+                    formatter={(value: number) => [`${value} verset${value > 1 ? 's' : ''}`, '']}
+                    labelStyle={{ color: 'var(--p-text-65)', fontWeight: 600 }}
+                  />
                   <Bar dataKey="count" radius={[6, 6, 0, 0]} maxBarSize={28}>
                     {weeklyData.map((entry, i) => (
                       <Cell key={i} fill={entry.count > 0 ? 'var(--p-accent)' : 'var(--p-track)'} />
