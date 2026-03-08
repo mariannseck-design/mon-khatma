@@ -352,6 +352,7 @@ export const EVENING_ADHKAR: DhikrItem[] = [
   {
     title: 'La Protection',
     source: 'Abû Dâwûd n°5088, At-Tirmidhî n°3388',
+    fadl: 'Quiconque le dit 3 fois le soir, rien ne lui nuira jusqu\'au matin. (At-Tirmidhî)',
     arabic: 'بِسـمِ اللهِ الذي لا يَضُـرُّ مَعَ اسمِـهِ شَيءٌ في الأرْضِ وَلا في السّمـاءِ وَهـوَ السّمـيعُ العَلـيم',
     phonetic: "Bismi-llâhi-lladhî lâ yadurru ma'a-smihi shay'un fî-l-ardi wa lâ fî s-samâ'i wa huwa s-Samî'u-l-'Alîm.",
     french: "Au nom d'Allah, celui dont le nom protège de tout mal sur terre et dans les cieux. Il est l'Audient, l'Omniscient.",
