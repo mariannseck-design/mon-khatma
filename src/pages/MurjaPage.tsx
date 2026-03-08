@@ -348,12 +348,14 @@ export default function MurjaPage() {
             {/* Section Ar-Rabt */}
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                 <Link className="h-5 w-5 flex-shrink-0" style={{ color: 'var(--p-primary)' }} />
+                 <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg, #B8960C, #D4AF37)', boxShadow: '0 3px 10px -2px rgba(212, 175, 55, 0.4)' }}>
+                   <Link className="h-3.5 w-3.5 text-white" />
+                 </div>
                  <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
                    <span className="text-lg font-extrabold" style={{ color: 'var(--p-primary)' }}>Ar-Rabt</span>{' '}
                    <span className="text-sm font-medium" style={{ color: 'var(--p-text-75)' }}>(Liaison du jour)</span>
                  </h2>
-                 <span className="text-[10px] font-medium px-2 py-0.5 rounded-full" style={{ background: 'var(--p-card-active)', color: 'var(--p-primary)' }}>
+                 <span className="text-[10px] font-bold px-2 py-0.5 rounded-full text-white" style={{ background: 'linear-gradient(135deg, #065F46, #10B981)' }}>
                    {rabtVerses.length}
                  </span>
                  <MurajaMethodModal defaultTab="rabt" />
