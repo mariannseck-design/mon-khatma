@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { useServiceWorkerUpdate } from "@/hooks/useServiceWorkerUpdate";
-import { BookOpenCheck, RefreshCw, BarChart3 } from "lucide-react";
+import { BookOpenCheck, RefreshCw, BarChart3, Sparkles, BookOpen } from "lucide-react";
 import ComingSoonGate from "./components/layout/ComingSoonGate";
 import LandingPage from "./pages/LandingPage";
 import AuthPage from "./pages/AuthPage";
