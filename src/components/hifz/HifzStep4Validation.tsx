@@ -206,7 +206,7 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
         >
           <div className="flex items-center justify-between px-4 pt-3 pb-1">
             <p style={{ color: tc.textMuted }} className="text-xs uppercase tracking-wider">AYAT</p>
-            <Eye className="h-4 w-4 text-white/30" />
+            <Eye className="h-4 w-4" style={{ color: tc.textFaint }} />
           </div>
           <div
             className="px-2 pb-2 transition-all duration-300"
