@@ -331,9 +331,9 @@ export default function MurjaPage() {
                    {rabtVerses.length}
                  </span>
               </div>
-              <p className="text-[11px] -mt-1" style={{ color: 'rgba(28,36,33,0.5)' }}>
-                Acquis récents (30 derniers jours) — révision quotidienne sans plafond
-              </p>
+               <p className="text-[11px] font-medium -mt-1" style={{ color: 'rgba(28,36,33,0.65)' }}>
+                 Acquis récents (30 derniers jours) — révision quotidienne sans plafond
+               </p>
               <MurajaChecklist
                 items={rabtVerses}
                 section="rabt"
