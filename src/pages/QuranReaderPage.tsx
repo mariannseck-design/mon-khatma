@@ -23,10 +23,14 @@ const IMAGE_SOURCES = [
 
 export default function QuranReaderPage() {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const isOnline = useOnlineStatus();
   const [page, setPage] = useState(() => {
-    const saved = localStorage.getItem('quran_reader_page');
-    return saved ? Math.min(Math.max(parseInt(saved), 1), TOTAL_PAGES) : 1;
+    const urlPage = parseInt(searchParams.get('page') || '');
+    if (!isNaN(urlPage) && urlPage >= 1 && urlPage <= TOTAL_PAGES) return urlPage;
+    const saved = parseInt(localStorage.getItem('quran_reader_page') || '');
+    if (!isNaN(saved) && saved >= 1 && saved <= TOTAL_PAGES) return saved;
+    return 1;
   });
   const [direction, setDirection] = useState(0);
   const [showSurahDrawer, setShowSurahDrawer] = useState(false);
