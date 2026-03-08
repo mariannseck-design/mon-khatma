@@ -510,7 +510,7 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
                   style={{ maxHeight: `${zoomConfig[mushafZoom].maxH}px` }}
                 >
                   <img
-                    src={`https://tajweed.me/hafs-tajweed/p${mushafPage}.png`}
+                    src={`https://cdn.jsdelivr.net/gh/QuranHub/quran-pages-images@main/easyquran.com/hafs-tajweed/${mushafPage}.jpg`}
                     alt={`Mushaf page ${mushafPage}`}
                     className="rounded-lg mx-auto"
                     style={{
