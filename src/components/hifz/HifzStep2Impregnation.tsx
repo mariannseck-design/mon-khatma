@@ -331,7 +331,7 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
         {/* Hamidullah Translation - collapsible */}
         <div
           className="rounded-2xl overflow-hidden"
-          style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(212,175,55,0.15)' }}
+          style={{ background: tc.cardBg, border: `1px solid ${tc.cardBorder}` }}
         >
           <button
             onClick={() => setShowTranslation(v => !v)}
