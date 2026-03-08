@@ -78,7 +78,7 @@ function AppRoutes() {
       <Route path="/accueil" element={<ProtectedRoute><AccueilPage /></ProtectedRoute>} />
       <Route path="/planificateur" element={<ProtectedRoute><PlanificateurPage /></ProtectedRoute>} />
       <Route path="/cercle" element={<ProtectedRoute><CerclePage /></ProtectedRoute>} />
-      <Route path="/favoris" element={<ProtectedRoute><FavorisPage /></ProtectedRoute>} />
+      
       <Route path="/quran-reader" element={<ProtectedRoute><QuranReaderPage /></ProtectedRoute>} />
       
       <Route path="/emotions" element={<ProtectedRoute><EmotionsPage /></ProtectedRoute>} />
