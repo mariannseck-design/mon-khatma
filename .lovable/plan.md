@@ -1,21 +1,17 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Modifier le message de fin de session Dhikr
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Changement unique dans `src/components/dhikr/DhikrSession.tsx`
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+Ligne 82 : remplacer `Bârak Allâhu fîk` par :
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+```
+Qu'Allah <span class="honorific">(عز وجل)</span> accepte, Amine
+```
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+Le texte utilisera la classe `honorific` existante pour styliser la mention en arabe conformément aux conventions du projet.
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+### Fichier modifié
+- `src/components/dhikr/DhikrSession.tsx` (1 ligne)
 
