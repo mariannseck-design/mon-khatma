@@ -286,6 +286,7 @@ export default function DefiAlBaqara({ disabled = false }: { disabled?: boolean 
 
         <motion.button
           onClick={() => {
+            if (disabled) return;
             const baqaraPage = 2 + Math.floor(challenge.checkedDays.length * (48 / challenge.targetDays));
             const page = Math.min(baqaraPage, 49);
             navigate(`/quran-reader?page=${page}`);
@@ -293,8 +294,8 @@ export default function DefiAlBaqara({ disabled = false }: { disabled?: boolean 
           initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3, duration: 0.4 }}
-          whileTap={{ scale: 0.97 }}
-          className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-medium mt-2 transition-colors"
+          whileTap={disabled ? {} : { scale: 0.97 }}
+          className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-medium mt-2 transition-colors ${disabled ? 'opacity-50 pointer-events-none' : ''}`}
           style={{
             background: `${COLORS.emerald}10`,
             color: COLORS.emerald,
