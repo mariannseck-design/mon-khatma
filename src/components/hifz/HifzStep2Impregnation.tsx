@@ -363,7 +363,7 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
                   ) : (
                     <div className="space-y-2 max-h-48 overflow-y-auto text-left">
                       {translation.map((verse, i) => (
-                        <p key={i} className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.65)' }}>{verse}</p>
+                        <p key={i} className="text-sm leading-relaxed" style={{ color: tc.textSecondary }}>{verse}</p>
                       ))}
                     </div>
                   )}
