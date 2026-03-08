@@ -212,8 +212,8 @@ export async function findNextStartingPoint(userId: string): Promise<{
     .order('verse_start', { ascending: true });
 
   if (!memorized || memorized.length === 0) {
-    // Start from Al-Fatiha
-    return { surahNumber: 1, startVerse: 1, endVerse: 7, surahName: 'Al-Fatiha' };
+    const endVerse = await getPageAlignedEnd(1, 1);
+    return { surahNumber: 1, startVerse: 1, endVerse, surahName: 'Al-Fatiha' };
   }
 
   // Build a set of fully memorized surahs
@@ -229,28 +229,45 @@ export async function findNextStartingPoint(userId: string): Promise<{
   for (const surah of SURAHS) {
     const coverage = surahCoverage.get(surah.number);
     if (!coverage) {
-      // This surah has no memorized verses — start here
+      const endVerse = await getPageAlignedEnd(surah.number, 1);
       return {
         surahNumber: surah.number,
         startVerse: 1,
-        endVerse: Math.min(6, surah.versesCount),
+        endVerse: Math.min(endVerse, surah.versesCount),
         surahName: surah.name,
       };
     }
     if (coverage.maxVerseEnd < surah.versesCount) {
-      // Partially memorized — continue from where they left off
+      const startVerse = coverage.maxVerseEnd + 1;
+      const endVerse = await getPageAlignedEnd(surah.number, startVerse);
       return {
         surahNumber: surah.number,
-        startVerse: coverage.maxVerseEnd + 1,
-        endVerse: Math.min(coverage.maxVerseEnd + 6, surah.versesCount),
+        startVerse,
+        endVerse: Math.min(endVerse, surah.versesCount),
         surahName: surah.name,
       };
     }
-    // Fully memorized, continue to next surah
   }
 
-  // Everything memorized! Default to Al-Fatiha for revision
   return { surahNumber: 1, startVerse: 1, endVerse: 7, surahName: 'Al-Fatiha' };
+}
+
+/**
+ * Find the last verse of the same surah on the same Mushaf page as `startVerse`.
+ * Falls back to startVerse + 5 if data isn't available.
+ */
+async function getPageAlignedEnd(surahNumber: number, startVerse: number): Promise<number> {
+  try {
+    const page = await getExactVersePage(surahNumber, startVerse);
+    const ayahs = await getPageAyahs(page);
+    const sameSurahOnPage = ayahs.filter(a => a.surah.number === surahNumber);
+    if (sameSurahOnPage.length > 0) {
+      return Math.max(...sameSurahOnPage.map(a => a.numberInSurah));
+    }
+  } catch {
+    // fallback
+  }
+  return startVerse + 5;
 }
 
 /**
