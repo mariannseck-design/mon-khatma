@@ -542,11 +542,14 @@ export default function QuranReaderPage() {
               <h3 className="text-lg font-bold mb-2" style={{ color: '#6b5417', fontFamily: "'Playfair Display', serif" }}>
                 Bienvenue dans le Lecteur
               </h3>
-              <p className="text-sm mb-4 leading-relaxed" style={{ color: '#5a4a2a' }}>
-                Tu peux lire le Coran en <strong>mode Mushaf</strong> (images avec tajwid en couleur) ou en <strong>mode Texte</strong> (avec traduction et tajwid).
+              <p className="text-sm mb-3 leading-relaxed" style={{ color: '#5a4a2a' }}>
+                Tu peux lire le Coran en <strong>mode Mushaf</strong> (image) ou en <strong>mode Texte</strong>.
+              </p>
+              <p className="text-sm mb-3 leading-relaxed" style={{ color: '#5a4a2a' }}>
+                Tu peux aussi <strong>marquer ta page</strong> pour la retrouver facilement 🔖
               </p>
               <p className="text-xs mb-5 opacity-70" style={{ color: '#5a4a2a' }}>
-                Change de mode à tout moment via l'icône ⚙️ en bas de l'écran.
+                Change de mode et accède aux réglages via ⚙️ en bas de l'écran.
               </p>
               <button
                 onClick={dismissIntro}
