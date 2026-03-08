@@ -193,7 +193,7 @@ export default function DefiAlKahf({ disabled = false }: { disabled?: boolean })
             {completed ? (
               <div
                 className="flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold"
-                style={{ background: `${COLORS.goldAccent}18`, color: COLORS.goldAccent }}
+                style={{ background: `${COLORS.sand}18`, color: COLORS.sand }}
               >
                 <Check className="h-4 w-4" />
                 Lecture validée cette semaine ✨
