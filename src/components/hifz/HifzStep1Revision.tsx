@@ -243,7 +243,13 @@ export default function HifzStep1Revision({ onNext, onBack, onPause }: Props) {
               <HifzMushafToggle mode={mushafMode} onChange={(m) => { setMushafModeState(m); setMushafMode(m); }} />
 
               {/* Arabic text / image block */}
-              {mushafMode === 'image' && yesterdayVerses.length > 0 ? (
+              {mushafMode === 'physical' && yesterdayVerses.length > 0 ? (
+                <div className="rounded-xl px-4 py-6 text-center" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(212,175,55,0.15)' }}>
+                  <p className="text-xs italic" style={{ color: 'rgba(255,255,255,0.45)' }}>
+                    📖 Ouvre ton Mushaf physique et suis depuis celui-ci.
+                  </p>
+                </div>
+              ) : mushafMode === 'image' && yesterdayVerses.length > 0 ? (
                 <HifzMushafImage
                   surahNumber={yesterdayVerses[0].surahNumber}
                   startVerse={yesterdayVerses[0].verseStart}
