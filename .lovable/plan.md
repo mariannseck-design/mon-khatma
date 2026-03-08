@@ -1,21 +1,27 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Corriger le calcul de progression en pages
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Problème
+La conversion versets → pages utilise une division fixe par 15 (`versesCompleted / 15`), ce qui est imprécis. Certaines pages du Coran contiennent 5 versets, d'autres 20+.
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Solution
+Utiliser les données réelles de pages du Mushaf au lieu d'une approximation. Le fichier `quran-uthmani.json` contient probablement les numéros de pages par verset. On peut calculer le nombre exact de pages distinctes couvertes par les sessions complétées.
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+### Changements dans `src/pages/HifzSuiviPage.tsx`
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+**1. Charger les données de mapping verset → page**
+- Utiliser `surahData` ou `quranData` pour connaître la page de chaque verset
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+**2. Remplacer la ligne 141**
+Au lieu de :
+```ts
+setPeriodProgress(Math.round((versesCompleted / 15) * 10) / 10);
+```
+Calculer les pages distinctes couvertes par les sessions complétées en utilisant les numéros de page réels des versets mémorisés.
+
+**Alternative simple (si pas de mapping page disponible)** : utiliser une constante plus réaliste. Le Coran a 6236 versets sur 604 pages → ~10.3 versets/page en moyenne. Remplacer `/15` par `/10.3` pour une meilleure approximation.
+
+### Vérification nécessaire
+Je dois d'abord vérifier quelles données de pages sont disponibles dans le projet avant de choisir l'approche.
 
