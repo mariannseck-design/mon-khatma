@@ -11,33 +11,34 @@ interface QuranTextViewProps {
   darkMode?: boolean;
 }
 
-const FONT_FAMILY = "'KFGQPC Uthmanic Script HAFS', 'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
+const FONT_FAMILY = "'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
 
-const LEADING_DECORATION_PATTERN = /^[\s\u200E\u200F\u061C\u06DD\u06DE\u06E9\u06DA\u06DB\u06DC\u06DF\u06E0\u06E1\u06E2\u06E3\u06E4\u06E5\u06E6\u06E7\u06E8\u06EA\u06EB\u06EC\u06ED]+/u;
-
-function normalizeArabicForMatch(value: string) {
-  return value
-    .normalize('NFKD')
-    .replace(/\p{M}/gu, '')
-    .replace(/[\s\u200E\u200F\u061C]/gu, '')
-    .replace(/[ٱأإآ]/gu, 'ا')
-    .replace(/ى/gu, 'ي');
-}
+// Raw Basmala words for zero-normalization detection
+const BASMALA_WORDS = ['بِسْمِ', 'ٱللَّهِ', 'ٱلرَّحْمَٰنِ', 'ٱلرَّحِيمِ'];
 
 function stripLeadingBasmala(text: string) {
-  const withoutDecorations = text.replace(LEADING_DECORATION_PATTERN, '').trimStart();
-  if (!withoutDecorations) return withoutDecorations;
+  const trimmed = text.trimStart();
+  if (!trimmed) return trimmed;
 
-  if (withoutDecorations.startsWith('﷽')) {
-    return withoutDecorations.slice(1).replace(LEADING_DECORATION_PATTERN, '').trimStart();
+  // Check for single Basmala ligature character
+  if (trimmed.startsWith('﷽')) {
+    return trimmed.slice(1).trimStart();
   }
 
-  const normalized = normalizeArabicForMatch(withoutDecorations);
-  if (!normalized.startsWith('بسماللهالرحمنالرحيم')) {
-    return withoutDecorations;
-  }
+  // Check if the first 4 words match known Basmala patterns (raw comparison, zero normalization)
+  const words = trimmed.split(/\s+/u);
+  if (words.length < 4) return trimmed;
 
-  const words = withoutDecorations.split(/\s+/u);
+  // Compare first 4 words against known Basmala variants
+  const first4 = words.slice(0, 4);
+  const isBasmala = first4.every((word, i) => {
+    // Strip any non-letter decoration characters for matching only
+    const clean = word.replace(/[\u06DD\u06DE\u06E9\u06DA\u06DB\u06DC\u200E\u200F\u061C]/gu, '');
+    return clean === BASMALA_WORDS[i];
+  });
+
+  if (!isBasmala) return trimmed;
+
   if (words.length <= 4) return '';
   return words.slice(4).join(' ').trimStart();
 }
@@ -262,11 +263,14 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 28, dark
                 textAlign: 'justify',
                 textAlignLast: 'center',
                 direction: 'rtl',
-                fontSize: `${computedFontSize}px`,
+              fontSize: `${computedFontSize}px`,
                 lineHeight: `${lineHeight}px`,
                 color: textColor,
                 wordSpacing: '0.12em',
-                letterSpacing: '0.01em',
+                fontVariantLigatures: 'common-ligatures',
+                fontFeatureSettings: '"liga" 1, "calt" 1, "kern" 1',
+                textRendering: 'optimizeLegibility',
+                WebkitFontSmoothing: 'antialiased',
               }}
             >
               {group.ayahs.map((ayah) => {
