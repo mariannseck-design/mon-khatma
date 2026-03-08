@@ -230,12 +230,12 @@ export default function DefiAlKahf({ disabled = false }: { disabled?: boolean })
           </div>
 
           <motion.button
-            onClick={() => navigate('/quran-reader?page=293')}
+            onClick={() => { if (!disabled) navigate('/quran-reader?page=293'); }}
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.4 }}
-            whileTap={{ scale: 0.97 }}
-            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-medium mt-3 transition-colors"
+            whileTap={disabled ? {} : { scale: 0.97 }}
+            className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-medium mt-3 transition-colors ${disabled ? 'opacity-50 pointer-events-none' : ''}`}
             style={{
               background: 'rgba(255,255,255,0.08)',
               color: 'rgba(255,255,255,0.65)',
