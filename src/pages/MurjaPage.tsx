@@ -289,7 +289,7 @@ export default function MurjaPage() {
             Muraja'a
           </h1>
           <p className="text-xs font-medium" style={{ color: 'var(--p-text-75)' }}>
-            Consolide ta mémorisation — Ton programme se renouvelle à minuit
+            Consolide ta mémorisation
           </p>
         </div>
 
