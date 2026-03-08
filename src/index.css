@@ -267,6 +267,10 @@
     background: var(--gradient-warm);
   }
 
+  .bg-gradient-muraja {
+    background: var(--gradient-muraja);
+  }
+
   /* Soft button hover */
   .hover-lift {
     @apply transition-all duration-300 ease-out;
