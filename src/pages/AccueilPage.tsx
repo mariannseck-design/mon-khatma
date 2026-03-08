@@ -203,6 +203,11 @@ export default function AccueilPage() {
           <p className="text-muted-foreground text-base mt-1">{greeting()}</p>
         </motion.div>
 
+        {/* Citation du jour */}
+        <motion.div variants={itemVariants}>
+          <DailyQuote />
+        </motion.div>
+
         {/* EN-TÊTE FONDATEUR — Pages lues + Ma Tillawah fusionnées */}
         <motion.div variants={itemVariants}>
           <div
