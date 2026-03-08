@@ -1,21 +1,34 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan: Améliorations du lecteur Coran
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### 1. Désactiver le mode texte (sans le supprimer)
+- Dans `ReaderSettingsPanel.tsx`: masquer le toggle "Mushaf / Texte" et la section taille de texte
+- Dans `QuranReaderPage.tsx`: forcer `viewMode = 'image'` (ignorer la valeur sauvegardée)
+- Le code de `QuranTextView` reste intact, prêt à être réactivé
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### 2. Fixer la page image (pas de scroll, zoom autorisé)
+- Dans `QuranReaderPage.tsx`: ajouter `overflow: hidden` sur le conteneur de l'image pour empêcher tout défilement vertical
+- Conserver le pinch-to-zoom et le double-tap zoom existants
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+### 3. Améliorer la précision de sélection des versets
+- Dans `ImageVerseOverlay.tsx`: le système actuel mappe par **ligne** (15 zones), ce qui crée des décalages
+- Ajuster les offsets `topOffset` / `bottomOffset` pour mieux aligner les zones de frappe avec le texte réel du Mushaf
+- Affiner les marges (top ~8%, bottom ~8% pour les pages normales) pour coller au texte imprimé
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+### 4. Choix verset début/fin pour la récitation audio
+- Dans `ReaderSettingsPanel.tsx`: ajouter deux champs numériques "Du verset" / "Au verset" dans la section audio
+- Passer `startVerse` et `endVerse` au hook `useQuranAudio`
+- Dans `useQuranAudio.ts`: filtrer les ayahs chargées pour ne jouer que celles dans la plage sélectionnée
+- Ajouter les props nécessaires dans l'interface
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+### 5. Ajouter Al-Ghamidi aux récitateurs
+- Dans `useQuranAudio.ts`: ajouter `{ id: 'ar.saabormedien', name: 'Al-Ghamidi' }` à la liste `RECITERS`
+- L'identifiant API alquran.cloud pour Saad Al-Ghamidi est `ar.saoodshuraym` ou similaire -- je vérifierai l'ID exact disponible sur l'API
+
+### Fichiers modifiés
+- `src/hooks/useQuranAudio.ts` -- ajout récitateur + filtre plage versets
+- `src/components/quran/ReaderSettingsPanel.tsx` -- masquer mode texte, ajouter champs versets
+- `src/pages/QuranReaderPage.tsx` -- forcer mode image, fixer overflow
+- `src/components/quran/ImageVerseOverlay.tsx` -- ajuster alignement zones de frappe
 
