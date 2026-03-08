@@ -36,6 +36,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (session?.user) {
           setTimeout(() => {
             checkAdminRole(session.user.id);
+            checkAllowedEmail(session.user.email);
             ensureProfile(session.user.id);
           }, 0);
         } else {
