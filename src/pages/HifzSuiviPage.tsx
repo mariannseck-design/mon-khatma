@@ -419,7 +419,9 @@ export default function HifzSuiviPage() {
                 className="rounded-2xl p-4 flex flex-col items-center gap-2"
                 style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', boxShadow: 'var(--p-card-shadow)' }}
               >
-                <RotateCcw className="h-5 w-5" style={{ color: 'var(--p-accent)' }} />
+                <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #065F46, #10B981)', boxShadow: '0 4px 10px rgba(16, 185, 129, 0.3)' }}>
+                  <RotateCcw className="h-4.5 w-4.5 text-white" />
+                </div>
                 <span className="text-2xl font-bold" style={{ color: 'var(--p-primary)' }}>{streak.tours}</span>
                 <span className="text-[10px] font-medium text-center leading-tight" style={{ color: 'var(--p-text-65)' }}>Cycles terminés</span>
               </motion.div>
