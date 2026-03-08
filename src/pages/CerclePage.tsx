@@ -157,7 +157,7 @@ export default function CerclePage() {
         <div className="zen-header">
           <h1>Espace Communauté</h1>
           <p className="text-muted-foreground">
-            Un espace d'entraide avec l'aide d'Allah <span className="honorific">(عز وجل)</span>
+            Un espace d'entraide avec l'aide d'Allah
           </p>
         </div>
 
