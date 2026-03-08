@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ChevronRight, Moon, MapPin, Heart, Sparkles, Star, Trash2 } from 'lucide-react';
 import { AppLayout } from '@/components/layout/AppLayout';
@@ -16,7 +17,10 @@ const GOLD = '#D4AF37';
 type View = 'categories' | 'subthemes' | 'session' | 'favorites' | 'fav-session';
 
 export default function DouasPage() {
-  const [view, setView] = useState<View>('categories');
+  const [searchParams] = useSearchParams();
+  const [view, setView] = useState<View>(() => {
+    return searchParams.get('view') === 'favorites' ? 'favorites' : 'categories';
+  });
   const [selectedCategory, setSelectedCategory] = useState<DouaCategory | null>(null);
   const [selectedSubtheme, setSelectedSubtheme] = useState<DouaSubtheme | null>(null);
   const [favSessionItems, setFavSessionItems] = useState<DhikrItem[]>([]);

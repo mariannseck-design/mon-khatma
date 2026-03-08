@@ -1,23 +1,21 @@
 
 
-## Remplacer "Mes Versets Favoris" par "Mes Invocations Favorites" sur l'accueil
+# Diagnostic : 404 sur /quran-reader
 
-### Constat
-La section `FavoriteVersesSection` dans l'onglet "Mon Univers" affiche les versets favoris du Coran (table `favorite_verses`). L'utilisateur veut que cette section montre les **invocations/duas favorites** (système `useDouaFavorites` basé sur localStorage).
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Changements
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-**1. Créer `src/components/favoris/FavoriteDouasSection.tsx`**
-- Nouveau composant qui remplace `FavoriteVersesSection` dans le contexte dhikr/zikr
-- Utilise le hook `useDouaFavorites` existant pour lire les favoris
-- Affiche le nombre d'invocations sauvegardées et les catégories
-- Au clic, redirige vers la page Douas avec la vue favoris (`/douas?view=favorites`)
-- Même style visuel que FavoriteVersesSection (carte arrondie, icône coeur, chevron)
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-**2. Modifier `src/pages/AccueilPage.tsx`**
-- Remplacer l'import et l'utilisation de `FavoriteVersesSection` par `FavoriteDouasSection`
-- Titre : "Mes Invocations Favorites" au lieu de "Mes Versets Favoris"
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-**3. Conserver `FavoriteVersesSection`**
-- Le composant et la page `/favoris` restent disponibles pour les versets favoris (utilisés depuis le Mushaf), mais ne sont plus affichés dans l'onglet "Mon Univers"
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

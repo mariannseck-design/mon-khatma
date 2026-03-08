@@ -17,7 +17,7 @@ import DefiAlKahf from '@/components/defis/DefiAlKahf';
 import DefiAlBaqara from '@/components/defis/DefiAlBaqara';
 import DefisCommunityCounter from '@/components/defis/DefisCommunityCounter';
 import HifzCommunityCounter from '@/components/hifz/HifzCommunityCounter';
-import FavoriteVersesSection from '@/components/favoris/FavoriteVersesSection';
+import FavoriteDouasSection from '@/components/favoris/FavoriteDouasSection';
 import { useDailyNotification } from '@/hooks/useDailyNotification';
 import { usePushSubscription } from '@/hooks/usePushSubscription';
 import DailyQuote from '@/components/accueil/DailyQuote';
@@ -555,9 +555,9 @@ export default function AccueilPage() {
               </Link>
             </motion.div>
 
-            {/* ═══ MES VERSETS FAVORIS ═══ */}
+            {/* ═══ MES INVOCATIONS FAVORITES ═══ */}
             <motion.div variants={itemVariants}>
-              <FavoriteVersesSection />
+              <FavoriteDouasSection />
             </motion.div>
 
             {/* ═══ NOS DÉFIS ═══ */}
