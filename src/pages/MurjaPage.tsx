@@ -374,12 +374,14 @@ export default function MurjaPage() {
             {/* Section Muraja'a (Consolidation) */}
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                 <BookOpen className="h-5 w-5 flex-shrink-0" style={{ color: 'var(--p-primary)' }} />
+                 <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg, #065F46, #10B981)', boxShadow: '0 3px 10px -2px rgba(16, 185, 129, 0.4)' }}>
+                   <BookOpen className="h-3.5 w-3.5 text-white" />
+                 </div>
                  <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
                    <span className="text-lg font-extrabold" style={{ color: 'var(--p-primary)' }}>Muraja'a</span>{' '}
                    <span className="text-sm font-medium" style={{ color: 'var(--p-text-75)' }}>(Consolidation)</span>
                  </h2>
-                 <span className="text-[10px] font-medium px-2 py-0.5 rounded-full" style={{ background: 'var(--p-card-active)', color: 'var(--p-primary)' }}>
+                 <span className="text-[10px] font-bold px-2 py-0.5 rounded-full text-white" style={{ background: 'linear-gradient(135deg, #065F46, #10B981)' }}>
                    {tourVerses.length}
                  </span>
                  <TooltipProvider delayDuration={0}>
