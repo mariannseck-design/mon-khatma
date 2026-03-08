@@ -1,16 +1,21 @@
 
 
-## Modifications de la modale « Notre Méthode »
+# Diagnostic : 404 sur /quran-reader
 
-### Fichier : `src/components/muraja/MurajaMethodModal.tsx`
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-**3 changements :**
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-1. **Titre** (ligne 48) : Remplacer `💡 Le coin des curieux` par `📖 Notre Méthode`
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-2. **Onglet SM-2 — paragraphe ligne 106-112** : Remplacer la phrase « C'est la méthode la plus efficace au monde pour préserver le savoir transmis par les Prophètes (عليهم السلام) sur le très long terme. » par :
-   - « C'est une méthode internationalement reconnue et scientifiquement prouvée pour ancrer durablement les connaissances dans la mémoire à long terme. »
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-3. **Encadré résumé SM-2 — lignes 175-178** : Remplacer « par la grâce d'Allah (عز وجل), stabilisant ta mémoire sur le très long terme. » par :
-   - « stabilisant ta mémoire durablement sur le très long terme. »
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

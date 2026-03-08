@@ -45,7 +45,7 @@ export default function MurajaMethodModal({ defaultTab = 'rabt', trigger }: Mura
             className="text-lg font-bold tracking-wide"
             style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-primary)' }}
           >
-            💡 Le coin des curieux
+            📖 Notre Méthode
           </DialogTitle>
         </DialogHeader>
 
@@ -106,10 +106,8 @@ export default function MurajaMethodModal({ defaultTab = 'rabt', trigger }: Mura
               <p className="text-xs leading-relaxed" style={{ color: '#1C2421' }}>
                 Le SM-2 est un système de « répétition espacée ». Plutôt que de tout réviser chaque jour,
                 le système calcule le <strong>moment précis</strong> où ton cerveau s'apprête à oublier une information
-                pour te la proposer à nouveau. C'est la méthode la plus efficace au monde pour préserver le savoir
-                transmis par les Prophètes{' '}
-                <span style={{ fontFamily: "'Amiri', serif", fontWeight: 'bold', fontSize: '1.1em' }}>(عليهم السلام)</span>{' '}
-                sur le très long terme.
+                pour te la proposer à nouveau. C'est une méthode <strong>internationalement reconnue</strong> et
+                scientifiquement prouvée pour ancrer durablement les connaissances dans la mémoire à long terme.
               </p>
 
               {/* Forgetting curve chart */}
@@ -173,9 +171,7 @@ export default function MurajaMethodModal({ defaultTab = 'rabt', trigger }: Mura
                 style={{ background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.2)', color: '#1C2421' }}
               >
                 <strong>En résumé :</strong> Chaque révision programmée par le SM-2 vient briser la courbe de l'oubli,
-                par la grâce d'<strong>Allah</strong>{' '}
-                <span style={{ fontFamily: "'Amiri', serif", fontWeight: 'bold', fontSize: '1.1em' }}>(عز وجل)</span>,
-                stabilisant ta mémoire sur le très long terme.
+                stabilisant ta mémoire durablement sur le très long terme.
               </div>
             </div>
           </TabsContent>
