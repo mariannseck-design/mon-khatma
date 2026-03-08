@@ -343,7 +343,7 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
             </span>
             <ChevronDown
               className="h-4 w-4 transition-transform duration-200"
-              style={{ color: 'rgba(255,255,255,0.4)', transform: showTranslation ? 'rotate(180deg)' : 'rotate(0deg)' }}
+              style={{ color: tc.textMuted, transform: showTranslation ? 'rotate(180deg)' : 'rotate(0deg)' }}
             />
           </button>
           <AnimatePresence>
