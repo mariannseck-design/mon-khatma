@@ -52,7 +52,7 @@ function CircularGauge({ value, max, label }: { value: number; max: number; labe
           / {max}
         </text>
       </svg>
-      <span className="text-xs" style={{ color: 'rgba(28,36,33,0.5)' }}>{label}</span>
+      <span className="text-xs font-medium" style={{ color: 'rgba(28,36,33,0.65)' }}>{label}</span>
     </div>
   );
 }
