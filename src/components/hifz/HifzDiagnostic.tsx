@@ -78,6 +78,10 @@ export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticPro
   const [recentBlocks, setRecentBlocks] = useState<BlockWithMeta[]>([]);
   const [recentDaysMap, setRecentDaysMap] = useState<Map<number, number>>(new Map()); // index -> days
 
+  // Human-readable labels for what the user entered (e.g. "Pages 1-10, 50-55")
+  const [solidLabels, setSolidLabels] = useState<string[]>([]);
+  const [recentLabels, setRecentLabels] = useState<string[]>([]);
+
   // Pages state
   const [pageIntervals, setPageIntervals] = useState<PageInterval[]>([{ id: '1', start: 1, end: 20 }]);
 
@@ -190,15 +194,40 @@ export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticPro
     return Array.from(surahSelections.values()).some(s => s.selected);
   }, [activeTab, pageIntervals, selectedJuz, surahSelections]);
 
+  // ─── Build a human-readable label from current form ───
+  const buildEntryLabel = (): string => {
+    if (activeTab === 'pages') {
+      return pageIntervals.map(i => `p.${i.start}-${i.end}`).join(', ');
+    } else if (activeTab === 'juz') {
+      const nums = Array.from(selectedJuz).sort((a, b) => a - b);
+      return nums.map(n => `Juz ${n}`).join(', ');
+    } else {
+      const selected = Array.from(surahSelections.entries())
+        .filter(([, sel]) => sel.selected)
+        .sort(([a], [b]) => a - b);
+      return selected.map(([num]) => {
+        const s = SURAHS.find(s => s.number === num);
+        return s ? s.name : `S.${num}`;
+      }).join(', ');
+    }
+  };
+
+  // ─── Compute total pages from labels ───
+  const countPagesFromIntervals = (intervals: PageInterval[]) =>
+    intervals.reduce((sum, i) => sum + Math.max(0, i.end - i.start + 1), 0);
+
   // ─── Save entry for a category ───
   const saveCurrentEntry = (category: Category) => {
     const blocks = buildCurrentBlocks(category);
+    const label = buildEntryLabel();
     if (category === 'solid') {
       setSolidBlocks(prev => [...prev, ...blocks]);
+      setSolidLabels(prev => [...prev, label]);
       resetEntryForm();
       setStep('choose-category');
     } else {
       setRecentBlocks(prev => [...prev, ...blocks]);
+      setRecentLabels(prev => [...prev, label]);
       // Initialize days map for new blocks
       setRecentDaysMap(prev => {
         const next = new Map(prev);
@@ -567,13 +596,13 @@ export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticPro
           {solidBlocks.length > 0 && (
             <div className="flex items-center justify-between">
               <span className="text-[11px] text-white/60">🏛️ Acquis Solides</span>
-              <span className="text-[11px] font-bold" style={{ color: goldColor }}>{solidBlocks.length} blocs</span>
+              <span className="text-[11px] font-bold" style={{ color: goldColor }}>{solidLabels.join(' · ')}</span>
             </div>
           )}
           {recentBlocks.length > 0 && (
             <div className="flex items-center justify-between">
               <span className="text-[11px] text-white/60">🌱 Récents (Liaison)</span>
-              <span className="text-[11px] font-bold" style={{ color: '#4ade80' }}>{recentBlocks.length} blocs</span>
+              <span className="text-[11px] font-bold" style={{ color: '#4ade80' }}>{recentLabels.join(' · ')}</span>
             </div>
           )}
         </div>
@@ -627,11 +656,12 @@ export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticPro
             className="w-full rounded-xl py-4 font-bold text-sm"
             style={{ background: `linear-gradient(135deg, ${goldColor}, #c4a030)`, color: '#1a2e1a',
               boxShadow: '0 4px 20px rgba(212,175,55,0.3)' }}>
-            {solidBlocks.length > 0 && recentBlocks.length > 0
-              ? `✨ Confirmer (${solidBlocks.length} solide${solidBlocks.length > 1 ? 's' : ''} + ${recentBlocks.length} récent${recentBlocks.length > 1 ? 's' : ''})`
-              : solidBlocks.length > 0
-                ? `✨ Confirmer ${solidBlocks.length === 1 ? 'mon' : 'mes'} ${solidBlocks.length} bloc${solidBlocks.length > 1 ? 's' : ''} solide${solidBlocks.length > 1 ? 's' : ''}`
-                : `✨ Confirmer ${recentBlocks.length === 1 ? 'mon' : 'mes'} ${recentBlocks.length} bloc${recentBlocks.length > 1 ? 's' : ''} récent${recentBlocks.length > 1 ? 's' : ''}`}
+            {(() => {
+              const solidDesc = solidLabels.length > 0 ? solidLabels.join(', ') : '';
+              const recentDesc = recentLabels.length > 0 ? recentLabels.join(', ') : '';
+              if (solidDesc && recentDesc) return `✨ Confirmer (${solidDesc} + ${recentDesc})`;
+              return `✨ Confirmer ${solidDesc || recentDesc}`;
+            })()}
           </motion.button>
         )}
 
