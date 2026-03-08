@@ -1,7 +1,8 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Check, ChevronLeft, ChevronRight, Minus, Plus, Info, ChevronDown } from 'lucide-react';
+import { ArrowLeft, Check, ChevronLeft, ChevronRight, Minus, Plus, Info, ChevronDown, Heart } from 'lucide-react';
 import DhikrCounter, { type DhikrItem } from './DhikrCounter';
+import { useDouaFavorites, makeDouaId } from '@/hooks/useDouaFavorites';
 
 const ARABIC_SIZES = ['1.3rem', '1.7rem', '2.2rem'];
 const ARABIC_LABELS = ['ا', 'ا', 'ا'];
@@ -19,9 +20,11 @@ interface DhikrSessionProps {
   items: DhikrItem[];
   onBack: () => void;
   intro?: IntroSection;
+  categoryId?: string;
 }
 
-export default function DhikrSession({ title, items, onBack, intro }: DhikrSessionProps) {
+export default function DhikrSession({ title, items, onBack, intro, categoryId = 'dhikr' }: DhikrSessionProps) {
+  const { isFavorite, toggleFavorite } = useDouaFavorites();
   const sessionKey = `dhikr-session-${title}`;
   const [showIntro, setShowIntro] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(() => {
@@ -144,6 +147,23 @@ export default function DhikrSession({ title, items, onBack, intro }: DhikrSessi
         >
           <ChevronRight className="w-5 h-5" />
         </button>
+
+        {/* Favorite button */}
+        {!sessionComplete && (() => {
+          const currentItem = items[currentIndex];
+          const favId = makeDouaId(categoryId, '', currentItem.title);
+          const isFav = isFavorite(favId);
+          return (
+            <button
+              onClick={() => toggleFavorite(favId, title, '', currentItem)}
+              className="p-1.5 rounded-full transition-all"
+              style={{ color: isFav ? '#e74c3c' : 'var(--p-text-55)' }}
+              aria-label={isFav ? 'Retirer des favoris' : 'Ajouter aux favoris'}
+            >
+              <Heart className="w-5 h-5" fill={isFav ? '#e74c3c' : 'none'} />
+            </button>
+          );
+        })()}
 
         {/* Arabic size control */}
         <div className="flex items-center gap-1 ml-1">
