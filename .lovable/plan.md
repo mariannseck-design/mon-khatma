@@ -1,24 +1,21 @@
 
 
-## Plan : Corriger le comptage des versets Muraja'a dans le diagramme
+# Diagnostic : 404 sur /quran-reader
 
-### Problème
-Le diagramme sous-compte les versets de Muraja'a. Les sessions sont insérées avec les clés `{ surah, start, end }` mais le parsing cherche `verse_end / end_verse` et `verse_start / start_verse`. Résultat : chaque session Muraja'a compte pour 1 verset au lieu du vrai nombre, ce qui rend le diagramme imprécis et donne l'impression de peu d'activité.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Correction : `src/pages/HifzSuiviPage.tsx` (ligne 158)
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-Ajouter les clés `end` et `start` dans le fallback du reduce :
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-```
-// Avant
-r.verse_end || r.end_verse || 0
-r.verse_start || r.start_verse || 0
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-// Après  
-r.verse_end || r.end_verse || r.end || 0
-r.verse_start || r.start_verse || r.start || 0
-```
-
-### Fichier modifié
-- `src/pages/HifzSuiviPage.tsx` — ligne 158
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
