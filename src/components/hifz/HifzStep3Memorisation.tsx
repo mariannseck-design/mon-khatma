@@ -636,8 +636,8 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
               )}
             </div>
 
-            {/* Audio: discreet help in phases 2-3 */}
-            {!phaseInfo.audioProminent && (
+            {/* Audio: discreet help in phase 2 only */}
+            {!phaseInfo.audioProminent && ('audioAvailable' in phaseInfo && phaseInfo.audioAvailable) && (
               <button
                 onClick={toggleAudioHelp}
                 className="flex items-center justify-center gap-1.5 mx-auto px-3 py-1.5 rounded-lg text-xs transition-all active:scale-95"
