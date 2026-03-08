@@ -26,14 +26,10 @@ export default function DailyQuote() {
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.2 }}
-      className="flex items-start gap-3 rounded-2xl px-4 py-3.5"
-      style={{
-        background: 'rgba(6, 95, 70, 0.06)',
-        border: '1px solid rgba(45, 106, 79, 0.2)',
-      }}
+      className="flex flex-col items-center text-center px-4 py-3.5"
     >
-      <Icon className="shrink-0 mt-0.5" size={18} style={{ color: '#52796f' }} />
-      <p className="text-sm italic leading-relaxed" style={{ color: '#2d6a4f' }}>
+      <Icon className="mb-2" size={16} style={{ color: 'var(--p-text-55)' }} />
+      <p className="text-sm italic leading-relaxed" style={{ color: 'var(--p-text-65)' }}>
         {renderWithHonorifics(quote.text)}
       </p>
     </motion.div>
