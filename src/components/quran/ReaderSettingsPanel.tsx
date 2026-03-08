@@ -6,8 +6,6 @@ import { RECITERS } from '@/hooks/useQuranAudio';
 export const TRANSLATION_EDITIONS = [
   { id: 'fr.hamidullah', label: 'Français (Hamidullah)', lang: '🇫🇷' },
   { id: 'en.sahih', label: 'English (Sahih Int.)', lang: '🇬🇧' },
-  { id: 'fr.leclerc', label: 'Français (Montada)', lang: '🇫🇷' },
-  { id: 'en.pickthall', label: 'English (Pickthall)', lang: '🇬🇧' },
 ];
 
 interface ReaderSettingsPanelProps {
