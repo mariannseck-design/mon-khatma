@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BookOpen, CheckCircle2, Sparkles, ArrowLeft, Layers, Plus, X, ChevronDown, ChevronUp, Building2, Sprout, Clock } from 'lucide-react';
+import { BookOpen, CheckCircle2, Sparkles, ArrowLeft, Layers, Plus, X, ChevronDown, ChevronUp, Building2, Sprout, Clock, RotateCcw } from 'lucide-react';
 import { SURAHS } from '@/lib/surahData';
 import { surahsToVerseBlocks, pageRangeToVerseBlocks, injectMemorizedVerses } from '@/lib/hifzUtils';
 import { useAuth } from '@/contexts/AuthContext';
