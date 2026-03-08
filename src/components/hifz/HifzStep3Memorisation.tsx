@@ -309,7 +309,7 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
         {/* Subtitle */}
         <div>
           <p className="text-sm font-semibold" style={{ color: '#d4af37' }}>L'ancrage d'acier</p>
-          <p className="text-white/50 text-xs">(Objectif {tikrarTarget} répétitions)</p>
+          <p style={{ color: tc.textMuted }} className="text-xs">(Objectif {tikrarTarget} répétitions)</p>
         </div>
 
 
