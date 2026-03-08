@@ -438,15 +438,9 @@ export default function MurjaPage() {
                      </span>
                      <div className="flex items-center gap-2 text-[10px] font-medium" style={{ color: 'var(--p-text-65)' }}>
                       <span>{s.versesCount} v.</span>
-                      <span className="px-1.5 py-0.5 rounded text-[9px]" style={{
-                        background: s.status === 'liaison' ? 'rgba(74,222,128,0.15)' : 'var(--p-card)',
-                        color: s.status === 'liaison' ? '#4ade80' : 'var(--p-text-65)',
-                      }}>
-                        {s.status === 'liaison' ? 'Liaison' : 'Tour'}
-                      </span>
                      <span className="flex items-center gap-0.5">
                         <CalendarDays className="h-2.5 w-2.5" />
-                        {`Prochain palier le ${formatDate(s.nextReview)} à 00h`}
+                        {`Prochaine Muraja'a le ${formatDate(s.nextReview)} à 00h`}
                       </span>
                     </div>
                   </div>
