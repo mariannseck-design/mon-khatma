@@ -337,7 +337,7 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
             onClick={() => setShowTranslation(v => !v)}
             className="w-full flex items-center justify-between px-4 py-3 text-left transition-all active:scale-[0.99]"
           >
-            <span className="flex items-center gap-2 text-sm" style={{ color: 'rgba(255,255,255,0.7)' }}>
+            <span className="flex items-center gap-2 text-sm" style={{ color: tc.textSecondary }}>
               <BookOpen className="h-4 w-4" style={{ color: '#d4af37' }} />
               Traduction — {surahName} (v.{startVerse}-{endVerse})
             </span>
