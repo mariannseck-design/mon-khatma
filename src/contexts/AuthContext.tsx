@@ -139,7 +139,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { error: error as Error | null };
   };
 
-    const hasFullAccess = isAdmin || (user?.email ? ALLOWED_EMAILS.includes(user.email) : false);
+    const hasFullAccess = isAdmin || isAllowedEmail;
 
     return (
       <AuthContext.Provider value={{ 
