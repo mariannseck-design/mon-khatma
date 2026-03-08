@@ -168,6 +168,15 @@ export default function HifzSuiviPage() {
       chartData.push({ day: label, count: dayCounts[key] || 0 });
     }
     setWeeklyData(chartData);
+
+    // Fetch next starting point & today's revisions
+    const [point, revisions] = await Promise.all([
+      findNextStartingPoint(user.id),
+      getTodayRevisions(user.id),
+    ]);
+    setNextPoint(point);
+    setTodayRevisions(revisions);
+
     setLoading(false);
   };
 
