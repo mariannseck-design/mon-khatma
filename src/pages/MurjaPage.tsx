@@ -288,7 +288,7 @@ export default function MurjaPage() {
             Muraja'a
           </h1>
           <p className="text-xs font-medium" style={{ color: 'var(--p-text-75)' }}>
-            Consolide ta mémorisation — reset à minuit
+            Consolide ta mémorisation — Nouveau cycle à minuit
           </p>
         </div>
 
@@ -429,7 +429,7 @@ export default function MurjaPage() {
                    className="text-base font-bold"
                    style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-text)' }}
                  >
-                   Le Tour — Révision SM-2
+                   L'Entretien Continu (Le Tour)
                  </h2>
                  <span className="text-[10px] font-medium px-2 py-0.5 rounded-full" style={{ background: 'var(--p-card-active)', color: 'var(--p-primary)' }}>
                    {tourVerses.length}
@@ -443,7 +443,7 @@ export default function MurjaPage() {
                  className="rounded-lg px-3 py-2 text-[11px] leading-relaxed"
                  style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', color: 'var(--p-text-65)' }}
                >
-                 <strong style={{ color: 'var(--p-primary)' }}>SM-2</strong> (SuperMemo-2) : Algorithme de révision espacée qui calcule ton taux d'oubli pour te proposer de réviser au moment parfait.
+                 Ton programme de révision intelligent (<strong style={{ color: 'var(--p-primary)' }}>Algorithme SM-2</strong>). Il s'adapte naturellement à ta mémoire pour te proposer de réviser chaque verset au moment parfait, préservant ainsi ton trésor de l'oubli.
                </div>
               <MurajaChecklist
                 items={tourVerses}
