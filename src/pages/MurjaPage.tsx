@@ -284,10 +284,10 @@ export default function MurjaPage() {
             }}
           >
             <RotateCcw className="h-10 w-10 mx-auto mb-4" style={{ color: '#D4AF37' }} />
-            <p className="text-base leading-relaxed" style={{ color: 'rgba(253,251,247,0.85)' }}>
+            <p className="text-base font-medium leading-relaxed" style={{ color: 'rgba(253,251,247,0.9)' }}>
               Tu n'as pas encore de versets mémorisés.
             </p>
-            <p className="text-sm mt-2" style={{ color: 'rgba(253,251,247,0.5)' }}>
+            <p className="text-sm font-medium mt-2" style={{ color: 'rgba(253,251,247,0.7)' }}>
               Commence par le module Hifz pour ancrer tes premiers versets !
             </p>
           </div>
