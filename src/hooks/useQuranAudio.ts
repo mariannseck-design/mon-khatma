@@ -13,7 +13,7 @@ export const RECITERS: readonly ReciterEntry[] = [
   { id: 'ea.ghamidi', name: 'Saad Al-Ghamidi', source: 'everyayah', folder: 'Sa3d_Al-Ghamidi/128kbps' },
   { id: 'ea.yasserdossari', name: 'Yasser Al-Dosari', source: 'everyayah', folder: 'Yasser_Ad-Dussary_128kbps' },
   { id: 'ea.nasserqatami', name: 'Nasser Al-Qatami', source: 'everyayah', folder: 'Nasser_Alqatami_128kbps' },
-  { id: 'ea.mahermuaiqly', name: 'Maher Al-Muaiqly', source: 'everyayah', folder: 'MauroHammad_128kbps' },
+  { id: 'ea.mahermuaiqly', name: 'Maher Al-Muaiqly', source: 'everyayah', folder: 'MaherAlMuaiqly128kbps' },
   { id: 'ar.husary', name: 'Al-Husary', source: 'alquran' },
   { id: 'ar.abdulsamad', name: 'Abdul Samad', source: 'alquran' },
   { id: 'ar.minshawi', name: 'Al-Minshawi', source: 'alquran' },
