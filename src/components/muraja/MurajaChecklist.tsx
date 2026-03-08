@@ -68,7 +68,7 @@ export default function MurajaChecklist({
         }}
       >
         <BookOpen className="h-6 w-6 mx-auto mb-2" style={{ color: '#D4AF37' }} />
-        <p className="text-sm" style={{ color: 'rgba(28,36,33,0.5)' }}>
+        <p className="text-sm font-medium" style={{ color: 'rgba(28,36,33,0.65)' }}>
           {section === 'rabt'
             ? 'Aucun acquis récent (< 30 jours)'
             : "Aucune révision planifiée aujourd'hui"}
