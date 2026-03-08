@@ -131,12 +131,12 @@ export default function FavoriteVersesSection() {
                   <p className="text-right leading-relaxed mb-1.5 font-arabic text-sm"
                     style={{ color: '#1a1a1a', fontFamily: "'Scheherazade New', 'Amiri', serif" }}
                     dir="rtl">
-                    {v.arabic_text.length > 120 ? v.arabic_text.slice(0, 120) + '…' : v.arabic_text}
+                    {v.arabic_text}
                   </p>
                 )}
                 {v.translation_text && (
                   <p className="text-[11px] leading-relaxed" style={{ color: `${COLORS.emerald}90` }}>
-                    {v.translation_text.length > 150 ? v.translation_text.slice(0, 150) + '…' : v.translation_text}
+                    {v.translation_text}
                   </p>
                 )}
               </motion.div>
