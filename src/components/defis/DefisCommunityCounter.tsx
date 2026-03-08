@@ -8,7 +8,7 @@ const COLORS = {
 };
 
 export default function DefisCommunityCounter() {
-  const [stats, setStats] = useState<{ mulk: number; baqara: number }>({ mulk: 0, baqara: 0 });
+  const [stats, setStats] = useState<{ mulk: number; baqara: number; kahf: number }>({ mulk: 0, baqara: 0, kahf: 0 });
 
   useEffect(() => {
     const load = async () => {
