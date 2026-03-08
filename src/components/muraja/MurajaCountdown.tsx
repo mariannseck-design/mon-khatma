@@ -25,7 +25,6 @@ export default function MurajaCountdown() {
 
   const radius = 70;
   const circumference = 2 * Math.PI * radius;
-  // Progress: how much of the day has passed (fills up as day progresses)
   const totalDaySeconds = 24 * 3600;
   const elapsed = totalDaySeconds - (hours * 3600 + minutes * 60 + seconds);
   const progress = elapsed / totalDaySeconds;
@@ -34,7 +33,7 @@ export default function MurajaCountdown() {
     <div className="flex flex-col items-center gap-3">
       <p
         className="text-xs font-medium tracking-widest uppercase"
-        style={{ color: '#d4af37' }}
+        style={{ color: '#D4AF37' }}
       >
         Reset dans
       </p>
@@ -45,13 +44,13 @@ export default function MurajaCountdown() {
           <circle
             cx="80" cy="80" r={radius}
             fill="none"
-            stroke="rgba(212,175,55,0.12)"
+            stroke="#E6F0ED"
             strokeWidth="3"
           />
           <motion.circle
             cx="80" cy="80" r={radius}
             fill="none"
-            stroke="#d4af37"
+            stroke="#065F46"
             strokeWidth="3"
             strokeLinecap="round"
             strokeDasharray={circumference}
@@ -64,18 +63,18 @@ export default function MurajaCountdown() {
         <div
           className="w-28 h-28 rounded-full flex flex-col items-center justify-center"
           style={{
-            background: 'linear-gradient(135deg, rgba(13,115,119,0.9), rgba(20,145,155,0.9))',
-            border: '2px solid rgba(212,175,55,0.4)',
-            boxShadow: '0 0 15px rgba(212,175,55,0.15)',
+            background: '#FFFFFF',
+            border: '2px solid #065F46',
+            boxShadow: '0 4px 20px rgba(6,95,70,0.06)',
           }}
         >
           <span
             className="text-xl font-bold tabular-nums"
-            style={{ fontFamily: "'Inter', sans-serif", color: '#d4af37' }}
+            style={{ fontFamily: "'Inter', sans-serif", color: '#065F46' }}
           >
             {pad(hours)}:{pad(minutes)}
           </span>
-          <span className="text-[10px] text-white/50 tabular-nums">
+          <span className="text-[10px] tabular-nums" style={{ color: 'rgba(28,36,33,0.4)' }}>
             :{pad(seconds)}
           </span>
         </div>

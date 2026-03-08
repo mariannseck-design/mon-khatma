@@ -22,9 +22,9 @@ interface MurajaChecklistProps {
 }
 
 const RATINGS = [
-  { key: 'hard', label: 'Difficile', quality: 2, icon: Zap, color: '#9b1c31' },
-  { key: 'good', label: 'Bien', quality: 4, icon: ThumbsUp, color: '#d4af37' },
-  { key: 'easy', label: 'Facile', quality: 5, icon: Crown, color: '#0d7377' },
+  { key: 'hard', label: 'Difficile', quality: 2, icon: Zap, color: '#9B1C31' },
+  { key: 'good', label: 'Moyen', quality: 4, icon: ThumbsUp, color: '#D97706' },
+  { key: 'easy', label: 'Facile', quality: 5, icon: Crown, color: '#065F46' },
 ] as const;
 
 export default function MurajaChecklist({
@@ -62,12 +62,13 @@ export default function MurajaChecklist({
       <div
         className="rounded-2xl p-5 text-center"
         style={{
-          background: 'linear-gradient(135deg, rgba(13,115,119,0.1), rgba(20,145,155,0.05))',
-          border: '1px solid rgba(212,175,55,0.15)',
+          background: '#FFFFFF',
+          border: '1px solid #E6F0ED',
+          boxShadow: '0 4px 20px rgba(6,95,70,0.06)',
         }}
       >
-        <BookOpen className="h-6 w-6 mx-auto mb-2" style={{ color: '#d4af37' }} />
-        <p className="text-muted-foreground text-sm">
+        <BookOpen className="h-6 w-6 mx-auto mb-2" style={{ color: '#D4AF37' }} />
+        <p className="text-sm" style={{ color: 'rgba(28,36,33,0.5)' }}>
           {section === 'rabt'
             ? 'Aucun acquis récent (< 30 jours)'
             : "Aucune révision planifiée aujourd'hui"}
@@ -83,9 +84,9 @@ export default function MurajaChecklist({
         <div
           className="flex items-start gap-2 rounded-xl px-3 py-2 text-xs"
           style={{
-            background: 'rgba(212,175,55,0.1)',
-            border: '1px solid rgba(212,175,55,0.2)',
-            color: '#d4af37',
+            background: 'rgba(212,175,55,0.08)',
+            border: '1px solid rgba(212,175,55,0.25)',
+            color: '#D4AF37',
           }}
         >
           <Info className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
@@ -104,11 +105,10 @@ export default function MurajaChecklist({
               disabled={isChecked}
               className="w-full flex items-center gap-3 rounded-xl px-4 py-3 text-left transition-all"
               style={{
-                background: isChecked
-                  ? 'rgba(212,175,55,0.12)'
-                  : 'rgba(13,115,119,0.06)',
-                border: `1px solid ${isChecked ? 'rgba(212,175,55,0.3)' : 'rgba(13,115,119,0.12)'}`,
-                opacity: isChecked ? 0.7 : 1,
+                background: isChecked ? '#F0F7F4' : '#FFFFFF',
+                border: `1px solid ${isChecked ? '#D4AF37' : '#E6F0ED'}`,
+                opacity: isChecked ? 0.8 : 1,
+                boxShadow: isChecked ? 'none' : '0 2px 8px rgba(6,95,70,0.04)',
               }}
               whileTap={isChecked ? {} : { scale: 0.98 }}
             >
@@ -116,24 +116,25 @@ export default function MurajaChecklist({
               <div
                 className="w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 transition-all"
                 style={{
-                  background: isChecked
-                    ? 'linear-gradient(135deg, #d4af37, #b8962e)'
-                    : 'rgba(255,255,255,0.08)',
-                  border: `2px solid ${isChecked ? '#d4af37' : 'rgba(13,115,119,0.3)'}`,
+                  background: isChecked ? '#D4AF37' : 'transparent',
+                  border: `2px solid ${isChecked ? '#D4AF37' : '#065F46'}`,
                 }}
               >
-                {isChecked && <Check className="h-3.5 w-3.5" style={{ color: '#1a2e1a' }} />}
+                {isChecked && <Check className="h-3.5 w-3.5" style={{ color: '#FFFFFF' }} />}
               </div>
 
               {/* Label */}
               <div className="flex-1 min-w-0">
                 <p
-                  className="text-sm font-semibold truncate"
-                  style={{ color: isChecked ? '#d4af37' : '#0d7377' }}
+                  className="text-sm truncate"
+                  style={{
+                    color: isChecked ? '#065F46' : '#1C2421',
+                    fontWeight: isChecked ? 700 : 600,
+                  }}
                 >
                   {getSurahName(item.surah_number)}
                 </p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs" style={{ color: 'rgba(28,36,33,0.45)' }}>
                   v. {item.verse_start} → {item.verse_end}
                   {section === 'tour' && item.sm2_interval != null && (
                     <span className="ml-2 opacity-60">· {item.sm2_interval}j</span>
@@ -158,7 +159,7 @@ export default function MurajaChecklist({
                         onClick={() => handleRate(quality, key)}
                         className="flex-1 flex items-center justify-center gap-1.5 rounded-lg px-2 py-2 text-xs font-medium transition-all"
                         style={{
-                          background: `${color}15`,
+                          background: `${color}12`,
                           color,
                           border: `1px solid ${color}30`,
                         }}

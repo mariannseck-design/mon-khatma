@@ -45,13 +45,13 @@ export default function MurajaCelebration({ type, isOpen, onClose }: MurajaCeleb
             transition={{ type: 'spring', damping: 20 }}
             className="relative w-full max-w-sm rounded-3xl p-8 text-center"
             style={{
-              background: 'linear-gradient(135deg, #0d7377 0%, #14919b 50%, #0d7377 100%)',
-              border: '2px solid rgba(212,175,55,0.5)',
+              background: 'linear-gradient(135deg, #065F46 0%, #044E3B 100%)',
+              border: '2px solid #D4AF37',
               boxShadow: '0 0 40px rgba(212,175,55,0.2), 0 20px 60px rgba(0,0,0,0.3)',
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <button onClick={onClose} className="absolute top-4 right-4 text-white/40 hover:text-white/70">
+            <button onClick={onClose} className="absolute top-4 right-4" style={{ color: 'rgba(253,251,247,0.4)' }}>
               <X className="h-5 w-5" />
             </button>
 
@@ -78,17 +78,17 @@ export default function MurajaCelebration({ type, isOpen, onClose }: MurajaCeleb
                 animate={type === 'cycle' ? { rotate: [0, 10, -10, 0], scale: [1, 1.1, 1] } : { scale: [1, 1.05, 1] }}
                 transition={{ duration: 2, repeat: Infinity }}
               >
-                <Star className="h-16 w-16 mx-auto mb-4" style={{ color: '#d4af37' }} fill="#d4af37" />
+                <Star className="h-16 w-16 mx-auto mb-4" style={{ color: '#D4AF37' }} fill="#D4AF37" />
               </motion.div>
 
               <h2
                 className="text-xl font-bold mb-4"
-                style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#d4af37' }}
+                style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#D4AF37' }}
               >
                 {type === 'cycle' ? '🎉 Cycle Terminé !' : '✨ Bravo !'}
               </h2>
 
-              <p className="text-white/90 text-base leading-relaxed mb-6">
+              <p className="text-base leading-relaxed mb-6" style={{ color: 'rgba(253,251,247,0.9)' }}>
                 {message}
               </p>
 
@@ -96,8 +96,8 @@ export default function MurajaCelebration({ type, isOpen, onClose }: MurajaCeleb
                 onClick={onClose}
                 className="px-8"
                 style={{
-                  background: 'linear-gradient(135deg, #d4af37, #c5a028)',
-                  color: '#0d4a4c',
+                  background: '#D4AF37',
+                  color: '#065F46',
                   border: 'none',
                 }}
               >
