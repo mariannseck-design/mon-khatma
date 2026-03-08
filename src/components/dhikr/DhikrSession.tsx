@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Check, ChevronLeft, ChevronRight, Minus, Plus, Info, ChevronDown } from 'lucide-react';
 import DhikrCounter, { type DhikrItem } from './DhikrCounter';
@@ -22,13 +22,32 @@ interface DhikrSessionProps {
 }
 
 export default function DhikrSession({ title, items, onBack, intro }: DhikrSessionProps) {
+  const sessionKey = `dhikr-session-${title}`;
   const [showIntro, setShowIntro] = useState(true);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(() => {
+    try {
+      const saved = localStorage.getItem(sessionKey);
+      if (saved) {
+        const idx = JSON.parse(saved).currentIndex ?? 0;
+        return idx >= 0 && idx < items.length ? idx : 0;
+      }
+    } catch {}
+    return 0;
+  });
   const [sessionComplete, setSessionComplete] = useState(false);
   const [arabicSizeIndex, setArabicSizeIndex] = useState(() => {
     const saved = localStorage.getItem('dhikr-arabic-size');
     return saved ? parseInt(saved, 10) : 1;
   });
+
+  // Persist current index
+  useEffect(() => {
+    if (sessionComplete) {
+      localStorage.removeItem(sessionKey);
+    } else {
+      localStorage.setItem(sessionKey, JSON.stringify({ currentIndex }));
+    }
+  }, [currentIndex, sessionComplete, sessionKey]);
 
   const touchStartX = useRef(0);
   const touchStartY = useRef(0);
