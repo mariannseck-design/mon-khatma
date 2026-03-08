@@ -4,6 +4,7 @@ export const MORNING_ADHKAR: DhikrItem[] = [
   {
     title: 'Âyat al-Kursî',
     source: 'Coran 2:255 — Al-Bukhârî n°5010',
+    fadl: 'Celui qui la récite le matin est protégé par Allah jusqu\'au soir, et celui qui la récite le soir est protégé jusqu\'au matin. (Al-Hâkim, An-Nasâ\'î)',
     arabic: 'أَعُوذُ بِاللهِ مِنَ الشَّيْطَانِ الرَّجِيمِ\nاللّهُ لاَ إِلَـهَ إِلاَّ هُوَ الْحَيُّ الْقَيُّومُ لاَ تَأْخُذُهُ سِنَةٌ وَلاَ نَوْمٌ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الأَرْضِ مَن ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلاَّ بِإِذْنِهِ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ وَلاَ يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلاَّ بِمَا شَاء وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالأَرْضَ وَلاَ يَؤُودُهُ حِفْظُهُمَا وَهُوَ الْعَلِيُّ الْعَظِيمُ',
     phonetic: "A'ûdhu bi-llâhi mina sh-shaytâni r-rajîm. Allâhu lâ ilâha illâ huwa-l-Hayyu-l-Qayyûm, lâ ta'khudhuhu sinatun wa lâ nawm, lahu mâ fî s-samâwâti wa mâ fî-l-ard, man dhâ-lladhî yashfa'u 'indahu illâ bi-idhnih, ya'lamu mâ bayna aydîhim wa mâ khalfahum wa lâ yuhîtûna bi-shay'in min 'ilmihi illâ bi-mâ shâ', wasi'a kursiyyuhu s-samâwâti wa-l-ard, wa lâ ya'ûduhu hifzuhumâ wa huwa-l-'Aliyyu-l-'Azîm.",
     french: "Allah ! Point de divinité à part Lui, le Vivant, Celui qui subsiste par Lui-même. Ni somnolence ni sommeil ne Le saisissent. À Lui appartient tout ce qui est dans les cieux et sur la terre. Qui peut intercéder auprès de Lui sans Sa permission ? Il connaît leur passé et leur futur. Et de Sa science, ils n'embrassent que ce qu'Il veut. Son Trône déborde les cieux et la terre, dont la garde ne Lui coûte aucune peine. Et Il est le Très Haut, le Très Grand.",
@@ -12,6 +13,7 @@ export const MORNING_ADHKAR: DhikrItem[] = [
   {
     title: 'Sourate Al-Ikhlâs',
     source: 'Coran 112:1-4 — Al-Bukhârî n°5017',
+    fadl: 'Les trois Qul (Al-Ikhlâs, Al-Falaq, An-Nâs) récitées 3 fois matin et soir te suffisent contre toute chose. (Abû Dâwûd n°5082)',
     arabic: 'بِسْمِ اللهِ الرَّحْمنِ الرَّحِيم\nقُلْ هُوَ ٱللَّهُ أَحَدٌ ۝ ٱللَّهُ ٱلصَّمَدُ ۝ لَمْ يَلِدْ وَلَمْ يُولَدْ ۝ وَلَمْ يَكُن لَّهُۥ كُفُوًا أَحَدٌ',
     phonetic: "Bismi-llâhi r-Rahmâni r-Rahîm. Qul huwa-llâhu Ahad. Allâhu s-Samad. Lam yalid wa lam yûlad. Wa lam yakun lahu kufuwan ahad.",
     french: "Dis : «Il est Allah, Unique. Allah, Le Seul à être imploré pour ce que nous désirons. Il n'a jamais engendré, n'a pas été engendré non plus. Et nul n'est égal à Lui.»",
@@ -44,6 +46,7 @@ export const MORNING_ADHKAR: DhikrItem[] = [
   {
     title: 'Sayyid al-Istighfâr',
     source: 'Al-Bukhârî n°6306',
+    fadl: 'Celui qui le récite avec certitude le matin et meurt dans la journée sera parmi les gens du Paradis. De même s\'il le dit le soir. (Al-Bukhârî)',
     arabic: 'اللّهـمَّ أَنْتَ رَبِّـي لا إلهَ إلاّ أَنْتَ، خَلَقْتَنـي وَأَنا عَبْـدُك، وَأَنا عَلـى عَهْـدِكَ وَوَعْـدِكَ ما اسْتَـطَعْـت، أَعـوذُ بِكَ مِنْ شَـرِّ ما صَنَـعْت، أَبـوءُ لَـكَ بِنِعْـمَتِـكَ عَلَـيَّ وَأَبـوءُ بِذَنْـبي فَاغْفـِرْ لي فَإِنَّـهُ لا يَغْـفِرُ الذُّنـوبَ إِلاّ أَنْتَ',
     phonetic: "Allâhumma anta Rabbî, lâ ilâha illâ ant, khalaqtanî wa ana 'abduk, wa ana 'alâ 'ahdika wa wa'dika mâ-stata't, a'ûdhu bika min sharri mâ sana't, abû'u laka bi-ni'matika 'alayya wa abû'u bi-dhanbî, fa-ghfir lî fa-innahu lâ yaghfiru dh-dhunûba illâ ant.",
     french: "Ô Allah, Tu es mon Seigneur, il n'y a de divinité que Toi. Tu m'as créé et je suis Ton serviteur. Je suis fidèle à mon engagement et à ma promesse envers Toi autant que je le peux. Je cherche refuge auprès de Toi contre le mal que j'ai fait. Je reconnais devant Toi Tes bienfaits sur moi et je reconnais mes péchés. Pardonne-moi, car nul ne pardonne les péchés à part Toi.",
@@ -52,6 +55,7 @@ export const MORNING_ADHKAR: DhikrItem[] = [
   {
     title: 'Agrément d\'Allah',
     source: 'Abû Dâwûd n°5072, At-Tirmidhî n°3389',
+    fadl: 'Quiconque dit cela 3 fois le matin, Allah s\'engage à le satisfaire le Jour du Jugement. (At-Tirmidhî)',
     arabic: 'رَضيـتُ بِاللهِ رَبَّـاً وَبِالإسْلامِ ديـناً وَبِمُحَـمَّدٍ صلى الله عليه وسلم نَبِيّـاً',
     phonetic: "Radîtu bi-llâhi Rabban, wa bi-l-islâmi dînan, wa bi-Muhammadin (sallâ-llâhu 'alayhi wa sallam) nabiyyan.",
     french: "J'accepte Allah comme Seigneur, l'Islam comme religion et Muhammad ﷺ comme Prophète.",
@@ -60,6 +64,7 @@ export const MORNING_ADHKAR: DhikrItem[] = [
   {
     title: 'Témoignage du matin',
     source: 'Abû Dâwûd n°5069',
+    fadl: 'Quiconque le dit 4 fois le matin et le soir, Allah l\'affranchira du Feu. (Abû Dâwûd)',
     arabic: 'اللّهُـمَّ إِنِّـي أَصْبَـحْتُ أُشْـهِدُك، وَأُشْـهِدُ حَمَلَـةَ عَـرْشِـك، وَمَلَائِكَتَكَ، وَجَمـيعَ خَلْـقِك، أَنَّـكَ أَنْـتَ اللهُ لا إلهَ إلاّ أَنْـتَ وَحْـدَكَ لا شَريكَ لَـك، وَأَنَّ مُحَمّـداً عَبْـدُكَ وَرَسـولُـك',
     phonetic: "Allâhumma innî asbahtu ush-hiduk, wa ush-hidu hamalata 'arshik, wa malâ'ikatak, wa jamî'a khalqik, annaka anta-llâhu lâ ilâha illâ anta wahdaka lâ sharîka lak, wa anna Muhammadan 'abduka wa rasûluk.",
     french: "Ô Allah, je prends à témoin en ce matin, Toi, les porteurs de Ton Trône, Tes anges et toutes Tes créatures, que Tu es Allah, nulle divinité à part Toi, Seul sans associé, et que Muhammad est Ton serviteur et Ton messager.",
@@ -68,6 +73,7 @@ export const MORNING_ADHKAR: DhikrItem[] = [
   {
     title: 'Reconnaissance des bienfaits',
     source: 'Abû Dâwûd n°5073',
+    fadl: 'Quiconque dit cela le matin a accompli le remerciement de sa journée, et quiconque le dit le soir a accompli le remerciement de sa nuit. (Abû Dâwûd)',
     arabic: 'اللّهُـمَّ ما أَصْبَـحَ بي مِـنْ نِعْـمَةٍ أَو بِأَحَـدٍ مِـنْ خَلْـقِك، فَمِـنْكَ وَحْـدَكَ لا شريكَ لَـك، فَلَـكَ الْحَمْـدُ وَلَـكَ الشُّكْـر',
     phonetic: "Allâhumma mâ asbaha bî min ni'matin aw bi-ahadin min khalqik, fa-minka wahdaka lâ sharîka lak, fa-laka-l-hamdu wa laka sh-shukr.",
     french: "Ô Allah, tout bienfait dont je jouis en ce matin, ou dont jouit l'une de Tes créatures, provient de Toi Seul, sans associé. À Toi la louange et à Toi la reconnaissance.",
@@ -76,6 +82,7 @@ export const MORNING_ADHKAR: DhikrItem[] = [
   {
     title: 'Tawakkul — La confiance',
     source: 'Coran 9:129 — Abû Dâwûd n°5081',
+    fadl: 'Quiconque le dit 7 fois matin et soir, Allah lui suffit pour tout ce qui le préoccupe. (Abû Dâwûd, Ibn as-Sunnî)',
     arabic: 'حَسْبِـيَ اللّهُ لا إلهَ إلاّ هُوَ عَلَـيهِ تَوَكَّـلتُ وَهُوَ رَبُّ العَرْشِ العَظـيم',
     phonetic: "Hasbiya-llâhu lâ ilâha illâ huwa, 'alayhi tawakkaltu wa huwa Rabbu-l-'arshi-l-'azîm.",
     french: "Allah me suffit, il n'y a de divinité que Lui. C'est en Lui que je place ma confiance et Il est le Seigneur du Trône immense.",
@@ -84,6 +91,7 @@ export const MORNING_ADHKAR: DhikrItem[] = [
   {
     title: 'La Protection',
     source: 'Abû Dâwûd n°5088, At-Tirmidhî n°3388',
+    fadl: 'Quiconque le dit 3 fois le matin et le soir, rien ne lui nuira. (At-Tirmidhî)',
     arabic: 'بِسـمِ اللهِ الذي لا يَضُـرُّ مَعَ اسمِـهِ شَيءٌ في الأرْضِ وَلا في السّمـاءِ وَهـوَ السّمـيعُ العَلـيم',
     phonetic: "Bismi-llâhi-lladhî lâ yadurru ma'a-smihi shay'un fî-l-ardi wa lâ fî s-samâ'i wa huwa s-Samî'u-l-'Alîm.",
     french: "Au nom d'Allah, celui dont le nom protège de tout mal sur terre et dans les cieux. Il est l'Audient, l'Omniscient.",
@@ -108,6 +116,7 @@ export const MORNING_ADHKAR: DhikrItem[] = [
   {
     title: 'Gloire à Allah',
     source: 'Muslim n°2726',
+    fadl: 'Juwayriya bint al-Hârith rapporte que le Prophète ﷺ a dit que ces paroles pèsent plus que tout ce qu\'on pourrait dire depuis le matin. (Muslim)',
     arabic: 'سُبْحـانَ اللهِ وَبِحَمْـدِهِ عَدَدَ خَلْـقِهِ، وَرِضـا نَفْسِـهِ، وَزِنَـةَ عَـرْشِـهِ، وَمِـدادَ كَلِمـاتِـهِ',
     phonetic: "Subhâna-llâhi wa bi-hamdihi 'adada khalqih, wa ridâ nafsih, wa zinata 'arshih, wa midâda kalimâtih.",
     french: "Gloire et louange à Allah autant que le nombre de Ses créatures, autant qu'Il agrée, autant que pèse Son Trône, et autant que l'encre de Ses paroles.",
@@ -164,6 +173,7 @@ export const MORNING_ADHKAR: DhikrItem[] = [
   {
     title: 'Protection par les paroles d\'Allah',
     source: 'Muslim n°2708',
+    fadl: 'Quiconque dit cela 3 fois le soir ne sera pas piqué par un scorpion ni touché par un mal cette nuit-là. (Muslim)',
     arabic: 'أَعـوذُ بِكَلِمـاتِ اللّهِ التّـامّـاتِ مِنْ شَـرِّ ما خَلَـق',
     phonetic: "A'ûdhu bi-kalimâti-llâhi t-tâmmâti min sharri mâ khalaq.",
     french: "Je cherche protection dans les paroles parfaites d'Allah contre le mal de ce qu'Il a créé.",
@@ -228,6 +238,7 @@ export const MORNING_ADHKAR: DhikrItem[] = [
   {
     title: 'Tahlîl',
     source: 'Al-Bukhârî n°6403, Muslim n°2693',
+    fadl: 'Quiconque le dit 100 fois par jour, c\'est comme s\'il avait affranchi 10 esclaves, on lui inscrit 100 bonnes actions, on lui efface 100 mauvaises actions, et il est protégé du diable. (Al-Bukhârî, Muslim)',
     arabic: 'لَا إلَهَ إلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِير',
     phonetic: "Lâ ilâha illâ-llâhu wahdahu lâ sharîka lah, lahu-l-mulku wa lahu-l-hamdu wa huwa 'alâ kulli shay'in qadîr.",
     french: "Nulle divinité à part Allah, Seul sans associé. À Lui le royaume, à Lui la louange, et Il est Omnipotent.",
@@ -236,6 +247,7 @@ export const MORNING_ADHKAR: DhikrItem[] = [
   {
     title: 'Tasbîh',
     source: 'Al-Bukhârî n°6405, Muslim n°2692',
+    fadl: 'Quiconque dit « Subhâna-llâhi wa bi-hamdih » 100 fois par jour, ses péchés seront effacés, fussent-ils comme l\'écume de la mer. (Al-Bukhârî, Muslim)',
     arabic: 'سُبْحـانَ اللهِ وَبِحَمْـدِهِ',
     phonetic: "Subhâna-llâhi wa bi-hamdih.",
     french: "Gloire et louange à Allah.",
@@ -255,6 +267,7 @@ export const EVENING_ADHKAR: DhikrItem[] = [
   {
     title: 'Âyat al-Kursî',
     source: 'Coran 2:255 — Al-Bukhârî n°5010',
+    fadl: 'Celui qui la récite le soir est protégé par Allah jusqu\'au matin. (Al-Hâkim, An-Nasâ\'î)',
     arabic: 'أَعُوذُ بِاللهِ مِنَ الشَّيْطَانِ الرَّجِيمِ\nاللّهُ لاَ إِلَـهَ إِلاَّ هُوَ الْحَيُّ الْقَيُّومُ لاَ تَأْخُذُهُ سِنَةٌ وَلاَ نَوْمٌ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الأَرْضِ مَن ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلاَّ بِإِذْنِهِ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ وَلاَ يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلاَّ بِمَا شَاء وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالأَرْضَ وَلاَ يَؤُودُهُ حِفْظُهُمَا وَهُوَ الْعَلِيُّ الْعَظِيمُ',
     phonetic: "A'ûdhu bi-llâhi mina sh-shaytâni r-rajîm. Allâhu lâ ilâha illâ huwa-l-Hayyu-l-Qayyûm, lâ ta'khudhuhu sinatun wa lâ nawm, lahu mâ fî s-samâwâti wa mâ fî-l-ard, man dhâ-lladhî yashfa'u 'indahu illâ bi-idhnih, ya'lamu mâ bayna aydîhim wa mâ khalfahum wa lâ yuhîtûna bi-shay'in min 'ilmihi illâ bi-mâ shâ', wasi'a kursiyyuhu s-samâwâti wa-l-ard, wa lâ ya'ûduhu hifzuhumâ wa huwa-l-'Aliyyu-l-'Azîm.",
     french: "Allah ! Point de divinité à part Lui, le Vivant, Celui qui subsiste par Lui-même. Ni somnolence ni sommeil ne Le saisissent. À Lui appartient tout ce qui est dans les cieux et sur la terre. Qui peut intercéder auprès de Lui sans Sa permission ? Il connaît leur passé et leur futur. Et de Sa science, ils n'embrassent que ce qu'Il veut. Son Trône déborde les cieux et la terre, dont la garde ne Lui coûte aucune peine. Et Il est le Très Haut, le Très Grand.",
@@ -263,6 +276,7 @@ export const EVENING_ADHKAR: DhikrItem[] = [
   {
     title: 'Sourate Al-Ikhlâs',
     source: 'Coran 112:1-4 — Al-Bukhârî n°5017',
+    fadl: 'Les trois Qul récitées 3 fois matin et soir te suffisent contre toute chose. (Abû Dâwûd n°5082)',
     arabic: 'بِسْمِ اللهِ الرَّحْمنِ الرَّحِيم\nقُلْ هُوَ ٱللَّهُ أَحَدٌ ۝ ٱللَّهُ ٱلصَّمَدُ ۝ لَمْ يَلِدْ وَلَمْ يُولَدْ ۝ وَلَمْ يَكُن لَّهُۥ كُفُوًا أَحَدٌ',
     phonetic: "Bismi-llâhi r-Rahmâni r-Rahîm. Qul huwa-llâhu Ahad. Allâhu s-Samad. Lam yalid wa lam yûlad. Wa lam yakun lahu kufuwan ahad.",
     french: "Dis : «Il est Allah, Unique. Allah, Le Seul à être imploré pour ce que nous désirons. Il n'a jamais engendré, n'a pas été engendré non plus. Et nul n'est égal à Lui.»",
@@ -295,6 +309,7 @@ export const EVENING_ADHKAR: DhikrItem[] = [
   {
     title: 'Sayyid al-Istighfâr',
     source: 'Al-Bukhârî n°6306',
+    fadl: 'Celui qui le récite avec certitude le soir et meurt cette nuit sera parmi les gens du Paradis. (Al-Bukhârî)',
     arabic: 'اللّهـمَّ أَنْتَ رَبِّـي لا إلهَ إلاّ أَنْتَ، خَلَقْتَنـي وَأَنا عَبْـدُك، وَأَنا عَلـى عَهْـدِكَ وَوَعْـدِكَ ما اسْتَـطَعْـت، أَعـوذُ بِكَ مِنْ شَـرِّ ما صَنَـعْت، أَبـوءُ لَـكَ بِنِعْـمَتِـكَ عَلَـيَّ وَأَبـوءُ بِذَنْـبي فَاغْفـِرْ لي فَإِنَّـهُ لا يَغْـفِرُ الذُّنـوبَ إِلاّ أَنْتَ',
     phonetic: "Allâhumma anta Rabbî, lâ ilâha illâ ant, khalaqtanî wa ana 'abduk, wa ana 'alâ 'ahdika wa wa'dika mâ-stata't, a'ûdhu bika min sharri mâ sana't, abû'u laka bi-ni'matika 'alayya wa abû'u bi-dhanbî, fa-ghfir lî fa-innahu lâ yaghfiru dh-dhunûba illâ ant.",
     french: "Ô Allah, Tu es mon Seigneur, il n'y a de divinité que Toi. Tu m'as créé et je suis Ton serviteur. Je suis fidèle à mon engagement et à ma promesse envers Toi autant que je le peux. Je cherche refuge auprès de Toi contre le mal que j'ai fait. Je reconnais devant Toi Tes bienfaits sur moi et je reconnais mes péchés. Pardonne-moi, car nul ne pardonne les péchés à part Toi.",
@@ -303,6 +318,7 @@ export const EVENING_ADHKAR: DhikrItem[] = [
   {
     title: 'Agrément d\'Allah',
     source: 'Abû Dâwûd n°5072, At-Tirmidhî n°3389',
+    fadl: 'Quiconque dit cela 3 fois le soir, Allah s\'engage à le satisfaire le Jour du Jugement. (At-Tirmidhî)',
     arabic: 'رَضيـتُ بِاللهِ رَبَّـاً وَبِالإسْلامِ ديـناً وَبِمُحَـمَّدٍ صلى الله عليه وسلم نَبِيّـاً',
     phonetic: "Radîtu bi-llâhi Rabban, wa bi-l-islâmi dînan, wa bi-Muhammadin (sallâ-llâhu 'alayhi wa sallam) nabiyyan.",
     french: "J'accepte Allah comme Seigneur, l'Islam comme religion et Muhammad ﷺ comme Prophète.",
@@ -311,6 +327,7 @@ export const EVENING_ADHKAR: DhikrItem[] = [
   {
     title: 'Témoignage du soir',
     source: 'Abû Dâwûd n°5069',
+    fadl: 'Quiconque le dit 4 fois le matin et le soir, Allah l\'affranchira du Feu. (Abû Dâwûd)',
     arabic: 'اللّهُـمَّ إِنِّـي أَمْسَيْتُ أُشْـهِدُك، وَأُشْـهِدُ حَمَلَـةَ عَـرْشِـك، وَمَلَائِكَتَكَ، وَجَمـيعَ خَلْـقِك، أَنَّـكَ أَنْـتَ اللهُ لا إلهَ إلاّ أَنْـتَ وَحْـدَكَ لا شَريكَ لَـك، وَأَنَّ مُحَمّـداً عَبْـدُكَ وَرَسـولُـك',
     phonetic: "Allâhumma innî amsaytu ush-hiduk, wa ush-hidu hamalata 'arshik, wa malâ'ikatak, wa jamî'a khalqik, annaka anta-llâhu lâ ilâha illâ anta wahdaka lâ sharîka lak, wa anna Muhammadan 'abduka wa rasûluk.",
     french: "Ô Allah, je prends à témoin en ce soir, Toi, les porteurs de Ton Trône, Tes anges et toutes Tes créatures, que Tu es Allah, nulle divinité à part Toi, Seul sans associé, et que Muhammad est Ton serviteur et Ton messager.",
@@ -319,6 +336,7 @@ export const EVENING_ADHKAR: DhikrItem[] = [
   {
     title: 'Reconnaissance des bienfaits',
     source: 'Abû Dâwûd n°5073',
+    fadl: 'Quiconque dit cela le soir a accompli le remerciement de sa nuit. (Abû Dâwûd)',
     arabic: 'اللّهُـمَّ ما أَمْسَى بي مِـنْ نِعْـمَةٍ أَو بِأَحَـدٍ مِـنْ خَلْـقِك، فَمِـنْكَ وَحْـدَكَ لا شريكَ لَـك، فَلَـكَ الْحَمْـدُ وَلَـكَ الشُّكْـر',
     phonetic: "Allâhumma mâ amsâ bî min ni'matin aw bi-ahadin min khalqik, fa-minka wahdaka lâ sharîka lak, fa-laka-l-hamdu wa laka sh-shukr.",
     french: "Ô Allah, tout bienfait dont je jouis en ce soir, ou dont jouit l'une de Tes créatures, provient de Toi Seul, sans associé. À Toi la louange et à Toi la reconnaissance.",
@@ -327,6 +345,7 @@ export const EVENING_ADHKAR: DhikrItem[] = [
   {
     title: 'Tawakkul — La confiance',
     source: 'Coran 9:129 — Abû Dâwûd n°5081',
+    fadl: 'Quiconque le dit 7 fois matin et soir, Allah lui suffit pour tout ce qui le préoccupe. (Abû Dâwûd)',
     arabic: 'حَسْبِـيَ اللّهُ لا إلهَ إلاّ هُوَ عَلَـيهِ تَوَكَّـلتُ وَهُوَ رَبُّ العَرْشِ العَظـيم',
     phonetic: "Hasbiya-llâhu lâ ilâha illâ huwa, 'alayhi tawakkaltu wa huwa Rabbu-l-'arshi-l-'azîm.",
     french: "Allah me suffit, il n'y a de divinité que Lui. C'est en Lui que je place ma confiance et Il est le Seigneur du Trône immense.",
@@ -335,6 +354,7 @@ export const EVENING_ADHKAR: DhikrItem[] = [
   {
     title: 'La Protection',
     source: 'Abû Dâwûd n°5088, At-Tirmidhî n°3388',
+    fadl: 'Quiconque le dit 3 fois le soir, rien ne lui nuira jusqu\'au matin. (At-Tirmidhî)',
     arabic: 'بِسـمِ اللهِ الذي لا يَضُـرُّ مَعَ اسمِـهِ شَيءٌ في الأرْضِ وَلا في السّمـاءِ وَهـوَ السّمـيعُ العَلـيم',
     phonetic: "Bismi-llâhi-lladhî lâ yadurru ma'a-smihi shay'un fî-l-ardi wa lâ fî s-samâ'i wa huwa s-Samî'u-l-'Alîm.",
     french: "Au nom d'Allah, celui dont le nom protège de tout mal sur terre et dans les cieux. Il est l'Audient, l'Omniscient.",
@@ -359,6 +379,7 @@ export const EVENING_ADHKAR: DhikrItem[] = [
   {
     title: 'Gloire à Allah',
     source: 'Muslim n°2726',
+    fadl: 'Ces paroles pèsent plus que tout ce qu\'on pourrait dire depuis le matin. (Muslim)',
     arabic: 'سُبْحـانَ اللهِ وَبِحَمْـدِهِ عَدَدَ خَلْـقِهِ، وَرِضـا نَفْسِـهِ، وَزِنَـةَ عَـرْشِـهِ، وَمِـدادَ كَلِمـاتِـهِ',
     phonetic: "Subhâna-llâhi wa bi-hamdihi 'adada khalqih, wa ridâ nafsih, wa zinata 'arshih, wa midâda kalimâtih.",
     french: "Gloire et louange à Allah autant que le nombre de Ses créatures, autant qu'Il agrée, autant que pèse Son Trône, et autant que l'encre de Ses paroles.",
@@ -415,6 +436,7 @@ export const EVENING_ADHKAR: DhikrItem[] = [
   {
     title: 'Protection par les paroles d\'Allah',
     source: 'Muslim n°2708',
+    fadl: 'Quiconque dit cela 3 fois le soir ne sera touché par aucun mal cette nuit-là. (Muslim)',
     arabic: 'أَعـوذُ بِكَلِمـاتِ اللّهِ التّـامّـاتِ مِنْ شَـرِّ ما خَلَـق',
     phonetic: "A'ûdhu bi-kalimâti-llâhi t-tâmmâti min sharri mâ khalaq.",
     french: "Je cherche protection dans les paroles parfaites d'Allah contre le mal de ce qu'Il a créé.",
@@ -471,6 +493,7 @@ export const EVENING_ADHKAR: DhikrItem[] = [
   {
     title: 'Tahlîl',
     source: 'Al-Bukhârî n°6403, Muslim n°2693',
+    fadl: 'Quiconque le dit 100 fois : récompense de 10 affranchissements, 100 bonnes actions, 100 péchés effacés et protection contre le diable. (Al-Bukhârî, Muslim)',
     arabic: 'لَا إلَهَ إلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِير',
     phonetic: "Lâ ilâha illâ-llâhu wahdahu lâ sharîka lah, lahu-l-mulku wa lahu-l-hamdu wa huwa 'alâ kulli shay'in qadîr.",
     french: "Nulle divinité à part Allah, Seul sans associé. À Lui le royaume, à Lui la louange, et Il est Omnipotent.",
@@ -479,6 +502,7 @@ export const EVENING_ADHKAR: DhikrItem[] = [
   {
     title: 'Tasbîh',
     source: 'Al-Bukhârî n°6405, Muslim n°2692',
+    fadl: 'Ses péchés seront effacés, fussent-ils comme l\'écume de la mer. (Al-Bukhârî, Muslim)',
     arabic: 'سُبْحـانَ اللهِ وَبِحَمْـدِهِ',
     phonetic: "Subhâna-llâhi wa bi-hamdih.",
     french: "Gloire et louange à Allah.",
@@ -528,6 +552,7 @@ export const POST_PRAYER_ADHKAR: DhikrItem[] = [
   },
   {
     title: 'Âyat al-Kursî',
+    fadl: 'Celui qui la récite après chaque prière, seule la mort le sépare du Paradis. (An-Nasâ\'î, Ibn Hibbân)',
     arabic: 'اللّهُ لاَ إِلَـهَ إِلاَّ هُوَ الْحَيُّ الْقَيُّومُ لاَ تَأْخُذُهُ سِنَةٌ وَلاَ نَوْمٌ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الأَرْضِ مَن ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلاَّ بِإِذْنِهِ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ وَلاَ يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلاَّ بِمَا شَاء وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالأَرْضَ وَلاَ يَؤُودُهُ حِفْظُهُمَا وَهُوَ الْعَلِيُّ الْعَظِيمُ',
     phonetic: "Allâhu lâ ilâha illâ huwa-l-Hayyu-l-Qayyûm, lâ ta'khudhuhu sinatun wa lâ nawm, lahu mâ fî s-samâwâti wa mâ fî-l-ard, man dhâ-lladhî yashfa'u 'indahu illâ bi-idhnih, ya'lamu mâ bayna aydîhim wa mâ khalfahum wa lâ yuhîtûna bi-shay'in min 'ilmihi illâ bi-mâ shâ', wasi'a kursiyyuhu s-samâwâti wa-l-ard, wa lâ ya'ûduhu hifzuhumâ wa huwa-l-'Aliyyu-l-'Azîm.",
     french: "Allah ! Point de divinité à part Lui, le Vivant, Celui qui subsiste par Lui-même. Ni somnolence ni sommeil ne Le saisissent. À Lui appartient tout ce qui est dans les cieux et sur la terre. Qui peut intercéder auprès de Lui sans Sa permission ? Il connaît leur passé et leur futur. Et de Sa science, ils n'embrassent que ce qu'Il veut. Son Trône déborde les cieux et la terre, dont la garde ne Lui coûte aucune peine. Et Il est le Très Haut, le Très Grand.",
@@ -559,6 +584,7 @@ export const POST_PRAYER_ADHKAR: DhikrItem[] = [
     arabic: 'سُبْحَانَ اللهِ',
     phonetic: "Subhâna-llâh.",
     french: "Gloire à Allah.",
+    fadl: 'Celui qui dit SubhânAllâh 33 fois, Al-Hamdulillâh 33 fois, Allâhu Akbar 33 fois et complète le centième, ses péchés seront pardonnés, fussent-ils comme l\'écume de la mer. (Muslim)',
     target: 33,
   },
   {
@@ -584,6 +610,7 @@ export const POST_PRAYER_ADHKAR: DhikrItem[] = [
   },
   {
     title: 'Invocation pour la protection',
+    fadl: 'Mu\'âdh ibn Jabal rapporte que le Prophète ﷺ lui a pris la main et lui a dit : « Je t\'aime, ne manque jamais de dire après chaque prière... » (Abû Dâwûd)',
     arabic: 'اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ',
     phonetic: "Allâhumma a'innî 'alâ dhikrika wa shukrika wa husni 'ibâdatik.",
     french: "Ô Allah, aide-moi à T'évoquer, à Te remercier et à T'adorer de la meilleure manière.",
@@ -625,6 +652,7 @@ export const ANYTIME_ADHKAR: DhikrItem[] = [
     arabic: 'لَا إِلَهَ إِلَّا اللهُ',
     phonetic: "Lâ ilâha illa-llâh",
     french: "Il n'y a de divinité qu'Allah.",
+    fadl: 'La meilleure parole que j\'ai dite, moi et les prophètes avant moi. (At-Tirmidhî)',
     target: 100,
   },
   {
@@ -632,6 +660,7 @@ export const ANYTIME_ADHKAR: DhikrItem[] = [
     arabic: 'اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى نَبِيِّنَا مُحَمَّدٍ',
     phonetic: "Allâhumma salli wa sallim 'alâ nabiyyinâ Muhammad",
     french: "Ô Allah, prie et accorde le salut sur notre prophète Muhammad ﷺ.",
+    fadl: 'Quiconque prie sur moi une fois, Allah prie sur lui dix fois. (Muslim)',
     target: 10,
   },
   {
@@ -646,6 +675,7 @@ export const ANYTIME_ADHKAR: DhikrItem[] = [
     arabic: 'لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللهِ',
     phonetic: "Lâ hawla wa lâ quwwata illâ bi-llâh",
     french: "Il n'y a de force ni de puissance qu'en Allah.",
+    fadl: 'C\'est un trésor parmi les trésors du Paradis. (Al-Bukhârî, Muslim)',
     target: 10,
   },
   {
@@ -653,13 +683,15 @@ export const ANYTIME_ADHKAR: DhikrItem[] = [
     arabic: 'سُبْحَانَ اللهِ وَبِحَمْدِهِ، سُبْحَانَ اللهِ الْعَظِيمِ',
     phonetic: "Subhâna-llâhi wa bi-hamdih, subhâna-llâhi-l-'Azîm",
     french: "Gloire à Allah et louange à Lui. Gloire à Allah le Très Grand.",
+    fadl: 'Deux paroles légères sur la langue, lourdes sur la balance, aimées du Tout Miséricordieux. (Al-Bukhârî, Muslim)',
     target: 100,
   },
   {
     title: 'Dhikr léger sur la balance',
     arabic: 'سُبْحَانَ اللهِ وَبِحَمْدِهِ',
     phonetic: "Subhâna-llâhi wa bi-hamdih",
-    french: "Gloire et louange à Allah. Deux paroles légères sur la langue, lourdes sur la balance, aimées du Tout Miséricordieux.",
+    french: "Gloire et louange à Allah.",
+    fadl: 'Quiconque le dit 100 fois par jour, ses péchés seront effacés, fussent-ils comme l\'écume de la mer. (Al-Bukhârî)',
     target: 100,
   },
   {
@@ -667,10 +699,12 @@ export const ANYTIME_ADHKAR: DhikrItem[] = [
     arabic: 'لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ',
     phonetic: "Lâ ilâha illa-llâhu wahdahu lâ sharîka lah, lahu-l-mulku wa lahu-l-hamd, wa huwa 'alâ kulli shay'in qadîr",
     french: "Il n'y a de divinité qu'Allah, Seul sans associé. À Lui la royauté et la louange, et Il est Omnipotent.",
+    fadl: 'Quiconque le dit 10 fois, c\'est comme s\'il avait affranchi 4 esclaves parmi les fils d\'Ismâ\'îl. (Al-Bukhârî, Muslim)',
     target: 10,
   },
   {
     title: 'Sayyid al-Istighfâr',
+    fadl: 'Celui qui le dit avec certitude le matin et meurt ce jour-là entrera au Paradis. (Al-Bukhârî)',
     arabic: 'اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ، أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ وَأَبُوءُ بِذَنْبِي فَاغْفِرْ لِي فَإِنَّهُ لَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ',
     phonetic: "Allâhumma Anta Rabbî, lâ ilâha illâ Ant, khalaqtanî wa anâ 'abduk, wa anâ 'alâ 'ahdika wa wa'dika ma-stata't, a'ûdhu bika min sharri mâ sana't, abû'u laka bi-ni'matika 'alayya wa abû'u bi-dhanbî, fa-ghfir lî fa-innahu lâ yaghfiru dh-dhunûba illâ Ant.",
     french: "Ô Allah, Tu es mon Seigneur, il n'y a de divinité que Toi. Tu m'as créé et je suis Ton serviteur. Je suis fidèle à Ton pacte et à Ta promesse autant que je le peux. Je cherche refuge auprès de Toi contre le mal que j'ai commis. Je reconnais Tes bienfaits sur moi et je reconnais mon péché. Pardonne-moi, car nul ne pardonne les péchés si ce n'est Toi.",
@@ -678,6 +712,7 @@ export const ANYTIME_ADHKAR: DhikrItem[] = [
   },
   {
     title: 'Demande de protection',
+    fadl: 'Quiconque le dit 3 fois matin et soir, rien ne lui nuira. (At-Tirmidhî)',
     arabic: 'بِسْمِ اللهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ',
     phonetic: "Bismi-llâhi-lladhî lâ yadurru ma'a-smihi shay'un fî-l-ardi wa lâ fî-s-samâ', wa huwa-s-Samî'u-l-'Alîm.",
     french: "Au nom d'Allah, Celui dont le nom protège de tout mal sur terre et dans le ciel, et Il est l'Audient, l'Omniscient.",
@@ -854,21 +889,24 @@ export const LOUANGES_ISTIGHFAR: DhikrItem[] = [
     title: 'Lâ ilâha illa-llâh',
     arabic: 'لَا إِلَٰهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ',
     phonetic: "Lâ ilâha illa-llâhu wahdahu lâ sharîka lah, lahu-l-mulku wa lahu-l-hamdu wa huwa 'alâ kulli shay'in Qadîr.",
-    french: "Il n'y a de divinité digne d'adoration qu'Allah, Seul sans associé. À Lui la royauté, à Lui la louange et Il est Omnipotent. Quiconque dit cela 100 fois par jour a la récompense de l'affranchissement de 10 esclaves.",
+    french: "Il n'y a de divinité digne d'adoration qu'Allah, Seul sans associé. À Lui la royauté, à Lui la louange et Il est Omnipotent.",
+    fadl: 'Quiconque le dit 100 fois par jour : récompense de 10 affranchissements, 100 bonnes actions, 100 péchés effacés, protection du diable. (Al-Bukhârî, Muslim)',
     target: 10,
   },
   {
     title: 'Subhân Allâhi wa bi-Hamdih',
     arabic: 'سُبْحَانَ اللهِ وَبِحَمْدِهِ',
     phonetic: "Subhân Allâhi wa bi-Hamdih.",
-    french: "Gloire et louange à Allah. Le Prophète ﷺ a dit : « Quiconque dit cela 100 fois par jour, ses péchés seront effacés, fussent-ils comme l'écume de la mer. »",
+    french: "Gloire et louange à Allah.",
+    fadl: 'Quiconque le dit 100 fois par jour, ses péchés seront effacés, fussent-ils comme l\'écume de la mer. (Al-Bukhârî)',
     target: 33,
   },
   {
     title: "Subhân Allâhi-l-'Azîm wa bi-Hamdih",
     arabic: 'سُبْحَانَ اللهِ الْعَظِيمِ وَبِحَمْدِهِ',
     phonetic: "Subhân Allâhi-l-'Azîm wa bi-Hamdih.",
-    french: "Gloire à Allah le Très Grand et louange à Lui. Deux paroles légères sur la langue, lourdes dans la balance, aimées du Tout Miséricordieux.",
+    french: "Gloire à Allah le Très Grand et louange à Lui.",
+    fadl: 'Deux paroles légères sur la langue, lourdes dans la balance, aimées du Tout Miséricordieux. (Al-Bukhârî, Muslim)',
     target: 33,
   },
   {
@@ -880,6 +918,7 @@ export const LOUANGES_ISTIGHFAR: DhikrItem[] = [
   },
   {
     title: 'Sayyid al-Istighfâr',
+    fadl: 'Quiconque le dit avec conviction le matin et meurt ce jour-là entrera au Paradis. (Al-Bukhârî)',
     arabic: 'اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَٰهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ، أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ وَأَبُوءُ بِذَنْبِي فَاغْفِرْ لِي فَإِنَّهُ لَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ',
     phonetic: "Allâhumma Anta Rabbî, lâ ilâha illâ Ant, khalaqtanî wa ana 'abduk, wa ana 'alâ 'ahdika wa wa'dika mâ-stata't, a'ûdhu bika min sharri mâ sana't, abû'u laka bi-ni'matika 'alayya wa abû'u bi-dhanbî, fa-ghfir lî fa-innahu lâ yaghfiru dh-dhunûba illâ Ant.",
     french: "Ô Allah, Tu es mon Seigneur, il n'y a de divinité que Toi. Tu m'as créé et je suis Ton serviteur. Je suis fidèle à Ton pacte et à Ta promesse autant que je le peux. Je cherche refuge auprès de Toi contre le mal que j'ai commis. Je reconnais Tes bienfaits envers moi et je reconnais mes péchés. Pardonne-moi car nul ne pardonne les péchés hormis Toi. (Maître de l'Istighfâr — quiconque le dit avec conviction le matin et meurt dans la journée entre au Paradis.)",
@@ -896,7 +935,8 @@ export const LOUANGES_ISTIGHFAR: DhikrItem[] = [
     title: 'Lâ hawla wa lâ quwwata illâ bi-llâh',
     arabic: 'لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللهِ',
     phonetic: "Lâ hawla wa lâ quwwata illâ bi-llâh.",
-    french: "Il n'y a de force ni de puissance qu'en Allah. Le Prophète ﷺ a dit : « C'est un trésor parmi les trésors du Paradis. »",
+    french: "Il n'y a de force ni de puissance qu'en Allah.",
+    fadl: 'C\'est un trésor parmi les trésors du Paradis. (Al-Bukhârî, Muslim)',
     target: 10,
   },
 ];

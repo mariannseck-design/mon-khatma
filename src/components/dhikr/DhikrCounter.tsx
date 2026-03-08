@@ -9,6 +9,7 @@ export interface DhikrItem {
   target: number;
   title: string;
   source?: string;
+  fadl?: string;
   readOnly?: boolean;
 }
 
@@ -115,6 +116,16 @@ export default function DhikrCounter({ item, onComplete, arabicFontSize = '1.7re
           style={{ color: 'var(--p-text-55)', opacity: 0.8 }}
         >
           📖 {item.source}
+        </p>
+      )}
+
+      {/* Fadl (virtue) */}
+      {item.fadl && (
+        <p
+          className="text-[11px] italic text-center max-w-xs leading-relaxed"
+          style={{ color: 'var(--p-accent)', opacity: 0.9 }}
+        >
+          ✨ {item.fadl}
         </p>
       )}
 

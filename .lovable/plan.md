@@ -1,27 +1,21 @@
 
 
-## Ajouter les vertus (fadl) aux dhikr principaux
+# Diagnostic : 404 sur /quran-reader
 
-### Scope
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-On ajoute un champ `fadl` uniquement aux dhikr qui ont une vertu specifique mentionnee dans les hadiths. Estimation : environ 60-80 items sur les 410 (ceux dont le hadith mentionne explicitement une recompense ou un merite).
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-### Changements
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-**1. `src/components/dhikr/DhikrCounter.tsx`**
-- Ajouter `fadl?: string` au type `DhikrItem`
-- Afficher le fadl sous la source avec une icone etoile (✨), style discret en `text-[11px]` italic
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-**2. `src/lib/adhkarData.ts`**
-- Ajouter le champ `fadl` aux items concernes dans les 10 categories. Exemples :
-  - Ayat al-Kursi : "Celui qui la recite le matin est protege jusqu'au soir" (Al-Hakim)
-  - Sayyid al-Istighfar : "Celui qui le recite avec certitude le matin et meurt dans la journee sera parmi les gens du Paradis" (Al-Bukhari)
-  - SubhanAllah x33 / Alhamdulillah x33 / Allahu Akbar x34 : "Celui qui les dit apres chaque priere, ses peches seront pardonnes meme s'ils sont comme l'ecume de la mer" (Muslim)
-  - Les 3 Qul (Ikhlas, Falaq, Nas) : "Te suffisent contre toute chose" (Abu Dawud)
-
-Cela necessitera 3-4 messages pour couvrir toutes les categories, en commencant par Matin et Soir.
-
-### Temps estime
-- Code (type + affichage) : 1 message
-- Donnees (fadl sur ~70 items en 10 categories) : 3-4 messages
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
