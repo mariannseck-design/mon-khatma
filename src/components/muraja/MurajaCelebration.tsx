@@ -1,6 +1,31 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { Star, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useMemo } from 'react';
+
+const CONFETTI_COLORS = ['#D4AF37', '#065F46', '#6EE7B7', '#FBBF24', '#ffffff', '#34D399'];
+
+interface ConfettiPiece {
+  id: number;
+  x: number;
+  color: string;
+  size: number;
+  delay: number;
+  rotation: number;
+  xDrift: number;
+}
+
+function generateConfetti(count = 30): ConfettiPiece[] {
+  return Array.from({ length: count }, (_, i) => ({
+    id: i,
+    x: Math.random() * 100,
+    color: CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)],
+    size: Math.random() * 8 + 4,
+    delay: Math.random() * 0.8,
+    rotation: Math.random() * 360,
+    xDrift: (Math.random() - 0.5) * 80,
+  }));
+}
 
 const DAILY_MESSAGES = [
   "MashaAllah, qu'Allah (عز وجل) bénisse ta persévérance ! 🌟",
