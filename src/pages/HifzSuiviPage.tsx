@@ -272,7 +272,7 @@ export default function HifzSuiviPage() {
                     />
                   </div>
                   <p className="text-[11px] text-center mt-1" style={{ color: 'var(--p-text-55)' }}>
-                    ≈ {goal.goal_unit === 'pages' ? Math.round(periodProgress * 15) : periodProgress} verset{(goal.goal_unit === 'pages' ? Math.round(periodProgress * 15) : periodProgress) > 1 ? 's' : ''} mémorisé{(goal.goal_unit === 'pages' ? Math.round(periodProgress * 15) : periodProgress) > 1 ? 's' : ''}
+                    ≈ {periodVerses} verset{periodVerses > 1 ? 's' : ''} mémorisé{periodVerses > 1 ? 's' : ''}
                   </p>
                   {progressPct >= 100 && (
                     <p className="text-xs text-center" style={{ color: 'var(--p-accent)' }}>
