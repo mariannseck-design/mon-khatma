@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mic, Square, Play, Pause, Check, X, Eye } from 'lucide-react';
+import { Mic, Square, Play, Pause, Check, X, Eye, ChevronDown, Lock } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import HifzStepWrapper from './HifzStepWrapper';
 import HifzMushafImage from './HifzMushafImage';
