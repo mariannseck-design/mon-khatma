@@ -57,6 +57,8 @@ export default function ReaderSettingsPanel({
   isOffline,
   tajweedEnabled,
   onTajweedChange,
+  translationEnabled,
+  onTranslationChange,
 }: ReaderSettingsPanelProps) {
   const [open, setOpen] = useState(false);
 
