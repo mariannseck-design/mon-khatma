@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { motion } from 'framer-motion';
 import { Flame, BookOpenCheck, RotateCcw, Target, Settings2, BookOpen, RefreshCw, BarChart3 } from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell, Tooltip } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { Progress } from '@/components/ui/progress';
@@ -72,7 +72,7 @@ export default function HifzSuiviPage() {
   const { user } = useAuth();
   const [streak, setStreak] = useState({ current: 0, longest: 0, tours: 0 });
   const [totalVerses, setTotalVerses] = useState(0);
-  const [weeklyData, setWeeklyData] = useState<{ day: string; count: number }[]>([]);
+  const [weeklyData, setWeeklyData] = useState<{ day: string; hifz: number; muraja: number }[]>([]);
   const [loading, setLoading] = useState(true);
   const [goal, setGoal] = useState<HifzGoal | null>(null);
   const [periodProgress, setPeriodProgress] = useState(0);
@@ -146,20 +146,21 @@ export default function HifzSuiviPage() {
       }
     }
 
-    const dayCounts: Record<string, number> = {};
+    const hifzCounts: Record<string, number> = {};
+    const murajaCounts: Record<string, number> = {};
     for (const s of (hifzSessions || [])) {
       const dateKey = s.created_at.split('T')[0];
       const verses = (s.end_verse - s.start_verse + 1);
-      dayCounts[dateKey] = (dayCounts[dateKey] || 0) + verses;
+      hifzCounts[dateKey] = (hifzCounts[dateKey] || 0) + verses;
     }
     for (const s of (murajaSessions || [])) {
       const dateKey = s.created_at.split('T')[0];
       const reviewed = Array.isArray(s.verses_reviewed) ? s.verses_reviewed as any[] : [];
       const verses = reviewed.reduce((sum: number, r: any) => sum + (Number(r.verse_end || r.end_verse || r.end || 0) - Number(r.verse_start || r.start_verse || r.start || 0) + 1), 0);
-      dayCounts[dateKey] = (dayCounts[dateKey] || 0) + (Number(verses) > 0 ? Number(verses) : 1);
+      murajaCounts[dateKey] = (murajaCounts[dateKey] || 0) + (Number(verses) > 0 ? Number(verses) : 1);
     }
 
-    const chartData: { day: string; count: number }[] = [];
+    const chartData: { day: string; hifz: number; muraja: number }[] = [];
     for (let i = 6; i >= 0; i--) {
       const d = new Date();
       d.setDate(d.getDate() - i);
@@ -167,9 +168,8 @@ export default function HifzSuiviPage() {
       const jsDay = d.getDay();
       const dayName = DAY_LABELS[jsDay === 0 ? 6 : jsDay - 1];
       const dayNum = d.getDate();
-      const month = String(d.getMonth() + 1).padStart(2, '0');
       const label = `${dayName} ${dayNum}`;
-      chartData.push({ day: label, count: dayCounts[key] || 0 });
+      chartData.push({ day: label, hifz: hifzCounts[key] || 0, muraja: murajaCounts[key] || 0 });
     }
     setWeeklyData(chartData);
 
@@ -453,6 +453,14 @@ export default function HifzSuiviPage() {
                   {new Date().toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
                 </span>
               </div>
+              <div className="flex items-center gap-3 mb-1 justify-end">
+                <span className="flex items-center gap-1 text-[10px] font-medium" style={{ color: 'var(--p-text-55)' }}>
+                  <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ background: 'var(--p-accent)' }} /> Hifz
+                </span>
+                <span className="flex items-center gap-1 text-[10px] font-medium" style={{ color: 'var(--p-text-55)' }}>
+                  <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ background: 'var(--p-primary)' }} /> Muraja'a
+                </span>
+              </div>
               <ResponsiveContainer width="100%" height={140}>
                 <BarChart data={weeklyData} barCategoryGap="30%">
                   <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: 'var(--p-text-65)', fontSize: 9, fontWeight: 500 }} />
@@ -460,14 +468,11 @@ export default function HifzSuiviPage() {
                   <Tooltip
                     cursor={false}
                     contentStyle={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', borderRadius: 8, fontSize: 12 }}
-                    formatter={(value: number) => [`${value} verset${value > 1 ? 's' : ''}`, '']}
+                    formatter={(value: number, name: string) => [`${value} verset${value > 1 ? 's' : ''}`, name === 'hifz' ? 'Hifz' : "Muraja'a"]}
                     labelStyle={{ color: 'var(--p-text-65)', fontWeight: 600 }}
                   />
-                  <Bar dataKey="count" radius={[6, 6, 0, 0]} maxBarSize={28}>
-                    {weeklyData.map((entry, i) => (
-                      <Cell key={i} fill={entry.count > 0 ? 'var(--p-accent)' : 'var(--p-track)'} />
-                    ))}
-                  </Bar>
+                  <Bar dataKey="hifz" stackId="a" fill="var(--p-accent)" maxBarSize={28} radius={[0, 0, 0, 0]} />
+                  <Bar dataKey="muraja" stackId="a" fill="var(--p-primary)" maxBarSize={28} radius={[6, 6, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </motion.div>
