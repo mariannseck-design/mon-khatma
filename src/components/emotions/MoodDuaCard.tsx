@@ -11,7 +11,7 @@ const difficultDuas: Dua[] = [
   {
     arabic: 'اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الهَمِّ وَ الْحَـزَنِ، والعَجْـزِ والكَسَلِ، والبُخْلِ والجُبْنِ، وضَلَعِ الدَّيْنِ وغَلَبَةِ الرِّجَالِ',
     phonetic: "Allâhoumma innî a'oûdhou bika mina-l-hammi wa-l-hazani, wa-l-'ajzi wa-l-kasali, wa-l-boukhli wa-l-joubni, wa dala'i d-dayni wa ghalabati r-rijâl.",
-    french: "Ô Allah (عز وجل), je me mets sous Ta protection contre les soucis et la tristesse, contre l'incapacité et la paresse, contre l'avarice et la lâcheté, contre le poids de la dette et la domination des hommes.",
+    french: "Ô Allah, je me mets sous Ta protection contre les soucis et la tristesse, contre l'incapacité et la paresse, contre l'avarice et la lâcheté, contre le poids de la dette et la domination des hommes.",
   },
   {
     arabic: 'اللَّهُمَّ إِنِّي عَبْدُكَ ابْنُ عَبْدِكَ ابْنُ أَمَتِكَ نَاصِيَتِي بِيَدِكَ... أنْ تَجْعَلَ القُرْآنَ رَبِيعَ قَلْبِي',
