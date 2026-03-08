@@ -187,8 +187,8 @@ export default function ReaderSettingsPanel({
                 </div>
               )}
 
-              {/* Translation Toggle — only in text mode */}
-              {!textModeDisabled && viewMode === 'text' && onTranslationChange && (
+              {/* Translation Toggle — available in both modes */}
+              {onTranslationChange && (
                 <div className="mb-4">
                   <button
                     onClick={() => onTranslationChange(!translationEnabled)}
