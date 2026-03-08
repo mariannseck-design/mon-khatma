@@ -455,7 +455,7 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
                 className="rounded-xl overflow-auto max-h-72 px-4 py-4"
                 dir="rtl"
               >
-                <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '12px', padding: '16px', border: '1px solid rgba(212,175,55,0.15)' }}>
+                <div style={{ background: tc.innerBg, borderRadius: '12px', padding: '16px', border: `1px solid ${tc.innerBorder}` }}>
                   {/* Basmala header for first verse */}
                   {startVerse === 1 && surahNumber !== 1 && surahNumber !== 9 && (
                     <p

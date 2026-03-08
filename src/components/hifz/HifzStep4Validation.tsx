@@ -250,7 +250,7 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
                 : <Mic className="h-8 w-8" style={{ color: '#d4af37' }} />
               }
             </motion.button>
-            <p className="text-white/40 text-xs">
+            <p style={{ color: tc.textMuted }} className="text-xs">
               {isRecording ? 'Appuie pour arrêter' : 'Appuie pour enregistrer'}
             </p>
           </div>
