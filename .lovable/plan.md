@@ -1,21 +1,24 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Ajouter un bouton favori dans DhikrSession pour sauvegarder des invocations
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Probleme
+Les sessions Dhikr n'ont pas de bouton favori. Le systeme `useDouaFavorites` existe deja (localStorage) mais n'est connecte qu'a la page Douas. Il faut l'integrer dans `DhikrSession` pour que chaque invocation puisse etre sauvegardee en favori.
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Changements
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+**`src/components/dhikr/DhikrSession.tsx`** :
+- Importer `Heart` de lucide-react, `useDouaFavorites` et `makeDouaId`
+- Accepter une nouvelle prop `categoryId: string` pour construire l'ID unique du favori
+- Ajouter un bouton coeur dans le header (a cote des controles de taille arabe)
+- Au clic, appeler `toggleFavorite(id, categoryTitle, '', item)` avec l'item courant
+- Le coeur se remplit (fill) si l'invocation est deja en favori
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+**`src/pages/DhikrPage.tsx`** :
+- Passer `categoryId={activeCategory}` a `<DhikrSession>`
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+**`src/pages/EmotionsPage.tsx`** :
+- Meme chose : passer le `categoryId` correspondant aux sessions Dhikr lancees depuis cette page
+
+Un bouton, trois fichiers touches.
 
