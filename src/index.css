@@ -113,6 +113,7 @@
   }
 
   .dark {
+    --gradient-muraja: linear-gradient(180deg, hsl(158 25% 8%), #0C1410);
     --background: 220 20% 10%;
     --foreground: 0 0% 95%;
 
