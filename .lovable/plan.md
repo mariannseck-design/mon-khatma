@@ -1,36 +1,21 @@
 
 
-## Plan : Encapsuler "Mes Versets Favoris" dans une carte scrollable
+# Diagnostic : 404 sur /quran-reader
 
-Le composant `FavoriteVersesSection` est déjà stylé avec un fond et une bordure, mais il manque une structure de carte avec hauteur limitée et scroll interne pour gérer plusieurs versets proprement.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Modification
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-**`src/components/favoris/FavoriteVersesSection.tsx`** :
-- Ajouter un `ScrollArea` (de shadcn) autour de la liste des versets avec une hauteur max (~300px)
-- Garder le header (titre + compteur) toujours visible en haut
-- La liste de versets scrolle à l'intérieur de la carte sans que la carte elle-même ne grossisse indéfiniment
-- Le bouton "Voir tout / Voir moins" est remplacé par le scroll natif dans la ScrollArea
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-### Résultat visuel
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-```text
-┌─────────────────────────────┐
-│ ❤️ Mes Versets Favoris      │
-│    3 versets sauvegardés    │
-├─────────────────────────────┤
-│ ┌─────────────────────┐  ▲ │
-│ │ Al-Baqara : 255     │  │ │
-│ │ آية الكرسي...       │  │ │
-│ └─────────────────────┘  │ │
-│ ┌─────────────────────┐  │ │
-│ │ Al-Mulk : 1         │  ░ │
-│ │ تبارك الذي...       │  │ │
-│ └─────────────────────┘  │ │
-│                          ▼ │
-└─────────────────────────────┘
-```
-
-### Fichier modifié
-- `src/components/favoris/FavoriteVersesSection.tsx` — ajouter `ScrollArea` avec `max-h-[350px]`, retirer le système expanded/collapsed
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
