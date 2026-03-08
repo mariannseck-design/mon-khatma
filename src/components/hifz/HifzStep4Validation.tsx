@@ -169,9 +169,9 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
   const secs = recordingTime % 60;
 
   return (
-    <HifzStepWrapper stepNumber={4} stepTitle="Test de Validation" onBack={onBack}>
+    <HifzStepWrapper stepNumber={4} stepTitle="Test de Validation" onBack={onBack} theme={theme}>
       <div className="space-y-5">
-        <p className="text-white/80 text-sm leading-relaxed text-center px-2">
+        <p style={{ color: tc.textSecondary }} className="text-sm leading-relaxed text-center px-2">
           Enregistre-toi 3 fois de suite sans regarder le Coran. Tu peux écouter ton audio ensuite pour vérifier.
           Si tu réussis les 3 sans erreur, tu as validé ton Hifz !
         </p>
