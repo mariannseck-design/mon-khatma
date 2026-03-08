@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Smile, Frown, Meh, Heart, Cloud, Sun, Sparkles, Trash2, Edit3, Calendar, MoreVertical, Flower2, Moon, Sunrise, BookOpen, ChevronDown, MapPin, Landmark } from 'lucide-react';
-import FavoriteVersesSection from '@/components/favoris/FavoriteVersesSection';
+import { useNavigate } from 'react-router-dom';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -59,13 +59,13 @@ const itemVariants = {
 
 export default function EmotionsPage() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [selectedMood, setSelectedMood] = useState<number | null>(null);
   const [gratitude, setGratitude] = useState('');
   const [entries, setEntries] = useState<MoodEntry[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const moodSectionRef = useRef<HTMLDivElement>(null);
-  const favorisSectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (user) {
@@ -196,55 +196,7 @@ export default function EmotionsPage() {
           initial="hidden"
           animate="visible"
         >
-          {/* Carte Mes Émotions */}
-          <motion.button
-            variants={itemVariants}
-            onClick={() => moodSectionRef.current?.scrollIntoView({ behavior: 'smooth' })}
-            className="relative overflow-hidden rounded-2xl p-5 flex flex-col items-center justify-center text-center aspect-[4/3]"
-            style={{
-              background: '#f0ebe3',
-              border: '1px solid rgba(0,0,0,0.06)',
-              boxShadow: '0 2px 12px -2px rgba(0,0,0,0.08)',
-            }}
-          >
-            <Flower2
-              className="h-7 w-7 mb-2 opacity-80"
-              strokeWidth={1.5}
-              style={{ color: '#1b4332' }}
-            />
-            <h3
-              className="text-sm font-semibold leading-tight"
-              style={{ color: '#1b4332', fontFamily: "'Inter', sans-serif" }}
-            >
-              Mes Émotions
-            </h3>
-          </motion.button>
-
-          {/* Carte Mes Favoris */}
-          <motion.button
-            variants={itemVariants}
-            onClick={() => favorisSectionRef.current?.scrollIntoView({ behavior: 'smooth' })}
-            className="relative overflow-hidden rounded-2xl p-5 flex flex-col items-center justify-center text-center aspect-[4/3]"
-            style={{
-              background: '#faf8f5',
-              border: '1.5px solid #b5942e',
-              boxShadow: '0 2px 12px -2px rgba(0,0,0,0.08)',
-            }}
-          >
-            <Heart
-              className="h-7 w-7 mb-2 text-red-500 opacity-80"
-              strokeWidth={1.5}
-              fill="rgba(220,38,38,0.3)"
-            />
-            <h3
-              className="text-sm font-semibold leading-tight"
-              style={{ color: '#1b4332', fontFamily: "'Inter', sans-serif" }}
-            >
-              Mes Favoris
-            </h3>
-          </motion.button>
-
-          {/* 8 cartes Dhikr */}
+          {/* 8 cartes Dhikr d'abord */}
           {dhikrCards.map((card) => {
             const Icon = card.icon;
             return (
@@ -282,6 +234,54 @@ export default function EmotionsPage() {
               </motion.div>
             );
           })}
+
+          {/* Carte Mes Émotions — en bas */}
+          <motion.button
+            variants={itemVariants}
+            onClick={() => moodSectionRef.current?.scrollIntoView({ behavior: 'smooth' })}
+            className="relative overflow-hidden rounded-2xl p-5 flex flex-col items-center justify-center text-center aspect-[4/3]"
+            style={{
+              background: '#f0ebe3',
+              border: '1px solid rgba(0,0,0,0.06)',
+              boxShadow: '0 2px 12px -2px rgba(0,0,0,0.08)',
+            }}
+          >
+            <Flower2
+              className="h-7 w-7 mb-2 opacity-80"
+              strokeWidth={1.5}
+              style={{ color: '#1b4332' }}
+            />
+            <h3
+              className="text-sm font-semibold leading-tight"
+              style={{ color: '#1b4332', fontFamily: "'Inter', sans-serif" }}
+            >
+              Mes Émotions
+            </h3>
+          </motion.button>
+
+          {/* Carte Mes Favoris — navigue vers Accueil Mon Univers */}
+          <motion.button
+            variants={itemVariants}
+            onClick={() => navigate('/accueil?tab=univers')}
+            className="relative overflow-hidden rounded-2xl p-5 flex flex-col items-center justify-center text-center aspect-[4/3]"
+            style={{
+              background: '#faf8f5',
+              border: '1.5px solid #b5942e',
+              boxShadow: '0 2px 12px -2px rgba(0,0,0,0.08)',
+            }}
+          >
+            <Heart
+              className="h-7 w-7 mb-2 text-red-500 opacity-80"
+              strokeWidth={1.5}
+              fill="rgba(220,38,38,0.3)"
+            />
+            <h3
+              className="text-sm font-semibold leading-tight"
+              style={{ color: '#1b4332', fontFamily: "'Inter', sans-serif" }}
+            >
+              Mes Favoris
+            </h3>
+          </motion.button>
         </motion.div>
 
         {/* Section Émotions */}
@@ -427,22 +427,6 @@ export default function EmotionsPage() {
             </div>
           )}
         </div>
-
-        {/* Section Favoris */}
-        <div ref={favorisSectionRef}>
-          <FavoriteVersesSection />
-        </div>
-
-        {/* Reflection Card */}
-        <Card className="pastel-card p-6">
-          <h3 className="font-display text-lg mb-3">💭 Réflexion du mois</h3>
-          <p className="text-foreground italic mb-3">
-            « La graine ne devient pas un arbre en un jour, mais en recevant un peu d'eau chaque matin. »
-          </p>
-          <p className="text-sm text-foreground/80 leading-relaxed">
-            On pense souvent que pour être un « bon croyant », il faut accomplir des exploits extraordinaires. Pourtant, le Prophète <span className="honorific font-bold">(عليه السلام)</span> nous a enseigné que : <em>« Les œuvres les plus aimées d'Allah <span className="honorific font-bold">(عز وجل)</span> sont les plus régulières, même si elles sont petites. »</em>
-          </p>
-        </Card>
       </div>
     </AppLayout>
   );
