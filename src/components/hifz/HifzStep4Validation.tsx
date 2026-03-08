@@ -28,9 +28,10 @@ interface Props {
   endVerse: number;
   onNext: () => void;
   onBack: () => void;
+  onPause?: () => void;
 }
 
-export default function HifzStep4Validation({ surahNumber, startVerse, endVerse, onNext, onBack }: Props) {
+export default function HifzStep4Validation({ surahNumber, startVerse, endVerse, onNext, onBack, onPause }: Props) {
   const [arabicVerses, setArabicVerses] = useState<{ number: number; text: string }[]>([]);
   const [mushafPage, setMushafPage] = useState<number | null>(null);
   const [attempt, setAttempt] = useState(0); // 0-based
