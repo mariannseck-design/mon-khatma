@@ -1,21 +1,12 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Cohérence des titres et texte "Mes Escaliers"
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Fichier : `src/pages/MurjaPage.tsx`
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+1. **Titre Ar-Rabt (lignes 351-356)** : Appliquer le même style que Muraja'a — "Ar-Rabt" en `text-lg font-extrabold` couleur primary, suivi de `(Liaison du jour)` en `text-sm font-medium` couleur atténuée.
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+2. **Titre "Mes Escaliers" (ligne 426)** : Remplacer `{totalVersesCount} marche(s) gravie(s)` par `{totalVersesCount} Ayat(s) mémorisée(s)`.
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
-
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+Deux modifications textuelles/stylistiques dans un seul fichier.
 
