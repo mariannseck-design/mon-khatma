@@ -523,6 +523,43 @@ export default function MurjaPage() {
         isOpen={celebration !== null}
         onClose={() => setCelebration(null)}
       />
+
+      {/* Graduation celebration */}
+      <Dialog open={showGraduation} onOpenChange={setShowGraduation}>
+        <DialogContent className="sm:max-w-md text-center border-none shadow-xl bg-gradient-to-br from-card via-card to-accent/10 relative overflow-hidden">
+          <SparkleEffect isActive={showGraduation} />
+          <DialogHeader className="space-y-4">
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: 'spring', duration: 0.6 }}
+              className="mx-auto text-5xl"
+            >
+              🎉
+            </motion.div>
+            <DialogTitle className="text-xl font-display text-center">
+              Félicitations !
+            </DialogTitle>
+            <DialogDescription className="text-base text-center leading-relaxed px-2">
+              Vos versets sont désormais ancrés dans votre cœur. Ils rejoignent votre trésor éternel pour l'entretien espacé.
+            </DialogDescription>
+          </DialogHeader>
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="mt-4"
+          >
+            <Button
+              onClick={() => setShowGraduation(false)}
+              className="w-full"
+              style={{ background: 'linear-gradient(135deg, #065F46, #10B981)', color: '#fff' }}
+            >
+              Alhamdulillah 🤲
+            </Button>
+          </motion.div>
+        </DialogContent>
+      </Dialog>
     </AppLayout>
   );
 }
