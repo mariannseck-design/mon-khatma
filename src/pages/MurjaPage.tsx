@@ -276,11 +276,11 @@ export default function MurjaPage() {
           <div
             className="w-12 h-12 rounded-xl mx-auto mb-2 flex items-center justify-center"
             style={{
-              background: 'var(--p-card-active)',
-              border: '1px solid var(--p-primary)',
+              background: 'linear-gradient(135deg, #065F46, #10B981)',
+              boxShadow: '0 4px 14px -2px rgba(16, 185, 129, 0.4)',
             }}
           >
-            <RefreshCw className="h-6 w-6" style={{ color: 'var(--p-primary)' }} />
+            <RefreshCw className="h-6 w-6 text-white" />
           </div>
           <h1
             className="text-xl font-bold tracking-[0.08em] uppercase"
