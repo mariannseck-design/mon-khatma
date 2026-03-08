@@ -97,14 +97,14 @@ export default function HifzSuiviPage() {
 
     const [
       { data: streakData },
-      { count },
+      { data: versesData },
       { data: goalData },
       { data: murajaSessions },
       { data: hifzSessions },
       { data: periodSessions },
     ] = await Promise.all([
       supabase.from('hifz_streaks').select('*').eq('user_id', user.id).maybeSingle(),
-      supabase.from('hifz_memorized_verses').select('*', { count: 'exact', head: true }).eq('user_id', user.id),
+      supabase.from('hifz_memorized_verses').select('verse_start, verse_end').eq('user_id', user.id),
       supabase.from('hifz_goals').select('*').eq('user_id', user.id).eq('is_active', true).maybeSingle(),
       supabase.from('muraja_sessions').select('created_at').eq('user_id', user.id).gte('created_at', sevenDaysAgo.toISOString()),
       supabase.from('hifz_sessions').select('created_at').eq('user_id', user.id).gte('created_at', sevenDaysAgo.toISOString()),
@@ -118,7 +118,10 @@ export default function HifzSuiviPage() {
     if (streakData) {
       setStreak({ current: streakData.current_streak, longest: streakData.longest_streak, tours: streakData.total_tours_completed });
     }
-    setTotalVerses(count || 0);
+    const realTotalVerses = (versesData || []).reduce(
+      (sum: number, v: any) => sum + (v.verse_end - v.verse_start + 1), 0
+    );
+    setTotalVerses(realTotalVerses);
 
     if (goalData) {
       setGoal(goalData as HifzGoal);
@@ -414,7 +417,7 @@ export default function HifzSuiviPage() {
                 className="rounded-2xl p-3 flex flex-col items-center"
                 style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', boxShadow: 'var(--p-card-shadow)' }}
               >
-                <CircularGauge value={totalVerses} max={Math.max(totalVerses, 50)} label="Versets ancrés" />
+                <CircularGauge value={totalVerses} max={6236} label="Versets ancrés" />
               </motion.div>
 
               <motion.div

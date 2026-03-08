@@ -295,14 +295,17 @@ export default function HifzPage() {
 
       if (streak) {
         const lastDate = streak.last_active_date;
-        const isConsecutive = lastDate && (
-          new Date(today).getTime() - new Date(lastDate).getTime() <= 86400000
-        );
-        await supabase.from('hifz_streaks').update({
-          current_streak: isConsecutive ? streak.current_streak + 1 : 1,
-          longest_streak: Math.max(streak.longest_streak, isConsecutive ? streak.current_streak + 1 : 1),
-          last_active_date: today,
-        }).eq('id', streak.id);
+        if (lastDate !== today) {
+          const yesterday = new Date();
+          yesterday.setDate(yesterday.getDate() - 1);
+          const yesterdayStr = yesterday.toISOString().split('T')[0];
+          const isConsecutive = lastDate === yesterdayStr;
+          await supabase.from('hifz_streaks').update({
+            current_streak: isConsecutive ? streak.current_streak + 1 : 1,
+            longest_streak: Math.max(streak.longest_streak, isConsecutive ? streak.current_streak + 1 : 1),
+            last_active_date: today,
+          }).eq('id', streak.id);
+        }
       } else {
         await supabase.from('hifz_streaks').insert({
           user_id: user.id, current_streak: 1, longest_streak: 1, last_active_date: today,
