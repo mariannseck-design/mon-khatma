@@ -3,7 +3,7 @@ import { AppLayout } from '@/components/layout/AppLayout';
 import { Sunrise, Moon, BookOpen, Heart, ChevronDown, MapPin, Landmark, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import DhikrSession from '@/components/dhikr/DhikrSession';
-import { MORNING_ADHKAR, EVENING_ADHKAR } from '@/lib/adhkarData';
+import { MORNING_ADHKAR, EVENING_ADHKAR, POST_PRAYER_ADHKAR } from '@/lib/adhkarData';
 import type { DhikrItem } from '@/components/dhikr/DhikrCounter';
 
 /* ── Card config ── */
