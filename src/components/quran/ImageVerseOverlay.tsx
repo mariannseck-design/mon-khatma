@@ -106,8 +106,8 @@ export default function ImageVerseOverlay({ page, scale, onVerseSelect, selected
 
   // For special pages (1, 2), the text area is smaller
   const isSpecial = SPECIAL_PAGES.has(page);
-  const topOffset = isSpecial ? '33%' : '6%';
-  const bottomOffset = isSpecial ? '20%' : '6%';
+  const topOffset = isSpecial ? '33%' : '7.5%';
+  const bottomOffset = isSpecial ? '20%' : '7.5%';
 
   const handleTouchStart = (e: React.TouchEvent) => {
     if (e.touches.length !== 1) return;

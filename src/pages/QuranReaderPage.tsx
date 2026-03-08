@@ -96,6 +96,8 @@ export default function QuranReaderPage() {
     setTranslate({ x: 0, y: 0 });
     setSelectedVerse(null);
     setPageVerses([]);
+    setAudioStartVerse(undefined);
+    setAudioEndVerse(undefined);
   }, [page]);
 
   useEffect(() => {
