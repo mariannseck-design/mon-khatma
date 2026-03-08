@@ -201,7 +201,7 @@ export default function CerclePage() {
                 </div>
                 <h3 className="font-display text-lg text-foreground mb-2">Tu fais partie du Cercle!</h3>
                 <p className="text-muted-foreground text-sm">
-                  Qu'Allah <span className="honorific">(عز وجل)</span> t'accorde la constance dans ta lecture.
+                  Qu'Allah t'accorde la constance dans ta lecture.
                 </p>
               </div> :
 
