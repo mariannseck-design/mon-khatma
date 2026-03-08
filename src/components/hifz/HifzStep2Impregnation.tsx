@@ -286,7 +286,7 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
             >
               <ZoomOut className="h-3.5 w-3.5" style={{ color: '#d4af37' }} />
             </button>
-            <span className="text-xs px-2" style={{ color: 'rgba(255,255,255,0.5)' }}>{FONT_LABELS[fontSizeIndex]}</span>
+            <span className="text-xs px-2" style={{ color: tc.textMuted }}>{FONT_LABELS[fontSizeIndex]}</span>
             <button
               onClick={() => setFontSizeIndex(i => Math.min(2, i + 1))}
               disabled={fontSizeIndex === 2}
