@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ChevronRight, Moon, MapPin, Heart, Sparkles, Star, Trash2 } from 'lucide-react';
 import { AppLayout } from '@/components/layout/AppLayout';
