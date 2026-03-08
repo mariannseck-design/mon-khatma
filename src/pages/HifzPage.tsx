@@ -76,6 +76,8 @@ export default function HifzPage() {
   const [showResumePrompt, setShowResumePrompt] = useState(false);
   const [pendingResume, setPendingResume] = useState<{ session: HifzSession; step: number; sessionId: string | null } | null>(null);
   const { isDevMode } = useDevMode();
+  const stepStartRef = useRef<number>(Date.now());
+  const stepTimesRef = useRef<Record<string, number>>({});
 
   // Persist session state to localStorage on every change
   useEffect(() => {
