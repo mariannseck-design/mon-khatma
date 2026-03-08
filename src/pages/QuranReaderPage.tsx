@@ -474,6 +474,8 @@ export default function QuranReaderPage() {
             onAudioStartVerseChange={setAudioStartVerse}
             onAudioEndVerseChange={setAudioEndVerse}
             isOffline={!isOnline}
+            tajweedEnabled={tajweedEnabled}
+            onTajweedChange={handleTajweedChange}
           />
         </div>
       </div>

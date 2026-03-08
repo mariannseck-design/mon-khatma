@@ -155,6 +155,34 @@ export default function ReaderSettingsPanel({
                 </div>
               )}
 
+              {/* Tajweed Toggle — only in text mode */}
+              {!textModeDisabled && viewMode === 'text' && onTajweedChange && (
+                <div className="mb-4">
+                  <button
+                    onClick={() => onTajweedChange(!tajweedEnabled)}
+                    className="w-full flex items-center justify-between py-2.5 px-4 rounded-xl text-sm font-medium transition-all"
+                    style={{ background: nightMode ? 'rgba(90,180,180,0.08)' : 'rgba(255,255,255,0.15)' }}
+                  >
+                    <span className="flex items-center gap-2">
+                      <Palette className="h-4 w-4" style={{ color: tajweedEnabled ? '#d63031' : (nightMode ? '#4a9a9a' : '#8a6d1b') }} />
+                      Couleurs Tajwid
+                    </span>
+                    <div
+                      className="w-10 h-6 rounded-full relative transition-colors"
+                      style={{ background: tajweedEnabled ? '#4a9a9a' : 'rgba(255,255,255,0.3)' }}
+                    >
+                      <div
+                        className="w-4 h-4 rounded-full absolute top-1 transition-all"
+                        style={{
+                          background: tajweedEnabled ? '#f7f3eb' : '#6b5417',
+                          left: tajweedEnabled ? '22px' : '4px',
+                        }}
+                      />
+                    </div>
+                  </button>
+                </div>
+              )}
+
               {/* Text Size (only when text mode active and not disabled) */}
               {!textModeDisabled && viewMode === 'text' && (
                 <div className="mb-4">
