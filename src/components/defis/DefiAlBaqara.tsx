@@ -199,7 +199,7 @@ export default function DefiAlBaqara({ disabled = false }: { disabled?: boolean 
             onClick={disabled ? undefined : startChallenge}
             disabled={disabled}
             className="w-full rounded-xl font-bold"
-            style={{ background: disabled ? `${COLORS.emerald}60` : COLORS.emerald, color: '#fff' }}
+            style={{ background: disabled ? `${COLORS.emerald}60` : '#fff', color: disabled ? '#fff' : COLORS.emerald }}
           >
             {disabled ? 'Lancement après le Ramadan in shâ Allah 🌸' : 'Lancer le défi 🚀'}
           </Button>
