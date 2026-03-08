@@ -163,7 +163,6 @@ export default function DefiAlKahf({ disabled = false }: { disabled?: boolean })
               </h4>
               <p className="text-xs text-white/70">Sourate Al-Kahf</p>
             </div>
-            </div>
             {streak > 0 && (
               <span
                 className="ml-auto text-xs font-semibold px-2 py-0.5 rounded-full"
