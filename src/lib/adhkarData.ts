@@ -935,7 +935,8 @@ export const LOUANGES_ISTIGHFAR: DhikrItem[] = [
     title: 'Lâ hawla wa lâ quwwata illâ bi-llâh',
     arabic: 'لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللهِ',
     phonetic: "Lâ hawla wa lâ quwwata illâ bi-llâh.",
-    french: "Il n'y a de force ni de puissance qu'en Allah. Le Prophète ﷺ a dit : « C'est un trésor parmi les trésors du Paradis. »",
+    french: "Il n'y a de force ni de puissance qu'en Allah.",
+    fadl: 'C\'est un trésor parmi les trésors du Paradis. (Al-Bukhârî, Muslim)',
     target: 10,
   },
 ];
