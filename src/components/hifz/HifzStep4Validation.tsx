@@ -197,7 +197,7 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
         {/* Blurred Mushaf image */}
         <div
           className="rounded-2xl relative overflow-hidden cursor-pointer"
-          style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(212,175,55,0.15)' }}
+          style={{ background: tc.cardBg, border: `1px solid rgba(212,175,55,0.15)` }}
           onTouchStart={() => setShowText(true)}
           onTouchEnd={() => setShowText(false)}
           onMouseDown={() => setShowText(true)}
