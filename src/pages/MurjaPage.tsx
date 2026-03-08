@@ -372,6 +372,7 @@ export default function MurjaPage() {
             {/* Section Muraja'a (Consolidation) */}
             <div className="space-y-4">
               <div className="flex items-center gap-2">
+                 <BookOpen className="h-5 w-5 flex-shrink-0" style={{ color: 'var(--p-primary)' }} />
                  <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
                    <span className="text-lg font-extrabold" style={{ color: 'var(--p-primary)' }}>Muraja'a</span>{' '}
                    <span className="text-sm font-medium" style={{ color: 'var(--p-text-75)' }}>(Consolidation)</span>
