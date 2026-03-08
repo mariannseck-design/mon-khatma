@@ -22,11 +22,9 @@ function getWeekKey() {
 
 function isValidationWindow() {
   const now = new Date();
-  const day = now.getDay(); // 0=Sun, 4=Thu, 5=Fri
+  const day = now.getDay();
   const hour = now.getHours();
-  // Thursday from 18:00 onwards
   if (day === 4 && hour >= 18) return true;
-  // All day Friday
   if (day === 5) return true;
   return false;
 }
@@ -35,10 +33,8 @@ function getNextWindowText() {
   const now = new Date();
   const day = now.getDay();
   if (day === 4 && now.getHours() < 18) return 'Disponible ce soir à 18h in shaa Allah';
-  // Calculate days until next Thursday
-  const daysUntilThursday = (4 - day + 7) % 7 || 7;
-  if (daysUntilThursday === 1) return 'Disponible demain soir in shaa Allah';
-  return `Disponible jeudi soir in shaa Allah`;
+  if (day === 3) return 'Disponible demain soir in shaa Allah';
+  return 'Disponible jeudi soir in shaa Allah';
 }
 
 function getPastWeekKeys(count: number): string[] {
@@ -67,7 +63,6 @@ export default function DefiAlKahf({ disabled = false }: { disabled?: boolean })
     if (!user) {
       const saved = localStorage.getItem(weekKey);
       setCompleted(saved === 'true');
-      // Load history from localStorage
       const pastKeys = getPastWeekKeys(4);
       setHistory(pastKeys.map(k => localStorage.getItem(k) === 'true'));
       setLoading(false);
@@ -75,8 +70,7 @@ export default function DefiAlKahf({ disabled = false }: { disabled?: boolean })
     }
 
     const load = async () => {
-      // Current week
-      const { data } = await supabase
+      const { data } = await (supabase as any)
         .from('challenge_kahf')
         .select('completed')
         .eq('user_id', user.id)
@@ -85,26 +79,25 @@ export default function DefiAlKahf({ disabled = false }: { disabled?: boolean })
 
       if (data?.completed) setCompleted(true);
 
-      // History (last 4 weeks)
       const pastKeys = getPastWeekKeys(4);
-      const { data: histData } = await supabase
+      const { data: histData } = await (supabase as any)
         .from('challenge_kahf')
         .select('week_key, completed')
         .eq('user_id', user.id)
         .in('week_key', pastKeys);
 
-      const completedKeys = new Set((histData || []).filter(r => r.completed).map(r => r.week_key));
+      const completedKeys = new Set(
+        ((histData as any[]) || []).filter((r: any) => r.completed).map((r: any) => r.week_key)
+      );
       const hist = pastKeys.map(k => completedKeys.has(k));
       setHistory(hist);
 
-      // Calculate streak
       let s = data?.completed ? 1 : 0;
       for (const h of hist) {
         if (h) s++;
         else break;
       }
       setStreak(s);
-
       setLoading(false);
     };
     load();
@@ -115,7 +108,7 @@ export default function DefiAlKahf({ disabled = false }: { disabled?: boolean })
       localStorage.setItem(weekKey, 'true');
       return;
     }
-    await supabase
+    await (supabase as any)
       .from('challenge_kahf')
       .upsert(
         { user_id: user.id, week_key: weekKey, completed: true },
@@ -173,7 +166,7 @@ export default function DefiAlKahf({ disabled = false }: { disabled?: boolean })
             )}
           </div>
 
-          {/* History dots (last 4 weeks) */}
+          {/* History dots */}
           <div className="flex items-center gap-2 mb-4">
             <span className="text-[10px] text-white/40 mr-1">Historique :</span>
             {[...history].reverse().map((done, i) => (
@@ -188,7 +181,6 @@ export default function DefiAlKahf({ disabled = false }: { disabled?: boolean })
                 {done && <Check className="h-3 w-3" style={{ color: COLORS.goldAccent }} />}
               </div>
             ))}
-            {/* Current week */}
             <div
               className="w-5 h-5 rounded-full flex items-center justify-center"
               style={{
@@ -242,7 +234,7 @@ export default function DefiAlKahf({ disabled = false }: { disabled?: boolean })
             <DialogDescription className="text-white/70 text-sm leading-relaxed">
               {streak > 1
                 ? `${streak} semaines consécutives, maa shaa Allah ! Qu'Allah te récompense pour ta constance. 🤲`
-                : 'Qu\'Allah accepte ta lecture et te couvre de Sa lumière. 🤲'}
+                : "Qu'Allah accepte ta lecture et te couvre de Sa lumière. 🤲"}
             </DialogDescription>
           </DialogHeader>
           <Button onClick={() => setShowCelebration(false)} className="mt-3 w-full" style={{ background: COLORS.goldAccent, color: COLORS.navy }}>

@@ -27,16 +27,18 @@ export default function DefisCommunityCounter() {
     return () => clearInterval(interval);
   }, []);
 
-  const total = stats.mulk + stats.baqara;
+  const total = stats.mulk + stats.baqara + stats.kahf;
   if (total === 0) return null;
 
   return (
     <div
-      className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold"
+      className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold flex-wrap justify-center"
       style={{ background: `${COLORS.goldAccent}18`, color: COLORS.emerald }}
     >
       <Users className="h-3 w-3" style={{ color: COLORS.goldAccent }} />
       <span>{stats.mulk} Al-Mulk</span>
+      <span style={{ color: `${COLORS.emerald}40` }}>·</span>
+      <span>{stats.kahf} Al-Kahf</span>
       <span style={{ color: `${COLORS.emerald}40` }}>·</span>
       <span>{stats.baqara} Al-Baqara</span>
     </div>

@@ -564,6 +564,7 @@ export default function AccueilPage() {
                   </p>
                 )}
                 <DefiAlMulk disabled={!isAdmin} />
+                <DefiAlKahf disabled={!isAdmin} />
                 <DefiAlBaqara disabled={!isAdmin} />
                 <DefisCommunityCounter />
               </div>
