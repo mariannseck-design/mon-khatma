@@ -80,10 +80,10 @@ function getStorageKey(surah: number, start: number, end: number) {
   return `hifz_ancrage_${surah}_${start}_${end}`;
 }
 
-function getQuarters(target: number) {
-  const q1End = Math.max(Math.floor(target / 4), 1);
-  const q2End = Math.max(Math.floor(target / 2), q1End + 1);
-  const q3End = Math.max(Math.floor(target * 3 / 4), q2End + 1);
+function getPhaseBreaks(target: number) {
+  const q1End = Math.max(Math.floor(target / 5), 1);
+  const q2End = Math.max(Math.floor(target * 2 / 5), q1End + 1);
+  const q3End = Math.max(Math.floor(target * 3 / 5), q2End + 1);
   return { q1End, q2End, q3End };
 }
 
