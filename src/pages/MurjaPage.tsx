@@ -300,7 +300,7 @@ export default function MurjaPage() {
             {totalBlocks > 0 && (
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-medium" style={{ color: '#065F46' }}>
+                   <span className="font-bold" style={{ color: '#065F46' }}>
                     Progression du jour
                   </span>
                   <span className="font-bold" style={{ color: '#D4AF37' }}>
