@@ -656,11 +656,12 @@ export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticPro
             className="w-full rounded-xl py-4 font-bold text-sm"
             style={{ background: `linear-gradient(135deg, ${goldColor}, #c4a030)`, color: '#1a2e1a',
               boxShadow: '0 4px 20px rgba(212,175,55,0.3)' }}>
-            {solidBlocks.length > 0 && recentBlocks.length > 0
-              ? `✨ Confirmer (${solidBlocks.length} solide${solidBlocks.length > 1 ? 's' : ''} + ${recentBlocks.length} récent${recentBlocks.length > 1 ? 's' : ''})`
-              : solidBlocks.length > 0
-                ? `✨ Confirmer ${solidBlocks.length === 1 ? 'mon' : 'mes'} ${solidBlocks.length} bloc${solidBlocks.length > 1 ? 's' : ''} solide${solidBlocks.length > 1 ? 's' : ''}`
-                : `✨ Confirmer ${recentBlocks.length === 1 ? 'mon' : 'mes'} ${recentBlocks.length} bloc${recentBlocks.length > 1 ? 's' : ''} récent${recentBlocks.length > 1 ? 's' : ''}`}
+            {(() => {
+              const solidDesc = solidLabels.length > 0 ? solidLabels.join(', ') : '';
+              const recentDesc = recentLabels.length > 0 ? recentLabels.join(', ') : '';
+              if (solidDesc && recentDesc) return `✨ Confirmer (${solidDesc} + ${recentDesc})`;
+              return `✨ Confirmer ${solidDesc || recentDesc}`;
+            })()}
           </motion.button>
         )}
 
