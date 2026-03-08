@@ -21,7 +21,7 @@ const invocations = [
     emoji: '⭐',
     arabic: 'اللَّهُمَّ إِنَّكَ عَفُوٌّ تُحِبُّ الْعَفْوَ فَاعْفُ عَنِّي',
     phonetic: "Allahumma innaka 'Afuwwun tuhibbu-l-'afwa, fâ'fu 'annî.",
-    translation: "Ô Allah (عز وجل), Tu es certes Pardonneur, Tu aimes le pardon, alors pardonne-moi.",
+    translation: "Ô Allah, Tu es certes Pardonneur, Tu aimes le pardon, alors pardonne-moi.",
   },
   {
     title: "En route vers la prière de l'Aïd",
