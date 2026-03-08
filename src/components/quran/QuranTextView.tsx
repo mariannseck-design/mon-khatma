@@ -196,7 +196,7 @@ interface AyahWithAnnotations extends LocalAyah {
 // In-memory translation cache
 const translationCache = new Map<string, Map<string, string>>();
 
-export default function QuranTextView({ page, highlightAyah, fontSize = 28, darkMode = false, tajweedEnabled = false, showTranslation = false, translationEdition = 'fr.hamidullah' }: QuranTextViewProps) {
+export default function QuranTextView({ page, highlightAyah, fontSize = 28, darkMode = false, tajweedEnabled = false, showTranslation = false, translationEdition = 'fr.hamidullah', onVerseSelect }: QuranTextViewProps) {
   const [ayahs, setAyahs] = useState<AyahWithAnnotations[]>([]);
   const [translations, setTranslations] = useState<Map<string, string>>(new Map());
   const [loading, setLoading] = useState(true);
