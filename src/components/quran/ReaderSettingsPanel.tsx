@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Settings, X, Moon, Sun, Play, Pause, Loader2, BookOpen, Image, Type, ChevronRight, Palette } from 'lucide-react';
+import { Settings, X, Moon, Sun, Play, Pause, Loader2, BookOpen, Image, Type, ChevronRight, Palette, Languages } from 'lucide-react';
 import { RECITERS } from '@/hooks/useQuranAudio';
 
 interface ReaderSettingsPanelProps {
