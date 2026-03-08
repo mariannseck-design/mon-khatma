@@ -596,13 +596,13 @@ export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticPro
           {solidBlocks.length > 0 && (
             <div className="flex items-center justify-between">
               <span className="text-[11px] text-white/60">🏛️ Acquis Solides</span>
-              <span className="text-[11px] font-bold" style={{ color: goldColor }}>{solidBlocks.length} blocs</span>
+              <span className="text-[11px] font-bold" style={{ color: goldColor }}>{solidLabels.join(' · ')}</span>
             </div>
           )}
           {recentBlocks.length > 0 && (
             <div className="flex items-center justify-between">
               <span className="text-[11px] text-white/60">🌱 Récents (Liaison)</span>
-              <span className="text-[11px] font-bold" style={{ color: '#4ade80' }}>{recentBlocks.length} blocs</span>
+              <span className="text-[11px] font-bold" style={{ color: '#4ade80' }}>{recentLabels.join(' · ')}</span>
             </div>
           )}
         </div>
