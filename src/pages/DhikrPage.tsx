@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { useAuth } from '@/contexts/AuthContext';
-import { Sunrise, Moon, BookOpen, Heart, ChevronDown, MapPin, Landmark, Sparkles } from 'lucide-react';
+import { Sunrise, Moon, BookOpen, Heart, ChevronDown, MapPin, Landmark, Sparkles, ShieldPlus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import DhikrSession from '@/components/dhikr/DhikrSession';
-import { MORNING_ADHKAR, EVENING_ADHKAR, POST_PRAYER_ADHKAR, ANYTIME_ADHKAR, SUJUD_TILAWAH_ADHKAR, OMRA_DUAS, ISTIKHARAH_DUAS, LOUANGES_ISTIGHFAR } from '@/lib/adhkarData';
+import { MORNING_ADHKAR, EVENING_ADHKAR, POST_PRAYER_ADHKAR, ANYTIME_ADHKAR, SUJUD_TILAWAH_ADHKAR, OMRA_DUAS, ISTIKHARAH_DUAS, LOUANGES_ISTIGHFAR, CHIFA_SERENITE, HAJJ_DUAS } from '@/lib/adhkarData';
 import type { DhikrItem } from '@/components/dhikr/DhikrCounter';
 
 /* ── Card config ── */
@@ -13,10 +13,12 @@ const dhikrCards = [
   { id: 'morning', title: 'Zikr du matin', icon: Sunrise, bg: '#e8d5a3', text: '#1b4332', border: '', enabled: true },
   { id: 'evening', title: 'Zikr du soir', icon: Moon, bg: '#1a1a2e', text: '#ffffff', border: '', enabled: true },
   { id: 'prayer', title: 'Après la prière', icon: BookOpen, bg: '#c8d5c0', text: '#1b4332', border: '', enabled: true },
+  { id: 'chifa', title: 'Chifâ & Sérénité', icon: ShieldPlus, bg: '#065F46', text: '#D4AF37', border: '', enabled: true },
+  { id: 'louanges', title: 'Louanges & Istighfar', icon: Sparkles, bg: '#2d6a4f', text: '#d4af37', border: '', enabled: true },
   { id: 'anytime', title: 'Toute occasion', icon: Heart, bg: '#f0ebe3', text: '#1b4332', border: '', enabled: false },
   { id: 'sujud', title: 'Sujud Tilawah', icon: ChevronDown, bg: '#c67a5c', text: '#ffffff', border: '', enabled: false },
   { id: 'omra', title: 'Duas Omra', icon: MapPin, bg: '#faf8f5', text: '#1b4332', border: '#b5942e', enabled: false },
-  { id: 'louanges', title: 'Louanges & Istighfar', icon: Sparkles, bg: '#2d6a4f', text: '#d4af37', border: '', enabled: true },
+  { id: 'hajj', title: 'Duas Hajj', icon: Landmark, bg: '#faf8f5', text: '#1b4332', border: '#b5942e', enabled: false },
   { id: 'istikharah', title: 'Istikharah', icon: Sparkles, bg: '#dce8f0', text: '#1b4332', border: '', enabled: false },
 ];
 
@@ -24,11 +26,13 @@ const CATEGORY_DATA: Record<string, { title: string; items: DhikrItem[] }> = {
   morning: { title: 'Zikr du matin', items: MORNING_ADHKAR },
   evening: { title: 'Zikr du soir', items: EVENING_ADHKAR },
   prayer: { title: 'Après la prière', items: POST_PRAYER_ADHKAR },
+  chifa: { title: 'Chifâ & Sérénité', items: CHIFA_SERENITE },
+  louanges: { title: 'Louanges & Istighfar', items: LOUANGES_ISTIGHFAR },
   anytime: { title: 'Toute occasion', items: ANYTIME_ADHKAR },
   sujud: { title: 'Sujud Tilawah', items: SUJUD_TILAWAH_ADHKAR },
   omra: { title: 'Duas Omra', items: OMRA_DUAS },
+  hajj: { title: 'Duas Hajj', items: HAJJ_DUAS },
   istikharah: { title: 'Istikharah', items: ISTIKHARAH_DUAS },
-  louanges: { title: 'Louanges & Istighfar', items: LOUANGES_ISTIGHFAR },
 };
 
 const containerVariants = {

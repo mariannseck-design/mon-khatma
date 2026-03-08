@@ -852,3 +852,253 @@ export const LOUANGES_ISTIGHFAR: DhikrItem[] = [
     target: 10,
   },
 ];
+
+/* ═══════════════════════════════════════════════════════════
+   CHIFÂ & SÉRÉNITÉ — Ruqyah et invocations de guérison
+   ═══════════════════════════════════════════════════════════ */
+
+export const CHIFA_SERENITE: DhikrItem[] = [
+  // ── Protection générale ──
+  {
+    title: "🛡️ Sourate Al-Fâtiha",
+    arabic: "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ ۝ الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ ۝ الرَّحْمَٰنِ الرَّحِيمِ ۝ مَالِكِ يَوْمِ الدِّينِ ۝ إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ ۝ اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ ۝ صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ",
+    phonetic: "Bismi-llâhi r-Rahmâni r-Rahîm. Al-hamdu li-llâhi Rabbi-l-'âlamîn. Ar-Rahmâni r-Rahîm. Mâliki yawmi d-dîn. Iyyâka na'budu wa iyyâka nasta'în. Ihdinâ s-sirâta-l-mustaqîm. Sirâta-lladhîna an'amta 'alayhim, ghayri-l-maghdûbi 'alayhim wa lâ d-dâllîn.",
+    french: "Au nom d'Allah (عز وجل), le Tout Miséricordieux, le Très Miséricordieux. Louange à Allah (عز وجل), Seigneur de l'univers. Le Tout Miséricordieux, le Très Miséricordieux. Maître du Jour de la rétribution. C'est Toi seul que nous adorons, et c'est Toi seul dont nous implorons secours. Guide-nous dans le droit chemin. Le chemin de ceux que Tu as comblés de faveurs, non pas de ceux qui ont encouru Ta colère, ni des égarés.",
+    target: 7,
+  },
+  {
+    title: "🛡️ Âyat al-Kursî",
+    arabic: "اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَن ذَا الَّذِي يَشْفَعُ عِندَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ",
+    phonetic: "Allâhu lâ ilâha illâ huwa-l-Hayyu-l-Qayyûm. Lâ ta'khudhuhu sinatun wa lâ nawm. Lahu mâ fî s-samâwâti wa mâ fî-l-ard. Man dhâ-lladhî yashfa'u 'indahu illâ bi-idhnih. Ya'lamu mâ bayna aydîhim wa mâ khalfahum. Wa lâ yuhîtûna bi-shay'in min 'ilmihi illâ bi-mâ shâ'. Wasi'a kursiyyuhu s-samâwâti wa-l-ard. Wa lâ ya'ûduhu hifzuhumâ. Wa huwa-l-'Aliyyu-l-'Azîm.",
+    french: "Allah (عز وجل) ! Point de divinité à part Lui, le Vivant, Celui qui subsiste par Lui-même. Ni somnolence ni sommeil ne Le saisissent. À Lui appartient tout ce qui est dans les cieux et sur la terre. Qui peut intercéder auprès de Lui sans Sa permission ? Il connaît leur passé et leur futur. Et de Sa science, ils n'embrassent que ce qu'Il veut. Son Trône déborde les cieux et la terre, dont la garde ne Lui coûte aucune peine. Et Il est le Très Haut, le Très Grand.",
+    target: 3,
+  },
+  {
+    title: "🛡️ Al-Baqarah v.285",
+    arabic: "آمَنَ الرَّسُولُ بِمَا أُنزِلَ إِلَيْهِ مِن رَّبِّهِ وَالْمُؤْمِنُونَ ۚ كُلٌّ آمَنَ بِاللَّهِ وَمَلَائِكَتِهِ وَكُتُبِهِ وَرُسُلِهِ لَا نُفَرِّقُ بَيْنَ أَحَدٍ مِّن رُّسُلِهِ ۚ وَقَالُوا سَمِعْنَا وَأَطَعْنَا ۖ غُفْرَانَكَ رَبَّنَا وَإِلَيْكَ الْمَصِيرُ",
+    phonetic: "Âmana r-rasûlu bi-mâ unzila ilayhi min Rabbihî wa-l-mu'minûn. Kullun âmana bi-llâhi wa malâ'ikatihî wa kutubihî wa rusulih. Lâ nufarriqu bayna ahadin min rusulih. Wa qâlû sami'nâ wa ata'nâ, ghufrânaka Rabbanâ wa ilayka-l-masîr.",
+    french: "Le Messager a cru en ce qu'on a fait descendre vers lui venant de son Seigneur, et aussi les croyants : tous ont cru en Allah (عز وجل), en Ses anges, en Ses livres et en Ses messagers ; « Nous ne faisons aucune distinction entre Ses messagers. » Et ils ont dit : « Nous avons entendu et obéi. Ton pardon, notre Seigneur. C'est vers Toi que sera le retour. »",
+    target: 1,
+  },
+  {
+    title: "🛡️ Al-Baqarah v.286",
+    arabic: "لَا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا ۚ لَهَا مَا كَسَبَتْ وَعَلَيْهَا مَا اكْتَسَبَتْ ۗ رَبَّنَا لَا تُؤَاخِذْنَا إِن نَّسِينَا أَوْ أَخْطَأْنَا ۚ رَبَّنَا وَلَا تَحْمِلْ عَلَيْنَا إِصْرًا كَمَا حَمَلْتَهُ عَلَى الَّذِينَ مِن قَبْلِنَا ۚ رَبَّنَا وَلَا تُحَمِّلْنَا مَا لَا طَاقَةَ لَنَا بِهِ ۖ وَاعْفُ عَنَّا وَاغْفِرْ لَنَا وَارْحَمْنَا ۚ أَنتَ مَوْلَانَا فَانصُرْنَا عَلَى الْقَوْمِ الْكَافِرِينَ",
+    phonetic: "Lâ yukallifu-llâhu nafsan illâ wus'ahâ. Lahâ mâ kasabat wa 'alayhâ mâ-ktasabat. Rabbanâ lâ tu'âkhidhnâ in nasînâ aw akhta'nâ. Rabbanâ wa lâ tahmil 'alaynâ isran kamâ hamaltahu 'alâ-lladhîna min qablinâ. Rabbanâ wa lâ tuhammilnâ mâ lâ tâqata lanâ bih. Wa-'fu 'annâ wa-ghfir lanâ wa-rhamnâ. Anta mawlânâ fa-nsurnâ 'alâ-l-qawmi-l-kâfirîn.",
+    french: "Allah (عز وجل) n'impose à aucune âme une charge supérieure à sa capacité. Elle sera récompensée du bien qu'elle aura fait, et punie du mal qu'elle aura fait. « Seigneur, ne nous châtie pas s'il nous arrive d'oublier ou de commettre une erreur. Seigneur ! Ne nous charge pas d'un fardeau lourd comme Tu as chargé ceux qui vécurent avant nous. Seigneur ! Ne nous impose pas ce que nous ne pouvons supporter. Efface nos fautes, pardonne-nous et fais-nous miséricorde. Tu es notre Maître, accorde-nous la victoire sur les peuples mécréants. »",
+    target: 1,
+  },
+  {
+    title: "🛡️ Sourate Al-Ikhlâs",
+    arabic: "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ\nقُلْ هُوَ اللَّهُ أَحَدٌ ۝ اللَّهُ الصَّمَدُ ۝ لَمْ يَلِدْ وَلَمْ يُولَدْ ۝ وَلَمْ يَكُن لَّهُ كُفُوًا أَحَدٌ",
+    phonetic: "Bismi-llâhi r-Rahmâni r-Rahîm. Qul huwa-llâhu Ahad. Allâhu s-Samad. Lam yalid wa lam yûlad. Wa lam yakun lahu kufuwan ahad.",
+    french: "Au nom d'Allah (عز وجل). Dis : « Il est Allah (عز وجل), Unique. Allah (عز وجل), Le Seul à être imploré. Il n'a jamais engendré, n'a pas été engendré non plus. Et nul n'est égal à Lui. »",
+    target: 3,
+  },
+  {
+    title: "🛡️ Sourate Al-Falaq",
+    arabic: "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ\nقُلْ أَعُوذُ بِرَبِّ الْفَلَقِ ۝ مِن شَرِّ مَا خَلَقَ ۝ وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ ۝ وَمِن شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ ۝ وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ",
+    phonetic: "Bismi-llâhi r-Rahmâni r-Rahîm. Qul a'ûdhu bi-Rabbi-l-falaq. Min sharri mâ khalaq. Wa min sharri ghâsiqin idhâ waqab. Wa min sharri n-naffâthâti fî-l-'uqad. Wa min sharri hâsidin idhâ hasad.",
+    french: "Au nom d'Allah (عز وجل). Dis : « Je cherche protection auprès du Seigneur de l'aube naissante, contre le mal des êtres qu'Il a créés, contre le mal de l'obscurité quand elle s'approfondit, contre le mal de celles qui soufflent sur les nœuds, et contre le mal de l'envieux quand il envie. »",
+    target: 3,
+  },
+  {
+    title: "🛡️ Sourate An-Nâs",
+    arabic: "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ\nقُلْ أَعُوذُ بِرَبِّ النَّاسِ ۝ مَلِكِ النَّاسِ ۝ إِلَٰهِ النَّاسِ ۝ مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ ۝ الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ ۝ مِنَ الْجِنَّةِ وَالنَّاسِ",
+    phonetic: "Bismi-llâhi r-Rahmâni r-Rahîm. Qul a'ûdhu bi-Rabbi n-nâs. Maliki n-nâs. Ilâhi n-nâs. Min sharri-l-waswâsi-l-khannâs. Alladhî yuwaswisu fî sudûri n-nâs. Mina-l-jinnati wa n-nâs.",
+    french: "Au nom d'Allah (عز وجل). Dis : « Je cherche protection auprès du Seigneur des hommes, le Souverain des hommes, Dieu des hommes, contre le mal du mauvais conseiller, furtif, qui souffle le mal dans les poitrines des hommes, qu'il soit djinn ou être humain. »",
+    target: 3,
+  },
+
+  // ── Apaisement du cœur ──
+  {
+    title: "💚 Du'â d'Ayyûb (عليه السلام)",
+    arabic: "رَبِّ إِنِّي مَسَّنِيَ الضُّرُّ وَأَنتَ أَرْحَمُ الرَّاحِمِينَ",
+    phonetic: "Rabbi innî massaniya d-durru wa anta Arhamu r-Râhimîn.",
+    french: "Seigneur ! Le mal m'a touché. Et Toi, Tu es le plus Miséricordieux des miséricordieux. (Al-Anbiyâ, 83) — Allah (عز وجل) exauça Ayyûb (عليه السلام) et le guérit.",
+    target: 7,
+  },
+  {
+    title: "💚 Sérénité du cœur (Ar-Ra'd 28)",
+    arabic: "أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ",
+    phonetic: "Alâ bi-dhikri-llâhi tatma'innu-l-qulûb.",
+    french: "N'est-ce point par le rappel d'Allah (عز وجل) que se tranquillisent les cœurs ? (Ar-Ra'd, 28)",
+    target: 7,
+  },
+  {
+    title: "💚 Du'â de Yûnus (عليه السلام)",
+    arabic: "لَّا إِلَٰهَ إِلَّا أَنتَ سُبْحَانَكَ إِنِّي كُنتُ مِنَ الظَّالِمِينَ",
+    phonetic: "Lâ ilâha illâ anta, subhânaka innî kuntu mina z-zâlimîn.",
+    french: "Pas de divinité à part Toi ! Pureté à Toi ! J'ai été du nombre des injustes. (Al-Anbiyâ, 87) — Le Prophète ﷺ a dit : « Aucun musulman n'invoque par cette du'â sans qu'Allah (عز وجل) ne l'exauce. »",
+    target: 7,
+  },
+  {
+    title: "💚 Contre l'angoisse et la tristesse",
+    arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ، وَالْعَجْزِ وَالْكَسَلِ، وَالْبُخْلِ وَالْجُبْنِ، وَضَلَعِ الدَّيْنِ وَغَلَبَةِ الرِّجَالِ",
+    phonetic: "Allâhumma innî a'ûdhu bika mina-l-hammi wa-l-hazan, wa-l-'ajzi wa-l-kasal, wa-l-bukhli wa-l-jubn, wa dala'i d-dayni wa ghalabati r-rijâl.",
+    french: "Ô Allah (عز وجل), je cherche refuge auprès de Toi contre les soucis et la tristesse, contre l'incapacité et la paresse, contre l'avarice et la lâcheté, contre le fardeau des dettes et la domination des hommes. (Rapporté par Al-Bukhârî)",
+    target: 3,
+  },
+  {
+    title: "💚 En cas de détresse",
+    arabic: "اللَّهُمَّ رَحْمَتَكَ أَرْجُو فَلَا تَكِلْنِي إِلَى نَفْسِي طَرْفَةَ عَيْنٍ وَأَصْلِحْ لِي شَأْنِي كُلَّهُ لَا إِلَهَ إِلَّا أَنتَ",
+    phonetic: "Allâhumma rahmataka arjû fa-lâ takilnî ilâ nafsî tarfata 'ayn, wa aslih lî sha'nî kullah, lâ ilâha illâ ant.",
+    french: "Ô Allah (عز وجل), c'est Ta miséricorde que j'espère. Ne me laisse pas à moi-même le temps d'un clin d'œil. Améliore ma situation tout entière. Il n'y a de divinité que Toi. (Rapporté par Abû Dâwûd)",
+    target: 3,
+  },
+  {
+    title: "💚 Confiance en Allah (عز وجل)",
+    arabic: "حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ",
+    phonetic: "Hasbunâ-llâhu wa ni'ma-l-wakîl.",
+    french: "Allah (عز وجل) nous suffit ; Il est notre meilleur Garant. (Âl 'Imrân, 173)",
+    target: 7,
+  },
+
+  // ── Douleurs physiques ──
+  {
+    title: "🤲 Ruqyah du malade",
+    arabic: "أَذْهِبِ الْبَأْسَ رَبَّ النَّاسِ، اشْفِ وَأَنْتَ الشَّافِي، لَا شِفَاءَ إِلَّا شِفَاؤُكَ، شِفَاءً لَا يُغَادِرُ سَقَمًا",
+    phonetic: "Adh-hibi-l-ba's, Rabba n-nâs, ishfi wa anta sh-Shâfî, lâ shifâ'a illâ shifâ'uk, shifâ'an lâ yughâdiru saqaman.",
+    french: "Ôte le mal, Seigneur des hommes ! Guéris, car Tu es le Guérisseur. Il n'y a de guérison que Ta guérison, une guérison qui ne laisse aucune maladie. (Rapporté par Al-Bukhârî et Muslim) — Invocation du Prophète ﷺ pour les malades.",
+    target: 7,
+  },
+  {
+    title: "🤲 En posant la main sur la douleur",
+    arabic: "بِسْمِ اللَّهِ (ثلاثًا)\nأَعُوذُ بِاللَّهِ وَقُدْرَتِهِ مِنْ شَرِّ مَا أَجِدُ وَأُحَاذِرُ",
+    phonetic: "Bismi-llâh (3 fois). A'ûdhu bi-llâhi wa qudratihî min sharri mâ ajidu wa uhâdhir.",
+    french: "Au nom d'Allah (عز وجل) (3 fois). Je cherche refuge auprès d'Allah (عز وجل) et de Sa puissance contre le mal que je ressens et que je crains. (Rapporté par Muslim) — Poser la main sur l'endroit douloureux.",
+    target: 7,
+  },
+  {
+    title: "🤲 Demande de guérison (7x)",
+    arabic: "أَسْأَلُ اللَّهَ الْعَظِيمَ رَبَّ الْعَرْشِ الْعَظِيمِ أَنْ يَشْفِيَكَ",
+    phonetic: "As'alu-llâha-l-'Azîm, Rabba-l-'Arshi-l-'Azîm, an yashfiyak.",
+    french: "Je demande à Allah (عز وجل) le Très Grand, le Seigneur du Trône immense, de te guérir. (À réciter 7 fois) — Le Prophète ﷺ a dit : « Quiconque dit cela 7 fois, Allah (عز وجل) le guérit. » (Rapporté par Abû Dâwûd et At-Tirmidhî)",
+    target: 7,
+  },
+  {
+    title: "🤲 Protection par le souffle (Mu'awwidhat)",
+    arabic: "كَانَ النَّبِيُّ ﷺ إِذَا اشْتَكَى يَقْرَأُ عَلَى نَفْسِهِ بِالمُعَوِّذَاتِ وَيَنْفُثُ",
+    phonetic: "Kâna n-Nabiyyu ﷺ idhâ-shtakâ yaqra'u 'alâ nafsihî bi-l-mu'awwidhât wa yanfuth.",
+    french: "Le Prophète ﷺ, lorsqu'il souffrait, récitait les sourates protectrices (Al-Ikhlâs, Al-Falaq, An-Nâs) et soufflait dans ses mains puis les passait sur son corps. (Rapporté par Al-Bukhârî) — Fais de même 3 fois.",
+    target: 3,
+  },
+  {
+    title: "🤲 Contre le mauvais œil",
+    arabic: "أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّةِ مِنْ كُلِّ شَيْطَانٍ وَهَامَّةٍ وَمِنْ كُلِّ عَيْنٍ لَامَّةٍ",
+    phonetic: "A'ûdhu bi-kalimâti-llâhi t-tâmmati min kulli shaytânin wa hâmmatin wa min kulli 'aynin lâmmah.",
+    french: "Je cherche protection par les paroles parfaites d'Allah (عز وجل) contre tout démon, tout animal venimeux et contre tout mauvais œil. (Rapporté par Al-Bukhârî) — Le Prophète ﷺ récitait cela pour protéger Al-Hasan et Al-Husayn.",
+    target: 3,
+  },
+  {
+    title: "🤲 Guérison par le Coran (Al-Isrâ' 82)",
+    arabic: "وَنُنَزِّلُ مِنَ الْقُرْآنِ مَا هُوَ شِفَاءٌ وَرَحْمَةٌ لِّلْمُؤْمِنِينَ",
+    phonetic: "Wa nunazzilu mina-l-Qur'âni mâ huwa shifâ'un wa rahmatun li-l-mu'minîn.",
+    french: "Nous faisons descendre du Coran ce qui est une guérison et une miséricorde pour les croyants. (Al-Isrâ', 82) — Le Coran est une guérison par la permission d'Allah (عز وجل).",
+    target: 3,
+  },
+  {
+    title: "🤲 Invocation pour le malade qu'on visite",
+    arabic: "لَا بَأْسَ طَهُورٌ إِنْ شَاءَ اللَّهُ",
+    phonetic: "Lâ ba's, tahûrun in shâ'a-llâh.",
+    french: "Pas de mal, c'est une purification si Allah (عز وجل) le veut. (Rapporté par Al-Bukhârî) — Parole du Prophète ﷺ lorsqu'il visitait un malade.",
+    target: 3,
+  },
+  {
+    title: "🤲 Sourate Ash-Shu'arâ' v.80",
+    arabic: "وَإِذَا مَرِضْتُ فَهُوَ يَشْفِينِ",
+    phonetic: "Wa idhâ maridtu fa-huwa yashfîn.",
+    french: "Et quand je suis malade, c'est Lui qui me guérit. (Ash-Shu'arâ', 80) — Parole d'Ibrâhîm (عليه السلام) rapportée dans le Coran.",
+    target: 7,
+  },
+];
+
+/* ═══════════════════════════════════════════════════════════
+   DUAS HAJJ — Invocations du pèlerinage
+   ═══════════════════════════════════════════════════════════ */
+
+export const HAJJ_DUAS: DhikrItem[] = [
+  {
+    title: "Talbiya",
+    arabic: "لَبَّيْكَ اللَّهُمَّ لَبَّيْكَ، لَبَّيْكَ لَا شَرِيكَ لَكَ لَبَّيْكَ، إِنَّ الْحَمْدَ وَالنِّعْمَةَ لَكَ وَالْمُلْكَ، لَا شَرِيكَ لَكَ",
+    phonetic: "Labbayka-llâhumma labbayk, labbayka lâ sharîka laka labbayk, inna-l-hamda wa n-ni'mata laka wa-l-mulk, lâ sharîka lak.",
+    french: "Me voici, ô Allah (عز وجل), me voici ! Me voici, Tu n'as point d'associé, me voici ! La louange, la grâce et la royauté T'appartiennent. Tu n'as point d'associé.",
+    target: 10,
+  },
+  {
+    title: "Du'â du Tawâf (Pierre Noire)",
+    arabic: "بِسْمِ اللَّهِ وَاللَّهُ أَكْبَرُ، اللَّهُمَّ إِيمَانًا بِكَ وَتَصْدِيقًا بِكِتَابِكَ وَوَفَاءً بِعَهْدِكَ وَاتِّبَاعًا لِسُنَّةِ نَبِيِّكَ مُحَمَّدٍ ﷺ",
+    phonetic: "Bismi-llâhi wa-llâhu Akbar. Allâhumma îmânan bika wa tasdîqan bi-kitâbika wa wafâ'an bi-'ahdika wa-ttibâ'an li-sunnati nabiyyika Muhammadin ﷺ.",
+    french: "Au nom d'Allah (عز وجل), Allah (عز وجل) est le plus Grand. Ô Allah (عز وجل), par foi en Toi, en confirmation de Ton Livre, en respect de Ton pacte, et en suivant la tradition de Ton Prophète Muhammad ﷺ.",
+    target: 7,
+  },
+  {
+    title: "Entre les deux coins (Tawâf)",
+    arabic: "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
+    phonetic: "Rabbanâ âtinâ fî d-dunyâ hasanatan wa fî-l-âkhirati hasanatan wa qinâ 'adhâba n-nâr.",
+    french: "Seigneur ! Accorde-nous une belle part dans ce monde, et une belle part dans l'au-delà, et protège-nous du châtiment du Feu. (Al-Baqarah, 201)",
+    target: 7,
+  },
+  {
+    title: "Du'â du Sa'î (Safâ & Marwa)",
+    arabic: "إِنَّ الصَّفَا وَالْمَرْوَةَ مِن شَعَائِرِ اللَّهِ ۖ أَبْدَأُ بِمَا بَدَأَ اللَّهُ بِهِ",
+    phonetic: "Inna s-Safâ wa-l-Marwata min sha'â'iri-llâh. Abda'u bi-mâ bada'a-llâhu bih.",
+    french: "Safâ et Marwa sont parmi les rites d'Allah (عز وجل). Je commence par ce par quoi Allah (عز وجل) a commencé. (Rapporté par Muslim)",
+    target: 3,
+  },
+  {
+    title: "Du'â sur le mont Safâ",
+    arabic: "اللَّهُ أَكْبَرُ، اللَّهُ أَكْبَرُ، اللَّهُ أَكْبَرُ، لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ",
+    phonetic: "Allâhu Akbar, Allâhu Akbar, Allâhu Akbar. Lâ ilâha illâ-llâhu wahdahu lâ sharîka lah, lahu-l-mulku wa lahu-l-hamdu wa huwa 'alâ kulli shay'in qadîr.",
+    french: "Allah (عز وجل) est le plus Grand (3 fois). Il n'y a de divinité qu'Allah (عز وجل), Seul sans associé. À Lui la royauté, à Lui la louange. Il est Omnipotent.",
+    target: 3,
+  },
+  {
+    title: "Du'â du jour de 'Arafât",
+    arabic: "خَيْرُ الدُّعَاءِ دُعَاءُ يَوْمِ عَرَفَةَ، وَخَيْرُ مَا قُلْتُ أَنَا وَالنَّبِيُّونَ مِنْ قَبْلِي: لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
+    phonetic: "Khayru d-du'â'i du'â'u yawmi 'Arafah, wa khayru mâ qultu anâ wa n-nabiyyûna min qablî: Lâ ilâha illâ-llâhu wahdahu lâ sharîka lah, lahu-l-mulku wa lahu-l-hamdu wa huwa 'alâ kulli shay'in qadîr.",
+    french: "La meilleure invocation est celle du jour de 'Arafât, et la meilleure parole que j'ai dite, moi et les Prophètes (عليهم السلام) avant moi : Il n'y a de divinité qu'Allah (عز وجل), Seul sans associé. À Lui la royauté, à Lui la louange. Il est Omnipotent. (Rapporté par At-Tirmidhî)",
+    target: 10,
+  },
+  {
+    title: "Du'â de Muzdalifah",
+    arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ بِأَنَّكَ أَنتَ اللَّهُ لَا إِلَٰهَ إِلَّا أَنتَ الْأَحَدُ الصَّمَدُ الَّذِي لَمْ يَلِدْ وَلَمْ يُولَدْ وَلَمْ يَكُن لَّهُ كُفُوًا أَحَدٌ",
+    phonetic: "Allâhumma innî as'aluka bi-annaka anta-llâhu lâ ilâha illâ anta-l-Ahadu s-Samadu-lladhî lam yalid wa lam yûlad wa lam yakun lahu kufuwan ahad.",
+    french: "Ô Allah (عز وجل), je T'implore car Tu es Allah (عز وجل), il n'y a de divinité que Toi, l'Unique, le Seul imploré, qui n'a jamais engendré et n'a pas été engendré, et nul n'est égal à Lui.",
+    target: 3,
+  },
+  {
+    title: "Lapidation (Jamarat)",
+    arabic: "اللَّهُ أَكْبَرُ",
+    phonetic: "Allâhu Akbar.",
+    french: "Allah (عز وجل) est le plus Grand. (À chaque lancer de caillou lors de la lapidation des stèles à Minâ.)",
+    target: 7,
+  },
+  {
+    title: "Du'â après le sacrifice",
+    arabic: "بِسْمِ اللَّهِ وَاللَّهُ أَكْبَرُ، اللَّهُمَّ مِنْكَ وَلَكَ، اللَّهُمَّ تَقَبَّلْ مِنِّي",
+    phonetic: "Bismi-llâhi wa-llâhu Akbar. Allâhumma minka wa lak. Allâhumma taqabbal minnî.",
+    french: "Au nom d'Allah (عز وجل), Allah (عز وجل) est le plus Grand. Ô Allah (عز وجل), cela vient de Toi et c'est pour Toi. Ô Allah (عز وجل), accepte de moi.",
+    target: 1,
+  },
+  {
+    title: "Du'â en buvant Zamzam",
+    arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْمًا نَافِعًا وَرِزْقًا وَاسِعًا وَشِفَاءً مِنْ كُلِّ دَاءٍ",
+    phonetic: "Allâhumma innî as'aluka 'ilman nâfi'an wa rizqan wâsi'an wa shifâ'an min kulli dâ'.",
+    french: "Ô Allah (عز وجل), je Te demande une science bénéfique, une subsistance abondante et la guérison de toute maladie. (À réciter en buvant l'eau de Zamzam.)",
+    target: 3,
+  },
+  {
+    title: "Takbîr des jours de Tachrîq",
+    arabic: "اللَّهُ أَكْبَرُ اللَّهُ أَكْبَرُ، لَا إِلَهَ إِلَّا اللَّهُ، وَاللَّهُ أَكْبَرُ اللَّهُ أَكْبَرُ وَلِلَّهِ الْحَمْدُ",
+    phonetic: "Allâhu Akbar, Allâhu Akbar, lâ ilâha illâ-llâh, wa-llâhu Akbar, Allâhu Akbar, wa li-llâhi-l-hamd.",
+    french: "Allah (عز وجل) est le plus Grand, Allah (عز وجل) est le plus Grand. Nulle divinité à part Allah (عز وجل). Allah (عز وجل) est le plus Grand, Allah (عز وجل) est le plus Grand. Et à Allah (عز وجل) la louange. (Du 9 au 13 Dhû-l-Hijja)",
+    target: 10,
+  },
+  {
+    title: "Du'â du retour de voyage",
+    arabic: "اللَّهُ أَكْبَرُ، اللَّهُ أَكْبَرُ، اللَّهُ أَكْبَرُ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، آيِبُونَ تَائِبُونَ عَابِدُونَ لِرَبِّنَا حَامِدُونَ",
+    phonetic: "Allâhu Akbar (3 fois). Lâ ilâha illâ-llâhu wahdahu lâ sharîka lah, lahu-l-mulku wa lahu-l-hamdu wa huwa 'alâ kulli shay'in qadîr. Âyibûna tâ'ibûna 'âbidûna li-Rabbinâ hâmidûn.",
+    french: "Allah (عز وجل) est le plus Grand (3 fois). Nulle divinité à part Allah (عز وجل), Seul sans associé. À Lui la royauté, à Lui la louange. Il est Omnipotent. Nous voilà de retour, repentants, adorateurs de notre Seigneur et Le louant. (Rapporté par Muslim)",
+    target: 3,
+  },
+];
