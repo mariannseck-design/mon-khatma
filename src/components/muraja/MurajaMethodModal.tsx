@@ -106,10 +106,8 @@ export default function MurajaMethodModal({ defaultTab = 'rabt', trigger }: Mura
               <p className="text-xs leading-relaxed" style={{ color: '#1C2421' }}>
                 Le SM-2 est un système de « répétition espacée ». Plutôt que de tout réviser chaque jour,
                 le système calcule le <strong>moment précis</strong> où ton cerveau s'apprête à oublier une information
-                pour te la proposer à nouveau. C'est la méthode la plus efficace au monde pour préserver le savoir
-                transmis par les Prophètes{' '}
-                <span style={{ fontFamily: "'Amiri', serif", fontWeight: 'bold', fontSize: '1.1em' }}>(عليهم السلام)</span>{' '}
-                sur le très long terme.
+                pour te la proposer à nouveau. C'est une méthode <strong>internationalement reconnue</strong> et
+                scientifiquement prouvée pour ancrer durablement les connaissances dans la mémoire à long terme.
               </p>
 
               {/* Forgetting curve chart */}
