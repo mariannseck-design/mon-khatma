@@ -712,6 +712,7 @@ export const ANYTIME_ADHKAR: DhikrItem[] = [
   },
   {
     title: 'Demande de protection',
+    fadl: 'Quiconque le dit 3 fois matin et soir, rien ne lui nuira. (At-Tirmidhî)',
     arabic: 'بِسْمِ اللهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ',
     phonetic: "Bismi-llâhi-lladhî lâ yadurru ma'a-smihi shay'un fî-l-ardi wa lâ fî-s-samâ', wa huwa-s-Samî'u-l-'Alîm.",
     french: "Au nom d'Allah, Celui dont le nom protège de tout mal sur terre et dans le ciel, et Il est l'Audient, l'Omniscient.",
