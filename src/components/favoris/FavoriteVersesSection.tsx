@@ -69,7 +69,7 @@ export default function FavoriteVersesSection() {
 
         <div className="flex-1 min-w-0">
           <h4 className="text-base font-bold tracking-wide text-foreground">
-            Mes Versets Favoris
+            Mes Ayats Favoris
           </h4>
           {count > 0 ? (
             <>
