@@ -1,12 +1,15 @@
 import { useState, useEffect, useMemo } from 'react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { motion } from 'framer-motion';
-import { Flame, BookOpenCheck, RotateCcw, Target, Settings2 } from 'lucide-react';
+import { Flame, BookOpenCheck, RotateCcw, Target, Settings2, BookOpen, RefreshCw } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { Progress } from '@/components/ui/progress';
 import HifzGoalOnboarding from '@/components/hifz/HifzGoalOnboarding';
+import { findNextStartingPoint, getTodayRevisions } from '@/lib/hifzUtils';
+import { SURAHS } from '@/lib/surahData';
+import { Link } from 'react-router-dom';
 
 function getGreeting(): string {
   const h = new Date().getHours();
