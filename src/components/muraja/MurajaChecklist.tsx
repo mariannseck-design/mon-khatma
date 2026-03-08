@@ -122,7 +122,8 @@ export default function MurajaChecklist({
               className="w-full flex items-center gap-3 rounded-xl px-4 py-3.5 text-left transition-all"
               style={{
                 background: isChecked ? 'var(--p-card-active)' : 'var(--p-card)',
-                border: `1px solid ${isChecked ? 'var(--p-accent)' : 'var(--p-border)'}`,
+                border: `1px solid ${isChecked ? '#D4AF37' : 'var(--p-border)'}`,
+                borderLeft: section === 'rabt' ? '3px solid #D4AF37' : undefined,
                 opacity: isChecked ? 0.8 : 1,
                 boxShadow: isChecked ? 'none' : 'var(--p-card-shadow)',
               }}
