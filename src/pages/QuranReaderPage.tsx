@@ -57,6 +57,10 @@ export default function QuranReaderPage() {
     setShowIntro(false);
     localStorage.setItem('quran_reader_intro_seen', 'true');
   };
+
+  // Exit prompt — ask to bookmark before leaving
+  const [showExitPrompt, setShowExitPrompt] = useState(false);
+
   const handleTajweedChange = (enabled: boolean) => {
     setTajweedEnabled(enabled);
     localStorage.setItem('quran_tajweed', String(enabled));
@@ -389,7 +393,14 @@ export default function QuranReaderPage() {
       >
         {/* Back */}
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => {
+            // If no bookmark set, ask user if they want to mark this page
+            if (bookmark === null) {
+              setShowExitPrompt(true);
+            } else {
+              navigate(-1);
+            }
+          }}
           className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
           style={{ color: nightMode ? '#f0e6c8' : '#1a3a3a' }}
         >
@@ -540,13 +551,16 @@ export default function QuranReaderPage() {
             >
               <div className="text-3xl mb-3">📖</div>
               <h3 className="text-lg font-bold mb-2" style={{ color: '#6b5417', fontFamily: "'Playfair Display', serif" }}>
-                Bienvenue dans le Lecteur
+                Bienvenue
               </h3>
-              <p className="text-sm mb-4 leading-relaxed" style={{ color: '#5a4a2a' }}>
-                Tu peux lire le Coran en <strong>mode Mushaf</strong> (images avec tajwid en couleur) ou en <strong>mode Texte</strong> (avec traduction et tajwid).
+              <p className="text-sm mb-3 leading-relaxed" style={{ color: '#5a4a2a' }}>
+                Tu peux lire le Coran en <strong>mode Mushaf</strong> (image) ou en <strong>mode Texte</strong>.
+              </p>
+              <p className="text-sm mb-3 leading-relaxed" style={{ color: '#5a4a2a' }}>
+                Tu peux aussi <strong>marquer ta page</strong> pour la retrouver facilement 🔖
               </p>
               <p className="text-xs mb-5 opacity-70" style={{ color: '#5a4a2a' }}>
-                Change de mode à tout moment via l'icône ⚙️ en bas de l'écran.
+                Change de mode et accède aux réglages via ⚙️ en bas de l'écran.
               </p>
               <button
                 onClick={dismissIntro}
@@ -559,6 +573,71 @@ export default function QuranReaderPage() {
               >
                 J'ai compris ✨
               </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Exit prompt — ask to bookmark before leaving */}
+      <AnimatePresence>
+        {showExitPrompt && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[60] flex items-center justify-center px-6"
+            style={{ background: 'rgba(0,0,0,0.5)' }}
+            onClick={() => { setShowExitPrompt(false); navigate(-1); }}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              className="w-full max-w-xs rounded-2xl p-5 text-center"
+              style={{
+                background: nightMode ? 'linear-gradient(135deg, #1a2e1a, #2a3e2a)' : 'linear-gradient(135deg, #f7f3eb, #e8dcc8)',
+                border: '1px solid rgba(212,175,55,0.3)',
+                boxShadow: '0 20px 60px rgba(0,0,0,0.25)',
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="text-2xl mb-2">🔖</div>
+              <h3 className="text-base font-bold mb-1" style={{ color: nightMode ? '#d4c9a8' : '#6b5417', fontFamily: "'Playfair Display', serif" }}>
+                Marquer cette page ?
+              </h3>
+              <p className="text-xs mb-4 opacity-70" style={{ color: nightMode ? '#a0996a' : '#5a4a2a' }}>
+                Page {page} {surah ? `· ${surah.name}` : ''}
+              </p>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => {
+                    setBookmark(page);
+                    localStorage.setItem('quran_bookmark', page.toString());
+                    toast(`Marque-page enregistré · Page ${page}`);
+                    setShowExitPrompt(false);
+                    navigate(-1);
+                  }}
+                  className="flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all"
+                  style={{
+                    background: 'linear-gradient(135deg, #4a9a9a, #5ab8b8)',
+                    color: '#f7f3eb',
+                    boxShadow: '0 4px 15px rgba(74,154,154,0.3)',
+                  }}
+                >
+                  Marquer
+                </button>
+                <button
+                  onClick={() => { setShowExitPrompt(false); navigate(-1); }}
+                  className="flex-1 py-2.5 rounded-xl text-sm font-medium transition-all"
+                  style={{
+                    background: nightMode ? 'rgba(90,180,180,0.1)' : 'rgba(0,0,0,0.06)',
+                    color: nightMode ? '#a0996a' : '#5a4a2a',
+                  }}
+                >
+                  Quitter
+                </button>
+              </div>
             </motion.div>
           </motion.div>
         )}
