@@ -96,21 +96,23 @@ export default function VerseTranslationDrawer({ verseKey, allVerses, onClose, o
 
     const fetchTranslation = async () => {
       try {
-        const res = await fetch(
-          `https://api.quran.com/api/v4/verses/by_key/${verseKey}?language=fr&words=true&translations=136&word_fields=text_uthmani`
-        );
-        if (!res.ok) throw new Error('API error');
-        const json = await res.json();
+        const [surah, ayah] = verseKey!.split(':');
+
+        // Fetch Arabic and French translation from the same source as inline text
+        const [arRes, frRes] = await Promise.all([
+          fetch(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/ar.alafasy`),
+          fetch(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/fr.hamidullah`),
+        ]);
+        if (!arRes.ok || !frRes.ok) throw new Error('API error');
+        const [arJson, frJson] = await Promise.all([arRes.json(), frRes.json()]);
         if (cancelled) return;
 
-        const verse = json.verse;
-        const arabic = verse.words
-          .filter((w: any) => w.char_type_name !== 'end')
-          .map((w: any) => w.text_uthmani)
-          .join(' ');
-        const translation = verse.translations?.[0]?.text?.replace(/<[^>]*>/g, '') || '';
+        if (arJson.code !== 200 || frJson.code !== 200) throw new Error('API error');
 
-        setData({ arabic, translation });
+        setData({
+          arabic: arJson.data.text,
+          translation: frJson.data.text,
+        });
       } catch {
         if (!cancelled) setError(true);
       } finally {
