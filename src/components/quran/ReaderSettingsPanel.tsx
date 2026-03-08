@@ -53,6 +53,8 @@ export default function ReaderSettingsPanel({
   onAudioStartVerseChange,
   onAudioEndVerseChange,
   isOffline,
+  tajweedEnabled,
+  onTajweedChange,
 }: ReaderSettingsPanelProps) {
   const [open, setOpen] = useState(false);
 
