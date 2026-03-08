@@ -18,6 +18,7 @@ export default function DefisCommunityCounter() {
         setStats({
           mulk: parsed.mulk_participants || 0,
           baqara: parsed.baqara_participants || 0,
+          kahf: parsed.kahf_participants || 0,
         });
       }
     };
