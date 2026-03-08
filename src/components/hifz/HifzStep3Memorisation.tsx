@@ -294,7 +294,7 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
   }, [ayahs, surahNumber]);
 
   return (
-    <HifzStepWrapper stepNumber={3} stepTitle="Tikrar" onBack={onBack}>
+    <HifzStepWrapper stepNumber={3} stepTitle="Tikrar" onBack={onBack} onPause={onPause}>
       <div className="text-center space-y-4">
         {/* Icon */}
         <div
