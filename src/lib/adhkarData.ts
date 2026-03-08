@@ -434,6 +434,7 @@ export const EVENING_ADHKAR: DhikrItem[] = [
   {
     title: 'Protection par les paroles d\'Allah',
     source: 'Muslim n°2708',
+    fadl: 'Quiconque dit cela 3 fois le soir ne sera touché par aucun mal cette nuit-là. (Muslim)',
     arabic: 'أَعـوذُ بِكَلِمـاتِ اللّهِ التّـامّـاتِ مِنْ شَـرِّ ما خَلَـق',
     phonetic: "A'ûdhu bi-kalimâti-llâhi t-tâmmâti min sharri mâ khalaq.",
     french: "Je cherche protection dans les paroles parfaites d'Allah contre le mal de ce qu'Il a créé.",
