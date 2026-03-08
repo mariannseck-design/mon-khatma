@@ -34,6 +34,7 @@ function isSundayEvening() {
 
 export default function DefiAlMulk({ disabled = false }: { disabled?: boolean }) {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const weekKey = getWeekKey();
   const [days, setDays] = useState<boolean[]>(Array(7).fill(false));
   const [showCelebration, setShowCelebration] = useState(false);
