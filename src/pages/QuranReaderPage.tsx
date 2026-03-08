@@ -45,6 +45,14 @@ export default function QuranReaderPage() {
   const [viewMode, setViewMode] = useState<'image' | 'text'>('image');
   const textModeDisabled = false;
 
+  const [tajweedEnabled, setTajweedEnabled] = useState(() => {
+    return localStorage.getItem('quran_tajweed') === 'true';
+  });
+  const handleTajweedChange = (enabled: boolean) => {
+    setTajweedEnabled(enabled);
+    localStorage.setItem('quran_tajweed', String(enabled));
+  };
+
   // Force text mode when offline
   useEffect(() => {
     if (!isOnline && viewMode === 'image') {
