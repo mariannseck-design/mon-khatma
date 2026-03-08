@@ -441,48 +441,10 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
               </button>
             )}
 
-            {/* Content container — Text or Mushaf */}
-            {loading && displayMode === 'text' ? (
+            {/* Content container — Text */}
+            {loading ? (
               <div className="flex items-center justify-center py-8">
                 <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: '#d4af37', borderTopColor: 'transparent' }} />
-              </div>
-            ) : displayMode === 'mushaf' ? (
-              <div
-                style={{ display: textVisible ? 'block' : 'none' }}
-                className="space-y-2"
-              >
-                {/* Zoom controls */}
-                <div className="flex items-center justify-center gap-1.5">
-                  {(['small', 'medium', 'large'] as const).map((z) => (
-                    <button
-                      key={z}
-                      onClick={() => setMushafZoom(z)}
-                      className="px-2.5 py-1 rounded-md text-[10px] font-medium transition-all"
-                      style={{
-                        background: mushafZoom === z ? 'rgba(212,175,55,0.2)' : 'rgba(255,255,255,0.05)',
-                        border: mushafZoom === z ? '1px solid rgba(212,175,55,0.5)' : '1px solid rgba(255,255,255,0.1)',
-                        color: mushafZoom === z ? '#d4af37' : 'rgba(255,255,255,0.4)',
-                      }}
-                    >
-                      {z === 'small' ? 'Petit' : z === 'medium' ? 'Moyen' : 'Grand'}
-                    </button>
-                  ))}
-                </div>
-                <div
-                  className="rounded-xl overflow-auto mx-auto"
-                  style={{ maxHeight: `${zoomConfig[mushafZoom].maxH}px` }}
-                >
-                  <img
-                    src={`https://cdn.jsdelivr.net/gh/QuranHub/quran-pages-images@main/easyquran.com/hafs-tajweed/${mushafPage}.jpg`}
-                    alt={`Mushaf page ${mushafPage}`}
-                    className="rounded-lg mx-auto"
-                    style={{
-                      width: zoomConfig[mushafZoom].width,
-                      border: '1px solid rgba(212,175,55,0.15)',
-                    }}
-                    loading="eager"
-                  />
-                </div>
               </div>
             ) : (
               <div
