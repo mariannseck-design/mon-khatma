@@ -1,25 +1,21 @@
 
 
-## Plan : Ajouter les Adhkâr du soir (أذكار المساء)
+# Diagnostic : 404 sur /quran-reader
 
-### Changements
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-**1. `src/lib/adhkarData.ts`** — Ajouter un nouveau tableau `EVENING_ADHKAR: DhikrItem[]`
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-Les adhkâr du soir sont très similaires à ceux du matin avec des adaptations :
-- Mêmes sourates protectrices (Âyat al-Kursî, Al-Ikhlâs, Al-Falaq, An-Nâs) — identiques
-- Formules du soir adaptées : "أَمْسَيْنا" au lieu de "أَصْبَحْنا", "هذه اللَّيلة" au lieu de "هذا اليوم"
-- Sayyid al-Istighfâr (version soir)
-- Mêmes invocations communes (Tawakkul, Protection, Santé, Pardon, etc.)
-- Tasbîh, Tahlîl, Istighfâr (100x chacun)
-- ~28-31 items au total avec les bons targets
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-**2. `src/pages/DhikrPage.tsx`** — 2 modifications mineures :
-- Importer `EVENING_ADHKAR`
-- Activer la carte "Zikr du soir" (`enabled: true`)
-- Ajouter l'entrée `evening` dans `CATEGORY_DATA`
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-### Fichiers modifiés
-- `src/lib/adhkarData.ts` (ajout ~350 lignes)
-- `src/pages/DhikrPage.tsx` (3 lignes)
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

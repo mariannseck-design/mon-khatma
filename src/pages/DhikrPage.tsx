@@ -3,13 +3,13 @@ import { AppLayout } from '@/components/layout/AppLayout';
 import { Sunrise, Moon, BookOpen, Heart, ChevronDown, MapPin, Landmark, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import DhikrSession from '@/components/dhikr/DhikrSession';
-import { MORNING_ADHKAR } from '@/lib/adhkarData';
+import { MORNING_ADHKAR, EVENING_ADHKAR } from '@/lib/adhkarData';
 import type { DhikrItem } from '@/components/dhikr/DhikrCounter';
 
 /* ── Card config ── */
 const dhikrCards = [
   { id: 'morning', title: 'Zikr du matin', icon: Sunrise, bg: '#e8d5a3', text: '#1b4332', border: '', enabled: true },
-  { id: 'evening', title: 'Zikr du soir', icon: Moon, bg: '#1a1a2e', text: '#ffffff', border: '', enabled: false },
+  { id: 'evening', title: 'Zikr du soir', icon: Moon, bg: '#1a1a2e', text: '#ffffff', border: '', enabled: true },
   { id: 'prayer', title: 'Après la prière', icon: BookOpen, bg: '#c8d5c0', text: '#1b4332', border: '', enabled: false },
   { id: 'anytime', title: 'Toute occasion', icon: Heart, bg: '#f0ebe3', text: '#1b4332', border: '', enabled: false },
   { id: 'sujud', title: 'Sujud Tilawah', icon: ChevronDown, bg: '#c67a5c', text: '#ffffff', border: '', enabled: false },
@@ -20,6 +20,7 @@ const dhikrCards = [
 
 const CATEGORY_DATA: Record<string, { title: string; items: DhikrItem[] }> = {
   morning: { title: 'Zikr du matin', items: MORNING_ADHKAR },
+  evening: { title: 'Zikr du soir', items: EVENING_ADHKAR },
 };
 
 const containerVariants = {
