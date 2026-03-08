@@ -8,6 +8,7 @@ export interface DhikrItem {
   french: string;
   target: number;
   title: string;
+  source?: string;
 }
 
 interface DhikrCounterProps {
