@@ -348,6 +348,7 @@ export default function MurjaPage() {
             {/* Section Ar-Rabt */}
             <div className="space-y-4">
               <div className="flex items-center gap-2">
+                 <Link className="h-5 w-5 flex-shrink-0" style={{ color: 'var(--p-primary)' }} />
                  <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
                    <span className="text-lg font-extrabold" style={{ color: 'var(--p-primary)' }}>Ar-Rabt</span>{' '}
                    <span className="text-sm font-medium" style={{ color: 'var(--p-text-75)' }}>(Liaison du jour)</span>
