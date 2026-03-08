@@ -1,6 +1,7 @@
 import { ReactNode, useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronLeft, Clock } from 'lucide-react';
+import { type HifzTheme, isLightTheme } from '@/lib/hifzTheme';
 
 interface HifzStepWrapperProps {
   stepNumber: number;
@@ -8,6 +9,7 @@ interface HifzStepWrapperProps {
   children: ReactNode;
   onBack?: () => void;
   totalSteps?: number;
+  theme?: HifzTheme;
 }
 
 function formatTime(seconds: number): string {
