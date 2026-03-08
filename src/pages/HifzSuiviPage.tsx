@@ -477,6 +477,43 @@ export default function HifzSuiviPage() {
               </ResponsiveContainer>
             </motion.div>
 
+            {/* Révisions du jour */}
+            {todayRevisions.length > 0 && (() => {
+              const totalDue = todayRevisions.reduce((s, r) => s + (r.verse_end - r.verse_start + 1), 0);
+              const todayKey = new Date().toISOString().split('T')[0];
+              const todayEntry = weeklyData.find(d => d.day.includes(String(new Date().getDate())));
+              const doneToday = todayEntry?.muraja || 0;
+              const remaining = Math.max(0, totalDue - doneToday);
+              const pct = totalDue > 0 ? Math.min(Math.round((doneToday / totalDue) * 100), 100) : 0;
+              return (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}
+                  className="rounded-2xl p-4"
+                  style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)' }}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <RotateCcw className="h-4 w-4" style={{ color: 'var(--p-primary)' }} />
+                      <span className="text-xs font-semibold" style={{ color: 'var(--p-on-dark)' }}>Révision du jour</span>
+                    </div>
+                    <span className="text-[11px] font-medium" style={{ color: pct >= 100 ? 'var(--p-accent)' : 'var(--p-text-55)' }}>
+                      {pct >= 100 ? '✅ Terminé' : `${remaining} verset${remaining > 1 ? 's' : ''} restant${remaining > 1 ? 's' : ''}`}
+                    </span>
+                  </div>
+                  <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: 'var(--p-track)' }}>
+                    <div
+                      className="h-full rounded-full transition-all duration-500"
+                      style={{ width: `${pct}%`, background: pct >= 100 ? 'var(--p-accent)' : 'var(--p-primary)' }}
+                    />
+                  </div>
+                  <div className="flex justify-between mt-1.5">
+                    <span className="text-[10px]" style={{ color: 'var(--p-text-55)' }}>{doneToday} révisé{doneToday > 1 ? 's' : ''}</span>
+                    <span className="text-[10px]" style={{ color: 'var(--p-text-55)' }}>{totalDue} à réviser</span>
+                  </div>
+                </motion.div>
+              );
+            })()}
+
             {/* Empty state */}
             {totalVerses === 0 && streak.current === 0 && (
               <div
