@@ -1,31 +1,21 @@
 
 
-## Fond apaisant pour la page Muraja'a
+# Diagnostic : 404 sur /quran-reader
 
-### Constat
-Le fond actuel (`bg-gradient-warm`) est quasi blanc — `hsl(20 70% 96%)` vers `hsl(0 0% 99%)`. Trop froid et clinique.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Proposition : Fond "Parchemin Émeraude"
-Un dégradé vertical très doux qui évoque la sérénité, en cohérence avec la charte premium :
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-- **Mode clair** : du vert d'eau très pâle (`hsl(158 30% 96%)`) vers le blanc parchemin (`#FDFBF7`)
-- **Mode sombre** : du vert profond (`hsl(158 25% 8%)`) vers le fond sombre actuel (`#0C1410`)
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-### Changements
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-| Fichier | Modification |
-|---|---|
-| `src/index.css` | Ajouter `--gradient-muraja` en clair et en sombre |
-| `src/index.css` | Ajouter classe `.bg-gradient-muraja` |
-| `src/pages/MurjaPage.tsx` | Remplacer `<AppLayout>` par `<AppLayout>` + wrapper `div` avec `bg-gradient-muraja` appliqué sur le contenu, ou passer une prop className |
-
-Puisque `AppLayout` applique `bg-gradient-warm` sur le `div` racine, la solution la plus propre est d'**ajouter une prop `className`** à `AppLayout` pour permettre de surcharger le fond, puis passer `bg-gradient-muraja` depuis `MurjaPage`.
-
-| Fichier | Modification |
-|---|---|
-| `src/components/layout/AppLayout.tsx` | Ajouter prop optionnelle `bgClassName` (défaut: `bg-gradient-warm`), l'appliquer au div racine |
-| `src/pages/MurjaPage.tsx` | Passer `bgClassName="bg-gradient-muraja"` |
-| `src/index.css` | Ajouter les variables et la classe `bg-gradient-muraja` |
-
-Le résultat : un fond vert d'eau très subtil, comme du papier ancien légèrement teinté — apaisant sans être distrayant.
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

@@ -268,7 +268,7 @@ export default function MurjaPage() {
   const refresh = () => setRefreshKey(k => k + 1);
 
   return (
-    <AppLayout title="Muraja'a" hideNav>
+    <AppLayout title="Muraja'a" hideNav bgClassName="bg-gradient-muraja">
       <div className="max-w-md mx-auto px-4 py-6 space-y-6" style={{ backgroundColor: 'var(--p-bg)', minHeight: '100vh' }}>
         {/* Header */}
         <div className="text-center space-y-1">
