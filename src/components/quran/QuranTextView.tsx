@@ -17,6 +17,7 @@ interface QuranTextViewProps {
   darkMode?: boolean;
   tajweedEnabled?: boolean;
   showTranslation?: boolean;
+  translationEdition?: string;
 }
 
 const FONT_FAMILY = "'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
@@ -192,9 +193,9 @@ interface AyahWithAnnotations extends LocalAyah {
 }
 
 // In-memory translation cache
-const translationCache = new Map<number, Map<string, string>>();
+const translationCache = new Map<string, Map<string, string>>();
 
-export default function QuranTextView({ page, highlightAyah, fontSize = 28, darkMode = false, tajweedEnabled = false, showTranslation = false }: QuranTextViewProps) {
+export default function QuranTextView({ page, highlightAyah, fontSize = 28, darkMode = false, tajweedEnabled = false, showTranslation = false, translationEdition = 'fr.hamidullah' }: QuranTextViewProps) {
   const [ayahs, setAyahs] = useState<AyahWithAnnotations[]>([]);
   const [translations, setTranslations] = useState<Map<string, string>>(new Map());
   const [loading, setLoading] = useState(true);
@@ -214,7 +215,6 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 28, dark
       .then(async (data) => {
         if (data.length > 0) {
           if (tajweedEnabled) {
-            // Load tajweed annotations in parallel for all ayahs on this page
             const withAnnotations = await Promise.all(
               data.map(async (ayah) => {
                 const tajweed = await getTajweedAnnotations(ayah.surah.number, ayah.numberInSurah);
@@ -233,11 +233,12 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 28, dark
       .finally(() => setLoading(false));
   }, [page, tajweedEnabled]);
 
-  // Load translations when enabled
+  // Load translations when enabled — keyed by page + edition
   useEffect(() => {
     if (!showTranslation) { setTranslations(new Map()); return; }
-    if (translationCache.has(page)) { setTranslations(translationCache.get(page)!); return; }
-    fetch(`https://api.alquran.cloud/v1/page/${page}/fr.hamidullah`)
+    const cacheKey = `${page}:${translationEdition}`;
+    if (translationCache.has(cacheKey)) { setTranslations(translationCache.get(cacheKey)!); return; }
+    fetch(`https://api.alquran.cloud/v1/page/${page}/${translationEdition}`)
       .then(res => res.json())
       .then(data => {
         const map = new Map<string, string>();
@@ -246,11 +247,11 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 28, dark
             map.set(`${ayah.surah.number}:${ayah.numberInSurah}`, ayah.text);
           }
         }
-        translationCache.set(page, map);
+        translationCache.set(cacheKey, map);
         setTranslations(map);
       })
       .catch(() => setTranslations(new Map()));
-  }, [page, showTranslation]);
+  }, [page, showTranslation, translationEdition]);
 
   useEffect(() => { setSelectedAyah(null); }, [page]);
 

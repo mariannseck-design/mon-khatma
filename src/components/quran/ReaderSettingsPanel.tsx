@@ -3,6 +3,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Settings, X, Moon, Sun, Play, Pause, Loader2, BookOpen, Image, Type, ChevronRight, Palette, Languages } from 'lucide-react';
 import { RECITERS } from '@/hooks/useQuranAudio';
 
+export const TRANSLATION_EDITIONS = [
+  { id: 'fr.hamidullah', label: 'Français (Hamidullah)', lang: '🇫🇷' },
+  { id: 'en.sahih', label: 'English (Sahih Int.)', lang: '🇬🇧' },
+  { id: 'fr.leclerc', label: 'Français (Montada)', lang: '🇫🇷' },
+  { id: 'en.pickthall', label: 'English (Pickthall)', lang: '🇬🇧' },
+];
+
 interface ReaderSettingsPanelProps {
   viewMode: 'image' | 'text';
   onViewModeChange: (mode: 'image' | 'text') => void;
@@ -29,6 +36,8 @@ interface ReaderSettingsPanelProps {
   onTajweedChange?: (enabled: boolean) => void;
   translationEnabled?: boolean;
   onTranslationChange?: (enabled: boolean) => void;
+  translationEdition?: string;
+  onTranslationEditionChange?: (edition: string) => void;
 }
 
 const FONT_SIZE_PRESETS = [
@@ -59,6 +68,8 @@ export default function ReaderSettingsPanel({
   onTajweedChange,
   translationEnabled,
   onTranslationChange,
+  translationEdition,
+  onTranslationEditionChange,
 }: ReaderSettingsPanelProps) {
   const [open, setOpen] = useState(false);
 
@@ -197,7 +208,7 @@ export default function ReaderSettingsPanel({
                   >
                     <span className="flex items-center gap-2">
                       <Languages className="h-4 w-4" style={{ color: translationEnabled ? '#4a9a9a' : (nightMode ? '#4a9a9a' : '#8a6d1b') }} />
-                      Traduction (Hamidullah)
+                      Traduction
                     </span>
                     <div
                       className="w-10 h-6 rounded-full relative transition-colors"
@@ -212,6 +223,28 @@ export default function ReaderSettingsPanel({
                       />
                     </div>
                   </button>
+                  {/* Edition selector — shown when translation is enabled */}
+                  {translationEnabled && onTranslationEditionChange && (
+                    <div className="mt-2 grid grid-cols-2 gap-1.5">
+                      {TRANSLATION_EDITIONS.map((ed) => (
+                        <button
+                          key={ed.id}
+                          onClick={() => onTranslationEditionChange(ed.id)}
+                          className="py-2 px-2 rounded-xl text-xs font-medium transition-all text-center"
+                          style={{
+                            background: translationEdition === ed.id
+                              ? (nightMode ? 'rgba(90,180,180,0.2)' : 'rgba(255,255,255,0.35)')
+                              : (nightMode ? 'rgba(90,180,180,0.05)' : 'rgba(255,255,255,0.15)'),
+                            border: translationEdition === ed.id
+                              ? `1.5px solid ${nightMode ? 'rgba(90,180,180,0.4)' : 'rgba(180,150,60,0.5)'}`
+                              : '1.5px solid transparent',
+                          }}
+                        >
+                          {ed.lang} {ed.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
 
