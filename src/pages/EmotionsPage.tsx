@@ -65,6 +65,7 @@ export default function EmotionsPage() {
   const [entries, setEntries] = useState<MoodEntry[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showEmotions, setShowEmotions] = useState(false);
   const moodSectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -238,7 +239,12 @@ export default function EmotionsPage() {
           {/* Carte Mes Émotions — en bas */}
           <motion.button
             variants={itemVariants}
-            onClick={() => moodSectionRef.current?.scrollIntoView({ behavior: 'smooth' })}
+            onClick={() => {
+              setShowEmotions(prev => !prev);
+              if (!showEmotions) {
+                setTimeout(() => moodSectionRef.current?.scrollIntoView({ behavior: 'smooth' }), 150);
+              }
+            }}
             className="relative overflow-hidden rounded-2xl p-5 flex flex-col items-center justify-center text-center aspect-[4/3]"
             style={{
               background: '#f0ebe3',
@@ -285,7 +291,16 @@ export default function EmotionsPage() {
         </motion.div>
 
         {/* Section Émotions */}
-        <div ref={moodSectionRef}>
+        <AnimatePresence>
+          {showEmotions && (
+            <motion.div
+              ref={moodSectionRef}
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
+              className="overflow-hidden space-y-4"
+            >
           <Card className="pastel-card p-6">
             <h3 className="font-display text-lg mb-4 text-center">
               {editingId ? 'Modifier mon humeur' : 'Mon humeur aujourd\'hui'}
@@ -426,7 +441,9 @@ export default function EmotionsPage() {
               })}
             </div>
           )}
-        </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </AppLayout>
   );
