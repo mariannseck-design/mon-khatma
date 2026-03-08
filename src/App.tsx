@@ -87,7 +87,7 @@ function AppRoutes() {
       <Route path="/profil" element={<ProtectedRoute><ProfilPage /></ProtectedRoute>} />
       <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
       <Route path="/parametres" element={<ProtectedRoute><ParametresPage /></ProtectedRoute>} />
-      <Route path="/dhikr" element={<ProtectedRoute><DhikrPage /></ProtectedRoute>} />
+      <Route path="/dhikr" element={<ProtectedRoute><ComingSoonGate title="Dhikr & Adhkâr" icon={BookOpenCheck} description="Accède à tes adhkâr du matin, du soir et invocations quotidiennes avec un compteur interactif.">{<DhikrPage />}</ComingSoonGate></ProtectedRoute>} />
       <Route path="/hifz" element={<ProtectedRoute><ComingSoonGate title="Espace Hifz" icon={BookOpenCheck} description="Mémorise le Coran étape par étape avec un parcours guidé." hideNav>{<HifzPage />}</ComingSoonGate></ProtectedRoute>} />
       <Route path="/muraja" element={<ProtectedRoute><ComingSoonGate title="Muraja'a" icon={RefreshCw} description="Consolide ta mémorisation grâce à la répétition espacée." hideNav>{<MurjaPage />}</ComingSoonGate></ProtectedRoute>} />
       <Route path="/hifz-suivi" element={<ProtectedRoute><ComingSoonGate title="Mon Suivi Hifz" icon={BarChart3} description="Consulte ta constance, tes versets ancrés et tes cycles.">{<HifzSuiviPage />}</ComingSoonGate></ProtectedRoute>} />
