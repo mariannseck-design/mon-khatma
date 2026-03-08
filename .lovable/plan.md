@@ -1,21 +1,55 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Refonte de la carte "Mes Versets Favoris"
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Problemes actuels
+1. La carte affiche tous les versets inline (ScrollArea) mais un seul est visible a cause du scroll interne
+2. Cliquer sur un verset redirige vers le Mushaf au lieu d'ouvrir une page dediee
+3. Le bouton supprimer est expose directement — il faut un menu 3 points (partager / supprimer)
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Solution
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+**La carte sur l'accueil devient une carte-resume compacte** : icone coeur, titre, nombre de versets, et un petit apercu (noms des 2-3 premieres sourates). Cliquer dessus ouvre une **nouvelle page dediee** `/favoris` avec la liste complete.
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+**Sur la page dediee**, chaque verset a un **menu 3 points** (MoreVertical) avec les options "Ouvrir dans le Mushaf" et "Supprimer". On peut aussi partager le verset (copier texte arabe + traduction).
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+### Fichiers
+
+1. **`src/components/favoris/FavoriteVersesSection.tsx`** — Simplifier en carte-resume compacte :
+   - Affiche icone + titre + count + apercu des 2-3 premieres sourates
+   - Clic sur la carte → `navigate('/favoris')`
+   - Plus de ScrollArea ni de liste inline
+
+2. **`src/pages/FavorisPage.tsx`** — Nouvelle page dediee :
+   - Charge tous les favoris depuis la DB
+   - Affiche chaque verset en carte (arabe + traduction)
+   - Bouton 3 points (MoreVertical) sur chaque carte avec DropdownMenu :
+     - "Ouvrir dans le Mushaf" → getExactVersePage + navigate
+     - "Partager" → copie texte dans le presse-papier
+     - "Supprimer" → supprime avec confirmation
+   - Bouton retour en haut
+
+3. **`src/App.tsx`** — Ajouter la route `/favoris` (protegee)
+
+### Design du menu 3 points
+```text
+┌──────────────────────┐
+│ Al-Ma'ida : 18   ⋮  │
+│                      │
+│   ﴾ texte arabe ﴿    │  ← menu ⋮ ouvre:
+│                      │     📖 Ouvrir dans le Mushaf
+│   traduction...      │     📋 Copier / Partager
+│                      │     🗑 Supprimer
+└──────────────────────┘
+```
+
+### Carte resume sur l'accueil
+```text
+┌──────────────────────────┐
+│ ❤️  Mes Versets Favoris  │
+│    3 versets sauvegardés  │
+│    Al-Ma'ida, Al-Baqara…  │
+│              Voir tout →  │
+└──────────────────────────┘
+```
 
