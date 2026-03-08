@@ -96,6 +96,7 @@ function AppRoutes() {
       <Route path="/hifz-suivi" element={<ProtectedRoute><ComingSoonGate title="Mon Suivi Hifz" icon={BarChart3} description="Consulte ta constance, tes versets ancrés et tes cycles.">{<HifzSuiviPage />}</ComingSoonGate></ProtectedRoute>} />
       <Route path="/sources-de-lumiere" element={<ProtectedRoute><SourcesDeLumierePage /></ProtectedRoute>} />
       <Route path="/douas" element={<ProtectedRoute><DouasPage /></ProtectedRoute>} />
+      <Route path="/favoris" element={<ProtectedRoute><FavorisPage /></ProtectedRoute>} />
       
       <Route path="*" element={<NotFound />} />
     </Routes>
