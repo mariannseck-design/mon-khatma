@@ -65,6 +65,7 @@ const STEP_NAMES = [
 
 export default function HifzPage() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [step, setStep] = useState<number>(-1);
   const [session, setSession] = useState<HifzSession | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -73,6 +74,7 @@ export default function HifzPage() {
   const [showDiagnostic, setShowDiagnostic] = useState(false);
   const [restoringSession, setRestoringSession] = useState(true);
   const [showResumePrompt, setShowResumePrompt] = useState(false);
+  const [showBreathingPause, setShowBreathingPause] = useState(false);
   const [pendingResume, setPendingResume] = useState<{ session: HifzSession; step: number; sessionId: string | null } | null>(null);
   const { isDevMode } = useDevMode();
   const stepStartRef = useRef<number>(Date.now());

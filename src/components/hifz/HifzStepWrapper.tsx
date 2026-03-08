@@ -1,12 +1,13 @@
 import { ReactNode, useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronLeft, Clock } from 'lucide-react';
+import { ChevronLeft, Clock, Pause } from 'lucide-react';
 
 interface HifzStepWrapperProps {
   stepNumber: number;
   stepTitle: string;
   children: ReactNode;
   onBack?: () => void;
+  onPause?: () => void;
   totalSteps?: number;
 }
 
@@ -16,11 +17,10 @@ function formatTime(seconds: number): string {
   return `${m}:${s.toString().padStart(2, '0')}`;
 }
 
-export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBack, totalSteps = 7 }: HifzStepWrapperProps) {
+export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBack, onPause, totalSteps = 5 }: HifzStepWrapperProps) {
   const [elapsed, setElapsed] = useState(0);
   const startRef = useRef(Date.now());
 
-  // Reset timer when step changes
   useEffect(() => {
     startRef.current = Date.now();
     setElapsed(0);
@@ -68,6 +68,29 @@ export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBac
       </div>
 
       {children}
+
+      {/* Pause button */}
+      {onPause && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1 }}
+          className="flex justify-center pt-4"
+        >
+          <button
+            onClick={onPause}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-medium transition-all active:scale-95"
+            style={{
+              background: 'rgba(255,255,255,0.08)',
+              color: 'rgba(240,230,200,0.6)',
+              border: '1px solid rgba(240,230,200,0.15)',
+            }}
+          >
+            <Pause className="h-3.5 w-3.5" />
+            Pause — revenir à l'accueil
+          </button>
+        </motion.div>
+      )}
     </motion.div>
   );
 }
