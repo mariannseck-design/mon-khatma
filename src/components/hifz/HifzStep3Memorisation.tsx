@@ -315,6 +315,34 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
           <p className="text-white/50 text-xs">(Objectif {tikrarTarget} répétitions)</p>
         </div>
 
+        {/* Display mode toggle */}
+        <div className="flex items-center justify-center gap-2">
+          <button
+            onClick={() => setDisplayMode('text')}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all"
+            style={{
+              background: displayMode === 'text' ? 'rgba(212,175,55,0.2)' : 'rgba(255,255,255,0.05)',
+              border: displayMode === 'text' ? '1px solid rgba(212,175,55,0.5)' : '1px solid rgba(255,255,255,0.1)',
+              color: displayMode === 'text' ? '#d4af37' : 'rgba(255,255,255,0.5)',
+            }}
+          >
+            <BookOpen className="h-3.5 w-3.5" />
+            Texte Tajwid
+          </button>
+          <button
+            onClick={() => setDisplayMode('mushaf')}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all"
+            style={{
+              background: displayMode === 'mushaf' ? 'rgba(212,175,55,0.2)' : 'rgba(255,255,255,0.05)',
+              border: displayMode === 'mushaf' ? '1px solid rgba(212,175,55,0.5)' : '1px solid rgba(255,255,255,0.1)',
+              color: displayMode === 'mushaf' ? '#d4af37' : 'rgba(255,255,255,0.5)',
+            }}
+          >
+            <Image className="h-3.5 w-3.5" />
+            Mushaf Image
+          </button>
+        </div>
+
         {/* Guide */}
         <div className="rounded-xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>
           <button
