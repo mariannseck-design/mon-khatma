@@ -268,9 +268,9 @@ export default function DefiAlBaqara({ disabled = false }: { disabled?: boolean 
           onClick={toggleToday}
           className="w-full flex items-center justify-center gap-2 py-3 rounded-xl transition-all font-semibold text-sm"
           style={{
-            background: todayChecked ? `${COLORS.emerald}` : `${COLORS.emerald}10`,
-            color: todayChecked ? '#fff' : COLORS.emerald,
-            border: todayChecked ? 'none' : `1.5px solid ${COLORS.emerald}30`,
+            background: todayChecked ? '#fff' : 'rgba(255,255,255,0.9)',
+            color: COLORS.emerald,
+            border: `1.5px solid ${COLORS.emerald}30`,
           }}
         >
           {todayChecked ? (
