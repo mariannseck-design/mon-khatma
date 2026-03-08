@@ -433,11 +433,13 @@ export default function MurjaPage() {
                     className="flex items-center justify-between px-3 py-2 rounded-lg"
                     style={{ background: 'var(--p-card-active)' }}
                   >
-                     <span className="text-xs font-bold" style={{ color: 'var(--p-primary)' }}>
-                       {s.name}
-                     </span>
-                     <div className="flex items-center gap-2 text-[10px] font-medium" style={{ color: 'var(--p-text-65)' }}>
-                      <span>{s.versesCount} v.</span>
+                     <div className="flex items-center gap-2">
+                       <span className="text-xs font-bold" style={{ color: 'var(--p-primary)' }}>
+                         {s.name}
+                       </span>
+                       <span className="text-sm font-extrabold" style={{ color: 'var(--p-primary)' }}>{s.versesCount} v.</span>
+                     </div>
+                     <div className="flex items-center gap-0.5 text-[10px] font-medium" style={{ color: 'var(--p-text-65)' }}>
                      <span className="flex items-center gap-0.5">
                         <CalendarDays className="h-2.5 w-2.5" />
                         {`Prochaine Muraja'a le ${formatDate(s.nextReview)} à 00h`}
