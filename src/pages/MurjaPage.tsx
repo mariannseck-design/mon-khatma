@@ -10,6 +10,7 @@ import { graduateLiaisonBlocks } from '@/lib/hifzUtils';
 import MurajaCountdown from '@/components/muraja/MurajaCountdown';
 import MurajaChecklist from '@/components/muraja/MurajaChecklist';
 import MurajaCelebration from '@/components/muraja/MurajaCelebration';
+import MurajaMethodModal from '@/components/muraja/MurajaMethodModal';
 import { toast } from 'sonner';
 
 const MAX_TOUR_BLOCKS_PER_DAY = 10;
