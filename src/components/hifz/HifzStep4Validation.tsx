@@ -1,18 +1,20 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mic, Square, Play, Pause, Check, X, Eye } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
 import HifzStepWrapper from './HifzStepWrapper';
-import { SURAHS } from '@/lib/surahData';
+import HifzMushafImage from './HifzMushafImage';
 
+/* ── Encouragements ── */
 const ENCOURAGEMENTS = [
   {
     title: 'Chaque effort est récompensé',
-    text: "Ne te décourage pas. L'erreur est une étape naturelle vers la perfection. Rappelle-toi que le Prophète (عليه السلام) a enseigné que celui qui récite le Coran avec difficulté obtient une double récompense. Prends une grande inspiration et reprenons.",
+    text: "Ne te décourage pas. L'erreur est une étape naturelle vers la perfection. Celui qui récite le Coran avec difficulté obtient une double récompense. Prends une grande inspiration et reprenons.",
     button: 'Je recommence mon essai',
   },
   {
     title: 'Une nouvelle chance',
-    text: "La mémorisation est un chemin de patience. Cette erreur t'aide à mieux ancrer le verset pour la prochaine fois. Recommençons cet enregistrement en plaçant notre confiance en Allah (عز وجل).",
+    text: "La mémorisation est un chemin de patience. Cette erreur t'aide à mieux ancrer le verset. Recommençons en plaçant notre confiance en Allah (عز وجل).",
     button: 'Essayer à nouveau',
   },
   {
@@ -21,6 +23,14 @@ const ENCOURAGEMENTS = [
     button: "Reprendre l'enregistrement",
   },
 ];
+
+/* ── Waveform CSS (inline keyframes) ── */
+const waveBarStyle = (i: number): React.CSSProperties => ({
+  width: 4,
+  borderRadius: 2,
+  background: '#065F46',
+  animation: `waveAnim 0.8s ease-in-out ${i * 0.12}s infinite alternate`,
+});
 
 interface Props {
   surahNumber: number;
@@ -32,48 +42,22 @@ interface Props {
 }
 
 export default function HifzStep4Validation({ surahNumber, startVerse, endVerse, onNext, onBack, onPause }: Props) {
-  const [arabicVerses, setArabicVerses] = useState<{ number: number; text: string }[]>([]);
-  const [mushafPage, setMushafPage] = useState<number | null>(null);
-  const [attempt, setAttempt] = useState(0); // 0-based
+  const [successes, setSuccesses] = useState(0);
   const [isRecording, setIsRecording] = useState(false);
   const [recordingTime, setRecordingTime] = useState(0);
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [isPlayingBack, setIsPlayingBack] = useState(false);
-  const [showText, setShowText] = useState(false);
+  const [showPeek, setShowPeek] = useState(false);
+  const [peekCount, setPeekCount] = useState(0);
   const [showEncouragement, setShowEncouragement] = useState(false);
   const [encourageIdx, setEncourageIdx] = useState(0);
+  const [validated, setValidated] = useState(false);
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const playbackRef = useRef<HTMLAudioElement | null>(null);
-
-  // Compute mushaf page from surah number
-  useEffect(() => {
-    const surah = SURAHS.find(s => s.number === surahNumber);
-    if (surah) {
-      setMushafPage(surah.startPage);
-    }
-  }, [surahNumber]);
-
-  // Fetch arabic text (kept for potential future use)
-  useEffect(() => {
-    const fetchArabic = async () => {
-      try {
-        const res = await fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}/ar.alafasy`);
-        const data = await res.json();
-        if (data.code === 200) {
-          setArabicVerses(
-            data.data.ayahs
-              .filter((a: any) => a.numberInSurah >= startVerse && a.numberInSurah <= endVerse)
-              .map((a: any) => ({ number: a.numberInSurah, text: a.text }))
-          );
-        }
-      } catch { /* ignore */ }
-    };
-    fetchArabic();
-  }, [surahNumber, startVerse, endVerse]);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -95,6 +79,7 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
     setIsPlayingBack(false);
   }, [audioUrl]);
 
+  /* ── Recording ── */
   const startRecording = async () => {
     destroyAudio();
     try {
@@ -102,20 +87,16 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
       const recorder = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus' });
       chunksRef.current = [];
       mediaRecorderRef.current = recorder;
-
       recorder.ondataavailable = e => { if (e.data.size > 0) chunksRef.current.push(e.data); };
       recorder.start();
       setIsRecording(true);
       setRecordingTime(0);
       timerRef.current = setInterval(() => setRecordingTime(prev => prev + 1), 1000);
-    } catch {
-      // Permission denied
-    }
+    } catch { /* permission denied */ }
   };
 
   const stopRecording = () => {
     if (!mediaRecorderRef.current || mediaRecorderRef.current.state === 'inactive') return;
-
     mediaRecorderRef.current.onstop = () => {
       const blob = new Blob(chunksRef.current, { type: 'audio/webm' });
       const url = URL.createObjectURL(blob);
@@ -123,18 +104,14 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
       setAudioUrl(url);
       mediaRecorderRef.current?.stream.getTracks().forEach(t => t.stop());
     };
-
     mediaRecorderRef.current.stop();
     setIsRecording(false);
     if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
   };
 
+  /* ── Playback ── */
   const togglePlayback = () => {
-    if (isPlayingBack) {
-      playbackRef.current?.pause();
-      setIsPlayingBack(false);
-      return;
-    }
+    if (isPlayingBack) { playbackRef.current?.pause(); setIsPlayingBack(false); return; }
     if (!audioUrl) return;
     const audio = new Audio(audioUrl);
     playbackRef.current = audio;
@@ -143,119 +120,205 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
     setIsPlayingBack(true);
   };
 
+  /* ── Validation logic ── */
   const handleSuccess = () => {
     destroyAudio();
-    if (attempt >= 2) {
-      onNext(); // 3 successes
+    const next = successes + 1;
+    if (next >= 3) {
+      setSuccesses(3);
+      setValidated(true);
     } else {
-      setAttempt(prev => prev + 1);
+      setSuccesses(next);
     }
   };
 
   const handleError = () => {
     destroyAudio();
+    setSuccesses(0);
     setEncourageIdx(prev => (prev + 1) % ENCOURAGEMENTS.length);
     setShowEncouragement(true);
   };
 
-  const handleRetry = () => {
-    setShowEncouragement(false);
-    setAttempt(0); // Reset all 3 attempts
+  const handleRetry = () => setShowEncouragement(false);
+
+  /* ── Peek penalty ── */
+  const handlePeek = () => {
+    setShowPeek(true);
+    setPeekCount(prev => prev + 1);
+    if (successes > 0) {
+      setSuccesses(0);
+      toast({ title: 'Compteur réinitialisé', description: 'Les 3 essais doivent être réussis sans aide.' });
+    }
   };
 
   const mins = Math.floor(recordingTime / 60);
   const secs = recordingTime % 60;
 
+  /* ── Validated state ── */
+  if (validated) {
+    return (
+      <HifzStepWrapper stepNumber={4} stepTitle="Validation" onBack={onBack} onPause={onPause}>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="rounded-2xl p-8 text-center space-y-5"
+          style={{ background: '#FDFBF7', border: '2px solid #D4AF37' }}
+        >
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: 'spring', stiffness: 200, delay: 0.2 }}
+            className="w-20 h-20 mx-auto rounded-full flex items-center justify-center"
+            style={{ background: 'rgba(212,175,55,0.15)', border: '3px solid #D4AF37' }}
+          >
+            <Check className="h-10 w-10" style={{ color: '#D4AF37' }} />
+          </motion.div>
+
+          <div className="flex justify-center gap-2">
+            {[0, 1, 2].map(i => (
+              <div key={i} className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"
+                style={{ background: 'rgba(212,175,55,0.2)', border: '2px solid #D4AF37', color: '#D4AF37' }}>✓</div>
+            ))}
+          </div>
+
+          <p className="text-lg font-bold" style={{ color: '#1C2421', fontFamily: "'Playfair Display', Georgia, serif" }}>
+            Votre mémorisation est scellée<br />par la grâce d'Allah (عز وجل)
+          </p>
+          <p className="text-sm" style={{ color: '#065F46' }}>3 récitations parfaites sans aide</p>
+
+          <motion.button
+            whileTap={{ scale: 0.97 }}
+            onClick={onNext}
+            className="w-full rounded-xl py-4 font-bold text-base"
+            style={{ background: '#065F46', color: '#FDFBF7' }}
+          >
+            Valider mon Hifz ✨
+          </motion.button>
+        </motion.div>
+      </HifzStepWrapper>
+    );
+  }
+
   return (
-    <HifzStepWrapper stepNumber={4} stepTitle="Test de Validation" onBack={onBack} onPause={onPause}>
+    <HifzStepWrapper stepNumber={4} stepTitle="Validation" onBack={onBack} onPause={onPause}>
+      {/* Inject waveform keyframes */}
+      <style>{`@keyframes waveAnim { 0% { height: 8px; } 100% { height: 28px; } }`}</style>
+
       <div className="space-y-5">
-        <p className="text-white/80 text-sm leading-relaxed text-center px-2">
-          Enregistre-toi 3 fois de suite sans regarder le Coran. Tu peux écouter ton audio ensuite pour vérifier.
-          Si tu réussis les 3 sans erreur, tu as validé ton Hifz !
+        {/* Instruction */}
+        <p className="text-sm leading-relaxed text-center px-2" style={{ color: 'rgba(255,255,255,0.7)' }}>
+          Enregistre-toi <strong>3 fois de suite</strong> sans regarder le Coran.
+          Si tu regardes, le compteur se réinitialise.
         </p>
 
-        {/* Attempt indicators */}
-        <div className="flex items-center justify-center gap-3">
-          {[0, 1, 2].map(i => (
-            <div
-              key={i}
-              className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold"
-              style={{
-                background: i < attempt ? 'rgba(212,175,55,0.3)' : 'rgba(255,255,255,0.06)',
-                border: `2px solid ${i < attempt ? '#d4af37' : i === attempt ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.1)'}`,
-                color: i < attempt ? '#d4af37' : 'rgba(255,255,255,0.4)',
-              }}
-            >
-              {i < attempt ? '✓' : `${i + 1}`}
-            </div>
-          ))}
+        {/* ── Badges 1-2-3 ── */}
+        <div className="flex items-center justify-center gap-4">
+          {[0, 1, 2].map(i => {
+            const done = i < successes;
+            const active = i === successes;
+            return (
+              <motion.div
+                key={i}
+                animate={done ? { scale: [1, 1.2, 1] } : {}}
+                transition={{ duration: 0.4 }}
+                className="w-11 h-11 rounded-full flex items-center justify-center text-sm font-bold"
+                style={{
+                  background: done ? 'rgba(212,175,55,0.25)' : 'rgba(255,255,255,0.06)',
+                  border: `2.5px solid ${done ? '#D4AF37' : active ? 'rgba(212,175,55,0.5)' : 'rgba(255,255,255,0.12)'}`,
+                  color: done ? '#D4AF37' : active ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.2)',
+                  boxShadow: active ? '0 0 12px rgba(212,175,55,0.2)' : 'none',
+                }}
+              >
+                {done ? <Check className="h-5 w-5" /> : `${i + 1}`}
+              </motion.div>
+            );
+          })}
         </div>
-        <p className="text-white/40 text-xs text-center">Essai {attempt + 1}/3</p>
+        <p className="text-xs text-center" style={{ color: 'rgba(255,255,255,0.35)' }}>
+          Essai {Math.min(successes + 1, 3)}/3
+        </p>
 
-        {/* Blurred Mushaf image */}
-        <div
-          className="rounded-2xl relative overflow-hidden cursor-pointer"
-          style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(212,175,55,0.15)' }}
-          onTouchStart={() => setShowText(true)}
-          onTouchEnd={() => setShowText(false)}
-          onMouseDown={() => setShowText(true)}
-          onMouseUp={() => setShowText(false)}
-          onMouseLeave={() => setShowText(false)}
-        >
-          <div className="flex items-center justify-between px-4 pt-3 pb-1">
-            <p className="text-white/40 text-xs uppercase tracking-wider">AYAT</p>
-            <Eye className="h-4 w-4 text-white/30" />
-          </div>
-          <div
-            className="px-2 pb-2 transition-all duration-300"
-            style={{
-              filter: showText ? 'none' : 'blur(8px)',
-            }}
-          >
-            {mushafPage && (
-              <img
-                src={`https://cdn.jsdelivr.net/gh/QuranHub/quran-pages-images@main/easyquran.com/hafs-tajweed/${mushafPage}.jpg`}
-                alt={`Page ${mushafPage} du Mushaf`}
-                className="w-full rounded-lg"
-                style={{ maxHeight: '200px', objectFit: 'contain' }}
-              />
+        {/* ── Peek section ── */}
+        <div className="rounded-2xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(212,175,55,0.12)' }}>
+          <AnimatePresence mode="wait">
+            {showPeek ? (
+              <motion.div key="peek" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                <HifzMushafImage surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse} maxHeight="220px" />
+                <div className="flex justify-center pb-3">
+                  <button
+                    onClick={() => setShowPeek(false)}
+                    className="text-xs px-3 py-1.5 rounded-lg"
+                    style={{ background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.5)' }}
+                  >
+                    Fermer
+                  </button>
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div key="hidden" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="p-5 text-center space-y-3">
+                <Eye className="h-6 w-6 mx-auto" style={{ color: 'rgba(255,255,255,0.15)' }} />
+                <button
+                  onClick={handlePeek}
+                  className="text-xs px-4 py-2 rounded-xl transition-all active:scale-95"
+                  style={{ background: 'rgba(212,175,55,0.1)', color: '#D4AF37', border: '1px solid rgba(212,175,55,0.2)' }}
+                >
+                  👁️ Jeter un œil rapide
+                </button>
+                <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.25)' }}>
+                  ⚠️ Réinitialise le compteur
+                  {peekCount > 0 && ` · ${peekCount} coup${peekCount > 1 ? 's' : ''} d'œil`}
+                </p>
+              </motion.div>
             )}
-          </div>
-          {!showText && (
-            <p className="text-white/30 text-xs text-center pb-3">Maintiens appuyé pour vérifier</p>
-          )}
+          </AnimatePresence>
         </div>
 
-        {/* Recording UI */}
+        {/* ── Dictaphone ── */}
         {!audioBlob ? (
           <div className="text-center space-y-3">
             {isRecording && (
-              <div className="text-xl font-mono text-white/80">
-                {String(mins).padStart(2, '0')}:{String(secs).padStart(2, '0')}
-              </div>
+              <>
+                <div className="text-xl font-mono" style={{ color: 'rgba(255,255,255,0.8)' }}>
+                  {String(mins).padStart(2, '0')}:{String(secs).padStart(2, '0')}
+                </div>
+                {/* Waveform */}
+                <div className="flex items-center justify-center gap-1.5 h-8">
+                  {[0, 1, 2, 3, 4].map(i => (
+                    <div key={i} style={waveBarStyle(i)} />
+                  ))}
+                </div>
+              </>
             )}
             <motion.button
               whileTap={{ scale: 0.9 }}
               onClick={isRecording ? stopRecording : startRecording}
-              className="w-20 h-20 rounded-full mx-auto flex items-center justify-center"
+              className="w-20 h-20 rounded-full mx-auto flex items-center justify-center relative"
               style={{
-                background: isRecording ? 'rgba(220,50,50,0.3)' : 'rgba(212,175,55,0.2)',
-                border: `3px solid ${isRecording ? '#dc3232' : '#d4af37'}`,
+                background: isRecording ? 'rgba(220,50,50,0.2)' : 'rgba(6,95,70,0.2)',
+                border: `3px solid ${isRecording ? '#dc3232' : '#065F46'}`,
               }}
             >
+              {isRecording && (
+                <motion.div
+                  className="absolute inset-0 rounded-full"
+                  style={{ border: '2px solid rgba(220,50,50,0.3)' }}
+                  animate={{ scale: [1, 1.3, 1], opacity: [0.6, 0, 0.6] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                />
+              )}
               {isRecording
                 ? <Square className="h-7 w-7 text-red-400" />
-                : <Mic className="h-8 w-8" style={{ color: '#d4af37' }} />
+                : <Mic className="h-8 w-8" style={{ color: '#065F46' }} />
               }
             </motion.button>
-            <p className="text-white/40 text-xs">
+            <p className="text-xs" style={{ color: 'rgba(255,255,255,0.35)' }}>
               {isRecording ? 'Appuie pour arrêter' : 'Appuie pour enregistrer'}
             </p>
           </div>
         ) : (
           <div className="space-y-4">
             {/* Playback */}
-            <div className="flex items-center justify-center gap-4">
+            <div className="flex justify-center">
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 onClick={togglePlayback}
@@ -273,26 +336,26 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
                 whileTap={{ scale: 0.95 }}
                 onClick={handleSuccess}
                 className="rounded-xl py-4 flex items-center justify-center gap-2 font-semibold text-sm"
-                style={{ background: 'rgba(80,200,120,0.2)', color: '#50c878', border: '1px solid rgba(80,200,120,0.3)' }}
+                style={{ background: 'rgba(6,95,70,0.15)', color: '#34D399', border: '1px solid rgba(6,95,70,0.3)' }}
               >
                 <Check className="h-5 w-5" />
-                Essai réussi
+                Parfait
               </motion.button>
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 onClick={handleError}
                 className="rounded-xl py-4 flex items-center justify-center gap-2 font-semibold text-sm"
-                style={{ background: 'rgba(220,50,50,0.15)', color: '#dc6464', border: '1px solid rgba(220,50,50,0.25)' }}
+                style={{ background: 'rgba(220,50,50,0.1)', color: '#dc6464', border: '1px solid rgba(220,50,50,0.2)' }}
               >
                 <X className="h-5 w-5" />
-                J'ai fait une erreur
+                Erreur
               </motion.button>
             </div>
           </div>
         )}
       </div>
 
-      {/* Encouragement popup */}
+      {/* ── Encouragement popup ── */}
       <AnimatePresence>
         {showEncouragement && (
           <motion.div
@@ -307,25 +370,19 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
               className="w-full max-w-sm rounded-2xl p-6 text-center"
-              style={{
-                background: 'linear-gradient(135deg, #faf8f0, #f5f0e0)',
-                border: '2px solid rgba(212,175,55,0.5)',
-              }}
+              style={{ background: '#FDFBF7', border: '2px solid rgba(212,175,55,0.4)' }}
             >
-              <h3
-                className="text-lg font-bold mb-3"
-                style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#d4af37' }}
-              >
+              <h3 className="text-lg font-bold mb-3" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#D4AF37' }}>
                 {ENCOURAGEMENTS[encourageIdx].title}
               </h3>
-              <p className="text-sm leading-relaxed mb-5" style={{ color: '#0d5f5f' }}>
+              <p className="text-sm leading-relaxed mb-5" style={{ color: '#1C2421' }}>
                 {ENCOURAGEMENTS[encourageIdx].text}
               </p>
               <motion.button
                 whileTap={{ scale: 0.97 }}
                 onClick={handleRetry}
                 className="w-full rounded-xl py-3 font-semibold"
-                style={{ background: '#0d7377', color: 'white' }}
+                style={{ background: '#065F46', color: '#FDFBF7' }}
               >
                 {ENCOURAGEMENTS[encourageIdx].button}
               </motion.button>
