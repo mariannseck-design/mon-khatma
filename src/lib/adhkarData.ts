@@ -623,6 +623,15 @@ export const POST_PRAYER_ADHKAR: DhikrItem[] = [
     french: "Ô Allah, je cherche refuge auprès de Toi contre la lâcheté, contre le fait d'être ramené au plus vil âge, contre les tentations de ce bas monde et contre le châtiment de la tombe.",
     target: 1,
   },
+  {
+    title: 'Demande de protection contre le Feu (7×)',
+    fadl: "Quiconque dit cette invocation 7 fois après la prière du Fajr et meurt ce jour-là, Allah le protègera du Feu. Et quiconque la dit 7 fois après la prière du Maghrib et meurt cette nuit-là, Allah le protègera du Feu. (Abû Dâwûd 5079, Ahmad — jugé hasan)",
+    arabic: 'اللَّهُمَّ أَجِرْنِي مِنَ النَّارِ',
+    phonetic: "Allâhumma ajirnî mina-n-nâr.",
+    french: "Ô Allah, protège-moi du Feu.",
+    target: 7,
+    source: "Abû Dâwûd 5079 — d'après al-Hârith ibn Muslim",
+  },
 ];
 
 export const ANYTIME_ADHKAR: DhikrItem[] = [
