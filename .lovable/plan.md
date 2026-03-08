@@ -1,21 +1,25 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Corriger le calcul de progression en pages
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Probleme
+La ligne 141 divise les versets completes par 10.3 (moyenne globale du Coran). C'est faux : si la soeur a un objectif de 1 page/semaine, la progression doit refleter combien de pages elle a couvertes dans ses sessions de la periode, pas un ratio sur le Coran entier.
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+Le vrai probleme est que `hifz_sessions` stocke `start_verse` et `end_verse` (numeros de versets dans une sourate), pas des numeros de pages. Donc on doit convertir les versets completes en pages.
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+### Solution
+La division par 10.3 est en fait la bonne approche conceptuelle (convertir versets en pages), car on n'a pas de mapping verset-page exact dans les sessions. Le ratio 10.3 (6236 versets / 604 pages) est une approximation raisonnable.
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+Cependant, le vrai bug est ailleurs : les `periodSessions` sont filtrées avec `gte('completed_at', weekStartStr)` pour la semaine, mais le filtre `daily` compare avec `startsWith(todayStr)` sur `completed_at`. Le probleme potentiel est que les sessions recupérées n'ont pas les bons champs (`start_verse`/`end_verse` vs les colonnes réelles).
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+Regardons plus précisément : la query ligne ~112 selectionne `start_verse, end_verse, completed_at` de `hifz_sessions`. Puis ligne 137-138 calcule `s.end_verse - s.start_verse + 1`. Si la soeur a complété 19 versets cette semaine, ca donne `19 / 10.3 = 1.8 pages`. C'est correct conceptuellement.
+
+**Le calcul est en fait juste.** 1.8 pages signifie qu'elle a memorise environ 1.8 pages de versets cette semaine. Si son objectif est 1 page/semaine, elle l'a depassé.
+
+Mais l'utilisatrice ne comprend pas ce chiffre. Le probleme est plutot d'affichage/UX : il faudrait mieux contextualiser le nombre.
+
+### Changement
+Aucun changement de logique necessaire. Le calcul `versets / 10.3 = pages` est correct. 1.8 signifie "tu as memorise l'equivalent de 1.8 pages cette semaine", ce qui est coherent avec un objectif de "1 page par semaine" ou "2 pages par semaine".
+
+Si tu veux, je peux ameliorer l'affichage pour que ce soit plus clair (par exemple afficher "1.8 / 2 pages cette semaine" plus lisiblement). Mais le calcul lui-meme n'a pas besoin de changer.
 
