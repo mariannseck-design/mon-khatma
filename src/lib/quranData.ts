@@ -24,14 +24,18 @@ let pageIndex: Map<number, LocalAyah[]> | null = null;
 let surahIndex: Map<number, Map<number, LocalAyah>> | null = null;
 let loadPromise: Promise<Map<number, LocalAyah[]>> | null = null;
 
-async function buildPageIndex(): Promise<Map<number, LocalAyah[]>> {
+async function buildIndexes(): Promise<{ pages: Map<number, LocalAyah[]>; surahs: Map<number, Map<number, LocalAyah>> }> {
   const res = await fetch('/data/quran-uthmani.json');
   const json = await res.json();
 
-  const surahs: any[] = json.data.surahs;
-  const index = new Map<number, LocalAyah[]>();
+  const rawSurahs: any[] = json.data.surahs;
+  const pages = new Map<number, LocalAyah[]>();
+  const surahs = new Map<number, Map<number, LocalAyah>>();
 
-  for (const surah of surahs) {
+  for (const surah of rawSurahs) {
+    const surahMap = new Map<number, LocalAyah>();
+    surahs.set(surah.number, surahMap);
+
     for (const ayah of surah.ayahs) {
       const page = ayah.page as number;
       const mapped: LocalAyah = {
@@ -40,14 +44,15 @@ async function buildPageIndex(): Promise<Map<number, LocalAyah[]>> {
         numberInSurah: ayah.numberInSurah,
         surah: { name: surah.name, number: surah.number },
       };
-      if (!index.has(page)) {
-        index.set(page, []);
+      if (!pages.has(page)) {
+        pages.set(page, []);
       }
-      index.get(page)!.push(mapped);
+      pages.get(page)!.push(mapped);
+      surahMap.set(ayah.numberInSurah, mapped);
     }
   }
 
-  return index;
+  return { pages, surahs };
 }
 
 /**
