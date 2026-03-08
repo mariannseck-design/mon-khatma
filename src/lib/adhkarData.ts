@@ -675,6 +675,7 @@ export const ANYTIME_ADHKAR: DhikrItem[] = [
     arabic: 'لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللهِ',
     phonetic: "Lâ hawla wa lâ quwwata illâ bi-llâh",
     french: "Il n'y a de force ni de puissance qu'en Allah.",
+    fadl: 'C\'est un trésor parmi les trésors du Paradis. (Al-Bukhârî, Muslim)',
     target: 10,
   },
   {
