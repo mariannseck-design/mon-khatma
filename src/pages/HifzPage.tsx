@@ -400,7 +400,7 @@ export default function HifzPage() {
   if (showGoalOnboarding) {
     return (
       <AppLayout title="Espace Hifz" hideNav>
-        <div className="min-h-[80vh] rounded-[2rem] p-6 mx-[-4px]" style={GRADIENT_STYLE}>
+        <div className="min-h-[80vh] rounded-[2rem] p-6 mx-[-4px]" style={containerStyle}>
           <HifzGoalOnboarding
             onGoalSet={() => { setHasGoal(true); setShowGoalOnboarding(false); }}
           />
