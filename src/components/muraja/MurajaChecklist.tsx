@@ -91,9 +91,25 @@ export default function MurajaChecklist({
             : "Aucune révision planifiée aujourd'hui"}
         </p>
         {section === 'tour' && (
-          <p className="text-xs mt-1.5" style={{ color: 'var(--p-text-50)' }}>
-            Tes blocs mémorisés arriveront ici après 30 jours de liaison (Ar-Rabt).
-          </p>
+          <>
+            <p className="text-xs mt-1.5" style={{ color: 'var(--p-text-50)' }}>
+              Tes blocs mémorisés arriveront ici après 30 jours de liaison (Ar-Rabt).
+            </p>
+            {firstArrivalDate && (() => {
+              const arrival = new Date(firstArrivalDate + 'T00:00:00');
+              arrival.setDate(arrival.getDate() + 30);
+              const formatted = arrival.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+              const daysLeft = Math.max(0, Math.ceil((arrival.getTime() - Date.now()) / 86400000));
+              return (
+                <div className="flex items-center gap-1.5 mt-2 justify-center">
+                  <CalendarDays className="h-3.5 w-3.5" style={{ color: 'var(--p-accent)' }} />
+                  <p className="text-xs font-semibold" style={{ color: 'var(--p-accent)' }}>
+                    Premier bloc estimé le {formatted} ({daysLeft > 0 ? `dans ${daysLeft} jour${daysLeft > 1 ? 's' : ''}` : "aujourd'hui"})
+                  </p>
+                </div>
+              );
+            })()}
+          </>
         )}
       </div>
     );

@@ -397,15 +397,23 @@ export default function MurjaPage() {
                <p className="text-[11px] font-medium -mt-2" style={{ color: 'var(--p-text-65)' }}>
                  Entretien de tes anciens acquis pour un ancrage éternel inshaa Allah.
                </p>
-              <MurajaChecklist
-                items={tourVerses}
-                section="tour"
-                checkedIds={checkedIds}
-                onCheck={handleTourCheck}
-                onRate={handleTourRate}
-                isCapActive={isCapActive}
-                totalDue={totalDueCount}
-              />
+               <MurajaChecklist
+                 items={tourVerses}
+                 section="tour"
+                 checkedIds={checkedIds}
+                 onCheck={handleTourCheck}
+                 onRate={handleTourRate}
+                 isCapActive={isCapActive}
+                 totalDue={totalDueCount}
+                 firstArrivalDate={
+                   rabtVerses.length > 0
+                     ? rabtVerses.reduce((earliest, v) => {
+                         if (!v.liaison_start_date) return earliest;
+                         return !earliest || v.liaison_start_date < earliest ? v.liaison_start_date : earliest;
+                       }, null as string | null) ?? undefined
+                     : undefined
+                 }
+               />
             </div>
 
             {/* Mon trésor */}
