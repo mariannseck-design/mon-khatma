@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { getAyahAudioUrl } from '@/hooks/useQuranAudio';
 import { X, ChevronRight, ChevronLeft, Loader2, Play, Pause, Heart } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
