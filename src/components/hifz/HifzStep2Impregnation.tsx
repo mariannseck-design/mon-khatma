@@ -147,7 +147,7 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
         </div>
 
         <p className="text-white/80 text-sm leading-relaxed px-2">
-          Écoute attentivement le récitateur au moins 3 fois. Tu peux écouter autant de fois que tu le souhaites.
+          Écoute attentivement le récitateur. L'idéal est d'écouter 3 fois, mais tu peux passer dès la 1ère écoute.
         </p>
 
         {/* Mushaf image display with zoom controls */}
