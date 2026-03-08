@@ -1,21 +1,19 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Diagnostic
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+L'utilisateur est bloqué sur la page `/quran-reader` qui masque la barre de navigation (`hideNav`). Il existe un bouton retour (flèche ←) en haut à gauche qui appelle `navigate(-1)`.
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+Aucune modification de code n'est nécessaire ici — c'est un problème de navigation utilisateur, pas un bug.
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+### Instructions pour l'utilisateur
+1. Taper la flèche ← en haut à gauche du lecteur Coran
+2. Aller dans Profil → activer "Mode Testeur (Dev)"
+3. Aller dans Hifz → le bouton ⏩ Skip apparaît
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+### Si le bouton retour n'est pas visible
+Il faudrait vérifier le header du QuranReaderPage pour s'assurer que le bouton retour est bien rendu. Mais d'après le code, il utilise `ArrowLeft` avec `navigate(-1)` donc il devrait fonctionner.
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+### Pas de changement de code requis
+Ce n'est pas un bug — l'utilisateur a juste besoin de naviguer via le bouton retour existant.
 
