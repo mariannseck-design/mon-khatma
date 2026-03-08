@@ -103,7 +103,7 @@ const itemVariants = {
 };
 
 export default function DhikrPage() {
-  const { isAdmin } = useAuth();
+  const { hasFullAccess } = useAuth();
   const [searchParams] = useSearchParams();
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
