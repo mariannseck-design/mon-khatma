@@ -13,7 +13,7 @@ import ResetPasswordPage from "./pages/ResetPasswordPage";
 import AccueilPage from "./pages/AccueilPage";
 import PlanificateurPage from "./pages/PlanificateurPage";
 import CerclePage from "./pages/CerclePage";
-import FavorisPage from "./pages/FavorisPage";
+
 import QuranReaderPage from "./pages/QuranReaderPage";
 
 import EmotionsPage from "./pages/EmotionsPage";
