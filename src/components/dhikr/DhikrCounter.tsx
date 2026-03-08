@@ -9,6 +9,7 @@ export interface DhikrItem {
   target: number;
   title: string;
   source?: string;
+  readOnly?: boolean;
 }
 
 interface DhikrCounterProps {
