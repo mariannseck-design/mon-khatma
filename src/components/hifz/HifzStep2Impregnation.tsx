@@ -48,6 +48,28 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
     }
   }, [listenCount, storageKey]);
 
+  // Fetch Hamidullah translation
+  useEffect(() => {
+    const fetchTranslation = async () => {
+      setTranslationLoading(true);
+      try {
+        const res = await fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}/fr.hamidullah`);
+        const data = await res.json();
+        if (data.code === 200) {
+          const ayahs = data.data.ayahs
+            .filter((a: any) => a.numberInSurah >= startVerse && a.numberInSurah <= endVerse)
+            .map((a: any) => `${a.numberInSurah}. ${a.text}`);
+          setTranslation(ayahs);
+        }
+      } catch {
+        setTranslation(['Traduction non disponible.']);
+      } finally {
+        setTranslationLoading(false);
+      }
+    };
+    fetchTranslation();
+  }, [surahNumber, startVerse, endVerse]);
+
   // Calculate exact Mushaf page from surah + verse number
   const mushafPage = getApproxVersePage(surahNumber, startVerse);
   const mushafImageUrl = `https://cdn.jsdelivr.net/gh/QuranHub/quran-pages-images@main/easyquran.com/hafs-tajweed/${mushafPage}.jpg`;
