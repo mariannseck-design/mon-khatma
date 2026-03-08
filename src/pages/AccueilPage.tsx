@@ -210,13 +210,18 @@ export default function AccueilPage() {
 
         {/* Greeting */}
         <motion.div className="text-center pt-2 pb-2" variants={itemVariants}>
+          {displayName && (
+            <p className="text-foreground font-semibold text-lg">Bonjour {displayName} 🤍</p>
+          )}
           <p className="text-muted-foreground text-base mt-1">{greeting()}</p>
         </motion.div>
 
-        {/* Citation du jour */}
-        <motion.div variants={itemVariants}>
-          <DailyQuote />
-        </motion.div>
+        {/* Citation du jour — uniquement si l'utilisateur a commencé la mémorisation */}
+        {hasStartedHifz && (
+          <motion.div variants={itemVariants}>
+            <DailyQuote />
+          </motion.div>
+        )}
 
         {/* EN-TÊTE FONDATEUR — Pages lues + Ma Tillawah fusionnées */}
         <motion.div variants={itemVariants}>
