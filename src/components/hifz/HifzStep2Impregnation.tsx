@@ -303,7 +303,13 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
             )}
           </div>
 
-          {mushafMode === 'image' ? (
+          {mushafMode === 'physical' ? (
+            <div className="rounded-xl px-4 py-6 text-center" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(212,175,55,0.15)' }}>
+              <p className="text-xs italic" style={{ color: 'rgba(255,255,255,0.45)' }}>
+                📖 Ouvre ton Mushaf physique et suis depuis celui-ci.
+              </p>
+            </div>
+          ) : mushafMode === 'image' ? (
             <HifzMushafImage surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse} maxHeight="320px" />
           ) : (
             <div

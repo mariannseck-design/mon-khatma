@@ -467,6 +467,12 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
               <div className="flex items-center justify-center py-8">
                 <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: '#d4af37', borderTopColor: 'transparent' }} />
               </div>
+            ) : textVisible && mushafMode === 'physical' ? (
+              <div className="rounded-xl px-4 py-6 text-center" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(212,175,55,0.15)' }}>
+                <p className="text-xs italic" style={{ color: 'rgba(255,255,255,0.45)' }}>
+                  📖 Ouvre ton Mushaf physique et suis depuis celui-ci.
+                </p>
+              </div>
             ) : textVisible && mushafMode === 'image' ? (
               <HifzMushafImage surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse} maxHeight="320px" />
             ) : (
