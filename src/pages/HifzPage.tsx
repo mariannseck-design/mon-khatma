@@ -5,6 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import HifzConfig from '@/components/hifz/HifzConfig';
 import HifzGoalOnboarding from '@/components/hifz/HifzGoalOnboarding';
+import HifzDiagnostic from '@/components/hifz/HifzDiagnostic';
 import HifzStep0Intention from '@/components/hifz/HifzStep0Intention';
 import HifzStep1Revision from '@/components/hifz/HifzStep1Revision';
 import HifzStep2Impregnation from '@/components/hifz/HifzStep2Impregnation';
