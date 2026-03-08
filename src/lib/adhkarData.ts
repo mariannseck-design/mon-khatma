@@ -690,7 +690,8 @@ export const ANYTIME_ADHKAR: DhikrItem[] = [
     title: 'Dhikr léger sur la balance',
     arabic: 'سُبْحَانَ اللهِ وَبِحَمْدِهِ',
     phonetic: "Subhâna-llâhi wa bi-hamdih",
-    french: "Gloire et louange à Allah. Deux paroles légères sur la langue, lourdes sur la balance, aimées du Tout Miséricordieux.",
+    french: "Gloire et louange à Allah.",
+    fadl: 'Quiconque le dit 100 fois par jour, ses péchés seront effacés, fussent-ils comme l\'écume de la mer. (Al-Bukhârî)',
     target: 100,
   },
   {
