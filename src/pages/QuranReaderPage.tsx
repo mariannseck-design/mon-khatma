@@ -116,7 +116,7 @@ export default function QuranReaderPage() {
   });
   useEffect(() => { localStorage.setItem('quran_text_size_index', textSizeIndex.toString()); }, [textSizeIndex]);
 
-  useEffect(() => { localStorage.setItem('quran_view_mode', viewMode); }, [viewMode]);
+  
 
   const [bookmark, setBookmark] = useState<number | null>(() => {
     const saved = localStorage.getItem('quran_bookmark');
