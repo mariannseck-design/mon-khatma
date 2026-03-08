@@ -71,8 +71,8 @@ export default defineConfig(({ mode }) => ({
         skipWaiting: true,
         clientsClaim: true,
         cleanupOutdatedCaches: true,
-        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
-        globPatterns: ["**/*.{js,css,html,ico,png,svg,woff,woff2}"],
+        maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
+        globPatterns: ["**/*.{js,css,html,ico,png,svg,woff,woff2,json}"],
         importScripts: ["/sw-push.js"],
         navigateFallbackDenylist: [/^\/~oauth/],
         runtimeCaching: [
