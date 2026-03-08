@@ -79,10 +79,26 @@ export default function AccueilPage() {
       fetchProfile();
       fetchProgress();
       fetchReadingGoal();
+      fetchPendingReviews();
     }
     // Check for active hifz session (localStorage first, then DB)
     detectActiveHifzSession();
   }, [user]);
+
+  const fetchPendingReviews = async () => {
+    if (!user) return;
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      const { count } = await supabase
+        .from('hifz_memorized_verses')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+        .lte('next_review_date', today);
+      setPendingReviews(count || 0);
+    } catch {
+      // ignore
+    }
+  };
 
   const detectActiveHifzSession = async () => {
     try {
