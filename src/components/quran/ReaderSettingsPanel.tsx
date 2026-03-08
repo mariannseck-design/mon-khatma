@@ -25,6 +25,8 @@ interface ReaderSettingsPanelProps {
   onAudioStartVerseChange?: (v: number | undefined) => void;
   onAudioEndVerseChange?: (v: number | undefined) => void;
   isOffline?: boolean;
+  tajweedEnabled?: boolean;
+  onTajweedChange?: (enabled: boolean) => void;
 }
 
 const FONT_SIZE_PRESETS = [
