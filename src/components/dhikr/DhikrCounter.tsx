@@ -104,6 +104,16 @@ export default function DhikrCounter({ item, onComplete }: DhikrCounterProps) {
         {item.french}
       </p>
 
+      {/* Source reference */}
+      {item.source && (
+        <p
+          className="text-[11px] italic text-center max-w-xs"
+          style={{ color: 'var(--p-text-55)', opacity: 0.8 }}
+        >
+          📖 {item.source}
+        </p>
+      )}
+
       {/* Counter Circle */}
       <motion.button
         className="relative w-32 h-32 flex items-center justify-center rounded-full focus:outline-none"
