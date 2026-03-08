@@ -1,22 +1,21 @@
 
 
-## Ajouter le 15e dua "Allâhumma ajirni mina-n-nâr" après la prière
+# Diagnostic : 404 sur /quran-reader
 
-### Changement
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-**`src/lib/adhkarData.ts`** — Ajouter un 15e élément à `POST_PRAYER_ADHKAR` après le dernier élément actuel (ligne 625) :
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-```ts
-{
-  title: 'Demande de protection contre le Feu (7×)',
-  fadl: "Quiconque dit cette invocation 7 fois après la prière du Fajr et meurt ce jour-là, Allah le protègera du Feu. Et quiconque la dit 7 fois après la prière du Maghrib et meurt cette nuit-là, Allah le protègera du Feu. (Abû Dâwûd 5079, Ahmad — jugé hasan)",
-  arabic: 'اللَّهُمَّ أَجِرْنِي مِنَ النَّارِ',
-  phonetic: "Allâhumma ajirnî mina-n-nâr.",
-  french: "Ô Allah, protège-moi du Feu.",
-  target: 7,
-  source: "Abû Dâwûd 5079 — d'après al-Hârith ibn Muslim"
-}
-```
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-Un seul fichier, une seule insertion.
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
