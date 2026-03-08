@@ -302,8 +302,8 @@ export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticPro
         </h2>
         <p className="text-sm text-white/70 max-w-xs">
           Votre programme de révision a été créé.
-          {solidBlocks.length > 0 && ` ${solidBlocks.length} blocs en Tour (SM-2).`}
-          {recentBlocks.length > 0 && ` ${recentBlocks.length} blocs en Liaison quotidienne.`}
+          {solidBlocks.length > 0 && ` ${solidBlocks.length} portion${solidBlocks.length > 1 ? 's' : ''} en révision espacée.`}
+          {recentBlocks.length > 0 && ` ${recentBlocks.length} portion${recentBlocks.length > 1 ? 's' : ''} en liaison quotidienne.`}
         </p>
       </motion.div>
     );
