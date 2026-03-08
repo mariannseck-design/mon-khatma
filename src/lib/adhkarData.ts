@@ -1135,6 +1135,7 @@ export const HAJJ_DUAS: DhikrItem[] = [
   },
   {
     title: "Du'â du Sa'î (Safâ & Marwa)",
+    readOnly: true,
     arabic: "إِنَّ الصَّفَا وَالْمَرْوَةَ مِن شَعَائِرِ اللَّهِ ۖ أَبْدَأُ بِمَا بَدَأَ اللَّهُ بِهِ",
     phonetic: "Inna s-Safâ wa-l-Marwata min sha'â'iri-llâh. Abda'u bi-mâ bada'a-llâhu bih.",
     french: "Safâ et Marwa sont parmi les rites d'Allah (عز وجل). Je commence par ce par quoi Allah (عز وجل) a commencé. (Rapporté par Muslim)",
