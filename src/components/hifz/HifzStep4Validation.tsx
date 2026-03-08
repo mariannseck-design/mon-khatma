@@ -9,17 +9,17 @@ import HifzMushafImage from './HifzMushafImage';
 const ENCOURAGEMENTS = [
   {
     title: 'Chaque effort est récompensé',
-    text: "Ne te décourage pas. L'erreur est une étape naturelle vers la perfection. Celui qui récite le Coran avec difficulté obtient une double récompense. Prends une grande inspiration et reprenons.",
+    text: "Ne te décourage pas. L'erreur est une étape naturelle vers la perfection. Celui qui récite le Coran avec difficulté obtient une double récompense. Regardez le texte si besoin et reprenez la série pour bien ancrer. Prends une grande inspiration et reprenons.",
     button: 'Je recommence mon essai',
   },
   {
     title: 'Une nouvelle chance',
-    text: "La mémorisation est un chemin de patience. Cette erreur t'aide à mieux ancrer le verset. Recommençons en plaçant notre confiance en Allah (عز وجل).",
+    text: "La mémorisation est un chemin de patience. Cette erreur t'aide à mieux ancrer le verset. Regardez le texte si besoin et reprenez la série pour bien ancrer. Recommençons en plaçant notre confiance en Allah (عز وجل).",
     button: 'Essayer à nouveau',
   },
   {
     title: 'Presque parfait !',
-    text: "Le Hifz demande de la répétition. Reprends ton souffle, concentre-toi et relance l'enregistrement. Tu vas y arriver !",
+    text: "Le Hifz demande de la répétition. Regardez le texte si besoin et reprenez la série pour bien ancrer. Reprends ton souffle, concentre-toi et relance l'enregistrement. Tu vas y arriver !",
     button: "Reprendre l'enregistrement",
   },
 ];
@@ -152,10 +152,8 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
   const handlePeek = () => {
     setShowPeek(true);
     setPeekCount(prev => prev + 1);
-    if (successes > 0) {
-      setSuccesses(0);
-      toast({ title: 'Compteur réinitialisé', description: 'Les 3 essais doivent être réussis sans aide.' });
-    }
+    setSuccesses(0);
+    toast({ title: 'Compteur remis à zéro', description: 'Les 3 essais doivent être réussis de mémoire pure, sans aucune aide.' });
   };
 
   const mins = Math.floor(recordingTime / 60);
@@ -224,6 +222,13 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
           Si tu regardes, le compteur se réinitialise.
         </p>
 
+        {/* Message d'exigence spirituel */}
+        <div className="rounded-xl px-4 py-3 mx-1" style={{ background: 'rgba(212,175,55,0.06)', border: '1px solid rgba(212,175,55,0.2)' }}>
+          <p className="text-xs leading-relaxed italic text-center" style={{ color: 'rgba(255,255,255,0.6)' }}>
+            « Si vous éprouvez le moindre doute lors de la récitation, c'est le signe que l'ancrage n'est pas encore solide. Regardez le texte, puis recommencez votre série de 3 à zéro. Cette rigueur est le secret d'une mémoire inaltérable. »
+          </p>
+        </div>
+
         {/* ── Badges 1-2-3 ── */}
         <div className="flex items-center justify-center gap-4">
           {[0, 1, 2].map(i => {
@@ -278,8 +283,8 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
                 >
                   👁️ Jeter un œil rapide
                 </button>
-                <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.25)' }}>
-                  ⚠️ Réinitialise le compteur
+                <p className="text-[10px] font-medium" style={{ color: 'rgba(220,50,50,0.5)' }}>
+                  ⚠️ Remet vos 3 essais à zéro
                   {peekCount > 0 && ` · ${peekCount} coup${peekCount > 1 ? 's' : ''} d'œil`}
                 </p>
               </motion.div>

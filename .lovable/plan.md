@@ -1,24 +1,21 @@
 
 
-## Ajout consigne de rigueur + renforcement logique (Étape 4)
+# Diagnostic : 404 sur /quran-reader
 
-### Fichier modifié : `src/components/hifz/HifzStep4Validation.tsx`
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-**4 changements :**
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-1. **Message d'exigence spirituel** (après l'instruction existante, ligne ~222-225)
-   - Encadré discret avec bordure dorée fine, fond semi-transparent
-   - Texte en italique : « Si vous éprouvez le moindre doute lors de la récitation... »
-   - Style : `#1C2421` texte, bordure `rgba(212,175,55,0.2)`
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-2. **Renforcement du Peek** (ligne ~152-158, `handlePeek`)
-   - Toast toujours affiché (pas seulement si `successes > 0`), avec message plus explicite : « Compteur remis à zéro — Les 3 essais doivent être réussis de mémoire pure, sans aucune aide. »
-   - Reset `successes` à 0 dans tous les cas (déjà fait si > 0, rendre systématique)
-   - Texte sous le bouton peek plus visible : « ⚠️ Remet vos 3 essais à zéro » au lieu de « Réinitialise le compteur »
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-3. **Message de soutien à l'erreur** (ligne ~140-147, encouragement popup)
-   - Ajouter dans le texte du popup d'encouragement une mention explicite : « Regardez le texte si besoin et reprenez la série pour bien ancrer. »
-   - Mettre à jour les `ENCOURAGEMENTS` pour inclure ce conseil dans chaque variante
-
-4. **Aucun changement de logique structurelle** — la mécanique reset est déjà correcte, on renforce juste les messages
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
