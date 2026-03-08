@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Users, BookOpen, TrendingUp, AlertCircle, Check, X } from 'lucide-react';
+import { AllowedEmailsSection } from '@/components/admin/AllowedEmailsSection';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { Card } from '@/components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
