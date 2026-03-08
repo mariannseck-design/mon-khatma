@@ -86,6 +86,29 @@
     --sidebar-accent-foreground: 260 40% 25%;
     --sidebar-border: 220 15% 92%;
     --sidebar-ring: 158 45% 70%;
+
+    /* Premium Emerald/Gold Palette */
+    --p-bg: #FDFBF7;
+    --p-card: #FFFFFF;
+    --p-card-active: #F0F7F4;
+    --p-primary: #065F46;
+    --p-primary-deep: #044E3B;
+    --p-accent: #D4AF37;
+    --p-text: #1C2421;
+    --p-text-75: rgba(28,36,33,0.75);
+    --p-text-65: rgba(28,36,33,0.65);
+    --p-text-60: rgba(28,36,33,0.6);
+    --p-text-55: rgba(28,36,33,0.55);
+    --p-track: #E6F0ED;
+    --p-border: #E6F0ED;
+    --p-card-shadow: 0 4px 20px rgba(6,95,70,0.06);
+    --p-hard: #9B1C31;
+    --p-medium: #D97706;
+    --p-on-dark: rgba(253,251,247,0.95);
+    --p-on-dark-muted: rgba(253,251,247,0.7);
+    --p-checkbox-border: #065F46;
+    --p-gradient-fill: linear-gradient(90deg, #065F46, #044E3B);
+    --p-gradient-bg: linear-gradient(135deg, #065F46 0%, #044E3B 100%);
   }
 
   .dark {
