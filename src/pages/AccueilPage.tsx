@@ -411,6 +411,11 @@ export default function AccueilPage() {
               </Link>
             </motion.div>
 
+            {/* Hifz Community Counter */}
+            <motion.div variants={itemVariants} className="flex justify-center -mt-1 -mb-1">
+              <HifzCommunityCounter />
+            </motion.div>
+
             {/* MURAJA'A — Unified card with badge */}
             <motion.div variants={itemVariants}>
               <Link to="/muraja" className="block">
