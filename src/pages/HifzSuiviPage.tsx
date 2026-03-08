@@ -429,13 +429,18 @@ export default function HifzSuiviPage() {
               className="rounded-2xl p-5"
               style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', boxShadow: 'var(--p-card-shadow)' }}
             >
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #6D28D9, #8B5CF6)', boxShadow: '0 3px 8px rgba(109, 40, 217, 0.25)' }}>
-                  <BarChart3 className="h-3.5 w-3.5 text-white" />
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #6D28D9, #8B5CF6)', boxShadow: '0 3px 8px rgba(109, 40, 217, 0.25)' }}>
+                    <BarChart3 className="h-3.5 w-3.5 text-white" />
+                  </div>
+                  <h3 className="text-sm font-bold" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-primary)' }}>
+                    Activité des 7 derniers jours
+                  </h3>
                 </div>
-                <h3 className="text-sm font-bold" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-primary)' }}>
-                  Activité des 7 derniers jours
-                </h3>
+                <span className="text-[11px] font-medium capitalize" style={{ color: 'var(--p-text-55)' }}>
+                  {new Date().toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
+                </span>
               </div>
               <ResponsiveContainer width="100%" height={140}>
                 <BarChart data={weeklyData} barCategoryGap="30%">
