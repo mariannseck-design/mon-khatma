@@ -382,6 +382,7 @@ export default function QuranReaderPage() {
             darkMode={nightMode}
             tajweedEnabled={tajweedEnabled}
             showTranslation={translationEnabled}
+            translationEdition={translationEdition}
           />
         )}
       </div>
