@@ -495,7 +495,7 @@ export default function QuranReaderPage() {
           {/* Settings */}
           <ReaderSettingsPanel
             viewMode={viewMode}
-            onViewModeChange={setViewMode}
+            onViewModeChange={handleViewModeChange}
             nightMode={nightMode}
             onNightModeChange={handleNightModeChange}
             fontSize={TEXT_SIZES[textSizeIndex].value}
