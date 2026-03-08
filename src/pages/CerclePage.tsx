@@ -65,6 +65,9 @@ export default function CerclePage() {
   const [loading, setLoading] = useState(true);
   const [activeSection, setActiveSection] = useState<SectionType | null>(null);
 
+  const isNewMember = membership && 
+    (Date.now() - new Date(membership.joined_at).getTime()) < 48 * 60 * 60 * 1000;
+
   useEffect(() => {
     fetchCircleData();
   }, [user]);
