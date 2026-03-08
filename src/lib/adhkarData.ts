@@ -116,6 +116,7 @@ export const MORNING_ADHKAR: DhikrItem[] = [
   {
     title: 'Gloire à Allah',
     source: 'Muslim n°2726',
+    fadl: 'Juwayriya bint al-Hârith rapporte que le Prophète ﷺ a dit que ces paroles pèsent plus que tout ce qu\'on pourrait dire depuis le matin. (Muslim)',
     arabic: 'سُبْحـانَ اللهِ وَبِحَمْـدِهِ عَدَدَ خَلْـقِهِ، وَرِضـا نَفْسِـهِ، وَزِنَـةَ عَـرْشِـهِ، وَمِـدادَ كَلِمـاتِـهِ',
     phonetic: "Subhâna-llâhi wa bi-hamdihi 'adada khalqih, wa ridâ nafsih, wa zinata 'arshih, wa midâda kalimâtih.",
     french: "Gloire et louange à Allah autant que le nombre de Ses créatures, autant qu'Il agrée, autant que pèse Son Trône, et autant que l'encre de Ses paroles.",
