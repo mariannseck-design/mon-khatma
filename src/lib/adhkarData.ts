@@ -905,7 +905,8 @@ export const LOUANGES_ISTIGHFAR: DhikrItem[] = [
     title: "Subhân Allâhi-l-'Azîm wa bi-Hamdih",
     arabic: 'سُبْحَانَ اللهِ الْعَظِيمِ وَبِحَمْدِهِ',
     phonetic: "Subhân Allâhi-l-'Azîm wa bi-Hamdih.",
-    french: "Gloire à Allah le Très Grand et louange à Lui. Deux paroles légères sur la langue, lourdes dans la balance, aimées du Tout Miséricordieux.",
+    french: "Gloire à Allah le Très Grand et louange à Lui.",
+    fadl: 'Deux paroles légères sur la langue, lourdes dans la balance, aimées du Tout Miséricordieux. (Al-Bukhârî, Muslim)',
     target: 33,
   },
   {
