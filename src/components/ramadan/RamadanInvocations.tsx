@@ -35,7 +35,7 @@ const invocations = [
     emoji: '❤️',
     arabic: 'تقبل الله منا ومنكم',
     phonetic: "Taqabala-l-lahu minâ wa minkum.",
-    translation: "Qu'Allah (عز وجل) agrée nos bonnes actions et les vôtres.",
+    translation: "Qu'Allah agrée nos bonnes actions et les vôtres.",
   },
 ];
 
