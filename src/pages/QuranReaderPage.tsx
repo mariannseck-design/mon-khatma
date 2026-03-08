@@ -53,6 +53,14 @@ export default function QuranReaderPage() {
     localStorage.setItem('quran_tajweed', String(enabled));
   };
 
+  const [translationEnabled, setTranslationEnabled] = useState(() => {
+    return localStorage.getItem('quran_translation') === 'true';
+  });
+  const handleTranslationChange = (enabled: boolean) => {
+    setTranslationEnabled(enabled);
+    localStorage.setItem('quran_translation', String(enabled));
+  };
+
   // Force text mode when offline
   useEffect(() => {
     if (!isOnline && viewMode === 'image') {
