@@ -1,21 +1,16 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Ajustements sémantiques — Page Muraja'a
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Fichiers et changements
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+**`src/pages/MurjaPage.tsx`**
+1. Ligne 291 : `reset à minuit` → `Nouveau cycle à minuit`
+2. Ligne 432 : `Le Tour — Révision SM-2` → `L'Entretien Continu (Le Tour)`
+3. Lignes 444-447 : Remplacer le texte explicatif SM-2 par : « Ton programme de révision intelligent (Algorithme SM-2). Il s'adapte naturellement à ta mémoire pour te proposer de réviser chaque verset au moment parfait, préservant ainsi ton trésor de l'oubli. »
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+**`src/components/muraja/MurajaCountdown.tsx`**
+4. Ligne 38 : `Reset dans` → `Nouveau cycle dans`
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
-
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+Aucun changement sur les badges "Tour" ni sur le sous-titre "Anciens acquis".
 
