@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { RotateCcw, Check, Sparkles, BookOpen } from 'lucide-react';
 import HifzStepWrapper from './HifzStepWrapper';
+import HifzMushafToggle, { getMushafMode, setMushafMode, type MushafMode } from './HifzMushafToggle';
+import HifzMushafImage from './HifzMushafImage';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { SURAHS } from '@/lib/surahData';
@@ -34,6 +36,7 @@ export default function HifzStep1Revision({ onNext, onBack, onPause }: Props) {
   const [rescueCount, setRescueCount] = useState(0);
   const [verseTexts, setVerseTexts] = useState<LocalAyah[]>([]);
   const [loadingVerses, setLoadingVerses] = useState(false);
+  const [mushafMode, setMushafModeState] = useState<MushafMode>(getMushafMode);
 
   // Fetch yesterday's memorized verses
   useEffect(() => {
@@ -236,8 +239,18 @@ export default function HifzStep1Revision({ onNext, onBack, onPause }: Props) {
                 Pas de panique ! Prenez le temps de relire 3 fois pour rafraîchir votre mémoire par la grâce d'Allah (عز وجل).
               </div>
 
-              {/* Arabic text block */}
-              {loadingVerses ? (
+              {/* Mushaf mode toggle */}
+              <HifzMushafToggle mode={mushafMode} onChange={(m) => { setMushafModeState(m); setMushafMode(m); }} />
+
+              {/* Arabic text / image block */}
+              {mushafMode === 'image' && yesterdayVerses.length > 0 ? (
+                <HifzMushafImage
+                  surahNumber={yesterdayVerses[0].surahNumber}
+                  startVerse={yesterdayVerses[0].verseStart}
+                  endVerse={yesterdayVerses[0].verseEnd}
+                  maxHeight="260px"
+                />
+              ) : loadingVerses ? (
                 <div className="flex items-center justify-center py-6">
                   <div className="w-5 h-5 border-2 border-white/30 border-t-white/80 rounded-full animate-spin" />
                 </div>

@@ -2,6 +2,8 @@ import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Headphones, Check, Play, Pause, RotateCcw, ZoomIn, ZoomOut, BookOpen, ChevronDown } from 'lucide-react';
 import HifzStepWrapper from './HifzStepWrapper';
+import HifzMushafToggle, { getMushafMode, setMushafMode, type MushafMode } from './HifzMushafToggle';
+import HifzMushafImage from './HifzMushafImage';
 import { RECITERS, getAyahAudioUrl } from '@/hooks/useQuranAudio';
 import { SURAHS } from '@/lib/surahData';
 import { getVersesByRange, type LocalAyah } from '@/lib/quranData';
@@ -86,6 +88,7 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
   const [showTranslation, setShowTranslation] = useState(false);
   const [ayahs, setAyahs] = useState<AyahWithAnnotations[]>([]);
   const [versesLoading, setVersesLoading] = useState(true);
+  const [mushafMode, setMushafModeState] = useState<MushafMode>(getMushafMode);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const ayahsRef = useRef<{ audio: string; numberInSurah: number }[]>([]);
   const indexRef = useRef(0);
@@ -273,57 +276,66 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
           Écoute attentivement le récitateur. L'idéal est d'écouter 3 fois, mais tu peux passer dès la 1ère écoute.
         </p>
 
-        {/* Arabic text display with font size controls */}
+        {/* Mushaf mode toggle + display */}
         <div className="space-y-2">
-          <div className="flex items-center justify-end gap-1.5 px-1">
-            <button
-              onClick={() => setFontSizeIndex(i => Math.max(0, i - 1))}
-              disabled={fontSizeIndex === 0}
-              className="w-8 h-8 rounded-lg flex items-center justify-center disabled:opacity-30 transition-all active:scale-95"
-              style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(212,175,55,0.15)' }}
-            >
-              <ZoomOut className="h-3.5 w-3.5" style={{ color: '#d4af37' }} />
-            </button>
-            <span className="text-xs px-2" style={{ color: 'rgba(255,255,255,0.5)' }}>{FONT_LABELS[fontSizeIndex]}</span>
-            <button
-              onClick={() => setFontSizeIndex(i => Math.min(2, i + 1))}
-              disabled={fontSizeIndex === 2}
-              className="w-8 h-8 rounded-lg flex items-center justify-center disabled:opacity-30 transition-all active:scale-95"
-              style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(212,175,55,0.15)' }}
-            >
-              <ZoomIn className="h-3.5 w-3.5" style={{ color: '#d4af37' }} />
-            </button>
-          </div>
-
-          <div
-            className="rounded-xl overflow-auto max-h-72 px-4 py-4"
-            style={{ border: '1px solid rgba(212,175,55,0.25)' }}
-            dir="rtl"
-          >
-            {versesLoading ? (
-              <div className="flex items-center justify-center py-8">
-                <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: '#d4af37', borderTopColor: 'transparent' }} />
-              </div>
-            ) : (
-              <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '12px', padding: '16px', border: '1px solid rgba(212,175,55,0.15)' }}>
-                {startVerse === 1 && surahNumber !== 1 && surahNumber !== 9 && (
-                  <p
-                    className="text-center mb-3"
-                    style={{
-                      fontFamily: FONT_FAMILY,
-                      color: '#6a9a6a',
-                      fontSize: '22px',
-                      lineHeight: '40px',
-                      fontWeight: 'bold',
-                    }}
-                  >
-                    بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
-                  </p>
-                )}
-                {renderedText}
+          <div className="flex items-center justify-between px-1">
+            <HifzMushafToggle mode={mushafMode} onChange={(m) => { setMushafModeState(m); setMushafMode(m); }} />
+            {mushafMode === 'text' && (
+              <div className="flex items-center gap-1.5">
+                <button
+                  onClick={() => setFontSizeIndex(i => Math.max(0, i - 1))}
+                  disabled={fontSizeIndex === 0}
+                  className="w-8 h-8 rounded-lg flex items-center justify-center disabled:opacity-30 transition-all active:scale-95"
+                  style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(212,175,55,0.15)' }}
+                >
+                  <ZoomOut className="h-3.5 w-3.5" style={{ color: '#d4af37' }} />
+                </button>
+                <span className="text-xs px-2" style={{ color: 'rgba(255,255,255,0.5)' }}>{FONT_LABELS[fontSizeIndex]}</span>
+                <button
+                  onClick={() => setFontSizeIndex(i => Math.min(2, i + 1))}
+                  disabled={fontSizeIndex === 2}
+                  className="w-8 h-8 rounded-lg flex items-center justify-center disabled:opacity-30 transition-all active:scale-95"
+                  style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(212,175,55,0.15)' }}
+                >
+                  <ZoomIn className="h-3.5 w-3.5" style={{ color: '#d4af37' }} />
+                </button>
               </div>
             )}
           </div>
+
+          {mushafMode === 'image' ? (
+            <HifzMushafImage surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse} maxHeight="320px" />
+          ) : (
+            <div
+              className="rounded-xl overflow-auto max-h-72 px-4 py-4"
+              style={{ border: '1px solid rgba(212,175,55,0.25)' }}
+              dir="rtl"
+            >
+              {versesLoading ? (
+                <div className="flex items-center justify-center py-8">
+                  <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: '#d4af37', borderTopColor: 'transparent' }} />
+                </div>
+              ) : (
+                <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '12px', padding: '16px', border: '1px solid rgba(212,175,55,0.15)' }}>
+                  {startVerse === 1 && surahNumber !== 1 && surahNumber !== 9 && (
+                    <p
+                      className="text-center mb-3"
+                      style={{
+                        fontFamily: FONT_FAMILY,
+                        color: '#6a9a6a',
+                        fontSize: '22px',
+                        lineHeight: '40px',
+                        fontWeight: 'bold',
+                      }}
+                    >
+                      بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
+                    </p>
+                  )}
+                  {renderedText}
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Hamidullah Translation - collapsible */}
