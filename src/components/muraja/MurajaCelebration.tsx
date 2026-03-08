@@ -51,8 +51,48 @@ interface MurajaCelebrationProps {
 export default function MurajaCelebration({ type, isOpen, onClose }: MurajaCelebrationProps) {
   const messages = type === 'cycle' ? CYCLE_MESSAGES : DAILY_MESSAGES;
   const message = messages[Math.floor(Math.random() * messages.length)];
+  const confetti = useMemo(() => generateConfetti(30), [isOpen]);
 
   return (
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 flex items-center justify-center px-4"
+          style={{ background: 'rgba(0,0,0,0.6)' }}
+          onClick={onClose}
+        >
+          {/* Confetti */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            {confetti.map((piece) => (
+              <motion.div
+                key={piece.id}
+                className="absolute"
+                style={{
+                  left: `${piece.x}%`,
+                  top: -10,
+                  width: piece.size,
+                  height: piece.size * 1.4,
+                  backgroundColor: piece.color,
+                  borderRadius: piece.size > 8 ? '50%' : '2px',
+                }}
+                initial={{ y: -20, x: 0, rotate: 0, opacity: 1 }}
+                animate={{
+                  y: [0, window.innerHeight + 40],
+                  x: [0, piece.xDrift, piece.xDrift * 0.5],
+                  rotate: [0, piece.rotation, piece.rotation * 2],
+                  opacity: [1, 1, 0],
+                }}
+                transition={{
+                  duration: 2.5 + Math.random(),
+                  delay: piece.delay,
+                  ease: 'easeIn',
+                }}
+              />
+            ))}
+          </div>
     <AnimatePresence>
       {isOpen && (
         <motion.div
