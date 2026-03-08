@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { User, Mail, Save, Bell, ChevronRight } from 'lucide-react';
+import { User, Mail, Save, Bell, ChevronRight, LogOut } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { Switch } from '@/components/ui/switch';
 import { useDevMode } from '@/hooks/useDevMode';
@@ -127,6 +127,18 @@ export default function ProfilPage() {
             </CardContent>
           </Card>
         )}
+
+        <Button
+          variant="outline"
+          className="w-full rounded-xl border-destructive/30 text-destructive hover:bg-destructive/10"
+          onClick={async () => {
+            await supabase.auth.signOut();
+            navigate('/');
+          }}
+        >
+          <LogOut className="h-4 w-4 mr-2" />
+          Se déconnecter
+        </Button>
       </div>
     </AppLayout>
   );
