@@ -1,21 +1,16 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Afficher le vrai nombre de versets mémorisés
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Problème
+`periodProgress` est calculé en divisant les versets par 15 (pour avoir des pages), puis l'affichage re-multiplie par 15 pour retrouver les versets → l'arrondi fausse le résultat.
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Solution
+Stocker le nombre exact de versets dans un state séparé `periodVerses`, et l'utiliser directement dans l'affichage.
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+### Changements dans `src/pages/HifzSuiviPage.tsx`
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
-
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+1. Ajouter un state `periodVerses` (nombre exact de versets complétés dans la période)
+2. Dans `loadData`, après le calcul de `versesCompleted`, faire `setPeriodVerses(versesCompleted)` 
+3. Dans le JSX ligne 272-274, remplacer `Math.round(periodProgress * 15)` par `periodVerses`
 
