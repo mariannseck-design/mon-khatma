@@ -1,15 +1,21 @@
 
 
-## Plan : Ne plus fermer le panneau automatiquement après sélection de sourate
+# Diagnostic : 404 sur /quran-reader
 
-### Problème
-Quand l'utilisateur clique "Choisir une sourate", le panneau Paramètres se ferme immédiatement (`setOpen(false)` ligne 209), ce qui ne laisse pas le temps de configurer la page ou les versets ensuite.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Correction : `src/components/quran/ReaderSettingsPanel.tsx`
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-- **Ligne 209** : Retirer `setOpen(false)` du onClick du bouton "Choisir une sourate"
-- Le SurahDrawer s'ouvrira par-dessus le panneau. Une fois la sourate choisie et le drawer fermé, l'utilisateur reviendra au panneau Paramètres où il pourra ajuster page, juz et versets avant de fermer manuellement.
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-### Fichier modifié
-- `src/components/quran/ReaderSettingsPanel.tsx` — une seule ligne modifiée
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
