@@ -1167,6 +1167,7 @@ export const HAJJ_DUAS: DhikrItem[] = [
   },
   {
     title: "Lapidation (Jamarat)",
+    readOnly: true,
     arabic: "اللَّهُ أَكْبَرُ",
     phonetic: "Allâhu Akbar.",
     french: "Allah (عز وجل) est le plus Grand. (À chaque lancer de caillou lors de la lapidation des stèles à Minâ.)",
