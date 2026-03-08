@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { AppLayout } from '@/components/layout/AppLayout';
+import { useAuth } from '@/contexts/AuthContext';
 import { Sunrise, Moon, BookOpen, Heart, ChevronDown, MapPin, Landmark, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import DhikrSession from '@/components/dhikr/DhikrSession';
@@ -35,6 +36,7 @@ const itemVariants = {
 };
 
 export default function DhikrPage() {
+  const { isAdmin } = useAuth();
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
   const categoryData = activeCategory ? CATEGORY_DATA[activeCategory] : null;
@@ -91,12 +93,12 @@ export default function DhikrPage() {
                       boxShadow: '0 2px 12px -2px rgba(0,0,0,0.08)',
                     }}
                     onClick={() => {
-                      if (card.enabled) setActiveCategory(card.id);
+                      if (card.enabled || isAdmin) setActiveCategory(card.id);
                     }}
-                    whileTap={card.enabled ? { scale: 0.96 } : {}}
+                    whileTap={card.enabled || isAdmin ? { scale: 0.96 } : {}}
                   >
                     {/* Badge Bientôt disponible — only for disabled cards */}
-                    {!card.enabled && (
+                    {!card.enabled && !isAdmin && (
                       <span
                         className="absolute top-2 right-2 text-[9px] font-medium px-2 py-0.5 rounded-full backdrop-blur-sm"
                         style={{
