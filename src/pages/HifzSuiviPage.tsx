@@ -26,7 +26,7 @@ const MOTIVATIONS = [
   "Qu'Allah (عز وجل) te facilite ce chemin.",
 ];
 
-function CircularGauge({ value, max, label }: { value: number; max: number; label: string }) {
+function CircularGauge({ value, max, label, hideMax }: { value: number; max: number; label: string; hideMax?: boolean }) {
   const pct = max > 0 ? Math.min(value / max, 1) : 0;
   const r = 38;
   const circ = 2 * Math.PI * r;
@@ -45,12 +45,14 @@ function CircularGauge({ value, max, label }: { value: number; max: number; labe
           animate={{ strokeDashoffset: offset }}
           transition={{ duration: 1.2, ease: 'easeOut' }}
         />
-        <text x="48" y="44" textAnchor="middle" fill="var(--p-primary)" fontSize="18" fontWeight="bold" fontFamily="Inter, sans-serif">
+        <text x="48" y={hideMax ? 52 : 44} textAnchor="middle" fill="var(--p-primary)" fontSize="18" fontWeight="bold" fontFamily="Inter, sans-serif">
           {value}
         </text>
-        <text x="48" y="60" textAnchor="middle" fill="var(--p-text-60)" fontSize="9" fontWeight="600">
-          / {max}
-        </text>
+        {!hideMax && (
+          <text x="48" y="60" textAnchor="middle" fill="var(--p-text-60)" fontSize="9" fontWeight="600">
+            / {max}
+          </text>
+        )}
       </svg>
       <span className="text-xs font-medium" style={{ color: 'var(--p-text-65)' }}>{label}</span>
     </div>
@@ -293,52 +295,51 @@ export default function HifzSuiviPage() {
               </motion.button>
             )}
 
-            {/* ═══ SPLIT DASHBOARD ═══ */}
-            <div className="grid grid-cols-1 gap-3">
-              {/* Programme du jour (Hifz) */}
-              {nextPoint && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.05 }}
-                >
-                  <Link to="/hifz" className="block">
+            {/* ═══ DUAL CIRCLES ═══ */}
+            <div className="grid grid-cols-2 gap-4">
+              {/* Programme du jour */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.05 }}
+              >
+                <Link to="/hifz" className="block">
+                  <div
+                    className="w-full aspect-square rounded-full flex flex-col items-center justify-center text-center p-4"
+                    style={{
+                      background: 'linear-gradient(145deg, var(--p-card), var(--p-card-active))',
+                      border: '2px solid rgba(16, 185, 129, 0.3)',
+                      boxShadow: '0 4px 20px rgba(16, 185, 129, 0.1)',
+                    }}
+                  >
                     <div
-                      className="rounded-2xl p-5"
-                      style={{
-                        background: 'var(--p-card-active)',
-                        border: '1px solid var(--p-border)',
-                      }}
+                      className="w-10 h-10 rounded-full flex items-center justify-center mb-2"
+                      style={{ background: 'linear-gradient(135deg, #065F46, #10B981)', boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)' }}
                     >
-                      <div className="flex items-center gap-3 mb-3">
-                      <div
-                          className="w-10 h-10 rounded-xl flex items-center justify-center"
-                          style={{ background: 'linear-gradient(135deg, #065F46, #10B981)', boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)' }}
-                        >
-                          <BookOpen className="h-5 w-5 text-white" />
-                        </div>
-                        <div>
-                          <h3 className="text-sm font-bold" style={{ color: 'var(--p-text)' }}>Programme du jour</h3>
-                          <p className="text-[10px] font-medium uppercase tracking-wider" style={{ color: 'var(--p-text-60)' }}>Nouvelle mémorisation</p>
-                        </div>
-                      </div>
-                      <div
-                        className="rounded-xl px-4 py-3"
-                        style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)' }}
-                      >
-                        <p className="text-sm font-semibold" style={{ color: 'var(--p-primary)' }}>
-                          {nextPoint.surahName}
-                        </p>
-                        <p className="text-xs font-medium" style={{ color: 'var(--p-text-60)' }}>
-                          Versets {nextPoint.startVerse} → {nextPoint.endVerse}
-                        </p>
-                      </div>
+                      <BookOpen className="h-5 w-5 text-white" />
                     </div>
-                  </Link>
-                </motion.div>
-              )}
+                    <span className="text-[10px] font-bold uppercase tracking-wider mb-1" style={{ color: 'var(--p-text-60)' }}>
+                      Programme
+                    </span>
+                    {nextPoint ? (
+                      <>
+                        <span className="text-xs font-semibold leading-tight" style={{ color: 'var(--p-primary)' }}>
+                          {nextPoint.surahName}
+                        </span>
+                        <span className="text-[10px] font-medium" style={{ color: 'var(--p-text-60)' }}>
+                          v. {nextPoint.startVerse} → {nextPoint.endVerse}
+                        </span>
+                      </>
+                    ) : (
+                      <span className="text-[10px] font-medium" style={{ color: 'var(--p-text-60)' }}>
+                        Aucun pour l'instant
+                      </span>
+                    )}
+                  </div>
+                </Link>
+              </motion.div>
 
-              {/* Révision du jour (Acquis) */}
+              {/* Révision du jour */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -346,51 +347,35 @@ export default function HifzSuiviPage() {
               >
                 <Link to="/muraja" className="block">
                   <div
-                    className="rounded-2xl p-5"
+                    className="w-full aspect-square rounded-full flex flex-col items-center justify-center text-center p-4"
                     style={{
-                      background: 'var(--p-card)',
-                      border: '1px solid var(--p-border)',
-                      boxShadow: 'var(--p-card-shadow)',
+                      background: 'linear-gradient(145deg, var(--p-card), var(--p-card-active))',
+                      border: '2px solid rgba(212, 175, 55, 0.3)',
+                      boxShadow: '0 4px 20px rgba(212, 175, 55, 0.1)',
                     }}
                   >
-                    <div className="flex items-center gap-3 mb-3">
-                      <div
-                        className="w-10 h-10 rounded-xl flex items-center justify-center"
-                        style={{ background: 'linear-gradient(135deg, #B8960C, #D4AF37)', boxShadow: '0 4px 12px rgba(212, 175, 55, 0.3)' }}
-                      >
-                        <RefreshCw className="h-5 w-5 text-white" />
-                      </div>
-                      <div>
-                        <h3 className="text-sm font-bold" style={{ color: 'var(--p-text)' }}>Révision du jour</h3>
-                        <p className="text-[10px] font-medium uppercase tracking-wider" style={{ color: 'var(--p-text-60)' }}>Acquis à consolider</p>
-                      </div>
+                    <div
+                      className="w-10 h-10 rounded-full flex items-center justify-center mb-2"
+                      style={{ background: 'linear-gradient(135deg, #B8960C, #D4AF37)', boxShadow: '0 4px 12px rgba(212, 175, 55, 0.3)' }}
+                    >
+                      <RefreshCw className="h-5 w-5 text-white" />
                     </div>
+                    <span className="text-[10px] font-bold uppercase tracking-wider mb-1" style={{ color: 'var(--p-text-60)' }}>
+                      Révision
+                    </span>
                     {todayRevisions.length > 0 ? (
-                      <div className="space-y-1.5">
-                        {todayRevisions.slice(0, 4).map((rev, i) => {
-                          const surah = SURAHS.find(s => s.number === rev.surah_number);
-                          return (
-                            <div
-                              key={i}
-                              className="rounded-lg px-3 py-2 flex items-center justify-between"
-                              style={{ background: 'var(--p-card-active)', border: '1px solid var(--p-border)' }}
-                            >
-                              <span className="text-xs font-semibold" style={{ color: 'var(--p-text)' }}>{surah?.name || `Sourate ${rev.surah_number}`}</span>
-                              <span className="text-[10px] font-medium" style={{ color: 'var(--p-text-60)' }}>v.{rev.verse_start}-{rev.verse_end}</span>
-                            </div>
-                          );
-                        })}
-                        {todayRevisions.length > 4 && (
-                          <p className="text-[10px] font-medium text-center" style={{ color: 'var(--p-text-60)' }}>+{todayRevisions.length - 4} autres portions</p>
-                        )}
-                      </div>
+                      <>
+                        <span className="text-lg font-bold" style={{ color: 'var(--p-primary)' }}>
+                          {todayRevisions.length}
+                        </span>
+                        <span className="text-[10px] font-medium" style={{ color: 'var(--p-text-60)' }}>
+                          portion{todayRevisions.length > 1 ? 's' : ''} à réviser
+                        </span>
+                      </>
                     ) : (
-                      <div
-                        className="rounded-xl px-4 py-3 text-center"
-                        style={{ background: 'var(--p-card-active)' }}
-                      >
-                        <p className="text-xs font-medium" style={{ color: 'var(--p-text-60)' }}>Aucune révision prévue aujourd'hui ✨</p>
-                      </div>
+                      <span className="text-[10px] font-medium" style={{ color: 'var(--p-text-60)' }}>
+                        Aucune révision ✨
+                      </span>
                     )}
                   </div>
                 </Link>
@@ -417,7 +402,7 @@ export default function HifzSuiviPage() {
                 className="rounded-2xl p-3 flex flex-col items-center"
                 style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', boxShadow: 'var(--p-card-shadow)' }}
               >
-                <CircularGauge value={totalVerses} max={6236} label="Versets ancrés" />
+                <CircularGauge value={totalVerses} max={6236} label="Versets ancrés" hideMax />
               </motion.div>
 
               <motion.div

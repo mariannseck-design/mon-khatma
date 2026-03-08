@@ -1,41 +1,21 @@
 
 
-## Plan : Nouvelle disposition en 2 cercles pour Programme & Révision + masquer le 6236
+# Diagnostic : 404 sur /quran-reader
 
-### Concept
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-Remplacer les deux cartes rectangulaires (Programme du jour + Révision du jour) par **deux cercles côte à côte** dans un `grid-cols-2`. Chaque cercle est cliquable et redirige vers la page correspondante.
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-### Changements dans `src/pages/HifzSuiviPage.tsx`
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-**1. Remplacer la section "SPLIT DASHBOARD" (lignes 296-398)** par deux cercles côte à côte :
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-```text
-┌─────────────────────────────────┐
-│  [🟢 Cercle]    [🟡 Cercle]    │
-│  Programme       Révision       │
-│  du jour         du jour        │
-│                                 │
-│  Sourate X       3 portions     │
-│  v. 1→5          à réviser      │
-│  ───────>        ───────>       │
-└─────────────────────────────────┘
-```
-
-- Cercle gauche (vert, lien `/hifz`) : icone BookOpen, nom de sourate + versets
-- Cercle droit (doré, lien `/muraja`) : icone RefreshCw, nombre de portions à réviser ou "Aucune"
-- Chaque cercle = `div` rond avec border, gradient subtil, contenu centré
-
-**2. Masquer le "/6236" dans CircularGauge (ligne 51-53)** :
-
-Modifier le composant `CircularGauge` pour accepter un prop `hideMax` optionnel. Quand `hideMax` est true, ne pas afficher la ligne `/ {max}`. Passer `hideMax={true}` pour la jauge "Versets ancrés".
-
-Alternativement, simplement retirer le texte `/ {max}` de la jauge des versets et afficher juste le nombre de versets ancrés.
-
-### Détails techniques
-
-- Les deux cercles utilisent `w-36 h-36 rounded-full` avec un fond card + border
-- Contenu centré avec `flex flex-col items-center justify-center`
-- Animation framer-motion identique (fade + slide up)
-- Les liens restent les mêmes (`/hifz` et `/muraja`)
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
