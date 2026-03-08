@@ -651,7 +651,7 @@ function PagesTab({ intervals, onAdd, onRemove, onUpdate }: {
     <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}
       className="space-y-3">
       <p className="text-xs text-white/50 leading-relaxed">
-        Indiquez les plages de pages du Mushaf que vous avez mémorisées (1 à 604).
+        Indiquez les pages que vous avez mémorisées.
       </p>
 
       {intervals.map((interval, idx) => (
