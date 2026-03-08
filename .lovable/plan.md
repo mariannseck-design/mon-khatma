@@ -1,19 +1,21 @@
 
 
-## Supprimer la carte "Tu fais partie du Cercle" après 48h
+# Diagnostic : 404 sur /quran-reader
 
-### Changement — `src/pages/CerclePage.tsx`
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-La carte de bienvenue (avec le check vert) ne s'affiche que si `membership.joined_at` date de moins de 48h. Après 48h, la carte disparaît complètement pour tous les membres.
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-**Logique :**
-```
-const isNewMember = membership && 
-  (Date.now() - new Date(membership.joined_at).getTime()) < 48 * 60 * 60 * 1000;
-```
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-- Si `isNewMember` → afficher la carte "Tu fais partie du Cercle!"
-- Sinon → ne rien afficher à la place (les sections d'échange s'affichent directement)
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-Il faut aussi ajouter `joined_at` à l'interface `Membership` locale (le champ existe déjà en base).
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
