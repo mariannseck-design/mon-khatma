@@ -275,9 +275,15 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
                 exit={{ height: 0, opacity: 0 }}
                 transition={{ duration: 0.2 }}
               >
-                <p className="text-xs leading-relaxed italic text-center px-4 pb-3" style={{ color: 'rgba(255,255,255,0.6)' }}>
+                <p className="text-xs leading-relaxed italic text-center px-4 pb-2" style={{ color: 'rgba(255,255,255,0.6)' }}>
                   « Si vous éprouvez le moindre doute lors de la récitation, c'est le signe que l'ancrage n'est pas encore solide. Regardez le texte, puis recommencez votre série de 3 à zéro. Cette rigueur est le secret d'une mémoire inaltérable. »
                 </p>
+                <div className="flex items-center justify-center gap-1.5 pb-3">
+                  <Lock className="h-2.5 w-2.5" style={{ color: 'rgba(255,255,255,0.3)' }} />
+                  <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.3)' }}>
+                    Tes enregistrements restent sur ton appareil et sont supprimés automatiquement
+                  </p>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
