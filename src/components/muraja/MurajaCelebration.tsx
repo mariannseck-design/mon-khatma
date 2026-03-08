@@ -1,6 +1,31 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { Star, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useMemo } from 'react';
+
+const CONFETTI_COLORS = ['#D4AF37', '#065F46', '#6EE7B7', '#FBBF24', '#ffffff', '#34D399'];
+
+interface ConfettiPiece {
+  id: number;
+  x: number;
+  color: string;
+  size: number;
+  delay: number;
+  rotation: number;
+  xDrift: number;
+}
+
+function generateConfetti(count = 30): ConfettiPiece[] {
+  return Array.from({ length: count }, (_, i) => ({
+    id: i,
+    x: Math.random() * 100,
+    color: CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)],
+    size: Math.random() * 8 + 4,
+    delay: Math.random() * 0.8,
+    rotation: Math.random() * 360,
+    xDrift: (Math.random() - 0.5) * 80,
+  }));
+}
 
 const DAILY_MESSAGES = [
   "MashaAllah, qu'Allah (عز وجل) bénisse ta persévérance ! 🌟",
@@ -26,6 +51,7 @@ interface MurajaCelebrationProps {
 export default function MurajaCelebration({ type, isOpen, onClose }: MurajaCelebrationProps) {
   const messages = type === 'cycle' ? CYCLE_MESSAGES : DAILY_MESSAGES;
   const message = messages[Math.floor(Math.random() * messages.length)];
+  const confetti = useMemo(() => generateConfetti(30), [isOpen]);
 
   return (
     <AnimatePresence>
@@ -38,6 +64,35 @@ export default function MurajaCelebration({ type, isOpen, onClose }: MurajaCeleb
           style={{ background: 'rgba(0,0,0,0.6)' }}
           onClick={onClose}
         >
+          {/* Confetti */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            {confetti.map((piece) => (
+              <motion.div
+                key={piece.id}
+                className="absolute"
+                style={{
+                  left: `${piece.x}%`,
+                  top: -10,
+                  width: piece.size,
+                  height: piece.size * 1.4,
+                  backgroundColor: piece.color,
+                  borderRadius: piece.size > 8 ? '50%' : '2px',
+                }}
+                initial={{ y: -20, x: 0, rotate: 0, opacity: 1 }}
+                animate={{
+                  y: [0, window.innerHeight + 40],
+                  x: [0, piece.xDrift, piece.xDrift * 0.5],
+                  rotate: [0, piece.rotation, piece.rotation * 2],
+                  opacity: [1, 1, 0],
+                }}
+                transition={{
+                  duration: 2.5 + Math.random(),
+                  delay: piece.delay,
+                  ease: 'easeIn',
+                }}
+              />
+            ))}
+          </div>
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
