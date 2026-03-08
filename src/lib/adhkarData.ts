@@ -1199,6 +1199,7 @@ export const HAJJ_DUAS: DhikrItem[] = [
   },
   {
     title: "Du'â du retour de voyage",
+    readOnly: true,
     arabic: "اللَّهُ أَكْبَرُ، اللَّهُ أَكْبَرُ، اللَّهُ أَكْبَرُ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، آيِبُونَ تَائِبُونَ عَابِدُونَ لِرَبِّنَا حَامِدُونَ",
     phonetic: "Allâhu Akbar (3 fois). Lâ ilâha illâ-llâhu wahdahu lâ sharîka lah, lahu-l-mulku wa lahu-l-hamdu wa huwa 'alâ kulli shay'in qadîr. Âyibûna tâ'ibûna 'âbidûna li-Rabbinâ hâmidûn.",
     french: "Allah (عز وجل) est le plus Grand (3 fois). Nulle divinité à part Allah (عز وجل), Seul sans associé. À Lui la royauté, à Lui la louange. Il est Omnipotent. Nous voilà de retour, repentants, adorateurs de notre Seigneur et Le louant. (Rapporté par Muslim)",
