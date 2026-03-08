@@ -181,10 +181,68 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
     setValidated(false);
   };
 
+  /* ── Golden particles ── */
+  const particles = useRef(
+    Array.from({ length: 40 }, (_, i) => ({
+      id: i,
+      x: Math.random() * 100,
+      delay: Math.random() * 1.5,
+      duration: 2 + Math.random() * 2,
+      size: 4 + Math.random() * 8,
+      drift: (Math.random() - 0.5) * 60,
+      opacity: 0.4 + Math.random() * 0.6,
+    }))
+  ).current;
+
   /* ── Validated state ── */
   if (validated && !bonusMode) {
     return (
       <HifzStepWrapper stepNumber={4} stepTitle="Validation" onBack={onBack} onPause={onPause}>
+        {/* Golden particles overlay */}
+        <div className="fixed inset-0 pointer-events-none overflow-hidden z-50">
+          {particles.map(p => (
+            <motion.div
+              key={p.id}
+              initial={{ y: -20, x: `${p.x}vw`, opacity: 0, scale: 0 }}
+              animate={{
+                y: ['0vh', '110vh'],
+                x: [`${p.x}vw`, `${p.x + p.drift / 100 * 100}vw`],
+                opacity: [0, p.opacity, p.opacity, 0],
+                scale: [0, 1, 1, 0.5],
+                rotate: [0, 360],
+              }}
+              transition={{
+                duration: p.duration,
+                delay: p.delay,
+                ease: 'easeOut',
+              }}
+              className="absolute rounded-full"
+              style={{
+                width: p.size,
+                height: p.size,
+                background: `radial-gradient(circle, #f0d060, #d4af37)`,
+                boxShadow: '0 0 6px rgba(212,175,55,0.5)',
+              }}
+            />
+          ))}
+          {/* Sparkle stars */}
+          {[...Array(8)].map((_, i) => (
+            <motion.div
+              key={`star-${i}`}
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: [0, 1, 0], scale: [0, 1.2, 0] }}
+              transition={{ duration: 1, delay: 0.3 + i * 0.15, ease: 'easeOut' }}
+              className="absolute text-lg"
+              style={{
+                left: `${15 + Math.random() * 70}%`,
+                top: `${10 + Math.random() * 40}%`,
+              }}
+            >
+              ✦
+            </motion.div>
+          ))}
+        </div>
+
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
