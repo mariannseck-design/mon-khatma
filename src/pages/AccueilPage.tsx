@@ -74,6 +74,7 @@ export default function AccueilPage() {
   const [readingGoal, setReadingGoal] = useState<{ first_name: string; daily_pages: number } | null>(null);
   const [activeHifzSession, setActiveHifzSession] = useState<{ surahName: string; stepName: string } | null>(null);
   const [pendingReviews, setPendingReviews] = useState(0);
+  const [hasStartedHifz, setHasStartedHifz] = useState(false);
 
   const STEP_NAMES = ['Intention', 'Réveil', 'Imprégnation', 'Ancrage (Tikrar)', 'Validation'];
 
@@ -98,6 +99,13 @@ export default function AccueilPage() {
         .eq('user_id', user.id)
         .lte('next_review_date', today);
       setPendingReviews(count || 0);
+
+      // Check if user has any memorized verses at all
+      const { count: totalCount } = await supabase
+        .from('hifz_memorized_verses')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id);
+      setHasStartedHifz((totalCount || 0) > 0);
     } catch {
       // ignore
     }
@@ -202,13 +210,18 @@ export default function AccueilPage() {
 
         {/* Greeting */}
         <motion.div className="text-center pt-2 pb-2" variants={itemVariants}>
+          {displayName && (
+            <p className="text-foreground font-semibold text-lg">Bonjour {displayName} 🤍</p>
+          )}
           <p className="text-muted-foreground text-base mt-1">{greeting()}</p>
         </motion.div>
 
-        {/* Citation du jour */}
-        <motion.div variants={itemVariants}>
-          <DailyQuote />
-        </motion.div>
+        {/* Citation du jour — uniquement si l'utilisateur a commencé la mémorisation */}
+        {hasStartedHifz && (
+          <motion.div variants={itemVariants}>
+            <DailyQuote />
+          </motion.div>
+        )}
 
         {/* EN-TÊTE FONDATEUR — Pages lues + Ma Tillawah fusionnées */}
         <motion.div variants={itemVariants}>
