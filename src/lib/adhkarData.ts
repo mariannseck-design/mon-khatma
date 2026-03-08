@@ -889,7 +889,8 @@ export const LOUANGES_ISTIGHFAR: DhikrItem[] = [
     title: 'Lâ ilâha illa-llâh',
     arabic: 'لَا إِلَٰهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ',
     phonetic: "Lâ ilâha illa-llâhu wahdahu lâ sharîka lah, lahu-l-mulku wa lahu-l-hamdu wa huwa 'alâ kulli shay'in Qadîr.",
-    french: "Il n'y a de divinité digne d'adoration qu'Allah, Seul sans associé. À Lui la royauté, à Lui la louange et Il est Omnipotent. Quiconque dit cela 100 fois par jour a la récompense de l'affranchissement de 10 esclaves.",
+    french: "Il n'y a de divinité digne d'adoration qu'Allah, Seul sans associé. À Lui la royauté, à Lui la louange et Il est Omnipotent.",
+    fadl: 'Quiconque le dit 100 fois par jour : récompense de 10 affranchissements, 100 bonnes actions, 100 péchés effacés, protection du diable. (Al-Bukhârî, Muslim)',
     target: 10,
   },
   {
