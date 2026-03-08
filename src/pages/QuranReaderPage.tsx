@@ -39,9 +39,9 @@ export default function QuranReaderPage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const retriesRef = useRef(0);
 
-  // Text mode disabled for now — force image mode
+  // Text mode now uses local bundled data — no network dependency
   const [viewMode, setViewMode] = useState<'image' | 'text'>('image');
-  const textModeDisabled = true;
+  const textModeDisabled = false;
   const [nightMode, setNightMode] = useState(() => {
     return localStorage.getItem('quran_night_mode') === 'true';
   });
