@@ -1127,6 +1127,7 @@ export const HAJJ_DUAS: DhikrItem[] = [
   },
   {
     title: "Entre les deux coins (Tawâf)",
+    readOnly: true,
     arabic: "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
     phonetic: "Rabbanâ âtinâ fî d-dunyâ hasanatan wa fî-l-âkhirati hasanatan wa qinâ 'adhâba n-nâr.",
     french: "Seigneur ! Accorde-nous une belle part dans ce monde, et une belle part dans l'au-delà, et protège-nous du châtiment du Feu. (Al-Baqarah, 201)",
