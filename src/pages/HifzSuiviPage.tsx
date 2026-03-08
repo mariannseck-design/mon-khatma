@@ -118,7 +118,10 @@ export default function HifzSuiviPage() {
     if (streakData) {
       setStreak({ current: streakData.current_streak, longest: streakData.longest_streak, tours: streakData.total_tours_completed });
     }
-    setTotalVerses(count || 0);
+    const realTotalVerses = ((count as any) || []).reduce(
+      (sum: number, v: any) => sum + (v.verse_end - v.verse_start + 1), 0
+    );
+    setTotalVerses(realTotalVerses);
 
     if (goalData) {
       setGoal(goalData as HifzGoal);
