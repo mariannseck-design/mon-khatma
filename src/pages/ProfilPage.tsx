@@ -7,10 +7,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { User, Mail, Save } from 'lucide-react';
+import { User, Mail, Save, Bell, ChevronRight } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { Switch } from '@/components/ui/switch';
 import { useDevMode } from '@/hooks/useDevMode';
+import { useNavigate } from 'react-router-dom';
 
 export default function ProfilPage() {
   const { user, isAdmin } = useAuth();
