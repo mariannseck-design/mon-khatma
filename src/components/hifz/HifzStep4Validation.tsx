@@ -388,6 +388,13 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
             <p className="text-xs" style={{ color: 'rgba(255,255,255,0.35)' }}>
               {isRecording ? 'Appuie pour arrêter' : 'Appuie pour enregistrer'}
             </p>
+            {/* Privacy note */}
+            <div className="flex items-center justify-center gap-1.5 pt-1">
+              <Lock className="h-3 w-3" style={{ color: 'rgba(255,255,255,0.25)' }} />
+              <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.25)' }}>
+                Tes enregistrements restent sur ton appareil et sont supprimés automatiquement
+              </p>
+            </div>
           </div>
         ) : (
           <div className="space-y-4">
@@ -408,7 +415,7 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
             <div className="grid grid-cols-2 gap-3">
               <motion.button
                 whileTap={{ scale: 0.95 }}
-                onClick={handleSuccess}
+                onClick={bonusMode ? handleBonusSuccess : handleSuccess}
                 className="rounded-xl py-4 flex items-center justify-center gap-2 font-semibold text-sm"
                 style={{ background: 'rgba(6,95,70,0.15)', color: '#34D399', border: '1px solid rgba(6,95,70,0.3)' }}
               >
@@ -417,7 +424,7 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
               </motion.button>
               <motion.button
                 whileTap={{ scale: 0.95 }}
-                onClick={handleError}
+                onClick={bonusMode ? handleBonusError : handleError}
                 className="rounded-xl py-4 flex items-center justify-center gap-2 font-semibold text-sm"
                 style={{ background: 'rgba(220,50,50,0.1)', color: '#dc6464', border: '1px solid rgba(220,50,50,0.2)' }}
               >
@@ -425,6 +432,26 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
                 Erreur
               </motion.button>
             </div>
+
+            {/* Privacy note */}
+            <div className="flex items-center justify-center gap-1.5">
+              <Lock className="h-3 w-3" style={{ color: 'rgba(255,255,255,0.25)' }} />
+              <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.25)' }}>
+                Tes enregistrements restent sur ton appareil et sont supprimés automatiquement
+              </p>
+            </div>
+
+            {/* Bonus mode: button to finalize */}
+            {bonusMode && (
+              <motion.button
+                whileTap={{ scale: 0.97 }}
+                onClick={() => { setValidated(true); setBonusMode(false); }}
+                className="w-full rounded-xl py-3 font-semibold text-sm"
+                style={{ background: '#065F46', color: '#FDFBF7' }}
+              >
+                Valider mon Hifz ✨ ({3 + bonusCount} récitations)
+              </motion.button>
+            )}
           </div>
         )}
       </div>
