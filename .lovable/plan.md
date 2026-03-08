@@ -1,20 +1,21 @@
 
 
-## Plan: Ajouter une estimation de date d'arrivée du premier bloc en Muraja'a
+# Diagnostic : 404 sur /quran-reader
 
-### Approche
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-1. **`MurjaPage.tsx`** : Calculer la date estimée du premier bloc qui graduera de liaison → tour. On cherche le `rabtVerses` avec la `liaison_start_date` la plus ancienne, on ajoute 30 jours, et on passe cette date en prop au `MurajaChecklist` pour la section tour.
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-2. **`MurajaChecklist.tsx`** : 
-   - Ajouter une prop optionnelle `firstArrivalDate?: string`
-   - Dans l'état vide du tour, si cette date existe, afficher un message du type : *"Premier bloc estimé le [date formatée]"* sous le message explicatif existant, avec une icône `CalendarDays`.
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-### Calcul
-```
-earliestLiaisonDate = min(rabtVerses.map(v => v.liaison_start_date))
-estimatedArrival = earliestLiaisonDate + 30 jours
-```
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-Si aucun bloc en liaison n'existe non plus, on n'affiche pas d'estimation.
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
