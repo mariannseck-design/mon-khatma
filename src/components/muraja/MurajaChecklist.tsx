@@ -9,6 +9,7 @@ interface ChecklistItem {
   verse_start: number;
   verse_end: number;
   sm2_interval?: number;
+  liaison_start_date?: string | null;
 }
 
 interface MurajaChecklistProps {
@@ -26,6 +27,20 @@ const RATINGS = [
   { key: 'good', label: 'Moyen', quality: 4, icon: ThumbsUp, colorVar: '--p-medium' },
   { key: 'easy', label: 'Facile', quality: 5, icon: Crown, colorVar: '--p-primary' },
 ] as const;
+
+function humanizeInterval(days?: number): string {
+  if (days == null) return '';
+  if (days <= 1) return 'À réviser aujourd\'hui';
+  if (days === 2) return 'Prévu demain';
+  return `Dans ${days} jours`;
+}
+
+function getLiaisonDaysPassed(startDate?: string | null): number {
+  if (!startDate) return 0;
+  const start = new Date(startDate + 'T00:00:00');
+  const now = new Date();
+  return Math.min(30, Math.max(0, Math.floor((now.getTime() - start.getTime()) / 86400000)));
+}
 
 export default function MurajaChecklist({
   items,
@@ -60,7 +75,7 @@ export default function MurajaChecklist({
   if (items.length === 0) {
     return (
       <div
-        className="rounded-2xl p-5 text-center"
+        className="rounded-2xl p-6 text-center"
         style={{
           background: 'var(--p-card)',
           border: '1px solid var(--p-border)',
@@ -78,11 +93,11 @@ export default function MurajaChecklist({
   }
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2.5">
       {/* Cap message */}
       {isCapActive && totalDue && (
         <div
-          className="flex items-start gap-2 rounded-xl px-3 py-2 text-xs"
+          className="flex items-start gap-2 rounded-xl px-4 py-2.5 text-xs"
           style={{
             background: 'rgba(212,175,55,0.08)',
             border: '1px solid rgba(212,175,55,0.25)',
@@ -97,13 +112,14 @@ export default function MurajaChecklist({
       {items.map((item) => {
         const isChecked = checkedIds.includes(item.id);
         const isRating = ratingFor === item.id;
+        const daysPassed = section === 'rabt' ? getLiaisonDaysPassed(item.liaison_start_date) : 0;
 
         return (
           <div key={item.id}>
             <motion.button
               onClick={() => handleCheck(item.id)}
               disabled={isChecked}
-              className="w-full flex items-center gap-3 rounded-xl px-4 py-3 text-left transition-all"
+              className="w-full flex items-center gap-3 rounded-xl px-4 py-3.5 text-left transition-all"
               style={{
                 background: isChecked ? 'var(--p-card-active)' : 'var(--p-card)',
                 border: `1px solid ${isChecked ? 'var(--p-accent)' : 'var(--p-border)'}`,
@@ -137,9 +153,25 @@ export default function MurajaChecklist({
                 <p className="text-xs font-medium" style={{ color: 'var(--p-text-60)' }}>
                   v. {item.verse_start} → {item.verse_end}
                   {section === 'tour' && item.sm2_interval != null && (
-                    <span className="ml-2 opacity-60">· {item.sm2_interval}j</span>
+                    <span className="ml-2 opacity-80">· {humanizeInterval(item.sm2_interval)}</span>
+                  )}
+                  {section === 'rabt' && (
+                    <span className="ml-2 opacity-80">· Jour {daysPassed} / 30</span>
                   )}
                 </p>
+
+                {/* Mini progress bar for rabt */}
+                {section === 'rabt' && item.liaison_start_date && (
+                  <div className="w-full h-1.5 rounded-full overflow-hidden mt-1.5" style={{ background: '#E6F0ED' }}>
+                    <motion.div
+                      className="h-full rounded-full"
+                      style={{ background: 'linear-gradient(90deg, #065F46, #10B981)' }}
+                      initial={{ width: 0 }}
+                      animate={{ width: `${(daysPassed / 30) * 100}%` }}
+                      transition={{ duration: 0.6 }}
+                    />
+                  </div>
+                )}
               </div>
             </motion.button>
 
@@ -152,12 +184,12 @@ export default function MurajaChecklist({
                   exit={{ height: 0, opacity: 0 }}
                   className="overflow-hidden"
                 >
-                  <div className="flex gap-2 px-2 py-2">
+                  <div className="flex gap-2 px-2 py-2.5">
                     {RATINGS.map(({ key, label, quality, icon: Icon, colorVar }) => (
                       <button
                         key={key}
                         onClick={() => handleRate(quality, key)}
-                        className="flex-1 flex items-center justify-center gap-1.5 rounded-lg px-2 py-2 text-xs font-bold transition-all"
+                        className="flex-1 flex items-center justify-center gap-1.5 rounded-lg px-2 py-2.5 text-xs font-bold transition-all"
                         style={{
                           background: `color-mix(in srgb, var(${colorVar}) 12%, transparent)`,
                           color: `var(${colorVar})`,

@@ -433,9 +433,11 @@ export default function MurjaPage() {
                       }}>
                         {s.status === 'liaison' ? 'Liaison' : 'Tour'}
                       </span>
-                      <span className="flex items-center gap-0.5">
+                     <span className="flex items-center gap-0.5">
                         <CalendarDays className="h-2.5 w-2.5" />
-                        {formatDate(s.nextReview)}
+                        {s.status === 'liaison'
+                          ? `Ancré le ${formatDate(s.nextReview)}`
+                          : `Prochaine : ${formatDate(s.nextReview)}`}
                       </span>
                     </div>
                   </div>
