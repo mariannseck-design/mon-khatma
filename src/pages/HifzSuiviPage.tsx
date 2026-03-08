@@ -373,7 +373,7 @@ export default function HifzSuiviPage() {
                           );
                         })}
                         {todayRevisions.length > 4 && (
-                          <p className="text-[10px] text-center" style={{ color: 'rgba(28,36,33,0.4)' }}>+{todayRevisions.length - 4} autres portions</p>
+                          <p className="text-[10px] font-medium text-center" style={{ color: 'rgba(28,36,33,0.6)' }}>+{todayRevisions.length - 4} autres portions</p>
                         )}
                       </div>
                     ) : (
