@@ -432,3 +432,114 @@ export const EVENING_ADHKAR: DhikrItem[] = [
     target: 100,
   },
 ];
+
+// ═══════════════════════════════════════════════════════════
+//  أذكار بعد الصلاة — Adhkâr après la prière
+// ═══════════════════════════════════════════════════════════
+export const POST_PRAYER_ADHKAR: DhikrItem[] = [
+  {
+    title: 'Istighfâr (3×)',
+    arabic: 'أَسْتَغْفِرُ اللهَ',
+    phonetic: "Astaghfiru-llâh.",
+    french: "Je demande pardon à Allah (عز وجل).",
+    target: 3,
+  },
+  {
+    title: 'Allâhumma anta s-Salâm',
+    arabic: 'اللَّهُمَّ أَنْتَ السَّلَامُ وَمِنْكَ السَّلَامُ تَبَارَكْتَ يَا ذَا الْجَلَالِ وَالْإِكْرَامِ',
+    phonetic: "Allâhumma anta s-Salâm, wa minka s-salâm, tabârakta yâ dhâ-l-Jalâli wa-l-Ikrâm.",
+    french: "Ô Allah (عز وجل), Tu es la Paix et de Toi vient la paix. Béni sois-Tu, ô Toi qui es pourvu de Majesté et de Munificence.",
+    target: 1,
+  },
+  {
+    title: 'Lâ ilâha illa-llâh wahdahu',
+    arabic: 'لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، اللَّهُمَّ لَا مَانِعَ لِمَا أَعْطَيْتَ وَلَا مُعْطِيَ لِمَا مَنَعْتَ وَلَا يَنْفَعُ ذَا الْجَدِّ مِنْكَ الْجَدُّ',
+    phonetic: "Lâ ilâha illa-llâhu wahdahu lâ sharîka lah, lahu-l-mulku wa lahu-l-hamd, wa huwa 'alâ kulli shay'in qadîr. Allâhumma lâ mâni'a limâ a'tayt, wa lâ mu'tiya limâ mana't, wa lâ yanfa'u dhâ-l-jaddi minka-l-jadd.",
+    french: "Il n'y a de divinité qu'Allah (عز وجل), Seul sans associé. À Lui la royauté, à Lui la louange et Il est Omnipotent. Ô Allah, nul ne peut empêcher ce que Tu donnes, et nul ne peut donner ce que Tu empêches, et la fortune d'aucun fortuné ne lui sera utile contre Toi.",
+    target: 1,
+  },
+  {
+    title: 'Lâ ilâha illa-llâh (après la prière)',
+    arabic: 'لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللهِ، لَا إِلَهَ إِلَّا اللهُ وَلَا نَعْبُدُ إِلَّا إِيَّاهُ، لَهُ النِّعْمَةُ وَلَهُ الْفَضْلُ وَلَهُ الثَّنَاءُ الْحَسَنُ، لَا إِلَهَ إِلَّا اللهُ مُخْلِصِينَ لَهُ الدِّينَ وَلَوْ كَرِهَ الْكَافِرُونَ',
+    phonetic: "Lâ ilâha illa-llâhu wahdahu lâ sharîka lah, lahu-l-mulku wa lahu-l-hamd, wa huwa 'alâ kulli shay'in qadîr. Lâ hawla wa lâ quwwata illâ bi-llâh. Lâ ilâha illa-llâh, wa lâ na'budu illâ iyyâh, lahu n-ni'matu wa lahu-l-fadl, wa lahu th-thanâ'u-l-hasan. Lâ ilâha illa-llâhu mukhlisîna lahu d-dîn wa law kariha-l-kâfirûn.",
+    french: "Il n'y a de divinité qu'Allah (عز وجل), Seul sans associé. À Lui la royauté, la louange et Il est Omnipotent. Il n'y a de force ni de puissance qu'en Allah. Il n'y a de divinité qu'Allah et nous n'adorons que Lui seul. À Lui le bienfait, la grâce et la belle louange. Il n'y a de divinité qu'Allah, en Lui vouant un culte exclusif, en dépit de l'aversion des mécréants.",
+    target: 1,
+  },
+  {
+    title: 'Âyat al-Kursî',
+    arabic: 'اللّهُ لاَ إِلَـهَ إِلاَّ هُوَ الْحَيُّ الْقَيُّومُ لاَ تَأْخُذُهُ سِنَةٌ وَلاَ نَوْمٌ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الأَرْضِ مَن ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلاَّ بِإِذْنِهِ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ وَلاَ يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلاَّ بِمَا شَاء وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالأَرْضَ وَلاَ يَؤُودُهُ حِفْظُهُمَا وَهُوَ الْعَلِيُّ الْعَظِيمُ',
+    phonetic: "Allâhu lâ ilâha illâ huwa-l-Hayyu-l-Qayyûm, lâ ta'khudhuhu sinatun wa lâ nawm, lahu mâ fî s-samâwâti wa mâ fî-l-ard, man dhâ-lladhî yashfa'u 'indahu illâ bi-idhnih, ya'lamu mâ bayna aydîhim wa mâ khalfahum wa lâ yuhîtûna bi-shay'in min 'ilmihi illâ bi-mâ shâ', wasi'a kursiyyuhu s-samâwâti wa-l-ard, wa lâ ya'ûduhu hifzuhumâ wa huwa-l-'Aliyyu-l-'Azîm.",
+    french: "Allah (عز وجل) ! Point de divinité à part Lui, le Vivant, Celui qui subsiste par Lui-même. Ni somnolence ni sommeil ne Le saisissent. À Lui appartient tout ce qui est dans les cieux et sur la terre. Qui peut intercéder auprès de Lui sans Sa permission ? Il connaît leur passé et leur futur. Et de Sa science, ils n'embrassent que ce qu'Il veut. Son Trône déborde les cieux et la terre, dont la garde ne Lui coûte aucune peine. Et Il est le Très Haut, le Très Grand.",
+    target: 1,
+  },
+  {
+    title: 'Sourate Al-Ikhlâs',
+    arabic: 'بِسْمِ اللهِ الرَّحْمنِ الرَّحِيم\nقُلْ هُوَ ٱللَّهُ أَحَدٌ ۝ ٱللَّهُ ٱلصَّمَدُ ۝ لَمْ يَلِدْ وَلَمْ يُولَدْ ۝ وَلَمْ يَكُن لَّهُۥ كُفُوًا أَحَدٌ',
+    phonetic: "Bismi-llâhi r-Rahmâni r-Rahîm. Qul huwa-llâhu Ahad. Allâhu s-Samad. Lam yalid wa lam yûlad. Wa lam yakun lahu kufuwan ahad.",
+    french: "Dis : «Il est Allah (عز وجل), Unique. Allah, Le Seul à être imploré pour ce que nous désirons. Il n'a jamais engendré, n'a pas été engendré non plus. Et nul n'est égal à Lui.»",
+    target: 1,
+  },
+  {
+    title: 'Sourate Al-Falaq',
+    arabic: 'بِسْمِ اللهِ الرَّحْمنِ الرَّحِيم\nقُلْ أَعُوذُ بِرَبِّ ٱلْفَلَقِ ۝ مِن شَرِّ مَا خَلَقَ ۝ وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ ۝ وَمِن شَرِّ ٱلنَّفَّٰثَٰتِ فِى ٱلْعُقَدِ ۝ وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ',
+    phonetic: "Bismi-llâhi r-Rahmâni r-Rahîm. Qul a'ûdhu bi-Rabbi-l-falaq. Min sharri mâ khalaq. Wa min sharri ghâsiqin idhâ waqab. Wa min sharri n-naffâthâti fî-l-'uqad. Wa min sharri hâsidin idhâ hasad.",
+    french: "Dis : «Je cherche protection auprès du Seigneur de l'aube naissante, contre le mal des êtres qu'Il a créés, contre le mal de l'obscurité quand elle s'approfondit, contre le mal de celles qui soufflent sur les nœuds, et contre le mal de l'envieux quand il envie.»",
+    target: 1,
+  },
+  {
+    title: 'Sourate An-Nâs',
+    arabic: 'بِسْمِ اللهِ الرَّحْمنِ الرَّحِيم\nقُلْ أَعُوذُ بِرَبِّ ٱلنَّاسِ ۝ مَلِكِ ٱلنَّاسِ ۝ إِلَٰهِ ٱلنَّاسِ ۝ مِن شَرِّ ٱلْوَسْوَاسِ ٱلْخَنَّاسِ ۝ ٱلَّذِى يُوَسْوِسُ فِى صُدُورِ ٱلنَّاسِ ۝ مِنَ ٱلْجِنَّةِ وَٱلنَّاسِ',
+    phonetic: "Bismi-llâhi r-Rahmâni r-Rahîm. Qul a'ûdhu bi-Rabbi n-nâs. Maliki n-nâs. Ilâhi n-nâs. Min sharri-l-waswâsi-l-khannâs. Alladhî yuwaswisu fî sudûri n-nâs. Mina-l-jinnati wa n-nâs.",
+    french: "Dis : «Je cherche protection auprès du Seigneur des hommes, le Souverain des hommes, Dieu des hommes, contre le mal du mauvais conseiller, furtif, qui souffle le mal dans les poitrines des hommes, qu'il soit djinn ou être humain.»",
+    target: 1,
+  },
+  {
+    title: 'Subhâna-llâh (33×)',
+    arabic: 'سُبْحَانَ اللهِ',
+    phonetic: "Subhâna-llâh.",
+    french: "Gloire à Allah (عز وجل).",
+    target: 33,
+  },
+  {
+    title: 'Al-hamdu li-llâh (33×)',
+    arabic: 'الْحَمْدُ لِلَّهِ',
+    phonetic: "Al-hamdu li-llâh.",
+    french: "Louange à Allah (عز وجل).",
+    target: 33,
+  },
+  {
+    title: 'Allâhu Akbar (33×)',
+    arabic: 'اللهُ أَكْبَرُ',
+    phonetic: "Allâhu Akbar.",
+    french: "Allah (عز وجل) est le Plus Grand.",
+    target: 33,
+  },
+  {
+    title: 'Compléter le centième (1×)',
+    arabic: 'لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ',
+    phonetic: "Lâ ilâha illa-llâhu wahdahu lâ sharîka lah, lahu-l-mulku wa lahu-l-hamd, wa huwa 'alâ kulli shay'in qadîr.",
+    french: "Il n'y a de divinité qu'Allah (عز وجل), Seul sans associé. À Lui la royauté, à Lui la louange et Il est Omnipotent. (Pour compléter le centième après 33+33+33)",
+    target: 1,
+  },
+  {
+    title: 'Invocation pour la protection',
+    arabic: 'اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ',
+    phonetic: "Allâhumma a'innî 'alâ dhikrika wa shukrika wa husni 'ibâdatik.",
+    french: "Ô Allah (عز وجل), aide-moi à T'évoquer, à Te remercier et à T'adorer de la meilleure manière.",
+    target: 1,
+  },
+  {
+    title: 'Protection contre le châtiment',
+    arabic: 'اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْجُبْنِ، وَأَعُوذُ بِكَ أَنْ أُرَدَّ إِلَى أَرْذَلِ الْعُمُرِ، وَأَعُوذُ بِكَ مِنْ فِتْنَةِ الدُّنْيَا، وَأَعُوذُ بِكَ مِنْ عَذَابِ الْقَبْرِ',
+    phonetic: "Allâhumma innî a'ûdhu bika mina-l-jubn, wa a'ûdhu bika an uradda ilâ ardhali-l-'umur, wa a'ûdhu bika min fitnati d-dunyâ, wa a'ûdhu bika min 'adhâbi-l-qabr.",
+    french: "Ô Allah (عز وجل), je cherche refuge auprès de Toi contre la lâcheté, contre le fait d'être ramené au plus vil âge, contre les tentations de ce bas monde et contre le châtiment de la tombe.",
+    target: 1,
+  },
+  {
+    title: 'Après Salat al-Fajr et al-Maghrib (10×)',
+    arabic: 'لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ يُحْيِي وَيُمِيتُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ',
+    phonetic: "Lâ ilâha illa-llâhu wahdahu lâ sharîka lah, lahu-l-mulku wa lahu-l-hamd, yuhyî wa yumît, wa huwa 'alâ kulli shay'in qadîr.",
+    french: "Il n'y a de divinité qu'Allah (عز وجل), Seul sans associé. À Lui la royauté, à Lui la louange. Il donne la vie et la mort et Il est Omnipotent. (Après Fajr et Maghrib)",
+    target: 10,
+  },
+];

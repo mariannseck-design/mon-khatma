@@ -21,6 +21,7 @@ const dhikrCards = [
 const CATEGORY_DATA: Record<string, { title: string; items: DhikrItem[] }> = {
   morning: { title: 'Zikr du matin', items: MORNING_ADHKAR },
   evening: { title: 'Zikr du soir', items: EVENING_ADHKAR },
+  prayer: { title: 'Après la prière', items: POST_PRAYER_ADHKAR },
 };
 
 const containerVariants = {
