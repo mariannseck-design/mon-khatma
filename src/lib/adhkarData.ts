@@ -73,6 +73,7 @@ export const MORNING_ADHKAR: DhikrItem[] = [
   {
     title: 'Reconnaissance des bienfaits',
     source: 'Abû Dâwûd n°5073',
+    fadl: 'Quiconque dit cela le matin a accompli le remerciement de sa journée, et quiconque le dit le soir a accompli le remerciement de sa nuit. (Abû Dâwûd)',
     arabic: 'اللّهُـمَّ ما أَصْبَـحَ بي مِـنْ نِعْـمَةٍ أَو بِأَحَـدٍ مِـنْ خَلْـقِك، فَمِـنْكَ وَحْـدَكَ لا شريكَ لَـك، فَلَـكَ الْحَمْـدُ وَلَـكَ الشُّكْـر',
     phonetic: "Allâhumma mâ asbaha bî min ni'matin aw bi-ahadin min khalqik, fa-minka wahdaka lâ sharîka lak, fa-laka-l-hamdu wa laka sh-shukr.",
     french: "Ô Allah, tout bienfait dont je jouis en ce matin, ou dont jouit l'une de Tes créatures, provient de Toi Seul, sans associé. À Toi la louange et à Toi la reconnaissance.",
