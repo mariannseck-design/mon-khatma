@@ -1,7 +1,8 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Check, ChevronLeft, ChevronRight, Minus, Plus, Info, ChevronDown } from 'lucide-react';
+import { ArrowLeft, Check, ChevronLeft, ChevronRight, Minus, Plus, Info, ChevronDown, Heart } from 'lucide-react';
 import DhikrCounter, { type DhikrItem } from './DhikrCounter';
+import { useDouaFavorites, makeDouaId } from '@/hooks/useDouaFavorites';
 
 const ARABIC_SIZES = ['1.3rem', '1.7rem', '2.2rem'];
 const ARABIC_LABELS = ['ا', 'ا', 'ا'];
