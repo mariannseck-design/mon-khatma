@@ -435,7 +435,7 @@ export default function MurjaPage() {
                       </span>
                      <span className="flex items-center gap-0.5">
                         <CalendarDays className="h-2.5 w-2.5" />
-                        {`Prochain palier le ${formatDate(s.nextReview)}`}
+                        {`Prochain palier le ${formatDate(s.nextReview)} à 00h`}
                       </span>
                     </div>
                   </div>
