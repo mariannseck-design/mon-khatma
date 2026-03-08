@@ -311,7 +311,7 @@ export default function HifzSuiviPage() {
                         </div>
                         <div>
                           <h3 className="text-sm font-bold" style={{ color: '#1C2421' }}>Programme du jour</h3>
-                          <p className="text-[10px] uppercase tracking-wider" style={{ color: 'rgba(28,36,33,0.4)' }}>Nouvelle mémorisation</p>
+                          <p className="text-[10px] font-medium uppercase tracking-wider" style={{ color: 'rgba(28,36,33,0.6)' }}>Nouvelle mémorisation</p>
                         </div>
                       </div>
                       <div
