@@ -24,6 +24,7 @@ interface ReaderSettingsPanelProps {
   audioEndVerse?: number;
   onAudioStartVerseChange?: (v: number | undefined) => void;
   onAudioEndVerseChange?: (v: number | undefined) => void;
+  isOffline?: boolean;
 }
 
 const FONT_SIZE_PRESETS = [
