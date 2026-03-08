@@ -164,7 +164,7 @@ export default function MurajaChecklist({
 
                 {/* Mini progress bar for rabt */}
                 {section === 'rabt' && item.liaison_start_date && (
-                  <div className="w-full h-1.5 rounded-full overflow-hidden mt-1.5" style={{ background: '#E6F0ED' }}>
+                  <div className="w-full h-2 rounded-full overflow-hidden mt-1.5" style={{ background: 'var(--p-track)' }}>
                     <motion.div
                       className="h-full rounded-full"
                       style={{ background: 'linear-gradient(90deg, #065F46, #10B981)' }}
