@@ -206,7 +206,7 @@ export default function ReaderSettingsPanel({
                 >
                   {onShowSurahDrawer && (
                     <button
-                      onClick={() => { onShowSurahDrawer(); setOpen(false); }}
+                      onClick={() => onShowSurahDrawer()}
                       className="w-full flex items-center justify-between py-2.5 px-3 rounded-xl text-sm font-medium transition-all"
                       style={{ background: nightMode ? 'rgba(90,180,180,0.08)' : 'rgba(255,255,255,0.2)', border: `1px solid ${nightMode ? 'rgba(90,180,180,0.12)' : 'rgba(212,175,55,0.2)'}` }}
                     >
