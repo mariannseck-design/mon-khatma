@@ -11,8 +11,6 @@ import HifzStep1Revision from '@/components/hifz/HifzStep1Revision';
 import HifzStep2Impregnation from '@/components/hifz/HifzStep2Impregnation';
 import HifzStep3Memorisation from '@/components/hifz/HifzStep3Memorisation';
 import HifzStep4Validation from '@/components/hifz/HifzStep4Validation';
-import HifzStep5Liaison from '@/components/hifz/HifzStep5Liaison';
-import HifzStep6Tour from '@/components/hifz/HifzStep6Tour';
 import HifzSuccess from '@/components/hifz/HifzSuccess';
 import DevSkipButton from '@/components/hifz/DevSkipButton';
 import { SURAHS } from '@/lib/surahData';
@@ -43,7 +41,6 @@ function loadLocalSession(): { session: HifzSession; step: number; sessionId: st
     if (!raw) return null;
     const data = JSON.parse(raw);
     if (!data.session || typeof data.step !== 'number' || data.step < 0) return null;
-    // Expire after 24h
     if (Date.now() - (data.ts || 0) > 24 * 60 * 60 * 1000) {
       localStorage.removeItem(LOCAL_KEY);
       return null;
@@ -61,7 +58,7 @@ function clearLocalSession() {
 
 const STEP_NAMES = [
   'Intention', 'Réveil', 'Imprégnation', 'Ancrage (Tikrar)',
-  'Validation', 'Liaison (Ar-Rabt)', 'Le Tour',
+  'Validation',
 ];
 
 export default function HifzPage() {
@@ -79,18 +76,15 @@ export default function HifzPage() {
   const stepStartRef = useRef<number>(Date.now());
   const stepTimesRef = useRef<Record<string, number>>({});
 
-  // Persist session state to localStorage on every change
   useEffect(() => {
-    if (session && step >= 0 && step <= 6) {
+    if (session && step >= 0 && step <= 4) {
       saveLocalSession(session, step, sessionId);
     }
   }, [session, step, sessionId]);
 
-  // Handle visibility change (mobile sleep/wake)
   useEffect(() => {
     const handler = () => {
-      if (document.visibilityState === 'visible' && session && step >= 0 && step <= 6) {
-        // Re-save to keep timestamp fresh
+      if (document.visibilityState === 'visible' && session && step >= 0 && step <= 4) {
         saveLocalSession(session, step, sessionId);
       }
     };
@@ -98,11 +92,9 @@ export default function HifzPage() {
     return () => document.removeEventListener('visibilitychange', handler);
   }, [session, step, sessionId]);
 
-  // Restore session on mount
   useEffect(() => {
     if (!user) { setHasGoal(true); setRestoringSession(false); return; }
     const init = async () => {
-      // Check if diagnostic was completed
       const { data: profileData } = await supabase
         .from('profiles')
         .select('onboarding_completed')
@@ -115,7 +107,6 @@ export default function HifzPage() {
         return;
       }
 
-      // Check goal
       const { data: goalData } = await supabase
         .from('hifz_goals')
         .select('id')
@@ -125,16 +116,14 @@ export default function HifzPage() {
       setHasGoal(!!goalData);
       if (!goalData) setShowGoalOnboarding(true);
 
-      // Try localStorage first (instant, survives mobile wake-up)
       const local = loadLocalSession();
-      if (local && local.step >= 0 && local.step <= 6) {
+      if (local && local.step >= 0 && local.step <= 4) {
         setPendingResume(local);
         setShowResumePrompt(true);
         setRestoringSession(false);
         return;
       }
 
-      // Fallback: restore from DB
       const { data: activeSession } = await supabase
         .from('hifz_sessions')
         .select('*')
@@ -144,7 +133,7 @@ export default function HifzPage() {
         .limit(1)
         .maybeSingle();
 
-      if (activeSession && activeSession.current_step >= 0 && activeSession.current_step <= 6) {
+      if (activeSession && activeSession.current_step >= 0 && activeSession.current_step <= 4) {
         const restored = {
           session: {
             surahNumber: activeSession.surah_number,
@@ -201,7 +190,6 @@ export default function HifzPage() {
   }, [user]);
 
   const updateStep = useCallback(async (newStep: number) => {
-    // Record time spent on current step
     const elapsedSeconds = Math.floor((Date.now() - stepStartRef.current) / 1000);
     if (step >= 0) {
       stepTimesRef.current[`step_${step}_time`] = elapsedSeconds;
@@ -220,19 +208,18 @@ export default function HifzPage() {
     }
   }, [sessionId, user, step]);
 
-  const completeSession = useCallback(async (difficulty: string) => {
-    // Record time for last step
+  // Complete session after step 4 (no more steps 5-6 in this tunnel)
+  const completeSession = useCallback(async () => {
     const elapsedSeconds = Math.floor((Date.now() - stepStartRef.current) / 1000);
     if (step >= 0) {
       stepTimesRef.current[`step_${step}_time`] = elapsedSeconds;
     }
 
-    // Clean up localStorage
     clearLocalSession();
 
     if (sessionId && user) {
       await supabase.from('hifz_sessions').update({
-        current_step: 6,
+        current_step: 4,
         completed_at: new Date().toISOString(),
         step_status: { ...stepTimesRef.current, completed: true },
       }).eq('id', sessionId);
@@ -285,8 +272,8 @@ export default function HifzPage() {
         });
       }
     }
-    setStep(7);
-  }, [sessionId, user, session]);
+    setStep(5); // 5 = success screen now
+  }, [sessionId, user, session, step]);
 
   const devModeBadge = isDevMode && (
     <div className="mb-3 flex justify-center">
@@ -296,7 +283,6 @@ export default function HifzPage() {
     </div>
   );
 
-  // Loading state
   if ((hasGoal === null && !showDiagnostic) || restoringSession) {
     return (
       <AppLayout title="Espace Hifz" hideNav>
@@ -307,7 +293,6 @@ export default function HifzPage() {
     );
   }
 
-  // Diagnostic onboarding (first time)
   if (showDiagnostic) {
     return (
       <AppLayout title="Espace Hifz" hideNav>
@@ -315,7 +300,6 @@ export default function HifzPage() {
           <HifzDiagnostic
             onComplete={() => {
               setShowDiagnostic(false);
-              // Now check for goal
               if (user) {
                 supabase.from('hifz_goals').select('id').eq('user_id', user.id).eq('is_active', true).maybeSingle().then(({ data }) => {
                   setHasGoal(!!data);
@@ -338,7 +322,6 @@ export default function HifzPage() {
     );
   }
 
-  // Resume prompt
   if (showResumePrompt && pendingResume) {
     const surah = SURAHS.find(s => s.number === pendingResume.session.surahNumber);
     const stepName = STEP_NAMES[pendingResume.step] || `Étape ${pendingResume.step}`;
@@ -388,7 +371,6 @@ export default function HifzPage() {
     );
   }
 
-  // Goal onboarding
   if (showGoalOnboarding) {
     return (
       <AppLayout title="Espace Hifz" hideNav>
@@ -401,7 +383,6 @@ export default function HifzPage() {
     );
   }
 
-  // Config screen
   if (!session || step === -1) {
     return (
       <AppLayout title="Espace Hifz" hideNav>
@@ -413,7 +394,6 @@ export default function HifzPage() {
     );
   }
 
-  // Session steps
   return (
     <AppLayout title="Espace Hifz" hideNav>
       <div className="min-h-[80vh] rounded-[2rem] p-6 mx-[-4px]" style={GRADIENT_STYLE}>
@@ -422,15 +402,13 @@ export default function HifzPage() {
         {step === 1 && <HifzStep1Revision onNext={() => updateStep(2)} onBack={() => setStep(0)} />}
         {step === 2 && <HifzStep2Impregnation surahNumber={session.surahNumber} startVerse={session.startVerse} endVerse={session.endVerse} onNext={() => updateStep(3)} onBack={() => setStep(1)} />}
         {step === 3 && <HifzStep3Memorisation surahNumber={session.surahNumber} startVerse={session.startVerse} endVerse={session.endVerse} repetitionLevel={session.repetitionLevel} onNext={() => updateStep(4)} onBack={() => setStep(2)} />}
-        {step === 4 && <HifzStep4Validation surahNumber={session.surahNumber} startVerse={session.startVerse} endVerse={session.endVerse} onNext={() => updateStep(5)} onBack={() => setStep(3)} />}
-        {step === 5 && <HifzStep5Liaison onNext={() => updateStep(6)} onBack={() => setStep(4)} />}
-        {step === 6 && <HifzStep6Tour onComplete={completeSession} onBack={() => setStep(5)} />}
-        {step === 7 && <HifzSuccess stepTimes={stepTimesRef.current} />}
+        {step === 4 && <HifzStep4Validation surahNumber={session.surahNumber} startVerse={session.startVerse} endVerse={session.endVerse} onNext={completeSession} onBack={() => setStep(3)} />}
+        {step === 5 && <HifzSuccess stepTimes={stepTimesRef.current} />}
       </div>
-      {step >= 0 && step <= 6 && (
+      {step >= 0 && step <= 4 && (
         <DevSkipButton isDevMode={isDevMode} onSkip={() => {
-          if (step < 6) { updateStep(step + 1); }
-          else { completeSession('easy'); }
+          if (step < 4) { updateStep(step + 1); }
+          else { completeSession(); }
         }} />
       )}
     </AppLayout>
