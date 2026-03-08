@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Headphones, Check, Play, Pause, RotateCcw, ZoomIn, ZoomOut } from 'lucide-react';
 import HifzStepWrapper from './HifzStepWrapper';
 import { RECITERS, getAyahAudioUrl } from '@/hooks/useQuranAudio';
-import { SURAHS } from '@/lib/surahData';
+import { SURAHS, getApproxVersePage } from '@/lib/surahData';
 
 interface Props {
   surahNumber: number;
@@ -44,8 +44,8 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
     }
   }, [listenCount, storageKey]);
 
-  // Calculate Mushaf page from surah data
-  const mushafPage = SURAHS.find(s => s.number === surahNumber)?.startPage ?? 1;
+  // Calculate exact Mushaf page from surah + verse number
+  const mushafPage = getApproxVersePage(surahNumber, startVerse);
   const mushafImageUrl = `https://cdn.jsdelivr.net/gh/QuranHub/quran-pages-images@main/easyquran.com/hafs-tajweed/${mushafPage}.jpg`;
 
   const fetchAudio = useCallback(async () => {
