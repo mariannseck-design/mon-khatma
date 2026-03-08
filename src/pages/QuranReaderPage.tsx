@@ -46,8 +46,17 @@ export default function QuranReaderPage() {
   const textModeDisabled = false;
 
   const [tajweedEnabled, setTajweedEnabled] = useState(() => {
-    return localStorage.getItem('quran_tajweed') === 'true';
+    return localStorage.getItem('quran_tajweed') !== 'false';
   });
+
+  // Welcome message for first-time users
+  const [showIntro, setShowIntro] = useState(() => {
+    return !localStorage.getItem('quran_reader_intro_seen');
+  });
+  const dismissIntro = () => {
+    setShowIntro(false);
+    localStorage.setItem('quran_reader_intro_seen', 'true');
+  };
   const handleTajweedChange = (enabled: boolean) => {
     setTajweedEnabled(enabled);
     localStorage.setItem('quran_tajweed', String(enabled));
