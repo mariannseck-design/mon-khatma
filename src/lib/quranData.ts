@@ -43,6 +43,7 @@ async function buildIndexes(): Promise<{ pages: Map<number, LocalAyah[]>; surahs
         number: ayah.number,
         text: ayah.text,
         numberInSurah: ayah.numberInSurah,
+        page: ayah.page as number,
         surah: { name: surah.name, number: surah.number },
       };
       if (!pages.has(page)) {
