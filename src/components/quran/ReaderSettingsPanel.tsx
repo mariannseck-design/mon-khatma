@@ -55,6 +55,7 @@ interface ReaderSettingsPanelProps {
   onGoToPage?: (page: number) => void;
 }
 
+export default function ReaderSettingsPanel({
   viewMode, onViewModeChange,
   nightMode, onNightModeChange,
   fontSize, onFontSizeChange,
