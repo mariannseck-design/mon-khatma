@@ -1,26 +1,21 @@
 
 
-## Transformer la carte Al-Kahf en thème "Caverne sablée"
+# Diagnostic : 404 sur /quran-reader
 
-### Changements — `src/components/defis/DefiAlKahf.tsx`
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-**1. Palette de couleurs** — Remplacer les tons navy par des tons sable/brun caverne :
-```
-COLORS = {
-  cave: '#3B2F1E',        // brun foncé (fond principal)
-  caveLight: '#5C4A32',   // brun moyen
-  sand: '#C2A66B',        // sable doré (accent)
-  sandLight: '#D4BF8A',   // sable clair
-}
-```
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-**2. Icône** — Remplacer `BookOpen` par `Mountain` (lucide-react) qui évoque une caverne/montagne, avec la couleur sable.
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-**3. Gradient du fond** — `linear-gradient(135deg, #3B2F1E 0%, #5C4A32 100%)` pour un effet caverne sablée.
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-**4. Dialog de célébration** — Même palette brun/sable, emoji 🕌 conservé.
-
-**5. Bouton de validation** — Fond sable `#C2A66B` avec texte brun foncé `#3B2F1E`.
-
-Toutes les références à `COLORS.navy`, `COLORS.navyLight`, `COLORS.goldAccent` seront mises à jour vers les nouvelles valeurs.
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

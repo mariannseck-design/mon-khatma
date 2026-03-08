@@ -1,16 +1,16 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { BookOpen, Check } from 'lucide-react';
+import { Mountain, Check } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 
 const COLORS = {
-  navy: '#1a2744',
-  navyLight: '#243556',
-  goldAccent: '#d4af37',
-  gold: '#b5942e',
+  cave: '#3B2F1E',
+  caveLight: '#5C4A32',
+  sand: '#C2A66B',
+  sandLight: '#D4BF8A',
 };
 
 function getWeekKey() {
@@ -136,19 +136,19 @@ export default function DefiAlKahf({ disabled = false }: { disabled?: boolean })
         transition={{ duration: 0.4 }}
         className="relative overflow-hidden rounded-2xl p-5"
         style={{
-          background: `linear-gradient(135deg, ${COLORS.navy} 0%, ${COLORS.navyLight} 100%)`,
-          boxShadow: `0 4px 20px -6px ${COLORS.navy}60`,
+          background: `linear-gradient(135deg, ${COLORS.cave} 0%, ${COLORS.caveLight} 100%)`,
+          boxShadow: `0 4px 20px -6px ${COLORS.cave}60`,
         }}
       >
-        <div className="absolute -top-8 -right-8 w-28 h-28 rounded-full blur-2xl" style={{ background: `${COLORS.goldAccent}12` }} />
+        <div className="absolute -top-8 -right-8 w-28 h-28 rounded-full blur-2xl" style={{ background: `${COLORS.sand}12` }} />
 
         <div className="relative z-10">
           <div className="flex items-center gap-3 mb-4">
             <div
               className="w-10 h-10 rounded-xl flex items-center justify-center"
-              style={{ background: `${COLORS.goldAccent}22`, border: `1px solid ${COLORS.goldAccent}35` }}
+              style={{ background: `${COLORS.sand}22`, border: `1px solid ${COLORS.sand}35` }}
             >
-              <BookOpen className="h-5 w-5" style={{ color: COLORS.goldAccent }} strokeWidth={1.5} />
+              <Mountain className="h-5 w-5" style={{ color: COLORS.sand }} strokeWidth={1.5} />
             </div>
             <div>
               <h4 className="text-sm font-bold text-white tracking-wide" style={{ fontFamily: "'Inter', sans-serif" }}>
@@ -159,7 +159,7 @@ export default function DefiAlKahf({ disabled = false }: { disabled?: boolean })
             {streak > 0 && (
               <span
                 className="ml-auto text-xs font-semibold px-2 py-0.5 rounded-full"
-                style={{ background: `${COLORS.goldAccent}25`, color: COLORS.goldAccent }}
+                style={{ background: `${COLORS.sand}25`, color: COLORS.sand }}
               >
                 🔥 {streak} sem.
               </span>
@@ -174,21 +174,21 @@ export default function DefiAlKahf({ disabled = false }: { disabled?: boolean })
                 key={i}
                 className="w-5 h-5 rounded-full flex items-center justify-center"
                 style={{
-                  background: done ? `${COLORS.goldAccent}30` : 'rgba(255,255,255,0.08)',
-                  border: `1.5px solid ${done ? COLORS.goldAccent : 'rgba(255,255,255,0.15)'}`,
+                  background: done ? `${COLORS.sand}30` : 'rgba(255,255,255,0.08)',
+                  border: `1.5px solid ${done ? COLORS.sand : 'rgba(255,255,255,0.15)'}`,
                 }}
               >
-                {done && <Check className="h-3 w-3" style={{ color: COLORS.goldAccent }} />}
+                {done && <Check className="h-3 w-3" style={{ color: COLORS.sand }} />}
               </div>
             ))}
             <div
               className="w-5 h-5 rounded-full flex items-center justify-center"
               style={{
-                background: completed ? `${COLORS.goldAccent}30` : 'rgba(255,255,255,0.08)',
-                border: `1.5px solid ${completed ? COLORS.goldAccent : COLORS.goldAccent + '60'}`,
+                background: completed ? `${COLORS.sand}30` : 'rgba(255,255,255,0.08)',
+                border: `1.5px solid ${completed ? COLORS.sand : COLORS.sand + '60'}`,
               }}
             >
-              {completed && <Check className="h-3 w-3" style={{ color: COLORS.goldAccent }} />}
+              {completed && <Check className="h-3 w-3" style={{ color: COLORS.sand }} />}
             </div>
           </div>
 
@@ -197,7 +197,7 @@ export default function DefiAlKahf({ disabled = false }: { disabled?: boolean })
             {completed ? (
               <div
                 className="flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold"
-                style={{ background: `${COLORS.goldAccent}18`, color: COLORS.goldAccent }}
+                style={{ background: `${COLORS.sand}18`, color: COLORS.sand }}
               >
                 <Check className="h-4 w-4" />
                 Lecture validée cette semaine ✨
@@ -206,7 +206,7 @@ export default function DefiAlKahf({ disabled = false }: { disabled?: boolean })
               <button
                 onClick={handleValidate}
                 className="w-full rounded-xl py-3 text-sm font-semibold transition-all active:scale-95"
-                style={{ background: COLORS.goldAccent, color: COLORS.navy }}
+                style={{ background: COLORS.sand, color: COLORS.cave }}
               >
                 Valider ma lecture d'Al-Kahf 📖
               </button>
@@ -223,7 +223,7 @@ export default function DefiAlKahf({ disabled = false }: { disabled?: boolean })
       </motion.div>
 
       <Dialog open={showCelebration} onOpenChange={setShowCelebration}>
-        <DialogContent className="sm:max-w-sm text-center border-none" style={{ background: `linear-gradient(135deg, ${COLORS.navy}, ${COLORS.navyLight})` }}>
+        <DialogContent className="sm:max-w-sm text-center border-none" style={{ background: `linear-gradient(135deg, ${COLORS.cave}, ${COLORS.caveLight})` }}>
           <DialogHeader className="space-y-3">
             <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', duration: 0.6 }} className="mx-auto text-5xl">
               🕌
@@ -237,7 +237,7 @@ export default function DefiAlKahf({ disabled = false }: { disabled?: boolean })
                 : "Qu'Allah accepte ta lecture et te couvre de Sa lumière. 🤲"}
             </DialogDescription>
           </DialogHeader>
-          <Button onClick={() => setShowCelebration(false)} className="mt-3 w-full" style={{ background: COLORS.goldAccent, color: COLORS.navy }}>
+          <Button onClick={() => setShowCelebration(false)} className="mt-3 w-full" style={{ background: COLORS.sand, color: COLORS.cave }}>
             Alhamdulillah ✨
           </Button>
         </DialogContent>
