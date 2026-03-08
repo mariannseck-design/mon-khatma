@@ -540,7 +540,7 @@ export default function QuranReaderPage() {
             >
               <div className="text-3xl mb-3">📖</div>
               <h3 className="text-lg font-bold mb-2" style={{ color: '#6b5417', fontFamily: "'Playfair Display', serif" }}>
-                Bienvenue dans le Lecteur
+                Bienvenue
               </h3>
               <p className="text-sm mb-3 leading-relaxed" style={{ color: '#5a4a2a' }}>
                 Tu peux lire le Coran en <strong>mode Mushaf</strong> (image) ou en <strong>mode Texte</strong>.
