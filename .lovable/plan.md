@@ -1,14 +1,21 @@
 
 
-## Désactiver Sources de Lumière et Mes Duas pour les abonnés
+# Diagnostic : 404 sur /quran-reader
 
-Envelopper les deux routes avec `ComingSoonGate` dans `src/App.tsx`, comme c'est déjà fait pour Hifz, Muraja'a, etc.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Changement unique — `src/App.tsx`
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-**Ligne 97** : Envelopper `SourcesDeLumierePage` avec `ComingSoonGate` (icon: `Sparkles`, titre: "Sources de Lumière")
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-**Ligne 98** : Envelopper `DouasPage` avec `ComingSoonGate` (icon: `BookOpen`, titre: "Mes Duas")
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-Les admins verront le contenu normal grâce à la logique existante de `ComingSoonGate` (`if (isAdmin) return children`). Les autres utilisateurs verront l'écran "Bientôt disponible".
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
