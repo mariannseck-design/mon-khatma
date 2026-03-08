@@ -757,6 +757,7 @@ export const OMRA_DUAS: DhikrItem[] = [
   },
   {
     title: "Du'â entre le Rukn Yamânî et la Pierre Noire",
+    readOnly: true,
     arabic: 'رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ',
     phonetic: "Rabbanâ âtinâ fî-d-dunyâ hasanatan wa fî-l-âkhirati hasanatan wa qinâ 'adhâba-n-nâr.",
     french: "Notre Seigneur, accorde-nous une belle part ici-bas et une belle part dans l'au-delà, et protège-nous du châtiment du Feu.",
