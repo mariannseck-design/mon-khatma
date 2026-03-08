@@ -52,6 +52,7 @@ function getPastWeekKeys(count: number): string[] {
 
 export default function DefiAlKahf({ disabled = false }: { disabled?: boolean }) {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const weekKey = getWeekKey();
   const [completed, setCompleted] = useState(false);
   const [streak, setStreak] = useState(0);
