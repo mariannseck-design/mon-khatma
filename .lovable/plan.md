@@ -1,19 +1,33 @@
 
 
-## Diagnostic
+## Problème : la page du lecteur revient au début après actualisation
 
-L'utilisateur est bloqué sur la page `/quran-reader` qui masque la barre de navigation (`hideNav`). Il existe un bouton retour (flèche ←) en haut à gauche qui appelle `navigate(-1)`.
+### Diagnostic
+Le code sauvegarde bien la page dans `localStorage` (ligne 28-29, 203), mais si `parseInt` renvoie `NaN` (valeur corrompue), `Math.min(Math.max(NaN, 1), 604)` donne `NaN` et non `1`. De plus, la page n'est pas reflétée dans l'URL — un refresh du navigateur repose uniquement sur `localStorage`.
 
-Aucune modification de code n'est nécessaire ici — c'est un problème de navigation utilisateur, pas un bug.
+### Correction
 
-### Instructions pour l'utilisateur
-1. Taper la flèche ← en haut à gauche du lecteur Coran
-2. Aller dans Profil → activer "Mode Testeur (Dev)"
-3. Aller dans Hifz → le bouton ⏩ Skip apparaît
+**Fichier : `src/pages/QuranReaderPage.tsx`**
 
-### Si le bouton retour n'est pas visible
-Il faudrait vérifier le header du QuranReaderPage pour s'assurer que le bouton retour est bien rendu. Mais d'après le code, il utilise `ArrowLeft` avec `navigate(-1)` donc il devrait fonctionner.
+1. **Sécuriser la lecture localStorage** : ajouter un fallback si `parseInt` retourne `NaN`
+2. **Synchroniser la page dans l'URL** via `useSearchParams` pour que la page survive aux rafraîchissements et aux navigations :
+   - Lire `?page=X` au montage (priorité sur localStorage)
+   - Mettre à jour l'URL sans rechargement quand la page change (`replace`)
+   - Continuer à sauvegarder dans localStorage comme fallback
 
-### Pas de changement de code requis
-Ce n'est pas un bug — l'utilisateur a juste besoin de naviguer via le bouton retour existant.
+```text
+Montage:
+  URL ?page=X  →  utiliser X
+  sinon localStorage  →  utiliser valeur sauvée
+  sinon  →  page 1
+
+Changement de page:
+  → localStorage.setItem(...)
+  → setSearchParams({ page: N }, { replace: true })
+```
+
+### Impact
+- 1 fichier modifié : `src/pages/QuranReaderPage.tsx`
+- Ajout de `useSearchParams` de `react-router-dom`
+- La page sera visible dans l'URL : `/quran-reader?page=123`
 
