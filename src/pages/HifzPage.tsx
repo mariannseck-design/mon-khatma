@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { useDevMode } from '@/hooks/useDevMode';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { useAuth } from '@/contexts/AuthContext';
@@ -76,6 +76,8 @@ export default function HifzPage() {
   const [showResumePrompt, setShowResumePrompt] = useState(false);
   const [pendingResume, setPendingResume] = useState<{ session: HifzSession; step: number; sessionId: string | null } | null>(null);
   const { isDevMode } = useDevMode();
+  const stepStartRef = useRef<number>(Date.now());
+  const stepTimesRef = useRef<Record<string, number>>({});
 
   // Persist session state to localStorage on every change
   useEffect(() => {
@@ -194,19 +196,37 @@ export default function HifzPage() {
       if (data) setSessionId(data.id);
     }
     setStep(0);
+    stepStartRef.current = Date.now();
+    stepTimesRef.current = {};
   }, [user]);
 
   const updateStep = useCallback(async (newStep: number) => {
+    // Record time spent on current step
+    const elapsedSeconds = Math.floor((Date.now() - stepStartRef.current) / 1000);
+    if (step >= 0) {
+      stepTimesRef.current[`step_${step}_time`] = elapsedSeconds;
+    }
+    stepStartRef.current = Date.now();
     setStep(newStep);
+
     if (sessionId && user) {
       await supabase.from('hifz_sessions').update({
         current_step: newStep,
-        step_status: { [`step_${newStep}`]: 'in_progress' },
+        step_status: {
+          ...stepTimesRef.current,
+          [`step_${newStep}`]: 'in_progress',
+        },
       }).eq('id', sessionId);
     }
-  }, [sessionId, user]);
+  }, [sessionId, user, step]);
 
   const completeSession = useCallback(async (difficulty: string) => {
+    // Record time for last step
+    const elapsedSeconds = Math.floor((Date.now() - stepStartRef.current) / 1000);
+    if (step >= 0) {
+      stepTimesRef.current[`step_${step}_time`] = elapsedSeconds;
+    }
+
     // Clean up localStorage
     clearLocalSession();
 
@@ -214,6 +234,7 @@ export default function HifzPage() {
       await supabase.from('hifz_sessions').update({
         current_step: 6,
         completed_at: new Date().toISOString(),
+        step_status: { ...stepTimesRef.current, completed: true },
       }).eq('id', sessionId);
 
       if (session) {
