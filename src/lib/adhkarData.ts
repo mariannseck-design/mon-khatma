@@ -55,6 +55,7 @@ export const MORNING_ADHKAR: DhikrItem[] = [
   {
     title: 'Agrément d\'Allah',
     source: 'Abû Dâwûd n°5072, At-Tirmidhî n°3389',
+    fadl: 'Quiconque dit cela 3 fois le matin, Allah s\'engage à le satisfaire le Jour du Jugement. (At-Tirmidhî)',
     arabic: 'رَضيـتُ بِاللهِ رَبَّـاً وَبِالإسْلامِ ديـناً وَبِمُحَـمَّدٍ صلى الله عليه وسلم نَبِيّـاً',
     phonetic: "Radîtu bi-llâhi Rabban, wa bi-l-islâmi dînan, wa bi-Muhammadin (sallâ-llâhu 'alayhi wa sallam) nabiyyan.",
     french: "J'accepte Allah comme Seigneur, l'Islam comme religion et Muhammad ﷺ comme Prophète.",
