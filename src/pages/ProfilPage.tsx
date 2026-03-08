@@ -13,9 +13,10 @@ import { Switch } from '@/components/ui/switch';
 import { useDevMode } from '@/hooks/useDevMode';
 
 export default function ProfilPage() {
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   const [displayName, setDisplayName] = useState('');
   const [loading, setLoading] = useState(false);
+  const { isDevMode, toggleDevMode } = useDevMode();
 
   useEffect(() => {
     if (user) fetchProfile();
