@@ -555,9 +555,9 @@ export default function AccueilPage() {
               </Link>
             </motion.div>
 
-            {/* ═══ MES INVOCATIONS FAVORITES ═══ */}
+            {/* ═══ MES VERSETS FAVORIS ═══ */}
             <motion.div variants={itemVariants}>
-              <FavoriteDouasSection />
+              <FavoriteVersesSection />
             </motion.div>
 
             {/* ═══ NOS DÉFIS ═══ */}

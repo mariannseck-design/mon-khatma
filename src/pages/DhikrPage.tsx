@@ -141,6 +141,8 @@ export default function DhikrPage() {
             transition={{ duration: 0.25 }}
             className="space-y-6"
           >
+            <FavoriteDouasSection />
+
             <motion.div
               className="grid grid-cols-2 gap-4"
               variants={containerVariants}
