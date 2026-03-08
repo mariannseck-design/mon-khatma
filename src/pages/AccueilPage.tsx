@@ -74,6 +74,7 @@ export default function AccueilPage() {
   const [readingGoal, setReadingGoal] = useState<{ first_name: string; daily_pages: number } | null>(null);
   const [activeHifzSession, setActiveHifzSession] = useState<{ surahName: string; stepName: string } | null>(null);
   const [pendingReviews, setPendingReviews] = useState(0);
+  const [hasStartedHifz, setHasStartedHifz] = useState(false);
 
   const STEP_NAMES = ['Intention', 'Réveil', 'Imprégnation', 'Ancrage (Tikrar)', 'Validation'];
 
