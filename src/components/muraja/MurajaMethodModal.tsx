@@ -49,6 +49,10 @@ export default function MurajaMethodModal({ defaultTab = 'rabt', trigger }: Mura
           </DialogTitle>
         </DialogHeader>
 
+        <p className="text-xs leading-relaxed mt-1" style={{ color: 'rgba(255,255,255,0.85)' }}>
+          À minuit, ton programme est mis à jour. Prépare ton cœur pour ta prochaine récitation afin d'ancrer durablement la Parole Sacrée, par la grâce d'Allah <span style={{ fontFamily: "'Amiri', serif" }}>(عز وجل)</span>.
+        </p>
+
         <Tabs defaultValue={defaultTab} className="w-full">
           <TabsList className="w-full grid grid-cols-2 h-9 rounded-xl" style={{ background: 'rgba(255,255,255,0.1)' }}>
             <TabsTrigger

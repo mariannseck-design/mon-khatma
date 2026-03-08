@@ -35,7 +35,7 @@ export default function MurajaCountdown() {
         className="text-xs font-medium tracking-widest uppercase"
         style={{ color: 'var(--p-accent)' }}
       >
-        Nouveau cycle dans
+        Ta prochaine récitation dans
       </p>
 
       <div className="relative w-36 h-36 flex items-center justify-center">
