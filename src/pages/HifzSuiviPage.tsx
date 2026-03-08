@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { motion } from 'framer-motion';
-import { Flame, BookOpenCheck, RotateCcw, Target, Settings2, BookOpen, RefreshCw } from 'lucide-react';
+import { Flame, BookOpenCheck, RotateCcw, Target, Settings2, BookOpen, RefreshCw, BarChart3 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -228,7 +228,9 @@ export default function HifzSuiviPage() {
               >
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <Target className="h-4 w-4" style={{ color: 'var(--p-accent)' }} />
+                    <div className="w-7 h-7 rounded-full flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #065F46, #10B981)' }}>
+                      <Target className="h-3.5 w-3.5 text-white" />
+                    </div>
                     <span className="text-sm font-semibold" style={{ color: 'var(--p-text)' }}>
                       Objectif {goal.goal_period === 'daily' ? 'du jour' : 'de la semaine'}
                     </span>
@@ -303,11 +305,11 @@ export default function HifzSuiviPage() {
                       }}
                     >
                       <div className="flex items-center gap-3 mb-3">
-                        <div
+                      <div
                           className="w-10 h-10 rounded-xl flex items-center justify-center"
-                          style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', boxShadow: 'var(--p-card-shadow)' }}
+                          style={{ background: 'linear-gradient(135deg, #065F46, #10B981)', boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)' }}
                         >
-                          <BookOpen className="h-5 w-5" style={{ color: 'var(--p-accent)' }} />
+                          <BookOpen className="h-5 w-5 text-white" />
                         </div>
                         <div>
                           <h3 className="text-sm font-bold" style={{ color: 'var(--p-text)' }}>Programme du jour</h3>
@@ -348,9 +350,9 @@ export default function HifzSuiviPage() {
                     <div className="flex items-center gap-3 mb-3">
                       <div
                         className="w-10 h-10 rounded-xl flex items-center justify-center"
-                        style={{ background: 'var(--p-card-active)', border: '1px solid var(--p-border)' }}
+                        style={{ background: 'linear-gradient(135deg, #B8960C, #D4AF37)', boxShadow: '0 4px 12px rgba(212, 175, 55, 0.3)' }}
                       >
-                        <RefreshCw className="h-5 w-5" style={{ color: 'var(--p-accent)' }} />
+                        <RefreshCw className="h-5 w-5 text-white" />
                       </div>
                       <div>
                         <h3 className="text-sm font-bold" style={{ color: 'var(--p-text)' }}>Révision du jour</h3>
@@ -396,7 +398,9 @@ export default function HifzSuiviPage() {
                 className="rounded-2xl p-4 flex flex-col items-center gap-2"
                 style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', boxShadow: 'var(--p-card-shadow)' }}
               >
-                <Flame className="h-5 w-5" style={{ color: 'var(--p-accent)' }} />
+                <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #D97706, #F59E0B)', boxShadow: '0 4px 10px rgba(245, 158, 11, 0.3)' }}>
+                  <Flame className="h-4.5 w-4.5 text-white" />
+                </div>
                 <span className="text-2xl font-bold" style={{ color: 'var(--p-primary)' }}>{streak.current}</span>
                 <span className="text-[10px] font-medium text-center leading-tight" style={{ color: 'var(--p-text-65)' }}>Jours consécutifs</span>
                 <span className="text-[9px] font-medium" style={{ color: 'var(--p-text-55)' }}>Record : {streak.longest}</span>
@@ -415,7 +419,9 @@ export default function HifzSuiviPage() {
                 className="rounded-2xl p-4 flex flex-col items-center gap-2"
                 style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', boxShadow: 'var(--p-card-shadow)' }}
               >
-                <RotateCcw className="h-5 w-5" style={{ color: 'var(--p-accent)' }} />
+                <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #065F46, #10B981)', boxShadow: '0 4px 10px rgba(16, 185, 129, 0.3)' }}>
+                  <RotateCcw className="h-4.5 w-4.5 text-white" />
+                </div>
                 <span className="text-2xl font-bold" style={{ color: 'var(--p-primary)' }}>{streak.tours}</span>
                 <span className="text-[10px] font-medium text-center leading-tight" style={{ color: 'var(--p-text-65)' }}>Cycles terminés</span>
               </motion.div>
@@ -427,9 +433,14 @@ export default function HifzSuiviPage() {
               className="rounded-2xl p-5"
               style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', boxShadow: 'var(--p-card-shadow)' }}
             >
-              <h3 className="text-sm font-bold mb-4" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-primary)' }}>
-                Activité des 7 derniers jours
-              </h3>
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #6D28D9, #8B5CF6)', boxShadow: '0 3px 8px rgba(109, 40, 217, 0.25)' }}>
+                  <BarChart3 className="h-3.5 w-3.5 text-white" />
+                </div>
+                <h3 className="text-sm font-bold" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-primary)' }}>
+                  Activité des 7 derniers jours
+                </h3>
+              </div>
               <ResponsiveContainer width="100%" height={140}>
                 <BarChart data={weeklyData} barCategoryGap="30%">
                   <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: 'var(--p-text-65)', fontSize: 11, fontWeight: 500 }} />
