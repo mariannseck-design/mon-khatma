@@ -18,6 +18,7 @@ export default function ProfilPage() {
   const [displayName, setDisplayName] = useState('');
   const [loading, setLoading] = useState(false);
   const { isDevMode, toggleDevMode } = useDevMode();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (user) fetchProfile();
