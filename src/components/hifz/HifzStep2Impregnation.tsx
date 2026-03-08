@@ -80,7 +80,7 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
     return saved ? parseInt(saved, 10) || 0 : 0;
   });
   const [isPlaying, setIsPlaying] = useState(false);
-  const [reciter, setReciter] = useState('ar.alafasy');
+  const [reciter, setReciter] = useState(() => localStorage.getItem('quran_reciter') || 'ar.alafasy');
   const [currentAyahIndex, setCurrentAyahIndex] = useState(-1);
   const [fontSizeIndex, setFontSizeIndex] = useState(1);
   const [translation, setTranslation] = useState<string[]>([]);
