@@ -39,9 +39,9 @@ export default function QuranReaderPage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const retriesRef = useRef(0);
 
-  const [viewMode, setViewMode] = useState<'image' | 'text'>(() => {
-    return (localStorage.getItem('quran_view_mode') as 'image' | 'text') || 'image';
-  });
+  // Text mode disabled for now — force image mode
+  const [viewMode, setViewMode] = useState<'image' | 'text'>('image');
+  const textModeDisabled = true;
   const [nightMode, setNightMode] = useState(() => {
     return localStorage.getItem('quran_night_mode') === 'true';
   });
@@ -74,12 +74,14 @@ export default function QuranReaderPage() {
   
   const [selectedVerse, setSelectedVerse] = useState<string | null>(null);
   const [pageVerses, setPageVerses] = useState<VerseLineInfo[]>([]);
+  const [audioStartVerse, setAudioStartVerse] = useState<number | undefined>();
+  const [audioEndVerse, setAudioEndVerse] = useState<number | undefined>(); 
 
   // Audio
   const goNextAuto = useCallback(() => {
     if (page < TOTAL_PAGES) { setDirection(1); setPage(p => Math.min(p + 1, TOTAL_PAGES)); }
   }, [page]);
-  const { isPlaying, currentAyahNumber, loading: audioLoading, reciter, setReciter, togglePlay } = useQuranAudio(page, goNextAuto);
+  const { isPlaying, currentAyahNumber, loading: audioLoading, reciter, setReciter, togglePlay } = useQuranAudio(page, goNextAuto, audioStartVerse, audioEndVerse);
 
   const getPageUrl = useCallback((p: number, srcIdx?: number) => {
     const idx = srcIdx ?? preferredSourceRef.current;
@@ -94,6 +96,8 @@ export default function QuranReaderPage() {
     setTranslate({ x: 0, y: 0 });
     setSelectedVerse(null);
     setPageVerses([]);
+    setAudioStartVerse(undefined);
+    setAudioEndVerse(undefined);
   }, [page]);
 
   useEffect(() => {
@@ -428,6 +432,11 @@ export default function QuranReaderPage() {
             textSizeIndex={textSizeIndex}
             textSizes={TEXT_SIZES as unknown as Array<{label: string; value: number}>}
             onTextSizeIndexChange={setTextSizeIndex}
+            textModeDisabled={textModeDisabled}
+            audioStartVerse={audioStartVerse}
+            audioEndVerse={audioEndVerse}
+            onAudioStartVerseChange={setAudioStartVerse}
+            onAudioEndVerseChange={setAudioEndVerse}
           />
         </div>
       </div>

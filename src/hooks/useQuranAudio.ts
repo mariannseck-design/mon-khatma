@@ -9,6 +9,10 @@ export const RECITERS = [
   { id: 'ar.abdurrahmaansudais', name: 'Al-Sudais' },
   { id: 'ar.hudhaify', name: 'Al-Huthaify' },
   { id: 'ar.ibrahimakhbar', name: 'Ibrahim Al-Akhdar' },
+  { id: 'ar.saoodshuraym', name: 'Saoud Al-Shuraym' },
+  { id: 'ar.shaatree', name: 'Abu Bakr Al-Shatri' },
+  { id: 'ar.hanirifai', name: 'Hani Ar-Rifai' },
+  { id: 'ar.muhammadayyoub', name: 'Muhammad Ayyoub' },
 ] as const;
 
 interface AyahAudio {
@@ -17,7 +21,7 @@ interface AyahAudio {
   audio: string;
 }
 
-export function useQuranAudio(page: number, onPageFinished?: () => void) {
+export function useQuranAudio(page: number, onPageFinished?: () => void, startVerse?: number, endVerse?: number) {
   const [reciter, setReciter] = useState(() => {
     return localStorage.getItem('quran_reciter') || 'ar.alafasy';
   });
@@ -86,11 +90,20 @@ export function useQuranAudio(page: number, onPageFinished?: () => void) {
       const res = await fetch(`https://api.alquran.cloud/v1/page/${targetPage}/${targetReciter}`);
       const data = await res.json();
       if (data.code === 200) {
-        ayahsRef.current = data.data.ayahs.map((a: any) => ({
+        let ayahs = data.data.ayahs.map((a: any) => ({
           number: a.number,
           numberInSurah: a.numberInSurah,
           audio: a.audio,
         }));
+        // Filter by verse range if specified
+        if (startVerse || endVerse) {
+          ayahs = ayahs.filter((a: AyahAudio) => {
+            if (startVerse && a.numberInSurah < startVerse) return false;
+            if (endVerse && a.numberInSurah > endVerse) return false;
+            return true;
+          });
+        }
+        ayahsRef.current = ayahs;
         indexRef.current = 0;
         setIsPlaying(true);
         playAyah(0);
