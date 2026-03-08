@@ -441,7 +441,9 @@ export default function EmotionsPage() {
               })}
             </div>
           )}
-        </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </AppLayout>
   );
