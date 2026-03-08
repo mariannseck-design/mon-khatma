@@ -805,6 +805,7 @@ export const OMRA_DUAS: DhikrItem[] = [
   },
   {
     title: "Du'â général pendant la Omra",
+    readOnly: true,
     arabic: 'اللَّهُمَّ إِنِّي أَسْأَلُكَ الْجَنَّةَ وَأَعُوذُ بِكَ مِنَ النَّارِ',
     phonetic: "Allâhumma innî as'aluka-l-jannata wa a'ûdhu bika mina-n-nâr.",
     french: "Ô Allah (عز وجل), je Te demande le Paradis et je cherche refuge auprès de Toi contre le Feu.",
