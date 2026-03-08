@@ -165,6 +165,29 @@
     --sidebar-accent-foreground: 260 50% 90%;
     --sidebar-border: 220 15% 20%;
     --sidebar-ring: 158 40% 55%;
+
+    /* Premium Emerald/Gold — Dark Mode */
+    --p-bg: #0C1410;
+    --p-card: #14221A;
+    --p-card-active: #1A2E22;
+    --p-primary: #34D399;
+    --p-primary-deep: #10B981;
+    --p-accent: #E5C44B;
+    --p-text: #E8EDE9;
+    --p-text-75: rgba(232,237,233,0.8);
+    --p-text-65: rgba(232,237,233,0.7);
+    --p-text-60: rgba(232,237,233,0.6);
+    --p-text-55: rgba(232,237,233,0.55);
+    --p-track: #1A2E22;
+    --p-border: #243D2E;
+    --p-card-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    --p-hard: #F87171;
+    --p-medium: #FBBF24;
+    --p-on-dark: rgba(232,237,233,0.95);
+    --p-on-dark-muted: rgba(232,237,233,0.6);
+    --p-checkbox-border: #34D399;
+    --p-gradient-fill: linear-gradient(90deg, #34D399, #10B981);
+    --p-gradient-bg: linear-gradient(135deg, #14221A 0%, #0C1410 100%);
   }
 }
 
