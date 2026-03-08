@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { AppLayout } from '@/components/layout/AppLayout';
-import { RefreshCw, RotateCcw, TrendingUp, CalendarDays, PartyPopper, Lamp } from 'lucide-react';
+import { RefreshCw, RotateCcw, TrendingUp, CalendarDays, PartyPopper, Lamp, Link, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { supabase } from '@/integrations/supabase/client';
@@ -348,6 +348,7 @@ export default function MurjaPage() {
             {/* Section Ar-Rabt */}
             <div className="space-y-4">
               <div className="flex items-center gap-2">
+                 <Link className="h-5 w-5 flex-shrink-0" style={{ color: 'var(--p-primary)' }} />
                  <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
                    <span className="text-lg font-extrabold" style={{ color: 'var(--p-primary)' }}>Ar-Rabt</span>{' '}
                    <span className="text-sm font-medium" style={{ color: 'var(--p-text-75)' }}>(Liaison du jour)</span>
@@ -371,6 +372,7 @@ export default function MurjaPage() {
             {/* Section Muraja'a (Consolidation) */}
             <div className="space-y-4">
               <div className="flex items-center gap-2">
+                 <BookOpen className="h-5 w-5 flex-shrink-0" style={{ color: 'var(--p-primary)' }} />
                  <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
                    <span className="text-lg font-extrabold" style={{ color: 'var(--p-primary)' }}>Muraja'a</span>{' '}
                    <span className="text-sm font-medium" style={{ color: 'var(--p-text-75)' }}>(Consolidation)</span>
