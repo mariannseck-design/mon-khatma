@@ -50,6 +50,9 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
   const [isPlayingBack, setIsPlayingBack] = useState(false);
   const [showPeek, setShowPeek] = useState(false);
   const [peekCount, setPeekCount] = useState(0);
+  const [totalAttempts, setTotalAttempts] = useState(0);
+  const [totalSuccesses, setTotalSuccesses] = useState(0);
+  const [totalErrors, setTotalErrors] = useState(0);
   const [showEncouragement, setShowEncouragement] = useState(false);
   const [encourageIdx, setEncourageIdx] = useState(0);
   const [validated, setValidated] = useState(false);
@@ -123,6 +126,8 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
   /* ── Validation logic ── */
   const handleSuccess = () => {
     destroyAudio();
+    setTotalAttempts(prev => prev + 1);
+    setTotalSuccesses(prev => prev + 1);
     const next = successes + 1;
     if (next >= 3) {
       setSuccesses(3);
@@ -134,6 +139,8 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
 
   const handleError = () => {
     destroyAudio();
+    setTotalAttempts(prev => prev + 1);
+    setTotalErrors(prev => prev + 1);
     setSuccesses(0);
     setEncourageIdx(prev => (prev + 1) % ENCOURAGEMENTS.length);
     setShowEncouragement(true);
@@ -185,6 +192,12 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
             Votre mémorisation est scellée<br />par la grâce d'Allah (عز وجل)
           </p>
           <p className="text-sm" style={{ color: '#065F46' }}>3 récitations parfaites sans aide</p>
+          <div className="flex justify-center gap-4 text-xs" style={{ color: 'rgba(6,95,70,0.6)' }}>
+            <span>{totalAttempts} tentative{totalAttempts > 1 ? 's' : ''}</span>
+            <span>·</span>
+            <span>{totalErrors} erreur{totalErrors > 1 ? 's' : ''}</span>
+            {peekCount > 0 && <><span>·</span><span>{peekCount} peek{peekCount > 1 ? 's' : ''}</span></>}
+          </div>
 
           <motion.button
             whileTap={{ scale: 0.97 }}
@@ -236,6 +249,7 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
         </div>
         <p className="text-xs text-center" style={{ color: 'rgba(255,255,255,0.35)' }}>
           Essai {Math.min(successes + 1, 3)}/3
+          {totalAttempts > 0 && ` · ${totalAttempts} tentative${totalAttempts > 1 ? 's' : ''} au total`}
         </p>
 
         {/* ── Peek section ── */}
