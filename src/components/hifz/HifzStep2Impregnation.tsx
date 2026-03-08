@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Headphones, Check, Play, Pause, RotateCcw, ZoomIn, ZoomOut, BookOpen, ChevronDown } from 'lucide-react';
 import HifzStepWrapper from './HifzStepWrapper';
 import { RECITERS, getAyahAudioUrl } from '@/hooks/useQuranAudio';
-import { SURAHS, getApproxVersePage } from '@/lib/surahData';
+import { SURAHS } from '@/lib/surahData';
+import { getExactVersePage } from '@/lib/quranData';
 
 interface Props {
   surahNumber: number;
