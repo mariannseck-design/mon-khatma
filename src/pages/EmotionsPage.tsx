@@ -354,6 +354,9 @@ export default function EmotionsPage() {
           </div>
         </motion.div>
 
+        {/* Mes Versets Favoris */}
+        <FavoriteVersesSection />
+
         {/* Section Émotions */}
         <AnimatePresence>
           {showEmotions && (
