@@ -56,6 +56,11 @@ export default function HifzConfig({ onStart }: HifzConfigProps) {
         <p className="text-white/70 text-sm">
           Prépare ta session de mémorisation avec soin
         </p>
+        {suggestedPoint && (
+          <p className="text-xs mt-1" style={{ color: '#d4af37' }}>
+            💡 Suggestion : continuer avec {suggestedPoint}
+          </p>
+        )}
       </div>
 
       {/* Surah selector */}

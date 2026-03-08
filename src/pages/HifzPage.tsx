@@ -276,11 +276,42 @@ export default function HifzPage() {
   );
 
   // Loading state
-  if (hasGoal === null || restoringSession) {
+  if ((hasGoal === null && !showDiagnostic) || restoringSession) {
     return (
       <AppLayout title="Espace Hifz" hideNav>
         <div className="min-h-[80vh] flex items-center justify-center">
           <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+        </div>
+      </AppLayout>
+    );
+  }
+
+  // Diagnostic onboarding (first time)
+  if (showDiagnostic) {
+    return (
+      <AppLayout title="Espace Hifz" hideNav>
+        <div className="min-h-[80vh] rounded-[2rem] p-6 mx-[-4px]" style={GRADIENT_STYLE}>
+          <HifzDiagnostic
+            onComplete={() => {
+              setShowDiagnostic(false);
+              // Now check for goal
+              if (user) {
+                supabase.from('hifz_goals').select('id').eq('user_id', user.id).eq('is_active', true).maybeSingle().then(({ data }) => {
+                  setHasGoal(!!data);
+                  if (!data) setShowGoalOnboarding(true);
+                });
+              }
+            }}
+            onSkip={() => {
+              setShowDiagnostic(false);
+              if (user) {
+                supabase.from('hifz_goals').select('id').eq('user_id', user.id).eq('is_active', true).maybeSingle().then(({ data }) => {
+                  setHasGoal(!!data);
+                  if (!data) setShowGoalOnboarding(true);
+                });
+              }
+            }}
+          />
         </div>
       </AppLayout>
     );
