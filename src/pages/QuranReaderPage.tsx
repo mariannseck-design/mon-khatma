@@ -23,6 +23,7 @@ const IMAGE_SOURCES = [
 
 export default function QuranReaderPage() {
   const navigate = useNavigate();
+  const isOnline = useOnlineStatus();
   const [page, setPage] = useState(() => {
     const saved = localStorage.getItem('quran_reader_page');
     return saved ? Math.min(Math.max(parseInt(saved), 1), TOTAL_PAGES) : 1;
@@ -43,6 +44,13 @@ export default function QuranReaderPage() {
   // Text mode now uses local bundled data — no network dependency
   const [viewMode, setViewMode] = useState<'image' | 'text'>('image');
   const textModeDisabled = false;
+
+  // Force text mode when offline
+  useEffect(() => {
+    if (!isOnline && viewMode === 'image') {
+      setViewMode('text');
+    }
+  }, [isOnline, viewMode]);
   const [nightMode, setNightMode] = useState(() => {
     return localStorage.getItem('quran_night_mode') === 'true';
   });
