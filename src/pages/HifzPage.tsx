@@ -72,6 +72,35 @@ export default function HifzPage() {
   const { isDevMode } = useDevMode();
   const stepStartRef = useRef<number>(Date.now());
   const stepTimesRef = useRef<Record<string, number>>({});
+  const [hifzTheme, setHifzTheme] = useState<HifzTheme>(() => {
+    return (localStorage.getItem(THEME_STORAGE_KEY) as HifzTheme) || 'teal';
+  });
+
+  const containerStyle = getContainerStyle(hifzTheme);
+
+  const handleThemeChange = (t: HifzTheme) => {
+    setHifzTheme(t);
+    localStorage.setItem(THEME_STORAGE_KEY, t);
+  };
+
+  const themeToggle = (
+    <div className="flex items-center justify-center gap-1 mb-4">
+      {([['teal', '🌊'], ['nur', '☀️'], ['parchemin', '📜']] as [HifzTheme, string][]).map(([t, emoji]) => (
+        <button
+          key={t}
+          onClick={() => handleThemeChange(t)}
+          className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all"
+          style={{
+            background: hifzTheme === t ? 'rgba(212,175,55,0.3)' : 'rgba(0,0,0,0.1)',
+            border: `1px solid ${hifzTheme === t ? '#d4af37' : 'rgba(0,0,0,0.1)'}`,
+            color: hifzTheme === t ? '#d4af37' : (hifzTheme === 'teal' ? 'rgba(255,255,255,0.6)' : '#666'),
+          }}
+        >
+          {emoji} {t === 'teal' ? 'Teal' : t === 'nur' ? 'An-Nur' : 'Parchemin'}
+        </button>
+      ))}
+    </div>
+  );
 
   useEffect(() => {
     if (session && step >= 0 && step <= 4) {
