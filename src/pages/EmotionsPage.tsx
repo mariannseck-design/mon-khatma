@@ -41,8 +41,8 @@ const dhikrCards = [
   { id: 'morning', title: 'Zikr du matin', icon: Sunrise, bg: '#e8d5a3', text: '#1b4332', border: '', enabled: false, adminOnly: true },
   { id: 'evening', title: 'Zikr du soir', icon: Moon, bg: '#1a1a2e', text: '#ffffff', border: '', enabled: false, adminOnly: true },
   { id: 'prayer', title: 'Après la prière', icon: BookOpen, bg: '#c8d5c0', text: '#1b4332', border: '', enabled: false, adminOnly: true },
-  { id: 'chifa', title: 'Chifâ & Sérénité', icon: ShieldPlus, bg: '#065F46', text: '#D4AF37', border: '', enabled: true },
-  { id: 'louanges', title: 'Louanges & Istighfar', icon: Sparkles, bg: '#2d6a4f', text: '#d4af37', border: '', enabled: true },
+  { id: 'chifa', title: 'Chifâ & Sérénité', icon: ShieldPlus, bg: '#065F46', text: '#D4AF37', border: '', enabled: false, adminOnly: true },
+  { id: 'louanges', title: 'Louanges & Istighfar', icon: Sparkles, bg: '#2d6a4f', text: '#d4af37', border: '', enabled: false, adminOnly: true },
   { id: 'anytime', title: 'Toute occasion', icon: Heart, bg: '#f0ebe3', text: '#1b4332', border: '', enabled: false },
   { id: 'sujud', title: 'Sujud Tilawah', icon: ChevronDown, bg: '#c67a5c', text: '#ffffff', border: '', enabled: false },
   { id: 'omra', title: 'Duas Omra', icon: MapPin, bg: '#faf8f5', text: '#1b4332', border: '#b5942e', enabled: false },
@@ -317,20 +317,21 @@ export default function EmotionsPage() {
           <div className="grid grid-cols-2 gap-4">
             {dhikrCards.filter(c => !['prayer', 'morning', 'evening'].includes(c.id)).map((card) => {
               const Icon = card.icon;
+              const accessible = ('adminOnly' in card && card.adminOnly) ? isAdmin : (card.enabled || hasFullAccess);
               return (
                 <motion.div
                   key={card.id}
                   variants={itemVariants}
-                  className={`relative overflow-hidden rounded-2xl p-5 flex flex-col items-center justify-center text-center aspect-[4/3] ${(card.enabled || hasFullAccess) ? 'cursor-pointer' : ''}`}
+                  className={`relative overflow-hidden rounded-2xl p-5 flex flex-col items-center justify-center text-center aspect-[4/3] ${accessible ? 'cursor-pointer' : ''}`}
                   style={{
                     background: card.bg,
                     border: card.border ? `1.5px solid ${card.border}` : '1px solid rgba(0,0,0,0.06)',
                     boxShadow: '0 2px 12px -2px rgba(0,0,0,0.08)',
                   }}
-                  onClick={() => (card.enabled || hasFullAccess) && navigate(`/dhikr?category=${card.id}`)}
-                  whileTap={(card.enabled || hasFullAccess) ? { scale: 0.96 } : {}}
+                  onClick={() => accessible && navigate(`/dhikr?category=${card.id}`)}
+                  whileTap={accessible ? { scale: 0.96 } : {}}
                 >
-                  {!card.enabled && !hasFullAccess && (
+                  {!accessible && (
                     <span className="absolute top-2 right-2 text-[9px] font-medium px-2 py-0.5 rounded-full backdrop-blur-sm"
                       style={{ background: 'rgba(255,255,255,0.35)', color: card.text, border: '1px solid rgba(255,255,255,0.25)' }}>
                       Bientôt
