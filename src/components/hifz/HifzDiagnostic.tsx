@@ -162,16 +162,20 @@ export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticPro
   }, [searchQuery]);
 
   // ─── Build blocks from current form ───
-  const buildCurrentBlocks = useCallback((category: Category): BlockWithMeta[] => {
+  const buildCurrentBlocks = useCallback(async (category: Category): Promise<BlockWithMeta[]> => {
     let rawBlocks: { surahNumber: number; verseStart: number; verseEnd: number }[] = [];
     if (activeTab === 'pages') {
       for (const interval of pageIntervals) {
-        rawBlocks.push(...pageRangeToVerseBlocks(interval.start, interval.end));
+        const blocks = await pageRangeToVerseBlocks(interval.start, interval.end);
+        rawBlocks.push(...blocks);
       }
     } else if (activeTab === 'juz') {
       for (const juzNum of Array.from(selectedJuz).sort((a, b) => a - b)) {
         const juz = JUZ_DATA[juzNum - 1];
-        if (juz) rawBlocks.push(...pageRangeToVerseBlocks(juz.startPage, juz.endPage));
+        if (juz) {
+          const blocks = await pageRangeToVerseBlocks(juz.startPage, juz.endPage);
+          rawBlocks.push(...blocks);
+        }
       }
     } else {
       surahSelections.forEach((sel, num) => {
@@ -217,8 +221,8 @@ export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticPro
     intervals.reduce((sum, i) => sum + Math.max(0, i.end - i.start + 1), 0);
 
   // ─── Save entry for a category ───
-  const saveCurrentEntry = (category: Category) => {
-    const blocks = buildCurrentBlocks(category);
+  const saveCurrentEntry = async (category: Category) => {
+    const blocks = await buildCurrentBlocks(category);
     const label = buildEntryLabel();
     if (category === 'solid') {
       setSolidBlocks(prev => [...prev, ...blocks]);
