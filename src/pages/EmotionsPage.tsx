@@ -198,7 +198,7 @@ export default function EmotionsPage() {
           {(() => {
             const prayer = dhikrCards.find(c => c.id === 'prayer')!;
             const PrayerIcon = prayer.icon;
-            const prayerAccessible = isAdmin;
+            const prayerAccessible = hasFullAccess;
             return (
               <motion.div
                 variants={itemVariants}
