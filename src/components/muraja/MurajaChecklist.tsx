@@ -12,6 +12,13 @@ interface ChecklistItem {
   liaison_start_date?: string | null;
 }
 
+interface NextReview {
+  surah_number: number;
+  verse_start: number;
+  verse_end: number;
+  next_review_date: string;
+}
+
 interface MurajaChecklistProps {
   items: ChecklistItem[];
   section: 'rabt' | 'tour';
@@ -22,6 +29,7 @@ interface MurajaChecklistProps {
   totalDue?: number;
   hasTourBlocks?: boolean;
   firstArrivalDate?: string;
+  nextTourReviews?: NextReview[];
 }
 
 const RATINGS = [
