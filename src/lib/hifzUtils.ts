@@ -53,6 +53,11 @@ export async function pageRangeToVerseBlocks(startPage: number, endPage: number)
     }
   }
 
+  // Fallback: if page 1 was included but Al-Fatiha wasn't found (data quirk), add it manually
+  if (startPage <= 1 && !blocks.some(b => b.surahNumber === 1)) {
+    blocks.unshift({ surahNumber: 1, verseStart: 1, verseEnd: 7 });
+  }
+
   return blocks;
 }
 

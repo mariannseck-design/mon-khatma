@@ -317,6 +317,26 @@ export default function MurjaPage() {
               Commence par le module Hifz pour ancrer tes premiers versets !
             </p>
           </div>
+        ) : totalBlocks === 0 ? (
+          <>
+            {/* All revisions done for today */}
+            <div
+              className="rounded-2xl p-8 text-center"
+              style={{
+                background: 'var(--p-gradient-bg)',
+                border: '2px solid var(--p-accent)',
+                boxShadow: '0 8px 32px -8px rgba(6,95,70,0.4)',
+              }}
+            >
+              <PartyPopper className="h-10 w-10 mx-auto mb-4" style={{ color: 'var(--p-accent)' }} />
+              <p className="text-base font-medium leading-relaxed" style={{ color: 'var(--p-on-dark)' }}>
+                Alhamdulillah, tu as terminé tes révisions pour aujourd'hui !
+              </p>
+              <p className="text-sm font-medium mt-2" style={{ color: 'var(--p-on-dark-muted)' }}>
+                Tes prochaines révisions arriveront selon l'algorithme de répétition espacée.
+              </p>
+            </div>
+          </>
         ) : (
           <>
             {/* Countdown */}
