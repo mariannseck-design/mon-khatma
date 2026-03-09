@@ -1,21 +1,55 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Date d'aujourd'hui + Correction critique du calcul pages→versets
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### 1. Affichage de la date du jour (AccueilPage)
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+**`src/pages/AccueilPage.tsx`** : Ajouter sous le greeting (ligne ~217) une ligne avec la date formatée en français :
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+```
+Lundi 9 mars
+```
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+Utiliser `new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })` avec première lettre en majuscule.
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+---
+
+### 2. BUG CRITIQUE : `pageRangeToVerseBlocks` utilise une interpolation linéaire fausse
+
+**Problème racine** : La fonction `pageRangeToVerseBlocks` dans `src/lib/hifzUtils.ts` calcule `versesPerPage = Math.ceil(versesCount / surahPages)` puis fait une multiplication linéaire. Pour Al-Baqara (286 versets, 48 pages), ça donne ~6 versets/page, mais la distribution réelle n'est pas uniforme. Pages 1-5 donne versets 1-30 approximativement, mais pages 6-10 recalcule depuis le début de la sourate et donne 25-54 au lieu de 30-69.
+
+**Solution** : Réécrire `pageRangeToVerseBlocks` pour utiliser les données **exactes** du fichier `quran-uthmani.json` via `getPageAyahs()` (déjà disponible dans `quranData.ts`). La fonction devient `async` et itère sur chaque page demandée, récupère les ayahs exactes de cette page, et construit les blocs avec les vrais numéros de versets.
+
+**`src/lib/hifzUtils.ts`** — Réécriture de `pageRangeToVerseBlocks` :
+
+```typescript
+export async function pageRangeToVerseBlocks(startPage: number, endPage: number) {
+  const blocks: { surahNumber: number; verseStart: number; verseEnd: number }[] = [];
+
+  for (let page = startPage; page <= endPage; page++) {
+    const ayahs = await getPageAyahs(page);
+    for (const ayah of ayahs) {
+      const existing = blocks.find(b => b.surahNumber === ayah.surah.number);
+      if (existing) {
+        existing.verseStart = Math.min(existing.verseStart, ayah.numberInSurah);
+        existing.verseEnd = Math.max(existing.verseEnd, ayah.numberInSurah);
+      } else {
+        blocks.push({
+          surahNumber: ayah.surah.number,
+          verseStart: ayah.numberInSurah,
+          verseEnd: ayah.numberInSurah,
+        });
+      }
+    }
+  }
+  return blocks;
+}
+```
+
+**`src/components/hifz/HifzDiagnostic.tsx`** — Adapter les appels (lignes 167-174) car la fonction devient `async`. Le `useMemo` qui appelle `pageRangeToVerseBlocks` doit être converti en `useEffect` + état, ou les appels doivent être awaités dans le handler de confirmation.
+
+### Résumé des fichiers modifiés
+1. **`src/lib/hifzUtils.ts`** — Réécriture de `pageRangeToVerseBlocks` avec données exactes
+2. **`src/components/hifz/HifzDiagnostic.tsx`** — Adapter les appels async
+3. **`src/pages/AccueilPage.tsx`** — Ajouter la date du jour sous le greeting
 
