@@ -281,7 +281,7 @@ export default function HifzSuiviPage() {
                     />
                   </div>
                   <p className="text-[11px] text-center mt-1" style={{ color: 'var(--p-text-55)' }}>
-                    ≈ {periodVerses} verset{periodVerses > 1 ? 's' : ''} mémorisé{periodVerses > 1 ? 's' : ''}
+                    {"≈ "}{periodVerses}{" ayat"}{periodVerses > 1 ? "s" : ""}{" validée"}{periodVerses > 1 ? "s" : ""}
                   </p>
                   {progressPct >= 100 && (
                     <p className="text-xs text-center" style={{ color: 'var(--p-accent)' }}>
@@ -333,10 +333,10 @@ export default function HifzSuiviPage() {
                       <BookOpen className="h-[18px] w-[18px] text-white" />
                     </div>
                     <span className="text-[10px] font-bold uppercase tracking-wider mb-1 leading-tight" style={{ color: 'var(--p-text-60)' }}>
-                      Programme de mémorisation
+                      Ar-Rabt (Nouveau)
                     </span>
                     {nextPoint ? (
-                      <>
+                    <>
                         <span className="text-sm font-semibold leading-tight" style={{ color: 'var(--p-primary)' }}>
                           {nextPoint.surahName}
                         </span>
@@ -375,7 +375,7 @@ export default function HifzSuiviPage() {
                       <RefreshCw className="h-[18px] w-[18px] text-white" />
                     </div>
                     <span className="text-[10px] font-bold uppercase tracking-wider mb-1" style={{ color: 'var(--p-text-60)' }}>
-                      À réviser
+                      {"Muraja'a (Consolidation)"}
                     </span>
                     {todayRevisions.length > 0 ? (
                       <>
@@ -421,7 +421,7 @@ export default function HifzSuiviPage() {
                 className="rounded-2xl p-2 flex flex-col items-center justify-center"
                 style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', boxShadow: 'var(--p-card-shadow)' }}
               >
-                <CircularGauge value={totalVerses} max={6236} label="Versets ancrés" hideMax />
+                <CircularGauge value={totalVerses} max={6236} label="Ayats mémorisées" hideMax />
               </motion.div>
 
               <motion.div
@@ -458,7 +458,7 @@ export default function HifzSuiviPage() {
               </div>
               <div className="flex items-center gap-3 mb-1 justify-end">
                 <span className="flex items-center gap-1 text-[10px] font-medium" style={{ color: 'var(--p-text-55)' }}>
-                  <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ background: 'var(--p-accent)' }} /> Hifz
+                  <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ background: 'var(--p-accent)' }} /> Ar-Rabt
                 </span>
                 <span className="flex items-center gap-1 text-[10px] font-medium" style={{ color: 'var(--p-text-55)' }}>
                   <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ background: 'var(--p-primary)' }} /> Muraja'a
@@ -471,7 +471,7 @@ export default function HifzSuiviPage() {
                   <Tooltip
                     cursor={false}
                     contentStyle={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', borderRadius: 8, fontSize: 12 }}
-                    formatter={(value: number, name: string) => [`${value} verset${value > 1 ? 's' : ''}`, name === 'hifz' ? 'Hifz' : "Muraja'a"]}
+                    formatter={(value: number, name: string) => [`${value} verset${value > 1 ? 's' : ''}`, name === 'hifz' ? 'Ar-Rabt' : "Muraja'a"]}
                     labelStyle={{ color: 'var(--p-text-65)', fontWeight: 600 }}
                   />
                   <Bar dataKey="hifz" stackId="a" fill="var(--p-accent)" maxBarSize={28} radius={[0, 0, 0, 0]} />
@@ -486,7 +486,7 @@ export default function HifzSuiviPage() {
                 return total > 0 ? (
                   <div className="mt-3 pt-3 flex items-center justify-center gap-3 text-[11px]" style={{ borderTop: '1px solid var(--p-border)' }}>
                     <span style={{ color: 'var(--p-text-65)' }}>Cette semaine :</span>
-                    <span className="font-bold" style={{ color: 'var(--p-accent)' }}>{totalHifz} hifz</span>
+                    <span className="font-bold" style={{ color: 'var(--p-accent)' }}>{totalHifz} ar-rabt</span>
                     <span style={{ color: 'var(--p-text-55)' }}>·</span>
                     <span className="font-bold" style={{ color: 'var(--p-primary)' }}>{totalMuraja} muraja'a</span>
                     <span style={{ color: 'var(--p-text-55)' }}>·</span>
