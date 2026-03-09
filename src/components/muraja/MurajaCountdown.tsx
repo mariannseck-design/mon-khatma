@@ -1,7 +1,12 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
+import { Clock } from 'lucide-react';
 
-export default function MurajaCountdown() {
+interface MurajaCountdownProps {
+  allChecked?: boolean;
+}
+
+export default function MurajaCountdown({ allChecked = false }: MurajaCountdownProps) {
   const [now, setNow] = useState(new Date());
 
   useEffect(() => {
@@ -28,6 +33,41 @@ export default function MurajaCountdown() {
   const totalDaySeconds = 24 * 3600;
   const elapsed = totalDaySeconds - (hours * 3600 + minutes * 60 + seconds);
   const progress = elapsed / totalDaySeconds;
+
+  if (!allChecked) {
+    return (
+      <div className="flex flex-col items-center gap-3">
+        <div className="relative w-40 h-40 flex items-center justify-center">
+          <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 170 170">
+            <circle
+              cx="85" cy="85" r={radius}
+              fill="none"
+              stroke="var(--p-track)"
+              strokeWidth="4"
+            />
+          </svg>
+          <div
+            className="w-30 h-30 rounded-full flex flex-col items-center justify-center gap-1.5"
+            style={{
+              width: '7.5rem',
+              height: '7.5rem',
+              background: 'radial-gradient(circle at center, var(--p-track), var(--p-card))',
+              border: '2px solid var(--p-border)',
+              boxShadow: 'var(--p-card-shadow)',
+            }}
+          >
+            <Clock className="h-5 w-5" style={{ color: 'var(--p-text-60)' }} />
+            <span
+              className="text-[10px] font-medium text-center leading-tight px-3"
+              style={{ color: 'var(--p-text-60)' }}
+            >
+              En attente de votre validation du jour
+            </span>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col items-center gap-3">
