@@ -38,7 +38,7 @@ const COLORS = {
 };
 
 export default function AccueilPage() {
-  const { user, isAdmin, hasFullAccess, hasFullAccess } = useAuth();
+  const { user, isAdmin, hasFullAccess } = useAuth();
   const { isInstallable, isInstalled, isIOS, promptInstall } = usePWAInstall();
   const { subscriptionError } = usePushSubscription();
   const [showNamePrompt, setShowNamePrompt] = useState(false);

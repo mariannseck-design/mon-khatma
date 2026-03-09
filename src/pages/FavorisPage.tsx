@@ -30,7 +30,7 @@ function getSurahName(num: number) {
 
 export default function FavorisPage() {
   const navigate = useNavigate();
-  const { user, hasFullAccessAccess } = useAuth();
+  const { user, hasFullAccess } = useAuth();
   const [verses, setVerses] = useState<FavoriteVerse[]>([]);
   const [loading, setLoading] = useState(true);
 
