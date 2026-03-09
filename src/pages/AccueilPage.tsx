@@ -567,14 +567,14 @@ hasFullAccess       {isAdmin ? (
                 </h3>
               </div>
               <div className="space-y-4">
-                {!isAdmin && (
+                {!hasFullAccess && (
                   <p className="text-xs text-center font-medium" style={{ color: COLORS.gold }}>
                     Lancement après le Ramadan 🌸
                   </p>
                 )}
-                <DefiAlMulk disabled={!isAdmin} />
-                <DefiAlKahf disabled={!isAdmin} />
-                <DefiAlBaqara disabled={!isAdmin} />
+                <DefiAlMulk disabled={!hasFullAccess} />
+                <DefiAlKahf disabled={!hasFullAccess} />
+                <DefiAlBaqara disabled={!hasFullAccess} />
                 <DefisCommunityCounter />
               </div>
             </motion.div>
