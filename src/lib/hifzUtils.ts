@@ -33,43 +33,23 @@ export function surahsToVerseBlocks(surahNumbers: number[]) {
 /**
  * Convert a page range into verse blocks (approximate: ~15 verses per page)
  */
-export function pageRangeToVerseBlocks(startPage: number, endPage: number) {
+export async function pageRangeToVerseBlocks(startPage: number, endPage: number) {
   const blocks: { surahNumber: number; verseStart: number; verseEnd: number }[] = [];
 
   for (let page = startPage; page <= endPage; page++) {
-    // Find which surah this page belongs to
-    let surah = SURAHS[0];
-    for (let i = SURAHS.length - 1; i >= 0; i--) {
-      if (SURAHS[i].startPage <= page) {
-        surah = SURAHS[i];
-        break;
+    const ayahs = await getPageAyahs(page);
+    for (const ayah of ayahs) {
+      const existing = blocks.find(b => b.surahNumber === ayah.surah.number);
+      if (existing) {
+        existing.verseStart = Math.min(existing.verseStart, ayah.numberInSurah);
+        existing.verseEnd = Math.max(existing.verseEnd, ayah.numberInSurah);
+      } else {
+        blocks.push({
+          surahNumber: ayah.surah.number,
+          verseStart: ayah.numberInSurah,
+          verseEnd: ayah.numberInSurah,
+        });
       }
-    }
-
-    // Check if we already have a block for this surah
-    const existing = blocks.find(b => b.surahNumber === surah.number);
-    if (!existing) {
-      // Approximate verse range for this page within the surah
-      const surahEndPage = SURAHS.find(s => s.number === surah.number + 1)?.startPage ?? 605;
-      const surahPages = surahEndPage - surah.startPage;
-      const pageOffset = page - surah.startPage;
-      const versesPerPage = Math.ceil(surah.versesCount / Math.max(surahPages, 1));
-
-      const verseStart = Math.min(pageOffset * versesPerPage + 1, surah.versesCount);
-      const verseEnd = Math.min((pageOffset + 1) * versesPerPage, surah.versesCount);
-
-      blocks.push({
-        surahNumber: surah.number,
-        verseStart,
-        verseEnd,
-      });
-    } else {
-      // Extend the existing block to cover more verses
-      const surahEndPage = SURAHS.find(s => s.number === surah.number + 1)?.startPage ?? 605;
-      const surahPages = surahEndPage - surah.startPage;
-      const pageOffset = page - surah.startPage;
-      const versesPerPage = Math.ceil(surah.versesCount / Math.max(surahPages, 1));
-      existing.verseEnd = Math.min((pageOffset + 1) * versesPerPage, surah.versesCount);
     }
   }
 
