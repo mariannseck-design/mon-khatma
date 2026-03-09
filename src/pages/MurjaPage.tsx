@@ -146,7 +146,11 @@ export default function MurjaPage() {
     }
     return {
       totalVersesCount: total,
-      surahSummary: [...map.values()].sort((a, b) => a.nextReview.localeCompare(b.nextReview)),
+      surahSummary: [...map.values()].sort((a, b) => {
+        // Liaison first, then tour; within same phase, sort by surah order
+        if (a.isLiaison !== b.isLiaison) return a.isLiaison ? -1 : 1;
+        return a.verseMin - b.verseMin || a.name.localeCompare(b.name);
+      }),
     };
   }, [allVerses]);
 
