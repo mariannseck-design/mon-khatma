@@ -305,12 +305,14 @@ export default function PlanificateurPage() {
     if (!activeGoal || activeGoal.goal_type !== 'pages_per_day') return null;
 
     const target = activeGoal.target_value;
-    const initialTargetDays = Math.ceil(TOTAL_QURAN_PAGES / target);
+    const initialTargetDays = Math.floor(TOTAL_QURAN_PAGES / target);
+    const initialExtraPages = TOTAL_QURAN_PAGES % target;
     const remainingPages = TOTAL_QURAN_PAGES - totalPagesRead;
+    const extraSuffix = initialExtraPages > 0 ? ` (+ ${Math.round(initialExtraPages)} pages le dernier jour)` : '';
 
     // Condition A: no pages read yet
     if (totalPagesRead <= 0) {
-      return `Bismillah ! À ce rythme d'objectif, tu termineras ta lecture dans ${initialTargetDays} jours.`;
+      return `Bismillah ! À ce rythme d'objectif, tu termineras ta lecture dans ${initialTargetDays} jours${extraSuffix}.`;
     }
 
     // Calculate days elapsed since start
@@ -321,7 +323,9 @@ export default function PlanificateurPage() {
     if (remainingPages <= 0) return null;
 
     // Days left based on TARGET pace (not actual pace)
-    const estimatedDaysLeft = Math.ceil(remainingPages / target);
+    const estimatedDaysLeft = Math.floor(remainingPages / target);
+    const estimatedExtraPages = remainingPages % target;
+    const estimatedExtraSuffix = estimatedExtraPages > 0 ? ` (+ ${Math.round(estimatedExtraPages)} pages le dernier jour)` : '';
 
     // Compare actual progress vs expected progress
     const expectedPages = daysElapsed * target;
@@ -329,16 +333,16 @@ export default function PlanificateurPage() {
 
     // Condition B: well ahead (read 50%+ more than expected)
     if (progressRatio > 1.5) {
-      return `Ma sha Allah ! Ton ardeur fait chaud au cœur. À ce rythme exceptionnel, tu termineras ta lecture dans seulement ${estimatedDaysLeft} jours. Qu'Allah (عز وجل) bénisse ton temps !`;
+      return `Ma sha Allah ! Ton ardeur fait chaud au cœur. Tu termineras ta lecture dans seulement ${estimatedDaysLeft} jours${estimatedExtraSuffix}. Qu'Allah (عز وجل) bénisse ton temps !`;
     }
 
     // Condition D: behind (read less than 85% of expected)
     if (progressRatio < 0.85) {
-      return `Chaque lettre lue est une immense récompense. Tu as pris un peu de retard, mais l'essentiel est l'Istiqamah (constance). À ce rythme, tu finiras dans ${estimatedDaysLeft} jours. On s'accroche !`;
+      return `Chaque lettre lue est une immense récompense. Tu as pris un peu de retard, mais l'essentiel est l'Istiqamah (constance). Tu finiras dans ${estimatedDaysLeft} jours${estimatedExtraSuffix}. On s'accroche !`;
     }
 
     // Condition C: on track
-    return `Excellente régularité ! À ton rythme actuel, tu termineras ta lecture dans environ ${estimatedDaysLeft} jours.`;
+    return `Excellente régularité ! Tu termineras ta lecture dans environ ${estimatedDaysLeft} jours${estimatedExtraSuffix}.`;
   };
 
   const handleRecalculateGoal = async () => {
