@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, Zap, ThumbsUp, Crown, BookOpen, Info, CalendarDays } from 'lucide-react';
+import { Check, Zap, ThumbsUp, Crown, BookOpen, Info, CalendarDays, PartyPopper } from 'lucide-react';
 import { SURAHS } from '@/lib/surahData';
 
 interface ChecklistItem {
@@ -20,6 +20,7 @@ interface MurajaChecklistProps {
   onRate?: (id: string, quality: number, ratingKey: string) => void;
   isCapActive?: boolean;
   totalDue?: number;
+  hasTourBlocks?: boolean;
   firstArrivalDate?: string;
 }
 
@@ -51,6 +52,7 @@ export default function MurajaChecklist({
   onRate,
   isCapActive,
   totalDue,
+  hasTourBlocks,
   firstArrivalDate,
 }: MurajaChecklistProps) {
   const [ratingFor, setRatingFor] = useState<string | null>(null);
@@ -75,6 +77,25 @@ export default function MurajaChecklist({
   };
 
   if (items.length === 0) {
+    // Tour section: distinguish "all done today" vs "no tour blocks at all"
+    if (section === 'tour' && hasTourBlocks) {
+      return (
+        <div
+          className="rounded-2xl p-6 text-center"
+          style={{
+            background: 'var(--p-card)',
+            border: '1px solid var(--p-border)',
+            boxShadow: 'var(--p-card-shadow)',
+          }}
+        >
+          <PartyPopper className="h-6 w-6 mx-auto mb-2" style={{ color: '#D4AF37' }} />
+          <p className="text-sm font-bold" style={{ color: 'var(--p-primary)' }}>
+            Alhamdulillah, tu as terminé tes révisions pour aujourd'hui !
+          </p>
+        </div>
+      );
+    }
+
     return (
       <div
         className="rounded-2xl p-6 text-center"

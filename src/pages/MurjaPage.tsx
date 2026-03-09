@@ -514,15 +514,16 @@ export default function MurjaPage() {
                  onRate={handleTourRate}
                  isCapActive={isCapActive}
                  totalDue={totalDueCount}
-                 firstArrivalDate={
-                   rabtVerses.length > 0
-                     ? rabtVerses.reduce((earliest, v) => {
-                         if (!v.liaison_start_date) return earliest;
-                         return !earliest || v.liaison_start_date < earliest ? v.liaison_start_date : earliest;
-                       }, null as string | null) ?? undefined
-                     : undefined
-                 }
-               />
+                 hasTourBlocks={allVerses.some(v => v.liaison_status === 'tour' || !v.liaison_status)}
+                  firstArrivalDate={
+                    rabtVerses.length > 0
+                      ? rabtVerses.reduce((earliest, v) => {
+                          if (!v.liaison_start_date) return earliest;
+                          return !earliest || v.liaison_start_date < earliest ? v.liaison_start_date : earliest;
+                        }, null as string | null) ?? undefined
+                      : undefined
+                  }
+                />
             </div>
 
             {/* Mes ayats mémorisées */}
