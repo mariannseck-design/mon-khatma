@@ -411,7 +411,7 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
                       }}
                     >
                       <span className="text-xs mt-0.5 whitespace-nowrap" style={{ color: '#d4af37', fontWeight: phaseInfo.phase === 4 ? 700 : 400 }}>Dès la 13ème</span>
-                      <p className="text-xs text-white/70">🧠 Texte masqué. Récitation de mémoireVous pouvez regarder le Mushaf en cas d'erreur ou de doutble.</p>
+                      <p className="text-xs text-white/70">🧠 Texte masqué. Récitation de mémoire. Vous pouvez regarder le Mushaf en cas d'erreur ou de doute.</p>
                     </div>
                   </div>
 

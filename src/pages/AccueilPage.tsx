@@ -76,7 +76,7 @@ export default function AccueilPage() {
   const [pendingReviews, setPendingReviews] = useState(0);
   const [hasStartedHifz, setHasStartedHifz] = useState(false);
 
-  const STEP_NAMES = ['Intention', 'Réveil', 'Imprégnation', 'Ancrage (Tikrar)', 'Validation'];
+  const STEP_NAMES = ['Intention', 'Réveil', 'Imprégnation', 'Istiqâmah', 'Validation'];
 
   useEffect(() => {
     if (user) {
