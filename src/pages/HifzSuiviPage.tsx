@@ -458,7 +458,7 @@ export default function HifzSuiviPage() {
               </div>
               <div className="flex items-center gap-3 mb-1 justify-end">
                 <span className="flex items-center gap-1 text-[10px] font-medium" style={{ color: 'var(--p-text-55)' }}>
-                  <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ background: 'var(--p-accentAr-Rabtr-Rabtr-Rabtifz
+                  <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ background: 'var(--p-accent)' }} /> Ar-Rabt
                 </span>
                 <span className="flex items-center gap-1 text-[10px] font-medium" style={{ color: 'var(--p-text-55)' }}>
                   <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ background: 'var(--p-primary)' }} /> Muraja'a
