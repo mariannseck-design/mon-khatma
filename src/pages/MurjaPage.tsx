@@ -551,14 +551,15 @@ export default function MurjaPage() {
                  isCapActive={isCapActive}
                  totalDue={totalDueCount}
                  hasTourBlocks={allVerses.some(v => v.liaison_status === 'tour' || !v.liaison_status)}
-                  firstArrivalDate={
-                    rabtVerses.length > 0
-                      ? rabtVerses.reduce((earliest, v) => {
-                          if (!v.liaison_start_date) return earliest;
-                          return !earliest || v.liaison_start_date < earliest ? v.liaison_start_date : earliest;
-                        }, null as string | null) ?? undefined
-                      : undefined
-                  }
+                 firstArrivalDate={
+                   rabtVerses.length > 0
+                     ? rabtVerses.reduce((earliest, v) => {
+                         if (!v.liaison_start_date) return earliest;
+                         return !earliest || v.liaison_start_date < earliest ? v.liaison_start_date : earliest;
+                       }, null as string | null) ?? undefined
+                     : undefined
+                 }
+                 nextTourReviews={nextTourReviews}
                 />
             </div>
 
