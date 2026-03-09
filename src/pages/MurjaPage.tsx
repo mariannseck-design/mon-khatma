@@ -130,16 +130,18 @@ export default function MurjaPage() {
 
   const { totalVersesCount, surahSummary } = useMemo(() => {
     const total = allVerses.reduce((sum, v) => sum + (v.verse_end - v.verse_start + 1), 0);
-    const map = new Map<number, { name: string; verseMin: number; verseMax: number; nextReview: string; status: string }>();
+    const map = new Map<number, { name: string; verseMin: number; verseMax: number; nextReview: string; isLiaison: boolean }>();
     for (const v of allVerses) {
       const existing = map.get(v.surah_number);
+      const isLiaison = v.liaison_status === 'liaison';
       if (existing) {
         existing.verseMin = Math.min(existing.verseMin, v.verse_start);
         existing.verseMax = Math.max(existing.verseMax, v.verse_end);
         if (v.next_review_date < existing.nextReview) existing.nextReview = v.next_review_date;
+        if (isLiaison) existing.isLiaison = true;
       } else {
         const surahName = SURAHS.find(s => s.number === v.surah_number)?.name || `Sourate ${v.surah_number}`;
-        map.set(v.surah_number, { name: surahName, verseMin: v.verse_start, verseMax: v.verse_end, nextReview: v.next_review_date, status: v.liaison_status || 'tour' });
+        map.set(v.surah_number, { name: surahName, verseMin: v.verse_start, verseMax: v.verse_end, nextReview: v.next_review_date, isLiaison });
       }
     }
     return {
