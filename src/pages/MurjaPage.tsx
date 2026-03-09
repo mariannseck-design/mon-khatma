@@ -575,29 +575,36 @@ export default function MurjaPage() {
               </div>
               <div className="space-y-1.5">
                 {surahSummary.map((s, idx) => {
-                  const today = getTodayKey();
-                  const tomorrow = new Date();
-                  tomorrow.setDate(tomorrow.getDate() + 1);
-                  const tomorrowKey = tomorrow.toISOString().split('T')[0];
-                  const phaseLabel = s.isLiaison ? 'liaison' : 'révision';
-
                   const statusText = s.isLiaison ? 'Phase de liaison' : 'Phase de révision';
                   const isLiaison = s.isLiaison;
+                  const pages = pageMap[`${s.surahNumber}_${isLiaison ? 'l' : 't'}`];
+                  const pageLabel = pages
+                    ? pages.startPage === pages.endPage
+                      ? `p. ${pages.startPage}`
+                      : `p. ${pages.startPage}-${pages.endPage}`
+                    : '';
 
                   return (
                     <div
                       key={`${s.name}_${idx}`}
-                      className="flex items-center justify-between px-3 py-2 rounded-lg"
+                      className="flex flex-col gap-1 px-3 py-2 rounded-lg"
                       style={{
                         background: isLiaison ? 'rgba(212, 175, 55, 0.08)' : 'rgba(16, 185, 129, 0.08)',
                         border: `1px solid ${isLiaison ? 'rgba(212, 175, 55, 0.2)' : 'rgba(16, 185, 129, 0.2)'}`,
                       }}
                     >
-                       <div className="flex items-center gap-2">
-                         <span className="text-xs font-bold" style={{ color: 'var(--p-primary)' }}>
-                           {s.name}
-                         </span>
-                         <span className="text-sm font-extrabold" style={{ color: 'var(--p-primary)' }}>v. {s.verseMin} à {s.verseMax}</span>
+                       <div className="flex items-center justify-between">
+                         <div className="flex items-center gap-2">
+                           <span className="text-xs font-bold" style={{ color: 'var(--p-primary)' }}>
+                             {s.name}
+                           </span>
+                           <span className="text-sm font-extrabold" style={{ color: 'var(--p-primary)' }}>v. {s.verseMin} à {s.verseMax}</span>
+                           {pageLabel && (
+                             <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded" style={{ background: 'var(--p-card)', color: 'var(--p-text-60)' }}>
+                               {pageLabel}
+                             </span>
+                           )}
+                         </div>
                        </div>
                         <div className="flex items-center gap-0.5 text-[10px] font-medium" style={{ color: isLiaison ? '#B8860B' : '#059669' }}>
                        <span className="flex items-center gap-0.5">
