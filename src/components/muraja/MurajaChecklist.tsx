@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, Zap, ThumbsUp, Crown, BookOpen, Info, CalendarDays } from 'lucide-react';
+import { Check, Zap, ThumbsUp, Crown, BookOpen, Info, CalendarDays, PartyPopper } from 'lucide-react';
 import { SURAHS } from '@/lib/surahData';
 
 interface ChecklistItem {
