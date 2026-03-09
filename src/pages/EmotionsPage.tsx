@@ -38,9 +38,9 @@ const moods = [
 ];
 
 const dhikrCards = [
-  { id: 'morning', title: 'Zikr du matin', icon: Sunrise, bg: '#e8d5a3', text: '#1b4332', border: '', enabled: true },
-  { id: 'evening', title: 'Zikr du soir', icon: Moon, bg: '#1a1a2e', text: '#ffffff', border: '', enabled: true },
-  { id: 'prayer', title: 'Après la prière', icon: BookOpen, bg: '#c8d5c0', text: '#1b4332', border: '', enabled: true },
+  { id: 'morning', title: 'Zikr du matin', icon: Sunrise, bg: '#e8d5a3', text: '#1b4332', border: '', enabled: false, adminOnly: true },
+  { id: 'evening', title: 'Zikr du soir', icon: Moon, bg: '#1a1a2e', text: '#ffffff', border: '', enabled: false, adminOnly: true },
+  { id: 'prayer', title: 'Après la prière', icon: BookOpen, bg: '#c8d5c0', text: '#1b4332', border: '', enabled: false, adminOnly: true },
   { id: 'chifa', title: 'Chifâ & Sérénité', icon: ShieldPlus, bg: '#065F46', text: '#D4AF37', border: '', enabled: true },
   { id: 'louanges', title: 'Louanges & Istighfar', icon: Sparkles, bg: '#2d6a4f', text: '#d4af37', border: '', enabled: true },
   { id: 'anytime', title: 'Toute occasion', icon: Heart, bg: '#f0ebe3', text: '#1b4332', border: '', enabled: false },
@@ -61,7 +61,7 @@ const itemVariants = {
 };
 
 export default function EmotionsPage() {
-  const { user, hasFullAccess } = useAuth();
+  const { user, hasFullAccess, isAdmin } = useAuth();
   const navigate = useNavigate();
   const [selectedMood, setSelectedMood] = useState<number | null>(null);
   const [gratitude, setGratitude] = useState('');
@@ -198,19 +198,26 @@ export default function EmotionsPage() {
           {(() => {
             const prayer = dhikrCards.find(c => c.id === 'prayer')!;
             const PrayerIcon = prayer.icon;
+            const prayerAccessible = isAdmin;
             return (
               <motion.div
                 variants={itemVariants}
-                className="relative overflow-hidden rounded-2xl p-5 flex flex-col items-center justify-center text-center cursor-pointer"
+                className={`relative overflow-hidden rounded-2xl p-5 flex flex-col items-center justify-center text-center ${prayerAccessible ? 'cursor-pointer' : ''}`}
                 style={{
                   background: prayer.bg,
                   border: '1px solid rgba(0,0,0,0.06)',
                   boxShadow: '0 2px 12px -2px rgba(0,0,0,0.08)',
                   minHeight: '100px',
                 }}
-                onClick={() => navigate(`/dhikr?category=${prayer.id}`)}
-                whileTap={{ scale: 0.96 }}
+                onClick={() => prayerAccessible && navigate(`/dhikr?category=${prayer.id}`)}
+                whileTap={prayerAccessible ? { scale: 0.96 } : {}}
               >
+                {!prayerAccessible && (
+                  <span className="absolute top-2 right-2 text-[9px] font-medium px-2 py-0.5 rounded-full backdrop-blur-sm"
+                    style={{ background: 'rgba(255,255,255,0.35)', color: prayer.text, border: '1px solid rgba(255,255,255,0.25)' }}>
+                    Bientôt
+                  </span>
+                )}
                 <PrayerIcon className="h-7 w-7 mb-2 opacity-80" strokeWidth={1.5} style={{ color: prayer.text }} />
                 <h3 className="text-sm font-semibold leading-tight" style={{ color: prayer.text, fontFamily: "'Inter', sans-serif" }}>
                   {prayer.title}
@@ -223,19 +230,26 @@ export default function EmotionsPage() {
           <div className="grid grid-cols-2 gap-4">
             {dhikrCards.filter(c => c.id === 'morning' || c.id === 'evening').map((card) => {
               const Icon = card.icon;
+              const accessible = card.adminOnly ? isAdmin : (card.enabled || hasFullAccess);
               return (
                 <motion.div
                   key={card.id}
                   variants={itemVariants}
-                  className="relative overflow-hidden rounded-2xl p-5 flex flex-col items-center justify-center text-center aspect-[4/3] cursor-pointer"
+                  className={`relative overflow-hidden rounded-2xl p-5 flex flex-col items-center justify-center text-center aspect-[4/3] ${accessible ? 'cursor-pointer' : ''}`}
                   style={{
                     background: card.bg,
                     border: '1px solid rgba(0,0,0,0.06)',
                     boxShadow: '0 2px 12px -2px rgba(0,0,0,0.08)',
                   }}
-                  onClick={() => navigate(`/dhikr?category=${card.id}`)}
-                  whileTap={{ scale: 0.96 }}
+                  onClick={() => accessible && navigate(`/dhikr?category=${card.id}`)}
+                  whileTap={accessible ? { scale: 0.96 } : {}}
                 >
+                  {!accessible && (
+                    <span className="absolute top-2 right-2 text-[9px] font-medium px-2 py-0.5 rounded-full backdrop-blur-sm"
+                      style={{ background: 'rgba(255,255,255,0.35)', color: card.text, border: '1px solid rgba(255,255,255,0.25)' }}>
+                      Bientôt
+                    </span>
+                  )}
                   <Icon className="h-7 w-7 mb-2 opacity-80" strokeWidth={1.5} style={{ color: card.text }} />
                   <h3 className="text-sm font-semibold leading-tight" style={{ color: card.text, fontFamily: "'Inter', sans-serif" }}>
                     {card.title}
