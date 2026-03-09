@@ -9,6 +9,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { SURAHS } from '@/lib/surahData';
 import { graduateLiaisonBlocks } from '@/lib/hifzUtils';
+import { getExactVersePage } from '@/lib/quranData';
 import { SparkleEffect } from '@/components/planificateur/SparkleEffect';
 import MurajaCountdown from '@/components/muraja/MurajaCountdown';
 import MurajaChecklist from '@/components/muraja/MurajaChecklist';
@@ -130,7 +131,7 @@ export default function MurjaPage() {
 
   const { totalVersesCount, surahSummary } = useMemo(() => {
     const total = allVerses.reduce((sum, v) => sum + (v.verse_end - v.verse_start + 1), 0);
-    const map = new Map<string, { name: string; verseMin: number; verseMax: number; nextReview: string; isLiaison: boolean }>();
+    const map = new Map<string, { name: string; surahNumber: number; verseMin: number; verseMax: number; nextReview: string; isLiaison: boolean }>();
     for (const v of allVerses) {
       const isLiaison = v.liaison_status === 'liaison';
       const key = `${v.surah_number}_${isLiaison ? 'liaison' : 'tour'}`;
@@ -141,7 +142,7 @@ export default function MurjaPage() {
         if (v.next_review_date < existing.nextReview) existing.nextReview = v.next_review_date;
       } else {
         const surahName = SURAHS.find(s => s.number === v.surah_number)?.name || `Sourate ${v.surah_number}`;
-        map.set(key, { name: surahName, verseMin: v.verse_start, verseMax: v.verse_end, nextReview: v.next_review_date, isLiaison });
+        map.set(key, { name: surahName, surahNumber: v.surah_number, verseMin: v.verse_start, verseMax: v.verse_end, nextReview: v.next_review_date, isLiaison });
       }
     }
     return {
@@ -153,6 +154,28 @@ export default function MurjaPage() {
       }),
     };
   }, [allVerses]);
+
+  // Compute page numbers for each summary item
+  const [pageMap, setPageMap] = useState<Record<string, { startPage: number; endPage: number }>>({});
+  useEffect(() => {
+    if (surahSummary.length === 0) return;
+    let cancelled = false;
+    (async () => {
+      const result: Record<string, { startPage: number; endPage: number }> = {};
+      for (const s of surahSummary) {
+        const key = `${s.surahNumber}_${s.isLiaison ? 'l' : 't'}`;
+        try {
+          const [startPage, endPage] = await Promise.all([
+            getExactVersePage(s.surahNumber, s.verseMin),
+            getExactVersePage(s.surahNumber, s.verseMax),
+          ]);
+          result[key] = { startPage, endPage };
+        } catch { /* skip */ }
+      }
+      if (!cancelled) setPageMap(result);
+    })();
+    return () => { cancelled = true; };
+  }, [surahSummary]);
 
   const formatDate = (dateStr: string) => {
     const d = new Date(dateStr + 'T00:00:00');
@@ -552,14 +575,14 @@ export default function MurjaPage() {
               </div>
               <div className="space-y-1.5">
                 {surahSummary.map((s, idx) => {
-                  const today = getTodayKey();
-                  const tomorrow = new Date();
-                  tomorrow.setDate(tomorrow.getDate() + 1);
-                  const tomorrowKey = tomorrow.toISOString().split('T')[0];
-                  const phaseLabel = s.isLiaison ? 'liaison' : 'révision';
-
                   const statusText = s.isLiaison ? 'Phase de liaison' : 'Phase de révision';
                   const isLiaison = s.isLiaison;
+                  const pages = pageMap[`${s.surahNumber}_${isLiaison ? 'l' : 't'}`];
+                  const pageLabel = pages
+                    ? pages.startPage === pages.endPage
+                      ? `p. ${pages.startPage}`
+                      : `p. ${pages.startPage}-${pages.endPage}`
+                    : '';
 
                   return (
                     <div
@@ -570,18 +593,21 @@ export default function MurjaPage() {
                         border: `1px solid ${isLiaison ? 'rgba(212, 175, 55, 0.2)' : 'rgba(16, 185, 129, 0.2)'}`,
                       }}
                     >
-                       <div className="flex items-center gap-2">
-                         <span className="text-xs font-bold" style={{ color: 'var(--p-primary)' }}>
-                           {s.name}
-                         </span>
-                         <span className="text-sm font-extrabold" style={{ color: 'var(--p-primary)' }}>v. {s.verseMin} à {s.verseMax}</span>
-                       </div>
-                        <div className="flex items-center gap-0.5 text-[10px] font-medium" style={{ color: isLiaison ? '#B8860B' : '#059669' }}>
-                       <span className="flex items-center gap-0.5">
-                           <CalendarDays className="h-2.5 w-2.5" />
-                           {statusText}
-                         </span>
-                       </div>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-xs font-bold" style={{ color: 'var(--p-primary)' }}>
+                          {s.name}
+                        </span>
+                        <span className="text-sm font-extrabold" style={{ color: 'var(--p-primary)' }}>v. {s.verseMin} à {s.verseMax}</span>
+                        {pageLabel && (
+                          <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded" style={{ background: 'var(--p-card)', color: 'var(--p-text-60)' }}>
+                            {pageLabel}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-0.5 text-[10px] font-medium flex-shrink-0" style={{ color: isLiaison ? '#B8860B' : '#059669' }}>
+                        <CalendarDays className="h-2.5 w-2.5" />
+                        {statusText}
+                      </div>
                     </div>
                   );
                 })}
