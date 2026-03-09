@@ -49,7 +49,7 @@ export default function FavorisPage() {
   }, [user]);
 
   const openInMushaf = async (v: FavoriteVerse) => {
-   hasFullAccesssAdmin) {
+   if (!hasFullAccess) {
       toast({ title: 'Bientôt disponible', description: 'Le Mushaf sera accessible prochainement in shaa Allah 🤲' });
       return;
     }

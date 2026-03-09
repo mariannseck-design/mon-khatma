@@ -230,7 +230,7 @@ export default function EmotionsPage() {
           <div className="grid grid-cols-2 gap-4">
             {dhikrCards.filter(c => c.id === 'morning' || c.id === 'evening').map((card) => {
               const Icon = card.icon;
-              const accessible = card.hasFullAccessasFullAccesssAdmin : (card.enabled || hasFullAccess);
+              const accessible = card.adminOnly ? hasFullAccess : (card.enabled || hasFullAccess);
               return (
                 <motion.div
                   key={card.id}
