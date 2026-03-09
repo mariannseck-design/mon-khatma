@@ -394,10 +394,10 @@ export default function PlanificateurPage() {
         )}
 
         {/* Precision message */}
-        {activeGoal && getPrecisionMessage() && (
+        {activeGoal && getDynamicEstimationMessage() && (
           <Card className="pastel-card p-4 bg-gradient-to-r from-accent/10 to-primary/10">
             <p className="text-sm text-center text-foreground">
-              🌟 {getPrecisionMessage()}
+              🌟 {getDynamicEstimationMessage()}
             </p>
           </Card>
         )}
