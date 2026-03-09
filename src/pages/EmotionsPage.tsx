@@ -317,20 +317,21 @@ export default function EmotionsPage() {
           <div className="grid grid-cols-2 gap-4">
             {dhikrCards.filter(c => !['prayer', 'morning', 'evening'].includes(c.id)).map((card) => {
               const Icon = card.icon;
+              const accessible = ('adminOnly' in card && card.adminOnly) ? isAdmin : (card.enabled || hasFullAccess);
               return (
                 <motion.div
                   key={card.id}
                   variants={itemVariants}
-                  className={`relative overflow-hidden rounded-2xl p-5 flex flex-col items-center justify-center text-center aspect-[4/3] ${(card.enabled || hasFullAccess) ? 'cursor-pointer' : ''}`}
+                  className={`relative overflow-hidden rounded-2xl p-5 flex flex-col items-center justify-center text-center aspect-[4/3] ${accessible ? 'cursor-pointer' : ''}`}
                   style={{
                     background: card.bg,
                     border: card.border ? `1.5px solid ${card.border}` : '1px solid rgba(0,0,0,0.06)',
                     boxShadow: '0 2px 12px -2px rgba(0,0,0,0.08)',
                   }}
-                  onClick={() => (card.enabled || hasFullAccess) && navigate(`/dhikr?category=${card.id}`)}
-                  whileTap={(card.enabled || hasFullAccess) ? { scale: 0.96 } : {}}
+                  onClick={() => accessible && navigate(`/dhikr?category=${card.id}`)}
+                  whileTap={accessible ? { scale: 0.96 } : {}}
                 >
-                  {!card.enabled && !hasFullAccess && (
+                  {!accessible && (
                     <span className="absolute top-2 right-2 text-[9px] font-medium px-2 py-0.5 rounded-full backdrop-blur-sm"
                       style={{ background: 'rgba(255,255,255,0.35)', color: card.text, border: '1px solid rgba(255,255,255,0.25)' }}>
                       Bientôt
