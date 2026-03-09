@@ -558,20 +558,17 @@ export default function MurjaPage() {
                   const tomorrowKey = tomorrow.toISOString().split('T')[0];
                   const phaseLabel = s.isLiaison ? 'liaison' : 'révision';
 
-                  let statusText: string;
-                  if (s.nextReview <= today) {
-                    statusText = s.isLiaison ? 'Phase de liaison' : 'Phase de révision';
-                  } else if (s.nextReview === tomorrowKey) {
-                    statusText = `Prochaine ${phaseLabel} : demain, ${formatDate(s.nextReview)}`;
-                  } else {
-                    statusText = `Prochaine ${phaseLabel} : ${formatDate(s.nextReview)}`;
-                  }
+                  const statusText = s.isLiaison ? 'Phase de liaison' : 'Phase de révision';
+                  const isLiaison = s.isLiaison;
 
                   return (
                     <div
                       key={`${s.name}_${idx}`}
                       className="flex items-center justify-between px-3 py-2 rounded-lg"
-                      style={{ background: 'var(--p-card-active)' }}
+                      style={{
+                        background: isLiaison ? 'rgba(212, 175, 55, 0.08)' : 'rgba(16, 185, 129, 0.08)',
+                        border: `1px solid ${isLiaison ? 'rgba(212, 175, 55, 0.2)' : 'rgba(16, 185, 129, 0.2)'}`,
+                      }}
                     >
                        <div className="flex items-center gap-2">
                          <span className="text-xs font-bold" style={{ color: 'var(--p-primary)' }}>
@@ -579,7 +576,7 @@ export default function MurjaPage() {
                          </span>
                          <span className="text-sm font-extrabold" style={{ color: 'var(--p-primary)' }}>v. {s.verseMin} à {s.verseMax}</span>
                        </div>
-                        <div className="flex items-center gap-0.5 text-[10px] font-medium" style={{ color: 'var(--p-text-65)' }}>
+                        <div className="flex items-center gap-0.5 text-[10px] font-medium" style={{ color: isLiaison ? '#B8860B' : '#059669' }}>
                        <span className="flex items-center gap-0.5">
                            <CalendarDays className="h-2.5 w-2.5" />
                            {statusText}
