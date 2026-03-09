@@ -122,6 +122,15 @@ export default function MurjaPage() {
     };
   }, [allVerses]);
 
+  const nextTourReviews = useMemo(() => {
+    const today = getTodayKey();
+    return allVerses
+      .filter(v => (v.liaison_status === 'tour' || !v.liaison_status) && v.next_review_date > today)
+      .sort((a, b) => a.next_review_date.localeCompare(b.next_review_date))
+      .slice(0, 3)
+      .map(v => ({ surah_number: v.surah_number, verse_start: v.verse_start, verse_end: v.verse_end, next_review_date: v.next_review_date }));
+  }, [allVerses]);
+
   const totalBlocks = rabtVerses.length + tourVerses.length;
   const checkedCount = checkedIds.filter(
     id => rabtVerses.some(v => v.id === id) || tourVerses.some(v => v.id === id)
