@@ -333,7 +333,10 @@ export default function HifzSuiviPage() {
                       <BookOpen className="h-[18px] w-[18px] text-white" />
                     </div>
                     <span className="text-[10px] font-bold uppercase tracking-wider mb-1 leading-tight" style={{ color: 'var(--p-text-60)' }}>
-                      Ar-RAr-RAr-RAr-Rabt (Nouveau)                    <>
+                      Ar-Rabt (Nouveau)
+                    </span>
+                    {nextPoint ? (
+                    <>
                         <span className="text-sm font-semibold leading-tight" style={{ color: 'var(--p-primary)' }}>
                           {nextPoint.surahName}
                         </span>
