@@ -177,7 +177,7 @@ export default function MurjaPage() {
     return () => { cancelled = true; };
   }, [surahSummary]);
 
-
+  const formatDate = (dateStr: string) => {
     const d = new Date(dateStr + 'T00:00:00');
     return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
   };
