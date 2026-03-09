@@ -118,6 +118,11 @@ export function PlannerCalculator({
                 className="text-sm text-primary font-medium text-center bg-primary/5 rounded-lg py-2 px-3"
               >
                 ✨ Vous finirez en <span className="font-bold">{parsedDays} jours</span>
+                {parsedPages > 0 && TOTAL_QURAN_PAGES % parsedPages !== 0 && (
+                  <span className="text-xs block mt-0.5 text-muted-foreground">
+                    + {Math.round(TOTAL_QURAN_PAGES % parsedPages)} pages le dernier jour
+                  </span>
+                )}
               </motion.p>
             )}
           </div>
