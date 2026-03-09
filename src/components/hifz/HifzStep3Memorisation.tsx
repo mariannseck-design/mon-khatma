@@ -92,7 +92,7 @@ function getPhaseInfo(ancrage: number, _target: number) {
     return { phase: 2, emoji: '📖', label: 'Regardez le Mushaf | Écoutez l\'audio si besoin | Répétez', showText: true, audioProminent: false, audioAvailable: true, color: '#45b7aa' };
   }
   if (ancrage < 12) {
-    return { phase: 3, emoji: '📖', label: 'Regardez le Mushaf | Éteignez l\'audio (Autonomie complète)', showText: true, audioProminent: false, audioAvailable: false, color: '#f0d060' };
+    return { phase: 3, emoji: '📖', label: 'Regardez le Mushaf | Éteignez l\'audio (Récitez de mémoire)', showText: true, audioProminent: false, audioAvailable: false, color: '#f0d060' };
   }
   return { phase: 4, emoji: '🧠', label: 'Texte masqué — Récitation de mémoire', showText: false, audioProminent: false, audioAvailable: false, color: '#d4af37' };
 }
