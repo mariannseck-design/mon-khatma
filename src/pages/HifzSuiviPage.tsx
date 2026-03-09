@@ -281,7 +281,7 @@ export default function HifzSuiviPage() {
                     />
                   </div>
                   <p className="text-[11px] text-center mt-1" style={{ color: 'var(--p-text-55)' }}>
-                    ≈ {periodVerses} verset{periodVerses > 1 ? 's' : ''} mémorisé{periodVerses > 1 ? 's' : ''}
+                    ≈ {periodVerses} ayat{periodVerses > 1 ? 's' : ''} validée{periodVerses > 1 ? 's' : ''}
                   </p>
                   {progressPct >= 100 && (
                     <p className="text-xs text-center" style={{ color: 'var(--p-accent)' }}>
@@ -333,7 +333,7 @@ export default function HifzSuiviPage() {
                       <BookOpen className="h-[18px] w-[18px] text-white" />
                     </div>
                     <span className="text-[10px] font-bold uppercase tracking-wider mb-1 leading-tight" style={{ color: 'var(--p-text-60)' }}>
-                      Ar-Rabt (Nouveau)   </span>
+                      Ar-Rabt (Nouveau)>
                     {nextPoint ? (
                       <>
                         <span className="text-sm font-semibold leading-tight" style={{ color: 'var(--p-primary)' }}>
@@ -374,7 +374,7 @@ export default function HifzSuiviPage() {
                       <RefreshCw className="h-[18px] w-[18px] text-white" />
                     </div>
                     <span className="text-[10px] font-bold uppercase tracking-wider mb-1" style={{ color: 'var(--p-text-60)' }}>
-                      À révisMuraja'a Muraja'a (Consolidation)ion)            </span>
+                      À révisMuraja'a Muraja'a Muraja'a (Consolidation)ion)ion)            </span>
                     {todayRevisions.length > 0 ? (
                       <>
                         <span className="text-sm font-semibold leading-tight" style={{ color: 'var(--p-primary)' }}>
@@ -419,7 +419,7 @@ export default function HifzSuiviPage() {
                 className="rounded-2xl p-2 flex flex-col items-center justify-center"
                 style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', boxShadow: 'var(--p-card-shadow)' }}
               >
-                <CircularGauge value={totalVerses} max={6236} labAyats mémoriséecrés" hideMax />
+                <CircularGauge value={totalVerses} max={6236}Ayats mémoriséeoriséecrés" hideMax />
               </motion.div>
 
               <motion.div
