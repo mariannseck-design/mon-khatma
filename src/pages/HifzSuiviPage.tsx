@@ -421,7 +421,7 @@ export default function HifzSuiviPage() {
                 className="rounded-2xl p-2 flex flex-col items-center justify-center"
                 style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', boxShadow: 'var(--p-card-shadow)' }}
               >
-                <CircularGauge value={totalVerses} max={6236}Ayats mémoriséeéeéeéeoriséecrés" hideMax />
+                <CircularGauge value={totalVerses} max={6236} label="Ayats mémorisées" hideMax />
               </motion.div>
 
               <motion.div
