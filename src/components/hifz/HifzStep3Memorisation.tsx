@@ -356,27 +356,56 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
                   <p className="text-xs font-semibold" style={{ color: '#d4af37' }}>Mode d'emploi de votre progression :</p>
 
                   <div className="space-y-2">
-                    <div className="flex items-start gap-2 rounded-lg px-3 py-2" style={{ background: phaseInfo.phase === 1 ? 'rgba(78,205,196,0.15)' : 'transparent', border: phaseInfo.phase === 1 ? '1px solid rgba(78,205,196,0.3)' : '1px solid transparent' }}>
-                      <span className="text-xs mt-0.5 whitespace-nowrap" style={{ color: '#4ecdc4', fontWeight: phaseInfo.phase === 1 ? 700 : 400 }}>1 à {quarters.q1End}</span>
-                      <p className="text-xs text-white/70">📖 Texte Tajwid + audio actif. Écoute, lecture et répétition simultanée.</p>
+                    {/* Étape 1 */}
+                    <div
+                      className="flex items-start gap-2 rounded-lg px-3 py-2"
+                      style={{
+                        background: phaseInfo.phase === 1 ? 'rgba(78,205,196,0.2)' : 'rgba(255,255,255,0.10)',
+                        border: phaseInfo.phase === 1 ? '1px solid rgba(78,205,196,0.3)' : '1px solid rgba(255,255,255,0.08)',
+                      }}
+                    >
+                      <span className="text-xs mt-0.5 whitespace-nowrap" style={{ color: '#4ecdc4', fontWeight: phaseInfo.phase === 1 ? 700 : 400 }}>1 à 4</span>
+                      <p className="text-xs text-white/70">📖 Regardez le Mushaf | Écoutez l'audio | Répétez en même temps.</p>
                     </div>
-                    <div className="flex items-start gap-2 rounded-lg px-3 py-2" style={{ background: phaseInfo.phase === 2 ? 'rgba(69,183,170,0.15)' : 'transparent', border: phaseInfo.phase === 2 ? '1px solid rgba(69,183,170,0.3)' : '1px solid transparent' }}>
-                      <span className="text-xs mt-0.5 whitespace-nowrap" style={{ color: '#45b7aa', fontWeight: phaseInfo.phase === 2 ? 700 : 400 }}>{quarters.q1End + 1} à {quarters.q2End}</span>
-                      <p className="text-xs text-white/70">📖 Texte visible + audio discret. Lecture autonome avec aide audio.</p>
+                    {/* Étape 2 */}
+                    <div
+                      className="flex items-start gap-2 rounded-lg px-3 py-2"
+                      style={{
+                        background: phaseInfo.phase === 2 ? 'rgba(69,183,170,0.2)' : 'rgba(255,255,255,0.20)',
+                        border: phaseInfo.phase === 2 ? '1px solid rgba(69,183,170,0.3)' : '1px solid rgba(255,255,255,0.08)',
+                      }}
+                    >
+                      <span className="text-xs mt-0.5 whitespace-nowrap" style={{ color: '#45b7aa', fontWeight: phaseInfo.phase === 2 ? 700 : 400 }}>5 à 8</span>
+                      <p className="text-xs text-white/70">📖 Regardez le Mushaf | Écoutez l'audio si besoin | Répétez en même temps.</p>
                     </div>
-                    <div className="flex items-start gap-2 rounded-lg px-3 py-2" style={{ background: phaseInfo.phase === 3 ? 'rgba(240,208,96,0.15)' : 'transparent', border: phaseInfo.phase === 3 ? '1px solid rgba(240,208,96,0.3)' : '1px solid transparent' }}>
-                      <span className="text-xs mt-0.5 whitespace-nowrap" style={{ color: '#f0d060', fontWeight: phaseInfo.phase === 3 ? 700 : 400 }}>{quarters.q2End + 1} à {quarters.q3End}</span>
-                      <p className="text-xs text-white/70">📖 Texte visible, sans audio. Autonomie visuelle complète.</p>
+                    {/* Étape 3 */}
+                    <div
+                      className="flex items-start gap-2 rounded-lg px-3 py-2"
+                      style={{
+                        background: phaseInfo.phase === 3 ? 'rgba(240,208,96,0.2)' : 'rgba(255,255,255,0.30)',
+                        border: phaseInfo.phase === 3 ? '1px solid rgba(240,208,96,0.3)' : '1px solid rgba(255,255,255,0.08)',
+                      }}
+                    >
+                      <span className="text-xs mt-0.5 whitespace-nowrap" style={{ color: '#f0d060', fontWeight: phaseInfo.phase === 3 ? 700 : 400 }}>9 à 12</span>
+                      <p className="text-xs text-white/70">📖 Regardez le Mushaf | Éteignez l'audio (Autonomie complète).</p>
                     </div>
-                    <div className="flex items-start gap-2 rounded-lg px-3 py-2" style={{ background: phaseInfo.phase === 4 ? 'rgba(212,175,55,0.15)' : 'transparent', border: phaseInfo.phase === 4 ? '1px solid rgba(212,175,55,0.3)' : '1px solid transparent' }}>
-                      <span className="text-xs mt-0.5 whitespace-nowrap" style={{ color: '#d4af37', fontWeight: phaseInfo.phase === 4 ? 700 : 400 }}>Dès la {quarters.q3End + 1}ème</span>
+                    {/* Étape 4 */}
+                    <div
+                      className="flex items-start gap-2 rounded-lg px-3 py-2"
+                      style={{
+                        background: phaseInfo.phase === 4 ? 'rgba(212,175,55,0.15)' : 'rgba(212,175,55,0.05)',
+                        border: phaseInfo.phase === 4 ? '2px solid rgba(212,175,55,0.5)' : '1px solid rgba(212,175,55,0.25)',
+                      }}
+                    >
+                      <span className="text-xs mt-0.5 whitespace-nowrap" style={{ color: '#d4af37', fontWeight: phaseInfo.phase === 4 ? 700 : 400 }}>Dès la 13ème</span>
                       <p className="text-xs text-white/70">🧠 Texte masqué. Récitation de mémoire. Bouton « Vérifier » disponible.</p>
                     </div>
                   </div>
 
-                  <p className="text-xs text-white/70 leading-relaxed">
-                    Bismillah, prenez le temps nécessaire. Votre persévérance honore le Prophète{' '}
-                    <span style={{ fontFamily: "'Amiri', serif", fontWeight: 'bold', fontSize: '1.1em' }}>(ﷺ)</span>.
+                  <p className="text-xs text-white/70 leading-relaxed italic" style={{ color: 'rgba(212,175,55,0.8)' }}>
+                    Bismillah, qu'Allah{' '}
+                    <span style={{ fontFamily: "'Amiri', serif", fontWeight: 'bold', fontSize: '1.1em' }}>(عز وجل)</span>
+                    {' '}facilite, amine.
                   </p>
                 </div>
               </motion.div>
