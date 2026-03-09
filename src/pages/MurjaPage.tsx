@@ -464,12 +464,14 @@ export default function MurjaPage() {
                        </span>
                        <span className="text-sm font-extrabold" style={{ color: 'var(--p-primary)' }}>v. {s.verseMin} à {s.verseMax}</span>
                      </div>
-                     <div className="flex items-center gap-0.5 text-[10px] font-medium" style={{ color: 'var(--p-text-65)' }}>
+                      <div className="flex items-center gap-0.5 text-[10px] font-medium" style={{ color: 'var(--p-text-65)' }}>
                      <span className="flex items-center gap-0.5">
-                        <CalendarDays className="h-2.5 w-2.5" />
-                        {`Prochaine Muraja'a le ${formatDate(s.nextReview)} à 00h`}
-                      </span>
-                    </div>
+                         <CalendarDays className="h-2.5 w-2.5" />
+                         {s.nextReview <= getTodayKey()
+                           ? (s.isLiaison ? "Liaison d'aujourd'hui" : "Révision d'aujourd'hui")
+                           : `Prochaine ${s.isLiaison ? 'liaison' : 'révision'} : ${formatDate(s.nextReview)}`}
+                       </span>
+                     </div>
                   </div>
                 ))}
               </div>
