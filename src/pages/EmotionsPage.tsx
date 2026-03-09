@@ -61,7 +61,7 @@ const itemVariants = {
 };
 
 export default function EmotionsPage() {
-  const { user, hasFullAccess } = useAuth();
+  const { user, hasFullAccess, isAdmin } = useAuth();
   const navigate = useNavigate();
   const [selectedMood, setSelectedMood] = useState<number | null>(null);
   const [gratitude, setGratitude] = useState('');
