@@ -305,12 +305,14 @@ export default function PlanificateurPage() {
     if (!activeGoal || activeGoal.goal_type !== 'pages_per_day') return null;
 
     const target = activeGoal.target_value;
-    const initialTargetDays = Math.ceil(TOTAL_QURAN_PAGES / target);
+    const initialTargetDays = Math.floor(TOTAL_QURAN_PAGES / target);
+    const initialExtraPages = TOTAL_QURAN_PAGES % target;
     const remainingPages = TOTAL_QURAN_PAGES - totalPagesRead;
+    const extraSuffix = initialExtraPages > 0 ? ` (+ ${Math.round(initialExtraPages)} pages le dernier jour)` : '';
 
     // Condition A: no pages read yet
     if (totalPagesRead <= 0) {
-      return `Bismillah ! À ce rythme d'objectif, tu termineras ta lecture dans ${initialTargetDays} jours.`;
+      return `Bismillah ! À ce rythme d'objectif, tu termineras ta lecture dans ${initialTargetDays} jours${extraSuffix}.`;
     }
 
     // Calculate days elapsed since start
