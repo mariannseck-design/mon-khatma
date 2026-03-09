@@ -214,9 +214,6 @@ export default function AccueilPage() {
             <p className="text-foreground font-semibold text-lg">{(() => { const h = new Date().getHours(); return h < 12 ? 'Bonjour' : h < 18 ? 'Bon après-midi' : 'Bonsoir'; })()} {displayName} {(() => { const h = new Date().getHours(); return h < 12 ? '☀️' : h < 18 ? '🌤' : '🌙'; })()}</p>
           )}
           <p className="text-muted-foreground text-base mt-1">{greeting()}</p>
-          <p className="text-muted-foreground/70 text-sm mt-1 capitalize">
-            {new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}
-          </p>
         </motion.div>
 
         {/* Citation du jour — uniquement si l'utilisateur a commencé la mémorisation */}

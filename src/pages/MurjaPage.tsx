@@ -130,18 +130,18 @@ export default function MurjaPage() {
 
   const { totalVersesCount, surahSummary } = useMemo(() => {
     const total = allVerses.reduce((sum, v) => sum + (v.verse_end - v.verse_start + 1), 0);
-    const map = new Map<number, { name: string; verseMin: number; verseMax: number; nextReview: string; isLiaison: boolean }>();
+    const map = new Map<string, { name: string; verseMin: number; verseMax: number; nextReview: string; isLiaison: boolean }>();
     for (const v of allVerses) {
-      const existing = map.get(v.surah_number);
       const isLiaison = v.liaison_status === 'liaison';
+      const key = `${v.surah_number}_${isLiaison ? 'liaison' : 'tour'}`;
+      const existing = map.get(key);
       if (existing) {
         existing.verseMin = Math.min(existing.verseMin, v.verse_start);
         existing.verseMax = Math.max(existing.verseMax, v.verse_end);
         if (v.next_review_date < existing.nextReview) existing.nextReview = v.next_review_date;
-        if (isLiaison) existing.isLiaison = true;
       } else {
         const surahName = SURAHS.find(s => s.number === v.surah_number)?.name || `Sourate ${v.surah_number}`;
-        map.set(v.surah_number, { name: surahName, verseMin: v.verse_start, verseMax: v.verse_end, nextReview: v.next_review_date, isLiaison });
+        map.set(key, { name: surahName, verseMin: v.verse_start, verseMax: v.verse_end, nextReview: v.next_review_date, isLiaison });
       }
     }
     return {
@@ -317,6 +317,100 @@ export default function MurjaPage() {
               Commence par le module Hifz pour ancrer tes premiers versets !
             </p>
           </div>
+        ) : totalBlocks === 0 ? (
+          <>
+            {/* All revisions done for today */}
+            <div
+              className="rounded-2xl p-8 text-center"
+              style={{
+                background: 'var(--p-gradient-bg)',
+                border: '2px solid var(--p-accent)',
+                boxShadow: '0 8px 32px -8px rgba(6,95,70,0.4)',
+              }}
+            >
+              <PartyPopper className="h-10 w-10 mx-auto mb-4" style={{ color: 'var(--p-accent)' }} />
+              <p className="text-base font-medium leading-relaxed" style={{ color: 'var(--p-on-dark)' }}>
+                Alhamdulillah, tu as terminé tes révisions pour aujourd'hui !
+              </p>
+              <p className="text-sm font-medium mt-2" style={{ color: 'var(--p-on-dark-muted)' }}>
+                Tes prochaines révisions arriveront selon l'algorithme de répétition espacée.
+              </p>
+            </div>
+
+            {/* Mes ayats mémorisées (when no blocks due today) */}
+            <div
+              className="rounded-2xl p-5 space-y-3"
+              style={{
+                background: 'var(--p-card)',
+                border: '1px solid var(--p-border)',
+                boxShadow: 'var(--p-card-shadow)',
+              }}
+            >
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg, #6D28D9, #8B5CF6)', boxShadow: '0 3px 10px -2px rgba(139, 92, 246, 0.4)' }}>
+                  <TrendingUp className="h-3.5 w-3.5 text-white" />
+                </div>
+                <h3
+                   className="text-sm font-bold"
+                   style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-primary)' }}
+                 >
+                  Mes ayats mémorisées : {totalVersesCount} Ayat{totalVersesCount > 1 ? 's' : ''}
+                </h3>
+              </div>
+              <div className="space-y-1.5">
+                {surahSummary.map((s, idx) => {
+                  const today = getTodayKey();
+                  const tomorrow = new Date();
+                  tomorrow.setDate(tomorrow.getDate() + 1);
+                  const tomorrowKey = tomorrow.toISOString().split('T')[0];
+                  const phaseLabel = s.isLiaison ? 'liaison' : 'révision';
+
+                  let statusText: string;
+                  if (s.nextReview <= today) {
+                    statusText = s.isLiaison ? 'Phase de liaison' : 'Phase de révision';
+                  } else if (s.nextReview === tomorrowKey) {
+                    statusText = `Prochaine ${phaseLabel} : demain, ${formatDate(s.nextReview)}`;
+                  } else {
+                    statusText = `Prochaine ${phaseLabel} : ${formatDate(s.nextReview)}`;
+                  }
+
+                  return (
+                    <div
+                      key={`${s.name}_${idx}`}
+                      className="flex items-center justify-between px-3 py-2 rounded-lg"
+                      style={{ background: 'var(--p-card-active)' }}
+                    >
+                       <div className="flex items-center gap-2">
+                         <span className="text-xs font-bold" style={{ color: 'var(--p-primary)' }}>
+                           {s.name}
+                         </span>
+                         <span className="text-sm font-extrabold" style={{ color: 'var(--p-primary)' }}>v. {s.verseMin} à {s.verseMax}</span>
+                       </div>
+                        <div className="flex items-center gap-0.5 text-[10px] font-medium" style={{ color: 'var(--p-text-65)' }}>
+                       <span className="flex items-center gap-0.5">
+                           <CalendarDays className="h-2.5 w-2.5" />
+                           {statusText}
+                         </span>
+                       </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Refresh */}
+            <div className="text-center">
+              <Button
+                variant="ghost"
+                onClick={refresh}
+                className="text-xs gap-1.5"
+                style={{ color: 'var(--p-primary)' }}
+              >
+                <RefreshCw className="h-3 w-3" />
+                Actualiser
+              </Button>
+            </div>
+          </>
         ) : (
           <>
             {/* Countdown */}
@@ -452,28 +546,43 @@ export default function MurjaPage() {
                 </h3>
               </div>
               <div className="space-y-1.5">
-                {surahSummary.map((s) => (
-                  <div
-                    key={s.name}
-                    className="flex items-center justify-between px-3 py-2 rounded-lg"
-                    style={{ background: 'var(--p-card-active)' }}
-                  >
-                     <div className="flex items-center gap-2">
-                       <span className="text-xs font-bold" style={{ color: 'var(--p-primary)' }}>
-                         {s.name}
-                       </span>
-                       <span className="text-sm font-extrabold" style={{ color: 'var(--p-primary)' }}>v. {s.verseMin} à {s.verseMax}</span>
-                     </div>
-                      <div className="flex items-center gap-0.5 text-[10px] font-medium" style={{ color: 'var(--p-text-65)' }}>
-                     <span className="flex items-center gap-0.5">
-                         <CalendarDays className="h-2.5 w-2.5" />
-                         {s.nextReview <= getTodayKey()
-                           ? (s.isLiaison ? "Liaison d'aujourd'hui" : "Révision d'aujourd'hui")
-                           : `Prochaine ${s.isLiaison ? 'liaison' : 'révision'} : ${formatDate(s.nextReview)}`}
-                       </span>
-                     </div>
-                  </div>
-                ))}
+                {surahSummary.map((s, idx) => {
+                  const today = getTodayKey();
+                  const tomorrow = new Date();
+                  tomorrow.setDate(tomorrow.getDate() + 1);
+                  const tomorrowKey = tomorrow.toISOString().split('T')[0];
+                  const phaseLabel = s.isLiaison ? 'liaison' : 'révision';
+
+                  let statusText: string;
+                  if (s.nextReview <= today) {
+                    statusText = s.isLiaison ? 'Phase de liaison' : 'Phase de révision';
+                  } else if (s.nextReview === tomorrowKey) {
+                    statusText = `Prochaine ${phaseLabel} : demain, ${formatDate(s.nextReview)}`;
+                  } else {
+                    statusText = `Prochaine ${phaseLabel} : ${formatDate(s.nextReview)}`;
+                  }
+
+                  return (
+                    <div
+                      key={`${s.name}_${idx}`}
+                      className="flex items-center justify-between px-3 py-2 rounded-lg"
+                      style={{ background: 'var(--p-card-active)' }}
+                    >
+                       <div className="flex items-center gap-2">
+                         <span className="text-xs font-bold" style={{ color: 'var(--p-primary)' }}>
+                           {s.name}
+                         </span>
+                         <span className="text-sm font-extrabold" style={{ color: 'var(--p-primary)' }}>v. {s.verseMin} à {s.verseMax}</span>
+                       </div>
+                        <div className="flex items-center gap-0.5 text-[10px] font-medium" style={{ color: 'var(--p-text-65)' }}>
+                       <span className="flex items-center gap-0.5">
+                           <CalendarDays className="h-2.5 w-2.5" />
+                           {statusText}
+                         </span>
+                       </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
