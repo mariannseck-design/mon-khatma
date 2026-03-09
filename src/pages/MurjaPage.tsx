@@ -587,30 +587,27 @@ export default function MurjaPage() {
                   return (
                     <div
                       key={`${s.name}_${idx}`}
-                      className="flex flex-col gap-1 px-3 py-2 rounded-lg"
+                      className="flex items-center justify-between px-3 py-2 rounded-lg"
                       style={{
                         background: isLiaison ? 'rgba(212, 175, 55, 0.08)' : 'rgba(16, 185, 129, 0.08)',
                         border: `1px solid ${isLiaison ? 'rgba(212, 175, 55, 0.2)' : 'rgba(16, 185, 129, 0.2)'}`,
                       }}
                     >
-                       <div className="flex items-center justify-between">
-                         <div className="flex items-center gap-2">
-                           <span className="text-xs font-bold" style={{ color: 'var(--p-primary)' }}>
-                             {s.name}
-                           </span>
-                           <span className="text-sm font-extrabold" style={{ color: 'var(--p-primary)' }}>v. {s.verseMin} à {s.verseMax}</span>
-                           {pageLabel && (
-                             <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded" style={{ background: 'var(--p-card)', color: 'var(--p-text-60)' }}>
-                               {pageLabel}
-                             </span>
-                           )}
-                         </div>
-                       </div>
-                         <div className="flex items-center gap-0.5 text-[10px] font-medium" style={{ color: isLiaison ? '#B8860B' : '#059669' }}>
-                           <CalendarDays className="h-2.5 w-2.5" />
-                           {statusText}
-                         </div>
-                       </div>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-xs font-bold" style={{ color: 'var(--p-primary)' }}>
+                          {s.name}
+                        </span>
+                        <span className="text-sm font-extrabold" style={{ color: 'var(--p-primary)' }}>v. {s.verseMin} à {s.verseMax}</span>
+                        {pageLabel && (
+                          <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded" style={{ background: 'var(--p-card)', color: 'var(--p-text-60)' }}>
+                            {pageLabel}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-0.5 text-[10px] font-medium flex-shrink-0" style={{ color: isLiaison ? '#B8860B' : '#059669' }}>
+                        <CalendarDays className="h-2.5 w-2.5" />
+                        {statusText}
+                      </div>
                     </div>
                   );
                 })}
