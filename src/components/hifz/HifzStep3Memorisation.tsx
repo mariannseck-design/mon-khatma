@@ -312,7 +312,7 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
   }, [ayahs, surahNumber]);
 
   return (
-    <HifzStepWrapper stepNumber={3} stepTitle="Tikrar" onBack={onBack} onPause={onPause}>
+    <HifzStepWrapper stepNumber={3} stepTitle="Istiqâmah" onBack={onBack} onPause={onPause}>
       <div className="text-center space-y-4">
         {/* Icon */}
         <div
@@ -322,9 +322,21 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
           <BookOpen className="h-8 w-8" style={{ color: '#d4af37' }} />
         </div>
 
-        {/* Subtitle */}
+        {/* Subtitle + info button */}
         <div>
-          <p className="text-sm font-semibold" style={{ color: '#d4af37' }}>L'ancrage d'acier</p>
+          <div className="flex items-center justify-center gap-2">
+            <p className="text-sm font-semibold" style={{ color: '#d4af37' }}>Istiqâmah</p>
+            <Popover>
+              <PopoverTrigger asChild>
+                <button className="rounded-full p-0.5 transition-colors hover:bg-white/10">
+                  <Info className="h-4 w-4" style={{ color: '#d4af37' }} />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="text-xs leading-relaxed" style={{ background: '#1a2e1a', border: '1px solid rgba(212,175,55,0.3)', color: 'rgba(255,255,255,0.85)' }}>
+                L'Istiqâmah désigne la constance, la droiture et la persévérance. Nous avons choisi ce nom car la régularité et l'effort continu sont les véritables clés pour graver ces versets dans votre cœur.
+              </PopoverContent>
+            </Popover>
+          </div>
           <p className="text-white/50 text-xs">(Objectif {tikrarTarget} répétitions)</p>
         </div>
 
