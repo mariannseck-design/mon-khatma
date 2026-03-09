@@ -400,7 +400,7 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
                       }}
                     >
                       <span className="text-xs mt-0.5 whitespace-nowrap" style={{ color: '#f0d060', fontWeight: phaseInfo.phase === 3 ? 700 : 400 }}>9 à 12</span>
-                      <p className="text-xs text-white/70">📖 Regardez le Mushaf | Éteignez l'audioRécitez de mémoirirte).</p>
+                      <p className="text-xs text-white/70">📖 Regardez le Mushaf | Éteignez l'audio (Récitez de mémoire).</p>
                     </div>
                     {/* Étape 4 */}
                     <div
