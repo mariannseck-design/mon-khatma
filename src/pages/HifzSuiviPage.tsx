@@ -214,9 +214,9 @@ export default function HifzSuiviPage() {
         {/* Greeting */}
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-center space-y-1">
           <h1 className="text-xl font-bold" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-primary)' }}>
-            {greeting} 🌙
+            {greeting}{displayName ? `, ${displayName}` : ''} 🌙
           </h1>
-          <p className="text-sm font-medium" style={{ color: 'var(--p-text-65)' }}>{motivation}</p>
+          <p className="text-sm font-medium" style={{ color: 'var(--p-text-65)' }}>{todayQuote.text}</p>
         </motion.div>
 
         {loading ? (
