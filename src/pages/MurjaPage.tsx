@@ -606,11 +606,10 @@ export default function MurjaPage() {
                            )}
                          </div>
                        </div>
-                        <div className="flex items-center gap-0.5 text-[10px] font-medium" style={{ color: isLiaison ? '#B8860B' : '#059669' }}>
-                       <span className="flex items-center gap-0.5">
+                         <div className="flex items-center gap-0.5 text-[10px] font-medium" style={{ color: isLiaison ? '#B8860B' : '#059669' }}>
                            <CalendarDays className="h-2.5 w-2.5" />
                            {statusText}
-                         </span>
+                         </div>
                        </div>
                     </div>
                   );
