@@ -1,26 +1,21 @@
 
 
-## Plan : Ajouter le prénom aux salutations + unifier la citation du jour
+# Diagnostic : 404 sur /quran-reader
 
-### 1. Ajouter le prénom dans HifzSuiviPage
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-**`src/pages/HifzSuiviPage.tsx`**
-- Importer `useAuth` (déjà fait) + récupérer le `displayName` depuis le profil ou `localStorage` (même logique que AccueilPage)
-- Ligne 221 : remplacer `{greeting} 🌙` par `{greeting}, {displayName} 🌙` (si displayName existe)
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-### 2. Utiliser la même citation du jour partout
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-**`src/pages/HifzSuiviPage.tsx`**
-- Supprimer le tableau `MOTIVATIONS` et le `useMemo` random
-- Importer `getTodayQuote` depuis `@/lib/dailyQuotes`
-- Ligne 223 : afficher `getTodayQuote().text` à la place de `{motivation}`
-- Ainsi la citation affichée sera identique à celle de l'Accueil
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-### 3. Récupérer le profil dans HifzSuiviPage
-
-- Charger le `display_name` depuis la table `profiles` (comme dans AccueilPage) ou simplement lire `localStorage.getItem('guest_first_name')` pour rester simple
-- Ajouter une requête `profiles` dans `loadData` ou un state dédié
-
-### Résumé des fichiers modifiés
-- `src/pages/HifzSuiviPage.tsx` : ajout du prénom aux salutations + remplacement des motivations aléatoires par la citation du jour unique
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

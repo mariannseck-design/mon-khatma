@@ -10,6 +10,7 @@ import HifzGoalOnboarding from '@/components/hifz/HifzGoalOnboarding';
 import { findNextStartingPoint, getTodayRevisions } from '@/lib/hifzUtils';
 import { SURAHS } from '@/lib/surahData';
 import { Link } from 'react-router-dom';
+import { getTodayQuote } from '@/lib/dailyQuotes';
 
 function getGreeting(): string {
   const h = new Date().getHours();
@@ -19,12 +20,6 @@ function getGreeting(): string {
   return 'Masa al-khayr';
 }
 
-const MOTIVATIONS = [
-  "Prête pour ton ancrage aujourd'hui ?",
-  "Chaque verset compte auprès d'Allah.",
-  "La constance est la clé de la mémorisation.",
-  "Qu'Allah te facilite ce chemin.",
-];
 
 function CircularGauge({ value, max, label, hideMax }: { value: number; max: number; label: string; hideMax?: boolean }) {
   const pct = max > 0 ? Math.min(value / max, 1) : 0;
@@ -82,11 +77,19 @@ export default function HifzSuiviPage() {
   const [todayRevisions, setTodayRevisions] = useState<{ surah_number: number; verse_start: number; verse_end: number }[]>([]);
 
   const greeting = useMemo(() => getGreeting(), []);
-  const motivation = useMemo(() => MOTIVATIONS[Math.floor(Math.random() * MOTIVATIONS.length)], []);
+  const todayQuote = useMemo(() => getTodayQuote(), []);
+  const [displayName, setDisplayName] = useState(() => localStorage.getItem('user_display_name') || localStorage.getItem('guest_first_name') || '');
 
   const loadData = async () => {
     if (!user) return;
     setLoading(true);
+
+    // Fetch display name
+    const { data: profileData } = await supabase.from('profiles').select('display_name').eq('user_id', user.id).maybeSingle();
+    if (profileData?.display_name) {
+      setDisplayName(profileData.display_name);
+      localStorage.setItem('user_display_name', profileData.display_name);
+    }
 
     const today = new Date();
     const todayStr = today.toISOString().split('T')[0];
@@ -218,9 +221,9 @@ export default function HifzSuiviPage() {
         {/* Greeting */}
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-center space-y-1">
           <h1 className="text-xl font-bold" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-primary)' }}>
-            {greeting} 🌙
+            {greeting}{displayName ? `, ${displayName}` : ''} 🌙
           </h1>
-          <p className="text-sm font-medium" style={{ color: 'var(--p-text-65)' }}>{motivation}</p>
+          <p className="text-sm font-medium" style={{ color: 'var(--p-text-65)' }}>{todayQuote.text}</p>
         </motion.div>
 
         {loading ? (
