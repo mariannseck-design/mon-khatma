@@ -1,21 +1,30 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Renommer « Tikrar » en « Istiqâmah » + bouton info
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Fichiers impactés et changements
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+**1. `src/components/hifz/HifzStep3Memorisation.tsx`**
+- Ligne 314 : `stepTitle="Tikrar"` → `stepTitle="Istiqâmah"`
+- Ligne 326 : Remplacer `L'ancrage d'acier` par `Istiqâmah`
+- Ligne 326 : Ajouter un bouton icône `Info` (lucide-react) à côté du titre, qui ouvre un Popover/Tooltip affichant le texte explicatif
+- Ligne 338 : `Mode d'emploi du Tikrar` → `Mode d'emploi de l'Istiqâmah`
+- Import `Info` de lucide-react + composants Tooltip ou Popover
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+**2. `src/pages/HifzPage.tsx`**
+- Ligne 62 : `'Ancrage (Tikrar)'` → `'Istiqâmah'`
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+**3. `src/pages/AccueilPage.tsx`**
+- Ligne 79 : `'Ancrage (Tikrar)'` → `'Istiqâmah'`
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+**4. `src/components/hifz/HifzSuccess.tsx`**
+- Ligne 9 : `3: 'Tikrar'` → `3: 'Istiqâmah'`
+
+**5. `src/components/hifz/HifzConfig.tsx`**
+- Ligne 208 : `Commencer l'ancrage` → `Commencer l'Istiqâmah`
+
+### Bouton info (détail technique)
+Un composant Popover (déjà disponible dans le projet) sera utilisé à côté du titre « Istiqâmah » avec une icône `Info` (16px, doré). Au clic, il affiche :
+
+> « L'Istiqâmah désigne la constance, la droiture et la persévérance. Nous avons choisi ce nom car la régularité et l'effort continu sont les véritables clés pour graver ces versets dans votre cœur. »
 
