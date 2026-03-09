@@ -62,6 +62,7 @@ export default function MurajaChecklist({
   totalDue,
   hasTourBlocks,
   firstArrivalDate,
+  nextTourReviews,
 }: MurajaChecklistProps) {
   const [ratingFor, setRatingFor] = useState<string | null>(null);
 
