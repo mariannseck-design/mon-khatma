@@ -282,6 +282,30 @@ export default function MurajaChecklist({
           </div>
         );
       })}
+
+      {/* Next upcoming tour reviews */}
+      {section === 'tour' && nextTourReviews && nextTourReviews.length > 0 && items.every(item => checkedIds.includes(item.id)) && (
+        <div
+          className="rounded-xl px-4 py-3 mt-1"
+          style={{
+            background: 'var(--p-card)',
+            border: '1px solid var(--p-border)',
+          }}
+        >
+          <p className="text-xs font-bold mb-1.5" style={{ color: 'var(--p-text-75)' }}>
+            Prochaine révision :
+          </p>
+          {nextTourReviews.slice(0, 3).map((nr, i) => {
+            const name = SURAHS.find(s => s.number === nr.surah_number)?.name || `Sourate ${nr.surah_number}`;
+            const date = new Date(nr.next_review_date + 'T00:00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' });
+            return (
+              <p key={i} className="text-xs font-medium" style={{ color: 'var(--p-text-60)' }}>
+                {name} v. {nr.verse_start} → {nr.verse_end} — <span style={{ color: 'var(--p-accent)' }}>{date}</span>
+              </p>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
