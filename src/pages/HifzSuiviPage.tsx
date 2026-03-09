@@ -486,7 +486,7 @@ export default function HifzSuiviPage() {
                 return total > 0 ? (
                   <div className="mt-3 pt-3 flex items-center justify-center gap-3 text-[11px]" style={{ borderTop: '1px solid var(--p-border)' }}>
                     <span style={{ color: 'var(--p-text-65)' }}>Cette semaine :</span>
-                    <span className="font-bold" style={{ color: 'var(--p-accent)' }}>{toar-rabtifz} hifz</span>
+                    <span className="font-bold" style={{ color: 'var(--p-accent)' }}>{totalHifz} ar-rabt</span>
                     <span style={{ color: 'var(--p-text-55)' }}>·</span>
                     <span className="font-bold" style={{ color: 'var(--p-primary)' }}>{totalMuraja} muraja'a</span>
                     <span style={{ color: 'var(--p-text-55)' }}>·</span>
