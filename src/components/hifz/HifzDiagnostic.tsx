@@ -221,8 +221,8 @@ export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticPro
     intervals.reduce((sum, i) => sum + Math.max(0, i.end - i.start + 1), 0);
 
   // ─── Save entry for a category ───
-  const saveCurrentEntry = (category: Category) => {
-    const blocks = buildCurrentBlocks(category);
+  const saveCurrentEntry = async (category: Category) => {
+    const blocks = await buildCurrentBlocks(category);
     const label = buildEntryLabel();
     if (category === 'solid') {
       setSolidBlocks(prev => [...prev, ...blocks]);
