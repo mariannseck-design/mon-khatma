@@ -348,7 +348,7 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
             className="w-full flex items-center justify-between px-4 py-2.5 text-xs font-medium transition-all"
             style={{ color: '#d4af37' }}
           >
-            <span>📋 Mode d'emploi du Tikrar</span>
+            <span>📋 Mode d'emploi de l'Istiqâmah</span>
             {showGuide ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
           </button>
           <AnimatePresence>
