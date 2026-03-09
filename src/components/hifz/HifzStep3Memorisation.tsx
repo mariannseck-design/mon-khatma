@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BookOpen, Check, Eye, EyeOff, RotateCcw, Volume2, Star, ChevronDown, ChevronUp } from 'lucide-react';
+import { BookOpen, Check, Eye, EyeOff, RotateCcw, Volume2, Star, ChevronDown, ChevronUp, Info } from 'lucide-react';
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import HifzStepWrapper from './HifzStepWrapper';
 import HifzMushafToggle, { getMushafMode, setMushafMode, type MushafMode } from './HifzMushafToggle';
 import HifzMushafImage from './HifzMushafImage';
@@ -311,7 +312,7 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
   }, [ayahs, surahNumber]);
 
   return (
-    <HifzStepWrapper stepNumber={3} stepTitle="Tikrar" onBack={onBack} onPause={onPause}>
+    <HifzStepWrapper stepNumber={3} stepTitle="Istiqâmah" onBack={onBack} onPause={onPause}>
       <div className="text-center space-y-4">
         {/* Icon */}
         <div
@@ -321,9 +322,21 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
           <BookOpen className="h-8 w-8" style={{ color: '#d4af37' }} />
         </div>
 
-        {/* Subtitle */}
+        {/* Subtitle + info button */}
         <div>
-          <p className="text-sm font-semibold" style={{ color: '#d4af37' }}>L'ancrage d'acier</p>
+          <div className="flex items-center justify-center gap-2">
+            <p className="text-sm font-semibold" style={{ color: '#d4af37' }}>Istiqâmah</p>
+            <Popover>
+              <PopoverTrigger asChild>
+                <button className="rounded-full p-0.5 transition-colors hover:bg-white/10">
+                  <Info className="h-4 w-4" style={{ color: '#d4af37' }} />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="text-xs leading-relaxed" style={{ background: '#1a2e1a', border: '1px solid rgba(212,175,55,0.3)', color: 'rgba(255,255,255,0.85)' }}>
+                L'Istiqâmah désigne la constance, la droiture et la persévérance. Nous avons choisi ce nom car la régularité et l'effort continu sont les véritables clés pour graver ces versets dans votre cœur.
+              </PopoverContent>
+            </Popover>
+          </div>
           <p className="text-white/50 text-xs">(Objectif {tikrarTarget} répétitions)</p>
         </div>
 
@@ -335,7 +348,7 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
             className="w-full flex items-center justify-between px-4 py-2.5 text-xs font-medium transition-all"
             style={{ color: '#d4af37' }}
           >
-            <span>📋 Mode d'emploi du Tikrar</span>
+            <span>📋 Mode d'emploi de l'Istiqâmah</span>
             {showGuide ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
           </button>
           <AnimatePresence>
@@ -387,7 +400,7 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
                       }}
                     >
                       <span className="text-xs mt-0.5 whitespace-nowrap" style={{ color: '#f0d060', fontWeight: phaseInfo.phase === 3 ? 700 : 400 }}>9 à 12</span>
-                      <p className="text-xs text-white/70">📖 Regardez le Mushaf | Éteignez l'audioRécitez de mémoirirte).</p>
+                      <p className="text-xs text-white/70">📖 Regardez le Mushaf | Éteignez l'audio (Récitez de mémoire).</p>
                     </div>
                     {/* Étape 4 */}
                     <div
@@ -398,7 +411,7 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
                       }}
                     >
                       <span className="text-xs mt-0.5 whitespace-nowrap" style={{ color: '#d4af37', fontWeight: phaseInfo.phase === 4 ? 700 : 400 }}>Dès la 13ème</span>
-                      <p className="text-xs text-white/70">🧠 Texte masqué. Récitation de mémoireVous pouvez regarder le Mushaf en cas d'erreur ou de doutble.</p>
+                      <p className="text-xs text-white/70">🧠 Texte masqué. Récitation de mémoire. Vous pouvez regarder le Mushaf en cas d'erreur ou de doute.</p>
                     </div>
                   </div>
 

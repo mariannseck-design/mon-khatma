@@ -6,7 +6,7 @@ const STEP_LABELS: Record<number, string> = {
   0: 'Intention',
   1: 'Révision',
   2: 'Imprégnation',
-  3: 'Tikrar',
+  3: 'Istiqâmah',
   4: 'Validation',
 };
 
