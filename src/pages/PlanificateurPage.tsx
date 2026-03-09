@@ -300,17 +300,41 @@ export default function PlanificateurPage() {
     ? Math.floor((Date.now() - new Date(lastReadingDate).getTime()) / (1000 * 60 * 60 * 24))
     : null;
 
-  // Precision message: if goal doesn't divide evenly into 604
-  const getPrecisionMessage = () => {
+  // Dynamic estimation message based on real pace
+  const getDynamicEstimationMessage = (): string | null => {
     if (!activeGoal || activeGoal.goal_type !== 'pages_per_day') return null;
+
     const target = activeGoal.target_value;
-    const fullDays = Math.floor(TOTAL_QURAN_PAGES / target);
-    const remainder = TOTAL_QURAN_PAGES - (fullDays * target);
-    if (remainder > 0) {
-      const lastDayPages = target + remainder;
-      return `À ce rythme, tu finiras en ${fullDays} jours en lisant simplement ${remainder} page${remainder > 1 ? 's' : ''} de plus (${lastDayPages} pages) lors de ta dernière séance. Bismillah !`;
+    const initialTargetDays = Math.ceil(TOTAL_QURAN_PAGES / target);
+    const remainingPages = TOTAL_QURAN_PAGES - totalPagesRead;
+
+    // Condition A: no pages read yet
+    if (totalPagesRead <= 0) {
+      return `Bismillah ! À ce rythme d'objectif, tu termineras ta lecture dans ${initialTargetDays} jours.`;
     }
-    return null;
+
+    // Calculate days elapsed since start
+    const startDate = new Date(activeGoal.start_date);
+    const now = new Date();
+    const daysElapsed = Math.max(1, Math.floor((now.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)));
+    const averagePacePerDay = totalPagesRead / daysElapsed;
+
+    if (averagePacePerDay <= 0 || remainingPages <= 0) return null;
+
+    const estimatedDaysLeft = Math.ceil(remainingPages / averagePacePerDay);
+
+    // Condition B: well ahead (estimated < 70% of initial target)
+    if (estimatedDaysLeft < initialTargetDays * 0.7) {
+      return `Ma sha Allah ! Ton ardeur fait chaud au cœur. À ce rythme exceptionnel, tu termineras ta lecture dans seulement ${estimatedDaysLeft} jours. Qu'Allah (عز وجل) bénisse ton temps !`;
+    }
+
+    // Condition D: behind (estimated > 115% of initial target)
+    if (estimatedDaysLeft > initialTargetDays * 1.15) {
+      return `Chaque lettre lue est une immense récompense. Tu as pris un peu de retard, mais l'essentiel est l'Istiqamah (constance). À ce rythme, tu finiras dans ${estimatedDaysLeft} jours. On s'accroche !`;
+    }
+
+    // Condition C: on track
+    return `Excellente régularité ! À ton rythme actuel, tu termineras ta lecture dans environ ${estimatedDaysLeft} jours.`;
   };
 
   const handleRecalculateGoal = async () => {
