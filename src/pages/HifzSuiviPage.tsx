@@ -471,7 +471,7 @@ export default function HifzSuiviPage() {
                   <Tooltip
                     cursor={false}
                     contentStyle={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', borderRadius: 8, fontSize: 12 }}
-                    formatter={(value: number, name: string) => [`${value} verset${value > 1 ? 's' : ''}`, name ==Ar-RabtifAr-Rabt 'Hifz' : "Muraja'a"]}
+                    formatter={(value: number, name: string) => [`${value} verset${value > 1 ? 's' : ''}`, name === 'hifz' ? 'Ar-Rabt' : "Muraja'a"]}
                     labelStyle={{ color: 'var(--p-text-65)', fontWeight: 600 }}
                   />
                   <Bar dataKey="hifz" stackId="a" fill="var(--p-accent)" maxBarSize={28} radius={[0, 0, 0, 0]} />
