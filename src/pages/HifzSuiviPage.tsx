@@ -10,6 +10,7 @@ import HifzGoalOnboarding from '@/components/hifz/HifzGoalOnboarding';
 import { findNextStartingPoint, getTodayRevisions } from '@/lib/hifzUtils';
 import { SURAHS } from '@/lib/surahData';
 import { Link } from 'react-router-dom';
+import { getTodayQuote } from '@/lib/dailyQuotes';
 
 function getGreeting(): string {
   const h = new Date().getHours();
