@@ -30,7 +30,7 @@ function getSurahName(num: number) {
 
 export default function FavorisPage() {
   const navigate = useNavigate();
-  const { user, hasFullAccess } = useAuth();
+  const { user, hasFullAccessAccess } = useAuth();
   const [verses, setVerses] = useState<FavoriteVerse[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -49,7 +49,7 @@ export default function FavorisPage() {
   }, [user]);
 
   const openInMushaf = async (v: FavoriteVerse) => {
-    if (!isAdmin) {
+   hasFullAccesssAdmin) {
       toast({ title: 'Bientôt disponible', description: 'Le Mushaf sera accessible prochainement in shaa Allah 🤲' });
       return;
     }
