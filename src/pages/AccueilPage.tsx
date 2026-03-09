@@ -38,7 +38,7 @@ const COLORS = {
 };
 
 export default function AccueilPage() {
-  const { user, isAdmin, hasFullAccess } = useAuth();
+  const { user, isAdmin, hasFullAccess, hasFullAccess } = useAuth();
   const { isInstallable, isInstalled, isIOS, promptInstall } = usePWAInstall();
   const { subscriptionError } = usePushSubscription();
   const [showNamePrompt, setShowNamePrompt] = useState(false);
@@ -322,7 +322,7 @@ export default function AccueilPage() {
 
             {/* LE NOBLE CORAN */}
             <motion.div variants={itemVariants}>
-              {isAdmin ? (
+hasFullAccess       {isAdmin ? (
                 <Link to="/quran-reader" className="block">
                   <motion.div
                     className="relative overflow-hidden rounded-[2rem] p-8 group"
