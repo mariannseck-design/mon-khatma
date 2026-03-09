@@ -31,7 +31,7 @@ export function PlannerCalculator({
     if (lastEdited === 'pages' && pagesPerDay) {
       const pages = parseFloat(pagesPerDay);
       if (pages > 0) {
-        const days = Math.ceil(TOTAL_QURAN_PAGES / pages);
+        const days = Math.floor(TOTAL_QURAN_PAGES / pages);
         setTargetDays(days.toString());
         onGoalChange?.(pages, days);
       }
