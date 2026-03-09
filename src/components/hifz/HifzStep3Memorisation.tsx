@@ -119,7 +119,19 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
   const [mushafMode, setMushafModeState] = useState<MushafMode>(getMushafMode);
 
   const phaseInfo = getPhaseInfo(ancrage, tikrarTarget);
-  const quarters = getPhaseBreaks(tikrarTarget);
+  const prevPhaseRef = useRef(phaseInfo.phase);
+
+  // Auto-stop audio when entering phase 2
+  useEffect(() => {
+    if (phaseInfo.phase >= 2 && prevPhaseRef.current < 2) {
+      if (isPlayingRef.current) {
+        isPlayingRef.current = false;
+        audioRef.current?.pause();
+        setIsPlaying(false);
+      }
+    }
+    prevPhaseRef.current = phaseInfo.phase;
+  }, [phaseInfo.phase]);
 
 
   // Load local text + tajweed
