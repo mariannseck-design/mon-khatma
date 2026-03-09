@@ -198,7 +198,7 @@ export default function EmotionsPage() {
           {(() => {
             const prayer = dhikrCards.find(c => c.id === 'prayer')!;
             const PrayerIcon = prayer.icon;
-            const prayerAccessible = isAdmin;
+            const prayerAccessible = hasFullAccess;
             return (
               <motion.div
                 variants={itemVariants}
@@ -230,7 +230,7 @@ export default function EmotionsPage() {
           <div className="grid grid-cols-2 gap-4">
             {dhikrCards.filter(c => c.id === 'morning' || c.id === 'evening').map((card) => {
               const Icon = card.icon;
-              const accessible = card.adminOnly ? isAdmin : (card.enabled || hasFullAccess);
+              const accessible = card.adminOnly ? hasFullAccess : (card.enabled || hasFullAccess);
               return (
                 <motion.div
                   key={card.id}
@@ -317,7 +317,7 @@ export default function EmotionsPage() {
           <div className="grid grid-cols-2 gap-4">
             {dhikrCards.filter(c => !['prayer', 'morning', 'evening'].includes(c.id)).map((card) => {
               const Icon = card.icon;
-              const accessible = ('adminOnly' in card && card.adminOnly) ? isAdmin : (card.enabled || hasFullAccess);
+              const accessible = ('adminOnly' in card && card.adminOnly) ? hasFullAccess : (card.enabled || hasFullAccess);
               return (
                 <motion.div
                   key={card.id}

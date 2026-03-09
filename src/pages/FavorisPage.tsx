@@ -30,7 +30,7 @@ function getSurahName(num: number) {
 
 export default function FavorisPage() {
   const navigate = useNavigate();
-  const { user, isAdmin } = useAuth();
+  const { user, hasFullAccess } = useAuth();
   const [verses, setVerses] = useState<FavoriteVerse[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -49,7 +49,7 @@ export default function FavorisPage() {
   }, [user]);
 
   const openInMushaf = async (v: FavoriteVerse) => {
-    if (!isAdmin) {
+   if (!hasFullAccess) {
       toast({ title: 'Bientôt disponible', description: 'Le Mushaf sera accessible prochainement in shaa Allah 🤲' });
       return;
     }
@@ -108,10 +108,10 @@ export default function FavorisPage() {
             </p>
             <button
               onClick={() => {
-                if (isAdmin) navigate('/quran-reader');
+                if (hasFullAccess) navigate('/quran-reader');
                 else toast({ title: 'Bientôt disponible', description: 'Le Mushaf sera accessible prochainement in shaa Allah 🤲' });
               }}
-              className={`px-5 py-2.5 rounded-xl text-sm font-semibold bg-primary text-primary-foreground active:scale-95 transition-transform ${!isAdmin ? 'opacity-50' : ''}`}
+              className={`px-5 py-2.5 rounded-xl text-sm font-semibold bg-primary text-primary-foreground active:scale-95 transition-transform ${!hasFullAccess ? 'opacity-50' : ''}`}
             >
               Ouvrir le Mushaf
             </button>

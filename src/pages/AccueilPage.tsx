@@ -38,7 +38,7 @@ const COLORS = {
 };
 
 export default function AccueilPage() {
-  const { user, isAdmin } = useAuth();
+  const { user, isAdmin, hasFullAccess } = useAuth();
   const { isInstallable, isInstalled, isIOS, promptInstall } = usePWAInstall();
   const { subscriptionError } = usePushSubscription();
   const [showNamePrompt, setShowNamePrompt] = useState(false);
@@ -322,7 +322,7 @@ export default function AccueilPage() {
 
             {/* LE NOBLE CORAN */}
             <motion.div variants={itemVariants}>
-              {isAdmin ? (
+hasFullAccess       {isAdmin ? (
                 <Link to="/quran-reader" className="block">
                   <motion.div
                     className="relative overflow-hidden rounded-[2rem] p-8 group"
@@ -567,14 +567,14 @@ export default function AccueilPage() {
                 </h3>
               </div>
               <div className="space-y-4">
-                {!isAdmin && (
+                {!hasFullAccess && (
                   <p className="text-xs text-center font-medium" style={{ color: COLORS.gold }}>
                     Lancement après le Ramadan 🌸
                   </p>
                 )}
-                <DefiAlMulk disabled={!isAdmin} />
-                <DefiAlKahf disabled={!isAdmin} />
-                <DefiAlBaqara disabled={!isAdmin} />
+                <DefiAlMulk disabled={!hasFullAccess} />
+                <DefiAlKahf disabled={!hasFullAccess} />
+                <DefiAlBaqara disabled={!hasFullAccess} />
                 <DefisCommunityCounter />
               </div>
             </motion.div>
