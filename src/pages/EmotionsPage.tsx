@@ -198,19 +198,26 @@ export default function EmotionsPage() {
           {(() => {
             const prayer = dhikrCards.find(c => c.id === 'prayer')!;
             const PrayerIcon = prayer.icon;
+            const prayerAccessible = isAdmin;
             return (
               <motion.div
                 variants={itemVariants}
-                className="relative overflow-hidden rounded-2xl p-5 flex flex-col items-center justify-center text-center cursor-pointer"
+                className={`relative overflow-hidden rounded-2xl p-5 flex flex-col items-center justify-center text-center ${prayerAccessible ? 'cursor-pointer' : ''}`}
                 style={{
                   background: prayer.bg,
                   border: '1px solid rgba(0,0,0,0.06)',
                   boxShadow: '0 2px 12px -2px rgba(0,0,0,0.08)',
                   minHeight: '100px',
                 }}
-                onClick={() => navigate(`/dhikr?category=${prayer.id}`)}
-                whileTap={{ scale: 0.96 }}
+                onClick={() => prayerAccessible && navigate(`/dhikr?category=${prayer.id}`)}
+                whileTap={prayerAccessible ? { scale: 0.96 } : {}}
               >
+                {!prayerAccessible && (
+                  <span className="absolute top-2 right-2 text-[9px] font-medium px-2 py-0.5 rounded-full backdrop-blur-sm"
+                    style={{ background: 'rgba(255,255,255,0.35)', color: prayer.text, border: '1px solid rgba(255,255,255,0.25)' }}>
+                    Bientôt
+                  </span>
+                )}
                 <PrayerIcon className="h-7 w-7 mb-2 opacity-80" strokeWidth={1.5} style={{ color: prayer.text }} />
                 <h3 className="text-sm font-semibold leading-tight" style={{ color: prayer.text, fontFamily: "'Inter', sans-serif" }}>
                   {prayer.title}
