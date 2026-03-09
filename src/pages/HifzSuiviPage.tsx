@@ -84,6 +84,13 @@ export default function HifzSuiviPage() {
     if (!user) return;
     setLoading(true);
 
+    // Fetch display name
+    const { data: profileData } = await supabase.from('profiles').select('display_name').eq('user_id', user.id).maybeSingle();
+    if (profileData?.display_name) {
+      setDisplayName(profileData.display_name);
+      localStorage.setItem('user_display_name', profileData.display_name);
+    }
+
     const today = new Date();
     const todayStr = today.toISOString().split('T')[0];
     const dayOfWeek = today.getDay();
