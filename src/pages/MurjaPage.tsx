@@ -155,7 +155,29 @@ export default function MurjaPage() {
     };
   }, [allVerses]);
 
-  const formatDate = (dateStr: string) => {
+  // Compute page numbers for each summary item
+  const [pageMap, setPageMap] = useState<Record<string, { startPage: number; endPage: number }>>({});
+  useEffect(() => {
+    if (surahSummary.length === 0) return;
+    let cancelled = false;
+    (async () => {
+      const result: Record<string, { startPage: number; endPage: number }> = {};
+      for (const s of surahSummary) {
+        const key = `${s.surahNumber}_${s.isLiaison ? 'l' : 't'}`;
+        try {
+          const [startPage, endPage] = await Promise.all([
+            getExactVersePage(s.surahNumber, s.verseMin),
+            getExactVersePage(s.surahNumber, s.verseMax),
+          ]);
+          result[key] = { startPage, endPage };
+        } catch { /* skip */ }
+      }
+      if (!cancelled) setPageMap(result);
+    })();
+    return () => { cancelled = true; };
+  }, [surahSummary]);
+
+
     const d = new Date(dateStr + 'T00:00:00');
     return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
   };
