@@ -317,19 +317,23 @@ export default function PlanificateurPage() {
     const startDate = new Date(activeGoal.start_date);
     const now = new Date();
     const daysElapsed = Math.max(1, Math.floor((now.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)));
-    const averagePacePerDay = totalPagesRead / daysElapsed;
 
-    if (averagePacePerDay <= 0 || remainingPages <= 0) return null;
+    if (remainingPages <= 0) return null;
 
-    const estimatedDaysLeft = Math.ceil(remainingPages / averagePacePerDay);
+    // Days left based on TARGET pace (not actual pace)
+    const estimatedDaysLeft = Math.ceil(remainingPages / target);
 
-    // Condition B: well ahead (estimated < 70% of initial target)
-    if (estimatedDaysLeft < initialTargetDays * 0.7) {
+    // Compare actual progress vs expected progress
+    const expectedPages = daysElapsed * target;
+    const progressRatio = totalPagesRead / expectedPages; // >1 = ahead, <1 = behind
+
+    // Condition B: well ahead (read 50%+ more than expected)
+    if (progressRatio > 1.5) {
       return `Ma sha Allah ! Ton ardeur fait chaud au cœur. À ce rythme exceptionnel, tu termineras ta lecture dans seulement ${estimatedDaysLeft} jours. Qu'Allah (عز وجل) bénisse ton temps !`;
     }
 
-    // Condition D: behind (estimated > 115% of initial target)
-    if (estimatedDaysLeft > initialTargetDays * 1.15) {
+    // Condition D: behind (read less than 85% of expected)
+    if (progressRatio < 0.85) {
       return `Chaque lettre lue est une immense récompense. Tu as pris un peu de retard, mais l'essentiel est l'Istiqamah (constance). À ce rythme, tu finiras dans ${estimatedDaysLeft} jours. On s'accroche !`;
     }
 
