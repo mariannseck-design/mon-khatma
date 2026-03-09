@@ -1,8 +1,8 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { AppLayout } from '@/components/layout/AppLayout';
-import { RefreshCw, RotateCcw, TrendingUp, CalendarDays, PartyPopper, Lamp, Link, BookOpen } from 'lucide-react';
+import { RefreshCw, RotateCcw, TrendingUp, CalendarDays, PartyPopper, Info, Link, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { supabase } from '@/integrations/supabase/client';
@@ -89,7 +89,6 @@ export default function MurjaPage() {
     if (!user) return;
     const fetchVerses = async () => {
       setLoading(true);
-      // Auto-graduate liaison blocks that have completed 30 days
       const graduated = await graduateLiaisonBlocks(user.id);
       if (graduated > 0) {
         setGraduatedCount(graduated);
@@ -106,12 +105,10 @@ export default function MurjaPage() {
     fetchVerses();
   }, [user, refreshKey]);
 
-  // Rabt: blocks with liaison_status = 'liaison' (daily mandatory review)
   const rabtVerses = useMemo(() => {
     return allVerses.filter(v => v.liaison_status === 'liaison');
   }, [allVerses]);
 
-  // Tour: blocks with liaison_status = 'tour' AND due today or earlier
   const { tourVerses, isCapActive, totalDueCount } = useMemo(() => {
     const today = getTodayKey();
     const allDue = allVerses.filter(
@@ -129,18 +126,20 @@ export default function MurjaPage() {
     id => rabtVerses.some(v => v.id === id) || tourVerses.some(v => v.id === id)
   ).length;
 
+  const allDailyChecked = checkedCount >= totalBlocks && totalBlocks > 0;
+
   const { totalVersesCount, surahSummary } = useMemo(() => {
     const total = allVerses.reduce((sum, v) => sum + (v.verse_end - v.verse_start + 1), 0);
-    const map = new Map<number, { name: string; versesCount: number; nextReview: string; status: string }>();
+    const map = new Map<number, { name: string; verseMin: number; verseMax: number; nextReview: string; status: string }>();
     for (const v of allVerses) {
       const existing = map.get(v.surah_number);
-      const count = v.verse_end - v.verse_start + 1;
       if (existing) {
-        existing.versesCount += count;
+        existing.verseMin = Math.min(existing.verseMin, v.verse_start);
+        existing.verseMax = Math.max(existing.verseMax, v.verse_end);
         if (v.next_review_date < existing.nextReview) existing.nextReview = v.next_review_date;
       } else {
         const surahName = SURAHS.find(s => s.number === v.surah_number)?.name || `Sourate ${v.surah_number}`;
-        map.set(v.surah_number, { name: surahName, versesCount: count, nextReview: v.next_review_date, status: v.liaison_status || 'tour' });
+        map.set(v.surah_number, { name: surahName, verseMin: v.verse_start, verseMax: v.verse_end, nextReview: v.next_review_date, status: v.liaison_status || 'tour' });
       }
     }
     return {
@@ -154,7 +153,6 @@ export default function MurjaPage() {
     return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
   };
 
-  // Compute remaining liaison days for rabt items
   const getLiaisonRemaining = (verse: MemorizedVerse) => {
     if (!verse.liaison_start_date) return null;
     const start = new Date(verse.liaison_start_date + 'T00:00:00');
@@ -291,6 +289,9 @@ export default function MurjaPage() {
           <p className="text-xs font-medium" style={{ color: 'var(--p-text-75)' }}>
             Consolide ta mémorisation
           </p>
+          <p className="text-[11px] leading-relaxed mt-2 px-2" style={{ color: 'var(--p-text-65)' }}>
+            Voici les versets que tu dois réciter aujourd'hui (une fois au minimum). Tu peux parfaitement les utiliser durant tes prières. L'objectif est de préserver ton apprentissage par la grâce d'Allah (عز وجل) et de ne jamais l'oublier.
+          </p>
         </div>
 
         {loading ? (
@@ -317,7 +318,7 @@ export default function MurjaPage() {
         ) : (
           <>
             {/* Countdown */}
-            <MurajaCountdown />
+            <MurajaCountdown allChecked={allDailyChecked} />
 
             {/* Progress bar */}
             {totalBlocks > 0 && (
@@ -358,6 +359,16 @@ export default function MurjaPage() {
                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full text-white" style={{ background: 'linear-gradient(135deg, #065F46, #10B981)' }}>
                    {rabtVerses.length}
                  </span>
+                 <Popover>
+                   <PopoverTrigger asChild>
+                     <button className="inline-flex items-center justify-center" aria-label="Info Ar-Rabt">
+                       <Info className="h-4 w-4" style={{ color: 'var(--p-accent)' }} />
+                     </button>
+                   </PopoverTrigger>
+                   <PopoverContent side="bottom" className="w-auto max-w-[200px] px-3 py-2 text-xs font-medium" style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', color: 'var(--p-text)' }}>
+                     Nouvelle mémorisation
+                   </PopoverContent>
+                 </Popover>
                  <MurajaMethodModal defaultTab="rabt" />
               </div>
                <p className="text-[11px] font-medium -mt-2" style={{ color: 'var(--p-text-65)' }}>
@@ -384,22 +395,20 @@ export default function MurjaPage() {
                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full text-white" style={{ background: 'linear-gradient(135deg, #065F46, #10B981)' }}>
                    {tourVerses.length}
                  </span>
-                 <TooltipProvider delayDuration={0}>
-                   <Tooltip>
-                     <TooltipTrigger asChild>
-                       <button className="inline-flex items-center justify-center" aria-label="Info Muraja'a">
-                         <Lamp className="h-4 w-4" style={{ color: 'var(--p-primary)' }} />
-                       </button>
-                     </TooltipTrigger>
-                     <TooltipContent side="bottom" className="max-w-[260px] text-xs leading-relaxed">
-                       La Muraja'a est la clé de la préservation. Ce programme intelligent organise ta consolidation pour que chaque verset reste vivant dans ton cœur par la grâce d'Allah.
-                     </TooltipContent>
-                   </Tooltip>
-                 </TooltipProvider>
+                 <Popover>
+                   <PopoverTrigger asChild>
+                     <button className="inline-flex items-center justify-center" aria-label="Info Muraja'a">
+                       <Info className="h-4 w-4" style={{ color: 'var(--p-accent)' }} />
+                     </button>
+                   </PopoverTrigger>
+                   <PopoverContent side="bottom" className="w-auto max-w-[200px] px-3 py-2 text-xs font-medium" style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', color: 'var(--p-text)' }}>
+                     Ancienne mémorisation
+                   </PopoverContent>
+                 </Popover>
                  <MurajaMethodModal defaultTab="sm2" />
               </div>
                <p className="text-[11px] font-medium -mt-2" style={{ color: 'var(--p-text-65)' }}>
-                 Entretien de tes anciens acquis pour un ancrage éternel inshaa Allah.
+                 Ton programme du jour. Récite les versets ci-dessous pour maintenir ton niveau.
                </p>
                <MurajaChecklist
                  items={tourVerses}
@@ -420,7 +429,7 @@ export default function MurjaPage() {
                />
             </div>
 
-            {/* Mon trésor */}
+            {/* Mes ayats mémorisées */}
             <div
               className="rounded-2xl p-5 space-y-3"
               style={{
@@ -437,7 +446,7 @@ export default function MurjaPage() {
                    className="text-sm font-bold"
                    style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-primary)' }}
                  >
-                  Mes Escaliers — {totalVersesCount} Ayat{totalVersesCount > 1 ? 's' : ''} mémorisée{totalVersesCount > 1 ? 's' : ''}
+                  Mes ayats mémorisées : {totalVersesCount} Ayat{totalVersesCount > 1 ? 's' : ''}
                 </h3>
               </div>
               <div className="space-y-1.5">
@@ -451,7 +460,7 @@ export default function MurjaPage() {
                        <span className="text-xs font-bold" style={{ color: 'var(--p-primary)' }}>
                          {s.name}
                        </span>
-                       <span className="text-sm font-extrabold" style={{ color: 'var(--p-primary)' }}>{s.versesCount} v.</span>
+                       <span className="text-sm font-extrabold" style={{ color: 'var(--p-primary)' }}>v. {s.verseMin} à {s.verseMax}</span>
                      </div>
                      <div className="flex items-center gap-0.5 text-[10px] font-medium" style={{ color: 'var(--p-text-65)' }}>
                      <span className="flex items-center gap-0.5">

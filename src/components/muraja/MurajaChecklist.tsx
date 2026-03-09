@@ -58,7 +58,7 @@ export default function MurajaChecklist({
   const getSurahName = (num: number) =>
     SURAHS.find(s => s.number === num)?.name || `Sourate ${num}`;
 
-  const handleCheck = (id: string) => {
+  const handleValidate = (id: string) => {
     if (checkedIds.includes(id)) return;
     if (section === 'tour') {
       setRatingFor(id);
@@ -139,10 +139,8 @@ export default function MurajaChecklist({
 
         return (
           <div key={item.id}>
-            <motion.button
-              onClick={() => handleCheck(item.id)}
-              disabled={isChecked}
-              className="w-full flex items-center gap-3 rounded-xl px-4 py-3.5 text-left transition-all"
+            <div
+              className="w-full rounded-xl px-4 py-3.5 transition-all"
               style={{
                 background: isChecked ? 'var(--p-card-active)' : 'var(--p-card)',
                 border: `1px solid ${isChecked ? '#D4AF37' : 'var(--p-border)'}`,
@@ -150,56 +148,73 @@ export default function MurajaChecklist({
                 opacity: isChecked ? 0.8 : 1,
                 boxShadow: isChecked ? 'none' : 'var(--p-card-shadow)',
               }}
-              whileTap={isChecked ? {} : { scale: 0.98 }}
             >
-              {/* Checkbox */}
-              <motion.div
-                className="w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 transition-all"
-                style={{
-                  background: isChecked ? '#D4AF37' : 'transparent',
-                  border: `2px solid ${isChecked ? '#D4AF37' : 'var(--p-checkbox-border)'}`,
-                }}
-                animate={isChecked ? { scale: [1, 1.25, 1] } : {}}
-                transition={{ type: 'spring', stiffness: 400, damping: 15 }}
-              >
-                {isChecked && <Check className="h-3.5 w-3.5" style={{ color: '#FFFFFF' }} />}
-              </motion.div>
-
               {/* Label */}
-              <div className="flex-1 min-w-0">
-                <p
-                  className="text-sm truncate"
+              <div className="flex items-center gap-3">
+                {/* Checkbox indicator */}
+                <motion.div
+                  className="w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 transition-all"
                   style={{
-                    color: isChecked ? 'var(--p-primary)' : 'var(--p-text)',
-                    fontWeight: isChecked ? 800 : 700,
+                    background: isChecked ? '#D4AF37' : 'transparent',
+                    border: `2px solid ${isChecked ? '#D4AF37' : 'var(--p-checkbox-border)'}`,
                   }}
+                  animate={isChecked ? { scale: [1, 1.25, 1] } : {}}
+                  transition={{ type: 'spring', stiffness: 400, damping: 15 }}
                 >
-                  {getSurahName(item.surah_number)}
-                </p>
-                <p className="text-xs font-medium" style={{ color: 'var(--p-text-60)' }}>
-                  v. {item.verse_start} → {item.verse_end}
-                  {section === 'tour' && item.sm2_interval != null && (
-                    <span className="ml-2 opacity-80">· {humanizeInterval(item.sm2_interval)}</span>
-                  )}
-                  {section === 'rabt' && (
-                    <span className="ml-2 opacity-80">· Jour {daysPassed} / 30</span>
-                  )}
-                </p>
+                  {isChecked && <Check className="h-3.5 w-3.5" style={{ color: '#FFFFFF' }} />}
+                </motion.div>
 
-                {/* Mini progress bar for rabt */}
-                {section === 'rabt' && item.liaison_start_date && (
-                  <div className="w-full h-2 rounded-full overflow-hidden mt-1.5" style={{ background: 'var(--p-track)' }}>
-                    <motion.div
-                      className="h-full rounded-full"
-                      style={{ background: 'linear-gradient(90deg, #065F46, #10B981)' }}
-                      initial={{ width: 0 }}
-                      animate={{ width: `${(daysPassed / 30) * 100}%` }}
-                      transition={{ duration: 0.6 }}
-                    />
-                  </div>
-                )}
+                <div className="flex-1 min-w-0">
+                  <p
+                    className="text-sm truncate"
+                    style={{
+                      color: isChecked ? 'var(--p-primary)' : 'var(--p-text)',
+                      fontWeight: isChecked ? 800 : 700,
+                    }}
+                  >
+                    {getSurahName(item.surah_number)}
+                  </p>
+                  <p className="text-xs font-medium" style={{ color: 'var(--p-text-60)' }}>
+                    v. {item.verse_start} → {item.verse_end}
+                    {section === 'tour' && item.sm2_interval != null && (
+                      <span className="ml-2 opacity-80">· {humanizeInterval(item.sm2_interval)}</span>
+                    )}
+                    {section === 'rabt' && (
+                      <span className="ml-2 opacity-80">· Jour {daysPassed} / 30</span>
+                    )}
+                  </p>
+
+                  {/* Mini progress bar for rabt */}
+                  {section === 'rabt' && item.liaison_start_date && (
+                    <div className="w-full h-2 rounded-full overflow-hidden mt-1.5" style={{ background: 'var(--p-track)' }}>
+                      <motion.div
+                        className="h-full rounded-full"
+                        style={{ background: 'linear-gradient(90deg, #065F46, #10B981)' }}
+                        initial={{ width: 0 }}
+                        animate={{ width: `${(daysPassed / 30) * 100}%` }}
+                        transition={{ duration: 0.6 }}
+                      />
+                    </div>
+                  )}
+                </div>
               </div>
-            </motion.button>
+
+              {/* Validation button */}
+              {!isChecked && !isRating && (
+                <motion.button
+                  onClick={() => handleValidate(item.id)}
+                  className="w-full mt-3 flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold transition-all"
+                  style={{
+                    background: 'linear-gradient(135deg, #065F46, #10B981)',
+                    color: '#FFFFFF',
+                    boxShadow: '0 2px 8px -2px rgba(16, 185, 129, 0.4)',
+                  }}
+                  whileTap={{ scale: 0.97 }}
+                >
+                  Bismillah, je valide ma révision
+                </motion.button>
+              )}
+            </div>
 
             {/* Inline rating for Tour */}
             <AnimatePresence>

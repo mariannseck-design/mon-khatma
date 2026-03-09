@@ -1,41 +1,21 @@
 
 
-## Plan : Améliorations du tableau de bord Muraja'a
+# Diagnostic : 404 sur /quran-reader
 
-### A. Badges d'information cliquables sur les titres de section
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-**`src/pages/MurjaPage.tsx`**
-- À côté du titre "Ar-Rabt (Liaison du jour)" : ajouter une icône `Info` cliquable qui affiche un popover/tooltip "Nouvelle mémorisation"
-- À côté du titre "Muraja'a (Consolidation)" : remplacer le tooltip existant (icône Lamp) par un badge `Info` cliquable affichant "Ancienne mémorisation"
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-### B. Logique conditionnelle du compte à rebours
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-**`src/components/muraja/MurajaCountdown.tsx`**
-- Ajouter une prop `allChecked: boolean` 
-- Si `allChecked = false` : afficher "En attente de votre validation du jour" à la place du timer
-- Si `allChecked = true` : afficher le timer "Ta prochaine récitation dans..."
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-**`src/pages/MurjaPage.tsx`**
-- Passer `allChecked={checkedCount >= totalBlocks && totalBlocks > 0}` au composant `MurajaCountdown`
-
-### C. Textes de la page Muraja'a
-
-**`src/pages/MurjaPage.tsx`**
-- Sous le titre principal "Consolide ta mémorisation", ajouter le paragraphe : *"Voici les versets que tu dois réciter aujourd'hui (une fois au minimum). Tu peux parfaitement les utiliser durant tes prières. L'objectif est de préserver ton apprentissage par la grâce d'Allah (عز وجل) et de ne jamais l'oublier."*
-- Remplacer le texte sous la section Muraja'a "Entretien de tes anciens acquis..." par : *"Ton programme du jour. Récite les versets ci-dessous pour maintenir ton niveau."*
-
-**`src/components/muraja/MurajaChecklist.tsx`**
-- Remplacer le comportement du bouton de validation : chaque item affiche un bouton "Bismillah, je valide ma révision" au lieu du simple checkbox tap
-
-### D. Affichage "Mes ayats mémorisées"
-
-**`src/pages/MurjaPage.tsx`**
-- Renommer "Mes Escaliers" → "Mes ayats mémorisées :"
-- Modifier `surahSummary` pour stocker `verse_start` et `verse_end` (min/max par sourate) au lieu du simple `versesCount`
-- Afficher "v. 1 à 102" au lieu de "102 v."
-
-### Fichiers modifiés
-1. `src/pages/MurjaPage.tsx` — badges info, textes, titre trésor, affichage dynamique des versets
-2. `src/components/muraja/MurajaCountdown.tsx` — logique conditionnelle d'affichage
-3. `src/components/muraja/MurajaChecklist.tsx` — bouton "Bismillah, je valide ma révision"
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
