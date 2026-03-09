@@ -333,8 +333,7 @@ export default function HifzSuiviPage() {
                       <BookOpen className="h-[18px] w-[18px] text-white" />
                     </div>
                     <span className="text-[10px] font-bold uppercase tracking-wider mb-1 leading-tight" style={{ color: 'var(--p-text-60)' }}>
-                      Ar-Rabt (Nouveau)
-                    </span>
+                      Ar-Rabt (Nouveau)            </span>
                     {nextPoint ? (
                       <>
                         <span className="text-sm font-semibold leading-tight" style={{ color: 'var(--p-primary)' }}>
@@ -375,8 +374,7 @@ export default function HifzSuiviPage() {
                       <RefreshCw className="h-[18px] w-[18px] text-white" />
                     </div>
                     <span className="text-[10px] font-bold uppercase tracking-wider mb-1" style={{ color: 'var(--p-text-60)' }}>
-                      À réviser
-                    </span>
+                      À révisMuraja'a (Consolidation)            </span>
                     {todayRevisions.length > 0 ? (
                       <>
                         <span className="text-sm font-semibold leading-tight" style={{ color: 'var(--p-primary)' }}>
