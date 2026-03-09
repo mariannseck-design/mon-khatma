@@ -322,7 +322,7 @@ export default function AccueilPage() {
 
             {/* LE NOBLE CORAN */}
             <motion.div variants={itemVariants}>
-hasFullAccess       {isAdmin ? (
+{hasFullAccess ? (
                 <Link to="/quran-reader" className="block">
                   <motion.div
                     className="relative overflow-hidden rounded-[2rem] p-8 group"
