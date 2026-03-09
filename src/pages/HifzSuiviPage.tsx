@@ -77,7 +77,8 @@ export default function HifzSuiviPage() {
   const [todayRevisions, setTodayRevisions] = useState<{ surah_number: number; verse_start: number; verse_end: number }[]>([]);
 
   const greeting = useMemo(() => getGreeting(), []);
-  const motivation = useMemo(() => MOTIVATIONS[Math.floor(Math.random() * MOTIVATIONS.length)], []);
+  const todayQuote = useMemo(() => getTodayQuote(), []);
+  const [displayName, setDisplayName] = useState(() => localStorage.getItem('user_display_name') || localStorage.getItem('guest_first_name') || '');
 
   const loadData = async () => {
     if (!user) return;
