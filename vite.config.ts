@@ -4,6 +4,7 @@ import path from "path";
 import { componentTagger } from "lovable-tagger";
 import { VitePWA } from "vite-plugin-pwa";
 import legacy from "@vitejs/plugin-legacy";
+import { writeFileSync } from "fs";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
@@ -18,6 +19,12 @@ export default defineConfig(({ mode }) => ({
     target: "es2015",
   },
   plugins: [
+    {
+      name: 'generate-version-json',
+      buildStart() {
+        writeFileSync('public/version.json', JSON.stringify({ v: Date.now().toString() }));
+      }
+    },
     react(),
     mode === "development" && componentTagger(),
     legacy({
