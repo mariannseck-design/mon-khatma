@@ -92,7 +92,7 @@ function getPhaseInfo(ancrage: number, _target: number) {
     return { phase: 2, emoji: '📖', label: 'Regardez le Mushaf | Écoutez l\'audio si besoin | Répétez', showText: true, audioProminent: false, audioAvailable: true, color: '#45b7aa' };
   }
   if (ancrage < 12) {
-    return { phase: 3, emoji: '📖', label: 'Regardez le Mushaf | Éteignez l\'audio (Récitez de mémoirre)', showText: true, audioProminent: false, audioAvailable: false, color: '#f0d060' };
+    return { phase: 3, emoji: '📖', label: 'Regardez le Mushaf | Éteignez l\'audio (Récitez de mémoirrre)', showText: true, audioProminent: false, audioAvailable: false, color: '#f0d060' };
   }
   return { phase: 4, emoji: '🧠', label: 'Texte masqué — Récitation de mémoire', showText: false, audioProminent: false, audioAvailable: false, color: '#d4af37' };
 }
@@ -387,7 +387,7 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
                       }}
                     >
                       <span className="text-xs mt-0.5 whitespace-nowrap" style={{ color: '#f0d060', fontWeight: phaseInfo.phase === 3 ? 700 : 400 }}>9 à 12</span>
-                      <p className="text-xs text-white/70">📖 Regardez le Mushaf | Éteignez l'audio Récitez de mémoirte).</p>
+                      <p className="text-xs text-white/70">📖 Regardez le Mushaf | Éteignez l'audioRécitez de mémoirirte).</p>
                     </div>
                     {/* Étape 4 */}
                     <div
@@ -398,7 +398,7 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
                       }}
                     >
                       <span className="text-xs mt-0.5 whitespace-nowrap" style={{ color: '#d4af37', fontWeight: phaseInfo.phase === 4 ? 700 : 400 }}>Dès la 13ème</span>
-                      <p className="text-xs text-white/70">🧠 Texte masqué. Récitation de mémoire. Bouton « Vérifier » disponible.</p>
+                      <p className="text-xs text-white/70">🧠 Texte masqué. Récitation de mémoireVous pouvez regarder le Mushaf en cas d'erreur ou de doutble.</p>
                     </div>
                   </div>
 
