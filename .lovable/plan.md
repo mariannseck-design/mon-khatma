@@ -1,21 +1,32 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Message d'estimation dynamique sur la carte Ma Khatma
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Problème
+Le message "🌟 À ce rythme, tu finiras en X jours..." utilise `getPrecisionMessage()` qui calcule uniquement à partir de l'objectif initial (target_value), sans tenir compte de la progression réelle.
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Solution
+Remplacer `getPrecisionMessage()` par une fonction `getDynamicEstimationMessage()` qui calcule le rythme réel et affiche 4 messages conditionnels.
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+### Modifications dans `src/pages/PlanificateurPage.tsx`
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+**Remplacer `getPrecisionMessage`** (lignes 304-314) par `getDynamicEstimationMessage` :
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+- **Calcul dynamique** :
+  - `daysElapsed` = jours écoulés depuis `activeGoal.start_date`
+  - `averagePacePerDay` = `totalPagesRead / daysElapsed`
+  - `remainingPages` = `604 - totalPagesRead`
+  - `estimatedDaysLeft` = `Math.ceil(remainingPages / averagePacePerDay)`
+  - `initialTargetDays` = `Math.ceil(604 / activeGoal.target_value)`
+
+- **4 conditions d'affichage** :
+  - **A (0 pages lues ou jour 1)** : "Bismillah ! À ce rythme d'objectif, tu termineras ta lecture dans [initialTargetDays] jours."
+  - **B (très en avance : estimatedDaysLeft < initialTargetDays * 0.7)** : "Ma sha Allah ! Ton ardeur fait chaud au cœur. À ce rythme exceptionnel, tu termineras ta lecture dans seulement [X] jours. Qu'Allah (عز وجل) bénisse ton temps !"
+  - **C (dans les temps : entre 0.7x et 1.15x)** : "Excellente régularité ! À ton rythme actuel, tu termineras ta lecture dans environ [X] jours."
+  - **D (en retard : estimatedDaysLeft > initialTargetDays * 1.15)** : "Chaque lettre lue est une immense récompense. Tu as pris un peu de retard, mais l'essentiel est l'Istiqamah (constance). À ce rythme, tu finiras dans [X] jours. On s'accroche !"
+
+**Mettre à jour l'appel** (lignes 373-378) pour utiliser `getDynamicEstimationMessage()`.
+
+### Fichier modifié
+- `src/pages/PlanificateurPage.tsx` uniquement
 
