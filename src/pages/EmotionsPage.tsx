@@ -198,7 +198,8 @@ export default function EmotionsPage() {
           {(() => {
             const prayer = dhikrCards.find(c => c.id === 'prayer')!;
             const PrayerIcon = prayer.icon;
-            const prayerAccessible = hasFullAccess  return (
+            const prayerAccessible = hasFullAccess;
+            return (
               <motion.div
                 variants={itemVariants}
                 className={`relative overflow-hidden rounded-2xl p-5 flex flex-col items-center justify-center text-center ${prayerAccessible ? 'cursor-pointer' : ''}`}
