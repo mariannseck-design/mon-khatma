@@ -281,7 +281,7 @@ export default function HifzSuiviPage() {
                     />
                   </div>
                   <p className="text-[11px] text-center mt-1" style={{ color: 'var(--p-text-55)' }}>
-                    ≈ {periodVerses} ayat{periodVerses > 1 ? 's' : ''} validées > 1 ? 's' : ''}
+                    {"≈ "}{periodVerses}{" ayat"}{periodVerses > 1 ? "s" : ""}{" validée"}{periodVerses > 1 ? "s" : ""}
                   </p>
                   {progressPct >= 100 && (
                     <p className="text-xs text-center" style={{ color: 'var(--p-accent)' }}>
