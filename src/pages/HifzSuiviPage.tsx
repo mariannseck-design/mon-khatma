@@ -333,7 +333,7 @@ export default function HifzSuiviPage() {
                       <BookOpen className="h-[18px] w-[18px] text-white" />
                     </div>
                     <span className="text-[10px] font-bold uppercase tracking-wider mb-1 leading-tight" style={{ color: 'var(--p-text-60)' }}>
-                      Programme de mémorisation
+                      Ar-Rabt (Nouveau)
                     </span>
                     {nextPoint ? (
                       <>
