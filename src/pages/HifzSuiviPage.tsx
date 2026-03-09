@@ -281,7 +281,7 @@ export default function HifzSuiviPage() {
                     />
                   </div>
                   <p className="text-[11px] text-center mt-1" style={{ color: 'var(--p-text-55)' }}>
-                    ≈ {periodVerses} ayat{periodVerses > 1 ? 's' : ''} validéeiodVerses > 1 ? 's' : ''}
+                    ≈ {periodVerses} ayat{periodVerses > 1 ? 's' : ''} validéeerses > 1 ? 's' : ''}
                   </p>
                   {progressPct >= 100 && (
                     <p className="text-xs text-center" style={{ color: 'var(--p-accent)' }}>
@@ -333,7 +333,7 @@ export default function HifzSuiviPage() {
                       <BookOpen className="h-[18px] w-[18px] text-white" />
                     </div>
                     <span className="text-[10px] font-bold uppercase tracking-wider mb-1 leading-tight" style={{ color: 'var(--p-text-60)' }}>
-                      Ar-RAr-Rabt (Nouveau)         {nextPoint ? (
+                      Ar-RAr-RAr-Rabt (Nouveau)tPoint ? (
                       <>
                         <span className="text-sm font-semibold leading-tight" style={{ color: 'var(--p-primary)' }}>
                           {nextPoint.surahName}
@@ -373,7 +373,7 @@ export default function HifzSuiviPage() {
                       <RefreshCw className="h-[18px] w-[18px] text-white" />
                     </div>
                     <span className="text-[10px] font-bold uppercase tracking-wider mb-1" style={{ color: 'var(--p-text-60)' }}>
-                      À révisMuraja'a Muraja'a Muraja'a (ConMuraja'a (Consolidation)ion)ion)            </span>
+                      À révisMuraja'a Muraja'a Muraja'a (ConMuraja'a (ConMuraja'a (Consolidation)ion)ion)            </span>
                     {todayRevisions.length > 0 ? (
                       <>
                         <span className="text-sm font-semibold leading-tight" style={{ color: 'var(--p-primary)' }}>
@@ -418,7 +418,7 @@ export default function HifzSuiviPage() {
                 className="rounded-2xl p-2 flex flex-col items-center justify-center"
                 style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', boxShadow: 'var(--p-card-shadow)' }}
               >
-                <CircularGauge value={totalVerses} max={6236}Ayats mémoriséeéeoriséecrés" hideMax />
+                <CircularGauge value={totalVerses} max={6236}Ayats mémoriséeéeéeoriséecrés" hideMax />
               </motion.div>
 
               <motion.div
@@ -455,7 +455,7 @@ export default function HifzSuiviPage() {
               </div>
               <div className="flex items-center gap-3 mb-1 justify-end">
                 <span className="flex items-center gap-1 text-[10px] font-medium" style={{ color: 'var(--p-text-55)' }}>
-                  <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ background: 'var(--p-accent)' }} Ar-Rabtifz
+                  <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ background: 'var(--p-accent)' Ar-Rabtr-Rabtifz
                 </span>
                 <span className="flex items-center gap-1 text-[10px] font-medium" style={{ color: 'var(--p-text-55)' }}>
                   <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ background: 'var(--p-primary)' }} /> Muraja'a
@@ -468,7 +468,7 @@ export default function HifzSuiviPage() {
                   <Tooltip
                     cursor={false}
                     contentStyle={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', borderRadius: 8, fontSize: 12 }}
-                    formatter={(value: number, name: string) => [`${value} verset${value > 1 ? 's' : ''}`, name === 'hifz' ? 'Hifz' : "Muraja'a"]}
+                    formatter={(value: number, name: string) => [`${value} verset${value > 1 ? 's' : ''}`, name === 'hifAr-Rabt 'Hifz' : "Muraja'a"]}
                     labelStyle={{ color: 'var(--p-text-65)', fontWeight: 600 }}
                   />
                   <Bar dataKey="hifz" stackId="a" fill="var(--p-accent)" maxBarSize={28} radius={[0, 0, 0, 0]} />
