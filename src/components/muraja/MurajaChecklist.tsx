@@ -12,6 +12,13 @@ interface ChecklistItem {
   liaison_start_date?: string | null;
 }
 
+interface NextReview {
+  surah_number: number;
+  verse_start: number;
+  verse_end: number;
+  next_review_date: string;
+}
+
 interface MurajaChecklistProps {
   items: ChecklistItem[];
   section: 'rabt' | 'tour';
@@ -22,6 +29,7 @@ interface MurajaChecklistProps {
   totalDue?: number;
   hasTourBlocks?: boolean;
   firstArrivalDate?: string;
+  nextTourReviews?: NextReview[];
 }
 
 const RATINGS = [
@@ -54,6 +62,7 @@ export default function MurajaChecklist({
   totalDue,
   hasTourBlocks,
   firstArrivalDate,
+  nextTourReviews,
 }: MurajaChecklistProps) {
   const [ratingFor, setRatingFor] = useState<string | null>(null);
 
@@ -197,8 +206,12 @@ export default function MurajaChecklist({
                   </p>
                   <p className="text-xs font-medium" style={{ color: 'var(--p-text-60)' }}>
                     v. {item.verse_start} → {item.verse_end}
-                    {section === 'tour' && item.sm2_interval != null && (
-                      <span className="ml-2 opacity-80">· {humanizeInterval(item.sm2_interval)}</span>
+                    {section === 'tour' && (
+                      isChecked
+                        ? <span className="ml-2 font-bold" style={{ color: '#10B981' }}>· Révision faite ✓</span>
+                        : item.sm2_interval != null
+                          ? <span className="ml-2 opacity-80">· {humanizeInterval(item.sm2_interval)}</span>
+                          : null
                     )}
                     {section === 'rabt' && (
                       <span className="ml-2 opacity-80">· Jour {daysPassed} / 30</span>
@@ -269,6 +282,30 @@ export default function MurajaChecklist({
           </div>
         );
       })}
+
+      {/* Next upcoming tour reviews */}
+      {section === 'tour' && nextTourReviews && nextTourReviews.length > 0 && items.every(item => checkedIds.includes(item.id)) && (
+        <div
+          className="rounded-xl px-4 py-3 mt-1"
+          style={{
+            background: 'var(--p-card)',
+            border: '1px solid var(--p-border)',
+          }}
+        >
+          <p className="text-xs font-bold mb-1.5" style={{ color: 'var(--p-text-75)' }}>
+            Prochaine révision :
+          </p>
+          {nextTourReviews.slice(0, 3).map((nr, i) => {
+            const name = SURAHS.find(s => s.number === nr.surah_number)?.name || `Sourate ${nr.surah_number}`;
+            const date = new Date(nr.next_review_date + 'T00:00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' });
+            return (
+              <p key={i} className="text-xs font-medium" style={{ color: 'var(--p-text-60)' }}>
+                {name} v. {nr.verse_start} → {nr.verse_end} — <span style={{ color: 'var(--p-accent)' }}>{date}</span>
+              </p>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

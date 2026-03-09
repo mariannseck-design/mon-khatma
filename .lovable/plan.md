@@ -1,27 +1,21 @@
 
 
-## Plan : Garder les items validés visibles avec "Révision faite" + prochaine révision
+# Diagnostic : 404 sur /quran-reader
 
-### Problème
-Quand un bloc tour (ex: Al-Fatiha) est validé, au lieu de rester visible avec un statut "fait", le message de célébration remplace tout. L'utilisatrice veut voir que c'est fait, pas un message vide.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Changements
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-**`src/components/muraja/MurajaChecklist.tsx`**
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-1. **Changer le texte quand un item est coché** (ligne 200-202) : Pour la section `tour`, quand `isChecked`, remplacer `humanizeInterval(item.sm2_interval)` par **"Révision faite ✓"** en vert.
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-2. **Ajouter prop `nextTourReview`** : une liste d'objets `{ surah_number, verse_start, verse_end, next_review_date }` représentant les prochains blocs tour non dus aujourd'hui, triés par date.
-
-3. **Après la liste des items**, si tous les items tour sont cochés et qu'il y a des prochaines révisions, afficher un petit encart : "Prochaine révision : [Sourate] v. X → Y le [date]".
-
-**`src/pages/MurjaPage.tsx`**
-
-4. **Calculer `nextTourReviews`** : filtrer `allVerses` pour les blocs tour dont `next_review_date > today`, trier par date, prendre le(s) premier(s).
-
-5. **Passer la prop** `nextTourReview` au `MurajaChecklist` de la section tour.
-
-### Fichiers modifiés
-- `src/components/muraja/MurajaChecklist.tsx`
-- `src/pages/MurjaPage.tsx`
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
