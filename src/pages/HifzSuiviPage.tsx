@@ -375,7 +375,8 @@ export default function HifzSuiviPage() {
                       <RefreshCw className="h-[18px] w-[18px] text-white" />
                     </div>
                     <span className="text-[10px] font-bold uppercase tracking-wider mb-1" style={{ color: 'var(--p-text-60)' }}>
-                      À révisMuraja'a Muraja'a Muraja'a (ConMuraja'a (ConMuraja'a (ConMuraja'a (Consolidation)ion)ion)            </span>
+                      {"Muraja'a (Consolidation)"}
+                    </span>
                     {todayRevisions.length > 0 ? (
                       <>
                         <span className="text-sm font-semibold leading-tight" style={{ color: 'var(--p-primary)' }}>
