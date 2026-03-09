@@ -19,6 +19,12 @@ export default defineConfig(({ mode }) => ({
     target: "es2015",
   },
   plugins: [
+    {
+      name: 'generate-version-json',
+      buildStart() {
+        writeFileSync('public/version.json', JSON.stringify({ v: Date.now().toString() }));
+      }
+    },
     react(),
     mode === "development" && componentTagger(),
     legacy({
