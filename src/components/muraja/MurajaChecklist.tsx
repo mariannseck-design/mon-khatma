@@ -20,6 +20,7 @@ interface MurajaChecklistProps {
   onRate?: (id: string, quality: number, ratingKey: string) => void;
   isCapActive?: boolean;
   totalDue?: number;
+  hasTourBlocks?: boolean;
   firstArrivalDate?: string;
 }
 
