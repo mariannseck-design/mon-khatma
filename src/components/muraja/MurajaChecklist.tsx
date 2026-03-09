@@ -206,8 +206,12 @@ export default function MurajaChecklist({
                   </p>
                   <p className="text-xs font-medium" style={{ color: 'var(--p-text-60)' }}>
                     v. {item.verse_start} → {item.verse_end}
-                    {section === 'tour' && item.sm2_interval != null && (
-                      <span className="ml-2 opacity-80">· {humanizeInterval(item.sm2_interval)}</span>
+                    {section === 'tour' && (
+                      isChecked
+                        ? <span className="ml-2 font-bold" style={{ color: '#10B981' }}>· Révision faite ✓</span>
+                        : item.sm2_interval != null
+                          ? <span className="ml-2 opacity-80">· {humanizeInterval(item.sm2_interval)}</span>
+                          : null
                     )}
                     {section === 'rabt' && (
                       <span className="ml-2 opacity-80">· Jour {daysPassed} / 30</span>
