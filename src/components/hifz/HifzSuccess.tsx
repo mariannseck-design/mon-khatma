@@ -125,7 +125,7 @@ export default function HifzSuccess({ stepTimes }: Props) {
       {/* CTA: Go to revision */}
       <motion.button
         whileTap={{ scale: 0.97 }}
-        onClick={() => navigate('/revision')}
+        onClick={() => navigate('/muraja')}
         className="mx-auto px-6 py-3 rounded-2xl flex items-center gap-2 font-semibold text-sm"
         style={{
           background: 'rgba(255,255,255,0.1)',
