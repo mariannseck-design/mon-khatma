@@ -1,21 +1,25 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Corriger le calcul des jours (604 ÷ 20 = 30 jours + 4 pages)
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Problème
+`Math.ceil(604 / 20)` donne 31 jours, mais en réalité c'est **30 jours** de 20 pages (= 600 pages) + **4 pages restantes** le dernier jour. L'utilisateur veut voir "30 jours" et non "31 jours".
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Solution
+Utiliser `Math.floor` au lieu de `Math.ceil` pour le nombre de jours, et calculer les pages restantes (`604 % target`). Adapter les messages pour mentionner les pages supplémentaires quand il y en a.
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+### Modifications
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+**1. `src/components/planificateur/PlannerCalculator.tsx`** (ligne 34)
+- `Math.ceil(604 / pages)` → `Math.floor(604 / pages)`
+- Ajouter sous le résultat une mention des pages restantes si `604 % pages !== 0` : ex. "+ 4 pages le dernier jour"
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+**2. `src/pages/PlanificateurPage.tsx`** (lignes 308, 313, 324)
+- `initialTargetDays` : `Math.floor` au lieu de `Math.ceil`
+- `estimatedDaysLeft` : `Math.floor` au lieu de `Math.ceil`
+- Dans les messages, ajouter la mention des pages supplémentaires quand `remainingPages % target !== 0`
+
+### Exemple concret
+- 20 pages/jour → "30 jours (+ 4 pages le dernier jour)" au lieu de "31 jours"
+- 4 pages/jour → "151 jours" (604/4 = 151 exactement, pas de reste)
 
