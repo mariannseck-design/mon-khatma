@@ -20,12 +20,6 @@ function getGreeting(): string {
   return 'Masa al-khayr';
 }
 
-const MOTIVATIONS = [
-  "Prête pour ton ancrage aujourd'hui ?",
-  "Chaque verset compte auprès d'Allah.",
-  "La constance est la clé de la mémorisation.",
-  "Qu'Allah te facilite ce chemin.",
-];
 
 function CircularGauge({ value, max, label, hideMax }: { value: number; max: number; label: string; hideMax?: boolean }) {
   const pct = max > 0 ? Math.min(value / max, 1) : 0;
