@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { AppLayout } from '@/components/layout/AppLayout';
-import { RefreshCw, RotateCcw, TrendingUp, CalendarDays, PartyPopper, Info, Link, BookOpen } from 'lucide-react';
+import { RefreshCw, TrendingUp, CalendarDays, PartyPopper, Info, Link, BookOpen } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
