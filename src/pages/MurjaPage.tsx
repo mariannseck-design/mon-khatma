@@ -264,10 +264,12 @@ export default function MurjaPage() {
       if (dateStr === tomorrowKey) return 'Demain';
       const d = new Date(dateStr + 'T00:00:00');
       const diff = Math.ceil((d.getTime() - new Date().setHours(0,0,0,0)) / 86400000);
+      const dayMonth = d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' });
       if (diff <= 7) {
-        return d.toLocaleDateString('fr-FR', { weekday: 'long' }).replace(/^\w/, c => c.toUpperCase());
+        const weekday = d.toLocaleDateString('fr-FR', { weekday: 'long' }).replace(/^\w/, c => c.toUpperCase());
+        return `${weekday} ${dayMonth}`;
       }
-      return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' });
+      return dayMonth;
     };
 
     return allVerses
