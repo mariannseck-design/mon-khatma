@@ -101,7 +101,47 @@ export default function MurjaPage() {
         .select('*')
         .eq('user_id', user.id)
         .order('memorized_at', { ascending: false });
-      setAllVerses((data as MemorizedVerse[]) || []);
+
+      const verses = (data as MemorizedVerse[]) || [];
+
+      // Auto-split multi-page blocks
+      let needsRefresh = false;
+      for (const verse of verses) {
+        const subBlocks = await splitBlockByPages(verse.surah_number, verse.verse_start, verse.verse_end);
+        if (subBlocks.length > 1) {
+          needsRefresh = true;
+          // Delete the original block
+          await supabase.from('hifz_memorized_verses').delete().eq('id', verse.id);
+          // Insert split blocks preserving SM-2 params
+          const newRows = subBlocks.map(sub => ({
+            user_id: user.id,
+            surah_number: sub.surahNumber,
+            verse_start: sub.verseStart,
+            verse_end: sub.verseEnd,
+            memorized_at: verse.memorized_at,
+            next_review_date: verse.next_review_date,
+            sm2_interval: verse.sm2_interval,
+            sm2_ease_factor: verse.sm2_ease_factor,
+            sm2_repetitions: verse.sm2_repetitions,
+            liaison_status: verse.liaison_status,
+            liaison_start_date: verse.liaison_start_date,
+            last_reviewed_at: verse.last_reviewed_at,
+          }));
+          await supabase.from('hifz_memorized_verses').insert(newRows);
+        }
+      }
+
+      if (needsRefresh) {
+        // Re-fetch after splitting
+        const { data: refreshed } = await supabase
+          .from('hifz_memorized_verses')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('memorized_at', { ascending: false });
+        setAllVerses((refreshed as MemorizedVerse[]) || []);
+      } else {
+        setAllVerses(verses);
+      }
       setLoading(false);
     };
     fetchVerses();
