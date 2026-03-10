@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { CheckCircle, Clock, CalendarDays } from 'lucide-react';
+import { CheckCircle, Clock, CalendarDays, Link, BookOpen } from 'lucide-react';
 
 interface NextReview {
   surahName: string;
@@ -56,38 +56,79 @@ export default function MurajaCountdown({ allChecked = false, nextReviews = [] }
       </div>
 
       {nextReviews.length > 0 && (
-        <div className="space-y-1.5 pt-2" style={{ borderTop: '1px solid var(--p-border)' }}>
+        <div className="space-y-2 pt-3" style={{ borderTop: '1px solid var(--p-border)' }}>
           <p className="text-xs font-bold" style={{ color: 'var(--p-text-75)' }}>
             Prochaines révisions :
           </p>
-          {nextReviews.map((nr, i) => (
-            <div
-              key={i}
-              className="flex items-center justify-between px-3 py-2 rounded-lg text-xs"
-              style={{
-                background: nr.type === 'rabt' ? 'rgba(212, 175, 55, 0.08)' : 'rgba(16, 185, 129, 0.08)',
-                border: `1px solid ${nr.type === 'rabt' ? 'rgba(212, 175, 55, 0.2)' : 'rgba(16, 185, 129, 0.2)'}`,
-              }}
-            >
-              <div className="flex items-center gap-1.5">
-                <span className="font-bold" style={{ color: 'var(--p-primary)' }}>
-                  {nr.surahName}
-                </span>
-                <span className="font-semibold" style={{ color: 'var(--p-text-60)' }}>
-                  v. {nr.verseStart} → {nr.verseEnd}
-                </span>
-                {nr.page && (
-                  <span className="font-medium px-1 py-0.5 rounded" style={{ background: 'var(--p-card)', color: 'var(--p-text-50)' }}>
-                    {nr.page}
-                  </span>
-                )}
-              </div>
-              <div className="flex items-center gap-1 flex-shrink-0" style={{ color: 'var(--p-accent)' }}>
-                <CalendarDays className="h-3 w-3" />
-                <span className="font-semibold">{nr.date}</span>
-              </div>
-            </div>
-          ))}
+          {nextReviews.map((nr, i) => {
+            const isRabt = nr.type === 'rabt';
+            const accentColor = isRabt ? '#D4AF37' : '#10B981';
+            const bgColor = isRabt ? 'rgba(212, 175, 55, 0.08)' : 'rgba(16, 185, 129, 0.08)';
+            const borderColor = isRabt ? 'rgba(212, 175, 55, 0.25)' : 'rgba(16, 185, 129, 0.25)';
+            const IconComp = isRabt ? Link : BookOpen;
+            const typeLabel = isRabt ? 'Liaison' : 'Révision';
+
+            return (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: -8 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: i * 0.08 }}
+                className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs text-left"
+                style={{
+                  background: bgColor,
+                  border: `1px solid ${borderColor}`,
+                }}
+              >
+                {/* Icon badge */}
+                <div
+                  className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+                  style={{
+                    background: isRabt
+                      ? 'linear-gradient(135deg, #B8960C, #D4AF37)'
+                      : 'linear-gradient(135deg, #065F46, #10B981)',
+                    boxShadow: `0 2px 8px -2px ${accentColor}66`,
+                  }}
+                >
+                  <IconComp className="h-3.5 w-3.5 text-white" />
+                </div>
+
+                {/* Info */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-bold truncate" style={{ color: 'var(--p-primary)' }}>
+                      {nr.surahName}
+                    </span>
+                    <span
+                      className="text-[9px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0"
+                      style={{ background: `${accentColor}20`, color: accentColor }}
+                    >
+                      {typeLabel}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 mt-0.5">
+                    <span className="font-semibold" style={{ color: 'var(--p-text-60)' }}>
+                      v. {nr.verseStart} → {nr.verseEnd}
+                    </span>
+                    {nr.page && (
+                      <span
+                        className="font-medium px-1.5 py-0.5 rounded"
+                        style={{ background: 'var(--p-track)', color: 'var(--p-text-50)', fontSize: '10px' }}
+                      >
+                        {nr.page}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Date */}
+                <div className="flex items-center gap-1 flex-shrink-0" style={{ color: accentColor }}>
+                  <CalendarDays className="h-3 w-3" />
+                  <span className="font-bold text-[11px]">{nr.date}</span>
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
       )}
     </motion.div>
