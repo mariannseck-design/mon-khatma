@@ -527,16 +527,6 @@ export default function MurjaPage() {
                 <RefreshCw className="h-3 w-3" />
                 Actualiser
               </Button>
-              <Button
-                variant="ghost"
-                onClick={handleRecalculate}
-                disabled={recalculating}
-                className="text-xs gap-1.5"
-                style={{ color: 'var(--p-text-65)' }}
-              >
-                <RotateCcw className={`h-3 w-3 ${recalculating ? 'animate-spin' : ''}`} />
-                {recalculating ? 'Recalcul...' : 'Recalculer mes portions'}
-              </Button>
             </div>
           </>
         ) : (
