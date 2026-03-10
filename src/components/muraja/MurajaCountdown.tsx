@@ -17,24 +17,7 @@ interface MurajaCountdownProps {
 
 export default function MurajaCountdown({ allChecked = false, nextReviews = [] }: MurajaCountdownProps) {
   if (!allChecked) {
-    return (
-      <div
-        className="rounded-2xl p-5 text-center"
-        style={{
-          background: 'var(--p-card)',
-          border: '1px solid var(--p-border)',
-          boxShadow: 'var(--p-card-shadow)',
-        }}
-      >
-        <Clock className="h-6 w-6 mx-auto mb-2" style={{ color: 'var(--p-text-60)' }} />
-        <p className="text-sm font-bold" style={{ color: 'var(--p-text-75)' }}>
-          En attente de ta validation du jour
-        </p>
-        <p className="text-xs mt-1" style={{ color: 'var(--p-text-50)' }}>
-          Récite et valide tes blocs ci-dessous
-        </p>
-      </div>
-    );
+    return null;
   }
 
   return (

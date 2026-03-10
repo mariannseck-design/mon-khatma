@@ -123,7 +123,7 @@ export default function MurajaChecklist({
         {section === 'tour' && (
           <>
             <p className="text-xs mt-1.5" style={{ color: 'var(--p-text-50)' }}>
-              Tes blocs mémorisés arriveront ici après 30 jours de liaison (Ar-Rabt).
+              Tes portions mémorisées arriveront ici après 30 jours de liaison (Ar-Rabt).
             </p>
             {firstArrivalDate && (() => {
               const arrival = new Date(firstArrivalDate + 'T00:00:00');
