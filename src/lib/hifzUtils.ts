@@ -134,7 +134,15 @@ export async function injectMemorizedVerses(
   const { spreadDays = 14, category = 'solid', daysAlreadyDone = 0 } = options;
   if (blocks.length === 0) return { success: true, count: 0 };
 
-  const now = new Date();
+  // Split all blocks by Mushaf pages for coherent portions
+  const splitBlocks: { surahNumber: number; verseStart: number; verseEnd: number }[] = [];
+  for (const block of blocks) {
+    const sub = await splitBlockByPages(block.surahNumber, block.verseStart, block.verseEnd);
+    splitBlocks.push(...sub);
+  }
+
+  if (splitBlocks.length === 0) return { success: true, count: 0 };
+
 
   const rows = blocks.map((block, index) => {
     if (category === 'recent') {
