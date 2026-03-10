@@ -116,7 +116,7 @@ export default function HifzSuiviPage() {
       supabase.from('muraja_sessions').select('verses_reviewed, created_at').eq('user_id', user.id).gte('created_at', sevenDaysAgo.toISOString()),
       supabase.from('hifz_sessions').select('start_verse, end_verse, created_at').eq('user_id', user.id).gte('created_at', sevenDaysAgo.toISOString()),
       supabase.from('hifz_sessions')
-        .select('start_verse, end_verse, completed_at')
+        .select('surah_number, start_verse, end_verse, completed_at')
         .eq('user_id', user.id)
         .not('completed_at', 'is', null)
         .gte('completed_at', weekStartStr + 'T00:00:00Z'),
