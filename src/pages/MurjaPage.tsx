@@ -414,6 +414,9 @@ export default function MurjaPage() {
               </p>
             </div>
 
+            {/* Récap hebdomadaire */}
+            <MurajaWeeklyRecap />
+
             {/* Mes ayats mémorisées (when no blocks due today) */}
             <div
               className="rounded-2xl p-5 space-y-3"
