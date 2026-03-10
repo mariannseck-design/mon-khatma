@@ -16,6 +16,50 @@ export const COMMON_SURAH_GROUPS = [
 ];
 
 /**
+ * Split a single verse block into sub-blocks aligned with Mushaf pages.
+ * E.g. Al-Baqara 1-69 → [1-5 (p.2), 6-16 (p.3), ...].
+ */
+export async function splitBlockByPages(
+  surahNumber: number,
+  verseStart: number,
+  verseEnd: number
+): Promise<{ surahNumber: number; verseStart: number; verseEnd: number }[]> {
+  if (verseStart === verseEnd) {
+    return [{ surahNumber, verseStart, verseEnd }];
+  }
+
+  try {
+    const startPage = await getExactVersePage(surahNumber, verseStart);
+    const endPage = await getExactVersePage(surahNumber, verseEnd);
+
+    if (startPage === endPage) {
+      return [{ surahNumber, verseStart, verseEnd }];
+    }
+
+    const subBlocks: { surahNumber: number; verseStart: number; verseEnd: number }[] = [];
+
+    for (let page = startPage; page <= endPage; page++) {
+      const ayahs = await getPageAyahs(page);
+      const sameSurah = ayahs
+        .filter(a => a.surah.number === surahNumber && a.numberInSurah >= verseStart && a.numberInSurah <= verseEnd)
+        .map(a => a.numberInSurah);
+
+      if (sameSurah.length === 0) continue;
+
+      subBlocks.push({
+        surahNumber,
+        verseStart: Math.min(...sameSurah),
+        verseEnd: Math.max(...sameSurah),
+      });
+    }
+
+    return subBlocks.length > 0 ? subBlocks : [{ surahNumber, verseStart, verseEnd }];
+  } catch {
+    return [{ surahNumber, verseStart, verseEnd }];
+  }
+}
+
+/**
  * Convert surah numbers into verse blocks for insertion
  */
 export function surahsToVerseBlocks(surahNumbers: number[]) {
@@ -28,6 +72,19 @@ export function surahsToVerseBlocks(surahNumbers: number[]) {
       verseEnd: surah.versesCount,
     };
   }).filter(Boolean) as { surahNumber: number; verseStart: number; verseEnd: number }[];
+}
+
+/**
+ * Convert surah numbers into page-aligned verse blocks (async version).
+ */
+export async function surahsToVerseBlocksSplit(surahNumbers: number[]) {
+  const raw = surahsToVerseBlocks(surahNumbers);
+  const allBlocks: { surahNumber: number; verseStart: number; verseEnd: number }[] = [];
+  for (const block of raw) {
+    const split = await splitBlockByPages(block.surahNumber, block.verseStart, block.verseEnd);
+    allBlocks.push(...split);
+  }
+  return allBlocks;
 }
 
 /**
