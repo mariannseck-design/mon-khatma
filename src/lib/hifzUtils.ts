@@ -165,7 +165,7 @@ export async function injectMemorizedVerses(
       };
     }
     // Solid: stagger SM-2 over spreadDays (existing behavior)
-    const dayOffset = Math.floor((index / blocks.length) * spreadDays);
+    const dayOffset = Math.floor((index / splitBlocks.length) * spreadDays);
     const reviewDate = new Date(now);
     reviewDate.setDate(reviewDate.getDate() + dayOffset);
     return {
