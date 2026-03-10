@@ -2,7 +2,8 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { AppLayout } from '@/components/layout/AppLayout';
-import { RefreshCw, RotateCcw, TrendingUp, CalendarDays, PartyPopper, Info, Link, BookOpen } from 'lucide-react';
+import { RefreshCw, TrendingUp, CalendarDays, PartyPopper, Info, Link, BookOpen } from 'lucide-react';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { supabase } from '@/integrations/supabase/client';
@@ -16,7 +17,6 @@ import MurajaChecklist from '@/components/muraja/MurajaChecklist';
 import MurajaCelebration from '@/components/muraja/MurajaCelebration';
 import MurajaMethodModal from '@/components/muraja/MurajaMethodModal';
 import MurajaWeeklyRecap from '@/components/muraja/MurajaWeeklyRecap';
-import { toast } from 'sonner';
 
 const MAX_TOUR_BLOCKS_PER_DAY = 10;
 
@@ -86,72 +86,6 @@ export default function MurjaPage() {
 
   const [graduatedCount, setGraduatedCount] = useState(0);
   const [showGraduation, setShowGraduation] = useState(false);
-  const [recalculating, setRecalculating] = useState(false);
-
-  const handleRecalculate = useCallback(async () => {
-    if (!user || recalculating) return;
-    setRecalculating(true);
-    try {
-      // Fetch all current verses
-      const { data: currentVerses } = await supabase
-        .from('hifz_memorized_verses')
-        .select('*')
-        .eq('user_id', user.id);
-
-      if (!currentVerses || currentVerses.length === 0) {
-        toast.info('Aucune portion à recalculer');
-        setRecalculating(false);
-        return;
-      }
-
-      // Split each block by pages
-      const newRows: any[] = [];
-      for (const verse of currentVerses) {
-        const subBlocks = await splitBlockByPages(verse.surah_number, verse.verse_start, verse.verse_end);
-        for (const sub of subBlocks) {
-          newRows.push({
-            user_id: user.id,
-            surah_number: sub.surahNumber,
-            verse_start: sub.verseStart,
-            verse_end: sub.verseEnd,
-            memorized_at: verse.memorized_at,
-            next_review_date: verse.next_review_date,
-            sm2_interval: verse.sm2_interval,
-            sm2_ease_factor: verse.sm2_ease_factor,
-            sm2_repetitions: verse.sm2_repetitions,
-            liaison_status: verse.liaison_status,
-            liaison_start_date: verse.liaison_start_date,
-            last_reviewed_at: verse.last_reviewed_at,
-          });
-        }
-      }
-
-      // Delete old entries
-      await supabase
-        .from('hifz_memorized_verses')
-        .delete()
-        .eq('user_id', user.id);
-
-      // Insert new split entries in batches
-      const batchSize = 50;
-      for (let i = 0; i < newRows.length; i += batchSize) {
-        await supabase
-          .from('hifz_memorized_verses')
-          .insert(newRows.slice(i, i + batchSize));
-      }
-
-      toast.success(`Portions recalculées : ${newRows.length} portions créées`);
-      setCheckedIds([]);
-      saveChecked([]);
-      refresh();
-    } catch (err) {
-      console.error('Recalculate error:', err);
-      toast.error('Erreur lors du recalcul');
-    } finally {
-      setRecalculating(false);
-    }
-  }, [user, recalculating]);
-
   useEffect(() => {
     if (!user) return;
     const fetchVerses = async () => {
@@ -166,7 +100,47 @@ export default function MurjaPage() {
         .select('*')
         .eq('user_id', user.id)
         .order('memorized_at', { ascending: false });
-      setAllVerses((data as MemorizedVerse[]) || []);
+
+      const verses = (data as MemorizedVerse[]) || [];
+
+      // Auto-split multi-page blocks
+      let needsRefresh = false;
+      for (const verse of verses) {
+        const subBlocks = await splitBlockByPages(verse.surah_number, verse.verse_start, verse.verse_end);
+        if (subBlocks.length > 1) {
+          needsRefresh = true;
+          // Delete the original block
+          await supabase.from('hifz_memorized_verses').delete().eq('id', verse.id);
+          // Insert split blocks preserving SM-2 params
+          const newRows = subBlocks.map(sub => ({
+            user_id: user.id,
+            surah_number: sub.surahNumber,
+            verse_start: sub.verseStart,
+            verse_end: sub.verseEnd,
+            memorized_at: verse.memorized_at,
+            next_review_date: verse.next_review_date,
+            sm2_interval: verse.sm2_interval,
+            sm2_ease_factor: verse.sm2_ease_factor,
+            sm2_repetitions: verse.sm2_repetitions,
+            liaison_status: verse.liaison_status,
+            liaison_start_date: verse.liaison_start_date,
+            last_reviewed_at: verse.last_reviewed_at,
+          }));
+          await supabase.from('hifz_memorized_verses').insert(newRows);
+        }
+      }
+
+      if (needsRefresh) {
+        // Re-fetch after splitting
+        const { data: refreshed } = await supabase
+          .from('hifz_memorized_verses')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('memorized_at', { ascending: false });
+        setAllVerses((refreshed as MemorizedVerse[]) || []);
+      } else {
+        setAllVerses(verses);
+      }
       setLoading(false);
     };
     fetchVerses();
@@ -450,7 +424,7 @@ export default function MurjaPage() {
               boxShadow: '0 8px 32px -8px rgba(6,95,70,0.4)',
             }}
           >
-            <RotateCcw className="h-10 w-10 mx-auto mb-4" style={{ color: 'var(--p-accent)' }} />
+            <RefreshCw className="h-10 w-10 mx-auto mb-4" style={{ color: 'var(--p-accent)' }} />
             <p className="text-base font-medium leading-relaxed" style={{ color: 'var(--p-on-dark)' }}>
               Tu n'as pas encore de versets mémorisés.
             </p>
@@ -552,16 +526,6 @@ export default function MurjaPage() {
               >
                 <RefreshCw className="h-3 w-3" />
                 Actualiser
-              </Button>
-              <Button
-                variant="ghost"
-                onClick={handleRecalculate}
-                disabled={recalculating}
-                className="text-xs gap-1.5"
-                style={{ color: 'var(--p-text-65)' }}
-              >
-                <RotateCcw className={`h-3 w-3 ${recalculating ? 'animate-spin' : ''}`} />
-                {recalculating ? 'Recalcul...' : 'Recalculer mes portions'}
               </Button>
             </div>
           </>
@@ -755,16 +719,6 @@ export default function MurjaPage() {
               >
                 <RefreshCw className="h-3 w-3" />
                 Actualiser
-              </Button>
-              <Button
-                variant="ghost"
-                onClick={handleRecalculate}
-                disabled={recalculating}
-                className="text-xs gap-1.5"
-                style={{ color: 'var(--p-text-65)' }}
-              >
-                <RotateCcw className={`h-3 w-3 ${recalculating ? 'animate-spin' : ''}`} />
-                {recalculating ? 'Recalcul...' : 'Recalculer mes portions'}
               </Button>
             </div>
           </>

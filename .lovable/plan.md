@@ -1,27 +1,21 @@
 
 
-## Plan : Découpage automatique des portions au chargement
+# Diagnostic : 404 sur /quran-reader
 
-### Probleme
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-Le bouton "Recalculer mes portions" oblige l'utilisateur a agir manuellement. Les portions devraient etre automatiquement decoupees par page du Mushaf sans intervention.
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-### Solution
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-Au chargement des donnees dans `fetchVerses`, detecter automatiquement les blocs qui couvrent plus d'une page du Mushaf et les redecouper en base. Supprimer ensuite le bouton "Recalculer mes portions" devenu inutile.
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-### Changements
-
-**`src/pages/MurjaPage.tsx`**
-
-1. Dans le `useEffect` / `fetchVerses` (lignes 155-173), apres avoir charge les versets, ajouter une verification automatique :
-   - Pour chaque verset, appeler `splitBlockByPages` et comparer le resultat
-   - Si un bloc produit plus d'un sous-bloc, supprimer l'ancien et inserer les nouveaux (en preservant les parametres SM-2)
-   - Ne faire cette operation que si des blocs multi-pages sont detectes (pas de requete inutile)
-
-2. Supprimer la fonction `handleRecalculate` (lignes 91-153) et le state `recalculating` (ligne 89)
-
-3. Supprimer le bouton "Recalculer mes portions" du JSX
-
-4. Supprimer l'import de `RotateCcw` si plus utilise
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
