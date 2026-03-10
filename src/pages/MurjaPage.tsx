@@ -226,7 +226,7 @@ export default function MurjaPage() {
       });
   }, [allVerses, pageMap]);
 
-
+  const formatDate = (dateStr: string) => {
     const d = new Date(dateStr + 'T00:00:00');
     return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
   };
