@@ -1,21 +1,33 @@
+## Plan : Remplacer le countdown par l'affichage de la prochaine révision
 
+### Problème
 
-# Diagnostic : 404 sur /quran-reader
+Le compte à rebours vers minuit est confus : il dit "révision dans 1 min", puis à minuit repart à 23h59 sans montrer de nouvelle tâche. Il ne sert à rien concrètement.
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Solution
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+Remplacer le countdown circulaire par un encart informatif qui montre clairement :
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+- **Quand toutes les révisions du jour sont faites** : un message "Révisions du jour terminées ✓" + la liste des prochaines révisions prévues (sourate, versets, page, date formatée "demain" ou jour de la semaine)
+- **Quand les révisions ne sont pas encore faites** : garder le message "En attente de votre validation du jour" actuel mais sans l'horloge inutile
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+### Changements
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+`**src/components/muraja/MurajaCountdown.tsx**`
 
+1. Supprimer tout le mécanisme de countdown (timer, SVG ring, calcul heures/minutes/secondes)
+2. Ajouter une nouvelle prop `nextReviews` : `{ surahName: string; verseStart: number; verseEnd: number; page?: string; date: string }[]`
+3. Quand `allChecked = false` : afficher un simple encart "En attente de ta validation du jour" avec icône Clock (sans countdown)
+4. Quand `allChecked = true` : afficher "Révisions terminées ✓" + liste des prochaines révisions avec date (formatée : "demain", nom du jour, ou date)
+
+`**src/pages/MurjaPage.tsx**`
+5. Enrichir `nextTourReviews` avec les données de page (réutiliser `pageMap` existant) et le nom de sourate
+6. Combiner `nextTourReviews` avec les prochains blocs rabt pour avoir une vue complète
+7. Passer ces données au `MurajaCountdown` via la nouvelle prop `nextReviews`
+
+### Fichiers modifiés
+
+- `src/components/muraja/MurajaCountdown.tsx`
+- `src/pages/MurjaPage.tsx`
+
+faire pareil pour revision et liaison 
