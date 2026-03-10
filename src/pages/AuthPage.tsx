@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Lock, User, ArrowRight, ArrowLeft, CheckCircle } from 'lucide-react';
+import { Mail, Lock, User, ArrowRight, ArrowLeft, CheckCircle, Eye, EyeOff, BookOpen, Brain, Heart } from 'lucide-react';
 import logo from '@/assets/logo.png';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -27,6 +27,12 @@ function translateAuthError(message: string): string {
     return 'Email ou mot de passe incorrect.';
   return message;
 }
+
+const FEATURES = [
+  { icon: BookOpen, title: 'Ma Khatma', desc: 'Suivi de lecture' },
+  { icon: Brain, title: 'Istiqamah', desc: 'Mémorisation' },
+  { icon: Heart, title: 'Duas', desc: 'Invocations quotidiennes' },
+];
 
 export default function AuthPage() {
   const [mode, setMode] = useState<AuthMode>('login');
@@ -148,58 +154,50 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-warm flex items-center justify-center p-6">
+    <div className="min-h-screen bg-gradient-to-b from-[hsl(40,33%,97%)] to-[hsl(140,20%,95%)] flex items-center justify-center p-6">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-sm"
       >
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <img src={logo} alt="Ma Khatma" className="w-20 h-20 rounded-3xl mx-auto mb-4 shadow-lg object-contain" />
-          <h1 className="font-display text-2xl text-foreground">Ma Khatma</h1>
+        {/* Logo & Header */}
+        <div className="text-center mb-6">
+          <div className="inline-block p-1 rounded-3xl border-2 border-[hsl(38,50%,75%)] shadow-[0_4px_20px_hsl(38,50%,75%,0.3)] mb-4">
+            <img src={logo} alt="Ma Khatma" className="w-20 h-20 rounded-2xl object-contain" />
+          </div>
+          <h1 className="font-display text-2xl text-foreground mb-2">Ma Khatma</h1>
+          <p className="text-xs text-muted-foreground leading-relaxed px-2">
+            Cheminez vers une lecture et une mémorisation constantes, par la grâce d'Allah (عز وجل).
+          </p>
         </div>
 
-        <Card className="pastel-card p-6">
+        <Card className="border-0 bg-white/70 backdrop-blur-sm shadow-[0_8px_32px_hsl(0,0%,0%,0.06)] rounded-2xl p-6">
           {mode === 'check-email' ? (
             <CheckEmailView
-              email={email}
-              cooldown={cooldown}
-              loading={loading}
-              onResend={handleResend}
-              onBack={() => setMode('login')}
+              email={email} cooldown={cooldown} loading={loading}
+              onResend={handleResend} onBack={() => setMode('login')}
               title="Vérifie ta boîte mail"
               description={<>Un email de confirmation a été envoyé à <strong className="text-foreground">{email}</strong>.</>}
             />
           ) : mode === 'check-email-reset' ? (
             <CheckEmailView
-              email={email}
-              cooldown={cooldown}
-              loading={loading}
-              onResend={handleForgotPasswordResend}
-              onBack={() => setMode('login')}
+              email={email} cooldown={cooldown} loading={loading}
+              onResend={handleForgotPasswordResend} onBack={() => setMode('login')}
               title="Email envoyé !"
               description={<>Un lien de réinitialisation a été envoyé à <strong className="text-foreground">{email}</strong>.</>}
             />
           ) : mode === 'forgot-password' ? (
             <ForgotPasswordForm
-              email={email}
-              setEmail={setEmail}
-              loading={loading}
-              onSubmit={handleForgotPassword}
-              onBack={() => setMode('login')}
+              email={email} setEmail={setEmail} loading={loading}
+              onSubmit={handleForgotPassword} onBack={() => setMode('login')}
             />
           ) : (
             <LoginSignupForm
               mode={mode as 'login' | 'signup'}
-              email={email}
-              setEmail={setEmail}
-              password={password}
-              setPassword={setPassword}
-              displayName={displayName}
-              setDisplayName={setDisplayName}
-              loading={loading}
-              cooldown={cooldown}
+              email={email} setEmail={setEmail}
+              password={password} setPassword={setPassword}
+              displayName={displayName} setDisplayName={setDisplayName}
+              loading={loading} cooldown={cooldown}
               onSubmit={handleSubmit}
               onToggleMode={() => setMode(mode === 'login' ? 'signup' : 'login')}
               onForgotPassword={() => setMode('forgot-password')}
@@ -207,8 +205,21 @@ export default function AuthPage() {
           )}
         </Card>
 
-        <p className="text-center text-xs text-muted-foreground mt-6 px-4">
-          "La constance est la clé du succès dans ce monde et dans l'au-delà."
+        {/* Feature cards - login only */}
+        {mode === 'login' && (
+          <div className="flex gap-2 mt-5 px-1">
+            {FEATURES.map(({ icon: Icon, title, desc }) => (
+              <div key={title} className="flex-1 bg-white/60 backdrop-blur-sm rounded-xl p-3 text-center shadow-sm">
+                <Icon className="h-5 w-5 mx-auto mb-1.5 text-primary" strokeWidth={1.5} />
+                <p className="text-[11px] font-semibold text-foreground leading-tight">{title}</p>
+                <p className="text-[10px] text-muted-foreground leading-tight">{desc}</p>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <p className="text-center text-[10px] text-muted-foreground mt-6 px-4 leading-relaxed">
+          💡 Le saviez-vous ? Le terme <em>Istiqamah</em> évoque la persévérance. C'est la clé d'une mémorisation réussie.
         </p>
       </motion.div>
     </div>
@@ -216,6 +227,8 @@ export default function AuthPage() {
 }
 
 /* ── Sub-components ── */
+
+const softInputClass = "pl-10 rounded-xl bg-[hsl(150,10%,96%)] border-[hsl(150,10%,90%)] shadow-[inset_0_2px_4px_hsl(0,0%,0%,0.04)] focus:bg-white transition-colors";
 
 function CheckEmailView({ email, cooldown, loading, onResend, onBack, title, description }: {
   email: string; cooldown: number; loading: boolean;
@@ -233,19 +246,9 @@ function CheckEmailView({ email, cooldown, loading, onResend, onBack, title, des
         <p>📬 Vérifie aussi tes <strong>spams</strong> et <strong>courrier indésirable</strong></p>
         <p>⏳ L'email peut prendre quelques minutes</p>
       </div>
-      <Button
-        onClick={onResend}
-        disabled={cooldown > 0 || loading}
-        variant="outline"
-        className="w-full rounded-xl"
-      >
-        {loading ? (
-          <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-        ) : cooldown > 0 ? (
-          `Renvoyer dans ${cooldown}s`
-        ) : (
-          'Renvoyer l\'email'
-        )}
+      <Button onClick={onResend} disabled={cooldown > 0 || loading} variant="outline" className="w-full rounded-xl">
+        {loading ? <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+          : cooldown > 0 ? `Renvoyer dans ${cooldown}s` : 'Renvoyer l\'email'}
       </Button>
       <button onClick={onBack} className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1 mx-auto">
         <ArrowLeft className="h-4 w-4" /> Retour à la connexion
@@ -263,7 +266,7 @@ function ForgotPasswordForm({ email, setEmail, loading, onSubmit, onBack }: {
       <button onClick={onBack} className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4">
         <ArrowLeft className="h-4 w-4" /> Retour
       </button>
-      <h2 className="font-display text-xl text-center mb-2">Mot de passe oublié?</h2>
+      <h2 className="font-display text-xl text-center mb-2">Mot de passe oublié ?</h2>
       <p className="text-sm text-muted-foreground text-center mb-6">
         Entre ton email et nous t'enverrons un lien pour réinitialiser ton mot de passe.
       </p>
@@ -273,11 +276,11 @@ function ForgotPasswordForm({ email, setEmail, loading, onSubmit, onBack }: {
           <div className="relative">
             <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input id="reset-email" type="email" placeholder="ton@email.com" value={email}
-              onChange={(e) => setEmail(e.target.value)} required className="pl-10 rounded-xl" />
+              onChange={(e) => setEmail(e.target.value)} required className={softInputClass} />
           </div>
         </div>
-        <Button type="submit" disabled={loading} className="w-full bg-primary text-primary-foreground hover-lift h-12 rounded-xl mt-6">
-          {loading ? <div className="w-5 h-5 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" /> : <>Envoyer le lien <ArrowRight className="ml-2 h-4 w-4" /></>}
+        <Button type="submit" disabled={loading} className="w-full h-12 rounded-xl bg-[hsl(160,40%,55%)] hover:bg-[hsl(160,40%,48%)] text-white mt-6 shadow-md">
+          {loading ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <>Envoyer le lien <ArrowRight className="ml-2 h-4 w-4" /></>}
         </Button>
       </form>
     </>
@@ -291,6 +294,8 @@ function LoginSignupForm({ mode, email, setEmail, password, setPassword, display
   loading: boolean; cooldown: number;
   onSubmit: (e: React.FormEvent) => void; onToggleMode: () => void; onForgotPassword: () => void;
 }) {
+  const [showPassword, setShowPassword] = useState(false);
+
   return (
     <>
       <h2 className="font-display text-xl text-center mb-6">
@@ -303,7 +308,7 @@ function LoginSignupForm({ mode, email, setEmail, password, setPassword, display
             <div className="relative">
               <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input id="name" type="text" placeholder="Ex: Fatima, Aïcha..." value={displayName}
-                onChange={(e) => setDisplayName(e.target.value)} required minLength={3} className="pl-10 rounded-xl" />
+                onChange={(e) => setDisplayName(e.target.value)} required minLength={3} className={softInputClass} />
             </div>
           </div>
         )}
@@ -312,7 +317,7 @@ function LoginSignupForm({ mode, email, setEmail, password, setPassword, display
           <div className="relative">
             <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input id="email" type="email" placeholder="ton@email.com" value={email}
-              onChange={(e) => setEmail(e.target.value)} required className="pl-10 rounded-xl" />
+              onChange={(e) => setEmail(e.target.value)} required className={softInputClass} />
           </div>
         </div>
         <div className="space-y-2">
@@ -320,19 +325,24 @@ function LoginSignupForm({ mode, email, setEmail, password, setPassword, display
             <Label htmlFor="password" className="text-foreground">Mot de passe</Label>
             {mode === 'login' && (
               <button type="button" onClick={onForgotPassword} className="text-xs text-primary hover:underline">
-                Mot de passe oublié?
+                Mot de passe oublié ?
               </button>
             )}
           </div>
           <div className="relative">
             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input id="password" type="password" placeholder="••••••••" value={password}
-              onChange={(e) => setPassword(e.target.value)} required className="pl-10 rounded-xl" />
+            <Input id="password" type={showPassword ? 'text' : 'password'} placeholder="••••••••" value={password}
+              onChange={(e) => setPassword(e.target.value)} required className={`${softInputClass} pr-10`} />
+            <button type="button" onClick={() => setShowPassword(v => !v)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors">
+              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
           </div>
         </div>
-        <Button type="submit" disabled={loading || cooldown > 0} className="w-full bg-primary text-primary-foreground hover-lift h-12 rounded-xl mt-6">
+        <Button type="submit" disabled={loading || cooldown > 0}
+          className="w-full h-12 rounded-xl bg-[hsl(160,40%,55%)] hover:bg-[hsl(160,40%,48%)] text-white mt-6 shadow-md">
           {loading ? (
-            <div className="w-5 h-5 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
+            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
           ) : cooldown > 0 ? (
             `Patienter ${cooldown}s`
           ) : (
@@ -342,7 +352,7 @@ function LoginSignupForm({ mode, email, setEmail, password, setPassword, display
       </form>
       <div className="mt-6 text-center">
         <button onClick={onToggleMode} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-          {mode === 'login' ? 'Pas encore de compte? ' : 'Déjà un compte? '}
+          {mode === 'login' ? 'Pas encore de compte ? ' : 'Déjà un compte ? '}
           <span className="text-primary font-medium">{mode === 'login' ? 'S\'inscrire' : 'Se connecter'}</span>
         </button>
       </div>
