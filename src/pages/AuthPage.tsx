@@ -223,7 +223,7 @@ export default function AuthPage() {
         </p>
 
         <a
-          href="https://wa.me/33785263862"
+          href="https://wa.me/221785263862"
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground hover:text-foreground transition-colors mt-3"
