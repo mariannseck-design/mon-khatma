@@ -221,15 +221,32 @@ export default function MurajaChecklist({
                 </motion.div>
 
                 <div className="flex-1 min-w-0">
-                  <p
-                    className="text-sm truncate"
-                    style={{
-                      color: isChecked ? 'var(--p-primary)' : 'var(--p-text)',
-                      fontWeight: isChecked ? 800 : 700,
-                    }}
-                  >
-                    {getSurahName(item.surah_number)}
-                  </p>
+                  <div className="flex items-center gap-1.5">
+                    <p
+                      className="text-sm truncate"
+                      style={{
+                        color: isChecked ? 'var(--p-primary)' : 'var(--p-text)',
+                        fontWeight: isChecked ? 800 : 700,
+                      }}
+                    >
+                      {getSurahName(item.surah_number)}
+                    </p>
+                    {pageMap[item.id] && (
+                      <button
+                        onClick={(e) => { e.stopPropagation(); openInReader(item.id); }}
+                        className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-md text-[10px] font-semibold transition-colors"
+                        style={{
+                          background: 'rgba(16, 185, 129, 0.1)',
+                          color: '#10B981',
+                          border: '1px solid rgba(16, 185, 129, 0.2)',
+                        }}
+                        title="Ouvrir dans le lecteur"
+                      >
+                        <BookOpen className="h-2.5 w-2.5" />
+                        p. {pageMap[item.id]}
+                      </button>
+                    )}
+                  </div>
                   <p className="text-xs font-medium" style={{ color: 'var(--p-text-60)' }}>
                     v. {item.verse_start} → {item.verse_end}
                     {section === 'tour' && (
