@@ -17,7 +17,6 @@ import MurajaChecklist from '@/components/muraja/MurajaChecklist';
 import MurajaCelebration from '@/components/muraja/MurajaCelebration';
 import MurajaMethodModal from '@/components/muraja/MurajaMethodModal';
 import MurajaWeeklyRecap from '@/components/muraja/MurajaWeeklyRecap';
-import { toast } from 'sonner';
 
 const MAX_TOUR_BLOCKS_PER_DAY = 10;
 
