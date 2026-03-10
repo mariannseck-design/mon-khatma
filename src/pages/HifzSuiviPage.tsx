@@ -144,7 +144,16 @@ export default function HifzSuiviPage() {
       );
       setPeriodVerses(versesCompleted);
       if (goalData.goal_unit === 'pages') {
-        setPeriodProgress(Math.round((versesCompleted / 15) * 10) / 10);
+        // Count distinct Mushaf pages covered by completed sessions
+        const pageSet = new Set<number>();
+        for (const s of relevantSessions) {
+          try {
+            const startPage = await getExactVersePage(s.surah_number, s.start_verse);
+            const endPage = await getExactVersePage(s.surah_number, s.end_verse);
+            for (let p = startPage; p <= endPage; p++) pageSet.add(p);
+          } catch { /* fallback: ignore */ }
+        }
+        setPeriodProgress(pageSet.size);
       } else {
         setPeriodProgress(versesCompleted);
       }
