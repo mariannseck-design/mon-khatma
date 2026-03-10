@@ -66,10 +66,34 @@ export default function MurajaChecklist({
   firstArrivalDate,
   nextTourReviews,
 }: MurajaChecklistProps) {
+  const navigate = useNavigate();
   const [ratingFor, setRatingFor] = useState<string | null>(null);
+  const [pageMap, setPageMap] = useState<Record<string, number>>({});
+
+  // Compute page numbers for each item
+  useEffect(() => {
+    if (items.length === 0) return;
+    let cancelled = false;
+    (async () => {
+      const result: Record<string, number> = {};
+      for (const item of items) {
+        try {
+          const page = await getExactVersePage(item.surah_number, item.verse_start);
+          result[item.id] = page;
+        } catch { /* skip */ }
+      }
+      if (!cancelled) setPageMap(result);
+    })();
+    return () => { cancelled = true; };
+  }, [items]);
 
   const getSurahName = (num: number) =>
     SURAHS.find(s => s.number === num)?.name || `Sourate ${num}`;
+
+  const openInReader = (itemId: string) => {
+    const page = pageMap[itemId];
+    if (page) navigate(`/quran?page=${page}`);
+  };
 
   const handleValidate = (id: string) => {
     if (checkedIds.includes(id)) return;
