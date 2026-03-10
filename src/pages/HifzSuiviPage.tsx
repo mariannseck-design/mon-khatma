@@ -9,6 +9,7 @@ import { Progress } from '@/components/ui/progress';
 import HifzGoalOnboarding from '@/components/hifz/HifzGoalOnboarding';
 import { findNextStartingPoint, getTodayRevisions } from '@/lib/hifzUtils';
 import { SURAHS } from '@/lib/surahData';
+import { getExactVersePage } from '@/lib/quranData';
 import { Link } from 'react-router-dom';
 import { getTodayQuote } from '@/lib/dailyQuotes';
 
@@ -115,7 +116,7 @@ export default function HifzSuiviPage() {
       supabase.from('muraja_sessions').select('verses_reviewed, created_at').eq('user_id', user.id).gte('created_at', sevenDaysAgo.toISOString()),
       supabase.from('hifz_sessions').select('start_verse, end_verse, created_at').eq('user_id', user.id).gte('created_at', sevenDaysAgo.toISOString()),
       supabase.from('hifz_sessions')
-        .select('start_verse, end_verse, completed_at')
+        .select('surah_number, start_verse, end_verse, completed_at')
         .eq('user_id', user.id)
         .not('completed_at', 'is', null)
         .gte('completed_at', weekStartStr + 'T00:00:00Z'),
@@ -143,7 +144,16 @@ export default function HifzSuiviPage() {
       );
       setPeriodVerses(versesCompleted);
       if (goalData.goal_unit === 'pages') {
-        setPeriodProgress(Math.round((versesCompleted / 15) * 10) / 10);
+        // Count distinct Mushaf pages covered by completed sessions
+        const pageSet = new Set<number>();
+        for (const s of relevantSessions) {
+          try {
+            const startPage = await getExactVersePage(s.surah_number, s.start_verse);
+            const endPage = await getExactVersePage(s.surah_number, s.end_verse);
+            for (let p = startPage; p <= endPage; p++) pageSet.add(p);
+          } catch { /* fallback: ignore */ }
+        }
+        setPeriodProgress(pageSet.size);
       } else {
         setPeriodProgress(versesCompleted);
       }

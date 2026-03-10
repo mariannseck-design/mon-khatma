@@ -1,30 +1,21 @@
 
 
-## Diagnostic : Pourquoi l'objectif affiche 0.3 au lieu de 1
+# Diagnostic : 404 sur /quran-reader
 
-### Le probleme
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-Ligne 146 de `HifzSuiviPage.tsx` :
-```typescript
-setPeriodProgress(Math.round((versesCompleted / 15) * 10) / 10);
-```
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-Le code divise le nombre d'ayats memorisees par **15** (estimation fixe du nombre de versets par page). Or, une page du Mushaf peut contenir entre **5 et 20+ versets** selon la sourate. Si ta page ne contenait que 5 ayats, le calcul donne `5 / 15 = 0.33 → 0.3` au lieu de **1.0**.
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-### Solution
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-Remplacer la division fixe par 15 par un **comptage reel des pages Mushaf** couvertes par les sessions completees. On utilisera `getExactVersePage()` (deja disponible dans `quranData.ts`) pour determiner combien de pages distinctes ont ete travaillees dans la periode.
-
-### Changement
-
-**`src/pages/HifzSuiviPage.tsx`** :
-
-1. Importer `getExactVersePage` depuis `quranData.ts`
-2. Remplacer le calcul `versesCompleted / 15` par une fonction async qui :
-   - Pour chaque session completee, recupere la page Mushaf de `start_verse` et `end_verse` (via le `surah_number` de la session)
-   - Collecte les pages distinctes dans un `Set`
-   - Le nombre de pages = taille du Set
-3. Si la session couvre une seule page → progress = 1.0 (et non 0.3)
-
-Note : il faut aussi recuperer `surah_number` dans la requete `periodSessions` (actuellement non selectionne).
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
