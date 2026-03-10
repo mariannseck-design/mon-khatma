@@ -490,7 +490,7 @@ export default function MurjaPage() {
         ) : (
           <>
             {/* Countdown */}
-            <MurajaCountdown allChecked={allDailyChecked} />
+            <MurajaCountdown allChecked={allDailyChecked} nextReviews={nextReviewsForCountdown} />
 
             {/* Progress bar */}
             {totalBlocks > 0 && (
