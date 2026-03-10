@@ -1,136 +1,95 @@
-import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Clock } from 'lucide-react';
+import { CheckCircle, Clock, CalendarDays } from 'lucide-react';
+
+interface NextReview {
+  surahName: string;
+  verseStart: number;
+  verseEnd: number;
+  page?: string;
+  date: string;
+  type: 'rabt' | 'tour';
+}
 
 interface MurajaCountdownProps {
   allChecked?: boolean;
+  nextReviews?: NextReview[];
 }
 
-export default function MurajaCountdown({ allChecked = false }: MurajaCountdownProps) {
-  const [now, setNow] = useState(new Date());
-
-  useEffect(() => {
-    const interval = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const { hours, minutes, seconds } = useMemo(() => {
-    const midnight = new Date(now);
-    midnight.setHours(24, 0, 0, 0);
-    const diff = midnight.getTime() - now.getTime();
-    const totalSeconds = Math.max(0, Math.floor(diff / 1000));
-    return {
-      hours: Math.floor(totalSeconds / 3600),
-      minutes: Math.floor((totalSeconds % 3600) / 60),
-      seconds: totalSeconds % 60,
-    };
-  }, [now]);
-
-  const pad = (n: number) => n.toString().padStart(2, '0');
-
-  const radius = 75;
-  const circumference = 2 * Math.PI * radius;
-  const totalDaySeconds = 24 * 3600;
-  const elapsed = totalDaySeconds - (hours * 3600 + minutes * 60 + seconds);
-  const progress = elapsed / totalDaySeconds;
-
+export default function MurajaCountdown({ allChecked = false, nextReviews = [] }: MurajaCountdownProps) {
   if (!allChecked) {
     return (
-      <div className="flex flex-col items-center gap-3">
-        <div className="relative w-40 h-40 flex items-center justify-center">
-          <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 170 170">
-            <circle
-              cx="85" cy="85" r={radius}
-              fill="none"
-              stroke="var(--p-track)"
-              strokeWidth="4"
-            />
-          </svg>
-          <div
-            className="w-30 h-30 rounded-full flex flex-col items-center justify-center gap-1.5"
-            style={{
-              width: '7.5rem',
-              height: '7.5rem',
-              background: 'radial-gradient(circle at center, var(--p-track), var(--p-card))',
-              border: '2px solid var(--p-border)',
-              boxShadow: 'var(--p-card-shadow)',
-            }}
-          >
-            <Clock className="h-5 w-5" style={{ color: 'var(--p-text-60)' }} />
-            <span
-              className="text-[10px] font-medium text-center leading-tight px-3"
-              style={{ color: 'var(--p-text-60)' }}
-            >
-              En attente de votre validation du jour
-            </span>
-          </div>
-        </div>
+      <div
+        className="rounded-2xl p-5 text-center"
+        style={{
+          background: 'var(--p-card)',
+          border: '1px solid var(--p-border)',
+          boxShadow: 'var(--p-card-shadow)',
+        }}
+      >
+        <Clock className="h-6 w-6 mx-auto mb-2" style={{ color: 'var(--p-text-60)' }} />
+        <p className="text-sm font-bold" style={{ color: 'var(--p-text-75)' }}>
+          En attente de ta validation du jour
+        </p>
+        <p className="text-xs mt-1" style={{ color: 'var(--p-text-50)' }}>
+          Récite et valide tes blocs ci-dessous
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col items-center gap-3">
-      <p
-        className="text-xs font-medium tracking-widest uppercase"
-        style={{ color: 'var(--p-accent)' }}
-      >
-        Ta prochaine récitation dans
-      </p>
-
-      <div className="relative w-40 h-40 flex items-center justify-center">
-        {/* SVG Ring */}
-        <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 170 170">
-          <defs>
-            <linearGradient id="countdown-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="var(--p-primary)" />
-              <stop offset="100%" stopColor="#10B981" />
-            </linearGradient>
-          </defs>
-          <circle
-            cx="85" cy="85" r={radius}
-            fill="none"
-            stroke="var(--p-track)"
-            strokeWidth="4"
-          />
-          <motion.circle
-            cx="85" cy="85" r={radius}
-            fill="none"
-            stroke="url(#countdown-gradient)"
-            strokeWidth="5"
-            strokeLinecap="round"
-            strokeDasharray={circumference}
-            strokeDashoffset={circumference * (1 - progress)}
-            transition={{ duration: 1 }}
-          />
-        </svg>
-
-        {/* Inner circle */}
-        <div
-          className="w-30 h-30 rounded-full flex flex-col items-center justify-center"
-          style={{
-            width: '7.5rem',
-            height: '7.5rem',
-            background: 'radial-gradient(circle at center, var(--p-track), var(--p-card))',
-            border: '2px solid var(--p-primary)',
-            boxShadow: '0 0 20px rgba(6,95,70,0.12), var(--p-card-shadow)',
-          }}
-        >
-          <span
-            className="text-2xl font-bold tabular-nums"
-            style={{
-              fontFamily: "'Inter', sans-serif",
-              color: 'var(--p-primary)',
-              letterSpacing: '0.05em',
-            }}
-          >
-            {pad(hours)}:{pad(minutes)}
-          </span>
-          <span className="text-[10px] tabular-nums" style={{ color: 'var(--p-text-60)' }}>
-            :{pad(seconds)}
-          </span>
-        </div>
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="rounded-2xl p-5 text-center space-y-3"
+      style={{
+        background: 'var(--p-card)',
+        border: '1px solid var(--p-border)',
+        boxShadow: 'var(--p-card-shadow)',
+      }}
+    >
+      <div className="flex items-center justify-center gap-2">
+        <CheckCircle className="h-5 w-5" style={{ color: '#10B981' }} />
+        <p className="text-sm font-bold" style={{ color: '#10B981' }}>
+          Révisions du jour terminées ✓
+        </p>
       </div>
-    </div>
+
+      {nextReviews.length > 0 && (
+        <div className="space-y-1.5 pt-2" style={{ borderTop: '1px solid var(--p-border)' }}>
+          <p className="text-xs font-bold" style={{ color: 'var(--p-text-75)' }}>
+            Prochaines révisions :
+          </p>
+          {nextReviews.map((nr, i) => (
+            <div
+              key={i}
+              className="flex items-center justify-between px-3 py-2 rounded-lg text-xs"
+              style={{
+                background: nr.type === 'rabt' ? 'rgba(212, 175, 55, 0.08)' : 'rgba(16, 185, 129, 0.08)',
+                border: `1px solid ${nr.type === 'rabt' ? 'rgba(212, 175, 55, 0.2)' : 'rgba(16, 185, 129, 0.2)'}`,
+              }}
+            >
+              <div className="flex items-center gap-1.5">
+                <span className="font-bold" style={{ color: 'var(--p-primary)' }}>
+                  {nr.surahName}
+                </span>
+                <span className="font-semibold" style={{ color: 'var(--p-text-60)' }}>
+                  v. {nr.verseStart} → {nr.verseEnd}
+                </span>
+                {nr.page && (
+                  <span className="font-medium px-1 py-0.5 rounded" style={{ background: 'var(--p-card)', color: 'var(--p-text-50)' }}>
+                    {nr.page}
+                  </span>
+                )}
+              </div>
+              <div className="flex items-center gap-1 flex-shrink-0" style={{ color: 'var(--p-accent)' }}>
+                <CalendarDays className="h-3 w-3" />
+                <span className="font-semibold">{nr.date}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </motion.div>
   );
 }
