@@ -9,6 +9,7 @@ import { Progress } from '@/components/ui/progress';
 import HifzGoalOnboarding from '@/components/hifz/HifzGoalOnboarding';
 import { findNextStartingPoint, getTodayRevisions } from '@/lib/hifzUtils';
 import { SURAHS } from '@/lib/surahData';
+import { getExactVersePage } from '@/lib/quranData';
 import { Link } from 'react-router-dom';
 import { getTodayQuote } from '@/lib/dailyQuotes';
 
