@@ -424,7 +424,7 @@ export default function MurjaPage() {
               boxShadow: '0 8px 32px -8px rgba(6,95,70,0.4)',
             }}
           >
-            <RotateCcw className="h-10 w-10 mx-auto mb-4" style={{ color: 'var(--p-accent)' }} />
+            <RefreshCw className="h-10 w-10 mx-auto mb-4" style={{ color: 'var(--p-accent)' }} />
             <p className="text-base font-medium leading-relaxed" style={{ color: 'var(--p-on-dark)' }}>
               Tu n'as pas encore de versets mémorisés.
             </p>
