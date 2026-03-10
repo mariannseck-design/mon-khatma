@@ -187,7 +187,46 @@ export default function MurjaPage() {
     return () => { cancelled = true; };
   }, [surahSummary]);
 
-  const formatDate = (dateStr: string) => {
+  // Combined next reviews for the countdown component (both rabt and tour)
+  const nextReviewsForCountdown = useMemo(() => {
+    const today = getTodayKey();
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const tomorrowKey = tomorrow.toISOString().split('T')[0];
+
+    const formatReviewDate = (dateStr: string) => {
+      if (dateStr === tomorrowKey) return 'Demain';
+      const d = new Date(dateStr + 'T00:00:00');
+      const diff = Math.ceil((d.getTime() - new Date().setHours(0,0,0,0)) / 86400000);
+      if (diff <= 7) {
+        return d.toLocaleDateString('fr-FR', { weekday: 'long' }).replace(/^\w/, c => c.toUpperCase());
+      }
+      return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' });
+    };
+
+    return allVerses
+      .filter(v => v.next_review_date > today)
+      .sort((a, b) => a.next_review_date.localeCompare(b.next_review_date))
+      .slice(0, 5)
+      .map(v => {
+        const surahName = SURAHS.find(s => s.number === v.surah_number)?.name || `Sourate ${v.surah_number}`;
+        const pKey = `${v.surah_number}_${v.liaison_status === 'liaison' ? 'l' : 't'}`;
+        const pages = pageMap[pKey];
+        const pageLabel = pages
+          ? pages.startPage === pages.endPage ? `p. ${pages.startPage}` : `p. ${pages.startPage}-${pages.endPage}`
+          : undefined;
+        return {
+          surahName,
+          verseStart: v.verse_start,
+          verseEnd: v.verse_end,
+          page: pageLabel,
+          date: formatReviewDate(v.next_review_date),
+          type: (v.liaison_status === 'liaison' ? 'rabt' : 'tour') as 'rabt' | 'tour',
+        };
+      });
+  }, [allVerses, pageMap]);
+
+
     const d = new Date(dateStr + 'T00:00:00');
     return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
   };
