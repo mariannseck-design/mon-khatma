@@ -143,8 +143,9 @@ export async function injectMemorizedVerses(
 
   if (splitBlocks.length === 0) return { success: true, count: 0 };
 
+  const now = new Date();
 
-  const rows = blocks.map((block, index) => {
+  const rows = splitBlocks.map((block, index) => {
     if (category === 'recent') {
       // Liaison: daily review, liaison_start_date = today - daysAlreadyDone
       const liaisonStart = new Date(now);
