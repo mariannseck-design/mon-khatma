@@ -158,7 +158,7 @@ export default function MurajaChecklist({
           }}
         >
           <Info className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
-          <span>Révision plafonnée à 10 blocs aujourd'hui ({totalDue} dus au total). Le reste est reporté.</span>
+          <span>Révision plafonnée à 10 portions aujourd'hui ({totalDue} dues au total). Le reste est reporté.</span>
         </div>
       )}
 
