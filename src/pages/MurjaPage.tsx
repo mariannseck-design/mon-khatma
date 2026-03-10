@@ -368,9 +368,6 @@ export default function MurjaPage() {
           <p className="text-xs font-medium" style={{ color: 'var(--p-text-75)' }}>
             Consolide ta mémorisation
           </p>
-          <p className="text-[11px] leading-relaxed mt-2 px-2" style={{ color: 'var(--p-text-65)' }}>
-            Voici les versets que tu dois réciter aujourd'hui (une fois au minimum). Tu peux parfaitement les utiliser durant tes prières. L'objectif est de préserver ton apprentissage par la grâce d'Allah (عز وجل) et de ne jamais l'oublier.
-          </p>
         </div>
 
         {loading ? (

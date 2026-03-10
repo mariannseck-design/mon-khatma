@@ -262,7 +262,7 @@ export default function MurajaWeeklyRecap() {
               ))}
               {surahDetails.length > 8 && (
                 <p className="text-[10px] text-center" style={{ color: 'var(--p-text-50)' }}>
-                  + {surahDetails.length - 8} autre{surahDetails.length - 8 > 1 ? 's' : ''} bloc{surahDetails.length - 8 > 1 ? 's' : ''}
+                  + {surahDetails.length - 8} autre{surahDetails.length - 8 > 1 ? 's' : ''} portion{surahDetails.length - 8 > 1 ? 's' : ''}
                 </p>
               )}
             </div>

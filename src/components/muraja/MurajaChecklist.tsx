@@ -123,7 +123,7 @@ export default function MurajaChecklist({
         {section === 'tour' && (
           <>
             <p className="text-xs mt-1.5" style={{ color: 'var(--p-text-50)' }}>
-              Tes blocs mémorisés arriveront ici après 30 jours de liaison (Ar-Rabt).
+              Tes portions mémorisées arriveront ici après 30 jours de liaison (Ar-Rabt).
             </p>
             {firstArrivalDate && (() => {
               const arrival = new Date(firstArrivalDate + 'T00:00:00');
@@ -134,7 +134,7 @@ export default function MurajaChecklist({
                 <div className="flex items-center gap-1.5 mt-2 justify-center">
                   <CalendarDays className="h-3.5 w-3.5" style={{ color: 'var(--p-accent)' }} />
                   <p className="text-xs font-semibold" style={{ color: 'var(--p-accent)' }}>
-                    Premier bloc estimé le {formatted} ({daysLeft > 0 ? `dans ${daysLeft} jour${daysLeft > 1 ? 's' : ''}` : "aujourd'hui"})
+                    Première portion estimée le {formatted} ({daysLeft > 0 ? `dans ${daysLeft} jour${daysLeft > 1 ? 's' : ''}` : "aujourd'hui"})
                   </p>
                 </div>
               );
@@ -158,7 +158,7 @@ export default function MurajaChecklist({
           }}
         >
           <Info className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
-          <span>Révision plafonnée à 10 blocs aujourd'hui ({totalDue} dus au total). Le reste est reporté.</span>
+          <span>Révision plafonnée à 10 portions aujourd'hui ({totalDue} dues au total). Le reste est reporté.</span>
         </div>
       )}
 
