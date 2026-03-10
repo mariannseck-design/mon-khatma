@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, Zap, ThumbsUp, Crown, BookOpen, Info, CalendarDays, PartyPopper } from 'lucide-react';
+import { Check, Zap, ThumbsUp, Crown, BookOpen, Info, CalendarDays, PartyPopper, ExternalLink } from 'lucide-react';
 import { SURAHS } from '@/lib/surahData';
+import { getExactVersePage } from '@/lib/quranData';
+import { useNavigate } from 'react-router-dom';
 
 interface ChecklistItem {
   id: string;
