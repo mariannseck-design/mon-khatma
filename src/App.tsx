@@ -7,7 +7,6 @@ import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { useServiceWorkerUpdate } from "@/hooks/useServiceWorkerUpdate";
 import { BookOpenCheck, RefreshCw, BarChart3, Sparkles, BookOpen } from "lucide-react";
 import ComingSoonGate from "./components/layout/ComingSoonGate";
-import LandingPage from "./pages/LandingPage";
 import AuthPage from "./pages/AuthPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import AccueilPage from "./pages/AccueilPage";
@@ -73,7 +72,7 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<PublicRoute><LandingPage /></PublicRoute>} />
+      <Route path="/" element={<PublicRoute><AuthPage /></PublicRoute>} />
       <Route path="/auth" element={<PublicRoute><AuthPage /></PublicRoute>} />
       <Route path="/reset-password" element={<ResetPasswordPage />} />
       
