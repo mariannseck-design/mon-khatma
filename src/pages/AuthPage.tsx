@@ -221,6 +221,16 @@ export default function AuthPage() {
         <p className="text-center text-[10px] text-muted-foreground mt-6 px-4 leading-relaxed">
           💡 Le saviez-vous ? Le terme <em>Istiqamah</em> évoque la persévérance. C'est la clé d'une mémorisation réussie.
         </p>
+
+        <a
+          href="https://wa.me/33785263862"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground hover:text-foreground transition-colors mt-3"
+        >
+          <MessageCircle className="h-3.5 w-3.5" />
+          Besoin d'aide ? Contacte-nous
+        </a>
       </motion.div>
     </div>
   );
