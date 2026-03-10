@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { SURAHS } from '@/lib/surahData';
-import { graduateLiaisonBlocks } from '@/lib/hifzUtils';
+import { graduateLiaisonBlocks, splitBlockByPages } from '@/lib/hifzUtils';
 import { getExactVersePage } from '@/lib/quranData';
 import { SparkleEffect } from '@/components/planificateur/SparkleEffect';
 import MurajaCountdown from '@/components/muraja/MurajaCountdown';
