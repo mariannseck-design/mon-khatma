@@ -270,7 +270,7 @@ export default function MurjaCalendarPage() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <button className="p-1 rounded-full" style={{ color: labelColor }}>
-                  <Info className="h-3.5 w-3.5" />
+                  <Lightbulb className="h-3.5 w-3.5" />
                 </button>
               </TooltipTrigger>
               <TooltipContent side="bottom" className="max-w-[220px] text-xs">
