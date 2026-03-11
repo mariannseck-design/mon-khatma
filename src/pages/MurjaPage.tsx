@@ -419,14 +419,32 @@ export default function MurjaPage() {
             </div>
           </div>
           {!loading && allVerses.length > 0 && (
-            <button
-              onClick={refresh}
-              className="w-7 h-7 rounded-lg flex items-center justify-center transition-colors"
-              style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)' }}
-              title="Actualiser"
-            >
-              <RefreshCw className="h-3 w-3" style={{ color: 'var(--p-text-60)' }} />
-            </button>
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={() => navigateTo('/murajaa-cards')}
+                className="w-7 h-7 rounded-lg flex items-center justify-center transition-colors"
+                style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)' }}
+                title="Vue Cartes"
+              >
+                <LayoutGrid className="h-3 w-3" style={{ color: 'var(--p-text-60)' }} />
+              </button>
+              <button
+                onClick={() => navigateTo('/murajaa-calendar')}
+                className="w-7 h-7 rounded-lg flex items-center justify-center transition-colors"
+                style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)' }}
+                title="Vue Calendrier"
+              >
+                <Calendar className="h-3 w-3" style={{ color: 'var(--p-text-60)' }} />
+              </button>
+              <button
+                onClick={refresh}
+                className="w-7 h-7 rounded-lg flex items-center justify-center transition-colors"
+                style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)' }}
+                title="Actualiser"
+              >
+                <RefreshCw className="h-3 w-3" style={{ color: 'var(--p-text-60)' }} />
+              </button>
+            </div>
           )}
         </div>
 
