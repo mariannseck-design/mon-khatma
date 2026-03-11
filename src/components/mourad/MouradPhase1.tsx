@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { BookOpen, Check } from 'lucide-react';
 import { SURAHS } from '@/lib/surahData';
-import { getExactVersePage } from '@/lib/quranData';
+
 import MouradMushafToggle, { type MushafMode, getMouradMushafMode, setMouradMushafMode } from './MouradMushafToggle';
 import MouradPhysicalView from './MouradPhysicalView';
 import HifzMushafImage from '@/components/hifz/HifzMushafImage';
