@@ -2,21 +2,21 @@ import { useState, useCallback, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 
 export function useDevMode() {
-  const { isAdmin } = useAuth();
+  const { hasFullAccess } = useAuth();
   const [isDevMode, setIsDevMode] = useState(() => localStorage.getItem('dev_mode') === 'true');
 
   useEffect(() => {
-    if (!isAdmin) {
+    if (!hasFullAccess) {
       setIsDevMode(false);
     }
-  }, [isAdmin]);
+  }, [hasFullAccess]);
 
   const toggleDevMode = useCallback((nextValue?: boolean) => {
-    if (!isAdmin) return;
+    if (!hasFullAccess) return;
     const next = typeof nextValue === 'boolean' ? nextValue : !isDevMode;
     localStorage.setItem('dev_mode', String(next));
     setIsDevMode(next);
-  }, [isAdmin, isDevMode]);
+  }, [hasFullAccess, isDevMode]);
 
-  return { isDevMode: isAdmin && isDevMode, toggleDevMode };
+  return { isDevMode: hasFullAccess && isDevMode, toggleDevMode };
 }

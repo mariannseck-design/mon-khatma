@@ -127,7 +127,7 @@ export default function ProfilPage() {
           </CardContent>
         </Card>
 
-        {isAdmin && (
+        {hasFullAccess && (
           <Card className="rounded-2xl border-dashed border-yellow-500/30">
             <CardContent className="flex items-center justify-between pt-6">
               <div>
