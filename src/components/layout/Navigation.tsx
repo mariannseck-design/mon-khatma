@@ -1,14 +1,14 @@
 import { NavLink, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Home, Moon, User } from 'lucide-react';
+import { Home, Moon, BookOpenCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ChapeletIcon } from '@/components/icons/ChapeletIcon';
 
 const navItems: { path: string; icon: React.FC<any>; label: string; glow?: boolean }[] = [
   { path: '/accueil', icon: Home, label: 'Accueil' },
+  { path: '/hifz-hub', icon: BookOpenCheck, label: 'Hifz' },
   { path: '/ramadan', icon: Moon, label: 'Ramadan', glow: true },
   { path: '/emotions', icon: ChapeletIcon, label: 'Dhikr' },
-  { path: '/profil', icon: User, label: 'Profil' },
 ];
 
 export function Navigation() {
