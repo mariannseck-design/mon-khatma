@@ -1,21 +1,25 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Corrections de la section détail Juz
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Problèmes identifiés
+1. **"Prochaine révision : Aujourd'hui"** — Si la révision a déjà été faite aujourd'hui (`last_reviewed_at` = aujourd'hui), la prochaine révision ne peut pas être aujourd'hui. Il faut recalculer `nextReview` en excluant les items déjà révisés aujourd'hui, ou afficher la prochaine date future.
+2. **Ordre d'affichage** — "Dernière révision" doit apparaître **avant** "Prochaine révision" (logique chronologique passé → futur).
+3. **Pas de boutons cliquables** — Les blocs "Prochaine révision" et "Dernière révision" sont de simples `div` statiques, pas des boutons. Ils ne mènent nulle part.
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Modifications — `src/pages/HifzSuiviTestPage.tsx`
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+**1. Filtrer `nextReview` pour exclure les items déjà révisés aujourd'hui**
+- Dans le `useMemo` (l.163), ne considérer `m.next_review_date` pour `earliestReview` que si l'item n'a **pas** été révisé aujourd'hui (`!m.last_reviewed_at || !isToday(new Date(m.last_reviewed_at))`)
+- Ainsi, si tout est révisé aujourd'hui, `nextReview` sera la prochaine date future (ex: "13 mars")
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+**2. Inverser l'ordre dans le grid (l.354-370)**
+- Afficher "Dernière révision" en premier, puis "Prochaine révision"
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+**3. Rendre les blocs cliquables**
+- "Dernière révision" : informatif seulement → reste un `div` (pas d'action logique)
+- "Prochaine révision" : transformer en `button` / lien qui navigue vers `/muraja` pour lancer la révision
+
+### Fichier modifié
+- `src/pages/HifzSuiviTestPage.tsx`
 
