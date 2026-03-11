@@ -287,7 +287,7 @@ export default function MurajaChecklist({
     );
   }
 
-  // Split checked vs unchecked for rabt compact mode
+  // Split checked vs unchecked — for merged items, both IDs are checked together
   const checkedItems = sortedItems.filter(i => checkedIds.includes(i.id));
   const uncheckedItems = sortedItems.filter(i => !checkedIds.includes(i.id));
 
