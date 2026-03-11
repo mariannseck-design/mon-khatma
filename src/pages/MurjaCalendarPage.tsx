@@ -129,6 +129,46 @@ export default function MurjaCalendarPage() {
   const totalDone = isFutureDay ? 0 : doneRabt.length + doneTour.length;
   const allDayChecked = totalItems > 0 && totalDone === totalItems && !isFutureDay;
 
+  // Update streak when all day items are checked
+  useEffect(() => {
+    if (!allDayChecked || !user?.id || streakUpdatedRef.current) return;
+    streakUpdatedRef.current = true;
+    
+    (async () => {
+      const { data: existing } = await supabase
+        .from('hifz_streaks')
+        .select('current_streak, longest_streak, last_active_date')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (existing?.last_active_date === todayKey) return;
+
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      const yesterdayKey = yesterday.toISOString().split('T')[0];
+      
+      const isConsecutive = existing?.last_active_date === yesterdayKey;
+      const newStreak = isConsecutive ? (existing?.current_streak ?? 0) + 1 : 1;
+      const newLongest = Math.max(newStreak, existing?.longest_streak ?? 0);
+
+      if (existing) {
+        await supabase.from('hifz_streaks').update({
+          current_streak: newStreak,
+          longest_streak: newLongest,
+          last_active_date: todayKey,
+        }).eq('user_id', user.id);
+      } else {
+        await supabase.from('hifz_streaks').insert({
+          user_id: user.id,
+          current_streak: 1,
+          longest_streak: 1,
+          last_active_date: todayKey,
+        });
+      }
+      setStreak(newStreak);
+    })();
+  }, [allDayChecked, user?.id]);
+
   const getItemColor = (item: MemorizedVerse, isRabt: boolean) => {
     if (!isRabt) return '#10B981';
     const days = getLiaisonDaysPassed(item.memorized_at, item.liaison_start_date);
