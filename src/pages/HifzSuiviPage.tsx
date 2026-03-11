@@ -6,6 +6,7 @@ import { getExactVersePage } from '@/lib/quranData';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { ArrowLeft, ChevronDown, ChevronUp, ChevronRight, Eye, EyeOff, AlertTriangle } from 'lucide-react';
 import { HifzActivityHeatmap } from '@/components/hifz/HifzActivityHeatmap';
+import { HifzMilestoneCelebration } from '@/components/hifz/HifzMilestoneCelebration';
 import { useNavigate } from 'react-router-dom';
 import { format, isToday, isTomorrow, isYesterday, isPast, startOfDay } from 'date-fns';
 import { fr } from 'date-fns/locale';
@@ -203,6 +204,9 @@ export default function HifzSuiviPage() {
   const activeJuz = juzData.filter(hasData);
   const visibleJuz = showAllJuz ? juzData : activeJuz;
 
+  const totalAyats = memorized.reduce((s, m) => s + (m.verse_end - m.verse_start + 1), 0);
+  const completedJuz = juzData.filter(j => j.percentage >= 100).map(j => j.juzNumber);
+
   if (loading) {
     return (
       <AppLayout title="Mon Suivi Hifz">
@@ -215,6 +219,12 @@ export default function HifzSuiviPage() {
 
   return (
     <AppLayout title="Mon Suivi Hifz" hideNav bgClassName="bg-[var(--p-bg)]">
+      {/* Milestone Celebration */}
+      <HifzMilestoneCelebration
+        totalAyats={totalAyats}
+        completedJuz={completedJuz}
+        activeJuzCount={activeJuz.length}
+      />
       {/* Header */}
       <div className="flex items-center gap-3 pt-4 pb-6">
         <button onClick={() => navigate(-1)} className="transition-colors" style={{ color: 'var(--p-primary)' }}>
@@ -229,7 +239,7 @@ export default function HifzSuiviPage() {
       <div className="grid grid-cols-3 gap-3 mb-6">
         {[
           { label: 'Juz commencés', value: activeJuz.length },
-          { label: 'Ayats mémorisées', value: memorized.reduce((s, m) => s + (m.verse_end - m.verse_start + 1), 0) },
+          { label: 'Ayats mémorisées', value: totalAyats },
           { label: 'Progression', value: `${activeJuz.length > 0 ? Math.round(activeJuz.reduce((s, j) => s + j.percentage, 0) / activeJuz.length) : 0}%` },
         ].map((stat, i) => (
           <div key={i} className="rounded-xl p-3 text-center" style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', boxShadow: 'var(--p-card-shadow)' }}>
