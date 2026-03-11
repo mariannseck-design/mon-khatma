@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { SURAHS } from '@/lib/surahData';
+import { SURAHS, getApproxVersePage } from '@/lib/surahData';
 import { graduateLiaisonBlocks, splitBlockByPages } from '@/lib/hifzUtils';
 import { getExactVersePage } from '@/lib/quranData';
 import { SparkleEffect } from '@/components/planificateur/SparkleEffect';
