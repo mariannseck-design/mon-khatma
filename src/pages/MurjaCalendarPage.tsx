@@ -183,11 +183,17 @@ export default function MurjaCalendarPage() {
     );
   };
 
-  const renderSection = (label: string, labelColor: string, pending: MemorizedVerse[], done: MemorizedVerse[], isRabt: boolean) => {
+  const renderSection = (label: string, labelColor: string, subtitle: string, pending: MemorizedVerse[], done: MemorizedVerse[], isRabt: boolean) => {
     if (pending.length === 0 && done.length === 0) return null;
     return (
       <div className="space-y-2">
-        <p className="text-xs font-bold uppercase tracking-widest" style={{ color: labelColor }}>{label}</p>
+        <div className="flex items-center gap-2">
+          <p className="text-xs font-bold uppercase tracking-widest" style={{ color: labelColor }}>{label}</p>
+          <div className="flex items-center gap-1">
+            <span className="text-[10px] font-medium" style={{ color: 'var(--p-text-40)' }}>· {subtitle}</span>
+            <Lightbulb className="h-3 w-3" style={{ color: 'var(--p-text-30)' }} />
+          </div>
+        </div>
         {pending.length > 0 && (
           <div className="grid grid-cols-2 gap-3">
             {pending.map(item => renderCard(item, isRabt, true))}
