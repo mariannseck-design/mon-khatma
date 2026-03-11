@@ -105,7 +105,7 @@ export default function HifzSuiviPage() {
       supabase.from('hifz_memorized_verses').select('verse_start, verse_end').eq('user_id', user.id),
       supabase.from('hifz_goals').select('*').eq('user_id', user.id).eq('is_active', true).maybeSingle(),
       supabase.from('muraja_sessions').select('verses_reviewed, created_at').eq('user_id', user.id).gte('created_at', sevenDaysAgo.toISOString()),
-      supabase.from('hifz_sessions').select('start_verse, end_verse, created_at').eq('user_id', user.id).gte('created_at', sevenDaysAgo.toISOString()),
+      supabase.from('hifz_sessions').select('surah_number, start_verse, end_verse, created_at').eq('user_id', user.id).gte('created_at', sevenDaysAgo.toISOString()),
       supabase.from('hifz_sessions')
         .select('surah_number, start_verse, end_verse, completed_at')
         .eq('user_id', user.id)
