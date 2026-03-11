@@ -244,9 +244,9 @@ export default function MurajaChecklist({
                         onClick={(e) => { e.stopPropagation(); openInReader(item.id); }}
                         className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-md text-[10px] font-semibold transition-colors"
                         style={{
-                          background: section === 'rabt' ? 'rgba(212, 175, 55, 0.1)' : 'rgba(16, 185, 129, 0.1)',
-                          color: borderLeftColor,
-                          border: `1px solid ${section === 'rabt' ? 'rgba(212, 175, 55, 0.2)' : 'rgba(16, 185, 129, 0.2)'}`,
+                          background: `color-mix(in srgb, ${itemColor} 10%, transparent)`,
+                          color: itemColor,
+                          border: `1px solid color-mix(in srgb, ${itemColor} 20%, transparent)`,
                         }}
                         title="Ouvrir dans le lecteur"
                       >
