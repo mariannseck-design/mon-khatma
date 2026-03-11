@@ -1,21 +1,12 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Nettoyage des titres de la page Muraja'a
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+Deux modifications simples dans `src/pages/MurjaCalendarPage.tsx` :
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+1. **Ligne 233** — `AppLayout title` : remplacer `"Muraja'a — Calendrier"` par `"Muraja'a"` (le sous-titre "Consolide ta mémorisation" sera géré visuellement dans le header interne, pas dans l'AppLayout title qui est trop contraint)
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+2. **Lignes 244-246** — Titre interne avec flèche retour : remplacer `"Vue Calendrier"` par `"Mon Programme du Jour"`
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
-
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+3. **Ajouter un sous-titre** sous le titre interne : une ligne `text-[11px]` grisée avec "Consolide ta mémorisation"
 
