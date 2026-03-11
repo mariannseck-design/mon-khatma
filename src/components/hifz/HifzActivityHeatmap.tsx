@@ -181,6 +181,7 @@ export function HifzActivityHeatmap({ userId }: HifzActivityHeatmapProps) {
 
               const dateKey = format(day, 'yyyy-MM-dd');
               const activity = activityMap.get(dateKey);
+              const hasActivity = activity && (activity.total > 0 || activity.versesAdded > 0);
               const intensity = getIntensity(activity?.total || 0);
               const style = INTENSITY_STYLES[intensity];
 
@@ -189,9 +190,9 @@ export function HifzActivityHeatmap({ userId }: HifzActivityHeatmapProps) {
                   key={di}
                   className="w-[13px] h-[13px] rounded-[3px] cursor-pointer transition-transform hover:scale-125"
                   style={{ background: style.background, border: style.border }}
-                  onMouseEnter={() => activity && setHoveredDay(activity)}
+                  onMouseEnter={() => hasActivity && setHoveredDay(activity)}
                   onMouseLeave={() => setHoveredDay(null)}
-                  onTouchStart={() => activity && setHoveredDay(activity)}
+                  onTouchStart={() => hasActivity && setHoveredDay(activity)}
                 />
               );
             })}
