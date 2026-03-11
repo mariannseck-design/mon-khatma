@@ -190,7 +190,10 @@ export default function MurjaCalendarPage() {
           <p className="text-xs font-bold uppercase tracking-widest" style={{ color: labelColor }}>{label}</p>
           <span className="text-[10px] font-medium" style={{ color: 'var(--p-text-40)' }}>· {subtitle}</span>
         </div>
-        <p className="text-[10px] leading-tight" style={{ color: 'var(--p-text-30)' }}>{tooltipText}</p>
+        <div className="flex items-start gap-1.5">
+          <Lightbulb className="h-3 w-3 mt-0.5 flex-shrink-0" style={{ color: labelColor }} />
+          <p className="text-[10px] leading-tight" style={{ color: 'var(--p-text-30)' }}>{tooltipText}</p>
+        </div>
         {pending.length > 0 && (
           <div className="grid grid-cols-2 gap-3">
             {pending.map(item => renderCard(item, isRabt, true))}
