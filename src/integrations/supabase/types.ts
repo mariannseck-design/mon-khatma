@@ -461,6 +461,60 @@ export type Database = {
         }
         Relationships: []
       }
+      mourad_sessions: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          current_phase: number
+          id: string
+          listen_count: number
+          maintenance_day: number
+          maintenance_start_date: string | null
+          phase_status: Json
+          reciter_id: string
+          repetition_40_count: number
+          started_at: string
+          surah_number: number
+          user_id: string
+          verse_end: number
+          verse_start: number
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          current_phase?: number
+          id?: string
+          listen_count?: number
+          maintenance_day?: number
+          maintenance_start_date?: string | null
+          phase_status?: Json
+          reciter_id?: string
+          repetition_40_count?: number
+          started_at?: string
+          surah_number: number
+          user_id: string
+          verse_end: number
+          verse_start: number
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          current_phase?: number
+          id?: string
+          listen_count?: number
+          maintenance_day?: number
+          maintenance_start_date?: string | null
+          phase_status?: Json
+          reciter_id?: string
+          repetition_40_count?: number
+          started_at?: string
+          surah_number?: number
+          user_id?: string
+          verse_end?: number
+          verse_start?: number
+        }
+        Relationships: []
+      }
       muraja_sessions: {
         Row: {
           completed_at: string | null
