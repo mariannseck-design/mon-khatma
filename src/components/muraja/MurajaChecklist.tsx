@@ -343,7 +343,9 @@ export default function MurajaChecklist({
                     }}
                   >
                     <FileText className="h-2.5 w-2.5" />
-                    {getSurahName(item.surah_number)} {page ? `p.${page}` : `v.${item.verse_start}-${item.verse_end}`}
+                    {(item as DisplayItem).mergedWith
+                      ? `${getSurahName((item as DisplayItem).mergedWith!.surah_number)} + ${getSurahName(item.surah_number)}`
+                      : getSurahName(item.surah_number)} {page ? `p.${page}` : `v.${item.verse_start}-${item.verse_end}`}
                   </button>
                 );
               })}
