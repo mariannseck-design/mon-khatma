@@ -197,10 +197,11 @@ export default function MurajaChecklist({
         </div>
       )}
 
-      {items.map((item) => {
+      {sortedItems.map((item) => {
         const isChecked = checkedIds.includes(item.id);
         const isRating = ratingFor === item.id;
         const daysPassed = section === 'rabt' ? getLiaisonDaysPassed(item.liaison_start_date) : 0;
+        const itemColor = getItemColor(item);
 
         return (
           <div key={item.id}>
@@ -209,7 +210,7 @@ export default function MurajaChecklist({
               style={{
                 background: isChecked ? 'var(--p-card-active)' : 'var(--p-card)',
                 border: '1px solid var(--p-border)',
-                borderLeft: `3px solid ${borderLeftColor}`,
+                borderLeft: `3px solid ${itemColor}`,
                 opacity: isChecked ? 0.8 : 1,
               }}
             >
