@@ -90,11 +90,6 @@ export default function MurjaPage() {
     if (!user) return;
     const fetchVerses = async () => {
       setLoading(true);
-      const graduated = await graduateLiaisonBlocks(user.id);
-      if (graduated > 0) {
-        setGraduatedCount(graduated);
-        setShowGraduation(true);
-      }
       const { data } = await supabase
         .from('hifz_memorized_verses')
         .select('*')
