@@ -282,7 +282,7 @@ export default function AccueilPage() {
                 style={{ background: `${COLORS.emerald}08`, border: `1px solid ${COLORS.emerald}15` }}
               >
                 <Target className="h-5 w-5" style={{ color: COLORS.goldAccent }} />
-                <span className="text-sm font-semibold" style={{ color: COLORS.emerald }}>Ma Khatma <span className="font-normal text-xs" style={{ color: COLORS.sage }}>(Mon objectif)</span></span>
+                <span className="text-base font-bold uppercase tracking-wide" style={{ color: COLORS.emerald }}>MA KHATMA <span className="font-normal text-xs normal-case" style={{ color: COLORS.sage }}>(Mon objectif)</span></span>
               </div>
             </Link>
           </div>
