@@ -124,6 +124,11 @@ export default function HifzHubPage() {
     <AppLayout title="Hifz">
       <motion.div className="space-y-4 pb-6 pt-2" variants={containerVariants} initial="hidden" animate="visible">
 
+        {/* Citation du jour */}
+        <motion.div variants={itemVariants}>
+          <DailyQuote />
+        </motion.div>
+
         {/* Le Noble Coran */}
         <motion.div variants={itemVariants}>
           {hasFullAccess ? (
