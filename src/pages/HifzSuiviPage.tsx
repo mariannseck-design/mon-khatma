@@ -256,18 +256,11 @@ export default function HifzSuiviPage() {
         </button>
       </div>
 
-      {/* Toggle + Juz Grid */}
-      <div className="flex items-center justify-between mb-3">
+      {/* Juz Grid */}
+      <div className="mb-3">
         <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--p-text-55)' }}>
           Mon Parcours par Juz
         </span>
-        <button
-          onClick={() => setShowAllJuz(!showAllJuz)}
-          className="inline-flex items-center gap-1 text-[11px] font-medium transition-colors"
-          style={{ color: 'var(--p-primary)' }}
-        >
-          {showAllJuz ? <><EyeOff className="w-3.5 h-3.5" /> Masquer les vides</> : <><Eye className="w-3.5 h-3.5" /> Voir tous les Juz</>}
-        </button>
       </div>
 
       {visibleJuz.length === 0 && (
