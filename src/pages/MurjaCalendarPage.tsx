@@ -105,7 +105,7 @@ export default function MurjaCalendarPage() {
   const pendingTour = selectedItems.tour.filter(v => !checkedIds.includes(v.id));
   const doneTour = selectedItems.tour.filter(v => checkedIds.includes(v.id));
   const totalItems = selectedItems.rabt.length + selectedItems.tour.length;
-  const totalDone = doneRabt.length + doneTour.length;
+  const totalDone = isFutureDay ? 0 : doneRabt.length + doneTour.length;
   const allDayChecked = totalItems > 0 && totalDone === totalItems && !isFutureDay;
 
   const getItemColor = (item: MemorizedVerse, isRabt: boolean) => {
