@@ -6,7 +6,7 @@ import { BookOpen, BookHeart, RefreshCw, BarChart3, Play } from 'lucide-react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
-import HifzCommunityCounter from '@/components/hifz/HifzCommunityCounter';
+
 
 const COLORS = {
   emerald: '#2d6a4f',
@@ -123,11 +123,6 @@ export default function HifzHubPage() {
   return (
     <AppLayout title="Hifz">
       <motion.div className="space-y-4 pb-6 pt-2" variants={containerVariants} initial="hidden" animate="visible">
-
-        {/* Community counter */}
-        <motion.div variants={itemVariants}>
-          <HifzCommunityCounter />
-        </motion.div>
 
         {/* Méthode Tikrar-ISTIQÂMAH */}
         <motion.div variants={itemVariants}>
