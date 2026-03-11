@@ -24,6 +24,7 @@ import ParametresPage from "./pages/ParametresPage";
 import HifzPage from "./pages/HifzPage";
 import MurjaCalendarPage from "./pages/MurjaCalendarPage";
 import HifzSuiviPage from "./pages/HifzSuiviPage";
+import HifzSuiviTestPage from "./pages/HifzSuiviTestPage";
 
 import DhikrPage from "./pages/DhikrPage";
 import SourcesDeLumierePage from "./pages/SourcesDeLumierePage";
@@ -93,6 +94,7 @@ function AppRoutes() {
       <Route path="/hifz" element={<ProtectedRoute><ComingSoonGate title="Espace Hifz" icon={BookOpenCheck} description="Mémorise le Coran étape par étape avec un parcours guidé." hideNav>{<HifzPage />}</ComingSoonGate></ProtectedRoute>} />
       <Route path="/muraja" element={<ProtectedRoute><MurjaCalendarPage /></ProtectedRoute>} />
       <Route path="/hifz-suivi" element={<ProtectedRoute><ComingSoonGate title="Mon Suivi Hifz" icon={BarChart3} description="Consulte ta constance, tes versets ancrés et tes cycles.">{<HifzSuiviPage />}</ComingSoonGate></ProtectedRoute>} />
+      <Route path="/hifz-suivi-test" element={<ProtectedRoute><HifzSuiviTestPage /></ProtectedRoute>} />
       <Route path="/sources-de-lumiere" element={<ProtectedRoute><ComingSoonGate title="Sources de Lumière" icon={Sparkles} description="Accède aux salawât, aux noms d'Allah et aux invocations lumineuses pour nourrir ton cœur.">{<SourcesDeLumierePage />}</ComingSoonGate></ProtectedRoute>} />
       <Route path="/douas" element={<ProtectedRoute><ComingSoonGate title="Mes Duas" icon={BookOpen} description="Retrouve des invocations classées par thème pour chaque moment de ta vie.">{<DouasPage />}</ComingSoonGate></ProtectedRoute>} />
       <Route path="/favoris" element={<ProtectedRoute><FavorisPage /></ProtectedRoute>} />
