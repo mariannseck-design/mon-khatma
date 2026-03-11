@@ -127,22 +127,53 @@ export default function MurajaChecklist({
 
   if (sortedItems.length === 0) {
     if (section === 'tour' && hasTourBlocks) {
+      const reviewedItems = checkedTourItems || [];
       return (
-        <div
-          className="rounded-xl px-3 py-2.5"
-          style={{
-            background: 'var(--p-card)',
-            border: '1px solid var(--p-border)',
-          }}
-        >
-          <div className="flex items-center gap-2">
-            <PartyPopper className="h-4 w-4 flex-shrink-0" style={{ color: '#D4AF37' }} />
-            <p className="text-[11px] font-bold" style={{ color: 'var(--p-primary)' }}>
-              Alhamdulillah, révisions terminées !
-            </p>
-          </div>
+        <div className="space-y-2">
+          {reviewedItems.length > 0 && (
+            <div
+              className="rounded-xl px-3 py-2.5"
+              style={{
+                background: 'var(--p-card-active)',
+                border: '1px solid var(--p-border)',
+              }}
+            >
+              <div className="flex items-center gap-1.5 mb-2">
+                <Check className="h-3.5 w-3.5" style={{ color: '#14B8A6' }} />
+                <span className="text-[11px] font-bold" style={{ color: '#14B8A6' }}>
+                  {reviewedItems.length} portion{reviewedItems.length > 1 ? 's' : ''} validée{reviewedItems.length > 1 ? 's' : ''} ✓
+                </span>
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {reviewedItems.map(item => {
+                  const page = pageMap[item.id];
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => page && openInReader(item.id)}
+                      className="flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-semibold transition-colors"
+                      style={{
+                        background: 'rgba(20, 184, 166, 0.10)',
+                        border: '1px solid rgba(20, 184, 166, 0.25)',
+                        color: '#14B8A6',
+                      }}
+                    >
+                      <FileText className="h-2.5 w-2.5" />
+                      {getSurahName(item.surah_number)} {page ? `p.${page}` : `v.${item.verse_start}-${item.verse_end}`}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
           {nextTourReviews && nextTourReviews.length > 0 && (
-            <div className="mt-3 text-left space-y-1.5">
+            <div
+              className="rounded-xl px-3 py-2.5 space-y-1.5"
+              style={{
+                background: 'var(--p-card)',
+                border: '1px solid var(--p-border)',
+              }}
+            >
               <p className="text-[10px] font-bold" style={{ color: 'var(--p-text-75)' }}>
                 Prochaine révision :
               </p>

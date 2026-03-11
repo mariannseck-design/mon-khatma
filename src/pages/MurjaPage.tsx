@@ -626,6 +626,7 @@ export default function MurjaPage() {
                       : undefined
                   }
                   nextTourReviews={nextTourReviews}
+                  checkedTourItems={todayReviewedTourItems}
                 />
               </div>
             </div>
