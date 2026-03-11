@@ -50,6 +50,7 @@ export default function MurjaCalendarPage() {
   const [pageMap, setPageMap] = useState<Record<string, number>>({});
   const [ratingFor, setRatingFor] = useState<string | null>(null);
   const [streak, setStreak] = useState(0);
+  const [longestStreak, setLongestStreak] = useState(0);
   const streakUpdatedRef = useRef(false);
 
   // Fetch streak on mount
@@ -57,12 +58,13 @@ export default function MurjaCalendarPage() {
     if (!user?.id) return;
     supabase
       .from('hifz_streaks')
-      .select('current_streak, last_active_date')
+      .select('current_streak, longest_streak, last_active_date')
       .eq('user_id', user.id)
       .maybeSingle()
       .then(({ data }) => {
         if (data) {
           setStreak(data.current_streak);
+          setLongestStreak(data.longest_streak);
           if (data.last_active_date === todayKey) streakUpdatedRef.current = true;
         }
       });
@@ -166,6 +168,7 @@ export default function MurjaCalendarPage() {
         });
       }
       setStreak(newStreak);
+      setLongestStreak(newLongest);
     })();
   }, [allDayChecked, user?.id]);
 
@@ -305,15 +308,24 @@ export default function MurjaCalendarPage() {
             <ArrowLeft className="h-4 w-4" strokeWidth={1.5} />
           </button>
           {streak > 0 && (
-            <motion.div
-              initial={{ opacity: 0, x: 10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.4, ease: 'easeOut' }}
-              className="absolute right-0 flex items-center gap-0.5 px-2 py-1 rounded-full"
-            >
-              <span className="text-xs font-bold" style={{ color: '#D4AF37' }}>{streak}</span>
-              <span className="text-xs">🔥</span>
-            </motion.div>
+            <TooltipProvider delayDuration={0}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <motion.button
+                    initial={{ opacity: 0, x: 10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.4, ease: 'easeOut' }}
+                    className="absolute right-0 flex items-center gap-0.5 px-2 py-1 rounded-full"
+                  >
+                    <span className="text-xs font-bold" style={{ color: '#D4AF37' }}>{streak}</span>
+                    <span className="text-xs">🔥</span>
+                  </motion.button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="text-xs font-semibold">
+                  Record : {longestStreak} jours 🏆
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           )}
           <div className="text-center">
             <h1 className="text-base font-bold" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-primary)' }}>
