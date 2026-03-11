@@ -310,7 +310,7 @@ export default function HifzConfig({ onStart }: HifzConfigProps) {
         }}
       >
         <Play className="h-5 w-5" />
-        Commencer l'Istiqâmah
+        Commencer
       </motion.button>
     </div>
   );
