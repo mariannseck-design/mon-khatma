@@ -305,8 +305,8 @@ export default function MurjaCalendarPage() {
               </p>
             ) : (
               <div className="space-y-4">
-                {renderSection('Ar-Rabt', '#D4AF37', isFutureDay ? selectedItems.rabt : pendingRabt, doneRabt, true)}
-                {renderSection('Consolidation', '#10B981', isFutureDay ? selectedItems.tour : pendingTour, doneTour, false)}
+                {renderSection('Ar-Rabt', '#D4AF37', 'Liaison quotidienne', isFutureDay ? selectedItems.rabt : pendingRabt, doneRabt, true)}
+                {renderSection('Consolidation', '#10B981', 'Révision espacée', isFutureDay ? selectedItems.tour : pendingTour, doneTour, false)}
               </div>
             )}
           </>
