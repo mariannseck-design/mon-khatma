@@ -1,22 +1,21 @@
 
 
-## Centrer le texte sur toute la barre
+# Diagnostic : 404 sur /quran-reader
 
-Le texte est décalé à droite à cause de l'icône Sparkles à gauche et du `flex items-center gap-2.5`. Pour centrer sur la barre entière :
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-**Fichier** : `src/pages/MurjaCalendarPage.tsx`, lignes 305-312
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-Passer la `motion.div` en `flex justify-center` et centrer le contenu texte. Rendre l'icône Sparkles positionnée en absolu à gauche pour ne pas décaler le texte :
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-```tsx
-className="relative flex items-center justify-center rounded-xl px-4 py-3 mb-2"
-```
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-Et l'icône Sparkles en `absolute left-4` :
-
-```tsx
-<Sparkles className="absolute left-4 h-4 w-4" style={{ color: '#10B981' }} />
-```
-
-Le `div` texte reste centré avec `items-center text-center`.
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
