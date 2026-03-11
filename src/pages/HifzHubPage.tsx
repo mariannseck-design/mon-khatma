@@ -85,14 +85,14 @@ export default function HifzHubPage() {
     } catch { /* ignore */ }
   };
 
-  const easeOut: Easing = [0.0, 0.0, 0.2, 1];
+  const easeOut: Easing = [0.16, 1, 0.3, 1];
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
+    visible: { opacity: 1, transition: { staggerChildren: 0.15, delayChildren: 0.1 } },
   };
   const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: easeOut } },
+    hidden: { opacity: 0, y: 40, scale: 0.92 },
+    visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.7, ease: easeOut } },
   };
 
   return (
