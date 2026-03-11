@@ -240,6 +240,25 @@ export default function MethodeMouradPage() {
           />
         )}
       </div>
+
+      {/* Dev Skip Button */}
+      {session && !isCompleted && (
+        <DevSkipButton
+          isDevMode={isDevMode}
+          onSkip={async () => {
+            if (phase <= 3) {
+              await advancePhase(phase + 1);
+            } else if (phase === 4) {
+              await updateSession({
+                current_phase: 5,
+                maintenance_start_date: new Date().toISOString().split('T')[0],
+              } as any);
+            } else if (phase === 5) {
+              await handleMaintenanceComplete();
+            }
+          }}
+        />
+      )}
     </div>
   );
 }
