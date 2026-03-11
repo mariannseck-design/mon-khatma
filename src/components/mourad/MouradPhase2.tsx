@@ -21,7 +21,6 @@ interface Props {
 
 export default function MouradPhase2({ surahNumber, startVerse, endVerse, listenCount, reciterId, onListenComplete, onReciterChange, onValidate }: Props) {
   const [mushafMode, setMushafModeState] = useState<MushafMode>(getMouradMushafMode());
-  const [page, setPage] = useState(1);
   const [isPlaying, setIsPlaying] = useState(false);
   const [audioEl, setAudioEl] = useState<HTMLAudioElement | null>(null);
   const [showReciters, setShowReciters] = useState(false);
