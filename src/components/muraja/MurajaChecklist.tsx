@@ -120,7 +120,7 @@ export default function MurajaChecklist({
   const getItemColor = (item: ChecklistItem) => {
     if (section !== 'rabt') return '#10B981';
     const daysPassed = getLiaisonDaysPassed(item.liaison_start_date);
-    return daysPassed <= 7 ? '#7C3AED' : '#D4AF37';
+    return daysPassed <= 7 ? '#14B8A6' : '#D4AF37';
   };
 
   if (sortedItems.length === 0) {
@@ -293,7 +293,7 @@ export default function MurajaChecklist({
                   style={{
                     background: section === 'rabt'
                       ? (daysPassed <= 7
-                        ? 'linear-gradient(135deg, #6D28D9, #7C3AED)'
+                        ? 'linear-gradient(135deg, #0D9488, #14B8A6)'
                         : 'linear-gradient(135deg, #B8960C, #D4AF37)')
                       : 'linear-gradient(135deg, #065F46, #10B981)',
                     color: '#FFFFFF',
