@@ -1,30 +1,21 @@
 
 
-## Probleme identifie
+# Diagnostic : 404 sur /quran-reader
 
-Le fichier `version.json` est **cache par le Service Worker** lui-meme. Dans `vite.config.ts` ligne 82 :
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-```
-globPatterns: ["**/*.{js,css,html,ico,png,svg,woff,woff2,json}"]
-```
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-Le pattern `**/*.json` inclut `version.json`. Donc quand l'app verifie la version, elle lit le fichier cache (ancien) au lieu du nouveau sur le serveur — la mise a jour n'est jamais detectee.
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-De plus, `index.html` n'a aucun en-tete `no-cache`, donc le navigateur peut aussi le servir depuis son propre cache HTTP.
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-## Corrections
-
-**1. `vite.config.ts`** — Exclure `version.json` du cache Workbox :
-- Ajouter `globIgnores: ["**/version.json"]` dans la config `workbox`
-- Ajouter une regle `runtimeCaching` pour `version.json` avec strategie `NetworkOnly` (jamais cache)
-
-**2. `index.html`** — Ajouter des meta tags anti-cache :
-```html
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-<meta http-equiv="Pragma" content="no-cache" />
-<meta http-equiv="Expires" content="0" />
-```
-
-**3. `src/hooks/useServiceWorkerUpdate.ts`** — Forcer le rechargement plus agressivement :
-- Apres detection d'une nouvelle version, appeler `registration.unregister()` avant de recharger pour garantir que l'ancien SW ne re-serve pas les fichiers caches
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

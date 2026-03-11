@@ -80,6 +80,7 @@ export default defineConfig(({ mode }) => ({
         cleanupOutdatedCaches: true,
         maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
         globPatterns: ["**/*.{js,css,html,ico,png,svg,woff,woff2,json}"],
+        globIgnores: ["**/version.json"],
         importScripts: ["/sw-push.js"],
         navigateFallbackDenylist: [/^\/~oauth/],
         runtimeCaching: [
@@ -110,6 +111,10 @@ export default defineConfig(({ mode }) => ({
                 statuses: [0, 200]
               }
             }
+          },
+          {
+            urlPattern: /\/version\.json/,
+            handler: "NetworkOnly"
           }
         ]
       }
