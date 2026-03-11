@@ -33,6 +33,8 @@ export default function HifzMushafImage({ surahNumber, startVerse, endVerse, max
   const lastTouchCenterRef = useRef<{ x: number; y: number } | null>(null);
   const isPanningRef = useRef(false);
   const panStartRef = useRef({ x: 0, y: 0, tx: 0, ty: 0 });
+  const lastTapTimeRef = useRef(0);
+  const lastTapPosRef = useRef<{ x: number; y: number } | null>(null);
 
   useEffect(() => {
     const load = async () => {
@@ -84,14 +86,18 @@ export default function HifzMushafImage({ surahNumber, startVerse, endVerse, max
       e.preventDefault();
       lastTouchDistRef.current = getTouchDist(e.touches);
       lastTouchCenterRef.current = getTouchCenter(e.touches);
-    } else if (e.touches.length === 1 && scale > 1) {
-      isPanningRef.current = true;
-      panStartRef.current = {
-        x: e.touches[0].clientX,
-        y: e.touches[0].clientY,
-        tx: translate.x,
-        ty: translate.y,
-      };
+    } else if (e.touches.length === 1) {
+      // Store position for double-tap detection
+      lastTapPosRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      if (scale > 1) {
+        isPanningRef.current = true;
+        panStartRef.current = {
+          x: e.touches[0].clientX,
+          y: e.touches[0].clientY,
+          tx: translate.x,
+          ty: translate.y,
+        };
+      }
     }
   }, [scale, translate]);
 
@@ -124,15 +130,47 @@ export default function HifzMushafImage({ surahNumber, startVerse, endVerse, max
     }
   }, [scale, translate, clampTranslate]);
 
-  const handleTouchEnd = useCallback(() => {
+  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
+    // Double-tap detection (single finger only, no pinch)
+    if (e.changedTouches.length === 1 && lastTouchDistRef.current === null) {
+      const now = Date.now();
+      const dt = now - lastTapTimeRef.current;
+      if (dt < 300 && lastTapPosRef.current) {
+        // Double-tap detected
+        e.preventDefault();
+        if (scale > 1.05) {
+          // Reset zoom
+          setScale(1);
+          setTranslate({ x: 0, y: 0 });
+        } else {
+          // Zoom to 2x centered on tap position
+          const container = containerRef.current;
+          if (container) {
+            const rect = container.getBoundingClientRect();
+            const tapX = lastTapPosRef.current.x - rect.left - rect.width / 2;
+            const tapY = lastTapPosRef.current.y - rect.top - rect.height / 2;
+            const newScale = 2;
+            const newTranslate = clampTranslate(-tapX, -tapY, newScale);
+            setScale(newScale);
+            setTranslate(newTranslate);
+          } else {
+            setScale(2);
+          }
+        }
+        lastTapTimeRef.current = 0;
+      } else {
+        lastTapTimeRef.current = now;
+      }
+    }
+
     lastTouchDistRef.current = null;
     lastTouchCenterRef.current = null;
     isPanningRef.current = false;
-    if (scale < 1.05) {
+    if (scale < 1.05 && !lastTapTimeRef.current) {
       setScale(1);
       setTranslate({ x: 0, y: 0 });
     }
-  }, [scale]);
+  }, [scale, clampTranslate]);
 
   const zoomIn = useCallback(() => {
     const newScale = Math.min(MAX_SCALE, scale + 0.5);

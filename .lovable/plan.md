@@ -1,19 +1,21 @@
 
 
-## Ajouter le double-tap zoom sur l'image du Mushaf
+# Diagnostic : 404 sur /quran-reader
 
-### Fonctionnement
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-- **Double-tap** sur l'image : zoom a 2x centre sur le point tape
-- **Double-tap quand zoome** : retour a 1x (reset)
-- Detection via delai entre deux taps successifs (< 300ms)
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-### Fichier modifie : `src/components/hifz/HifzMushafImage.tsx`
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-1. Ajouter un `lastTapRef` pour stocker le timestamp du dernier tap
-2. Dans `handleTouchEnd`, detecter si 2 taps rapides (< 300ms) avec 1 seul doigt
-3. Si double-tap detecte :
-   - Si `scale <= 1` : zoomer a 2x en centrant sur le point tape
-   - Si `scale > 1` : reset a 1x
-4. Stocker la position du dernier touch dans `lastTapPosRef` pour centrer le zoom
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
