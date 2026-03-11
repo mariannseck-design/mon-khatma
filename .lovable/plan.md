@@ -1,12 +1,21 @@
 
 
-## Renommer la carte Mourad dans le Hifz Hub
+# Diagnostic : 404 sur /quran-reader
 
-### Changement
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-Modifier le titre de la carte "Méthode Oustaz Mourad" en **"Méthode Oustaz Mourad + Tikrar + Istiqâmah"** sur la page `HifzHubPage.tsx`.
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-### Fichier modifié
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-**`src/pages/HifzHubPage.tsx`** — ligne 203 : remplacer `'Méthode Oustaz Mourad'` par `'Méthode Oustaz Mourad + Tikrar + Istiqâmah'` (état sans session active uniquement).
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

@@ -200,7 +200,7 @@ export default function HifzHubPage() {
                     className="text-base font-bold tracking-[0.08em] uppercase"
                     style={{ fontFamily: "'Inter', sans-serif", color: COLORS.goldAccent }}
                   >
-                    {activeMouradSession ? '▶️ Continuer ma session' : 'Méthode Oustaz Mourad'}
+                    {activeMouradSession ? '▶️ Continuer ma session' : 'Méthode Oustaz Mourad + Tikrar + Istiqâmah'}
                   </h3>
                   <p className="text-white/70 text-sm mt-1">
                     {activeMouradSession
