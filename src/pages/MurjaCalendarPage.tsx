@@ -247,7 +247,11 @@ export default function MurjaCalendarPage() {
             <h1 className="text-base font-bold" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-primary)' }}>
               Mon Programme du Jour
             </h1>
-            <p className="text-[11px] font-medium" style={{ color: 'var(--p-text-40)' }}>Consolide ta mémorisation</p>
+            <p className="text-[11px] font-medium" style={{ color: 'var(--p-text-40)' }}>
+              {totalItems > 0 
+                ? `${totalDone}/${totalItems} terminés`
+                : 'Consolide ta mémorisation'}
+            </p>
           </div>
         </div>
 

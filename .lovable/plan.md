@@ -1,18 +1,21 @@
 
 
-## Ajouter un compteur de progression dans le header
+# Diagnostic : 404 sur /quran-reader
 
-**Fichier** : `src/pages/MurjaCalendarPage.tsx`
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-**Modification** (ligne 250) : Remplacer le sous-titre statique par un compteur dynamique qui reflète `totalDone / totalItems` pour le jour sélectionné.
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-```tsx
-<p className="text-[11px] font-medium" style={{ color: 'var(--p-text-40)' }}>
-  {totalItems > 0 
-    ? `${totalDone}/${totalItems} terminés`
-    : 'Consolide ta mémorisation'}
-</p>
-```
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-Le compteur utilise `totalDone` et `totalItems` déjà calculés dans le composant (lignes ~100-103), qui se mettent à jour instantanément via `checkedIds`. Quand il n'y a aucune tâche, le texte original est conservé.
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
