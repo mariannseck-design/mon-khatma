@@ -1,21 +1,30 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Enrichir la configuration de la Méthode Oustaz Mourad
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Problème
+Le `MouradConfig` est trop simple comparé au `HifzConfig` : pas de suggestion automatique du prochain passage, pas de sélection par page, et pas de visibilité sur ce qui est déjà mémorisé.
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Modifications sur `src/components/mourad/MouradConfig.tsx`
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+**1. Auto-suggestion du prochain passage**
+- Importer `useAuth` et `findNextStartingPoint` depuis `hifzUtils`
+- Au chargement, appeler `findNextStartingPoint(user.id)` pour pré-remplir sourate/versets
+- Afficher un message "💡 Suggestion : continuer avec {surahName}" si une suggestion existe
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+**2. Sélection par page (Mushaf)**
+- Ajouter un toggle Sourate / Page comme dans HifzConfig
+- En mode Page : deux champs (page début / page fin, 1-604)
+- Au lancement, convertir la plage de pages en versets via `getPageAyahs` (même logique que HifzConfig)
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+**3. Historique des sessions terminées**
+- Requêter les `mourad_sessions` complétées de l'utilisateur
+- Afficher un petit récapitulatif en bas : "✅ Déjà mémorisé : An-Nas v.1-6, Al-Falaq v.1-5..."
+- Limité aux 5 dernières sessions pour ne pas surcharger
+
+### Fichiers modifiés
+- `src/components/mourad/MouradConfig.tsx` — ajout des 3 fonctionnalités
+
+### Résultat
+L'écran de configuration Mourad proposera automatiquement le prochain passage à mémoriser, permettra de choisir par page du Mushaf, et affichera les portions déjà complétées.
 
