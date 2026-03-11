@@ -1,0 +1,1 @@
+ALTER TABLE public.hifz_goals ADD COLUMN active_days integer[] NOT NULL DEFAULT '{0,1,2,3,4,5,6}';
