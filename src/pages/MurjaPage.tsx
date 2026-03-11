@@ -79,6 +79,7 @@ function saveChecked(ids: string[]) {
 
 export default function MurjaPage() {
   const { user } = useAuth();
+  const navigateTo = useNavigate();
   const [allVerses, setAllVerses] = useState<MemorizedVerse[]>([]);
   const [loading, setLoading] = useState(true);
   const [checkedIds, setCheckedIds] = useState<string[]>(loadChecked);
