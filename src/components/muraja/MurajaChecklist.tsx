@@ -256,7 +256,7 @@ export default function MurajaChecklist({
                     )}
                   </div>
                   <div className="flex items-center gap-1 text-xs font-medium" style={{ color: 'var(--p-text-60)' }}>
-                    <BookOpen className="h-2.5 w-2.5 flex-shrink-0" style={{ color: borderLeftColor }} />
+                    <BookOpen className="h-2.5 w-2.5 flex-shrink-0" style={{ color: itemColor }} />
                     <span>{item.verse_start} → {item.verse_end}</span>
                     {section === 'tour' && (
                       isChecked
