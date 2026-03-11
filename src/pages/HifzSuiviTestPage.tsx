@@ -248,7 +248,7 @@ export default function HifzSuiviTestPage() {
           className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold transition-all hover:scale-105 active:scale-95"
           style={{ background: 'var(--p-card)', color: 'var(--p-primary)', border: '1.5px solid var(--p-primary)' }}
         >
-          Réviser l'ancien <ChevronRight className="w-3.5 h-3.5" />
+          Réviser <ChevronRight className="w-3.5 h-3.5" />
         </button>
       </div>
 
