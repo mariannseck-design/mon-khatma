@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, Zap, ThumbsUp, Crown, BookOpen, FileText, Info, CalendarDays, PartyPopper } from 'lucide-react';
 import { SURAHS } from '@/lib/surahData';
