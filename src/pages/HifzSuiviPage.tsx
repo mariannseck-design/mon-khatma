@@ -206,7 +206,7 @@ export default function HifzSuiviPage() {
   const activeJuz = juzData.filter(hasData);
   const visibleJuz = showAllJuz ? juzData : activeJuz;
 
-  const totalAyats = memorized.reduce((s, m) => s + (m.verse_end - m.verse_start + 1), 0);
+  const totalPages = Math.max(memorized.length > 0 ? 1 : 0, Math.round(memorized.reduce((s, m) => s + (m.verse_end - m.verse_start + 1), 0) / 15));
   const completedJuz = juzData.filter(j => j.percentage >= 100).map(j => j.juzNumber);
 
   if (loading) {
