@@ -310,7 +310,7 @@ export default function MurjaCalendarPage() {
             ) : (
               <div className="space-y-4">
                 {renderSection('Ar-Rabt', '#D4AF37', 'Liaison quotidienne', 'Récitez chaque jour vos versets récents (< 30 jours) pour les ancrer en mémoire.', isFutureDay ? selectedItems.rabt : pendingRabt, doneRabt, true)}
-                {renderSection('Consolidation', '#10B981', 'Révision espacée', '{renderSection('Consolidation', '#10B981', 'Révision espacée', 'Révisez vos portions plus anciennes au moment idéal pour ne jamais les oublier.', isFutureDay ? selectedItems.tour : pendingTour, doneTour, false)}', isFutureDay ? selectedItems.tour : pendingTour, doneTour, false)}
+                {renderSection('Consolidation', '#10B981', 'Révision espacée', 'Révisez vos portions plus anciennes au moment idéal pour ne jamais les oublier.', isFutureDay ? selectedItems.tour : pendingTour, doneTour, false)}
               </div>
             )}
           </>
