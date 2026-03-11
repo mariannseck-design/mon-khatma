@@ -158,6 +158,14 @@ export default function MurjaPage() {
     };
   }, [allVerses]);
 
+  const todayReviewedTourItems = useMemo(() => {
+    const today = getTodayKey();
+    return allVerses.filter(v =>
+      (v.liaison_status === 'tour' || !v.liaison_status) &&
+      v.last_reviewed_at?.startsWith(today)
+    );
+  }, [allVerses]);
+
   const nextTourReviews = useMemo(() => {
     const today = getTodayKey();
     const tomorrow = new Date();
