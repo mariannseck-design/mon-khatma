@@ -36,6 +36,8 @@ interface MurajaChecklistProps {
   checkedTourItems?: ChecklistItem[];
 }
 
+type DisplayItem = ChecklistItem & { mergedWith?: ChecklistItem };
+
 const RATINGS = [
   { key: 'hard', label: 'Difficile', quality: 2, icon: Zap, colorVar: '--p-hard' },
   { key: 'good', label: 'Moyen', quality: 4, icon: ThumbsUp, colorVar: '--p-medium' },
