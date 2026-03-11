@@ -128,7 +128,9 @@ export function useMurajaData() {
   }, []);
 
   const rabtVerses = useMemo(() => {
-    return allVerses.filter(v => v.memorized_at >= thirtyDaysCutoff);
+    return allVerses
+      .filter(v => v.memorized_at >= thirtyDaysCutoff)
+      .sort((a, b) => a.surah_number - b.surah_number || a.verse_start - b.verse_start);
   }, [allVerses, thirtyDaysCutoff]);
 
   const { tourVerses, isCapActive, totalDueCount } = useMemo(() => {
