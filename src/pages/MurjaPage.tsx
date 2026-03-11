@@ -170,16 +170,13 @@ export default function MurjaPage() {
 
   const nextTourReviews = useMemo(() => {
     const today = getTodayKey();
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const tomorrowKey = tomorrow.toISOString().split('T')[0];
 
     // Consolidation reviews scheduled for the future
     const futureReviews = allVerses
       .filter(v => v.memorized_at < thirtyDaysCutoff && v.next_review_date > today)
       .map(v => ({ surah_number: v.surah_number, verse_start: v.verse_start, verse_end: v.verse_end, next_review_date: v.next_review_date }));
 
-    return [...futureReviews]
+    return futureReviews
       .sort((a, b) => a.next_review_date.localeCompare(b.next_review_date))
       .slice(0, 3);
   }, [allVerses, thirtyDaysCutoff]);
