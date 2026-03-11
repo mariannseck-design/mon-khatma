@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { SURAHS, getApproxVersePage } from '@/lib/surahData';
-import { graduateLiaisonBlocks, splitBlockByPages } from '@/lib/hifzUtils';
+import { splitBlockByPages } from '@/lib/hifzUtils';
 import { getExactVersePage } from '@/lib/quranData';
 import { SparkleEffect } from '@/components/planificateur/SparkleEffect';
 import MurajaCountdown from '@/components/muraja/MurajaCountdown';
@@ -90,11 +90,6 @@ export default function MurjaPage() {
     if (!user) return;
     const fetchVerses = async () => {
       setLoading(true);
-      const graduated = await graduateLiaisonBlocks(user.id);
-      if (graduated > 0) {
-        setGraduatedCount(graduated);
-        setShowGraduation(true);
-      }
       const { data } = await supabase
         .from('hifz_memorized_verses')
         .select('*')
@@ -142,50 +137,49 @@ export default function MurjaPage() {
     fetchVerses();
   }, [user, refreshKey]);
 
+  // Date-based cutoff: items memorized < 30 days ago = Rabt, >= 30 days = Consolidation
+  const thirtyDaysCutoff = useMemo(() => {
+    const d = new Date();
+    d.setDate(d.getDate() - 30);
+    return d.toISOString();
+  }, []);
+
   const rabtVerses = useMemo(() => {
-    return allVerses.filter(v => v.liaison_status === 'liaison');
-  }, [allVerses]);
+    return allVerses.filter(v => v.memorized_at >= thirtyDaysCutoff);
+  }, [allVerses, thirtyDaysCutoff]);
 
   const { tourVerses, isCapActive, totalDueCount } = useMemo(() => {
     const today = getTodayKey();
     const allDue = allVerses.filter(
-      v => (v.liaison_status === 'tour' || !v.liaison_status) && v.next_review_date <= today
+      v => v.memorized_at < thirtyDaysCutoff && v.next_review_date <= today
     );
     return {
       tourVerses: allDue.slice(0, MAX_TOUR_BLOCKS_PER_DAY),
       isCapActive: allDue.length > MAX_TOUR_BLOCKS_PER_DAY,
       totalDueCount: allDue.length,
     };
-  }, [allVerses]);
+  }, [allVerses, thirtyDaysCutoff]);
 
   const todayReviewedTourItems = useMemo(() => {
     const today = getTodayKey();
     return allVerses.filter(v =>
-      (v.liaison_status === 'tour' || !v.liaison_status) &&
+      v.memorized_at < thirtyDaysCutoff &&
       v.last_reviewed_at?.startsWith(today)
     );
-  }, [allVerses]);
+  }, [allVerses, thirtyDaysCutoff]);
 
   const nextTourReviews = useMemo(() => {
     const today = getTodayKey();
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const tomorrowKey = tomorrow.toISOString().split('T')[0];
 
-    // Tour reviews scheduled for the future
+    // Consolidation reviews scheduled for the future
     const futureReviews = allVerses
-      .filter(v => (v.liaison_status === 'tour' || !v.liaison_status) && v.next_review_date > today)
+      .filter(v => v.memorized_at < thirtyDaysCutoff && v.next_review_date > today)
       .map(v => ({ surah_number: v.surah_number, verse_start: v.verse_start, verse_end: v.verse_end, next_review_date: v.next_review_date }));
 
-    // Liaison verses are due every day → show them as "tomorrow"
-    const liaisonReviews = allVerses
-      .filter(v => v.liaison_status === 'liaison')
-      .map(v => ({ surah_number: v.surah_number, verse_start: v.verse_start, verse_end: v.verse_end, next_review_date: tomorrowKey }));
-
-    return [...liaisonReviews, ...futureReviews]
+    return futureReviews
       .sort((a, b) => a.next_review_date.localeCompare(b.next_review_date))
       .slice(0, 3);
-  }, [allVerses]);
+  }, [allVerses, thirtyDaysCutoff]);
 
   const totalBlocks = rabtVerses.length + tourVerses.length;
   const checkedCount = checkedIds.filter(
@@ -194,11 +188,11 @@ export default function MurjaPage() {
 
   const allDailyChecked = checkedCount >= totalBlocks && totalBlocks > 0;
 
-  const { totalVersesCount, surahSummary } = useMemo(() => {
+  const { totalVersesCount, surahSummary } = useMemo<{ totalVersesCount: number; surahSummary: { name: string; surahNumber: number; verseMin: number; verseMax: number; nextReview: string; isLiaison: boolean }[] }>(() => {
     const total = allVerses.reduce((sum, v) => sum + (v.verse_end - v.verse_start + 1), 0);
     const map = new Map<string, { name: string; surahNumber: number; verseMin: number; verseMax: number; nextReview: string; isLiaison: boolean }>();
     for (const v of allVerses) {
-      const isLiaison = v.liaison_status === 'liaison';
+      const isLiaison = v.memorized_at >= thirtyDaysCutoff;
       const key = `${v.surah_number}_${isLiaison ? 'liaison' : 'tour'}`;
       const existing = map.get(key);
       if (existing) {
@@ -217,7 +211,7 @@ export default function MurjaPage() {
         return a.verseMin - b.verseMin || a.name.localeCompare(b.name);
       }),
     };
-  }, [allVerses]);
+  }, [allVerses, thirtyDaysCutoff]);
 
   const [pageMap, setPageMap] = useState<Record<string, { startPage: number; endPage: number }>>({});
   useEffect(() => {
