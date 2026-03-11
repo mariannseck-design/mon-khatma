@@ -21,6 +21,7 @@ const COLORS = {
 };
 
 const STEP_NAMES = ['Intention', 'Réveil', 'Imprégnation', 'Istiqâmah', 'Validation'];
+const MOURAD_PHASE_NAMES = ['Compréhension', 'Imprégnation', 'Liaison', 'Ancrage'];
 
 export default function HifzHubPage() {
   const { user } = useAuth();
