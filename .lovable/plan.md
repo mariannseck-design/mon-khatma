@@ -1,29 +1,21 @@
 
 
-## Plan : Améliorer la hiérarchie visuelle des couleurs du Hifz Hub
+# Diagnostic : 404 sur /quran-reader
 
-### Problème
-Les 3 cartes principales sont trop similaires visuellement (même dégradé émeraude + titres dorés), rendant la navigation peu intuitive. La carte "Mon Suivi Hifz" est trop discrète.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Changements proposés dans `HifzHubPage.tsx`
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-**1. Carte "Continuer ma session"** (quand une session active existe)
-- Dégradé plus sombre/profond : `#1B4332 → #2d6a4f` pour la distinguer comme action prioritaire
-- Ajouter un léger liseré doré lumineux à gauche (accent visuel)
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-**2. Carte "Muraja'a"**
-- Garder le dégradé sage actuel mais le rendre légèrement plus chaud/distinct : `#3a6b5a → #5a9a80`
-- Badge : augmenter la taille du texte et ajouter un fond blanc au lieu du doré pour un meilleur contraste
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-**3. Carte "Mon Suivi Hifz"**
-- Passer d'un fond `greenMist` plat à un fond beige chaud (`#f5f0e8`) avec une bordure émeraude plus marquée
-- Augmenter le padding et le border-radius pour le rendre cohérent avec les cartes au-dessus (rounded-[2rem], p-7)
-
-**4. Titres — varier les couleurs**
-- Carte Tikrar : titre en blanc pur (pas doré) pour la différencier, sous-titre blanc/70
-- Carte "Continuer" : titre doré (action en cours, attire l'oeil)
-- Carte Muraja'a : titre en blanc, badge doré
-- Mon Suivi : titre émeraude (déjà le cas, OK)
-
-Ces changements créent une hiérarchie claire : session active (sombre + doré) > méthodes (émeraude standard) > révision (sage) > suivi (beige clair).
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
