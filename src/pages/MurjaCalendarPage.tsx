@@ -66,7 +66,9 @@ export default function MurjaCalendarPage() {
 
   const getItemsForDay = (dayKey: string) => {
     const rabt = rabtVerses;
-    const tour = allConsolidation.filter(v => v.next_review_date === dayKey);
+    const tour = dayKey === todayKey
+      ? allConsolidation.filter(v => v.next_review_date <= dayKey)
+      : allConsolidation.filter(v => v.next_review_date === dayKey);
     return { rabt, tour };
   };
 
