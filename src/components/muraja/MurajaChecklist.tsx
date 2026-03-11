@@ -98,19 +98,30 @@ export default function MurajaChecklist({
     if (page) navigate(`/quran-reader?page=${page}`);
   };
 
-  const handleValidate = (id: string) => {
+  const handleValidate = (id: string, mergedId?: string) => {
     if (checkedIds.includes(id)) return;
     if (section === 'tour') {
       setRatingFor(id);
+      // Store merged ID for later rating
+      if (mergedId) mergedRatingRef.current = mergedId;
     } else {
       onCheck(id);
+      if (mergedId) onCheck(mergedId);
     }
   };
+
+  const mergedRatingRef = { current: null as string | null };
 
   const handleRate = (quality: number, ratingKey: string) => {
     if (!ratingFor || !onRate) return;
     onRate(ratingFor, quality, ratingKey);
     onCheck(ratingFor);
+    // Also check+rate the merged item
+    if (mergedRatingRef.current) {
+      onRate(mergedRatingRef.current, quality, ratingKey);
+      onCheck(mergedRatingRef.current);
+      mergedRatingRef.current = null;
+    }
     setRatingFor(null);
   };
 
