@@ -467,6 +467,16 @@ export default function HifzSuiviPage() {
                                 </span>
                               )}
                             </span>
+                            {d.surahs.length > 0 && (
+                              <div className="mt-1 flex flex-wrap gap-x-2 gap-y-0.5">
+                                {d.surahs.map((s, idx) => (
+                                  <span key={idx} className="text-[10px]" style={{ color: 'var(--p-text-55)' }}>
+                                    {s.name} (v.{s.startVerse}-{s.endVerse})
+                                    {s.startPage > 0 && <span className="ml-0.5" style={{ color: 'var(--p-text-45, var(--p-text-55))' }}>· p.{s.startPage === s.endPage ? s.startPage : `${s.startPage}-${s.endPage}`}</span>}
+                                  </span>
+                                ))}
+                              </div>
+                            )}
                           </div>
                         </div>
                       );
