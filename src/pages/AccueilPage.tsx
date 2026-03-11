@@ -452,7 +452,7 @@ export default function AccueilPage() {
                         Méthode Oustaz Mourad
                       </h3>
                       <p className="text-white/60 text-xs mt-0.5">
-                        Parcours guidé de mémorisation
+                        Recommandé pour débutant
                       </p>
                     </div>
                   </motion.div>
