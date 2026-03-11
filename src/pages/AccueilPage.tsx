@@ -43,7 +43,7 @@ export default function AccueilPage() {
   const { subscriptionError } = usePushSubscription();
   const [showNamePrompt, setShowNamePrompt] = useState(false);
   const [guestName, setGuestName] = useState('');
-  const [activeTab, setActiveTab] = useState<'principal' | 'univers'>('principal');
+  
 
   useEffect(() => {
     const hasName = localStorage.getItem('guest_first_name') || localStorage.getItem('user_display_name');
