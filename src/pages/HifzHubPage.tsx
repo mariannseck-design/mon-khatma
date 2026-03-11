@@ -232,7 +232,8 @@ export default function HifzHubPage() {
           </Link>
         </motion.div>
 
-        {/* Méthode Oustaz Mourad */}
+        {/* Méthode Oustaz Mourad — admin only */}
+        {isAdmin && (
         <motion.div variants={itemVariants}>
           <Link to="/methode-mourad" className="block">
             <motion.div
@@ -273,6 +274,7 @@ export default function HifzHubPage() {
             </motion.div>
           </Link>
         </motion.div>
+        )}
 
         {/* Muraja'a */}
         <motion.div variants={itemVariants}>
