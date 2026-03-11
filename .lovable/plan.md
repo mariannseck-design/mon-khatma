@@ -1,24 +1,21 @@
 
 
-## Intégrer "Méthode Oustaz Mourad" dans la carte Hifz
+# Diagnostic : 404 sur /quran-reader
 
-### Approche
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-Transformer la carte "Espace Hifz" (lignes 388-429) en une carte conteneur avec deux sous-liens séparés par un séparateur visuel :
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-1. **Sous-lien 1** : "Espace Hifz" → `/hifz` (comportement actuel conservé, avec session active si applicable)
-2. **Sous-lien 2** : "Méthode Oustaz Mourad" → `/methode-mourad` (nouveau lien avec icône BookHeart déjà importée)
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-### Design
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-- La carte garde le même gradient émeraude et le même arrondi `rounded-[2rem]`
-- Retirer le `<Link>` qui englobe toute la carte
-- Diviser l'intérieur en 2 zones cliquables séparées par une ligne fine `border-t` semi-transparente
-- Chaque zone a son propre `<Link>` avec effet `whileTap`
-- La partie Hifz garde l'icône Play/BookOpen et le texte session active
-- La partie Mourad utilise l'icône BookHeart avec le texte "Méthode Oustaz Mourad" et sous-titre "Parcours guidé de mémorisation"
-
-### Fichier modifié
-
-`src/pages/AccueilPage.tsx` — lignes 388-429 (bloc ESPACE HIFZ)
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

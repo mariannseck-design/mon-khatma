@@ -385,21 +385,24 @@ export default function AccueilPage() {
 
 
 
-            {/* ESPACE HIFZ */}
+            {/* ESPACE HIFZ + MÉTHODE MOURAD */}
             <motion.div variants={itemVariants}>
-              <Link to="/hifz" className="block">
-                <motion.div
-                  className="relative overflow-hidden rounded-[2rem] p-7 group"
-                  style={{
-                    background: `linear-gradient(135deg, ${COLORS.emerald} 0%, ${COLORS.emeraldLight} 100%)`,
-                    border: `2px solid ${COLORS.gold}40`,
-                    boxShadow: `0 8px 32px -8px ${COLORS.emerald}50`,
-                  }}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <div className="absolute -bottom-4 -right-4 w-32 h-32 rounded-full blur-xl" style={{ background: `${COLORS.gold}10` }} />
-                  <div className="relative z-10 flex items-center gap-5">
+              <div
+                className="relative overflow-hidden rounded-[2rem]"
+                style={{
+                  background: `linear-gradient(135deg, ${COLORS.emerald} 0%, ${COLORS.emeraldLight} 100%)`,
+                  border: `2px solid ${COLORS.gold}40`,
+                  boxShadow: `0 8px 32px -8px ${COLORS.emerald}50`,
+                }}
+              >
+                <div className="absolute -bottom-4 -right-4 w-32 h-32 rounded-full blur-xl" style={{ background: `${COLORS.gold}10` }} />
+
+                {/* Zone 1 — Espace Hifz */}
+                <Link to="/hifz" className="block">
+                  <motion.div
+                    className="relative z-10 p-7 flex items-center gap-5"
+                    whileTap={{ scale: 0.97 }}
+                  >
                     <div
                       className="w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0"
                       style={{ background: `${COLORS.gold}22`, border: `1px solid ${COLORS.gold}35` }}
@@ -423,9 +426,38 @@ export default function AccueilPage() {
                           : 'Mémoriser le Noble Coran'}
                       </p>
                     </div>
-                  </div>
-                </motion.div>
-              </Link>
+                  </motion.div>
+                </Link>
+
+                {/* Séparateur */}
+                <div className="mx-6" style={{ borderTop: '1px solid rgba(255,255,255,0.15)' }} />
+
+                {/* Zone 2 — Méthode Oustaz Mourad */}
+                <Link to="/methode-mourad" className="block">
+                  <motion.div
+                    className="relative z-10 px-7 py-5 flex items-center gap-5"
+                    whileTap={{ scale: 0.97 }}
+                  >
+                    <div
+                      className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+                      style={{ background: `${COLORS.gold}22`, border: `1px solid ${COLORS.gold}35` }}
+                    >
+                      <BookHeart className="h-6 w-6" style={{ color: COLORS.goldAccent }} />
+                    </div>
+                    <div className="flex-1">
+                      <h3
+                        className="text-base font-bold tracking-wide"
+                        style={{ fontFamily: "'Inter', sans-serif", color: COLORS.goldAccent }}
+                      >
+                        Méthode Oustaz Mourad
+                      </h3>
+                      <p className="text-white/60 text-xs mt-0.5">
+                        Parcours guidé de mémorisation
+                      </p>
+                    </div>
+                  </motion.div>
+                </Link>
+              </div>
             </motion.div>
 
 
