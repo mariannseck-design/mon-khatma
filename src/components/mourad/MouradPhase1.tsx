@@ -6,7 +6,7 @@ import { getExactVersePage } from '@/lib/quranData';
 import MouradMushafToggle, { type MushafMode, getMouradMushafMode, setMouradMushafMode } from './MouradMushafToggle';
 import MouradPhysicalView from './MouradPhysicalView';
 import HifzMushafImage from '@/components/hifz/HifzMushafImage';
-import QuranTextView from '@/components/quran/QuranTextView';
+import MouradVerseTextView from './MouradVerseTextView';
 
 interface Props {
   surahNumber: number;

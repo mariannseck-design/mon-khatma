@@ -2,12 +2,11 @@ import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Headphones, Check, Play, Pause } from 'lucide-react';
 import { SURAHS } from '@/lib/surahData';
-import { getExactVersePage } from '@/lib/quranData';
 import { RECITERS } from '@/hooks/useQuranAudio';
 import MouradMushafToggle, { type MushafMode, getMouradMushafMode, setMouradMushafMode } from './MouradMushafToggle';
 import MouradPhysicalView from './MouradPhysicalView';
 import HifzMushafImage from '@/components/hifz/HifzMushafImage';
-import QuranTextView from '@/components/quran/QuranTextView';
+import MouradVerseTextView from './MouradVerseTextView';
 
 interface Props {
   surahNumber: number;
