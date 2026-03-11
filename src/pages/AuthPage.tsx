@@ -235,6 +235,7 @@ export default function AuthPage() {
           Besoin d'aide ? Contacte-nous
         </a>
       </motion.div>
+      </div>
     </div>
   );
 }
