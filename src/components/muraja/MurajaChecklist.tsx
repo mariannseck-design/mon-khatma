@@ -224,8 +224,8 @@ export default function MurajaChecklist({
   }
 
   // Split checked vs unchecked for rabt compact mode
-  const checkedItems = section === 'rabt' ? sortedItems.filter(i => checkedIds.includes(i.id)) : [];
-  const uncheckedItems = section === 'rabt' ? sortedItems.filter(i => !checkedIds.includes(i.id)) : sortedItems;
+  const checkedItems = sortedItems.filter(i => checkedIds.includes(i.id));
+  const uncheckedItems = sortedItems.filter(i => !checkedIds.includes(i.id));
 
   return (
     <div className="space-y-2">
