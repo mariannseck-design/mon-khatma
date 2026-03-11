@@ -115,11 +115,29 @@ export default function MurajaChecklist({
   };
 
   // Sort items by Mushaf page number (ascending) when pageMap is available
-  const sortedItems = [...items].sort((a, b) => {
+  const rawSorted = [...items].sort((a, b) => {
     const pageA = pageMap[a.id] ?? Infinity;
     const pageB = pageMap[b.id] ?? Infinity;
     return pageA - pageB;
   });
+
+  // Merge Al-Fatiha with the next item so it never appears alone
+  type DisplayItem = ChecklistItem & { mergedWith?: ChecklistItem };
+  const sortedItems: DisplayItem[] = [];
+  const isFatiha = (it: ChecklistItem) => it.surah_number === 1 && it.verse_start === 1 && it.verse_end === 7;
+
+  for (let i = 0; i < rawSorted.length; i++) {
+    if (isFatiha(rawSorted[i]) && i + 1 < rawSorted.length) {
+      // Attach Fatiha to the next item
+      sortedItems.push({ ...rawSorted[i + 1], mergedWith: rawSorted[i] });
+      i++; // skip next
+    } else if (isFatiha(rawSorted[i]) && rawSorted.length === 1) {
+      // Only Fatiha exists — show it as-is
+      sortedItems.push(rawSorted[i]);
+    } else {
+      sortedItems.push(rawSorted[i]);
+    }
+  }
 
   const getItemColor = (item: ChecklistItem) => {
     if (section !== 'rabt') return '#10B981';
