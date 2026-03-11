@@ -1,21 +1,26 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Ajout du tooltip sur le streak avec record personnel
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Fichier : `src/pages/MurjaCalendarPage.tsx`
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+**1. State** : Ajouter `longestStreak` au state, le charger depuis `hifz_streaks` (colonne `longest_streak` déjà existante).
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+**2. Fetch** (ligne ~60) : Ajouter `longest_streak` au select et stocker dans le state.
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+**3. UI** (lignes 307-316) : Envelopper le bloc streak dans un `Tooltip` (composant Radix déjà importé). Le tooltip affichera `Record personnel : X jours 🏆`. Le `delayDuration={0}` permet l'ouverture au tap sur mobile.
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+**4. Mise à jour streak** : Quand le streak est mis à jour (effet `allDayChecked`), mettre aussi à jour `longestStreak` localement.
+
+### Rendu cible
+
+```text
+  [←]     Mon Programme du Jour       [1 🔥]
+              3/7 terminés              ↓
+                                  ┌─────────────────────┐
+                                  │ Record : 12 jours 🏆│
+                                  └─────────────────────┘
+```
+
+Aucune migration nécessaire — `longest_streak` existe déjà dans `hifz_streaks`.
 
