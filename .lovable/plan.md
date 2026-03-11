@@ -1,46 +1,21 @@
 
 
-## Réorganisation de la page Accueil + ajout Coran dans Hifz Hub
+# Diagnostic : 404 sur /quran-reader
 
-### Résumé
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-1. **Supprimer le toggle tabs** (PRINCIPAL / MON UNIVERS) de la page Accueil
-2. **Fusionner tout sur une seule page** avec une barre verte "Ma Khatma" comme séparateur visuel
-3. **Copier la carte "Le Noble Coran"** dans le Hifz Hub (en plus de la garder sur l'Accueil)
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-### Fichiers modifiés
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-#### `src/pages/AccueilPage.tsx`
-- Supprimer le state `activeTab` et le toggle tabs (lignes 291-317)
-- Afficher le contenu sur une seule page dans cet ordre :
-  1. Greeting + Citation + Carte pages lues (inchangé)
-  2. **Carte "Le Noble Coran"** (sortie de l'onglet Principal, toujours visible)
-  3. **Barre verte** avec texte "MA KHATMA" (même fond émeraude que le tab MON UNIVERS actif) comme séparateur de section
-  4. En dessous : Ma Khatma (lien planificateur), Versets favoris, Nos Défis, Espace Communauté, Weekly Report, Citation spirituelle, PWA Install, Partage
-- Les défis et Ma Khatma restent intacts, ils sont juste sortis du système d'onglets
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-#### `src/pages/HifzHubPage.tsx`
-- Ajouter une carte "Le Noble Coran" en haut du hub (avant Tikrar), identique à celle de l'Accueil
-- Utiliser `useAuth` pour `hasFullAccess` et conditionner l'accès comme sur l'Accueil
-- Importer `BookOpenCheck` de lucide-react
-
-### Structure finale de l'Accueil
-
-```text
-┌─────────────────────┐
-│  Greeting + Citation │
-│  Carte pages lues    │
-│  Le Noble Coran      │
-├─────────────────────┤
-│ ████ MA KHATMA ████ │  ← barre verte pleine
-├─────────────────────┤
-│  Ma Khatma (objectif)│
-│  Versets favoris     │
-│  Nos Défis           │
-│  Communauté          │
-│  Weekly Report       │
-│  Citation            │
-│  PWA / Partage       │
-└─────────────────────┘
-```
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
