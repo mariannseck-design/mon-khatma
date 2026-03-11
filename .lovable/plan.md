@@ -1,21 +1,48 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Deux variantes visuelles de la page Muraja'a
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+Créer deux pages expérimentales sans toucher à `MurjaPage.tsx`, accessibles via des routes temporaires.
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### 1. `MurjaCardsPage.tsx` — Route `/murajaa-cards`
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+**Concept** : Vue en flashcards, grille 2 colonnes sur mobile.
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+- Réutilise la même logique de fetch (copie simplifiée de MurjaPage) : `allVerses`, `rabtVerses`, `tourVerses`, `checkedIds`, handlers.
+- Affiche les items dans une grille CSS `grid-cols-2 gap-3`.
+- Chaque carte : carré arrondi, bordure gauche colorée (moutarde/émeraude), contenu minimal :
+  - Nom de la sourate (tronqué)
+  - `📖 v.X → Y`
+  - Petit indicateur de page
+  - Tap pour valider (check overlay animé)
+- Section Ar-Rabt et Consolidation séparées par un simple divider texte.
+- Rating (tour) : bottom sheet simplifié au tap.
+- Header identique au MurjaPage actuel.
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+### 2. `MurjaCalendarPage.tsx` — Route `/murajaa-calendar`
+
+**Concept** : Bandeau calendrier horizontal + cartes filtrées par jour.
+
+- Même logique de fetch que ci-dessus.
+- En haut : bandeau horizontal scrollable montrant les 7 jours de la semaine courante (Lun → Dim).
+  - Jour actif = fond émeraude, texte blanc.
+  - Indicateurs sous chaque jour : point moutarde si rabt prévu, point émeraude si consolidation prévue.
+  - Les items rabt sont quotidiens (point moutarde chaque jour des 30 jours).
+  - Les items tour apparaissent le jour de leur `next_review_date`.
+- Clic sur un jour → filtre les tâches affichées en dessous.
+- Les tâches filtrées s'affichent en grille 2 colonnes (même style flashcard que variante 1).
+- Jours futurs : lecture seule, pas de validation possible.
+
+### 3. Routes et navigation temporaire
+
+- Dans `App.tsx` : ajouter deux routes protégées `/murajaa-cards` et `/murajaa-calendar` (sans ComingSoonGate).
+- Dans `MurjaPage.tsx` : ajouter 2 petits boutons de navigation en haut (icônes Grid et Calendar) pour accéder aux variantes, et un bouton retour sur chaque variante.
+
+### Fichiers créés
+- `src/pages/MurjaCardsPage.tsx`
+- `src/pages/MurjaCalendarPage.tsx`
+
+### Fichiers modifiés
+- `src/App.tsx` — 2 routes
+- `src/pages/MurjaPage.tsx` — 2 boutons nav temporaires
 
