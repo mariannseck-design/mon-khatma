@@ -1,21 +1,20 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Modifications
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### 1. MurajaChecklist — Compacter le message "Alhamdulillah" (lignes 127-159)
+- Réduire le padding, mettre le PartyPopper et le texte sur une seule ligne
+- Raccourcir le texte : remplacer "Alhamdulillah, tu as terminé tes révisions pour aujourd'hui !" par une version plus courte comme "Alhamdulillah, révisions terminées !"
+- Garder les prochaines révisions en dessous mais compact
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### 2. MurajaCountdown — Ajouter la date du jour + compacter (lignes 34-38)
+- Remplacer "Révisions du jour terminées ✓" par "Révisions du mercredi 11 mars terminées ✓" (date dynamique avec `toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })`)
+- Réduire le padding global (`p-5` → `p-3`) et l'espacement (`space-y-3` → `space-y-2`)
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+### 3. MurjaPage — Mettre "Consolidation · Révision espacée" sur une ligne (lignes 576-585)
+- Fusionner le label "Consolidation", "· Révision espacée", le badge count et le bouton info sur une seule ligne compacte (déjà le cas via flex, mais vérifier qu'il n'y a pas de `space-y` qui force un retour)
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
-
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+### Fichiers modifiés
+- `src/components/muraja/MurajaChecklist.tsx`
+- `src/components/muraja/MurajaCountdown.tsx`
 
