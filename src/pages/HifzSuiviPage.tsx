@@ -272,7 +272,7 @@ export default function HifzSuiviPage() {
       {/* Activity Heatmap */}
       {user && (
         <div className="mb-6">
-          <HifzActivityHeatmap userId={user.id} />
+          <HifzActivitySummary userId={user.id} />
         </div>
       )}
 
