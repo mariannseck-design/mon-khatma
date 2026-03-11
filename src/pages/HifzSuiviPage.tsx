@@ -204,6 +204,9 @@ export default function HifzSuiviPage() {
   const activeJuz = juzData.filter(hasData);
   const visibleJuz = showAllJuz ? juzData : activeJuz;
 
+  const totalAyats = memorized.reduce((s, m) => s + (m.verse_end - m.verse_start + 1), 0);
+  const completedJuz = juzData.filter(j => j.percentage >= 100).map(j => j.juzNumber);
+
   if (loading) {
     return (
       <AppLayout title="Mon Suivi Hifz">
@@ -216,6 +219,12 @@ export default function HifzSuiviPage() {
 
   return (
     <AppLayout title="Mon Suivi Hifz" hideNav bgClassName="bg-[var(--p-bg)]">
+      {/* Milestone Celebration */}
+      <HifzMilestoneCelebration
+        totalAyats={totalAyats}
+        completedJuz={completedJuz}
+        activeJuzCount={activeJuz.length}
+      />
       {/* Header */}
       <div className="flex items-center gap-3 pt-4 pb-6">
         <button onClick={() => navigate(-1)} className="transition-colors" style={{ color: 'var(--p-primary)' }}>
