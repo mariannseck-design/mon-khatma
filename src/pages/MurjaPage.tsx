@@ -160,11 +160,23 @@ export default function MurjaPage() {
 
   const nextTourReviews = useMemo(() => {
     const today = getTodayKey();
-    return allVerses
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const tomorrowKey = tomorrow.toISOString().split('T')[0];
+
+    // Tour reviews scheduled for the future
+    const futureReviews = allVerses
       .filter(v => (v.liaison_status === 'tour' || !v.liaison_status) && v.next_review_date > today)
-      .sort((a, b) => a.next_review_date.localeCompare(b.next_review_date))
-      .slice(0, 3)
       .map(v => ({ surah_number: v.surah_number, verse_start: v.verse_start, verse_end: v.verse_end, next_review_date: v.next_review_date }));
+
+    // Liaison verses are due every day → show them as "tomorrow"
+    const liaisonReviews = allVerses
+      .filter(v => v.liaison_status === 'liaison')
+      .map(v => ({ surah_number: v.surah_number, verse_start: v.verse_start, verse_end: v.verse_end, next_review_date: tomorrowKey }));
+
+    return [...liaisonReviews, ...futureReviews]
+      .sort((a, b) => a.next_review_date.localeCompare(b.next_review_date))
+      .slice(0, 3);
   }, [allVerses]);
 
   const totalBlocks = rabtVerses.length + tourVerses.length;
@@ -238,9 +250,18 @@ export default function MurjaPage() {
       return dayMonth;
     };
 
-    return allVerses
-      .filter(v => v.next_review_date > today)
-      .sort((a, b) => a.next_review_date.localeCompare(b.next_review_date))
+    // Tour/future reviews
+    const futureItems = allVerses
+      .filter(v => v.next_review_date > today && v.liaison_status !== 'liaison')
+      .map(v => ({ ...v, _sortDate: v.next_review_date }));
+
+    // Liaison verses are daily → treat them as due tomorrow
+    const liaisonItems = allVerses
+      .filter(v => v.liaison_status === 'liaison')
+      .map(v => ({ ...v, _sortDate: tomorrowKey }));
+
+    return [...liaisonItems, ...futureItems]
+      .sort((a, b) => a._sortDate.localeCompare(b._sortDate))
       .slice(0, 5)
       .map(v => {
         const surahName = SURAHS.find(s => s.number === v.surah_number)?.name || `Sourate ${v.surah_number}`;
@@ -254,7 +275,7 @@ export default function MurjaPage() {
           verseStart: v.verse_start,
           verseEnd: v.verse_end,
           page: pageLabel,
-          date: formatReviewDate(v.next_review_date),
+          date: formatReviewDate(v._sortDate),
           type: (v.liaison_status === 'liaison' ? 'rabt' : 'tour') as 'rabt' | 'tour',
         };
       });

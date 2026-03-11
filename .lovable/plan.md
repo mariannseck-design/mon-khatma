@@ -1,25 +1,21 @@
 
 
-## Problème identifié
+# Diagnostic : 404 sur /quran-reader
 
-Les versets en phase de **liaison** (`liaison_status === 'liaison'`) ne sont **jamais** inclus dans la liste "Prochaines révisions" affichée dans le `MurajaCountdown` ni dans `nextTourReviews` du `MurajaChecklist`.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-**Raison technique** : Deux filtres excluent les versets de liaison :
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-1. **`nextReviewsForCountdown`** (ligne 241) filtre `v.next_review_date > today` — mais les versets en liaison gardent leur `next_review_date` à aujourd'hui ou dans le passé (jamais mis à jour vers demain dans `handleRabtCheck`, ligne 274-277, seul `last_reviewed_at` est mis à jour).
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-2. **`nextTourReviews`** (ligne 164) filtre explicitement `v.liaison_status === 'tour' || !v.liaison_status`, excluant les versets de liaison.
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-Les versets mémorisés cette semaine sont en phase de liaison quotidienne → ils n'apparaissent jamais dans le programme de demain.
-
-## Corrections
-
-### `src/pages/MurjaPage.tsx`
-
-1. **`nextReviewsForCountdown`** (lignes 241-261) : Inclure les versets en liaison comme révisions de demain. Ajouter les `rabtVerses` avec la date de demain et type `'rabt'`, les fusionner avec les révisions tour existantes, trier par date, et limiter à 5.
-
-2. **`nextTourReviews`** (lignes 161-168) : Inclure aussi les versets en liaison (ils seront affichés avec une date "demain" dans le MurajaChecklist quand la section tour est vide).
-
-### Fichier modifié
-- `src/pages/MurjaPage.tsx` — 2 blocs `useMemo` à ajuster
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
