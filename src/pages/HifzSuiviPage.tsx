@@ -1,11 +1,10 @@
 import { useState, useEffect, useMemo } from 'react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { motion } from 'framer-motion';
-import { Flame, BookOpenCheck, RotateCcw, Target, Settings2, BookOpen, RefreshCw, BarChart3 } from 'lucide-react';
+import { Flame, BookOpenCheck, RotateCcw, Target, Settings2, BookOpen, RefreshCw, BarChart3, Layers, Grid3X3, FileText } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { Progress } from '@/components/ui/progress';
 import HifzGoalOnboarding from '@/components/hifz/HifzGoalOnboarding';
 import { findNextStartingPoint, getTodayRevisions } from '@/lib/hifzUtils';
 import { SURAHS } from '@/lib/surahData';
@@ -21,37 +20,26 @@ function getGreeting(): string {
   return 'Masa al-khayr';
 }
 
-
-function CircularGauge({ value, max, label, hideMax }: { value: number; max: number; label: string; hideMax?: boolean }) {
-  const pct = max > 0 ? Math.min(value / max, 1) : 0;
-  const r = 32;
+/* ── Mini circular progress for milestone cards ── */
+function MiniCircle({ value, max, size = 36, stroke = 3 }: { value: number; max: number; size?: number; stroke?: number }) {
+  const r = (size - stroke) / 2;
   const circ = 2 * Math.PI * r;
+  const pct = max > 0 ? Math.min(value / max, 1) : 0;
   const offset = circ * (1 - pct);
-
+  const half = size / 2;
   return (
-    <div className="flex flex-col items-center gap-1">
-      <svg width="80" height="80" viewBox="0 0 80 80">
-        <circle cx="40" cy="40" r={r} fill="none" stroke="var(--p-track)" strokeWidth="5" />
-        <motion.circle
-          cx="40" cy="40" r={r} fill="none"
-          stroke="var(--p-primary)" strokeWidth="5" strokeLinecap="round"
-          strokeDasharray={circ} strokeDashoffset={offset}
-          transform="rotate(-90 40 40)"
-          initial={{ strokeDashoffset: circ }}
-          animate={{ strokeDashoffset: offset }}
-          transition={{ duration: 1.2, ease: 'easeOut' }}
-        />
-        <text x="40" y={hideMax ? 44 : 38} textAnchor="middle" fill="var(--p-primary)" fontSize="16" fontWeight="bold" fontFamily="Inter, sans-serif">
-          {value}
-        </text>
-        {!hideMax && (
-          <text x="40" y="52" textAnchor="middle" fill="var(--p-text-60)" fontSize="8" fontWeight="600">
-            / {max}
-          </text>
-        )}
-      </svg>
-      <span className="text-[10px] font-medium" style={{ color: 'var(--p-text-65)' }}>{label}</span>
-    </div>
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+      <circle cx={half} cy={half} r={r} fill="none" stroke="var(--p-track)" strokeWidth={stroke} />
+      <motion.circle
+        cx={half} cy={half} r={r} fill="none"
+        stroke="var(--p-primary)" strokeWidth={stroke} strokeLinecap="round"
+        strokeDasharray={circ} strokeDashoffset={offset}
+        transform={`rotate(-90 ${half} ${half})`}
+        initial={{ strokeDashoffset: circ }}
+        animate={{ strokeDashoffset: offset }}
+        transition={{ duration: 1, ease: 'easeOut' }}
+      />
+    </svg>
   );
 }
 
@@ -68,7 +56,7 @@ export default function HifzSuiviPage() {
   const { user } = useAuth();
   const [streak, setStreak] = useState({ current: 0, longest: 0, tours: 0 });
   const [totalVerses, setTotalVerses] = useState(0);
-  const [weeklyData, setWeeklyData] = useState<{ day: string; hifz: number; muraja: number }[]>([]);
+  const [weeklyData, setWeeklyData] = useState<{ day: string; hifz: number; muraja: number; date: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [goal, setGoal] = useState<HifzGoal | null>(null);
   const [periodProgress, setPeriodProgress] = useState(0);
@@ -81,11 +69,15 @@ export default function HifzSuiviPage() {
   const todayQuote = useMemo(() => getTodayQuote(), []);
   const [displayName, setDisplayName] = useState(() => localStorage.getItem('user_display_name') || localStorage.getItem('guest_first_name') || '');
 
+  // ── Derived milestones ──
+  const juzCount = Math.floor(totalVerses / 208);
+  const hizbCount = Math.floor(totalVerses / 104);
+  const pageCount = Math.floor(totalVerses / 10.3); // ~604 pages / 6236 verses
+
   const loadData = async () => {
     if (!user) return;
     setLoading(true);
 
-    // Fetch display name
     const { data: profileData } = await supabase.from('profiles').select('display_name').eq('user_id', user.id).maybeSingle();
     if (profileData?.display_name) {
       setDisplayName(profileData.display_name);
@@ -144,14 +136,13 @@ export default function HifzSuiviPage() {
       );
       setPeriodVerses(versesCompleted);
       if (goalData.goal_unit === 'pages') {
-        // Count distinct Mushaf pages covered by completed sessions
         const pageSet = new Set<number>();
         for (const s of relevantSessions) {
           try {
             const startPage = await getExactVersePage(s.surah_number, s.start_verse);
             const endPage = await getExactVersePage(s.surah_number, s.end_verse);
             for (let p = startPage; p <= endPage; p++) pageSet.add(p);
-          } catch { /* fallback: ignore */ }
+          } catch { /* fallback */ }
         }
         setPeriodProgress(pageSet.size);
       } else {
@@ -173,7 +164,7 @@ export default function HifzSuiviPage() {
       murajaCounts[dateKey] = (murajaCounts[dateKey] || 0) + (Number(verses) > 0 ? Number(verses) : 1);
     }
 
-    const chartData: { day: string; hifz: number; muraja: number }[] = [];
+    const chartData: { day: string; hifz: number; muraja: number; date: string }[] = [];
     for (let i = 6; i >= 0; i--) {
       const d = new Date();
       d.setDate(d.getDate() - i);
@@ -182,7 +173,7 @@ export default function HifzSuiviPage() {
       const dayName = DAY_LABELS[jsDay === 0 ? 6 : jsDay - 1];
       const dayNum = d.getDate();
       const label = `${dayName} ${dayNum}`;
-      chartData.push({ day: label, hifz: hifzCounts[key] || 0, muraja: murajaCounts[key] || 0 });
+      chartData.push({ day: label, hifz: hifzCounts[key] || 0, muraja: murajaCounts[key] || 0, date: key });
     }
     setWeeklyData(chartData);
 
@@ -204,10 +195,7 @@ export default function HifzSuiviPage() {
         <div className="max-w-md mx-auto px-4 py-6" style={{ backgroundColor: 'var(--p-bg)', minHeight: '100vh' }}>
           <div
             className="min-h-[60vh] rounded-[2rem] p-6"
-            style={{
-              background: 'var(--p-gradient-bg)',
-              border: '2px solid var(--p-accent)',
-            }}
+            style={{ background: 'var(--p-gradient-bg)', border: '2px solid var(--p-accent)' }}
           >
             <HifzGoalOnboarding
               existingGoal={goal}
@@ -225,10 +213,21 @@ export default function HifzSuiviPage() {
   const periodLabel = goal?.goal_period === 'daily' ? "aujourd'hui" : 'cette semaine';
   const progressPct = goal ? Math.min((periodProgress / goal.goal_value) * 100, 100) : 0;
 
+  // ── Global progress ──
+  const globalPct = totalVerses > 0 ? Math.min(totalVerses / 6236, 1) : 0;
+  const bigR = 70;
+  const bigCirc = 2 * Math.PI * bigR;
+  const bigOffset = bigCirc * (1 - globalPct);
+
+  // ── Today stats for pills ──
+  const todayEntry = weeklyData[weeklyData.length - 1];
+  const todayHifz = todayEntry?.hifz || 0;
+  const todayMuraja = todayEntry?.muraja || 0;
+
   return (
     <AppLayout title="Mon Suivi Hifz">
       <div className="max-w-md mx-auto px-4 py-6 space-y-6" style={{ backgroundColor: 'var(--p-bg)', minHeight: '100vh' }}>
-        {/* Greeting */}
+        {/* ═══ Greeting ═══ */}
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-center space-y-1">
           <h1 className="text-xl font-bold" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-primary)' }}>
             {greeting}{displayName ? `, ${displayName}` : ''} 🌙
@@ -242,18 +241,83 @@ export default function HifzSuiviPage() {
           </div>
         ) : (
           <>
-            {/* Goal Progress Card */}
+            {/* ═══ 1. GRAND CERCLE — Progression Globale ═══ */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.05 }}
+              className="flex flex-col items-center"
+            >
+              <div className="relative">
+                <svg width="180" height="180" viewBox="0 0 180 180">
+                  <defs>
+                    <linearGradient id="emeraldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#065F46" />
+                      <stop offset="100%" stopColor="#10B981" />
+                    </linearGradient>
+                  </defs>
+                  <circle cx="90" cy="90" r={bigR} fill="none" stroke="var(--p-track)" strokeWidth="4" />
+                  <motion.circle
+                    cx="90" cy="90" r={bigR} fill="none"
+                    stroke="url(#emeraldGrad)" strokeWidth="4" strokeLinecap="round"
+                    strokeDasharray={bigCirc} strokeDashoffset={bigOffset}
+                    transform="rotate(-90 90 90)"
+                    initial={{ strokeDashoffset: bigCirc }}
+                    animate={{ strokeDashoffset: bigOffset }}
+                    transition={{ duration: 1.4, ease: 'easeOut' }}
+                  />
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <span className="text-2xl font-bold" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-primary)' }}>
+                    {totalVerses}
+                  </span>
+                  <span className="text-[11px] font-medium" style={{ color: 'var(--p-text-55)' }}>
+                    / 6236 versets
+                  </span>
+                </div>
+              </div>
+              <span className="text-xs font-semibold mt-2" style={{ color: 'var(--p-text-65)' }}>
+                Progression globale
+              </span>
+            </motion.div>
+
+            {/* ═══ 2. JALONS — 3 mini-cartes ═══ */}
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="grid grid-cols-3 gap-3"
+            >
+              {[
+                { icon: Layers, label: 'Juz', value: juzCount, max: 30 },
+                { icon: Grid3X3, label: 'Hizb', value: hizbCount, max: 60 },
+                { icon: FileText, label: 'Pages', value: pageCount, max: 604 },
+              ].map((m, i) => (
+                <div
+                  key={m.label}
+                  className="rounded-2xl p-3 flex flex-col items-center gap-2"
+                  style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', boxShadow: 'var(--p-card-shadow)' }}
+                >
+                  <m.icon className="h-4 w-4" style={{ color: 'var(--p-primary)' }} />
+                  <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: 'var(--p-text-60)' }}>
+                    {m.label}
+                  </span>
+                  <span className="text-lg font-bold" style={{ color: 'var(--p-text)' }}>
+                    {m.value}<span className="text-xs font-medium" style={{ color: 'var(--p-text-55)' }}>/{m.max}</span>
+                  </span>
+                  <MiniCircle value={m.value} max={m.max} />
+                </div>
+              ))}
+            </motion.div>
+
+            {/* ═══ 3. OBJECTIF ═══ */}
             {goal && (
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.05 }}
+                transition={{ delay: 0.15 }}
                 className="rounded-2xl p-5"
-                style={{
-                  background: 'var(--p-card)',
-                  border: '1px solid var(--p-border)',
-                  boxShadow: 'var(--p-card-shadow)',
-                }}
+                style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', boxShadow: 'var(--p-card-shadow)' }}
               >
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
@@ -272,7 +336,6 @@ export default function HifzSuiviPage() {
                     <Settings2 className="h-3.5 w-3.5" style={{ color: 'var(--p-primary)' }} />
                   </button>
                 </div>
-
                 <div className="space-y-2">
                   <div className="flex justify-between items-end">
                     <span className="text-2xl font-bold" style={{ color: 'var(--p-accent)' }}>
@@ -291,7 +354,7 @@ export default function HifzSuiviPage() {
                     />
                   </div>
                   <p className="text-[11px] text-center mt-1" style={{ color: 'var(--p-text-55)' }}>
-                    {"≈ "}{periodVerses}{" ayat"}{periodVerses > 1 ? "s" : ""}{" validée"}{periodVerses > 1 ? "s" : ""}
+                    ≈ {periodVerses} ayat{periodVerses > 1 ? 's' : ''} validée{periodVerses > 1 ? 's' : ''}
                   </p>
                   {progressPct >= 100 && (
                     <p className="text-xs text-center" style={{ color: 'var(--p-accent)' }}>
@@ -302,154 +365,52 @@ export default function HifzSuiviPage() {
               </motion.div>
             )}
 
-            {/* No goal set */}
             {!goal && (
               <motion.button
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
                 onClick={() => setShowGoalEdit(true)}
                 className="w-full rounded-2xl p-5 text-center"
-                style={{
-                  background: 'var(--p-card-active)',
-                  border: '1px dashed var(--p-accent)',
-                }}
+                style={{ background: 'var(--p-card-active)', border: '1px dashed var(--p-accent)' }}
               >
                 <Target className="h-6 w-6 mx-auto mb-2" style={{ color: 'var(--p-accent)' }} />
                 <p className="text-sm font-medium" style={{ color: 'var(--p-text-75)' }}>Définis ton objectif de mémorisation</p>
               </motion.button>
             )}
 
-            {/* ═══ DUAL CIRCLES ═══ */}
-            <div className="grid grid-cols-2 gap-5">
-              {/* Programme du jour */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.05 }}
-              >
-                <Link to="/hifz" className="block">
-                  <div
-                    className="w-full aspect-square rounded-full flex flex-col items-center justify-center text-center p-5 transition-transform hover:scale-[1.03]"
-                    style={{
-                      background: 'linear-gradient(145deg, var(--p-card), var(--p-card-active))',
-                      border: '2px solid rgba(16, 185, 129, 0.3)',
-                      boxShadow: '0 4px 20px rgba(16, 185, 129, 0.1)',
-                    }}
-                  >
-                    <div
-                      className="w-9 h-9 rounded-full flex items-center justify-center mb-1.5"
-                      style={{ background: 'linear-gradient(135deg, #065F46, #10B981)', boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)' }}
-                    >
-                      <BookOpen className="h-[18px] w-[18px] text-white" />
-                    </div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider mb-1 leading-tight" style={{ color: 'var(--p-text-60)' }}>
-                      Ar-Rabt (Nouveau)
-                    </span>
-                    {nextPoint ? (
-                    <>
-                        <span className="text-sm font-semibold leading-tight" style={{ color: 'var(--p-primary)' }}>
-                          {nextPoint.surahName}
-                        </span>
-                        <span className="text-xs font-medium" style={{ color: 'var(--p-text-60)' }}>
-                          v. {nextPoint.startVerse} → {nextPoint.endVerse}
-                        </span>
-                      </>
-                    ) : (
-                      <span className="text-xs font-medium" style={{ color: 'var(--p-text-60)' }}>
-                        Aucun pour l'instant
-                      </span>
-                    )}
-                  </div>
-                </Link>
-              </motion.div>
-
-              {/* Révision du jour */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-              >
-                <Link to="/muraja" className="block">
-                  <div
-                    className="w-full aspect-square rounded-full flex flex-col items-center justify-center text-center p-5 transition-transform hover:scale-[1.03]"
-                    style={{
-                      background: 'linear-gradient(145deg, var(--p-card), var(--p-card-active))',
-                      border: '2px solid rgba(212, 175, 55, 0.3)',
-                      boxShadow: '0 4px 20px rgba(212, 175, 55, 0.1)',
-                    }}
-                  >
-                    <div
-                      className="w-9 h-9 rounded-full flex items-center justify-center mb-1.5"
-                      style={{ background: 'linear-gradient(135deg, #B8960C, #D4AF37)', boxShadow: '0 4px 12px rgba(212, 175, 55, 0.3)' }}
-                    >
-                      <RefreshCw className="h-[18px] w-[18px] text-white" />
-                    </div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider mb-1" style={{ color: 'var(--p-text-60)' }}>
-                      {"Muraja'a (Consolidation)"}
-                    </span>
-                    {todayRevisions.length > 0 ? (
-                      <>
-                        <span className="text-sm font-semibold leading-tight" style={{ color: 'var(--p-primary)' }}>
-                          {SURAHS.find(s => s.number === todayRevisions[0].surah_number)?.name || `Sourate ${todayRevisions[0].surah_number}`}
-                        </span>
-                        <span className="text-xs font-medium" style={{ color: 'var(--p-text-60)' }}>
-                          v. {todayRevisions[0].verse_start} → {todayRevisions[0].verse_end}
-                        </span>
-                        {todayRevisions.length > 1 && (
-                          <span className="text-[10px] font-medium mt-0.5" style={{ color: 'var(--p-accent)' }}>
-                            +{todayRevisions.length - 1} autre{todayRevisions.length > 2 ? 's' : ''}
-                          </span>
-                        )}
-                      </>
-                    ) : (
-                      <span className="text-xs font-medium" style={{ color: 'var(--p-text-60)' }}>
-                        Aucune révision ✨
-                      </span>
-                    )}
-                  </div>
-                </Link>
-              </motion.div>
-            </div>
-
-            {/* 3 KPI Cards */}
-            <div className="grid grid-cols-3 gap-2">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-                className="rounded-2xl p-3 flex flex-col items-center gap-1.5"
-                style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', boxShadow: 'var(--p-card-shadow)' }}
-              >
-                <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #D97706, #F59E0B)', boxShadow: '0 4px 10px rgba(245, 158, 11, 0.3)' }}>
-                  <Flame className="h-4 w-4 text-white" />
-                </div>
-                <span className="text-xl font-bold" style={{ color: 'var(--p-primary)' }}>{streak.current}</span>
-                <span className="text-[10px] font-medium text-center leading-tight" style={{ color: 'var(--p-text-65)' }}>Jours consécutifs</span>
-                <span className="text-[9px] font-medium" style={{ color: 'var(--p-text-55)' }}>Record : {streak.longest}</span>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                className="rounded-2xl p-2 flex flex-col items-center justify-center"
-                style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', boxShadow: 'var(--p-card-shadow)' }}
-              >
-                <CircularGauge value={totalVerses} max={6236} label="Ayats mémorisées" hideMax />
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-                className="rounded-2xl p-3 flex flex-col items-center gap-1.5"
-                style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', boxShadow: 'var(--p-card-shadow)' }}
-              >
-                <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #065F46, #10B981)', boxShadow: '0 4px 10px rgba(16, 185, 129, 0.3)' }}>
-                  <RotateCcw className="h-4 w-4 text-white" />
-                </div>
-                <span className="text-xl font-bold" style={{ color: 'var(--p-primary)' }}>{streak.tours}</span>
-                <span className="text-[10px] font-medium text-center leading-tight" style={{ color: 'var(--p-text-65)' }}>Cycles terminés</span>
-              </motion.div>
-            </div>
-
-            {/* Weekly chart */}
+            {/* ═══ 4. STATS FUSIONNÉES — Grille 2x2 ═══ */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="grid grid-cols-2 gap-3"
+            >
+              {[
+                { emoji: '🟢', label: 'Ar-Rabt', sublabel: "aujourd'hui", value: todayHifz, unit: 'verset' },
+                { emoji: '🟡', label: "Muraja'a", sublabel: "aujourd'hui", value: todayMuraja, unit: 'verset' },
+                { emoji: '🔥', label: 'Streak', sublabel: `Record : ${streak.longest}`, value: streak.current, unit: 'jour' },
+                { emoji: '✅', label: 'Cycles', sublabel: 'terminés', value: streak.tours, unit: '' },
+              ].map((s) => (
+                <div
+                  key={s.label}
+                  className="rounded-2xl p-4 flex items-center gap-3"
+                  style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', boxShadow: 'var(--p-card-shadow)' }}
+                >
+                  <span className="text-xl">{s.emoji}</span>
+                  <div className="flex flex-col">
+                    <span className="text-lg font-bold leading-tight" style={{ color: 'var(--p-text)' }}>
+                      {s.value}{s.unit ? <span className="text-xs font-medium ml-0.5" style={{ color: 'var(--p-text-55)' }}>{s.unit}{s.value > 1 ? 's' : ''}</span> : ''}
+                    </span>
+                    <span className="text-[11px] font-semibold" style={{ color: 'var(--p-primary)' }}>{s.label}</span>
+                    <span className="text-[9px] font-medium" style={{ color: 'var(--p-text-55)' }}>{s.sublabel}</span>
+                  </div>
+                </div>
+              ))}
+            </motion.div>
+
+            {/* ═══ 5. GRAPHIQUE HEBDO ═══ */}
+            <motion.div
+              initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}
               className="rounded-2xl p-5"
               style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', boxShadow: 'var(--p-card-shadow)' }}
             >
@@ -487,8 +448,7 @@ export default function HifzSuiviPage() {
                   <Bar dataKey="hifz" stackId="a" fill="var(--p-accent)" maxBarSize={28} radius={[0, 0, 0, 0]} />
                   <Bar dataKey="muraja" stackId="a" fill="var(--p-primary)" maxBarSize={28} radius={[6, 6, 0, 0]} />
                 </BarChart>
-               </ResponsiveContainer>
-              {/* Total hebdomadaire */}
+              </ResponsiveContainer>
               {(() => {
                 const totalHifz = weeklyData.reduce((s, d) => s + d.hifz, 0);
                 const totalMuraja = weeklyData.reduce((s, d) => s + d.muraja, 0);
@@ -499,49 +459,98 @@ export default function HifzSuiviPage() {
                     <span className="font-bold" style={{ color: 'var(--p-accent)' }}>{totalHifz} ar-rabt</span>
                     <span style={{ color: 'var(--p-text-55)' }}>·</span>
                     <span className="font-bold" style={{ color: 'var(--p-primary)' }}>{totalMuraja} muraja'a</span>
-                    <span style={{ color: 'var(--p-text-55)' }}>·</span>
-                    <span className="font-semibold" style={{ color: 'var(--p-on-dark)' }}>{total} total</span>
                   </div>
                 ) : null;
               })()}
             </motion.div>
 
-            {/* Révisions du jour */}
-            {todayRevisions.length > 0 && (() => {
-              const totalDue = todayRevisions.reduce((s, r) => s + (r.verse_end - r.verse_start + 1), 0);
-              const todayKey = new Date().toISOString().split('T')[0];
-              const todayEntry = weeklyData.find(d => d.day.includes(String(new Date().getDate())));
-              const doneToday = todayEntry?.muraja || 0;
-              const remaining = Math.max(0, totalDue - doneToday);
-              const pct = totalDue > 0 ? Math.min(Math.round((doneToday / totalDue) * 100), 100) : 0;
-              return (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}
-                  className="rounded-2xl p-4"
-                  style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)' }}
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      <RotateCcw className="h-4 w-4" style={{ color: 'var(--p-primary)' }} />
-                      <span className="text-xs font-semibold" style={{ color: 'var(--p-on-dark)' }}>Révision du jour</span>
-                    </div>
-                    <span className="text-[11px] font-medium" style={{ color: pct >= 100 ? 'var(--p-accent)' : 'var(--p-text-55)' }}>
-                      {pct >= 100 ? '✅ Terminé' : `${remaining} verset${remaining > 1 ? 's' : ''} restant${remaining > 1 ? 's' : ''}`}
-                    </span>
-                  </div>
-                  <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: 'var(--p-track)' }}>
-                    <div
-                      className="h-full rounded-full transition-all duration-500"
-                      style={{ width: `${pct}%`, background: pct >= 100 ? 'var(--p-accent)' : 'var(--p-primary)' }}
-                    />
-                  </div>
-                  <div className="flex justify-between mt-1.5">
-                    <span className="text-[10px]" style={{ color: 'var(--p-text-55)' }}>{doneToday} révisé{doneToday > 1 ? 's' : ''}</span>
-                    <span className="text-[10px]" style={{ color: 'var(--p-text-55)' }}>{totalDue} à réviser</span>
-                  </div>
-                </motion.div>
-              );
-            })()}
+            {/* ═══ 6. TIMELINE HISTORIQUE ═══ */}
+            {weeklyData.some(d => d.hifz > 0 || d.muraja > 0) && (
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="rounded-2xl p-5"
+                style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', boxShadow: 'var(--p-card-shadow)' }}
+              >
+                <h3 className="text-sm font-bold mb-4" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-primary)' }}>
+                  Historique récent
+                </h3>
+                <div className="space-y-0">
+                  {weeklyData
+                    .slice()
+                    .reverse()
+                    .filter(d => d.hifz > 0 || d.muraja > 0)
+                    .slice(0, 7)
+                    .map((d, i, arr) => {
+                      const total = d.hifz + d.muraja;
+                      return (
+                        <div key={d.date} className="flex items-start gap-3">
+                          {/* Timeline line + dot */}
+                          <div className="flex flex-col items-center">
+                            <div
+                              className="w-2.5 h-2.5 rounded-full mt-1 flex-shrink-0"
+                              style={{ background: d.hifz > 0 ? 'var(--p-primary)' : 'var(--p-accent)' }}
+                            />
+                            {i < arr.length - 1 && (
+                              <div className="w-px h-8 flex-shrink-0" style={{ background: 'var(--p-border)' }} />
+                            )}
+                          </div>
+                          {/* Content */}
+                          <div className="pb-3">
+                            <span className="text-xs font-medium" style={{ color: 'var(--p-text-65)' }}>
+                              {d.day}
+                            </span>
+                            <span className="text-xs ml-2" style={{ color: 'var(--p-text-55)' }}>
+                              +{total} verset{total > 1 ? 's' : ''}
+                              {d.hifz > 0 && d.muraja > 0 && (
+                                <span className="ml-1" style={{ color: 'var(--p-text-55)' }}>
+                                  ({d.hifz} nouveau{d.hifz > 1 ? 'x' : ''} · {d.muraja} révisé{d.muraja > 1 ? 's' : ''})
+                                </span>
+                              )}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
+              </motion.div>
+            )}
+
+            {/* ═══ LIENS RAPIDES ═══ */}
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.35 }}
+              className="grid grid-cols-2 gap-3"
+            >
+              <Link
+                to="/hifz"
+                className="rounded-2xl p-4 flex items-center gap-3 transition-transform hover:scale-[1.02]"
+                style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', boxShadow: 'var(--p-card-shadow)' }}
+              >
+                <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg, #065F46, #10B981)' }}>
+                  <BookOpen className="h-4 w-4 text-white" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-xs font-bold" style={{ color: 'var(--p-text)' }}>Ar-Rabt</span>
+                  <span className="text-[10px]" style={{ color: 'var(--p-text-55)' }}>Mémoriser</span>
+                </div>
+              </Link>
+              <Link
+                to="/muraja"
+                className="rounded-2xl p-4 flex items-center gap-3 transition-transform hover:scale-[1.02]"
+                style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', boxShadow: 'var(--p-card-shadow)' }}
+              >
+                <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg, #B8960C, #D4AF37)' }}>
+                  <RefreshCw className="h-4 w-4 text-white" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-xs font-bold" style={{ color: 'var(--p-text)' }}>Muraja'a</span>
+                  <span className="text-[10px]" style={{ color: 'var(--p-text-55)' }}>Réviser</span>
+                </div>
+              </Link>
+            </motion.div>
 
             {/* Empty state */}
             {totalVerses === 0 && streak.current === 0 && (
