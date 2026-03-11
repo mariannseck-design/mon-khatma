@@ -353,14 +353,6 @@ export default function HifzSuiviTestPage() {
                     )}
 
                     <div className="grid grid-cols-2 gap-2">
-                      {juz.nextReview && (
-                        <div className="rounded-lg p-2" style={{ background: 'var(--p-track)' }}>
-                          <div className="text-[9px] uppercase" style={{ color: 'var(--p-text-55)' }}>Prochaine révision</div>
-                          <div className="text-xs font-medium" style={{ color: 'var(--p-primary)' }}>
-                            {formatSmartDate(juz.nextReview)}
-                          </div>
-                        </div>
-                      )}
                       {juz.lastReviewed && (
                         <div className="rounded-lg p-2" style={{ background: 'var(--p-track)' }}>
                           <div className="text-[9px] uppercase" style={{ color: 'var(--p-text-55)' }}>Dernière révision</div>
@@ -368,6 +360,18 @@ export default function HifzSuiviTestPage() {
                             {formatSmartDate(juz.lastReviewed)}
                           </div>
                         </div>
+                      )}
+                      {juz.nextReview && (
+                        <button
+                          onClick={(e) => { e.stopPropagation(); navigate('/muraja'); }}
+                          className="rounded-lg p-2 text-left transition-colors hover:opacity-80 active:scale-95"
+                          style={{ background: 'var(--p-track)' }}
+                        >
+                          <div className="text-[9px] uppercase" style={{ color: 'var(--p-text-55)' }}>Prochaine révision</div>
+                          <div className="text-xs font-medium flex items-center gap-1" style={{ color: 'var(--p-primary)' }}>
+                            {formatSmartDate(juz.nextReview)} <ChevronRight className="w-3 h-3" />
+                          </div>
+                        </button>
                       )}
                     </div>
                   </div>
