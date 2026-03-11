@@ -275,7 +275,7 @@ export default function MurjaPage() {
           verseStart: v.verse_start,
           verseEnd: v.verse_end,
           page: pageLabel,
-          date: formatReviewDate(v.next_review_date),
+          date: formatReviewDate(v._sortDate),
           type: (v.liaison_status === 'liaison' ? 'rabt' : 'tour') as 'rabt' | 'tour',
         };
       });
