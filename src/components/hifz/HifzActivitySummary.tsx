@@ -23,28 +23,19 @@ export function HifzActivitySummary({ userId }: HifzActivitySummaryProps) {
     (async () => {
       const weekStart = format(monday, 'yyyy-MM-dd');
 
-      const [sessionsRes, murajaRes, hifzVersesRes, streakDaysRes] = await Promise.all([
-        // Week sessions (hifz) — need verse range for verse count
+      const [sessionsRes, murajaRes, streakDaysRes] = await Promise.all([
         supabase
           .from('hifz_sessions')
-          .select('completed_at, start_verse, end_verse')
+          .select('completed_at, start_verse, end_verse, surah_number')
           .eq('user_id', userId)
           .not('completed_at', 'is', null)
           .gte('completed_at', weekStart),
-        // Week sessions (muraja) — need verses_reviewed
         supabase
           .from('muraja_sessions')
           .select('completed_at, verses_reviewed')
           .eq('user_id', userId)
           .not('completed_at', 'is', null)
           .gte('completed_at', weekStart),
-        // Week new verses
-        supabase
-          .from('hifz_memorized_verses')
-          .select('verse_start, verse_end')
-          .eq('user_id', userId)
-          .gte('memorized_at', weekStart),
-        // Last 60 days for streak calc
         supabase
           .from('hifz_sessions')
           .select('completed_at')
@@ -53,28 +44,24 @@ export function HifzActivitySummary({ userId }: HifzActivitySummaryProps) {
           .gte('completed_at', format(subDays(today, 60), 'yyyy-MM-dd')),
       ]);
 
-      // Week sessions count
       const hifzCount = sessionsRes.data?.length || 0;
       const murajaCount = murajaRes.data?.length || 0;
       setWeekSessions(hifzCount + murajaCount);
 
-      // Week verses worked (memorized + revised)
-      let versesWorked = 0;
+      // Estimate pages worked (≈15 verses per page)
+      let totalVerses = 0;
       for (const s of sessionsRes.data || []) {
-        versesWorked += (s.end_verse - s.start_verse + 1);
+        totalVerses += (s.end_verse - s.start_verse + 1);
       }
       for (const s of murajaRes.data || []) {
         const reviewed = s.verses_reviewed as any[];
         if (Array.isArray(reviewed)) {
           for (const r of reviewed) {
-            versesWorked += ((r.verse_end || r.end_verse || 0) - (r.verse_start || r.start_verse || 0) + 1);
+            totalVerses += ((r.verse_end || r.end_verse || 0) - (r.verse_start || r.start_verse || 0) + 1);
           }
         }
       }
-      for (const v of hifzVersesRes.data || []) {
-        versesWorked += (v.verse_end - v.verse_start + 1);
-      }
-      setWeekVerses(versesWorked);
+      setWeekPages(Math.max(1, Math.round(totalVerses / 15)));
 
       // Week active days (0=Mon … 6=Sun)
       const activeDays = new Set<number>();
