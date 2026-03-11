@@ -6,8 +6,16 @@ import { getExactVersePage } from '@/lib/quranData';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { ArrowLeft, ChevronDown, ChevronUp, ChevronRight, Eye, EyeOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { format } from 'date-fns';
+import { format, isToday, isTomorrow, isYesterday } from 'date-fns';
 import { fr } from 'date-fns/locale';
+
+function formatSmartDate(dateStr: string): string {
+  const d = new Date(dateStr);
+  if (isToday(d)) return "Aujourd'hui";
+  if (isTomorrow(d)) return 'Demain';
+  if (isYesterday(d)) return 'Hier';
+  return format(d, 'd MMM', { locale: fr });
+}
 
 const JUZ_PAGE_RANGES: { start: number; end: number }[] = [
   { start: 1, end: 21 }, { start: 22, end: 41 }, { start: 42, end: 61 },
@@ -348,7 +356,7 @@ export default function HifzSuiviTestPage() {
                         <div className="rounded-lg p-2" style={{ background: 'var(--p-track)' }}>
                           <div className="text-[9px] uppercase" style={{ color: 'var(--p-text-55)' }}>Prochaine révision</div>
                           <div className="text-xs font-medium" style={{ color: 'var(--p-primary)' }}>
-                            {format(new Date(juz.nextReview), 'd MMM', { locale: fr })}
+                            {formatSmartDate(juz.nextReview)}
                           </div>
                         </div>
                       )}
@@ -356,7 +364,7 @@ export default function HifzSuiviTestPage() {
                         <div className="rounded-lg p-2" style={{ background: 'var(--p-track)' }}>
                           <div className="text-[9px] uppercase" style={{ color: 'var(--p-text-55)' }}>Dernière révision</div>
                           <div className="text-xs font-medium" style={{ color: 'var(--p-primary)' }}>
-                            {format(new Date(juz.lastReviewed), 'd MMM', { locale: fr })}
+                            {formatSmartDate(juz.lastReviewed)}
                           </div>
                         </div>
                       )}
