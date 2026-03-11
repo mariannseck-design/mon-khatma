@@ -1,21 +1,30 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Aligner le compteur "Jour X/30" sur `memorized_at`
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Problème
+Le compteur "Jour X/30" et la barre de progression dans la section Ar-Rabt utilisent `liaison_start_date` via `getLiaisonDaysPassed()`. Or, la logique de tri Rabt vs Consolidation repose désormais sur `memorized_at`. Pour les items récents injectés via le diagnostic, `liaison_start_date` et `memorized_at` sont identiques (today - daysAlreadyDone), donc ça fonctionne. Mais si `liaison_start_date` est null (cas d'items ajoutés autrement), le jour affiche 0/30.
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Correction — `src/components/muraja/MurajaChecklist.tsx`
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+1. **Modifier `getLiaisonDaysPassed`** pour accepter `memorized_at` en priorité, avec fallback sur `liaison_start_date` :
+   ```ts
+   function getLiaisonDaysPassed(memorizedAt?: string | null, startDate?: string | null): number {
+     const dateStr = memorizedAt || startDate;
+     if (!dateStr) return 0;
+     const start = new Date(dateStr);
+     const now = new Date();
+     return Math.min(30, Math.max(0, Math.floor((now.getTime() - start.getTime()) / 86400000)));
+   }
+   ```
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+2. **Mettre à jour les appels** (lignes 124, 327) pour passer `item.memorized_at` :
+   ```ts
+   const daysPassed = getLiaisonDaysPassed(item.memorized_at, item.liaison_start_date);
+   ```
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+3. **Condition de la barre de progression** (ligne 398) : remplacer `item.liaison_start_date` par `item.memorized_at || item.liaison_start_date` pour qu'elle s'affiche même si `liaison_start_date` est null.
+
+### Résultat
+Le "Jour X/30" reflète correctement les jours déjà passés depuis la mémorisation, y compris les jours déclarés lors du diagnostic d'inscription.
 
