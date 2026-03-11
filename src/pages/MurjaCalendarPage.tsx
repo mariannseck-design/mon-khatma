@@ -290,7 +290,7 @@ export default function MurjaCalendarPage() {
             </div>
 
             {/* Selected day label */}
-            <p className="text-xs font-medium text-center" style={{ color: 'var(--p-text-50)' }}>
+            <p className="text-xs font-medium text-center mb-2" style={{ color: 'var(--p-text-50)' }}>
               {isToday ? "Aujourd'hui" : new Date(selectedDay + 'T00:00:00').toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' }).replace(/^\w/, c => c.toUpperCase())}
               {isFutureDay && ' · Lecture seule'}
             </p>
