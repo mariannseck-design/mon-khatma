@@ -306,9 +306,10 @@ export default function MurjaCalendarPage() {
                   style={{ background: 'color-mix(in srgb, #10B981 10%, transparent)', border: '1px solid color-mix(in srgb, #10B981 20%, transparent)' }}
                 >
                   <Sparkles className="h-4 w-4 flex-shrink-0" style={{ color: '#10B981' }} />
-                  <p className="text-xs font-semibold" style={{ color: '#10B981' }}>
-                    Alhamdulillah ! Programme du jour terminé.
-                  </p>
+                  <div className="flex flex-col">
+                    <p className="text-xs font-bold" style={{ color: '#10B981' }}>Alhamdulillah !</p>
+                    <p className="text-[11px] font-medium" style={{ color: '#10B981' }}>Programme du jour terminé.</p>
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
