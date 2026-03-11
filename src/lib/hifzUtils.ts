@@ -147,24 +147,26 @@ export async function injectMemorizedVerses(
 
   const rows = splitBlocks.map((block, index) => {
     if (category === 'recent') {
-      // Liaison: daily review, liaison_start_date = today - daysAlreadyDone
-      const liaisonStart = new Date(now);
-      liaisonStart.setDate(liaisonStart.getDate() - daysAlreadyDone);
+      // Recent: memorized_at = today - daysAlreadyDone so Ar-Rabt shows correct progress
+      const recentDate = new Date(now);
+      recentDate.setDate(recentDate.getDate() - daysAlreadyDone);
       return {
         user_id: userId,
         surah_number: block.surahNumber,
         verse_start: block.verseStart,
         verse_end: block.verseEnd,
-        memorized_at: now.toISOString(),
+        memorized_at: recentDate.toISOString(),
         next_review_date: now.toISOString().split('T')[0],
         sm2_interval: 1,
         sm2_ease_factor: 2.5,
         sm2_repetitions: 0,
         liaison_status: 'liaison',
-        liaison_start_date: liaisonStart.toISOString().split('T')[0],
+        liaison_start_date: recentDate.toISOString().split('T')[0],
       };
     }
-    // Solid: stagger SM-2 over spreadDays (existing behavior)
+    // Solid: memorized_at set 31 days in the past so items go directly to Consolidation
+    const solidDate = new Date(now);
+    solidDate.setDate(solidDate.getDate() - 31);
     const dayOffset = Math.floor((index / splitBlocks.length) * spreadDays);
     const reviewDate = new Date(now);
     reviewDate.setDate(reviewDate.getDate() + dayOffset);
@@ -173,7 +175,7 @@ export async function injectMemorizedVerses(
       surah_number: block.surahNumber,
       verse_start: block.verseStart,
       verse_end: block.verseEnd,
-      memorized_at: now.toISOString(),
+      memorized_at: solidDate.toISOString(),
       next_review_date: reviewDate.toISOString().split('T')[0],
       sm2_interval: Math.max(dayOffset, 1),
       sm2_ease_factor: 2.5,

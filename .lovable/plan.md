@@ -1,35 +1,21 @@
 
 
-## Problème : les anciennes mémorisations apparaissent dans Ar-Rabt au lieu de Consolidation
+# Diagnostic : 404 sur /quran-reader
 
-### Cause racine
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-Dans `injectMemorizedVerses` (hifzUtils.ts), les items **solides** (`category === 'solid'`) reçoivent `memorized_at: now.toISOString()` (ligne 158). Avec la nouvelle règle des 30 jours (`memorized_at >= cutoff` → Rabt), ces anciens acquis sont traités comme récents et apparaissent dans Ar-Rabt pendant 30 jours — ce qui est incorrect.
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-### Correction
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-**Fichier : `src/lib/hifzUtils.ts`** — Dans la branche `solid` de `injectMemorizedVerses` (lignes 167-183) :
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-Remplacer `memorized_at: now.toISOString()` par une date antérieure de 31 jours ou plus, pour que ces items atterrissent directement dans la zone Consolidation :
-
-```ts
-// Pour les acquis solides, dater memorized_at à 31 jours dans le passé
-const solidDate = new Date(now);
-solidDate.setDate(solidDate.getDate() - 31);
-// ...
-memorized_at: solidDate.toISOString(),
-```
-
-Pour les items `recent`, ajuster `memorized_at` en fonction de `daysAlreadyDone` (au lieu de `now`) afin que la barre de maturité Ar-Rabt reflète les jours déjà faits :
-
-```ts
-// memorized_at = aujourd'hui - daysAlreadyDone
-const recentDate = new Date(now);
-recentDate.setDate(recentDate.getDate() - daysAlreadyDone);
-memorized_at: recentDate.toISOString(),
-```
-
-### Résultat
-- Anciennes mémorisations → `memorized_at` vieux de 31+ jours → directement dans Consolidation (SM-2)
-- Nouvelles mémorisations → `memorized_at` = aujourd'hui - jours déjà faits → dans Ar-Rabt avec la bonne progression
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
