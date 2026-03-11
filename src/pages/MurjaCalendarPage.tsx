@@ -66,7 +66,9 @@ export default function MurjaCalendarPage() {
 
   const getItemsForDay = (dayKey: string) => {
     const rabt = rabtVerses;
-    const tour = allConsolidation.filter(v => v.next_review_date === dayKey);
+    const tour = dayKey === todayKey
+      ? allConsolidation.filter(v => v.next_review_date <= dayKey)
+      : allConsolidation.filter(v => v.next_review_date === dayKey);
     return { rabt, tour };
   };
 
@@ -75,7 +77,9 @@ export default function MurjaCalendarPage() {
     for (const day of weekDays) {
       map[day.key] = {
         hasRabt: rabtVerses.length > 0,
-        hasTour: allConsolidation.some(v => v.next_review_date === day.key),
+        hasTour: day.key === todayKey
+          ? allConsolidation.some(v => v.next_review_date <= day.key)
+          : allConsolidation.some(v => v.next_review_date === day.key),
       };
     }
     return map;
