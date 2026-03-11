@@ -17,7 +17,6 @@ interface Props {
 
 export default function MouradPhase1({ surahNumber, startVerse, endVerse, onValidate }: Props) {
   const [mushafMode, setMushafModeState] = useState<MushafMode>(getMouradMushafMode());
-  const [page, setPage] = useState(1);
   const [translations, setTranslations] = useState<Map<string, string>>(new Map());
   const [loadingTranslation, setLoadingTranslation] = useState(true);
 
