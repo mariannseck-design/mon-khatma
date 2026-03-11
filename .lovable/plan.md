@@ -1,20 +1,21 @@
 
 
-## Flèche retour plus discrète et élégante
+# Diagnostic : 404 sur /quran-reader
 
-**Fichier** : `src/pages/MurjaCalendarPage.tsx`, lignes 237-243
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-Remplacer le bouton carré avec fond et bordure par un simple bouton transparent sans fond ni bordure, avec une icône plus fine et grisée :
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-```tsx
-<button
-  onClick={() => navigate('/accueil')}
-  className="absolute left-0 p-1.5 rounded-full flex items-center justify-center"
-  style={{ color: 'var(--p-text-40)' }}
->
-  <ArrowLeft className="h-4 w-4" strokeWidth={1.5} />
-</button>
-```
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-Changements : suppression du `background` et `border`, passage à `rounded-full`, couleur atténuée (`--p-text-40`), trait fin (`strokeWidth=1.5`).
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
