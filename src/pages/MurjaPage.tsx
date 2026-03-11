@@ -137,29 +137,36 @@ export default function MurjaPage() {
     fetchVerses();
   }, [user, refreshKey]);
 
+  // Date-based cutoff: items memorized < 30 days ago = Rabt, >= 30 days = Consolidation
+  const thirtyDaysCutoff = useMemo(() => {
+    const d = new Date();
+    d.setDate(d.getDate() - 30);
+    return d.toISOString();
+  }, []);
+
   const rabtVerses = useMemo(() => {
-    return allVerses.filter(v => v.liaison_status === 'liaison');
-  }, [allVerses]);
+    return allVerses.filter(v => v.memorized_at >= thirtyDaysCutoff);
+  }, [allVerses, thirtyDaysCutoff]);
 
   const { tourVerses, isCapActive, totalDueCount } = useMemo(() => {
     const today = getTodayKey();
     const allDue = allVerses.filter(
-      v => (v.liaison_status === 'tour' || !v.liaison_status) && v.next_review_date <= today
+      v => v.memorized_at < thirtyDaysCutoff && v.next_review_date <= today
     );
     return {
       tourVerses: allDue.slice(0, MAX_TOUR_BLOCKS_PER_DAY),
       isCapActive: allDue.length > MAX_TOUR_BLOCKS_PER_DAY,
       totalDueCount: allDue.length,
     };
-  }, [allVerses]);
+  }, [allVerses, thirtyDaysCutoff]);
 
   const todayReviewedTourItems = useMemo(() => {
     const today = getTodayKey();
     return allVerses.filter(v =>
-      (v.liaison_status === 'tour' || !v.liaison_status) &&
+      v.memorized_at < thirtyDaysCutoff &&
       v.last_reviewed_at?.startsWith(today)
     );
-  }, [allVerses]);
+  }, [allVerses, thirtyDaysCutoff]);
 
   const nextTourReviews = useMemo(() => {
     const today = getTodayKey();
