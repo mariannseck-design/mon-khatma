@@ -1,21 +1,41 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Rendre le bouton Skip visible dans tous les écrans Hifz
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Probleme
+`HifzPage.tsx` a 4 blocs `return` distincts. Le `DevSkipButton` n'est rendu que dans le dernier (session active, steps 0-4). Il est absent sur :
+- L'ecran "Session en cours / Reprendre" (pendingResume)
+- L'ecran Goal Onboarding
+- L'ecran de pause respiratoire (showBreathingPause)
+- L'ecran de succes (step 5)
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+`MethodeMouradPage.tsx` semble correct (le bouton couvre toutes les phases actives).
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+### Modifications sur `src/pages/HifzPage.tsx`
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+**1. Ecran pendingResume (ligne ~370-411)**
+- Ajouter `<DevSkipButton>` avec `onSkip` = `handleResume()` (reprend directement la session)
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+**2. Ecran Goal Onboarding (ligne ~414-424)**
+- Ajouter `<DevSkipButton>` avec `onSkip` = `{ setHasGoal(true); setShowGoalOnboarding(false); }` (bypass l'onboarding)
+
+**3. Session active — elargir la condition (ligne ~449)**
+- Retirer `!showBreathingPause` de la condition du DevSkipButton
+- Changer `step >= 0 && step <= 4` en `step >= 0 && step <= 5`
+- Si breathing pause : `onSkip` appelle `handleBreathingComplete()`
+- Si step 5 (succes) : `onSkip` navigue vers `/muraja`
+
+### Logique du Skip mise a jour
+
+```text
+pendingResume     → handleResume()
+goalOnboarding    → setHasGoal + dismiss
+breathingPause    → handleBreathingComplete()
+step 0-3          → updateStep(step + 1)
+step 4            → completeSession()
+step 5 (succes)   → navigate('/muraja')
+```
+
+### Fichier modifie
+- `src/pages/HifzPage.tsx`
 
