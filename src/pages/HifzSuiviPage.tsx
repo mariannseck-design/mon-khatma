@@ -89,7 +89,7 @@ export default function HifzSuiviPage() {
   const [memorized, setMemorized] = useState<MemorizedVerse[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [expandedJuz, setExpandedJuz] = useState<number | null>(null);
+  const [collapsedJuz, setCollapsedJuz] = useState<Set<number>>(new Set());
   const [versePages, setVersePages] = useState<Map<string, number>>(new Map());
   const [showAllJuz, setShowAllJuz] = useState(false);
 
@@ -292,7 +292,7 @@ export default function HifzSuiviPage() {
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pb-24">
         {visibleJuz.map(juz => {
           const active = hasData(juz);
-          const expanded = expandedJuz === juz.juzNumber;
+          const expanded = !collapsedJuz.has(juz.juzNumber);
 
           if (!active) {
             return (
@@ -320,7 +320,12 @@ export default function HifzSuiviPage() {
                 border: expanded ? '1.5px solid var(--p-primary)' : '1px solid var(--p-border)',
                 boxShadow: expanded ? '0 8px 30px rgba(6,95,70,0.12)' : 'var(--p-card-shadow)',
               }}
-              onClick={() => setExpandedJuz(expanded ? null : juz.juzNumber)}
+              onClick={() => {
+                const next = new Set(collapsedJuz);
+                if (next.has(juz.juzNumber)) next.delete(juz.juzNumber);
+                else next.add(juz.juzNumber);
+                setCollapsedJuz(next);
+              }}
             >
               <div className="p-4">
                 <div className="flex items-center justify-between mb-2">

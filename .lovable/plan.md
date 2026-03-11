@@ -1,14 +1,21 @@
 
 
-## Cartes Juz ouvertes par défaut
+# Diagnostic : 404 sur /quran-reader
 
-Remplacer `expandedJuz` (un seul Juz) par un `Set` contenant tous les Juz actifs, pour qu'ils soient tous dépliés par défaut.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Modifications — `src/pages/HifzSuiviPage.tsx`
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-1. **State** : Remplacer `const [expandedJuz, setExpandedJuz] = useState<number | null>(null)` par `const [collapsedJuz, setCollapsedJuz] = useState<Set<number>>(new Set())`
-2. **Toggle logic** : Au clic, ajouter/retirer du Set des Juz repliés
-3. **Condition expanded** : `expanded = !collapsedJuz.has(juz.juzNumber)` (ouvert par défaut pour les actifs)
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-Un seul fichier modifié, logique inversée simple.
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
