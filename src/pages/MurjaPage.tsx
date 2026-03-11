@@ -577,7 +577,7 @@ export default function MurjaPage() {
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: '#10B981' }} />
                   <span className="text-xs font-bold" style={{ color: '#059669' }}>Consolidation</span>
-                  <span className="text-[10px] font-medium" style={{ color: 'var(--p-text-60)' }}>· Révision espacée</span>
+                  <span className="text-[11px] font-bold" style={{ color: 'var(--p-text-60)' }}>· Révision espacée</span>
                   <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: 'rgba(16, 185, 129, 0.12)', color: '#059669' }}>
                     {tourVerses.length}
                   </span>

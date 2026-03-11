@@ -137,6 +137,25 @@ export default function MurajaChecklist({
           <p className="text-xs font-bold" style={{ color: 'var(--p-primary)' }}>
             Alhamdulillah, tu as terminé tes révisions pour aujourd'hui !
           </p>
+          {nextTourReviews && nextTourReviews.length > 0 && (
+            <div className="mt-3 text-left space-y-1">
+              <p className="text-[10px] font-bold" style={{ color: 'var(--p-text-75)' }}>
+                Prochaine révision :
+              </p>
+              {nextTourReviews.slice(0, 3).map((nr, i) => {
+                const name = SURAHS.find(s => s.number === nr.surah_number)?.name || `Sourate ${nr.surah_number}`;
+                const date = new Date(nr.next_review_date + 'T00:00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' });
+                return (
+                  <div key={i} className="flex items-center gap-1 text-[11px] font-medium" style={{ color: 'var(--p-text-60)' }}>
+                    <BookOpen className="h-2.5 w-2.5 flex-shrink-0" style={{ color: '#10B981' }} />
+                    <span>{name}</span>
+                    <span>{nr.verse_start} → {nr.verse_end}</span>
+                    <span style={{ color: 'var(--p-accent)' }}>— {date}</span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       );
     }
