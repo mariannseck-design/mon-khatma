@@ -230,7 +230,7 @@ export default function MurjaCalendarPage() {
   };
 
   return (
-    <AppLayout title="Muraja'a — Calendrier" hideNav bgClassName="bg-gradient-muraja">
+    <AppLayout title="Muraja'a" hideNav bgClassName="bg-gradient-muraja">
       <div className="max-w-md mx-auto px-4 py-5 space-y-4" style={{ backgroundColor: 'var(--p-bg)', minHeight: '100vh' }}>
         {/* Header */}
         <div className="flex items-center gap-3">
@@ -241,9 +241,12 @@ export default function MurjaCalendarPage() {
           >
             <ArrowLeft className="h-4 w-4" style={{ color: 'var(--p-text-60)' }} />
           </button>
-          <h1 className="text-base font-bold" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-primary)' }}>
-            Vue Calendrier
-          </h1>
+          <div>
+            <h1 className="text-base font-bold" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-primary)' }}>
+              Mon Programme du Jour
+            </h1>
+            <p className="text-[11px] font-medium" style={{ color: 'var(--p-text-40)' }}>Consolide ta mémorisation</p>
+          </div>
         </div>
 
         {loading ? (
