@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useMurajaData, getSurahName, getLiaisonDaysPassed, MemorizedVerse } from '@/hooks/useMurajaData';
 import { getExactVersePage } from '@/lib/quranData';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
 
 const RATINGS = [
   { key: 'hard', label: 'Difficile', quality: 2, icon: Zap, color: '#EF4444' },
@@ -183,7 +184,7 @@ export default function MurjaCalendarPage() {
     );
   };
 
-  const renderSection = (label: string, labelColor: string, subtitle: string, pending: MemorizedVerse[], done: MemorizedVerse[], isRabt: boolean) => {
+  const renderSection = (label: string, labelColor: string, subtitle: string, tooltipText: string, pending: MemorizedVerse[], done: MemorizedVerse[], isRabt: boolean) => {
     if (pending.length === 0 && done.length === 0) return null;
     return (
       <div className="space-y-2">
@@ -191,7 +192,18 @@ export default function MurjaCalendarPage() {
           <p className="text-xs font-bold uppercase tracking-widest" style={{ color: labelColor }}>{label}</p>
           <div className="flex items-center gap-1">
             <span className="text-[10px] font-medium" style={{ color: 'var(--p-text-40)' }}>· {subtitle}</span>
-            <Lightbulb className="h-3 w-3" style={{ color: 'var(--p-text-30)' }} />
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button type="button" className="inline-flex">
+                    <Lightbulb className="h-3 w-3" style={{ color: 'var(--p-text-30)' }} />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="top" className="max-w-[200px] text-xs">
+                  {tooltipText}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
         </div>
         {pending.length > 0 && (
@@ -305,8 +317,8 @@ export default function MurjaCalendarPage() {
               </p>
             ) : (
               <div className="space-y-4">
-                {renderSection('Ar-Rabt', '#D4AF37', 'Liaison quotidienne', isFutureDay ? selectedItems.rabt : pendingRabt, doneRabt, true)}
-                {renderSection('Consolidation', '#10B981', 'Révision espacée', isFutureDay ? selectedItems.tour : pendingTour, doneTour, false)}
+                {renderSection('Ar-Rabt', '#D4AF37', 'Liaison quotidienne', 'Récitez chaque jour vos versets récents (< 30 jours) pour les ancrer en mémoire.', isFutureDay ? selectedItems.rabt : pendingRabt, doneRabt, true)}
+                {renderSection('Consolidation', '#10B981', 'Révision espacée', 'Révisez vos versets anciens selon un algorithme de répétition espacée (SM-2).', isFutureDay ? selectedItems.tour : pendingTour, doneTour, false)}
               </div>
             )}
           </>
