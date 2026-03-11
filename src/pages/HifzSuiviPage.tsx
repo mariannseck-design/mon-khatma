@@ -320,7 +320,12 @@ export default function HifzSuiviPage() {
                 border: expanded ? '1.5px solid var(--p-primary)' : '1px solid var(--p-border)',
                 boxShadow: expanded ? '0 8px 30px rgba(6,95,70,0.12)' : 'var(--p-card-shadow)',
               }}
-              onClick={() => setExpandedJuz(expanded ? null : juz.juzNumber)}
+              onClick={() => {
+                const next = new Set(collapsedJuz);
+                if (next.has(juz.juzNumber)) next.delete(juz.juzNumber);
+                else next.add(juz.juzNumber);
+                setCollapsedJuz(next);
+              }}
             >
               <div className="p-4">
                 <div className="flex items-center justify-between mb-2">
