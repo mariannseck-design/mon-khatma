@@ -139,15 +139,20 @@ export default function MurjaCalendarPage() {
 
     return (
       <motion.button
-        key={item.id}
+        key={`${selectedDay}-${item.id}`}
         onClick={interactive ? () => handleCardTap(item.id, isRabt) : undefined}
         className="relative rounded-2xl p-3.5 text-left transition-all"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{
+          opacity: locked ? 0.7 : isChecked ? 0.5 : 1,
+          y: 0,
+        }}
+        transition={{ duration: 0.3, ease: 'easeOut' }}
         style={{
           background: locked ? 'color-mix(in srgb, var(--p-card) 85%, rgba(128,128,128,0.15))' : 'var(--p-card)',
           border: '1px solid var(--p-border)',
           borderLeftWidth: '3px',
           borderLeftColor: color,
-          opacity: locked ? 0.7 : isChecked ? 0.5 : 1,
           pointerEvents: locked || isChecked ? 'none' : 'auto',
           cursor: locked ? 'not-allowed' : isChecked ? 'default' : 'pointer',
           filter: locked ? 'grayscale(40%)' : 'none',
