@@ -1,21 +1,31 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Ajouter les boutons de validation sur les cartes du Calendrier
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Problème
+Les cartes affichent les portions mais il n'y a pas de checkbox visible — toute la carte est cliquable, ce qui n'est pas intuitif. Il faut un bouton rond explicite.
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Modifications — `src/pages/MurjaCalendarPage.tsx`
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+Dans `renderCards`, modifier chaque carte pour :
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+1. **Ajouter un cercle checkbox** en haut à droite de chaque carte (non-future, non-checked) :
+   - Cercle vide : `w-5 h-5 rounded-full border-2` avec bordure de la couleur de l'item
+   - Au clic : déclenche `handleCardTap(id, isRabt)` (même logique existante — rabt = check direct, tour = ouvre rating sheet)
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+2. **Afficher les cartes validées inline** (au lieu de les cacher + badges) :
+   - Les items checked restent dans la grille mais avec `opacity: 0.5`
+   - Le cercle se remplit avec la couleur (jaune `#D4AF37` pour rabt, vert `#10B981` pour consolidation) + icône Check blanche
+   - Empêcher le re-clic
+
+3. **Séparer le clic checkbox du clic carte** :
+   - La carte entière reste un `div` (plus un `button`)
+   - Le cercle checkbox est le seul élément cliquable (via `e.stopPropagation()`)
+   - Ou plus simple : garder la carte cliquable mais ajouter visuellement le cercle
+
+### Approche retenue (simple)
+- Garder `motion.button` sur toute la carte (tap = valide)
+- Ajouter visuellement le cercle en haut à droite comme indicateur
+- Les items checked restent dans la grille avec opacity 0.5 et cercle rempli
+- Supprimer la section "badges checked" en bas
 
