@@ -239,7 +239,7 @@ export default function HifzSuiviPage() {
       <div className="grid grid-cols-3 gap-3 mb-6">
         {[
           { label: 'Juz commencés', value: activeJuz.length },
-          { label: 'Ayats mémorisées', value: memorized.reduce((s, m) => s + (m.verse_end - m.verse_start + 1), 0) },
+          { label: 'Ayats mémorisées', value: totalAyats },
           { label: 'Progression', value: `${activeJuz.length > 0 ? Math.round(activeJuz.reduce((s, j) => s + j.percentage, 0) / activeJuz.length) : 0}%` },
         ].map((stat, i) => (
           <div key={i} className="rounded-xl p-3 text-center" style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', boxShadow: 'var(--p-card-shadow)' }}>
