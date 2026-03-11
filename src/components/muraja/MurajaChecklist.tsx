@@ -292,12 +292,12 @@ export default function MurajaChecklist({
                   className="w-full mt-2.5 flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-bold transition-all"
                   style={{
                     background: section === 'rabt'
-                      ? 'linear-gradient(135deg, #B8960C, #D4AF37)'
+                      ? (daysPassed <= 7
+                        ? 'linear-gradient(135deg, #6D28D9, #7C3AED)'
+                        : 'linear-gradient(135deg, #B8960C, #D4AF37)')
                       : 'linear-gradient(135deg, #065F46, #10B981)',
                     color: '#FFFFFF',
-                    boxShadow: section === 'rabt'
-                      ? '0 2px 8px -2px rgba(212, 175, 55, 0.4)'
-                      : '0 2px 8px -2px rgba(16, 185, 129, 0.4)',
+                    boxShadow: `0 2px 8px -2px color-mix(in srgb, ${itemColor} 40%, transparent)`,
                   }}
                   whileTap={{ scale: 0.97 }}
                 >
