@@ -80,11 +80,7 @@ export default function AccueilPage() {
       fetchProfile();
       fetchProgress();
       fetchReadingGoal();
-      fetchPendingReviews();
     }
-    // Check for active hifz session (localStorage first, then DB)
-    detectActiveHifzSession();
-  }, [user]);
 
   const fetchPendingReviews = async () => {
     if (!user) return;
