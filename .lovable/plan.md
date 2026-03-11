@@ -1,24 +1,21 @@
 
 
-## Modifications demandées
+# Diagnostic : 404 sur /quran-reader
 
-### 1. Mettre en gras et agrandir "Révision espacée" et "Liaison quotidienne"
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-**`src/pages/MurjaPage.tsx`** lignes 581 et 600 :
-- Changer `text-[10px] font-medium` en `text-[11px] font-bold` pour les deux labels "· Liaison quotidienne" et "· Révision espacée"
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-### 2. Restaurer l'affichage détaillé après validation de toutes les révisions
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-Actuellement quand tout est validé, le message "Alhamdulillah..." dans `MurjaPage.tsx` (lignes 516-533) est un simple banner sans détail. Le composant `MurajaCountdown` (ligne 513) affiche déjà les prochaines révisions avec dates, pages et types — mais le banner duplique le message de succès.
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-**`src/pages/MurjaPage.tsx`** :
-- Supprimer le banner "Alhamdulillah" simplifié (lignes 516-534) qui fait doublon avec `MurajaCountdown`
-- Le composant `MurajaCountdown` gère déjà l'affichage complet avec les portions validées et les prochaines révisions détaillées (dates, pages, type Liaison/Révision)
-
-De même dans **`MurajaChecklist.tsx`** (lignes 127-141), le message "Alhamdulillah, tu as terminé tes révisions pour aujourd'hui !" pour la section tour quand `hasTourBlocks` est true :
-- Remplacer par l'affichage des `nextTourReviews` avec détails (sourate, versets, date) au lieu du simple message avec PartyPopper — identique à ce qui est déjà codé lignes 342-367 mais affiché même quand `items` est vide
-
-### Fichiers modifiés
-- `src/pages/MurjaPage.tsx` — labels en gras + suppression banner doublon
-- `src/components/muraja/MurajaChecklist.tsx` — message tour vide → affichage prochaines révisions
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

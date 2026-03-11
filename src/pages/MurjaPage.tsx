@@ -512,26 +512,6 @@ export default function MurjaPage() {
             {/* Countdown */}
             <MurajaCountdown allChecked={allDailyChecked} nextReviews={nextReviewsForCountdown} />
 
-            {/* Success banner — conditional */}
-            <AnimatePresence>
-              {allDailyChecked && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="rounded-xl px-4 py-3 flex items-center gap-3 overflow-hidden"
-                  style={{
-                    background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(212, 175, 55, 0.08))',
-                    border: '1px solid rgba(16, 185, 129, 0.25)',
-                  }}
-                >
-                  <Sparkles className="h-5 w-5 flex-shrink-0" style={{ color: '#D4AF37' }} />
-                  <p className="text-xs font-bold" style={{ color: 'var(--p-primary)' }}>
-                    Alhamdulillah, tu as terminé tes révisions du jour ! 🤲
-                  </p>
-                </motion.div>
-              )}
-            </AnimatePresence>
 
             {/* Progress bar */}
             {totalBlocks > 0 && (
@@ -578,7 +558,7 @@ export default function MurjaPage() {
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: '#D4AF37' }} />
                   <span className="text-xs font-bold" style={{ color: '#B8860B' }}>Ar-Rabt</span>
-                  <span className="text-[10px] font-medium" style={{ color: 'var(--p-text-60)' }}>· Liaison quotidienne</span>
+                  <span className="text-[11px] font-bold" style={{ color: 'var(--p-text-60)' }}>· Liaison quotidienne</span>
                   <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: 'rgba(212, 175, 55, 0.12)', color: '#B8860B' }}>
                     {rabtVerses.length}
                   </span>
@@ -597,7 +577,7 @@ export default function MurjaPage() {
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: '#10B981' }} />
                   <span className="text-xs font-bold" style={{ color: '#059669' }}>Consolidation</span>
-                  <span className="text-[10px] font-medium" style={{ color: 'var(--p-text-60)' }}>· Révision espacée</span>
+                  <span className="text-[11px] font-bold" style={{ color: 'var(--p-text-60)' }}>· Révision espacée</span>
                   <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: 'rgba(16, 185, 129, 0.12)', color: '#059669' }}>
                     {tourVerses.length}
                   </span>
