@@ -135,7 +135,6 @@ export default function MurajaChecklist({
   });
 
   // Merge Al-Fatiha with the next item so it never appears alone
-  type DisplayItem = ChecklistItem & { mergedWith?: ChecklistItem };
   const sortedItems: DisplayItem[] = [];
   const isFatiha = (it: ChecklistItem) => it.surah_number === 1 && it.verse_start === 1 && it.verse_end === 7;
 
