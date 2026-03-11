@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Heart, Check } from 'lucide-react';
 import HifzStepWrapper from './HifzStepWrapper';
 import { SURAHS } from '@/lib/surahData';
+import { getExactVersePage } from '@/lib/quranData';
 
 interface Props {
   surahNumber: number;
