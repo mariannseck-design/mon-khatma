@@ -236,10 +236,10 @@ export default function MurjaCalendarPage() {
         <div className="relative flex items-center justify-center">
           <button
             onClick={() => navigate('/accueil')}
-            className="absolute left-0 w-8 h-8 rounded-lg flex items-center justify-center"
-            style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)' }}
+            className="absolute left-0 p-1.5 rounded-full flex items-center justify-center"
+            style={{ color: 'var(--p-text-40)' }}
           >
-            <ArrowLeft className="h-4 w-4" style={{ color: 'var(--p-text-60)' }} />
+            <ArrowLeft className="h-4 w-4" strokeWidth={1.5} />
           </button>
           <div className="text-center">
             <h1 className="text-base font-bold" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-primary)' }}>
