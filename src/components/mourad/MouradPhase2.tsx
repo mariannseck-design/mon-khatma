@@ -29,9 +29,6 @@ export default function MouradPhase2({ surahNumber, startVerse, endVerse, listen
   const minListens = 5;
   const canValidate = listenCount >= minListens;
 
-  useEffect(() => {
-    getExactVersePage(surahNumber, startVerse).then(setPage);
-  }, [surahNumber, startVerse]);
 
   const handleModeChange = (mode: MushafMode) => {
     setMushafModeState(mode);
