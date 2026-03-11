@@ -219,8 +219,8 @@ export default function MurajaChecklist({
                 <motion.div
                   className="w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0"
                   style={{
-                    background: isChecked ? borderLeftColor : 'transparent',
-                    border: `2px solid ${isChecked ? borderLeftColor : 'var(--p-checkbox-border)'}`,
+                    background: isChecked ? itemColor : 'transparent',
+                    border: `2px solid ${isChecked ? itemColor : 'var(--p-checkbox-border)'}`,
                   }}
                   animate={isChecked ? { scale: [1, 1.2, 1] } : {}}
                   transition={{ type: 'spring', stiffness: 400, damping: 15 }}
