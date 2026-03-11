@@ -49,9 +49,10 @@ function humanizeInterval(days?: number): string {
   return `Dans ${days} jours`;
 }
 
-function getLiaisonDaysPassed(startDate?: string | null): number {
-  if (!startDate) return 0;
-  const start = new Date(startDate + 'T00:00:00');
+function getLiaisonDaysPassed(memorizedAt?: string | null, startDate?: string | null): number {
+  const dateStr = memorizedAt || startDate;
+  if (!dateStr) return 0;
+  const start = new Date(dateStr.length === 10 ? dateStr + 'T00:00:00' : dateStr);
   const now = new Date();
   return Math.min(30, Math.max(0, Math.floor((now.getTime() - start.getTime()) / 86400000)));
 }
