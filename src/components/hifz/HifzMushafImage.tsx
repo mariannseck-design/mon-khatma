@@ -199,7 +199,7 @@ export default function HifzMushafImage({ surahNumber, startVerse, endVerse, max
 
       <div
         ref={containerRef}
-        className="rounded-xl overflow-hidden relative touch-none"
+        className={`rounded-xl overflow-hidden relative ${scale > 1 ? 'touch-none' : 'touch-pan-y'}`}
         style={{
           border: '1px solid rgba(212,175,55,0.25)',
           maxHeight,
