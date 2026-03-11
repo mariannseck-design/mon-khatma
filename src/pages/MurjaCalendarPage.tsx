@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { ArrowLeft, Check, Zap, ThumbsUp, Crown, BookOpen, Lock, ChevronDown, Sparkles, Lightbulb } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useNavigate } from 'react-router-dom';
 import { useMurajaData, getSurahName, getLiaisonDaysPassed, MemorizedVerse } from '@/hooks/useMurajaData';
 import { getExactVersePage } from '@/lib/quranData';
@@ -189,10 +190,18 @@ export default function MurjaCalendarPage() {
         <div className="flex items-center gap-2">
           <p className="text-xs font-bold uppercase tracking-widest" style={{ color: labelColor }}>{label}</p>
           <span className="text-[10px] font-medium" style={{ color: 'var(--p-text-40)' }}>· {subtitle}</span>
-        </div>
-        <div className="flex items-start gap-1.5">
-          <Lightbulb className="h-3 w-3 mt-0.5 flex-shrink-0" style={{ color: labelColor }} />
-          <p className="text-[10px] leading-tight" style={{ color: 'var(--p-text-30)' }}>{tooltipText}</p>
+          <TooltipProvider delayDuration={0}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button className="ml-auto p-1 rounded-full" style={{ color: labelColor }}>
+                  <Lightbulb className="h-3.5 w-3.5" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="max-w-[220px] text-xs">
+                {tooltipText}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
         {pending.length > 0 && (
           <div className="grid grid-cols-2 gap-3">
