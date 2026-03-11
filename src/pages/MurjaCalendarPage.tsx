@@ -478,13 +478,50 @@ export default function MurjaCalendarPage() {
             >
               <div className="absolute inset-0 bg-black/30 pointer-events-auto" onClick={() => setShowNewRecord(false)} />
               <motion.div
-                className="relative flex flex-col items-center gap-3 px-8 py-6 rounded-2xl pointer-events-auto"
+                className="relative flex flex-col items-center gap-3 px-8 py-6 rounded-2xl pointer-events-auto overflow-visible"
                 style={{ background: 'var(--p-card)', border: '2px solid #D4AF37', boxShadow: '0 0 40px rgba(212, 175, 55, 0.3)' }}
                 initial={{ scale: 0.5, y: 30, opacity: 0 }}
                 animate={{ scale: 1, y: 0, opacity: 1 }}
                 exit={{ scale: 0.8, y: -20, opacity: 0 }}
                 transition={{ type: 'spring', stiffness: 300, damping: 20 }}
               >
+                {/* Golden particles */}
+                {Array.from({ length: 14 }).map((_, i) => {
+                  const angle = (i / 14) * 360;
+                  const radius = 60 + Math.random() * 50;
+                  const size = 4 + Math.random() * 5;
+                  const dx = Math.cos((angle * Math.PI) / 180) * radius;
+                  const dy = Math.sin((angle * Math.PI) / 180) * radius;
+                  const isCircle = i % 3 !== 0;
+                  return (
+                    <motion.div
+                      key={i}
+                      className="absolute"
+                      style={{
+                        width: size,
+                        height: size,
+                        borderRadius: isCircle ? '50%' : '2px',
+                        background: i % 2 === 0 ? '#D4AF37' : '#F5D680',
+                        top: '50%',
+                        left: '50%',
+                        rotate: isCircle ? 0 : `${angle}deg`,
+                      }}
+                      initial={{ x: 0, y: 0, opacity: 0, scale: 0 }}
+                      animate={{
+                        x: dx,
+                        y: dy,
+                        opacity: [0, 1, 1, 0],
+                        scale: [0, 1.2, 1, 0.4],
+                      }}
+                      transition={{
+                        duration: 1.8,
+                        delay: 0.2 + i * 0.04,
+                        ease: 'easeOut',
+                      }}
+                    />
+                  );
+                })}
+
                 <motion.div
                   initial={{ rotate: -20, scale: 0 }}
                   animate={{ rotate: 0, scale: 1 }}
