@@ -5,6 +5,8 @@ import { AppLayout } from '@/components/layout/AppLayout';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useDevMode } from '@/hooks/useDevMode';
+import DevSkipButton from '@/components/hifz/DevSkipButton';
 import MouradConfig from '@/components/mourad/MouradConfig';
 import MouradPhase1 from '@/components/mourad/MouradPhase1';
 import MouradPhase2 from '@/components/mourad/MouradPhase2';
@@ -31,6 +33,7 @@ export default function MethodeMouradPage() {
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { isDevMode } = useDevMode();
   const [session, setSession] = useState<SessionData | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -237,6 +240,25 @@ export default function MethodeMouradPage() {
           />
         )}
       </div>
+
+      {/* Dev Skip Button */}
+      {session && !isCompleted && (
+        <DevSkipButton
+          isDevMode={isDevMode}
+          onSkip={async () => {
+            if (phase <= 3) {
+              await advancePhase(phase + 1);
+            } else if (phase === 4) {
+              await updateSession({
+                current_phase: 5,
+                maintenance_start_date: new Date().toISOString().split('T')[0],
+              } as any);
+            } else if (phase === 5) {
+              await handleMaintenanceComplete();
+            }
+          }}
+        />
+      )}
     </div>
   );
 }
