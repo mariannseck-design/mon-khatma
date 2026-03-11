@@ -377,62 +377,6 @@ export default function HifzSuiviPage() {
             )}
 
 
-            {/* ═══ 5. GRAPHIQUE HEBDO ═══ */}
-            <motion.div
-              initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}
-              className="rounded-2xl p-5"
-              style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', boxShadow: 'var(--p-card-shadow)' }}
-            >
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #6D28D9, #8B5CF6)', boxShadow: '0 3px 8px rgba(109, 40, 217, 0.25)' }}>
-                    <BarChart3 className="h-3.5 w-3.5 text-white" />
-                  </div>
-                  <h3 className="text-sm font-bold" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-primary)' }}>
-                    Versets travaillés (7 jours)
-                  </h3>
-                </div>
-                <span className="text-[11px] font-medium capitalize" style={{ color: 'var(--p-text-55)' }}>
-                  {new Date().toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
-                </span>
-              </div>
-              <div className="flex items-center gap-3 mb-1 justify-end">
-                <span className="flex items-center gap-1 text-[10px] font-medium" style={{ color: 'var(--p-text-55)' }}>
-                  <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ background: 'var(--p-accent)' }} /> Ar-Rabt
-                </span>
-                <span className="flex items-center gap-1 text-[10px] font-medium" style={{ color: 'var(--p-text-55)' }}>
-                  <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ background: 'var(--p-primary)' }} /> Muraja'a
-                </span>
-              </div>
-              <ResponsiveContainer width="100%" height={140}>
-                <BarChart data={weeklyData} barCategoryGap="30%">
-                  <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: 'var(--p-text-65)', fontSize: 9, fontWeight: 500 }} />
-                  <YAxis axisLine={false} tickLine={false} allowDecimals={false} tick={{ fill: 'var(--p-text-55)', fontSize: 9 }} width={28} />
-                  <Tooltip
-                    cursor={false}
-                    contentStyle={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', borderRadius: 8, fontSize: 12 }}
-                    formatter={(value: number, name: string) => [`${value} verset${value > 1 ? 's' : ''}`, name === 'hifz' ? 'Ar-Rabt' : "Muraja'a"]}
-                    labelStyle={{ color: 'var(--p-text-65)', fontWeight: 600 }}
-                  />
-                  <Bar dataKey="hifz" stackId="a" fill="var(--p-accent)" maxBarSize={28} radius={[0, 0, 0, 0]} />
-                  <Bar dataKey="muraja" stackId="a" fill="var(--p-primary)" maxBarSize={28} radius={[6, 6, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-              {(() => {
-                const totalHifz = weeklyData.reduce((s, d) => s + d.hifz, 0);
-                const totalMuraja = weeklyData.reduce((s, d) => s + d.muraja, 0);
-                const total = totalHifz + totalMuraja;
-                return total > 0 ? (
-                  <div className="mt-3 pt-3 flex items-center justify-center gap-3 text-[11px]" style={{ borderTop: '1px solid var(--p-border)' }}>
-                    <span style={{ color: 'var(--p-text-65)' }}>Cette semaine :</span>
-                    <span className="font-bold" style={{ color: 'var(--p-accent)' }}>{totalHifz} ar-rabt</span>
-                    <span style={{ color: 'var(--p-text-55)' }}>·</span>
-                    <span className="font-bold" style={{ color: 'var(--p-primary)' }}>{totalMuraja} muraja'a</span>
-                  </div>
-                ) : null;
-              })()}
-            </motion.div>
-
             {/* ═══ 6. TIMELINE HISTORIQUE ═══ */}
             {weeklyData.some(d => d.hifz > 0 || d.muraja > 0) && (
               <motion.div
