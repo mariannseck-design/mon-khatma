@@ -1,13 +1,21 @@
 
 
-## Probleme
+# Diagnostic : 404 sur /quran-reader
 
-Dans `MurajaChecklist.tsx` ligne 94, le clic sur le badge page (ex: "13") navigue vers `/quran?page=X` — mais cette route n'existe pas. La bonne route est `/quran-reader`.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-## Correction
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-**`src/components/muraja/MurajaChecklist.tsx`** ligne 94 :
-- Remplacer `navigate('/quran?page=${page}')` par `navigate('/quran-reader?page=${page}')`
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-C'est un fix d'une seule ligne.
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

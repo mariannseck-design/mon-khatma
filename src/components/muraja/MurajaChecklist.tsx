@@ -91,7 +91,7 @@ export default function MurajaChecklist({
 
   const openInReader = (itemId: string) => {
     const page = pageMap[itemId];
-    if (page) navigate(`/quran?page=${page}`);
+    if (page) navigate(`/quran-reader?page=${page}`);
   };
 
   const handleValidate = (id: string) => {
