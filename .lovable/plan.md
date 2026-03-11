@@ -1,14 +1,21 @@
 
 
-## Plan : Améliorer la visibilité sur la barre MA KHATMA
+# Diagnostic : 404 sur /quran-reader
 
-### Problèmes identifiés
-1. L'icône `Target` (cercle/cible) a `color: COLORS.goldAccent` — doré sur fond doré, invisible.
-2. Le sous-texte "(Mon objectif)" est en `text-white/70` et `font-normal text-xs` — trop discret sur fond doré.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Modifications dans `AccueilPage.tsx` (ligne 210-211)
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-**Icône Target** : passer la couleur en blanc (`#fff`) pour qu'elle ressorte sur le fond doré.
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-**Sous-texte "(Mon objectif)"** : remplacer `font-normal text-xs text-white/70` par `font-bold text-xs text-white` pour le rendre visible et lisible.
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
