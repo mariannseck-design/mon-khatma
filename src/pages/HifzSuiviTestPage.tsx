@@ -52,6 +52,7 @@ interface JuzData {
   nextReview: string | null;
   lastReviewed: string | null;
   retentionLabel: string;
+  isOverdue: boolean;
 }
 
 function getRetentionLabel(avgEase: number): string {
