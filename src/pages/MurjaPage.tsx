@@ -558,7 +558,7 @@ export default function MurjaPage() {
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: '#D4AF37' }} />
                   <span className="text-xs font-bold" style={{ color: '#B8860B' }}>Ar-Rabt</span>
-                  <span className="text-[10px] font-medium" style={{ color: 'var(--p-text-60)' }}>· Liaison quotidienne</span>
+                  <span className="text-[11px] font-bold" style={{ color: 'var(--p-text-60)' }}>· Liaison quotidienne</span>
                   <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: 'rgba(212, 175, 55, 0.12)', color: '#B8860B' }}>
                     {rabtVerses.length}
                   </span>
