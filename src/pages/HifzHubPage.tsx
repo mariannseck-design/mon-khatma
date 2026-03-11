@@ -167,16 +167,24 @@ export default function HifzHubPage() {
                   className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0"
                   style={{ background: `${COLORS.gold}22`, border: `1px solid ${COLORS.gold}35` }}
                 >
-                  <BookHeart className="h-7 w-7" style={{ color: COLORS.goldAccent }} />
+                  {activeMouradSession ? (
+                    <Play className="h-7 w-7" style={{ color: COLORS.goldAccent }} />
+                  ) : (
+                    <BookHeart className="h-7 w-7" style={{ color: COLORS.goldAccent }} />
+                  )}
                 </div>
                 <div className="flex-1">
                   <h3
                     className="text-base font-bold tracking-[0.08em] uppercase"
                     style={{ fontFamily: "'Inter', sans-serif", color: COLORS.goldAccent }}
                   >
-                    Méthode Oustaz Mourad
+                    {activeMouradSession ? '▶️ Continuer ma session' : 'Méthode Oustaz Mourad'}
                   </h3>
-                  <p className="text-white/60 text-xs mt-0.5">Recommandé pour débutant</p>
+                  <p className="text-white/70 text-sm mt-1">
+                    {activeMouradSession
+                      ? `${activeMouradSession.surahName} — ${activeMouradSession.phaseName}`
+                      : 'Recommandé pour débutant'}
+                  </p>
                 </div>
               </div>
             </motion.div>
