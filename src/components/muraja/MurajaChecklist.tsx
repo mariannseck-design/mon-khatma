@@ -110,7 +110,7 @@ export default function MurajaChecklist({
     }
   };
 
-  const mergedRatingRef = { current: null as string | null };
+  const mergedRatingRef = useRef<string | null>(null);
 
   const handleRate = (quality: number, ratingKey: string) => {
     if (!ratingFor || !onRate) return;
