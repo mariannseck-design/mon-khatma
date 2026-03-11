@@ -1,21 +1,17 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Trier les cartes de révision par page croissante
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Problème
+Les cartes Ar-Rabt et Consolidation s'affichent dans l'ordre de `memorized_at` (ordre d'insertion) au lieu d'être triées par page du Mushaf. Résultat : pages 10, 11, 12, 14, 13, 15 au lieu de 10, 11, 12, 13, 14, 15.
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Solution dans `src/hooks/useMurajaData.ts`
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+Ajouter un tri par `(surah_number, verse_start)` sur les deux listes :
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+1. **`rabtVerses`** (ligne ~130) : après le `.filter()`, ajouter `.sort((a, b) => a.surah_number - b.surah_number || a.verse_start - b.verse_start)`
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+2. **`tourVerses`** (ligne ~134) : trier `allDue` avant le `.slice()` avec le même comparateur
+
+Cela garantit un ordre croissant par position dans le Mushaf (sourate puis verset), ce qui correspond à l'ordre des pages.
 
