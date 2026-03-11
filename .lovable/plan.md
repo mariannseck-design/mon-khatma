@@ -1,21 +1,15 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Barre MA KHATMA en doré
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+Changer le fond de la barre "MA KHATMA" de vert émeraude vers un dégradé doré, cohérent avec le style du Noble Coran.
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Modification unique dans `AccueilPage.tsx` (lignes 206-212)
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+Remplacer `background: COLORS.emerald` par un dégradé doré, et ajuster les couleurs du texte/icône pour le contraste :
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
-
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+- Fond : `linear-gradient(135deg, #b5942e, #d4af37)` (dégradé or)
+- Icône Target : blanc ou émeraude foncé
+- Texte : blanc (reste lisible sur doré)
+- Sous-texte : `white/80`
 
