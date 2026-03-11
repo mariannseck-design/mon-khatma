@@ -182,6 +182,8 @@ export default function HifzSuiviTestPage() {
         };
       });
 
+      const isOverdue = earliestReview ? isPast(startOfDay(new Date(earliestReview))) && !isToday(new Date(earliestReview)) : false;
+
       return {
         juzNumber: juzNum,
         totalVerses,
@@ -192,6 +194,7 @@ export default function HifzSuiviTestPage() {
         nextReview: earliestReview,
         lastReviewed: latestReviewed,
         retentionLabel: getRetentionLabel(avgEase),
+        isOverdue,
       };
     });
   }, [memorized, versePages]);
