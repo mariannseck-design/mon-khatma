@@ -124,7 +124,7 @@ export function HifzActivitySummary({ userId }: HifzActivitySummaryProps) {
       setStreak(currentStreak);
       setLoading(false);
     })();
-  }, [userId, monday, monthStart, today]);
+  }, [userId, monday, today]);
 
   if (loading) {
     return (
