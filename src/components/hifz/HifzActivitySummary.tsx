@@ -11,7 +11,7 @@ const DAY_LABELS = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
 export function HifzActivitySummary({ userId }: HifzActivitySummaryProps) {
   const [streak, setStreak] = useState(0);
   const [weekSessions, setWeekSessions] = useState(0);
-  const [weekVerses, setWeekVerses] = useState(0);
+  const [weekPages, setWeekPages] = useState(0);
   const [weekActiveDays, setWeekActiveDays] = useState<Set<number>>(new Set());
   const [loading, setLoading] = useState(true);
 
