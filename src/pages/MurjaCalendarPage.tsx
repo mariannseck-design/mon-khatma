@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AppLayout } from '@/components/layout/AppLayout';
-import { ArrowLeft, Check, Zap, ThumbsUp, Crown, BookOpen, Lock, ChevronDown, Sparkles } from 'lucide-react';
+import { ArrowLeft, Check, Zap, ThumbsUp, Crown, BookOpen, Lock, ChevronDown, Sparkles, Lightbulb } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useMurajaData, getSurahName, getLiaisonDaysPassed, MemorizedVerse } from '@/hooks/useMurajaData';
 import { getExactVersePage } from '@/lib/quranData';
@@ -183,11 +183,17 @@ export default function MurjaCalendarPage() {
     );
   };
 
-  const renderSection = (label: string, labelColor: string, pending: MemorizedVerse[], done: MemorizedVerse[], isRabt: boolean) => {
+  const renderSection = (label: string, labelColor: string, subtitle: string, pending: MemorizedVerse[], done: MemorizedVerse[], isRabt: boolean) => {
     if (pending.length === 0 && done.length === 0) return null;
     return (
       <div className="space-y-2">
-        <p className="text-xs font-bold uppercase tracking-widest" style={{ color: labelColor }}>{label}</p>
+        <div className="flex items-center gap-2">
+          <p className="text-xs font-bold uppercase tracking-widest" style={{ color: labelColor }}>{label}</p>
+          <div className="flex items-center gap-1">
+            <span className="text-[10px] font-medium" style={{ color: 'var(--p-text-40)' }}>· {subtitle}</span>
+            <Lightbulb className="h-3 w-3" style={{ color: 'var(--p-text-30)' }} />
+          </div>
+        </div>
         {pending.length > 0 && (
           <div className="grid grid-cols-2 gap-3">
             {pending.map(item => renderCard(item, isRabt, true))}
@@ -276,7 +282,7 @@ export default function MurjaCalendarPage() {
 
             {/* Celebration banner */}
             <AnimatePresence>
-              {allDayChecked && isToday && (
+              {allDayChecked && (
                 <motion.div
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -299,8 +305,8 @@ export default function MurjaCalendarPage() {
               </p>
             ) : (
               <div className="space-y-4">
-                {renderSection('Ar-Rabt', '#D4AF37', isFutureDay ? selectedItems.rabt : pendingRabt, doneRabt, true)}
-                {renderSection('Consolidation', '#10B981', isFutureDay ? selectedItems.tour : pendingTour, doneTour, false)}
+                {renderSection('Ar-Rabt', '#D4AF37', 'Liaison quotidienne', isFutureDay ? selectedItems.rabt : pendingRabt, doneRabt, true)}
+                {renderSection('Consolidation', '#10B981', 'Révision espacée', isFutureDay ? selectedItems.tour : pendingTour, doneTour, false)}
               </div>
             )}
           </>
