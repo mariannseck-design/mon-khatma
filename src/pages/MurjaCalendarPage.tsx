@@ -193,7 +193,7 @@ export default function MurjaCalendarPage() {
           <TooltipProvider delayDuration={0}>
             <Tooltip>
               <TooltipTrigger asChild>
-                <button className="ml-auto p-1 rounded-full" style={{ color: labelColor }}>
+                <button className="p-1 rounded-full" style={{ color: labelColor }}>
                   <Lightbulb className="h-3.5 w-3.5" />
                 </button>
               </TooltipTrigger>
