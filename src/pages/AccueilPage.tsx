@@ -16,7 +16,7 @@ import DefiAlMulk from '@/components/defis/DefiAlMulk';
 import DefiAlKahf from '@/components/defis/DefiAlKahf';
 import DefiAlBaqara from '@/components/defis/DefiAlBaqara';
 import DefisCommunityCounter from '@/components/defis/DefisCommunityCounter';
-import HifzCommunityCounter from '@/components/hifz/HifzCommunityCounter';
+
 import FavoriteVersesSection from '@/components/favoris/FavoriteVersesSection';
 import { useDailyNotification } from '@/hooks/useDailyNotification';
 import { usePushSubscription } from '@/hooks/usePushSubscription';
