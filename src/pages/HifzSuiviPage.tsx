@@ -1,8 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { motion } from 'framer-motion';
-import { Flame, BookOpenCheck, RotateCcw, Target, Settings2, BookOpen, RefreshCw, BarChart3, Layers, Grid3X3, FileText } from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts';
+import { Flame, BookOpenCheck, RotateCcw, Target, Settings2, BookOpen, RefreshCw, Layers, Grid3X3, FileText } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import HifzGoalOnboarding from '@/components/hifz/HifzGoalOnboarding';
