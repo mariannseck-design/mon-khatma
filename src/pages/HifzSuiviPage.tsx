@@ -269,12 +269,6 @@ export default function HifzSuiviPage() {
         </button>
       </div>
 
-      {/* Activity Heatmap */}
-      {user && (
-        <div className="mb-6">
-          <HifzActivitySummary userId={user.id} />
-        </div>
-      )}
 
       {/* Juz Grid */}
       <div className="mb-3">
