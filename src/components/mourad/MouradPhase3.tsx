@@ -167,7 +167,7 @@ export default function MouradPhase3({ surahNumber, startVerse, endVerse, recite
           <MouradMushafToggle mode={mushafMode} onChange={handleModeChange} />
           <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
             {mushafMode === 'image' && <HifzMushafImage surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse} maxHeight="250px" />}
-            {mushafMode === 'text' && <div style={{ height: '250px' }}><QuranTextView page={page} fontSize={22} darkMode={false} tajweedEnabled /></div>}
+            {mushafMode === 'text' && <MouradVerseTextView surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse} fontSize={22} maxHeight="250px" />}
             {mushafMode === 'physical' && <MouradPhysicalView surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse} />}
           </div>
         </div>
