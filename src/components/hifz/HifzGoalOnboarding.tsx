@@ -212,18 +212,21 @@ export default function HifzGoalOnboarding({ onGoalSet, existingGoal }: HifzGoal
       )}
 
       {/* Submit */}
-      <Button
+      <button
         onClick={handleSave}
         disabled={!selected || saving}
-        className="w-full rounded-xl py-6 text-base font-semibold"
+        className="w-full rounded-xl py-4 text-base font-semibold transition-all disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98]"
         style={{
-          background: selected ? 'linear-gradient(135deg, #d4af37, #c4a030)' : undefined,
-          color: selected ? '#0d7377' : undefined,
-          opacity: selected ? 1 : 0.5,
+          background: selected
+            ? 'linear-gradient(135deg, #d4af37, #c4a030)'
+            : 'rgba(255,255,255,0.1)',
+          color: selected ? '#0d7377' : 'rgba(255,255,255,0.4)',
+          border: selected ? '1px solid rgba(212,175,55,0.5)' : '1px solid rgba(255,255,255,0.15)',
+          boxShadow: selected ? '0 4px 16px rgba(212,175,55,0.3)' : 'none',
         }}
       >
         {saving ? 'Enregistrement...' : existingGoal ? 'Modifier mon objectif' : 'Valider mon engagement'}
-      </Button>
+      </button>
     </motion.div>
   );
 }
