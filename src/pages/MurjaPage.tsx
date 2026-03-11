@@ -182,7 +182,7 @@ export default function MurjaPage() {
     return [...futureReviews]
       .sort((a, b) => a.next_review_date.localeCompare(b.next_review_date))
       .slice(0, 3);
-  }, [allVerses]);
+  }, [allVerses, thirtyDaysCutoff]);
 
   const totalBlocks = rabtVerses.length + tourVerses.length;
   const checkedCount = checkedIds.filter(
