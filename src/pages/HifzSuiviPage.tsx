@@ -292,7 +292,7 @@ export default function HifzSuiviPage() {
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pb-24">
         {visibleJuz.map(juz => {
           const active = hasData(juz);
-          const expanded = expandedJuz === juz.juzNumber;
+          const expanded = !collapsedJuz.has(juz.juzNumber);
 
           if (!active) {
             return (
