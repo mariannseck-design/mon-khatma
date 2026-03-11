@@ -1,30 +1,21 @@
 
 
-## Plan : Finalisation de la page "Mon Suivi Hifz"
+# Diagnostic : 404 sur /quran-reader
 
-### 1. Correction de texte
-- **`src/pages/HifzSuiviPage.tsx` l.504** : Remplacer "Ar-Rabt" par "Mémorisation"
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### 2. Ajout des appels à l'action contextuels
-Ajouter des petits liens cliquables (style pilule, texte émeraude, flèche `→`) directement sous chaque bloc concerné :
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-- **Après le bloc Objectif (section 3, ~l.408)** : lien "Définir son programme →" pointant vers l'édition d'objectif (`setShowGoalEdit(true)`)
-- **Après les liens rapides existants (section "LIENS RAPIDES")** : transformer les 2 cartes existantes en CTAs contextuels :
-  - "Apprendre du nouveau →" → `/hifz` (remplace la carte "Ar-Rabt")
-  - "Réviser l'ancien →" → `/muraja` (remplace la carte "Muraja'a")
-- Design : texte émeraude (`var(--p-accent)`), effet hover scale, flèche `ChevronRight`, forme pilule arrondie
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-### 3. Finition des mini-cartes Juz/Hizb/Pages
-Modifier le composant `MiniCircle` et les 3 cartes jalons pour afficher la valeur `value/max` **centrée à l'intérieur** du cercle SVG (via un positionnement absolu), au lieu d'avoir le cercle vide séparé du texte.
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-### 4. Carrousel horizontal pour le détail par Juz
-- Importer le composant `HifzSuiviTestPage` (la grille des 30 Juz) en tant que section dans `HifzSuiviPage`, mais **en carrousel horizontal** :
-  - Conteneur `overflow-x-auto scrollbar-hide` avec `flex` et `snap-x`
-  - Chaque carte Juz en `snap-center`, largeur fixe (~160px)
-  - Scroll horizontal au doigt, pas de barre de défilement visible
-- Ajouter une classe CSS `scrollbar-hide` dans `index.css` si absente
-
-### Fichiers modifiés
-- `src/pages/HifzSuiviPage.tsx` — toutes les modifications ci-dessus
-- `src/index.css` — ajout de `.scrollbar-hide` si nécessaire
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

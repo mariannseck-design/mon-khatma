@@ -382,4 +382,13 @@
     @apply text-primary font-medium;
     font-family: 'Scheherazade New', 'Traditional Arabic', serif;
   }
+
+  /* Hide scrollbar for carousel */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
 }
