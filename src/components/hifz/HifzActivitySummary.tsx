@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { format, subDays, startOfWeek, addDays, isSameDay, startOfMonth } from 'date-fns';
+import { format, subDays, startOfWeek, addDays, isSameDay } from 'date-fns';
 
 interface HifzActivitySummaryProps {
   userId: string;
