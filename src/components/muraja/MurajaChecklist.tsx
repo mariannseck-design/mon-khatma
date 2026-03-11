@@ -12,6 +12,7 @@ interface ChecklistItem {
   verse_end: number;
   sm2_interval?: number;
   liaison_start_date?: string | null;
+  memorized_at?: string | null;
 }
 
 interface NextReview {
@@ -48,9 +49,10 @@ function humanizeInterval(days?: number): string {
   return `Dans ${days} jours`;
 }
 
-function getLiaisonDaysPassed(startDate?: string | null): number {
-  if (!startDate) return 0;
-  const start = new Date(startDate + 'T00:00:00');
+function getLiaisonDaysPassed(memorizedAt?: string | null, startDate?: string | null): number {
+  const dateStr = memorizedAt || startDate;
+  if (!dateStr) return 0;
+  const start = new Date(dateStr.length === 10 ? dateStr + 'T00:00:00' : dateStr);
   const now = new Date();
   return Math.min(30, Math.max(0, Math.floor((now.getTime() - start.getTime()) / 86400000)));
 }
@@ -121,7 +123,7 @@ export default function MurajaChecklist({
 
   const getItemColor = (item: ChecklistItem) => {
     if (section !== 'rabt') return '#10B981';
-    const daysPassed = getLiaisonDaysPassed(item.liaison_start_date);
+    const daysPassed = getLiaisonDaysPassed(item.memorized_at, item.liaison_start_date);
     return daysPassed <= 7 ? '#14B8A6' : '#D4AF37';
   };
 
@@ -324,7 +326,7 @@ export default function MurajaChecklist({
       {uncheckedItems.map((item) => {
         const isChecked = checkedIds.includes(item.id);
         const isRating = ratingFor === item.id;
-        const daysPassed = section === 'rabt' ? getLiaisonDaysPassed(item.liaison_start_date) : 0;
+        const daysPassed = section === 'rabt' ? getLiaisonDaysPassed(item.memorized_at, item.liaison_start_date) : 0;
         const itemColor = getItemColor(item);
 
         return (
@@ -395,7 +397,7 @@ export default function MurajaChecklist({
                   </div>
 
                   {/* Mini progress bar for rabt */}
-                  {section === 'rabt' && item.liaison_start_date && (
+                  {section === 'rabt' && (item.memorized_at || item.liaison_start_date) && (
                     <div className="w-full h-1.5 rounded-full overflow-hidden mt-1.5" style={{ background: 'var(--p-track)' }}>
                       <motion.div
                         className="h-full rounded-full"
