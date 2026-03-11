@@ -203,13 +203,24 @@ export default function AccueilPage() {
 
             {/* Ma Tillawah sub-link */}
             <Link to="/planificateur" className="block mt-4">
-              <div
-                className="flex items-center gap-3 rounded-xl px-4 py-3 transition-colors"
+              <motion.div
+                className="flex items-center gap-3 rounded-xl px-4 py-3 relative overflow-hidden"
                 style={{ background: `linear-gradient(135deg, ${COLORS.gold}, ${COLORS.goldAccent})` }}
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.4, duration: 0.5, ease: easeOut }}
               >
-                <Target className="h-5 w-5" style={{ color: '#fff' }} />
-                <span className="text-base font-bold uppercase tracking-wide text-white">MA KHATMA <span className="font-bold text-xs normal-case text-white">(Mon objectif)</span></span>
-              </div>
+                {/* Shimmer effect */}
+                <motion.div
+                  className="absolute inset-0"
+                  style={{ background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.25) 50%, transparent 100%)' }}
+                  initial={{ x: '-100%' }}
+                  animate={{ x: '200%' }}
+                  transition={{ delay: 1, duration: 1.2, ease: 'easeInOut' }}
+                />
+                <Target className="h-5 w-5 relative z-10" style={{ color: '#fff' }} />
+                <span className="text-base font-bold uppercase tracking-wide text-white relative z-10">MA KHATMA <span className="font-bold text-xs normal-case text-white">(Mon objectif)</span></span>
+              </motion.div>
             </Link>
           </div>
         </motion.div>
