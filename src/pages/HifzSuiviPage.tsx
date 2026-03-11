@@ -151,19 +151,48 @@ export default function HifzSuiviPage() {
 
     const hifzCounts: Record<string, number> = {};
     const murajaCounts: Record<string, number> = {};
+    const daySurahs: Record<string, Map<number, { minVerse: number; maxVerse: number }>> = {};
+
     for (const s of (hifzSessions || [])) {
       const dateKey = s.created_at.split('T')[0];
       const verses = (s.end_verse - s.start_verse + 1);
       hifzCounts[dateKey] = (hifzCounts[dateKey] || 0) + verses;
+      // Track surah ranges per day
+      if (s.surah_number) {
+        if (!daySurahs[dateKey]) daySurahs[dateKey] = new Map();
+        const existing = daySurahs[dateKey].get(s.surah_number);
+        if (existing) {
+          existing.minVerse = Math.min(existing.minVerse, s.start_verse);
+          existing.maxVerse = Math.max(existing.maxVerse, s.end_verse);
+        } else {
+          daySurahs[dateKey].set(s.surah_number, { minVerse: s.start_verse, maxVerse: s.end_verse });
+        }
+      }
     }
     for (const s of (murajaSessions || [])) {
       const dateKey = s.created_at.split('T')[0];
       const reviewed = Array.isArray(s.verses_reviewed) ? s.verses_reviewed as any[] : [];
       const verses = reviewed.reduce((sum: number, r: any) => sum + (Number(r.verse_end || r.end_verse || r.end || 0) - Number(r.verse_start || r.start_verse || r.start || 0) + 1), 0);
       murajaCounts[dateKey] = (murajaCounts[dateKey] || 0) + (Number(verses) > 0 ? Number(verses) : 1);
+      // Track muraja surah ranges per day
+      for (const r of reviewed) {
+        const sn = Number(r.surah_number || r.surahNumber || 0);
+        if (sn > 0) {
+          if (!daySurahs[dateKey]) daySurahs[dateKey] = new Map();
+          const vs = Number(r.verse_start || r.start_verse || r.start || 0);
+          const ve = Number(r.verse_end || r.end_verse || r.end || 0);
+          const existing = daySurahs[dateKey].get(sn);
+          if (existing) {
+            existing.minVerse = Math.min(existing.minVerse, vs);
+            existing.maxVerse = Math.max(existing.maxVerse, ve);
+          } else {
+            daySurahs[dateKey].set(sn, { minVerse: vs, maxVerse: ve });
+          }
+        }
+      }
     }
 
-    const chartData: { day: string; hifz: number; muraja: number; date: string }[] = [];
+    const chartData: typeof weeklyData = [];
     for (let i = 6; i >= 0; i--) {
       const d = new Date();
       d.setDate(d.getDate() - i);
@@ -172,7 +201,24 @@ export default function HifzSuiviPage() {
       const dayName = DAY_LABELS[jsDay === 0 ? 6 : jsDay - 1];
       const dayNum = d.getDate();
       const label = `${dayName} ${dayNum}`;
-      chartData.push({ day: label, hifz: hifzCounts[key] || 0, muraja: murajaCounts[key] || 0, date: key });
+
+      // Build surahs array with page info
+      const surahsForDay: typeof weeklyData[0]['surahs'] = [];
+      const surahMap = daySurahs[key];
+      if (surahMap) {
+        for (const [surahNum, range] of surahMap.entries()) {
+          const surahInfo = SURAHS[surahNum - 1];
+          const name = surahInfo?.name || `Sourate ${surahNum}`;
+          let startPage = 0, endPage = 0;
+          try {
+            startPage = await getExactVersePage(surahNum, range.minVerse);
+            endPage = await getExactVersePage(surahNum, range.maxVerse);
+          } catch { /* fallback */ }
+          surahsForDay.push({ name, startVerse: range.minVerse, endVerse: range.maxVerse, startPage, endPage });
+        }
+      }
+
+      chartData.push({ day: label, hifz: hifzCounts[key] || 0, muraja: murajaCounts[key] || 0, date: key, surahs: surahsForDay });
     }
     setWeeklyData(chartData);
 
