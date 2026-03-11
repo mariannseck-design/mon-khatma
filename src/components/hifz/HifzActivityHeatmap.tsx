@@ -52,7 +52,7 @@ export function HifzActivityHeatmap({ userId }: HifzActivityHeatmapProps) {
     (async () => {
       const fromDate = format(startDate, 'yyyy-MM-dd');
 
-      const [sessionsRes, murajaRes] = await Promise.all([
+      const [sessionsRes, murajaRes, versesRes] = await Promise.all([
         supabase
           .from('hifz_sessions')
           .select('completed_at')
@@ -65,13 +65,20 @@ export function HifzActivityHeatmap({ userId }: HifzActivityHeatmapProps) {
           .eq('user_id', userId)
           .not('completed_at', 'is', null)
           .gte('completed_at', fromDate),
+        supabase
+          .from('hifz_memorized_verses')
+          .select('memorized_at')
+          .eq('user_id', userId)
+          .gte('memorized_at', fromDate),
       ]);
 
       const map = new Map<string, DayActivity>();
+      const getOrCreate = (dateKey: string): DayActivity =>
+        map.get(dateKey) || { date: dateKey, memorized: 0, reviewed: 0, total: 0, versesAdded: 0 };
 
       for (const s of sessionsRes.data || []) {
         const dateKey = format(new Date(s.completed_at!), 'yyyy-MM-dd');
-        const existing = map.get(dateKey) || { date: dateKey, memorized: 0, reviewed: 0, total: 0 };
+        const existing = getOrCreate(dateKey);
         existing.memorized++;
         existing.total++;
         map.set(dateKey, existing);
@@ -79,9 +86,16 @@ export function HifzActivityHeatmap({ userId }: HifzActivityHeatmapProps) {
 
       for (const s of murajaRes.data || []) {
         const dateKey = format(new Date(s.completed_at!), 'yyyy-MM-dd');
-        const existing = map.get(dateKey) || { date: dateKey, memorized: 0, reviewed: 0, total: 0 };
+        const existing = getOrCreate(dateKey);
         existing.reviewed++;
         existing.total++;
+        map.set(dateKey, existing);
+      }
+
+      for (const s of versesRes.data || []) {
+        const dateKey = format(new Date(s.memorized_at), 'yyyy-MM-dd');
+        const existing = getOrCreate(dateKey);
+        existing.versesAdded++;
         map.set(dateKey, existing);
       }
 
