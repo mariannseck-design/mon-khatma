@@ -250,9 +250,18 @@ export default function MurjaPage() {
       return dayMonth;
     };
 
-    return allVerses
-      .filter(v => v.next_review_date > today)
-      .sort((a, b) => a.next_review_date.localeCompare(b.next_review_date))
+    // Tour/future reviews
+    const futureItems = allVerses
+      .filter(v => v.next_review_date > today && v.liaison_status !== 'liaison')
+      .map(v => ({ ...v, _sortDate: v.next_review_date }));
+
+    // Liaison verses are daily → treat them as due tomorrow
+    const liaisonItems = allVerses
+      .filter(v => v.liaison_status === 'liaison')
+      .map(v => ({ ...v, _sortDate: tomorrowKey }));
+
+    return [...liaisonItems, ...futureItems]
+      .sort((a, b) => a._sortDate.localeCompare(b._sortDate))
       .slice(0, 5)
       .map(v => {
         const surahName = SURAHS.find(s => s.number === v.surah_number)?.name || `Sourate ${v.surah_number}`;
