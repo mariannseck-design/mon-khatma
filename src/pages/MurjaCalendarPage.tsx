@@ -308,15 +308,24 @@ export default function MurjaCalendarPage() {
             <ArrowLeft className="h-4 w-4" strokeWidth={1.5} />
           </button>
           {streak > 0 && (
-            <motion.div
-              initial={{ opacity: 0, x: 10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.4, ease: 'easeOut' }}
-              className="absolute right-0 flex items-center gap-0.5 px-2 py-1 rounded-full"
-            >
-              <span className="text-xs font-bold" style={{ color: '#D4AF37' }}>{streak}</span>
-              <span className="text-xs">🔥</span>
-            </motion.div>
+            <TooltipProvider delayDuration={0}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <motion.button
+                    initial={{ opacity: 0, x: 10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.4, ease: 'easeOut' }}
+                    className="absolute right-0 flex items-center gap-0.5 px-2 py-1 rounded-full"
+                  >
+                    <span className="text-xs font-bold" style={{ color: '#D4AF37' }}>{streak}</span>
+                    <span className="text-xs">🔥</span>
+                  </motion.button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="text-xs font-semibold">
+                  Record : {longestStreak} jours 🏆
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           )}
           <div className="text-center">
             <h1 className="text-base font-bold" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-primary)' }}>
