@@ -192,7 +192,7 @@ export default function HifzHubPage() {
                 </div>
                 <div className="flex-1">
                   <h3
-                    className="text-base font-bold tracking-[0.08em] uppercase"
+                    className="text-sm font-bold tracking-[0.08em] uppercase"
                     style={{ fontFamily: "'Inter', sans-serif", color: COLORS.goldAccent }}
                   >
                     {activeMouradSession ? '▶️ Continuer ma session' : 'Méthode Oustaz Mourad + Tikrar + Istiqâmah'}
