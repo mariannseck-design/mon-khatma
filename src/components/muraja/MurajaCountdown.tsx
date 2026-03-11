@@ -34,7 +34,7 @@ export default function MurajaCountdown({ allChecked = false, nextReviews = [] }
       <div className="flex items-center justify-center gap-2">
         <CheckCircle className="h-5 w-5" style={{ color: '#10B981' }} />
         <p className="text-sm font-bold" style={{ color: '#10B981' }}>
-          Révisions du jour terminées ✓
+          Révisions du {new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })} terminées ✓
         </p>
       </div>
 

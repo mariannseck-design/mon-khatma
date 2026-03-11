@@ -127,16 +127,18 @@ export default function MurajaChecklist({
     if (section === 'tour' && hasTourBlocks) {
       return (
         <div
-          className="rounded-xl p-4 text-center"
+          className="rounded-xl px-3 py-2.5"
           style={{
             background: 'var(--p-card)',
             border: '1px solid var(--p-border)',
           }}
         >
-          <PartyPopper className="h-5 w-5 mx-auto mb-1.5" style={{ color: '#D4AF37' }} />
-          <p className="text-xs font-bold" style={{ color: 'var(--p-primary)' }}>
-            Alhamdulillah, tu as terminé tes révisions pour aujourd'hui !
-          </p>
+          <div className="flex items-center gap-2">
+            <PartyPopper className="h-4 w-4 flex-shrink-0" style={{ color: '#D4AF37' }} />
+            <p className="text-[11px] font-bold" style={{ color: 'var(--p-primary)' }}>
+              Alhamdulillah, révisions terminées !
+            </p>
+          </div>
           {nextTourReviews && nextTourReviews.length > 0 && (
             <div className="mt-3 text-left space-y-1">
               <p className="text-[10px] font-bold" style={{ color: 'var(--p-text-75)' }}>
