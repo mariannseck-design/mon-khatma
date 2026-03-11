@@ -195,7 +195,7 @@ export default function MurjaPage() {
     const total = allVerses.reduce((sum, v) => sum + (v.verse_end - v.verse_start + 1), 0);
     const map = new Map<string, { name: string; surahNumber: number; verseMin: number; verseMax: number; nextReview: string; isLiaison: boolean }>();
     for (const v of allVerses) {
-      const isLiaison = v.liaison_status === 'liaison';
+      const isLiaison = v.memorized_at >= thirtyDaysCutoff;
       const key = `${v.surah_number}_${isLiaison ? 'liaison' : 'tour'}`;
       const existing = map.get(key);
       if (existing) {
