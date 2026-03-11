@@ -5,6 +5,7 @@ import { SURAHS } from '@/lib/surahData';
 import { getExactVersePage } from '@/lib/quranData';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { ArrowLeft, ChevronDown, ChevronUp, ChevronRight, Eye, EyeOff, AlertTriangle } from 'lucide-react';
+import { HifzActivityHeatmap } from '@/components/hifz/HifzActivityHeatmap';
 import { useNavigate } from 'react-router-dom';
 import { format, isToday, isTomorrow, isYesterday, isPast, startOfDay } from 'date-fns';
 import { fr } from 'date-fns/locale';
@@ -255,6 +256,13 @@ export default function HifzSuiviPage() {
           Réviser <ChevronRight className="w-3.5 h-3.5" />
         </button>
       </div>
+
+      {/* Activity Heatmap */}
+      {user && (
+        <div className="mb-6">
+          <HifzActivityHeatmap userId={user.id} />
+        </div>
+      )}
 
       {/* Juz Grid */}
       <div className="mb-3">
