@@ -51,6 +51,7 @@ export default function MurjaCalendarPage() {
   const [ratingFor, setRatingFor] = useState<string | null>(null);
   const [streak, setStreak] = useState(0);
   const [longestStreak, setLongestStreak] = useState(0);
+  const [showNewRecord, setShowNewRecord] = useState(false);
   const streakUpdatedRef = useRef(false);
 
   // Fetch streak on mount
