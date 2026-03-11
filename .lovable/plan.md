@@ -1,21 +1,12 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Remplacer l'icône lampe par un point d'info plus accessible
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Changement unique dans `src/pages/MurjaCalendarPage.tsx`
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+**Lignes ~272-273** : Remplacer `<Lightbulb className="h-3.5 w-3.5" />` par un petit cercle avec un `?` ou un `i` (point d'information), plus intuitif et universellement compris comme "cliquez pour en savoir plus".
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+Concrètement : remplacer l'icône `Lightbulb` par l'icône `Info` de Lucide (un cercle avec un "i"). Cette icône est un standard UX reconnu — les utilisateurs savent instinctivement qu'il faut taper dessus pour lire l'explication.
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
-
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+Import : remplacer `Lightbulb` par `Info` dans la ligne d'import Lucide.
 
