@@ -1,21 +1,18 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Ajouter le bouton Skip Dev Mode sur la page Méthode Mourad
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Modifications sur `src/pages/MethodeMouradPage.tsx`
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+1. Importer `DevSkipButton` et `useDevMode`
+2. Appeler `useDevMode()` dans le composant
+3. Ajouter `<DevSkipButton>` en bas du JSX, visible quand une session est active et non terminée
+4. Le `onSkip` avance à la phase suivante (phase+1), ou complète la session si phase 4/5
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+### Logique du Skip
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
-
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+- Phase 1→2→3→4 : `advancePhase(phase + 1)`
+- Phase 4 : passe en maintenance (phase 5 + date)
+- Phase 5 (maintenance) : appelle `handleMaintenanceComplete()`
+- Session terminée / config : bouton masqué
 
