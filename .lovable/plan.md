@@ -1,21 +1,17 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Compacter la section Consolidation et harmoniser les tailles
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Problème
+1. Les items de tour validés restent affichés en taille pleine (contrairement au rabt qui les regroupe en badges compacts)
+2. Dans le MurajaChecklist (section tour vide), les "Prochaine révision" sont affichées en texte `11px` minimaliste, alors que dans le MurajaCountdown les prochaines révisions sont des cartes stylisées — pas de cohérence de taille
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Corrections — `src/components/muraja/MurajaChecklist.tsx`
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+1. **Appliquer le même regroupement compact aux items tour validés** (lignes 204-206) : Étendre la logique `checkedItems` / `uncheckedItems` à la section `tour` aussi. Les items validés seront affichés comme des badges compacts (sourate + page) dans un bloc résumé vert (même pattern que le rabt doré, mais en émeraude).
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+2. **Harmoniser l'affichage des "Prochaine révision"** (lignes 142-159 et 405-430) : Remplacer le texte compact par des mini-cartes avec la même structure que le MurajaCountdown — icône + sourate + versets + page + date, dans un layout flex horizontal avec fond coloré léger. Utiliser le même style pour les deux occurrences (section vide et section après validation complète).
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+### Fichier modifié
+- `src/components/muraja/MurajaChecklist.tsx`
 
