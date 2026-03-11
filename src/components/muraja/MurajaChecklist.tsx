@@ -397,7 +397,7 @@ export default function MurajaChecklist({
                   </div>
 
                   {/* Mini progress bar for rabt */}
-                  {section === 'rabt' && item.liaison_start_date && (
+                  {section === 'rabt' && (item.memorized_at || item.liaison_start_date) && (
                     <div className="w-full h-1.5 rounded-full overflow-hidden mt-1.5" style={{ background: 'var(--p-track)' }}>
                       <motion.div
                         className="h-full rounded-full"
