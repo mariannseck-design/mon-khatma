@@ -101,7 +101,7 @@ export default function HifzConfig({ onStart }: HifzConfigProps) {
               color: selectionMode === mode ? '#d4af37' : 'rgba(255,255,255,0.6)',
             }}
           >
-            {mode === 'surah' ? 'Sourate' : 'Page Mushaf'}
+            {mode === 'surah' ? 'Sourate' : 'Page'}
           </button>
         ))}
       </div>
