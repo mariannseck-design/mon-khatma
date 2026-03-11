@@ -5,6 +5,7 @@ import { SURAHS } from '@/lib/surahData';
 import { getExactVersePage } from '@/lib/quranData';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { ArrowLeft, ChevronDown, ChevronUp, ChevronRight, Eye, EyeOff, AlertTriangle } from 'lucide-react';
+import { WeeklyCalendarBar } from '@/components/hifz/WeeklyCalendarBar';
 import { HifzActivityHeatmap } from '@/components/hifz/HifzActivityHeatmap';
 import { HifzMilestoneCelebration } from '@/components/hifz/HifzMilestoneCelebration';
 import { useNavigate } from 'react-router-dom';
@@ -87,6 +88,7 @@ export default function HifzSuiviPage() {
   const navigate = useNavigate();
   const [memorized, setMemorized] = useState<MemorizedVerse[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [expandedJuz, setExpandedJuz] = useState<number | null>(null);
   const [versePages, setVersePages] = useState<Map<string, number>>(new Map());
   const [showAllJuz, setShowAllJuz] = useState(false);
@@ -415,6 +417,8 @@ export default function HifzSuiviPage() {
           {showAllJuz ? <><EyeOff className="w-3.5 h-3.5" /> Masquer les vides</> : <><Eye className="w-3.5 h-3.5" /> Voir tous les Juz</>}
         </button>
       </div>
+
+      <WeeklyCalendarBar selectedDate={selectedDate} onSelectDate={setSelectedDate} variant="floating" />
     </AppLayout>
   );
 }
