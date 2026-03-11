@@ -265,16 +265,12 @@ export default function MurjaPage() {
       .slice(0, 5)
       .map(v => {
         const surahName = SURAHS.find(s => s.number === v.surah_number)?.name || `Sourate ${v.surah_number}`;
-        const pKey = `${v.surah_number}_${v.liaison_status === 'liaison' ? 'l' : 't'}`;
-        const pages = pageMap[pKey];
-        const pageLabel = pages
-          ? pages.startPage === pages.endPage ? `p. ${pages.startPage}` : `p. ${pages.startPage}-${pages.endPage}`
-          : undefined;
+        const page = getApproxVersePage(v.surah_number, v.verse_start);
         return {
           surahName,
           verseStart: v.verse_start,
           verseEnd: v.verse_end,
-          page: pageLabel,
+          page: `p. ${page}`,
           date: formatReviewDate(v._sortDate),
           type: (v.liaison_status === 'liaison' ? 'rabt' : 'tour') as 'rabt' | 'tour',
         };
