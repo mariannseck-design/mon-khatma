@@ -271,9 +271,6 @@ export default function HifzSuiviPage() {
                   <span className="text-2xl font-bold" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-primary)' }}>
                     {totalVerses}
                   </span>
-                  <span className="text-[11px] font-medium" style={{ color: 'var(--p-text-55)' }}>
-                    / 6236 versets
-                  </span>
                 </div>
               </div>
               <span className="text-xs font-semibold mt-2" style={{ color: 'var(--p-text-65)' }}>
