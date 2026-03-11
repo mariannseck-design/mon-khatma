@@ -257,6 +257,13 @@ export default function HifzSuiviPage() {
         </button>
       </div>
 
+      {/* Activity Heatmap */}
+      {user && (
+        <div className="mb-6">
+          <HifzActivityHeatmap userId={user.id} />
+        </div>
+      )}
+
       {/* Juz Grid */}
       <div className="mb-3">
         <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--p-text-55)' }}>
