@@ -328,16 +328,16 @@ export default function HifzHubPage() {
                     className="w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0"
                     style={{ background: `${COLORS.gold}22`, border: `1px solid ${COLORS.gold}35` }}
                   >
-                    <RefreshCw className="h-8 w-8" style={{ color: COLORS.goldAccent }} />
+                    <RefreshCw className="h-8 w-8" style={{ color: '#fff' }} />
                   </div>
                   {pendingReviews > 0 && (
                     <span
-                      className="absolute -top-1.5 -right-1.5 min-w-[22px] h-[22px] rounded-full flex items-center justify-center text-[11px] font-bold px-1"
+                      className="absolute -top-2 -right-2 min-w-[26px] h-[26px] rounded-full flex items-center justify-center text-[13px] font-extrabold px-1.5"
                       style={{
-                        background: 'linear-gradient(135deg, #d4af37, #b8962e)',
-                        color: '#1a2e1a',
-                        border: '2px solid white',
-                        boxShadow: '0 2px 6px rgba(212,175,55,0.4)',
+                        background: '#fff',
+                        color: COLORS.emerald,
+                        border: `2px solid ${COLORS.goldAccent}`,
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
                       }}
                     >
                       {pendingReviews > 99 ? '99+' : pendingReviews}
@@ -347,7 +347,7 @@ export default function HifzHubPage() {
                 <div className="flex-1">
                   <h3
                     className="text-xl font-bold tracking-[0.08em] uppercase"
-                    style={{ fontFamily: "'Inter', sans-serif", color: COLORS.goldAccent }}
+                    style={{ fontFamily: "'Inter', sans-serif", color: '#fff' }}
                   >
                     Muraja'a
                   </h3>
