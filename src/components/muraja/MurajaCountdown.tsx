@@ -24,7 +24,7 @@ export default function MurajaCountdown({ allChecked = false, nextReviews = [] }
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      className="rounded-2xl p-5 text-center space-y-3"
+      className="rounded-2xl p-3 text-center space-y-2"
       style={{
         background: 'var(--p-card)',
         border: '1px solid var(--p-border)',
