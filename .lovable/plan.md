@@ -1,21 +1,21 @@
 
 
-## Corriger le blocage du scroll sur les pages Hifz
+# Diagnostic : 404 sur /quran-reader
 
-### Probleme
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-Le composant `HifzMushafImage` utilise la classe CSS `touch-none` sur son conteneur d'image. Cette classe desactive **tous** les gestes tactiles (scroll, zoom natif, etc.) sur toute la zone de l'image. Comme l'image occupe une grande partie de l'ecran, l'utilisateur ne peut plus scroller la page du tout.
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-De plus, les handlers `handleTouchStart` et `handleTouchMove` appellent `e.preventDefault()` meme pour des gestes a un seul doigt quand le zoom est actif, ce qui bloque aussi le scroll.
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-### Solution
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-1. **Remplacer `touch-none` par `touch-pan-y`** quand le zoom n'est pas actif (scale <= 1). Cela permet le scroll vertical normal tout en capturant le pinch-to-zoom a 2 doigts.
-2. **Appliquer `touch-none` uniquement quand le zoom est actif** (scale > 1), car dans ce cas le pan interne est necessaire.
-3. **Ne pas appeler `e.preventDefault()` sur les gestes a 1 doigt quand le zoom n'est pas actif**, pour laisser le scroll natif fonctionner.
-
-### Fichier modifie : `src/components/hifz/HifzMushafImage.tsx`
-
-- Ligne 202 : classe dynamique `touch-none` vs `touch-pan-y` selon `scale > 1`
-- Ligne 88-94 : ne capturer le pan a 1 doigt que si `scale > 1` (deja fait mais le `touch-none` bloquait quand meme)
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
