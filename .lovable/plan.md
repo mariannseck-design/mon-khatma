@@ -1,29 +1,21 @@
 
 
-## Différencier clairement l'icône des cartes verrouillées
+# Diagnostic : 404 sur /quran-reader
 
-Le problème : le cercle gris avec le petit cadenas (h-2.5) ressemble trop au cercle de validation. L'icône est quasi invisible.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-**Fichier** : `src/pages/MurjaCalendarPage.tsx`, lignes 159-171
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-Remplacer le cercle rond par une icône cadenas plus grande, sans cercle de fond, pour que ce soit immédiatement reconnaissable :
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-```tsx
-{/* Checkbox / Lock */}
-<div className="absolute top-2.5 right-2.5 flex items-center justify-center">
-  {isChecked ? (
-    <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ background: checkColor }}>
-      <Check className="h-3 w-3 text-white" />
-    </div>
-  ) : locked ? (
-    <Lock className="h-4 w-4" style={{ color: 'var(--p-text-30)' }} />
-  ) : (
-    <div className="w-5 h-5 rounded-full" style={{ border: `2px solid ${checkColor}` }} />
-  )}
-</div>
-```
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-- **Validé** : cercle coloré + coche blanche (inchangé)
-- **Verrouillé** : icône cadenas seule, plus grande (h-4), sans cercle — visuellement distinct
-- **À faire** : cercle vide avec bordure colorée (inchangé)
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
