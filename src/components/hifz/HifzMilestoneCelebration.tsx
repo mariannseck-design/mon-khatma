@@ -52,12 +52,12 @@ function generateParticles(count: number): Particle[] {
 }
 
 interface HifzMilestoneCelebrationProps {
-  totalAyats: number;
-  completedJuz: number[]; // juz numbers at 100%
+  totalPages: number;
+  completedJuz: number[];
   activeJuzCount: number;
 }
 
-export function HifzMilestoneCelebration({ totalAyats, completedJuz, activeJuzCount }: HifzMilestoneCelebrationProps) {
+export function HifzMilestoneCelebration({ totalPages, completedJuz, activeJuzCount }: HifzMilestoneCelebrationProps) {
   const [shownMilestones, setShownMilestones] = useState<Set<string>>(new Set());
   const [activeMilestone, setActiveMilestone] = useState<Milestone | null>(null);
   const [particles, setParticles] = useState<Particle[]>([]);
