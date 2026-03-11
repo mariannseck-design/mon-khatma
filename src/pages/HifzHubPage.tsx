@@ -6,7 +6,66 @@ import { BookOpen, BookHeart, RefreshCw, BarChart3, Play, BookOpenCheck } from '
 import { AppLayout } from '@/components/layout/AppLayout';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
-
+        {/* Le Noble Coran */}
+        <motion.div variants={itemVariants}>
+          {hasFullAccess ? (
+            <Link to="/quran-reader" className="block">
+              <motion.div
+                className="relative overflow-hidden rounded-[2rem] p-7 group"
+                style={{
+                  background: COLORS.beige,
+                  border: `2px solid ${COLORS.emerald}35`,
+                  boxShadow: `0 6px 24px -8px ${COLORS.emerald}15`,
+                }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <div className="absolute -bottom-6 -right-6 w-32 h-32 rounded-full blur-2xl" style={{ background: `${COLORS.gold}08` }} />
+                <div className="relative z-10 flex items-center justify-center gap-5">
+                  <div
+                    className="w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0"
+                    style={{ background: `${COLORS.gold}18`, border: `1px solid ${COLORS.gold}30` }}
+                  >
+                    <BookOpenCheck className="h-9 w-9" style={{ color: COLORS.goldAccent }} />
+                  </div>
+                  <div className="flex-1 text-center">
+                    <h3
+                      className="text-xl font-bold tracking-[0.1em] uppercase"
+                      style={{ fontFamily: "'Inter', sans-serif", color: COLORS.goldAccent }}
+                    >
+                      Le Noble Coran
+                    </h3>
+                  </div>
+                </div>
+              </motion.div>
+            </Link>
+          ) : (
+            <div
+              className="relative overflow-hidden rounded-[2rem] p-7 opacity-75"
+              style={{
+                background: COLORS.beige,
+                border: `2px solid ${COLORS.emerald}25`,
+              }}
+            >
+              <div className="relative z-10 flex items-center justify-center gap-5">
+                <div
+                  className="w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0"
+                  style={{ background: `${COLORS.gold}12`, border: `1px solid ${COLORS.gold}20` }}
+                >
+                  <BookOpenCheck className="h-9 w-9" style={{ color: COLORS.goldAccent }} />
+                </div>
+                <div className="flex-1 text-center">
+                  <h3
+                    className="text-xl font-bold tracking-[0.1em] uppercase"
+                    style={{ fontFamily: "'Inter', sans-serif", color: COLORS.goldAccent }}
+                  >
+                    Le Noble Coran
+                  </h3>
+                  <p className="text-sm mt-1" style={{ color: `${COLORS.sage}90` }}>Bientôt disponible in shaa Allah</p>
+                </div>
+              </div>
+            </div>
+          )}
+        </motion.div>
 
 const COLORS = {
   emerald: '#2d6a4f',
