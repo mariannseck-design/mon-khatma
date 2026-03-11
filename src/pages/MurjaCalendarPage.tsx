@@ -118,67 +118,61 @@ export default function MurjaCalendarPage() {
 
   const renderCards = (items: MemorizedVerse[], isRabt: boolean) => {
     if (items.length === 0) return null;
-    const displayItems = isFutureDay ? items : items.filter(i => !checkedIds.includes(i.id));
-    const checked = isFutureDay ? [] : items.filter(i => checkedIds.includes(i.id));
 
     return (
-      <div className="space-y-2">
-        <div className="grid grid-cols-2 gap-3">
-          {displayItems.map(item => {
-            const color = getItemColor(item, isRabt);
-            const page = pageMap[item.id];
-            return (
-              <motion.button
-                key={item.id}
-                onClick={() => handleCardTap(item.id, isRabt)}
-                className="relative rounded-2xl p-3.5 text-left transition-all"
-                style={{
-                  background: 'var(--p-card)',
-                  border: '1px solid var(--p-border)',
-                  borderLeftWidth: '3px',
-                  borderLeftColor: color,
-                  opacity: isFutureDay ? 0.5 : 1,
-                }}
-                whileTap={isFutureDay ? {} : { scale: 0.96 }}
-                disabled={isFutureDay}
-              >
-                {isFutureDay && (
-                  <Lock className="absolute top-2 right-2 h-3 w-3" style={{ color: 'var(--p-text-40)' }} />
-                )}
-                <p className="text-sm font-bold truncate" style={{ color: 'var(--p-text)' }}>
-                  {getSurahName(item.surah_number)}
-                </p>
-                <div className="flex items-center gap-1 mt-1.5 text-[11px] font-medium" style={{ color: 'var(--p-text-60)' }}>
-                  <BookOpen className="h-3 w-3" style={{ color }} />
-                  <span>v.{item.verse_start} → {item.verse_end}</span>
-                </div>
-                {page && (
-                  <p className="text-[10px] mt-1 font-semibold" style={{ color: 'var(--p-text-50)' }}>
-                    p. {page}
-                  </p>
-                )}
-              </motion.button>
-            );
-          })}
-        </div>
+      <div className="grid grid-cols-2 gap-3">
+        {items.map(item => {
+          const color = getItemColor(item, isRabt);
+          const page = pageMap[item.id];
+          const isChecked = checkedIds.includes(item.id);
+          const checkColor = isRabt ? '#D4AF37' : '#10B981';
 
-        {checked.length > 0 && (
-          <div className="flex flex-wrap gap-1.5">
-            {checked.map(item => (
-              <span
-                key={item.id}
-                className="flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-semibold"
-                style={{
-                  background: isRabt ? 'rgba(212,175,55,0.10)' : 'rgba(16,185,129,0.10)',
-                  color: isRabt ? '#D4AF37' : '#10B981',
-                }}
+          return (
+            <motion.button
+              key={item.id}
+              onClick={() => handleCardTap(item.id, isRabt)}
+              className="relative rounded-2xl p-3.5 text-left transition-all"
+              style={{
+                background: 'var(--p-card)',
+                border: '1px solid var(--p-border)',
+                borderLeftWidth: '3px',
+                borderLeftColor: color,
+                opacity: isFutureDay ? 0.5 : isChecked ? 0.5 : 1,
+              }}
+              whileTap={isFutureDay || isChecked ? {} : { scale: 0.96 }}
+              disabled={isFutureDay || isChecked}
+            >
+              {/* Checkbox circle */}
+              <div
+                className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full flex items-center justify-center transition-all"
+                style={isChecked
+                  ? { background: checkColor }
+                  : isFutureDay
+                    ? { border: '1.5px solid var(--p-text-40)' }
+                    : { border: `2px solid ${checkColor}` }
+                }
               >
-                <Check className="h-2.5 w-2.5" />
+                {isChecked && <Check className="h-3 w-3 text-white" />}
+                {isFutureDay && !isChecked && (
+                  <Lock className="h-2.5 w-2.5" style={{ color: 'var(--p-text-40)' }} />
+                )}
+              </div>
+
+              <p className="text-sm font-bold truncate pr-6" style={{ color: 'var(--p-text)' }}>
                 {getSurahName(item.surah_number)}
-              </span>
-            ))}
-          </div>
-        )}
+              </p>
+              <div className="flex items-center gap-1 mt-1.5 text-[11px] font-medium" style={{ color: 'var(--p-text-60)' }}>
+                <BookOpen className="h-3 w-3" style={{ color }} />
+                <span>v.{item.verse_start} → {item.verse_end}</span>
+              </div>
+              {page && (
+                <p className="text-[10px] mt-1 font-semibold" style={{ color: 'var(--p-text-50)' }}>
+                  p. {page}
+                </p>
+              )}
+            </motion.button>
+          );
+        })}
       </div>
     );
   };
