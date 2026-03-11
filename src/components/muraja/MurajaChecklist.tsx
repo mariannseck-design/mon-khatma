@@ -12,6 +12,7 @@ interface ChecklistItem {
   verse_end: number;
   sm2_interval?: number;
   liaison_start_date?: string | null;
+  memorized_at?: string | null;
 }
 
 interface NextReview {
