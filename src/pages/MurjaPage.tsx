@@ -191,7 +191,7 @@ export default function MurjaPage() {
 
   const allDailyChecked = checkedCount >= totalBlocks && totalBlocks > 0;
 
-  const { totalVersesCount, surahSummary } = useMemo(() => {
+  const { totalVersesCount, surahSummary } = useMemo<{ totalVersesCount: number; surahSummary: { name: string; surahNumber: number; verseMin: number; verseMax: number; nextReview: string; isLiaison: boolean }[] }>(() => {
     const total = allVerses.reduce((sum, v) => sum + (v.verse_end - v.verse_start + 1), 0);
     const map = new Map<string, { name: string; surahNumber: number; verseMin: number; verseMax: number; nextReview: string; isLiaison: boolean }>();
     for (const v of allVerses) {
