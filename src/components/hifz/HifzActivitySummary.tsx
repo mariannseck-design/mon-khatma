@@ -17,7 +17,6 @@ export function HifzActivitySummary({ userId }: HifzActivitySummaryProps) {
 
   const today = useMemo(() => new Date(), []);
   const monday = useMemo(() => startOfWeek(today, { weekStartsOn: 1 }), [today]);
-  const monthStart = useMemo(() => format(startOfMonth(today), 'yyyy-MM-dd'), [today]);
 
   useEffect(() => {
     if (!userId) return;
