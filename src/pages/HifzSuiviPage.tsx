@@ -321,7 +321,7 @@ export default function HifzSuiviPage() {
                   <div className="relative flex-shrink-0">
                     <CircleProgress percentage={juz.percentage} size={80} />
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <span className={`font-bold ${expanded ? 'text-base' : 'text-sm'}`} style={{ color: 'var(--p-primary)' }}>
+                      <span className="font-bold text-base" style={{ color: 'var(--p-primary)' }}>
                         {juz.percentage}%
                       </span>
                     </div>
