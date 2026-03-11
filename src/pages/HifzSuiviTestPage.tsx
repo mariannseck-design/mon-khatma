@@ -356,7 +356,7 @@ export default function HifzSuiviTestPage() {
                         <div className="rounded-lg p-2" style={{ background: 'var(--p-track)' }}>
                           <div className="text-[9px] uppercase" style={{ color: 'var(--p-text-55)' }}>Prochaine révision</div>
                           <div className="text-xs font-medium" style={{ color: 'var(--p-primary)' }}>
-                            {format(new Date(juz.nextReview), 'd MMM', { locale: fr })}
+                            {formatSmartDate(juz.nextReview)}
                           </div>
                         </div>
                       )}
