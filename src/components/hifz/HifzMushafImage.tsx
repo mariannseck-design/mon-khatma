@@ -86,14 +86,18 @@ export default function HifzMushafImage({ surahNumber, startVerse, endVerse, max
       e.preventDefault();
       lastTouchDistRef.current = getTouchDist(e.touches);
       lastTouchCenterRef.current = getTouchCenter(e.touches);
-    } else if (e.touches.length === 1 && scale > 1) {
-      isPanningRef.current = true;
-      panStartRef.current = {
-        x: e.touches[0].clientX,
-        y: e.touches[0].clientY,
-        tx: translate.x,
-        ty: translate.y,
-      };
+    } else if (e.touches.length === 1) {
+      // Store position for double-tap detection
+      lastTapPosRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      if (scale > 1) {
+        isPanningRef.current = true;
+        panStartRef.current = {
+          x: e.touches[0].clientX,
+          y: e.touches[0].clientY,
+          tx: translate.x,
+          ty: translate.y,
+        };
+      }
     }
   }, [scale, translate]);
 
