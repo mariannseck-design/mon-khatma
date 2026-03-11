@@ -6,8 +6,16 @@ import { getExactVersePage } from '@/lib/quranData';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { ArrowLeft, ChevronDown, ChevronUp, ChevronRight, Eye, EyeOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { format } from 'date-fns';
+import { format, isToday, isTomorrow, isYesterday } from 'date-fns';
 import { fr } from 'date-fns/locale';
+
+function formatSmartDate(dateStr: string): string {
+  const d = new Date(dateStr);
+  if (isToday(d)) return "Aujourd'hui";
+  if (isTomorrow(d)) return 'Demain';
+  if (isYesterday(d)) return 'Hier';
+  return format(d, 'd MMM', { locale: fr });
+}
 
 const JUZ_PAGE_RANGES: { start: number; end: number }[] = [
   { start: 1, end: 21 }, { start: 22, end: 41 }, { start: 42, end: 61 },
