@@ -1,21 +1,35 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Supprimer les pages Muraja'a alternatives et garder uniquement le Calendrier
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Pages à supprimer
+- `src/pages/MurjaPage.tsx` (757 lignes — l'ancienne page principale)
+- `src/pages/MurjaCardsPage.tsx` (207 lignes — vue flashcards)
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Composants Muraja devenus orphelins à supprimer
+- `src/components/muraja/MurajaChecklist.tsx`
+- `src/components/muraja/MurajaCelebration.tsx`
+- `src/components/muraja/MurajaCountdown.tsx`
+- `src/components/muraja/MurajaMethodModal.tsx`
+- `src/components/muraja/MurajaWeeklyRecap.tsx`
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+### Fichiers à modifier
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+1. **`src/App.tsx`** :
+   - Supprimer les imports de `MurjaPage` et `MurjaCardsPage`
+   - Supprimer les routes `/muraja` et `/murajaa-cards`
+   - Renommer la route `/murajaa-calendar` → `/muraja` (nouvelle route principale)
+   - Supprimer l'import `RefreshCw` s'il n'est plus utilisé
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+2. **`src/pages/MurjaCalendarPage.tsx`** :
+   - Le bouton retour navigue actuellement vers `/muraja` → changer vers `/accueil`
+
+3. **`src/pages/AccueilPage.tsx`** :
+   - Le lien `<Link to="/muraja">` reste inchangé (la route `/muraja` pointera désormais vers le calendrier)
+
+4. **`src/components/hifz/HifzSuccess.tsx`** :
+   - `navigate('/muraja')` reste inchangé (même raison)
+
+5. **`src/pages/HifzSuiviPage.tsx`** :
+   - `<Link to="/muraja">` reste inchangé
 
