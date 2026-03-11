@@ -233,15 +233,15 @@ export default function MurjaCalendarPage() {
     <AppLayout title="Muraja'a" hideNav bgClassName="bg-gradient-muraja">
       <div className="max-w-md mx-auto px-4 py-5 space-y-4" style={{ backgroundColor: 'var(--p-bg)', minHeight: '100vh' }}>
         {/* Header */}
-        <div className="flex items-center gap-3">
+        <div className="relative flex items-center justify-center">
           <button
             onClick={() => navigate('/accueil')}
-            className="w-8 h-8 rounded-lg flex items-center justify-center"
+            className="absolute left-0 w-8 h-8 rounded-lg flex items-center justify-center"
             style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)' }}
           >
             <ArrowLeft className="h-4 w-4" style={{ color: 'var(--p-text-60)' }} />
           </button>
-          <div>
+          <div className="text-center">
             <h1 className="text-base font-bold" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-primary)' }}>
               Mon Programme du Jour
             </h1>
