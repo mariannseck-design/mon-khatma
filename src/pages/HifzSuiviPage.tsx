@@ -376,35 +376,6 @@ export default function HifzSuiviPage() {
               </motion.button>
             )}
 
-            {/* ═══ 4. STATS FUSIONNÉES — Grille 2x2 ═══ */}
-            <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="grid grid-cols-2 gap-3"
-            >
-              {[
-                { emoji: '🟢', label: 'Ar-Rabt', sublabel: "aujourd'hui", value: todayHifz, unit: 'verset' },
-                { emoji: '🟡', label: "Muraja'a", sublabel: "aujourd'hui", value: todayMuraja, unit: 'verset' },
-                { emoji: '🔥', label: 'Streak', sublabel: `Record : ${streak.longest}`, value: streak.current, unit: 'jour' },
-                { emoji: '✅', label: 'Cycles', sublabel: 'terminés', value: streak.tours, unit: '' },
-              ].map((s) => (
-                <div
-                  key={s.label}
-                  className="rounded-2xl p-4 flex items-center gap-3"
-                  style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', boxShadow: 'var(--p-card-shadow)' }}
-                >
-                  <span className="text-xl">{s.emoji}</span>
-                  <div className="flex flex-col">
-                    <span className="text-lg font-bold leading-tight" style={{ color: 'var(--p-text)' }}>
-                      {s.value}{s.unit ? <span className="text-xs font-medium ml-0.5" style={{ color: 'var(--p-text-55)' }}>{s.unit}{s.value > 1 ? 's' : ''}</span> : ''}
-                    </span>
-                    <span className="text-[11px] font-semibold" style={{ color: 'var(--p-primary)' }}>{s.label}</span>
-                    <span className="text-[9px] font-medium" style={{ color: 'var(--p-text-55)' }}>{s.sublabel}</span>
-                  </div>
-                </div>
-              ))}
-            </motion.div>
 
             {/* ═══ 5. GRAPHIQUE HEBDO ═══ */}
             <motion.div
