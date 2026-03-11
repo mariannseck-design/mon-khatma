@@ -12,6 +12,7 @@ interface DayActivity {
   memorized: number;
   reviewed: number;
   total: number;
+  versesAdded: number;
 }
 
 const WEEKS_TO_SHOW = 20;
