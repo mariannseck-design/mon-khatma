@@ -67,6 +67,23 @@ export default function HifzConfig({ onStart }: HifzConfigProps) {
         )}
       </div>
 
+      {/* Selection mode toggle */}
+      <div className="grid grid-cols-2 gap-2">
+        {(['surah', 'page'] as const).map(mode => (
+          <button
+            key={mode}
+            onClick={() => setSelectionMode(mode)}
+            className="rounded-xl py-2.5 text-center transition-all text-sm font-semibold"
+            style={{
+              background: selectionMode === mode ? 'rgba(212,175,55,0.25)' : 'rgba(255,255,255,0.06)',
+              border: `1px solid ${selectionMode === mode ? 'rgba(212,175,55,0.6)' : 'rgba(255,255,255,0.1)'}`,
+              color: selectionMode === mode ? '#d4af37' : 'rgba(255,255,255,0.6)',
+            }}
+          >
+            {mode === 'surah' ? 'Sourate' : 'Page Mushaf'}
+          </button>
+        ))}
+      </div>
       {/* Surah selector */}
       <div
         className="rounded-2xl p-4 cursor-pointer"
