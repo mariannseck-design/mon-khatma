@@ -1,15 +1,21 @@
 
 
-## Suppression des pages A/B
+# Diagnostic : 404 sur /quran-reader
 
-Supprimer les fichiers de test A/B et leurs routes, on garde la page actuelle `HifzSuiviPage.tsx`.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Fichiers à supprimer
-- `src/pages/SuiviHifz_PageA.tsx`
-- `src/pages/SuiviHifz_PageB.tsx`
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-### Fichier modifié
-- `src/App.tsx` : retirer les imports `SuiviHifz_PageA` / `SuiviHifz_PageB` et les routes `/hifz-suivi-a` et `/hifz-suivi-b`
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-Le composant `WeeklyCalendarBar.tsx` est conservé car il pourrait servir plus tard.
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
