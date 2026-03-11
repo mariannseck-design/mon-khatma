@@ -10,6 +10,15 @@ async function clearAllCaches() {
   }
 }
 
+async function forceUpdate() {
+  await clearAllCaches();
+  // Unregister SW so it doesn't re-serve stale files on reload
+  if ('serviceWorker' in navigator) {
+    const regs = await navigator.serviceWorker.getRegistrations();
+    await Promise.all(regs.map(r => r.unregister()));
+  }
+}
+
 async function checkVersion(): Promise<boolean> {
   try {
     const res = await fetch(`/version.json?t=${Date.now()}`, { cache: 'no-store' });
@@ -18,7 +27,7 @@ async function checkVersion(): Promise<boolean> {
     const stored = localStorage.getItem('app_version');
     if (stored && stored !== v) {
       localStorage.setItem('app_version', v);
-      await clearAllCaches();
+      await forceUpdate();
       return true; // needs reload
     }
     if (!stored) {

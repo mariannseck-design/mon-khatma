@@ -111,6 +111,10 @@ export default defineConfig(({ mode }) => ({
                 statuses: [0, 200]
               }
             }
+          },
+          {
+            urlPattern: /\/version\.json/,
+            handler: "NetworkOnly"
           }
         ]
       }
