@@ -241,9 +241,12 @@ export default function MurjaCalendarPage() {
           >
             <ArrowLeft className="h-4 w-4" style={{ color: 'var(--p-text-60)' }} />
           </button>
-          <h1 className="text-base font-bold" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-primary)' }}>
-            Vue Calendrier
-          </h1>
+          <div>
+            <h1 className="text-base font-bold" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-primary)' }}>
+              Mon Programme du Jour
+            </h1>
+            <p className="text-[11px] font-medium" style={{ color: 'var(--p-text-40)' }}>Consolide ta mémorisation</p>
+          </div>
         </div>
 
         {loading ? (
