@@ -1,17 +1,21 @@
 
 
-## Rendre le bouton "Masquer les vides / Voir tous les Juz" plus discret
+# Diagnostic : 404 sur /quran-reader
 
-Transformer le bouton pilule bordé émeraude en un simple lien textuel discret, sans bordure ni fond.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Modification — `src/pages/HifzSuiviPage.tsx` (lignes 411-419)
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-Remplacer le style actuel (fond carte, bordure émeraude épaisse, `font-semibold`) par :
-- Pas de bordure, pas de fond
-- Texte en `var(--p-text-55)` (gris discret) au lieu de `var(--p-primary)`
-- Taille `text-[11px]` avec `font-medium` au lieu de `font-semibold`
-- Icône plus petite (`w-3 h-3`)
-- Garde le `rounded-full` et les animations hover/active subtiles
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-Résultat : un petit texte cliquable discret en bas de la liste des Juz, qui ne détourne plus l'attention.
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
