@@ -1,12 +1,12 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AppLayout } from '@/components/layout/AppLayout';
-import { ArrowLeft, Check, Zap, ThumbsUp, Crown, BookOpen, Lock, ChevronDown, Sparkles, Lightbulb } from 'lucide-react';
+import { ArrowLeft, Check, Zap, ThumbsUp, Crown, BookOpen, Lock, ChevronDown, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useMurajaData, getSurahName, getLiaisonDaysPassed, MemorizedVerse } from '@/hooks/useMurajaData';
 import { getExactVersePage } from '@/lib/quranData';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
-import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
+
 
 const RATINGS = [
   { key: 'hard', label: 'Difficile', quality: 2, icon: Zap, color: '#EF4444' },
@@ -190,22 +190,9 @@ export default function MurjaCalendarPage() {
       <div className="space-y-2">
         <div className="flex items-center gap-2">
           <p className="text-xs font-bold uppercase tracking-widest" style={{ color: labelColor }}>{label}</p>
-          <div className="flex items-center gap-1">
-            <span className="text-[10px] font-medium" style={{ color: 'var(--p-text-40)' }}>· {subtitle}</span>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button type="button" className="inline-flex">
-                    <Lightbulb className="h-3 w-3" style={{ color: 'var(--p-text-30)' }} />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="top" className="max-w-[200px] text-xs">
-                  {tooltipText}
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
+          <span className="text-[10px] font-medium" style={{ color: 'var(--p-text-40)' }}>· {subtitle}</span>
         </div>
+        <p className="text-[10px] leading-tight" style={{ color: 'var(--p-text-30)' }}>{tooltipText}</p>
         {pending.length > 0 && (
           <div className="grid grid-cols-2 gap-3">
             {pending.map(item => renderCard(item, isRabt, true))}

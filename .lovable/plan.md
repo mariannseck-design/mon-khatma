@@ -1,22 +1,21 @@
 
 
-## Remplacer le Tooltip par un texte toujours visible
+# Diagnostic : 404 sur /quran-reader
 
-Le `Tooltip` sur mobile ne s'affiche qu'au hover (inexistant sur tactile). Solution : remplacer le `Tooltip` + icône `Lightbulb` par le texte explicatif affiché directement sous le label de section, en petit et discret.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-**Fichier** : `src/pages/MurjaCalendarPage.tsx`, lignes 193-207
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-Remplacer le bloc `<div className="flex items-center gap-1">` contenant le subtitle + TooltipProvider par :
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-```tsx
-<span className="text-[10px] font-medium" style={{ color: 'var(--p-text-40)' }}>· {subtitle}</span>
-```
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-Et ajouter une ligne en dessous du header flex avec le texte d'aide :
-
-```tsx
-<p className="text-[10px] leading-tight" style={{ color: 'var(--p-text-30)' }}>{tooltipText}</p>
-```
-
-Cela supprime l'icône lampe et le Tooltip (inutilisable sur mobile) et affiche le texte d'aide directement sous le titre de section, de manière discrète.
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
