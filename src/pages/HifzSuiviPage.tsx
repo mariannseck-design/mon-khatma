@@ -386,6 +386,17 @@ export default function HifzSuiviPage() {
           );
         })}
       </div>
+
+      {/* Toggle Voir tous les Juz */}
+      <div className="flex justify-center pb-24">
+        <button
+          onClick={() => setShowAllJuz(!showAllJuz)}
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold transition-all hover:scale-105 active:scale-95"
+          style={{ background: 'var(--p-card)', color: 'var(--p-primary)', border: '1.5px solid var(--p-primary)' }}
+        >
+          {showAllJuz ? <><EyeOff className="w-3.5 h-3.5" /> Masquer les vides</> : <><Eye className="w-3.5 h-3.5" /> Voir tous les Juz</>}
+        </button>
+      </div>
     </AppLayout>
   );
 }
