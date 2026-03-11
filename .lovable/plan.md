@@ -1,21 +1,34 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Ajouter un tooltip sur l'icône Lightbulb
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+L'icône `Lightbulb` est actuellement purement décorative — elle ne fait rien au clic. La solution la plus simple et cohérente : transformer l'icône en un bouton avec un **Tooltip** qui affiche une explication pédagogique au tap/hover.
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Changements — `src/pages/MurjaCalendarPage.tsx`
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+1. **Importer** `Tooltip`, `TooltipTrigger`, `TooltipContent`, `TooltipProvider` depuis `@/components/ui/tooltip` (déjà installé via Radix)
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+2. **Modifier `renderSection`** : Envelopper l'icône `Lightbulb` dans un `Tooltip` avec un texte explicatif :
+   - **Ar-Rabt** → "Récitez chaque jour vos versets récents (< 30 jours) pour les ancrer en mémoire."
+   - **Consolidation** → "Révisez vos versets anciens selon un algorithme de répétition espacée (SM-2)."
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+3. **Passer le texte du tooltip** comme paramètre supplémentaire à `renderSection` (ex: `tooltipText: string`)
+
+4. **Structure du tooltip** :
+```tsx
+<TooltipProvider>
+  <Tooltip>
+    <TooltipTrigger asChild>
+      <button type="button" className="inline-flex">
+        <Lightbulb className="h-3 w-3" />
+      </button>
+    </TooltipTrigger>
+    <TooltipContent side="top" className="max-w-[200px] text-xs">
+      {tooltipText}
+    </TooltipContent>
+  </Tooltip>
+</TooltipProvider>
+```
+
+Aucun autre fichier modifié.
 
