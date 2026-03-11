@@ -60,11 +60,11 @@ export default function FavoriteVersesSection() {
         <div
           className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0"
           style={{
-            background: 'linear-gradient(135deg, rgba(239,68,68,0.12) 0%, rgba(239,68,68,0.06) 100%)',
-            border: '1.5px solid rgba(239,68,68,0.18)',
+            background: 'linear-gradient(135deg, rgba(212,175,55,0.12) 0%, rgba(212,175,55,0.06) 100%)',
+            border: '1.5px solid rgba(212,175,55,0.25)',
           }}
         >
-          <Heart className="h-6 w-6 text-red-400" strokeWidth={1.8} fill="rgba(239,68,68,0.25)" />
+          <Heart className="h-6 w-6" style={{ color: '#d4af37' }} strokeWidth={1.8} fill="rgba(212,175,55,0.25)" />
         </div>
 
         <div className="flex-1 min-w-0">
