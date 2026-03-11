@@ -573,123 +573,155 @@ export default function AccueilPage() {
                 </motion.div>
               </Link>
             </motion.div>
-                  style={{
-                    background: `linear-gradient(135deg, ${COLORS.emerald} 0%, ${COLORS.emeraldLight} 100%)`,
-                    border: `2px solid ${COLORS.gold}35`,
-                    boxShadow: `0 8px 28px -8px ${COLORS.emerald}40`,
-                  }}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <div className="relative z-10 flex items-center gap-5">
-                    <div
-                      className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0"
-                      style={{ background: `${COLORS.gold}22`, border: `1px solid ${COLORS.gold}35` }}
-                    >
-                      <Users className="h-7 w-7" style={{ color: COLORS.goldAccent }} />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-lg font-bold tracking-[0.06em] uppercase" style={{ fontFamily: "'Inter', sans-serif", color: COLORS.goldAccent }}>
-                        Espace Communauté
-                      </h3>
-                      <p className="text-white/70 text-sm mt-1">Rejoindre la communauté</p>
-                    </div>
-                  </div>
-                </motion.div>
-              </Link>
-            </motion.div>
 
-            {/* Weekly Report */}
-            {user && readingGoal && (
-              <motion.div variants={itemVariants}>
-                <RamadanWeeklyReport firstName={readingGoal.first_name} dailyPages={readingGoal.daily_pages} />
-              </motion.div>
-            )}
+        {/* ═══ MES VERSETS FAVORIS ═══ */}
+        <motion.div variants={itemVariants}>
+          <FavoriteVersesSection />
+        </motion.div>
 
-            {/* Spiritual Quote */}
-            <motion.div
-              variants={itemVariants}
-              className="relative overflow-hidden rounded-[2rem] p-8 border"
-              style={{
-                background: `linear-gradient(135deg, ${COLORS.greenMist}80, ${COLORS.beige})`,
-                borderColor: `${COLORS.emerald}15`,
-              }}
+        {/* ═══ NOS DÉFIS ═══ */}
+        <motion.div variants={itemVariants}>
+          <div className="flex items-center justify-between mb-3 px-1">
+            <h3
+              className="text-sm font-bold tracking-[0.1em] uppercase"
+              style={{ fontFamily: "'Inter', sans-serif", color: COLORS.emerald }}
             >
-              <div className="absolute -top-10 -right-10 w-36 h-36 rounded-full blur-2xl" style={{ background: `${COLORS.emerald}06` }} />
-              <p className="relative z-10 text-lg leading-relaxed italic text-center" style={{ color: COLORS.emerald, fontFamily: "'Inter', sans-serif" }}>
-                « Ô les croyants ! On vous a prescrit le jeûne comme on l'a prescrit à ceux d'avant vous, ainsi atteindrez-vous la piété »
+              Nos Défis
+            </h3>
+          </div>
+          <div className="space-y-4">
+            {!hasFullAccess && (
+              <p className="text-xs text-center font-medium" style={{ color: COLORS.gold }}>
+                Lancement après le Ramadan 🌸
               </p>
-              <p className="relative z-10 text-sm mt-3 text-center font-medium" style={{ color: COLORS.sage }}>
-                — Sourate Al-Baqara, verset 183
-              </p>
-            </motion.div>
-
-            {/* PWA Install */}
-            {!isInstalled && isInstallable && (
-              <motion.div variants={itemVariants}>
-                <motion.button
-                  onClick={() => {
-                    if (isIOS) {
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                      toast('📲 Pour installer l\'app', {
-                        description: 'Appuie sur le bouton Partager (⎙) puis "Sur l\'écran d\'accueil"',
-                        duration: 8000,
-                      });
-                    } else {
-                      promptInstall();
-                    }
-                  }}
-                  className="w-full relative overflow-hidden rounded-[2rem] p-7 group border-2"
-                  style={{
-                    background: `linear-gradient(135deg, ${COLORS.emerald}, ${COLORS.emeraldLight})`,
-                    borderColor: `${COLORS.gold}40`,
-                    boxShadow: `0 8px 32px -8px ${COLORS.emerald}40`,
-                  }}
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.96 }}
-                >
-                  <div className="relative z-10 flex items-center justify-center gap-4">
-                    <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: `${COLORS.gold}22` }}>
-                      <Download className="h-6 w-6" style={{ color: COLORS.goldAccent }} />
-                    </div>
-                    <div className="text-left">
-                      <p className="text-lg font-bold text-white">📲 Télécharger</p>
-                      <p className="text-white/70 text-sm">Installe l'app sur ton téléphone</p>
-                    </div>
-                  </div>
-                </motion.button>
-              </motion.div>
             )}
+            <DefiAlMulk disabled={!hasFullAccess} />
+            <DefiAlKahf disabled={!hasFullAccess} />
+            <DefiAlBaqara disabled={!hasFullAccess} />
+            <DefisCommunityCounter />
+          </div>
+        </motion.div>
 
-            {/* Share Button */}
-            <motion.div variants={itemVariants}>
-              <motion.button
-                onClick={() => {
-                  const shareData = {
-                    title: 'Ma Khatma',
-                    text: "Salam ! Je t'invite à découvrir Ma Khatma, l'application qui m'aide à rester constante dans ma lecture du Coran et mes adorations. Rejoins-nous ici :",
-                    url: 'https://www.makhatma.com',
-                  };
-                  if (navigator.share) {
-                    navigator.share(shareData).catch(() => {});
-                  } else {
-                    navigator.clipboard.writeText(shareData.text + ' ' + shareData.url);
-                    toast.success('Lien copié dans le presse-papiers !');
-                  }
-                }}
-                className="w-full flex items-center justify-center gap-3 py-4 rounded-2xl transition-colors"
-                style={{ background: `${COLORS.emerald}10` }}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.97 }}
-              >
-                <Share2 className="h-5 w-5" style={{ color: COLORS.emerald }} />
-                <span className="text-base font-bold" style={{ color: COLORS.emerald, fontFamily: "'Inter', sans-serif" }}>
-                  Partager l'application
-                </span>
-              </motion.button>
+        {/* Espace Communauté */}
+        <motion.div variants={itemVariants}>
+          <Link to="/cercle" className="block">
+            <motion.div
+              className="relative overflow-hidden rounded-[2rem] p-7 group"
+              style={{
+                background: `linear-gradient(135deg, ${COLORS.emerald} 0%, ${COLORS.emeraldLight} 100%)`,
+                border: `2px solid ${COLORS.gold}35`,
+                boxShadow: `0 8px 28px -8px ${COLORS.emerald}40`,
+              }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <div className="relative z-10 flex items-center gap-5">
+                <div
+                  className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0"
+                  style={{ background: `${COLORS.gold}22`, border: `1px solid ${COLORS.gold}35` }}
+                >
+                  <Users className="h-7 w-7" style={{ color: COLORS.goldAccent }} />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-bold tracking-[0.06em] uppercase" style={{ fontFamily: "'Inter', sans-serif", color: COLORS.goldAccent }}>
+                    Espace Communauté
+                  </h3>
+                  <p className="text-white/70 text-sm mt-1">Rejoindre la communauté</p>
+                </div>
+              </div>
             </motion.div>
+          </Link>
+        </motion.div>
+
+        {/* Weekly Report */}
+        {user && readingGoal && (
+          <motion.div variants={itemVariants}>
+            <RamadanWeeklyReport firstName={readingGoal.first_name} dailyPages={readingGoal.daily_pages} />
           </motion.div>
         )}
+
+        {/* Spiritual Quote */}
+        <motion.div
+          variants={itemVariants}
+          className="relative overflow-hidden rounded-[2rem] p-8 border"
+          style={{
+            background: `linear-gradient(135deg, ${COLORS.greenMist}80, ${COLORS.beige})`,
+            borderColor: `${COLORS.emerald}15`,
+          }}
+        >
+          <div className="absolute -top-10 -right-10 w-36 h-36 rounded-full blur-2xl" style={{ background: `${COLORS.emerald}06` }} />
+          <p className="relative z-10 text-lg leading-relaxed italic text-center" style={{ color: COLORS.emerald, fontFamily: "'Inter', sans-serif" }}>
+            « Ô les croyants ! On vous a prescrit le jeûne comme on l'a prescrit à ceux d'avant vous, ainsi atteindrez-vous la piété »
+          </p>
+          <p className="relative z-10 text-sm mt-3 text-center font-medium" style={{ color: COLORS.sage }}>
+            — Sourate Al-Baqara, verset 183
+          </p>
+        </motion.div>
+
+        {/* PWA Install */}
+        {!isInstalled && isInstallable && (
+          <motion.div variants={itemVariants}>
+            <motion.button
+              onClick={() => {
+                if (isIOS) {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                  toast('📲 Pour installer l\'app', {
+                    description: 'Appuie sur le bouton Partager (⎙) puis "Sur l\'écran d\'accueil"',
+                    duration: 8000,
+                  });
+                } else {
+                  promptInstall();
+                }
+              }}
+              className="w-full relative overflow-hidden rounded-[2rem] p-7 group border-2"
+              style={{
+                background: `linear-gradient(135deg, ${COLORS.emerald}, ${COLORS.emeraldLight})`,
+                borderColor: `${COLORS.gold}40`,
+                boxShadow: `0 8px 32px -8px ${COLORS.emerald}40`,
+              }}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.96 }}
+            >
+              <div className="relative z-10 flex items-center justify-center gap-4">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: `${COLORS.gold}22` }}>
+                  <Download className="h-6 w-6" style={{ color: COLORS.goldAccent }} />
+                </div>
+                <div className="text-left">
+                  <p className="text-lg font-bold text-white">📲 Télécharger</p>
+                  <p className="text-white/70 text-sm">Installe l'app sur ton téléphone</p>
+                </div>
+              </div>
+            </motion.button>
+          </motion.div>
+        )}
+
+        {/* Share Button */}
+        <motion.div variants={itemVariants}>
+          <motion.button
+            onClick={() => {
+              const shareData = {
+                title: 'Ma Khatma',
+                text: "Salam ! Je t'invite à découvrir Ma Khatma, l'application qui m'aide à rester constante dans ma lecture du Coran et mes adorations. Rejoins-nous ici :",
+                url: 'https://www.makhatma.com',
+              };
+              if (navigator.share) {
+                navigator.share(shareData).catch(() => {});
+              } else {
+                navigator.clipboard.writeText(shareData.text + ' ' + shareData.url);
+                toast.success('Lien copié dans le presse-papiers !');
+              }
+            }}
+            className="w-full flex items-center justify-center gap-3 py-4 rounded-2xl transition-colors"
+            style={{ background: `${COLORS.emerald}10` }}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.97 }}
+          >
+            <Share2 className="h-5 w-5" style={{ color: COLORS.emerald }} />
+            <span className="text-base font-bold" style={{ color: COLORS.emerald, fontFamily: "'Inter', sans-serif" }}>
+              Partager l'application
+            </span>
+          </motion.button>
+        </motion.div>
       </motion.div>
 
       {/* Name Prompt Dialog */}
