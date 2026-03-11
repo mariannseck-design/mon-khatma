@@ -418,12 +418,12 @@ export default function AccueilPage() {
                         className="text-xl font-bold tracking-[0.08em] uppercase"
                         style={{ fontFamily: "'Inter', sans-serif", color: COLORS.goldAccent }}
                       >
-                        {activeHifzSession ? '▶️ Continuer ma session' : 'Espace Hifz'}
+                        {activeHifzSession ? '▶️ Continuer ma session' : 'Méthode Tikrar-Istiqâmah'}
                       </h3>
                       <p className="text-white/70 text-sm mt-1">
                         {activeHifzSession
                           ? `${activeHifzSession.surahName} — ${activeHifzSession.stepName}`
-                          : 'Mémoriser le Noble Coran'}
+                          : ''}
                       </p>
                     </div>
                   </motion.div>
