@@ -29,6 +29,7 @@ import DhikrPage from "./pages/DhikrPage";
 import SourcesDeLumierePage from "./pages/SourcesDeLumierePage";
 import DouasPage from "./pages/DouasPage";
 import FavorisPage from "./pages/FavorisPage";
+import MethodeMouradPage from "./pages/MethodeMouradPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -96,6 +97,7 @@ function AppRoutes() {
       <Route path="/sources-de-lumiere" element={<ProtectedRoute><ComingSoonGate title="Sources de Lumière" icon={Sparkles} description="Accède aux salawât, aux noms d'Allah et aux invocations lumineuses pour nourrir ton cœur.">{<SourcesDeLumierePage />}</ComingSoonGate></ProtectedRoute>} />
       <Route path="/douas" element={<ProtectedRoute><ComingSoonGate title="Mes Duas" icon={BookOpen} description="Retrouve des invocations classées par thème pour chaque moment de ta vie.">{<DouasPage />}</ComingSoonGate></ProtectedRoute>} />
       <Route path="/favoris" element={<ProtectedRoute><FavorisPage /></ProtectedRoute>} />
+      <Route path="/methode-mourad" element={<ProtectedRoute><MethodeMouradPage /></ProtectedRoute>} />
       
       <Route path="*" element={<NotFound />} />
     </Routes>
