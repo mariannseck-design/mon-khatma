@@ -1,21 +1,10 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Supprimer la section "Statistiques d'apprentissage"
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Changement
+Supprimer le bloc **"4. STATS FUSIONNÉES — Grille 2x2"** (lignes 379-407) qui affiche les 4 pilules Ar-Rabt, Muraja'a, Streak et Cycles.
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
-
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
-
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
-
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+### Fichier modifié
+- `src/pages/HifzSuiviPage.tsx` — Suppression des lignes 379-407 (le `motion.div` contenant la grille 2x2). Les variables `todayHifz`, `todayMuraja` et `streak` restent utilisées par le graphique hebdo et la timeline, donc on ne touche pas à la logique data.
 
