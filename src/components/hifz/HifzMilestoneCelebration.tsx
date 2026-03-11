@@ -75,7 +75,7 @@ export function HifzMilestoneCelebration({ totalPages, completedJuz, activeJuzCo
     // Find the highest unlocked milestone not yet shown
     const unlocked = MILESTONE_DEFS.filter(m => m.check(args) && !shownMilestones.has(m.key));
     return unlocked.length > 0 ? unlocked[unlocked.length - 1] : null;
-  }, [totalAyats, completedJuz, activeJuzCount, shownMilestones]);
+  }, [totalPages, completedJuz, activeJuzCount, shownMilestones]);
 
   useEffect(() => {
     if (!newMilestone) return;

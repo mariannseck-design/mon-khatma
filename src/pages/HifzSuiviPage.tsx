@@ -354,7 +354,7 @@ export default function HifzSuiviPage() {
 
                   <div className="flex-1 min-w-0">
                     <div className="text-xs mb-1" style={{ color: 'var(--p-text-65)' }}>
-                      {juz.memorizedVerses} ayats mémorisées
+                      {Math.max(1, Math.round(juz.memorizedVerses / 15))} page{Math.round(juz.memorizedVerses / 15) > 1 ? 's' : ''} mémorisée{Math.round(juz.memorizedVerses / 15) > 1 ? 's' : ''}
                     </div>
                     <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--p-track)' }}>
                       <div className="h-full rounded-full transition-all duration-500"
