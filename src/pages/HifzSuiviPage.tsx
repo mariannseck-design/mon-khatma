@@ -214,7 +214,7 @@ export default function HifzSuiviPage() {
   const progressPct = goal ? Math.min((periodProgress / goal.goal_value) * 100, 100) : 0;
 
   // ── Global progress ──
-  const globalPct = totalVerses > 0 ? Math.min(totalVerses / 6236, 1) : 0;
+  const globalPct = pageCount > 0 ? Math.min(pageCount / 604, 1) : 0;
   const bigR = 70;
   const bigCirc = 2 * Math.PI * bigR;
   const bigOffset = bigCirc * (1 - globalPct);
