@@ -5,6 +5,8 @@ import { AppLayout } from '@/components/layout/AppLayout';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useDevMode } from '@/hooks/useDevMode';
+import DevSkipButton from '@/components/hifz/DevSkipButton';
 import MouradConfig from '@/components/mourad/MouradConfig';
 import MouradPhase1 from '@/components/mourad/MouradPhase1';
 import MouradPhase2 from '@/components/mourad/MouradPhase2';
