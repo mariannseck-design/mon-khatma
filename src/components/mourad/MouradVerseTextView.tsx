@@ -50,7 +50,7 @@ export default function MouradVerseTextView({ surahNumber, startVerse, endVerse,
       {/* Surah header */}
       <div className="text-center mb-3" style={{ direction: 'ltr' }}>
         <p className="text-sm font-semibold" style={{ color: '#059669' }}>
-          {surah?.name} ({surah?.latinName})
+          {surah?.name} ({surah?.nameFr})
         </p>
       </div>
 
