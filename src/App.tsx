@@ -23,6 +23,8 @@ import ProfilPage from "./pages/ProfilPage";
 import ParametresPage from "./pages/ParametresPage";
 import HifzPage from "./pages/HifzPage";
 import MurjaPage from "./pages/MurjaPage";
+import MurjaCardsPage from "./pages/MurjaCardsPage";
+import MurjaCalendarPage from "./pages/MurjaCalendarPage";
 import HifzSuiviPage from "./pages/HifzSuiviPage";
 
 import DhikrPage from "./pages/DhikrPage";
