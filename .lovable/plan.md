@@ -1,38 +1,21 @@
 
 
-## Ajout de l'indicateur de Streak dans le header Muraja'a
+# Diagnostic : 404 sur /quran-reader
 
-### Approche
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-La table `hifz_streaks` existe déjà avec `current_streak`, `last_active_date`, `longest_streak`. Elle est mise à jour à chaque session Hifz terminée. Il faut :
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-1. **Lire le streak** depuis `hifz_streaks` dans `MurjaCalendarPage` et l'afficher en haut à droite du header.
-2. **Mettre à jour le streak** quand l'utilisateur termine tout son programme Muraja'a du jour (tous les items cochés).
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-### Fichier : `src/pages/MurjaCalendarPage.tsx`
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-**Affichage** (header, position absolue à droite, symétrique au bouton retour) :
-- Format : `12 🔥` en petit (`text-xs`), couleur moutarde `#D4AF37`
-- Visible uniquement si `current_streak > 0`
-- Animation d'entrée discrète avec framer-motion
-
-**Logique streak** :
-- Au mount, fetch `hifz_streaks` pour l'utilisateur connecté
-- Quand `allDayChecked` passe à `true` → appeler une fonction qui met à jour le streak (même logique que dans `HifzPage` : vérifier `last_active_date`, incrémenter si consécutif, reset à 1 sinon)
-- Mettre à jour le state local pour refléter le +1 immédiatement
-
-### Rendu header cible
-
-```text
-  [←]     Mon Programme du Jour       [12 🔥]
-              3/7 terminés
-```
-
-### Détails techniques
-
-- Import `useAuth` pour récupérer `user.id`
-- State : `streak: number` (initialisé à 0)
-- `useEffect` au mount → fetch streak
-- `useEffect` sur `allDayChecked` → si `true`, update streak en DB + state local
-- Guard : ne pas re-update si `last_active_date === today`
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

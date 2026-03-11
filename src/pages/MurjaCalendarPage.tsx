@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { ArrowLeft, Check, Zap, ThumbsUp, Crown, BookOpen, Lock, ChevronDown, Sparkles, Lightbulb } from 'lucide-react';
@@ -7,6 +7,8 @@ import { useNavigate } from 'react-router-dom';
 import { useMurajaData, getSurahName, getLiaisonDaysPassed, MemorizedVerse } from '@/hooks/useMurajaData';
 import { getExactVersePage } from '@/lib/quranData';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 
 
 const RATINGS = [
@@ -36,6 +38,7 @@ function getWeekDays(): { key: string; label: string; dayNum: number; isToday: b
 
 export default function MurjaCalendarPage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const {
     loading, allVerses, checkedIds, rabtVerses, tourVerses, thirtyDaysCutoff,
     handleRabtCheck, handleTourRate, handleTourCheck,
@@ -46,6 +49,24 @@ export default function MurjaCalendarPage() {
   const [selectedDay, setSelectedDay] = useState(todayKey);
   const [pageMap, setPageMap] = useState<Record<string, number>>({});
   const [ratingFor, setRatingFor] = useState<string | null>(null);
+  const [streak, setStreak] = useState(0);
+  const streakUpdatedRef = useRef(false);
+
+  // Fetch streak on mount
+  useEffect(() => {
+    if (!user?.id) return;
+    supabase
+      .from('hifz_streaks')
+      .select('current_streak, last_active_date')
+      .eq('user_id', user.id)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (data) {
+          setStreak(data.current_streak);
+          if (data.last_active_date === todayKey) streakUpdatedRef.current = true;
+        }
+      });
+  }, [user?.id]);
 
   const allItems = [...rabtVerses, ...tourVerses];
 
@@ -107,6 +128,46 @@ export default function MurjaCalendarPage() {
   const totalItems = selectedItems.rabt.length + selectedItems.tour.length;
   const totalDone = isFutureDay ? 0 : doneRabt.length + doneTour.length;
   const allDayChecked = totalItems > 0 && totalDone === totalItems && !isFutureDay;
+
+  // Update streak when all day items are checked
+  useEffect(() => {
+    if (!allDayChecked || !user?.id || streakUpdatedRef.current) return;
+    streakUpdatedRef.current = true;
+    
+    (async () => {
+      const { data: existing } = await supabase
+        .from('hifz_streaks')
+        .select('current_streak, longest_streak, last_active_date')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (existing?.last_active_date === todayKey) return;
+
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      const yesterdayKey = yesterday.toISOString().split('T')[0];
+      
+      const isConsecutive = existing?.last_active_date === yesterdayKey;
+      const newStreak = isConsecutive ? (existing?.current_streak ?? 0) + 1 : 1;
+      const newLongest = Math.max(newStreak, existing?.longest_streak ?? 0);
+
+      if (existing) {
+        await supabase.from('hifz_streaks').update({
+          current_streak: newStreak,
+          longest_streak: newLongest,
+          last_active_date: todayKey,
+        }).eq('user_id', user.id);
+      } else {
+        await supabase.from('hifz_streaks').insert({
+          user_id: user.id,
+          current_streak: 1,
+          longest_streak: 1,
+          last_active_date: todayKey,
+        });
+      }
+      setStreak(newStreak);
+    })();
+  }, [allDayChecked, user?.id]);
 
   const getItemColor = (item: MemorizedVerse, isRabt: boolean) => {
     if (!isRabt) return '#10B981';
@@ -243,6 +304,17 @@ export default function MurjaCalendarPage() {
           >
             <ArrowLeft className="h-4 w-4" strokeWidth={1.5} />
           </button>
+          {streak > 0 && (
+            <motion.div
+              initial={{ opacity: 0, x: 10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.4, ease: 'easeOut' }}
+              className="absolute right-0 flex items-center gap-0.5 px-2 py-1 rounded-full"
+            >
+              <span className="text-xs font-bold" style={{ color: '#D4AF37' }}>{streak}</span>
+              <span className="text-xs">🔥</span>
+            </motion.div>
+          )}
           <div className="text-center">
             <h1 className="text-base font-bold" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-primary)' }}>
               Mon Programme du Jour
