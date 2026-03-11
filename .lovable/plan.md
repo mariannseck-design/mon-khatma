@@ -1,27 +1,21 @@
 
 
-## Ajustements esthétiques finaux
+# Diagnostic : 404 sur /quran-reader
 
-### 1. Centrage du titre — lignes 236-250
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-Remplacer le `flex items-center gap-3` par une structure `relative` : la flèche en `absolute left-0`, le titre centré avec `text-center w-full`.
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-```tsx
-<div className="relative flex items-center justify-center">
-  <button ... className="absolute left-0 w-8 h-8 ...">
-    <ArrowLeft />
-  </button>
-  <div className="text-center">
-    <h1>Mon Programme du Jour</h1>
-    <p>Consolide ta mémorisation</p>
-  </div>
-</div>
-```
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-### 2. Espacement — lignes 292-313
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-- Ajouter `mb-2` sur le paragraphe "Aujourd'hui" (ligne 293)
-- Ajouter `mb-2` sur la `motion.div` du banner de succès (ligne 305)
-
-Concrètement : changer le `space-y-4` parent en gardant tel quel, mais ajouter des marges supplémentaires sur ces deux éléments spécifiques pour plus de respiration.
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
