@@ -366,18 +366,19 @@ export default function HifzHubPage() {
         <motion.div variants={itemVariants}>
           <Link to="/hifz-suivi" className="block">
             <motion.div
-              className="relative overflow-hidden rounded-2xl p-5 flex items-center gap-4 group"
+              className="relative overflow-hidden rounded-[2rem] p-7 flex items-center gap-5 group"
               style={{
-                background: COLORS.greenMist,
-                border: `1.5px solid ${COLORS.emerald}20`,
+                background: COLORS.beigeWarm,
+                border: `2px solid ${COLORS.emerald}30`,
+                boxShadow: `0 4px 20px -6px ${COLORS.emerald}10`,
               }}
               whileTap={{ scale: 0.97 }}
             >
               <div
-                className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
-                style={{ background: `${COLORS.gold}18`, border: `1px solid ${COLORS.gold}25` }}
+                className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0"
+                style={{ background: `${COLORS.emerald}15`, border: `1px solid ${COLORS.emerald}25` }}
               >
-                <BarChart3 className="h-6 w-6" style={{ color: COLORS.goldAccent }} />
+                <BarChart3 className="h-7 w-7" style={{ color: COLORS.emerald }} />
               </div>
               <div>
                 <h4
