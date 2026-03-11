@@ -448,10 +448,12 @@ export default function HifzPage() {
         {!showBreathingPause && step === 4 && <HifzStep4Validation surahNumber={session.surahNumber} startVerse={session.startVerse} endVerse={session.endVerse} onNext={completeSession} onBack={() => setStep(3)} onPause={handlePause} />}
         {step === 5 && <HifzSuccess stepTimes={stepTimesRef.current} />}
       </div>
-      {step >= 0 && step <= 4 && !showBreathingPause && (
+      {step >= 0 && step <= 5 && (
         <DevSkipButton isDevMode={isDevMode} onSkip={() => {
-          if (step < 4) { updateStep(step + 1); }
-          else { completeSession(); }
+          if (showBreathingPause) { handleBreathingComplete(); }
+          else if (step < 4) { updateStep(step + 1); }
+          else if (step === 4) { completeSession(); }
+          else if (step === 5) { navigate('/muraja'); }
         }} />
       )}
     </AppLayout>
