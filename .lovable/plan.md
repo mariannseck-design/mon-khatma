@@ -1,21 +1,16 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Adapter le coeur aux couleurs de la page d'accueil
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+Remplacer les teintes rouges/roses du coeur par des teintes dorées (gold) cohérentes avec la palette émeraude/or de la page.
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Modification dans `FavoriteVersesSection.tsx`
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+**Icône conteneur (lignes 62-65)** : remplacer `rgba(239,68,68,...)` par des teintes dorées :
+- background : `rgba(212,175,55,0.12)` → `rgba(212,175,55,0.06)`
+- border : `rgba(212,175,55,0.25)`
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
-
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+**Icône Heart (ligne 67)** : remplacer `text-red-400` et `fill` rouge par du doré :
+- couleur : `#d4af37`
+- fill : `rgba(212,175,55,0.25)`
 
