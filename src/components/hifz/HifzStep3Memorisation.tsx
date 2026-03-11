@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BookOpen, Check, Eye, EyeOff, RotateCcw, Volume2, Star, ChevronDown, ChevronUp, Info } from 'lucide-react';
+import { BookOpen, Check, Eye, EyeOff, RotateCcw, Volume2, Star, Info, ChevronRight, ChevronLeft, Brain } from 'lucide-react';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import HifzStepWrapper from './HifzStepWrapper';
 import HifzMushafToggle, { getMushafMode, setMushafMode, type MushafMode } from './HifzMushafToggle';
@@ -85,17 +85,63 @@ function getStorageKey(surah: number, start: number, end: number) {
   return `hifz_ancrage_${surah}_${start}_${end}`;
 }
 
-function getPhaseInfo(ancrage: number, _target: number) {
-  if (ancrage < 4) {
-    return { phase: 1, emoji: '📖', label: 'Regardez le Mushaf | Écoutez l\'audio | Répétez en même temps', showText: true, audioProminent: true, color: '#4ecdc4' };
-  }
-  if (ancrage < 8) {
-    return { phase: 2, emoji: '📖', label: 'Regardez le Mushaf | Écoutez l\'audio si besoin | Répétez', showText: true, audioProminent: false, audioAvailable: true, color: '#45b7aa' };
-  }
-  if (ancrage < 12) {
-    return { phase: 3, emoji: '📖', label: 'Regardez le Mushaf | Éteignez l\'audio (Récitez de mémoirrre)', showText: true, audioProminent: false, audioAvailable: false, color: '#f0d060' };
-  }
-  return { phase: 4, emoji: '🧠', label: 'Texte masqué — Récitation de mémoire', showText: false, audioProminent: false, audioAvailable: false, color: '#d4af37' };
+// Phase definitions
+const PHASES = [
+  {
+    id: 1,
+    emoji: '📖',
+    title: 'Écoute & Répétition',
+    consigne: 'Regardez le Mushaf, écoutez l\'audio et répétez en même temps.',
+    color: '#4ecdc4',
+    minRep: 0,
+    maxRep: 4,
+    showText: true,
+    audioProminent: true,
+    audioAvailable: true,
+  },
+  {
+    id: 2,
+    emoji: '📖',
+    title: 'Lecture autonome',
+    consigne: 'Lisez seul(e), utilisez l\'audio en aide si besoin.',
+    color: '#45b7aa',
+    minRep: 4,
+    maxRep: 8,
+    showText: true,
+    audioProminent: false,
+    audioAvailable: true,
+  },
+  {
+    id: 3,
+    emoji: '📖',
+    title: 'Récitation guidée',
+    consigne: 'Regardez le Mushaf et récitez de mémoire, sans audio.',
+    color: '#f0d060',
+    minRep: 8,
+    maxRep: 12,
+    showText: true,
+    audioProminent: false,
+    audioAvailable: false,
+  },
+  {
+    id: 4,
+    emoji: '🧠',
+    title: 'Ancrage final',
+    consigne: 'Texte masqué — récitez de mémoire. Appuyez sur "Vérifier" en cas de doute.',
+    color: '#d4af37',
+    minRep: 12,
+    maxRep: Infinity,
+    showText: false,
+    audioProminent: false,
+    audioAvailable: false,
+  },
+];
+
+function getPhaseForAncrage(ancrage: number): number {
+  if (ancrage < 4) return 0;
+  if (ancrage < 8) return 1;
+  if (ancrage < 12) return 2;
+  return 3;
 }
 
 export default function HifzStep3Memorisation({ surahNumber, startVerse, endVerse, repetitionLevel, onNext, onBack, onPause }: Props) {
@@ -106,12 +152,14 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
     const saved = localStorage.getItem(storageKey);
     return saved ? Math.min(parseInt(saved, 10) || 0, tikrarTarget) : 0;
   });
+  const [currentPhase, setCurrentPhase] = useState(() => getPhaseForAncrage(
+    (() => { const s = localStorage.getItem(getStorageKey(surahNumber, startVerse, endVerse)); return s ? Math.min(parseInt(s, 10) || 0, repetitionLevel || 40) : 0; })()
+  ));
+  const [slideDirection, setSlideDirection] = useState(1);
   const [ayahs, setAyahs] = useState<AyahWithAnnotations[]>([]);
   const [loading, setLoading] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
   const isPlayingRef = useRef(false);
-  const [showText, setShowText] = useState(true);
-  const [showGuide, setShowGuide] = useState(true);
   const [showCelebration, setShowCelebration] = useState(false);
   const [peekMode, setPeekMode] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -119,21 +167,36 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
   const [reciter, setReciter] = useState(() => localStorage.getItem('quran_reciter') || 'ar.alafasy');
   const [mushafMode, setMushafModeState] = useState<MushafMode>(getMushafMode);
 
-  const phaseInfo = getPhaseInfo(ancrage, tikrarTarget);
-  const prevPhaseRef = useRef(phaseInfo.phase);
+  const phase = PHASES[currentPhase];
+  const phaseLocalMin = phase.minRep;
+  const phaseLocalMax = Math.min(phase.maxRep, tikrarTarget);
+  const phaseLocalCount = Math.max(0, Math.min(ancrage, phaseLocalMax) - phaseLocalMin);
+  const phaseLocalTarget = phaseLocalMax - phaseLocalMin;
+  const phaseComplete = ancrage >= phaseLocalMax;
+  const isComplete = ancrage >= tikrarTarget;
 
-  // Auto-stop audio when entering phase 2
+  // Auto-advance phase when threshold reached
   useEffect(() => {
-    if (phaseInfo.phase >= 2 && prevPhaseRef.current < 2) {
-      if (isPlayingRef.current) {
-        isPlayingRef.current = false;
-        audioRef.current?.pause();
-        setIsPlaying(false);
-      }
+    const naturalPhase = getPhaseForAncrage(ancrage);
+    if (naturalPhase > currentPhase) {
+      setSlideDirection(1);
+      setCurrentPhase(naturalPhase);
     }
-    prevPhaseRef.current = phaseInfo.phase;
-  }, [phaseInfo.phase]);
+  }, [ancrage, currentPhase]);
 
+  // Stop audio when entering phase without audio
+  useEffect(() => {
+    if (!phase.audioAvailable && isPlayingRef.current) {
+      isPlayingRef.current = false;
+      audioRef.current?.pause();
+      setIsPlaying(false);
+    }
+  }, [currentPhase, phase.audioAvailable]);
+
+  // Reset peek when phase changes
+  useEffect(() => {
+    setPeekMode(false);
+  }, [currentPhase]);
 
   // Load local text + tajweed
   useEffect(() => {
@@ -188,11 +251,13 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
     }
   }, [ancrage, tikrarTarget, storageKey]);
 
-  // Auto-show/hide text based on phase
+  // Peek timeout
   useEffect(() => {
-    setShowText(phaseInfo.showText);
-    setPeekMode(false);
-  }, [phaseInfo.phase]);
+    if (peekMode) {
+      const timer = setTimeout(() => setPeekMode(false), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [peekMode]);
 
   const playNextAyah = useCallback((idx: number) => {
     if (!isPlayingRef.current && idx > 0) return;
@@ -233,17 +298,22 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
     return () => { isPlayingRef.current = false; audioRef.current?.pause(); };
   }, []);
 
-  // Peek timeout
-  useEffect(() => {
-    if (peekMode) {
-      const timer = setTimeout(() => setPeekMode(false), 5000);
-      return () => clearTimeout(timer);
-    }
-  }, [peekMode]);
-
   const progress = Math.min((ancrage / tikrarTarget) * 100, 100);
-  const isComplete = ancrage >= tikrarTarget;
-  const textVisible = showText || peekMode;
+  const textVisible = phase.showText || peekMode;
+
+  const goToPhase = (idx: number) => {
+    if (idx < 0 || idx > 3) return;
+    // Can only go back, or forward if current phase is complete
+    if (idx > currentPhase && !phaseComplete) return;
+    setSlideDirection(idx > currentPhase ? 1 : -1);
+    setCurrentPhase(idx);
+    // Stop audio on phase change
+    if (isPlayingRef.current) {
+      isPlayingRef.current = false;
+      audioRef.current?.pause();
+      setIsPlaying(false);
+    }
+  };
 
   // Render the Quran text block
   const renderedText = useMemo(() => {
@@ -311,372 +381,404 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
     );
   }, [ayahs, surahNumber]);
 
+  // Stepper component
+  const Stepper = () => (
+    <div className="flex items-center justify-center gap-1 mb-5">
+      {PHASES.map((p, idx) => {
+        const isActive = idx === currentPhase;
+        const isDone = ancrage >= p.maxRep || (idx < 3 && ancrage >= PHASES[idx].maxRep);
+        const isAccessible = idx <= getPhaseForAncrage(ancrage);
+        return (
+          <button
+            key={p.id}
+            onClick={() => isAccessible ? goToPhase(idx) : undefined}
+            className="flex flex-col items-center transition-all"
+            style={{ opacity: isAccessible ? 1 : 0.35, cursor: isAccessible ? 'pointer' : 'default' }}
+          >
+            <div
+              className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all"
+              style={{
+                background: isActive ? p.color : isDone ? `${p.color}40` : 'rgba(255,255,255,0.08)',
+                border: isActive ? `2px solid ${p.color}` : isDone ? `1px solid ${p.color}60` : '1px solid rgba(255,255,255,0.15)',
+                color: isActive || isDone ? '#fff' : 'rgba(255,255,255,0.4)',
+                boxShadow: isActive ? `0 0 12px ${p.color}40` : 'none',
+              }}
+            >
+              {isDone && !isActive ? <Check className="h-3.5 w-3.5" /> : p.id}
+            </div>
+            <span
+              className="text-[9px] mt-1 font-medium leading-tight text-center max-w-[60px]"
+              style={{ color: isActive ? p.color : 'rgba(255,255,255,0.4)' }}
+            >
+              {idx === 0 ? 'Écoute' : idx === 1 ? 'Lecture' : idx === 2 ? 'Récitation' : 'Ancrage'}
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  );
+
   return (
     <HifzStepWrapper stepNumber={3} stepTitle="Istiqâmah" onBack={onBack} onPause={onPause}>
       <div className="text-center space-y-4">
-        {/* Icon */}
-        <div
-          className="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center"
-          style={{ background: 'rgba(212,175,55,0.2)', border: '1px solid rgba(212,175,55,0.3)' }}
-        >
-          <BookOpen className="h-8 w-8" style={{ color: '#d4af37' }} />
-        </div>
-
-        {/* Subtitle + info button */}
-        <div>
-          <div className="flex items-center justify-center gap-2">
-            <p className="text-sm font-semibold" style={{ color: '#d4af37' }}>Istiqâmah</p>
-            <Popover>
-              <PopoverTrigger asChild>
-                <button className="rounded-full p-0.5 transition-colors hover:bg-white/10">
-                  <Info className="h-4 w-4" style={{ color: '#d4af37' }} />
-                </button>
-              </PopoverTrigger>
-              <PopoverContent className="text-xs leading-relaxed" style={{ background: '#1a2e1a', border: '1px solid rgba(212,175,55,0.3)', color: 'rgba(255,255,255,0.85)' }}>
-                L'Istiqâmah désigne la constance, la droiture et la persévérance. Nous avons choisi ce nom car la régularité et l'effort continu sont les véritables clés pour graver ces versets dans votre cœur.
-              </PopoverContent>
-            </Popover>
-          </div>
-          <p className="text-white/50 text-xs">(Objectif {tikrarTarget} répétitions)</p>
-        </div>
-
-
-        {/* Guide */}
-        <div className="rounded-xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>
-          <button
-            onClick={() => setShowGuide(!showGuide)}
-            className="w-full flex items-center justify-between px-4 py-2.5 text-xs font-medium transition-all"
-            style={{ color: '#d4af37' }}
-          >
-            <span>📋 Mode d'emploi de l'Istiqâmah</span>
-            {showGuide ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-          </button>
-          <AnimatePresence>
-            {showGuide && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                className="overflow-hidden"
-              >
-                <div className="px-4 pb-4 space-y-3 text-left">
-                  <p className="text-xs text-white/70 leading-relaxed">
-                    Pour graver ce passage dans votre cœur par la grâce d'Allah{' '}
-                    <span style={{ fontFamily: "'Amiri', serif", fontWeight: 'bold', fontSize: '1.1em' }}>(عز وجل)</span>
-                    , nous vous suggérons un minimum de 15 répétitions. Votre objectif : <strong style={{ color: '#d4af37' }}>{tikrarTarget} répétitions</strong>.
-                  </p>
-
-                  <p className="text-xs font-semibold" style={{ color: '#d4af37' }}>Mode d'emploi de votre progression :</p>
-
-                  <div className="space-y-2">
-                    {/* Étape 1 */}
-                    <div
-                      className="flex items-start gap-2 rounded-lg px-3 py-2"
-                      style={{
-                        background: phaseInfo.phase === 1 ? 'rgba(78,205,196,0.2)' : 'rgba(255,255,255,0.10)',
-                        border: phaseInfo.phase === 1 ? '1px solid rgba(78,205,196,0.3)' : '1px solid rgba(255,255,255,0.08)',
-                      }}
-                    >
-                      <span className="text-xs mt-0.5 whitespace-nowrap" style={{ color: '#4ecdc4', fontWeight: phaseInfo.phase === 1 ? 700 : 400 }}>1 à 4</span>
-                      <p className="text-xs text-white/70">📖 Regardez le Mushaf | Écoutez l'audio | Répétez en même temps.</p>
-                    </div>
-                    {/* Étape 2 */}
-                    <div
-                      className="flex items-start gap-2 rounded-lg px-3 py-2"
-                      style={{
-                        background: phaseInfo.phase === 2 ? 'rgba(69,183,170,0.2)' : 'rgba(255,255,255,0.20)',
-                        border: phaseInfo.phase === 2 ? '1px solid rgba(69,183,170,0.3)' : '1px solid rgba(255,255,255,0.08)',
-                      }}
-                    >
-                      <span className="text-xs mt-0.5 whitespace-nowrap" style={{ color: '#45b7aa', fontWeight: phaseInfo.phase === 2 ? 700 : 400 }}>5 à 8</span>
-                      <p className="text-xs text-white/70">📖 Regardez le Mushaf | Écoutez l'audio si besoin | Répétez en même temps.</p>
-                    </div>
-                    {/* Étape 3 */}
-                    <div
-                      className="flex items-start gap-2 rounded-lg px-3 py-2"
-                      style={{
-                        background: phaseInfo.phase === 3 ? 'rgba(240,208,96,0.2)' : 'rgba(255,255,255,0.30)',
-                        border: phaseInfo.phase === 3 ? '1px solid rgba(240,208,96,0.3)' : '1px solid rgba(255,255,255,0.08)',
-                      }}
-                    >
-                      <span className="text-xs mt-0.5 whitespace-nowrap" style={{ color: '#f0d060', fontWeight: phaseInfo.phase === 3 ? 700 : 400 }}>9 à 12</span>
-                      <p className="text-xs text-white/70">📖 Regardez le Mushaf | Éteignez l'audio (Récitez de mémoire).</p>
-                    </div>
-                    {/* Étape 4 */}
-                    <div
-                      className="flex items-start gap-2 rounded-lg px-3 py-2"
-                      style={{
-                        background: phaseInfo.phase === 4 ? 'rgba(212,175,55,0.15)' : 'rgba(212,175,55,0.05)',
-                        border: phaseInfo.phase === 4 ? '2px solid rgba(212,175,55,0.5)' : '1px solid rgba(212,175,55,0.25)',
-                      }}
-                    >
-                      <span className="text-xs mt-0.5 whitespace-nowrap" style={{ color: '#d4af37', fontWeight: phaseInfo.phase === 4 ? 700 : 400 }}>Dès la 13ème</span>
-                      <p className="text-xs text-white/70">🧠 Texte masqué. Récitation de mémoire. Vous pouvez regarder le Mushaf en cas d'erreur ou de doute.</p>
-                    </div>
-                  </div>
-
-                  <p className="text-xs text-white/70 leading-relaxed italic" style={{ color: 'rgba(212,175,55,0.8)' }}>
-                    Bismillah, qu'Allah{' '}
-                    <span style={{ fontFamily: "'Amiri', serif", fontWeight: 'bold', fontSize: '1.1em' }}>(عز وجل)</span>
-                    {' '}facilite, amine.
-                  </p>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-
-        {/* Celebration */}
-        <AnimatePresence>
-          {showCelebration && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="rounded-2xl p-5 space-y-3"
-              style={{ background: 'rgba(212,175,55,0.15)', border: '1px solid rgba(212,175,55,0.4)' }}
-            >
-              <div className="flex justify-center gap-1">
-                {[...Array(5)].map((_, i) => (
-                  <motion.div key={i} initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: i * 0.1 }}>
-                    <Star className="h-5 w-5 fill-current" style={{ color: '#d4af37' }} />
-                  </motion.div>
-                ))}
-              </div>
-              <p className="text-white text-sm leading-relaxed">
-                Félicitations ! Votre ancrage est terminé par la grâce d'Allah{' '}
-                <span style={{ fontFamily: "'Amiri', serif", fontWeight: 'bold', fontSize: '1.1em' }}>(عز وجل)</span>.
-                Vous suivez avec succès la voie des Prophètes{' '}
-                <span style={{ fontFamily: "'Amiri', serif", fontWeight: 'bold', fontSize: '1.1em' }}>(عليهم السلام)</span>.
-              </p>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Counter */}
-        <div className="relative w-32 h-32 mx-auto">
-          <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="44" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="6" />
-            <circle
-              cx="50" cy="50" r="44" fill="none"
-              stroke={isComplete ? '#d4af37' : phaseInfo.color}
-              strokeWidth="6"
-              strokeLinecap="round"
-              strokeDasharray={`${progress * 2.76} 276`}
-              style={{ transition: 'stroke-dasharray 0.5s ease, stroke 0.3s ease' }}
-            />
-          </svg>
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-3xl font-bold" style={{ color: '#d4af37' }}>{ancrage}</span>
-            <span className="text-white/40 text-xs">/ {tikrarTarget}</span>
-          </div>
-        </div>
-
-        {/* Phase indicator */}
-        {!isComplete && (
-          <motion.div
-            key={phaseInfo.phase}
-            initial={{ opacity: 0, y: 5 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="rounded-xl px-4 py-2.5 mx-auto max-w-xs"
-            style={{ background: `${phaseInfo.color}15`, border: `1px solid ${phaseInfo.color}40` }}
-          >
-            <p className="text-xs font-medium" style={{ color: phaseInfo.color }}>
-              {phaseInfo.emoji} {phaseInfo.label}
-            </p>
-          </motion.div>
-        )}
-
-        {/* Quran text block */}
-        {!isComplete && (
-          <div className="relative">
-            {/* Phase 3: Verify button */}
-            {!phaseInfo.showText && (
-              <button
-                onClick={() => setPeekMode(p => !p)}
-                className="flex items-center justify-center gap-2 mx-auto px-4 py-2 rounded-xl text-sm font-medium transition-all active:scale-95 mb-3"
-                style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(212,175,55,0.2)', color: '#d4af37' }}
-              >
-                {peekMode ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                {peekMode ? 'Masquer' : 'Vérifier'}
+        {/* Info button */}
+        <div className="flex items-center justify-center gap-2">
+          <p className="text-sm font-semibold" style={{ color: '#d4af37' }}>Istiqâmah</p>
+          <Popover>
+            <PopoverTrigger asChild>
+              <button className="rounded-full p-0.5 transition-colors hover:bg-white/10">
+                <Info className="h-4 w-4" style={{ color: '#d4af37' }} />
               </button>
-            )}
+            </PopoverTrigger>
+            <PopoverContent className="text-xs leading-relaxed" style={{ background: '#1a2e1a', border: '1px solid rgba(212,175,55,0.3)', color: 'rgba(255,255,255,0.85)' }}>
+              L'Istiqâmah désigne la constance, la droiture et la persévérance. Nous avons choisi ce nom car la régularité et l'effort continu sont les véritables clés pour graver ces versets dans votre cœur.
+            </PopoverContent>
+          </Popover>
+        </div>
 
-            {/* Mushaf mode toggle */}
-            {textVisible && (
-              <div className="mb-3">
-                <HifzMushafToggle mode={mushafMode} onChange={(m) => { setMushafModeState(m); setMushafMode(m); }} />
-              </div>
-            )}
+        {/* Stepper */}
+        <Stepper />
 
-            {/* Content container — Image or Text */}
-            {loading ? (
-              <div className="flex items-center justify-center py-8">
-                <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: '#d4af37', borderTopColor: 'transparent' }} />
-              </div>
-            ) : textVisible && mushafMode === 'physical' ? (
-              <div className="rounded-xl px-4 py-6 text-center" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(212,175,55,0.15)' }}>
-                <p className="text-xs italic" style={{ color: 'rgba(255,255,255,0.45)' }}>
-                  📖 Ouvre ton Mushaf physique et suis depuis celui-ci.
-                </p>
-              </div>
-            ) : textVisible && mushafMode === 'image' ? (
-              <HifzMushafImage surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse} maxHeight="320px" />
-            ) : (
+        {/* Phase content with slide animation */}
+        <AnimatePresence mode="wait" custom={slideDirection}>
+          <motion.div
+            key={currentPhase}
+            custom={slideDirection}
+            initial={{ opacity: 0, x: slideDirection * 60 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: slideDirection * -60 }}
+            transition={{ duration: 0.25, ease: 'easeInOut' }}
+            className="space-y-4"
+          >
+            {/* Phase icon + title */}
+            <div className="flex flex-col items-center gap-2">
               <div
-                style={{ display: textVisible ? 'block' : 'none' }}
-                className="rounded-xl overflow-auto max-h-72 px-4 py-4"
-                dir="rtl"
+                className="w-14 h-14 rounded-2xl flex items-center justify-center"
+                style={{ background: `${phase.color}20`, border: `1px solid ${phase.color}40` }}
               >
-                <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '12px', padding: '16px', border: '1px solid rgba(212,175,55,0.15)' }}>
-                  {startVerse === 1 && surahNumber !== 1 && surahNumber !== 9 && (
-                    <p
-                      className="text-center mb-3"
-                      style={{
-                        fontFamily: FONT_FAMILY,
-                        color: '#6a9a6a',
-                        fontSize: '22px',
-                        lineHeight: '40px',
-                        fontWeight: 'bold',
-                      }}
-                    >
-                      بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
-                    </p>
-                  )}
-                  {renderedText}
-                </div>
+                {phase.id === 4 ? (
+                  <Brain className="h-7 w-7" style={{ color: phase.color }} />
+                ) : (
+                  <BookOpen className="h-7 w-7" style={{ color: phase.color }} />
+                )}
               </div>
-            )}
-
-            {/* Phase 3: Encouragement */}
-            {!phaseInfo.showText && !peekMode && !loading && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="rounded-xl px-4 py-3 mx-auto max-w-xs text-left"
-                style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}
-              >
-                <p className="text-white/70 text-xs italic leading-relaxed">
-                  Fermez les yeux et récitez de mémoire. En cas de doute, appuyez sur « Vérifier » pour un bref aperçu.
-                  L'essentiel est la sincérité de votre effort pour plaire à Allah{' '}
-                  <span style={{ fontFamily: "'Amiri', serif", fontWeight: 'bold', fontSize: '1.1em' }}>(عز وجل)</span>.
+              <div>
+                <p className="text-base font-bold" style={{ color: phase.color }}>
+                  {phase.emoji} {phase.title}
                 </p>
-              </motion.div>
-            )}
-          </div>
-        )}
-
-        {/* Reset */}
-        {ancrage > 0 && !isComplete && (
-          <button
-            onClick={() => {
-              if (window.confirm('Réinitialiser le compteur d\'ancrage ? Votre progression sera perdue.')) {
-                setAncrage(0);
-                localStorage.removeItem(storageKey);
-                audioRef.current?.pause();
-                setIsPlaying(false);
-              }
-            }}
-            className="flex items-center justify-center gap-1.5 mx-auto px-3 py-1.5 rounded-lg text-xs transition-all active:scale-95"
-            style={{ color: 'rgba(255,255,255,0.4)' }}
-          >
-            <RotateCcw className="h-3 w-3" />
-            Recommencer
-          </button>
-        )}
-
-        {/* Reciter selector — visible in phases 1 & 2 */}
-        {!isComplete && (phaseInfo.audioProminent || ('audioAvailable' in phaseInfo && phaseInfo.audioAvailable)) && (
-          <select
-            value={reciter}
-            onChange={e => {
-              setReciter(e.target.value);
-              localStorage.setItem('quran_reciter', e.target.value);
-              audioRef.current?.pause();
-              isPlayingRef.current = false;
-              setIsPlaying(false);
-            }}
-            className="w-full rounded-xl px-4 py-3 text-sm outline-none"
-            style={{
-              background: 'rgba(255,255,255,0.08)',
-              border: '1px solid rgba(212,175,55,0.2)',
-              color: 'white',
-              fontSize: '16px',
-            }}
-          >
-            {RECITERS.map(r => (
-              <option key={r.id} value={r.id} style={{ background: '#0d4f4f' }}>{r.name}</option>
-            ))}
-          </select>
-        )}
-
-        {/* Controls */}
-        {!isComplete && (
-          <div className="space-y-3">
-            <div className="flex items-center justify-center">
-              <motion.button
-                whileTap={{ scale: 0.85 }}
-                onClick={() => {
-                  setAncrage(prev => Math.min(prev + 1, tikrarTarget));
-                  try { navigator?.vibrate?.(40); } catch {}
-                }}
-                className="w-20 h-20 rounded-full flex items-center justify-center"
-                style={{
-                  background: 'rgba(212,175,55,0.15)',
-                  border: '2px solid rgba(212,175,55,0.4)',
-                }}
-              >
-                <span className="text-2xl font-bold" style={{ color: '#d4af37' }}>+1</span>
-              </motion.button>
-
-              {/* Audio: prominent in phase 1 */}
-              {phaseInfo.audioProminent && (
-                <button
-                  onClick={toggleAudioHelp}
-                  className="w-12 h-12 rounded-full flex items-center justify-center transition-all active:scale-95 ml-4"
-                  style={{
-                    background: isPlaying ? 'rgba(212,175,55,0.15)' : 'rgba(255,255,255,0.08)',
-                    border: isPlaying ? '1px solid rgba(212,175,55,0.4)' : '1px solid rgba(255,255,255,0.15)',
-                  }}
-                  title={isPlaying ? 'Arrêter l\'audio' : 'Écouter le passage'}
-                >
-                  <Volume2 className="h-5 w-5" style={{ color: isPlaying ? '#d4af37' : 'rgba(255,255,255,0.5)' }} />
-                </button>
-              )}
+                <p className="text-white/50 text-xs mt-0.5">
+                  Palier {phase.id}/4 · Objectif global : {tikrarTarget} rép.
+                </p>
+              </div>
             </div>
 
-            {/* Audio: discreet help in phase 2 only */}
-            {!phaseInfo.audioProminent && ('audioAvailable' in phaseInfo && phaseInfo.audioAvailable) && (
+            {/* Consigne */}
+            <div
+              className="rounded-xl px-4 py-3 mx-auto max-w-sm"
+              style={{ background: `${phase.color}12`, border: `1px solid ${phase.color}30` }}
+            >
+              <p className="text-xs font-medium leading-relaxed" style={{ color: phase.color }}>
+                {phase.consigne}
+              </p>
+            </div>
+
+            {/* Celebration */}
+            <AnimatePresence>
+              {showCelebration && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="rounded-2xl p-5 space-y-3"
+                  style={{ background: 'rgba(212,175,55,0.15)', border: '1px solid rgba(212,175,55,0.4)' }}
+                >
+                  <div className="flex justify-center gap-1">
+                    {[...Array(5)].map((_, i) => (
+                      <motion.div key={i} initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: i * 0.1 }}>
+                        <Star className="h-5 w-5 fill-current" style={{ color: '#d4af37' }} />
+                      </motion.div>
+                    ))}
+                  </div>
+                  <p className="text-white text-sm leading-relaxed">
+                    Félicitations ! Votre ancrage est terminé par la grâce d'Allah{' '}
+                    <span style={{ fontFamily: "'Amiri', serif", fontWeight: 'bold', fontSize: '1.1em' }}>(عز وجل)</span>.
+                  </p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Counters: local + global */}
+            <div className="flex items-center justify-center gap-6">
+              {/* Local phase counter */}
+              <div className="relative w-28 h-28">
+                <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="44" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="6" />
+                  <circle
+                    cx="50" cy="50" r="44" fill="none"
+                    stroke={phaseComplete ? '#d4af37' : phase.color}
+                    strokeWidth="6"
+                    strokeLinecap="round"
+                    strokeDasharray={`${Math.min((phaseLocalCount / phaseLocalTarget) * 276, 276)} 276`}
+                    style={{ transition: 'stroke-dasharray 0.5s ease, stroke 0.3s ease' }}
+                  />
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <span className="text-2xl font-bold" style={{ color: phase.color }}>{phaseLocalCount}</span>
+                  <span className="text-white/40 text-[10px]">/ {phaseLocalTarget}</span>
+                </div>
+              </div>
+
+              {/* Global mini counter */}
+              <div className="flex flex-col items-center gap-1">
+                <div className="relative w-12 h-12">
+                  <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="44" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="8" />
+                    <circle
+                      cx="50" cy="50" r="44" fill="none"
+                      stroke={isComplete ? '#d4af37' : 'rgba(212,175,55,0.5)'}
+                      strokeWidth="8"
+                      strokeLinecap="round"
+                      strokeDasharray={`${progress * 2.76} 276`}
+                      style={{ transition: 'stroke-dasharray 0.5s ease' }}
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-[10px] font-bold" style={{ color: '#d4af37' }}>{ancrage}</span>
+                  </div>
+                </div>
+                <span className="text-[9px] text-white/30">/ {tikrarTarget} total</span>
+              </div>
+            </div>
+
+            {/* Quran text block */}
+            {!isComplete && (
+              <div className="relative">
+                {/* Phase 4: Verify button */}
+                {!phase.showText && (
+                  <button
+                    onClick={() => setPeekMode(p => !p)}
+                    className="flex items-center justify-center gap-2 mx-auto px-4 py-2 rounded-xl text-sm font-medium transition-all active:scale-95 mb-3"
+                    style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(212,175,55,0.2)', color: '#d4af37' }}
+                  >
+                    {peekMode ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    {peekMode ? 'Masquer' : 'Vérifier'}
+                  </button>
+                )}
+
+                {/* Mushaf mode toggle */}
+                {textVisible && (
+                  <div className="mb-3">
+                    <HifzMushafToggle mode={mushafMode} onChange={(m) => { setMushafModeState(m); setMushafMode(m); }} />
+                  </div>
+                )}
+
+                {/* Content container */}
+                {loading ? (
+                  <div className="flex items-center justify-center py-8">
+                    <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: '#d4af37', borderTopColor: 'transparent' }} />
+                  </div>
+                ) : textVisible && mushafMode === 'physical' ? (
+                  <div className="rounded-xl px-4 py-6 text-center" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(212,175,55,0.15)' }}>
+                    <p className="text-xs italic" style={{ color: 'rgba(255,255,255,0.45)' }}>
+                      📖 Ouvre ton Mushaf physique et suis depuis celui-ci.
+                    </p>
+                  </div>
+                ) : textVisible && mushafMode === 'image' ? (
+                  <HifzMushafImage surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse} maxHeight="320px" />
+                ) : (
+                  <div
+                    style={{ display: textVisible ? 'block' : 'none' }}
+                    className="rounded-xl overflow-auto max-h-72 px-4 py-4"
+                    dir="rtl"
+                  >
+                    <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '12px', padding: '16px', border: '1px solid rgba(212,175,55,0.15)' }}>
+                      {startVerse === 1 && surahNumber !== 1 && surahNumber !== 9 && (
+                        <p
+                          className="text-center mb-3"
+                          style={{
+                            fontFamily: FONT_FAMILY,
+                            color: '#6a9a6a',
+                            fontSize: '22px',
+                            lineHeight: '40px',
+                            fontWeight: 'bold',
+                          }}
+                        >
+                          بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
+                        </p>
+                      )}
+                      {renderedText}
+                    </div>
+                  </div>
+                )}
+
+                {/* Phase 4: encouragement when text hidden */}
+                {!phase.showText && !peekMode && !loading && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="rounded-xl px-4 py-3 mx-auto max-w-xs text-left"
+                    style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}
+                  >
+                    <p className="text-white/70 text-xs italic leading-relaxed">
+                      Fermez les yeux et récitez de mémoire. En cas de doute, appuyez sur « Vérifier » pour un bref aperçu.
+                      L'essentiel est la sincérité de votre effort pour plaire à Allah{' '}
+                      <span style={{ fontFamily: "'Amiri', serif", fontWeight: 'bold', fontSize: '1.1em' }}>(عز وجل)</span>.
+                    </p>
+                  </motion.div>
+                )}
+              </div>
+            )}
+
+            {/* Reset */}
+            {ancrage > 0 && !isComplete && (
               <button
-                onClick={toggleAudioHelp}
+                onClick={() => {
+                  if (window.confirm('Réinitialiser le compteur d\'ancrage ? Votre progression sera perdue.')) {
+                    setAncrage(0);
+                    setCurrentPhase(0);
+                    localStorage.removeItem(storageKey);
+                    audioRef.current?.pause();
+                    setIsPlaying(false);
+                  }
+                }}
                 className="flex items-center justify-center gap-1.5 mx-auto px-3 py-1.5 rounded-lg text-xs transition-all active:scale-95"
-                style={{ color: 'rgba(255,255,255,0.3)' }}
-                title={isPlaying ? 'Arrêter' : 'Aide audio'}
+                style={{ color: 'rgba(255,255,255,0.4)' }}
               >
-                <Volume2 className="h-3 w-3" style={{ color: isPlaying ? '#d4af37' : 'rgba(255,255,255,0.3)' }} />
-                <span style={{ color: isPlaying ? '#d4af37' : undefined }}>
-                  {isPlaying ? 'Arrêter' : 'Aide audio'}
-                </span>
+                <RotateCcw className="h-3 w-3" />
+                Recommencer
               </button>
             )}
-          </div>
-        )}
 
-        {/* Next — locked until target reached */}
-        {isComplete && (
-          <motion.button
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            whileTap={{ scale: 0.97 }}
-            onClick={onNext}
-            className="w-full rounded-2xl py-4 flex items-center justify-center gap-2 font-semibold"
-            style={{
-              background: 'linear-gradient(135deg, #d4af37, #b8962e)',
-              color: '#1a2e1a',
-            }}
-          >
-            <Check className="h-5 w-5" />
-            Passer au test de validation
-          </motion.button>
+            {/* Reciter selector — visible in phases with audio */}
+            {!isComplete && (phase.audioProminent || phase.audioAvailable) && (
+              <select
+                value={reciter}
+                onChange={e => {
+                  setReciter(e.target.value);
+                  localStorage.setItem('quran_reciter', e.target.value);
+                  audioRef.current?.pause();
+                  isPlayingRef.current = false;
+                  setIsPlaying(false);
+                }}
+                className="w-full rounded-xl px-4 py-3 text-sm outline-none"
+                style={{
+                  background: 'rgba(255,255,255,0.08)',
+                  border: '1px solid rgba(212,175,55,0.2)',
+                  color: 'white',
+                  fontSize: '16px',
+                }}
+              >
+                {RECITERS.map(r => (
+                  <option key={r.id} value={r.id} style={{ background: '#0d4f4f' }}>{r.name}</option>
+                ))}
+              </select>
+            )}
+
+            {/* Controls */}
+            {!isComplete && (
+              <div className="space-y-3">
+                <div className="flex items-center justify-center">
+                  <motion.button
+                    whileTap={{ scale: 0.85 }}
+                    onClick={() => {
+                      setAncrage(prev => Math.min(prev + 1, tikrarTarget));
+                      try { navigator?.vibrate?.(40); } catch {}
+                    }}
+                    className="w-20 h-20 rounded-full flex items-center justify-center"
+                    style={{
+                      background: 'rgba(212,175,55,0.15)',
+                      border: '2px solid rgba(212,175,55,0.4)',
+                    }}
+                  >
+                    <span className="text-2xl font-bold" style={{ color: '#d4af37' }}>+1</span>
+                  </motion.button>
+
+                  {/* Audio: prominent in phase 1 */}
+                  {phase.audioProminent && (
+                    <button
+                      onClick={toggleAudioHelp}
+                      className="w-12 h-12 rounded-full flex items-center justify-center transition-all active:scale-95 ml-4"
+                      style={{
+                        background: isPlaying ? 'rgba(212,175,55,0.15)' : 'rgba(255,255,255,0.08)',
+                        border: isPlaying ? '1px solid rgba(212,175,55,0.4)' : '1px solid rgba(255,255,255,0.15)',
+                      }}
+                    >
+                      <Volume2 className="h-5 w-5" style={{ color: isPlaying ? '#d4af37' : 'rgba(255,255,255,0.5)' }} />
+                    </button>
+                  )}
+                </div>
+
+                {/* Audio: discreet help in phase 2 */}
+                {!phase.audioProminent && phase.audioAvailable && (
+                  <button
+                    onClick={toggleAudioHelp}
+                    className="flex items-center justify-center gap-1.5 mx-auto px-3 py-1.5 rounded-lg text-xs transition-all active:scale-95"
+                    style={{ color: 'rgba(255,255,255,0.3)' }}
+                  >
+                    <Volume2 className="h-3 w-3" style={{ color: isPlaying ? '#d4af37' : 'rgba(255,255,255,0.3)' }} />
+                    <span style={{ color: isPlaying ? '#d4af37' : undefined }}>
+                      {isPlaying ? 'Arrêter' : 'Aide audio'}
+                    </span>
+                  </button>
+                )}
+              </div>
+            )}
+
+            {/* Navigation between phases */}
+            {!isComplete && (
+              <div className="flex items-center justify-between gap-3 pt-2">
+                {currentPhase > 0 ? (
+                  <button
+                    onClick={() => goToPhase(currentPhase - 1)}
+                    className="flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-medium transition-all active:scale-95"
+                    style={{ color: 'rgba(255,255,255,0.5)', background: 'rgba(255,255,255,0.05)' }}
+                  >
+                    <ChevronLeft className="h-3.5 w-3.5" />
+                    Palier {currentPhase}
+                  </button>
+                ) : <div />}
+
+                {phaseComplete && currentPhase < 3 && (
+                  <motion.button
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    onClick={() => goToPhase(currentPhase + 1)}
+                    className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold transition-all active:scale-95"
+                    style={{ background: `${PHASES[currentPhase + 1].color}25`, border: `1px solid ${PHASES[currentPhase + 1].color}50`, color: PHASES[currentPhase + 1].color }}
+                  >
+                    Palier {currentPhase + 2}
+                    <ChevronRight className="h-3.5 w-3.5" />
+                  </motion.button>
+                )}
+              </div>
+            )}
+
+            {/* Final next button */}
+            {isComplete && (
+              <motion.button
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={onNext}
+                className="w-full rounded-2xl py-4 flex items-center justify-center gap-2 font-semibold"
+                style={{
+                  background: 'linear-gradient(135deg, #d4af37, #b8962e)',
+                  color: '#1a2e1a',
+                }}
+              >
+                <Check className="h-5 w-5" />
+                Passer au test de validation
+              </motion.button>
+            )}
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Bismillah footer */}
+        {!isComplete && (
+          <p className="text-xs italic leading-relaxed" style={{ color: 'rgba(212,175,55,0.6)' }}>
+            Bismillah, qu'Allah{' '}
+            <span style={{ fontFamily: "'Amiri', serif", fontWeight: 'bold', fontSize: '1.1em' }}>(عز وجل)</span>
+            {' '}facilite, amine.
+          </p>
         )}
       </div>
     </HifzStepWrapper>
