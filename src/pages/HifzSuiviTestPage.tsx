@@ -375,11 +375,13 @@ export default function HifzSuiviTestPage() {
                       {juz.nextReview && (
                         <button
                           onClick={(e) => { e.stopPropagation(); navigate('/muraja'); }}
-                          className="rounded-lg p-2 text-left transition-colors hover:opacity-80 active:scale-95"
-                          style={{ background: 'var(--p-track)' }}
+                          className={`rounded-lg p-2 text-left transition-colors hover:opacity-80 active:scale-95 ${juz.isOverdue ? 'ring-1 ring-red-400/50' : ''}`}
+                          style={{ background: juz.isOverdue ? 'rgba(239,68,68,0.08)' : 'var(--p-track)' }}
                         >
-                          <div className="text-[9px] uppercase" style={{ color: 'var(--p-text-55)' }}>Prochaine révision</div>
-                          <div className="text-xs font-medium flex items-center gap-1" style={{ color: 'var(--p-primary)' }}>
+                          <div className="text-[9px] uppercase" style={{ color: juz.isOverdue ? 'rgb(220,38,38)' : 'var(--p-text-55)' }}>
+                            {juz.isOverdue ? '⚠ Révision en retard' : 'Prochaine révision'}
+                          </div>
+                          <div className="text-xs font-medium flex items-center gap-1" style={{ color: juz.isOverdue ? 'rgb(220,38,38)' : 'var(--p-primary)' }}>
                             {formatSmartDate(juz.nextReview)} <ChevronRight className="w-3 h-3" />
                           </div>
                         </button>
