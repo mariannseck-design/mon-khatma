@@ -1,21 +1,27 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Fusionner Al-Fatiha avec la portion suivante
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Problème
+Al-Fatiha (sourate 1, versets 1-7) est trop courte pour apparaître seule dans la checklist Muraja'a. Elle doit toujours être groupée avec la portion suivante (page 2 du Mushaf).
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Approche
+Fusionner Al-Fatiha au niveau de la **liste triée** dans `MurajaChecklist.tsx`, de sorte qu'elle ne forme qu'un seul item visuel combiné avec le bloc suivant.
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+### Modifications — `src/components/muraja/MurajaChecklist.tsx`
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+1. **Après le tri par page** (ligne ~122), ajouter une logique de fusion :
+   - Si un item a `surah_number === 1` et `verse_start === 1` et `verse_end === 7`, le fusionner visuellement avec l'item suivant dans la liste triée.
+   - L'item fusionné affiche les deux sourates (ex: "Al-Fatiha + Al-Baqara") avec les versets de chaque.
+   - Le check valide les deux items d'un coup (`onCheck` appelé pour les deux IDs).
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+2. **Implémentation concrète** :
+   - Créer un type `DisplayItem` qui peut contenir un `mergedWith?: ChecklistItem` optionnel.
+   - Transformer `sortedItems` → `displayItems` en détectant Al-Fatiha seule et l'attachant au suivant.
+   - Dans le rendu, afficher le nom combiné et les deux lignes de versets.
+   - Le bouton de validation déclenche `onCheck` / `onRate` pour les deux IDs.
+   - La barre de progression utilise les données de l'item principal (celui qui n'est pas Al-Fatiha).
+
+### Résultat
+Al-Fatiha n'apparaît jamais seule — elle est toujours présentée comme une portion combinée avec le bloc adjacent.
 
