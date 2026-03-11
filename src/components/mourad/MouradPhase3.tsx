@@ -2,13 +2,13 @@ import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Brain, Mic, Check, Play, Pause, RotateCcw } from 'lucide-react';
 import { SURAHS } from '@/lib/surahData';
-import { getExactVersePage } from '@/lib/quranData';
+
 import { RECITERS } from '@/hooks/useQuranAudio';
 import { useVoiceRecorder } from '@/hooks/useVoiceRecorder';
 import MouradMushafToggle, { type MushafMode, getMouradMushafMode, setMouradMushafMode } from './MouradMushafToggle';
 import MouradPhysicalView from './MouradPhysicalView';
 import HifzMushafImage from '@/components/hifz/HifzMushafImage';
-import QuranTextView from '@/components/quran/QuranTextView';
+import MouradVerseTextView from './MouradVerseTextView';
 
 interface Props {
   surahNumber: number;
@@ -22,7 +22,6 @@ type SubPhase = 'listen' | 'repetition' | 'recording';
 
 export default function MouradPhase3({ surahNumber, startVerse, endVerse, reciterId, onValidate }: Props) {
   const [mushafMode, setMushafModeState] = useState<MushafMode>(getMouradMushafMode());
-  const [page, setPage] = useState(1);
   const [subPhase, setSubPhase] = useState<SubPhase>('listen');
   const [listenCount, setListenCount] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -42,9 +41,6 @@ export default function MouradPhase3({ surahNumber, startVerse, endVerse, recite
 
   const surah = SURAHS.find(s => s.number === surahNumber);
 
-  useEffect(() => {
-    getExactVersePage(surahNumber, startVerse).then(setPage);
-  }, [surahNumber, startVerse]);
 
   const handleModeChange = (mode: MushafMode) => {
     setMushafModeState(mode);
@@ -167,7 +163,7 @@ export default function MouradPhase3({ surahNumber, startVerse, endVerse, recite
           <MouradMushafToggle mode={mushafMode} onChange={handleModeChange} />
           <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
             {mushafMode === 'image' && <HifzMushafImage surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse} maxHeight="250px" />}
-            {mushafMode === 'text' && <div style={{ height: '250px' }}><QuranTextView page={page} fontSize={22} darkMode={false} tajweedEnabled /></div>}
+            {mushafMode === 'text' && <MouradVerseTextView surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse} fontSize={22} maxHeight="250px" />}
             {mushafMode === 'physical' && <MouradPhysicalView surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse} />}
           </div>
         </div>

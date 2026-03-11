@@ -2,11 +2,11 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { BookOpen, Check } from 'lucide-react';
 import { SURAHS } from '@/lib/surahData';
-import { getExactVersePage } from '@/lib/quranData';
+
 import MouradMushafToggle, { type MushafMode, getMouradMushafMode, setMouradMushafMode } from './MouradMushafToggle';
 import MouradPhysicalView from './MouradPhysicalView';
 import HifzMushafImage from '@/components/hifz/HifzMushafImage';
-import QuranTextView from '@/components/quran/QuranTextView';
+import MouradVerseTextView from './MouradVerseTextView';
 
 interface Props {
   surahNumber: number;
@@ -17,15 +17,11 @@ interface Props {
 
 export default function MouradPhase1({ surahNumber, startVerse, endVerse, onValidate }: Props) {
   const [mushafMode, setMushafModeState] = useState<MushafMode>(getMouradMushafMode());
-  const [page, setPage] = useState(1);
   const [translations, setTranslations] = useState<Map<string, string>>(new Map());
   const [loadingTranslation, setLoadingTranslation] = useState(true);
 
   const surah = SURAHS.find(s => s.number === surahNumber);
 
-  useEffect(() => {
-    getExactVersePage(surahNumber, startVerse).then(setPage);
-  }, [surahNumber, startVerse]);
 
   // Load translations
   useEffect(() => {
@@ -77,9 +73,7 @@ export default function MouradPhase1({ surahNumber, startVerse, endVerse, onVali
           <HifzMushafImage surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse} maxHeight="280px" />
         )}
         {mushafMode === 'text' && (
-          <div style={{ height: '280px' }}>
-            <QuranTextView page={page} fontSize={22} darkMode={false} showTranslation tajweedEnabled />
-          </div>
+          <MouradVerseTextView surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse} fontSize={22} maxHeight="280px" />
         )}
         {mushafMode === 'physical' && (
           <MouradPhysicalView surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse} />
