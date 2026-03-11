@@ -21,15 +21,18 @@ const COLORS = {
 };
 
 const STEP_NAMES = ['Intention', 'Réveil', 'Imprégnation', 'Istiqâmah', 'Validation'];
+const MOURAD_PHASE_NAMES = ['Compréhension', 'Imprégnation', 'Liaison', 'Ancrage'];
 
 export default function HifzHubPage() {
   const { user } = useAuth();
   const [activeHifzSession, setActiveHifzSession] = useState<{ surahName: string; stepName: string } | null>(null);
+  const [activeMouradSession, setActiveMouradSession] = useState<{ surahName: string; phaseName: string } | null>(null);
   const [pendingReviews, setPendingReviews] = useState(0);
 
   useEffect(() => {
     if (user) {
       fetchPendingReviews();
+      detectActiveMouradSession();
     }
     detectActiveHifzSession();
   }, [user]);
@@ -81,6 +84,28 @@ export default function HifzHubPage() {
             stepName: STEP_NAMES[dbSession.current_step] || `Étape ${dbSession.current_step}`,
           });
         }
+      }
+    } catch { /* ignore */ }
+  };
+
+  const detectActiveMouradSession = async () => {
+    if (!user) return;
+    try {
+      const { data: dbSession } = await supabase
+        .from('mourad_sessions')
+        .select('surah_number, current_phase')
+        .eq('user_id', user.id)
+        .is('completed_at', null)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (dbSession && dbSession.current_phase >= 0 && dbSession.current_phase <= 3) {
+        const surahData = await import('@/lib/surahData');
+        const surah = surahData.SURAHS.find((s: any) => s.number === dbSession.surah_number);
+        setActiveMouradSession({
+          surahName: surah?.name || `Sourate ${dbSession.surah_number}`,
+          phaseName: MOURAD_PHASE_NAMES[dbSession.current_phase] || `Phase ${dbSession.current_phase}`,
+        });
       }
     } catch { /* ignore */ }
   };
@@ -164,16 +189,24 @@ export default function HifzHubPage() {
                   className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0"
                   style={{ background: `${COLORS.gold}22`, border: `1px solid ${COLORS.gold}35` }}
                 >
-                  <BookHeart className="h-7 w-7" style={{ color: COLORS.goldAccent }} />
+                  {activeMouradSession ? (
+                    <Play className="h-7 w-7" style={{ color: COLORS.goldAccent }} />
+                  ) : (
+                    <BookHeart className="h-7 w-7" style={{ color: COLORS.goldAccent }} />
+                  )}
                 </div>
                 <div className="flex-1">
                   <h3
                     className="text-base font-bold tracking-[0.08em] uppercase"
                     style={{ fontFamily: "'Inter', sans-serif", color: COLORS.goldAccent }}
                   >
-                    Méthode Oustaz Mourad
+                    {activeMouradSession ? '▶️ Continuer ma session' : 'Méthode Oustaz Mourad'}
                   </h3>
-                  <p className="text-white/60 text-xs mt-0.5">Recommandé pour débutant</p>
+                  <p className="text-white/70 text-sm mt-1">
+                    {activeMouradSession
+                      ? `${activeMouradSession.surahName} — ${activeMouradSession.phaseName}`
+                      : 'Recommandé pour débutant'}
+                  </p>
                 </div>
               </div>
             </motion.div>
