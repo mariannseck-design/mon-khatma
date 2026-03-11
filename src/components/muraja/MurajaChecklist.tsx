@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, Zap, ThumbsUp, Crown, BookOpen, Info, CalendarDays, PartyPopper, ExternalLink } from 'lucide-react';
+import { Check, Zap, ThumbsUp, Crown, BookOpen, FileText, Info, CalendarDays, PartyPopper } from 'lucide-react';
 import { SURAHS } from '@/lib/surahData';
 import { getExactVersePage } from '@/lib/quranData';
 import { useNavigate } from 'react-router-dom';
@@ -70,7 +70,6 @@ export default function MurajaChecklist({
   const [ratingFor, setRatingFor] = useState<string | null>(null);
   const [pageMap, setPageMap] = useState<Record<string, number>>({});
 
-  // Compute page numbers for each item
   useEffect(() => {
     if (items.length === 0) return;
     let cancelled = false;
@@ -111,20 +110,20 @@ export default function MurajaChecklist({
     setRatingFor(null);
   };
 
+  const borderLeftColor = section === 'rabt' ? '#D4AF37' : '#10B981';
+
   if (items.length === 0) {
-    // Tour section: distinguish "all done today" vs "no tour blocks at all"
     if (section === 'tour' && hasTourBlocks) {
       return (
         <div
-          className="rounded-2xl p-6 text-center"
+          className="rounded-xl p-4 text-center"
           style={{
             background: 'var(--p-card)',
             border: '1px solid var(--p-border)',
-            boxShadow: 'var(--p-card-shadow)',
           }}
         >
-          <PartyPopper className="h-6 w-6 mx-auto mb-2" style={{ color: '#D4AF37' }} />
-          <p className="text-sm font-bold" style={{ color: 'var(--p-primary)' }}>
+          <PartyPopper className="h-5 w-5 mx-auto mb-1.5" style={{ color: '#D4AF37' }} />
+          <p className="text-xs font-bold" style={{ color: 'var(--p-primary)' }}>
             Alhamdulillah, tu as terminé tes révisions pour aujourd'hui !
           </p>
         </div>
@@ -133,23 +132,22 @@ export default function MurajaChecklist({
 
     return (
       <div
-        className="rounded-2xl p-6 text-center"
+        className="rounded-xl p-4 text-center"
         style={{
           background: 'var(--p-card)',
           border: '1px solid var(--p-border)',
-          boxShadow: 'var(--p-card-shadow)',
         }}
       >
-        <BookOpen className="h-6 w-6 mx-auto mb-2" style={{ color: 'var(--p-accent)' }} />
-        <p className="text-sm font-medium" style={{ color: 'var(--p-text-65)' }}>
+        <BookOpen className="h-5 w-5 mx-auto mb-1.5" style={{ color: 'var(--p-accent)' }} />
+        <p className="text-xs font-medium" style={{ color: 'var(--p-text-65)' }}>
           {section === 'rabt'
             ? 'Aucun acquis récent (< 30 jours)'
             : "Aucune révision planifiée aujourd'hui"}
         </p>
         {section === 'tour' && (
           <>
-            <p className="text-xs mt-1.5" style={{ color: 'var(--p-text-50)' }}>
-              Tes portions mémorisées arriveront ici après 30 jours de liaison (Ar-Rabt).
+            <p className="text-[10px] mt-1" style={{ color: 'var(--p-text-50)' }}>
+              Tes portions arriveront ici après 30 jours de liaison.
             </p>
             {firstArrivalDate && (() => {
               const arrival = new Date(firstArrivalDate + 'T00:00:00');
@@ -157,10 +155,10 @@ export default function MurajaChecklist({
               const formatted = arrival.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
               const daysLeft = Math.max(0, Math.ceil((arrival.getTime() - Date.now()) / 86400000));
               return (
-                <div className="flex items-center gap-1.5 mt-2 justify-center">
-                  <CalendarDays className="h-3.5 w-3.5" style={{ color: 'var(--p-accent)' }} />
-                  <p className="text-xs font-semibold" style={{ color: 'var(--p-accent)' }}>
-                    Première portion estimée le {formatted} ({daysLeft > 0 ? `dans ${daysLeft} jour${daysLeft > 1 ? 's' : ''}` : "aujourd'hui"})
+                <div className="flex items-center gap-1 mt-1.5 justify-center">
+                  <CalendarDays className="h-3 w-3" style={{ color: 'var(--p-accent)' }} />
+                  <p className="text-[10px] font-semibold" style={{ color: 'var(--p-accent)' }}>
+                    Première portion le {formatted} ({daysLeft > 0 ? `dans ${daysLeft}j` : "aujourd'hui"})
                   </p>
                 </div>
               );
@@ -172,19 +170,19 @@ export default function MurajaChecklist({
   }
 
   return (
-    <div className="space-y-2.5">
+    <div className="space-y-2">
       {/* Cap message */}
       {isCapActive && totalDue && (
         <div
-          className="flex items-start gap-2 rounded-xl px-4 py-2.5 text-xs"
+          className="flex items-start gap-2 rounded-xl px-3 py-2 text-[11px]"
           style={{
             background: 'rgba(212,175,55,0.08)',
             border: '1px solid rgba(212,175,55,0.25)',
             color: 'var(--p-accent)',
           }}
         >
-          <Info className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
-          <span>Révision plafonnée à 10 portions aujourd'hui ({totalDue} dues au total). Le reste est reporté.</span>
+          <Info className="h-3 w-3 mt-0.5 flex-shrink-0" />
+          <span>Plafonnée à 10 portions ({totalDue} dues au total).</span>
         </div>
       )}
 
@@ -196,28 +194,26 @@ export default function MurajaChecklist({
         return (
           <div key={item.id}>
             <div
-              className="w-full rounded-xl px-4 py-3.5 transition-all"
+              className="w-full rounded-xl px-3.5 py-3 transition-all"
               style={{
                 background: isChecked ? 'var(--p-card-active)' : 'var(--p-card)',
-                border: `1px solid ${isChecked ? '#D4AF37' : 'var(--p-border)'}`,
-                borderLeft: section === 'rabt' ? '3px solid #D4AF37' : undefined,
+                border: '1px solid var(--p-border)',
+                borderLeft: `3px solid ${borderLeftColor}`,
                 opacity: isChecked ? 0.8 : 1,
-                boxShadow: isChecked ? 'none' : 'var(--p-card-shadow)',
               }}
             >
-              {/* Label */}
-              <div className="flex items-center gap-3">
-                {/* Checkbox indicator */}
+              <div className="flex items-center gap-2.5">
+                {/* Checkbox */}
                 <motion.div
-                  className="w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 transition-all"
+                  className="w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0"
                   style={{
-                    background: isChecked ? '#D4AF37' : 'transparent',
-                    border: `2px solid ${isChecked ? '#D4AF37' : 'var(--p-checkbox-border)'}`,
+                    background: isChecked ? borderLeftColor : 'transparent',
+                    border: `2px solid ${isChecked ? borderLeftColor : 'var(--p-checkbox-border)'}`,
                   }}
-                  animate={isChecked ? { scale: [1, 1.25, 1] } : {}}
+                  animate={isChecked ? { scale: [1, 1.2, 1] } : {}}
                   transition={{ type: 'spring', stiffness: 400, damping: 15 }}
                 >
-                  {isChecked && <Check className="h-3.5 w-3.5" style={{ color: '#FFFFFF' }} />}
+                  {isChecked && <Check className="h-3 w-3" style={{ color: '#FFFFFF' }} />}
                 </motion.div>
 
                 <div className="flex-1 min-w-0">
@@ -236,37 +232,38 @@ export default function MurajaChecklist({
                         onClick={(e) => { e.stopPropagation(); openInReader(item.id); }}
                         className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-md text-[10px] font-semibold transition-colors"
                         style={{
-                          background: 'rgba(16, 185, 129, 0.1)',
-                          color: '#10B981',
-                          border: '1px solid rgba(16, 185, 129, 0.2)',
+                          background: section === 'rabt' ? 'rgba(212, 175, 55, 0.1)' : 'rgba(16, 185, 129, 0.1)',
+                          color: borderLeftColor,
+                          border: `1px solid ${section === 'rabt' ? 'rgba(212, 175, 55, 0.2)' : 'rgba(16, 185, 129, 0.2)'}`,
                         }}
                         title="Ouvrir dans le lecteur"
                       >
-                        <BookOpen className="h-2.5 w-2.5" />
-                        p. {pageMap[item.id]}
+                        <FileText className="h-2.5 w-2.5" />
+                        {pageMap[item.id]}
                       </button>
                     )}
                   </div>
-                  <p className="text-xs font-medium" style={{ color: 'var(--p-text-60)' }}>
-                    v. {item.verse_start} → {item.verse_end}
+                  <div className="flex items-center gap-1 text-xs font-medium" style={{ color: 'var(--p-text-60)' }}>
+                    <BookOpen className="h-2.5 w-2.5 flex-shrink-0" style={{ color: borderLeftColor }} />
+                    <span>{item.verse_start} → {item.verse_end}</span>
                     {section === 'tour' && (
                       isChecked
-                        ? <span className="ml-2 font-bold" style={{ color: '#10B981' }}>· Révision faite ✓</span>
+                        ? <span className="ml-1 font-bold" style={{ color: '#10B981' }}>· Révision faite ✓</span>
                         : item.sm2_interval != null
-                          ? <span className="ml-2 opacity-80">· {humanizeInterval(item.sm2_interval)}</span>
+                          ? <span className="ml-1 opacity-80">· {humanizeInterval(item.sm2_interval)}</span>
                           : null
                     )}
                     {section === 'rabt' && (
-                      <span className="ml-2 opacity-80">· Jour {daysPassed} / 30</span>
+                      <span className="ml-1 opacity-80">· Jour {daysPassed}/30</span>
                     )}
-                  </p>
+                  </div>
 
                   {/* Mini progress bar for rabt */}
                   {section === 'rabt' && item.liaison_start_date && (
-                    <div className="w-full h-2 rounded-full overflow-hidden mt-1.5" style={{ background: 'var(--p-track)' }}>
+                    <div className="w-full h-1.5 rounded-full overflow-hidden mt-1.5" style={{ background: 'var(--p-track)' }}>
                       <motion.div
                         className="h-full rounded-full"
-                        style={{ background: 'linear-gradient(90deg, #065F46, #10B981)' }}
+                        style={{ background: 'linear-gradient(90deg, #B8960C, #D4AF37)' }}
                         initial={{ width: 0 }}
                         animate={{ width: `${(daysPassed / 30) * 100}%` }}
                         transition={{ duration: 0.6 }}
@@ -280,11 +277,15 @@ export default function MurajaChecklist({
               {!isChecked && !isRating && (
                 <motion.button
                   onClick={() => handleValidate(item.id)}
-                  className="w-full mt-3 flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold transition-all"
+                  className="w-full mt-2.5 flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-bold transition-all"
                   style={{
-                    background: 'linear-gradient(135deg, #065F46, #10B981)',
+                    background: section === 'rabt'
+                      ? 'linear-gradient(135deg, #B8960C, #D4AF37)'
+                      : 'linear-gradient(135deg, #065F46, #10B981)',
                     color: '#FFFFFF',
-                    boxShadow: '0 2px 8px -2px rgba(16, 185, 129, 0.4)',
+                    boxShadow: section === 'rabt'
+                      ? '0 2px 8px -2px rgba(212, 175, 55, 0.4)'
+                      : '0 2px 8px -2px rgba(16, 185, 129, 0.4)',
                   }}
                   whileTap={{ scale: 0.97 }}
                 >
@@ -302,19 +303,19 @@ export default function MurajaChecklist({
                   exit={{ height: 0, opacity: 0 }}
                   className="overflow-hidden"
                 >
-                  <div className="flex gap-2 px-2 py-2.5">
+                  <div className="flex gap-2 px-1 py-2">
                     {RATINGS.map(({ key, label, quality, icon: Icon, colorVar }) => (
                       <button
                         key={key}
                         onClick={() => handleRate(quality, key)}
-                        className="flex-1 flex items-center justify-center gap-1.5 rounded-xl px-3 py-3 text-xs font-bold transition-all"
+                        className="flex-1 flex items-center justify-center gap-1 rounded-lg px-2 py-2.5 text-[11px] font-bold transition-all"
                         style={{
                           background: `color-mix(in srgb, var(${colorVar}) 12%, transparent)`,
                           color: `var(${colorVar})`,
                           border: `1px solid color-mix(in srgb, var(${colorVar}) 30%, transparent)`,
                         }}
                       >
-                        <Icon className="h-3.5 w-3.5" />
+                        <Icon className="h-3 w-3" />
                         {label}
                       </button>
                     ))}
@@ -329,22 +330,25 @@ export default function MurajaChecklist({
       {/* Next upcoming tour reviews */}
       {section === 'tour' && nextTourReviews && nextTourReviews.length > 0 && items.every(item => checkedIds.includes(item.id)) && (
         <div
-          className="rounded-xl px-4 py-3 mt-1"
+          className="rounded-xl px-3 py-2.5 mt-1"
           style={{
             background: 'var(--p-card)',
             border: '1px solid var(--p-border)',
           }}
         >
-          <p className="text-xs font-bold mb-1.5" style={{ color: 'var(--p-text-75)' }}>
+          <p className="text-[10px] font-bold mb-1" style={{ color: 'var(--p-text-75)' }}>
             Prochaine révision :
           </p>
           {nextTourReviews.slice(0, 3).map((nr, i) => {
             const name = SURAHS.find(s => s.number === nr.surah_number)?.name || `Sourate ${nr.surah_number}`;
             const date = new Date(nr.next_review_date + 'T00:00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' });
             return (
-              <p key={i} className="text-xs font-medium" style={{ color: 'var(--p-text-60)' }}>
-                {name} v. {nr.verse_start} → {nr.verse_end} — <span style={{ color: 'var(--p-accent)' }}>{date}</span>
-              </p>
+              <div key={i} className="flex items-center gap-1 text-[11px] font-medium" style={{ color: 'var(--p-text-60)' }}>
+                <BookOpen className="h-2.5 w-2.5 flex-shrink-0" style={{ color: '#10B981' }} />
+                <span>{name}</span>
+                <span>{nr.verse_start} → {nr.verse_end}</span>
+                <span style={{ color: 'var(--p-accent)' }}>— {date}</span>
+              </div>
             );
           })}
         </div>

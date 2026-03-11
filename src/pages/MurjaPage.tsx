@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { AppLayout } from '@/components/layout/AppLayout';
-import { RefreshCw, TrendingUp, CalendarDays, PartyPopper, Info, Link, BookOpen } from 'lucide-react';
+import { RefreshCw, TrendingUp, CalendarDays, Info, Link, BookOpen, Sparkles, FileText } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
@@ -103,15 +103,12 @@ export default function MurjaPage() {
 
       const verses = (data as MemorizedVerse[]) || [];
 
-      // Auto-split multi-page blocks
       let needsRefresh = false;
       for (const verse of verses) {
         const subBlocks = await splitBlockByPages(verse.surah_number, verse.verse_start, verse.verse_end);
         if (subBlocks.length > 1) {
           needsRefresh = true;
-          // Delete the original block
           await supabase.from('hifz_memorized_verses').delete().eq('id', verse.id);
-          // Insert split blocks preserving SM-2 params
           const newRows = subBlocks.map(sub => ({
             user_id: user.id,
             surah_number: sub.surahNumber,
@@ -131,7 +128,6 @@ export default function MurjaPage() {
       }
 
       if (needsRefresh) {
-        // Re-fetch after splitting
         const { data: refreshed } = await supabase
           .from('hifz_memorized_verses')
           .select('*')
@@ -171,7 +167,6 @@ export default function MurjaPage() {
       .map(v => ({ surah_number: v.surah_number, verse_start: v.verse_start, verse_end: v.verse_end, next_review_date: v.next_review_date }));
   }, [allVerses]);
 
-
   const totalBlocks = rabtVerses.length + tourVerses.length;
   const checkedCount = checkedIds.filter(
     id => rabtVerses.some(v => v.id === id) || tourVerses.some(v => v.id === id)
@@ -198,14 +193,12 @@ export default function MurjaPage() {
     return {
       totalVersesCount: total,
       surahSummary: [...map.values()].sort((a, b) => {
-        // Liaison first, then tour; within same phase, sort by surah order
         if (a.isLiaison !== b.isLiaison) return a.isLiaison ? -1 : 1;
         return a.verseMin - b.verseMin || a.name.localeCompare(b.name);
       }),
     };
   }, [allVerses]);
 
-  // Compute page numbers for each summary item
   const [pageMap, setPageMap] = useState<Record<string, { startPage: number; endPage: number }>>({});
   useEffect(() => {
     if (surahSummary.length === 0) return;
@@ -227,7 +220,6 @@ export default function MurjaPage() {
     return () => { cancelled = true; };
   }, [surahSummary]);
 
-  // Combined next reviews for the countdown component (both rabt and tour)
   const nextReviewsForCountdown = useMemo(() => {
     const today = getTodayKey();
     const tomorrow = new Date();
@@ -271,14 +263,6 @@ export default function MurjaPage() {
   const formatDate = (dateStr: string) => {
     const d = new Date(dateStr + 'T00:00:00');
     return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
-  };
-
-  const getLiaisonRemaining = (verse: MemorizedVerse) => {
-    if (!verse.liaison_start_date) return null;
-    const start = new Date(verse.liaison_start_date + 'T00:00:00');
-    const now = new Date();
-    const daysPassed = Math.floor((now.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
-    return Math.max(0, 30 - daysPassed);
   };
 
   const handleRabtCheck = useCallback(async (id: string) => {
@@ -388,27 +372,41 @@ export default function MurjaPage() {
 
   return (
     <AppLayout title="Muraja'a" hideNav bgClassName="bg-gradient-muraja">
-      <div className="max-w-md mx-auto px-4 py-6 space-y-6" style={{ backgroundColor: 'var(--p-bg)', minHeight: '100vh' }}>
-        {/* Header */}
-        <div className="text-center space-y-1">
-          <div
-            className="w-12 h-12 rounded-xl mx-auto mb-2 flex items-center justify-center"
-            style={{
-              background: 'linear-gradient(135deg, #065F46, #10B981)',
-              boxShadow: '0 4px 14px -2px rgba(16, 185, 129, 0.4)',
-            }}
-          >
-            <RefreshCw className="h-6 w-6 text-white" />
+      <div className="max-w-md mx-auto px-4 py-5 space-y-4" style={{ backgroundColor: 'var(--p-bg)', minHeight: '100vh' }}>
+        {/* Compact Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div
+              className="w-8 h-8 rounded-lg flex items-center justify-center"
+              style={{
+                background: 'linear-gradient(135deg, #065F46, #10B981)',
+                boxShadow: '0 3px 10px -2px rgba(16, 185, 129, 0.4)',
+              }}
+            >
+              <RefreshCw className="h-4 w-4 text-white" />
+            </div>
+            <div>
+              <h1
+                className="text-base font-bold tracking-wide"
+                style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-primary)' }}
+              >
+                Muraja'a
+              </h1>
+              <p className="text-[10px] font-medium -mt-0.5" style={{ color: 'var(--p-text-60)' }}>
+                Consolide ta mémorisation
+              </p>
+            </div>
           </div>
-          <h1
-            className="text-xl font-bold tracking-[0.08em] uppercase"
-            style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-primary)' }}
-          >
-            Muraja'a
-          </h1>
-          <p className="text-xs font-medium" style={{ color: 'var(--p-text-75)' }}>
-            Consolide ta mémorisation
-          </p>
+          {!loading && allVerses.length > 0 && (
+            <button
+              onClick={refresh}
+              className="w-7 h-7 rounded-lg flex items-center justify-center transition-colors"
+              style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)' }}
+              title="Actualiser"
+            >
+              <RefreshCw className="h-3 w-3" style={{ color: 'var(--p-text-60)' }} />
+            </button>
+          )}
         </div>
 
         {loading ? (
@@ -434,48 +432,47 @@ export default function MurjaPage() {
           </div>
         ) : totalBlocks === 0 ? (
           <>
-            {/* All revisions done for today */}
-            <div
-              className="rounded-2xl p-8 text-center"
+            {/* All done — success banner */}
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="rounded-xl px-4 py-3 flex items-center gap-3"
               style={{
-                background: 'var(--p-gradient-bg)',
-                border: '2px solid var(--p-accent)',
-                boxShadow: '0 8px 32px -8px rgba(6,95,70,0.4)',
+                background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(212, 175, 55, 0.08))',
+                border: '1px solid rgba(16, 185, 129, 0.25)',
               }}
             >
-              <PartyPopper className="h-10 w-10 mx-auto mb-4" style={{ color: 'var(--p-accent)' }} />
-              <p className="text-base font-medium leading-relaxed" style={{ color: 'var(--p-on-dark)' }}>
-                Alhamdulillah, tu as terminé tes révisions pour aujourd'hui !
-              </p>
-              <p className="text-sm font-medium mt-2" style={{ color: 'var(--p-on-dark-muted)' }}>
-                Tes prochaines révisions arriveront selon l'algorithme de répétition espacée.
-              </p>
-            </div>
+              <Sparkles className="h-5 w-5 flex-shrink-0" style={{ color: '#D4AF37' }} />
+              <div>
+                <p className="text-xs font-bold" style={{ color: 'var(--p-primary)' }}>
+                  Alhamdulillah, tu as terminé tes révisions !
+                </p>
+                <p className="text-[10px] font-medium" style={{ color: 'var(--p-text-60)' }}>
+                  Prochaines révisions selon la répétition espacée.
+                </p>
+              </div>
+            </motion.div>
 
             {/* Récap hebdomadaire */}
             <MurajaWeeklyRecap />
 
-            {/* Mes ayats mémorisées (when no blocks due today) */}
+            {/* Mes ayats mémorisées */}
             <div
-              className="rounded-2xl p-5 space-y-3"
+              className="rounded-2xl p-4 space-y-2.5"
               style={{
                 background: 'var(--p-card)',
                 border: '1px solid var(--p-border)',
-                boxShadow: 'var(--p-card-shadow)',
               }}
             >
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg, #6D28D9, #8B5CF6)', boxShadow: '0 3px 10px -2px rgba(139, 92, 246, 0.4)' }}>
-                  <TrendingUp className="h-3.5 w-3.5 text-white" />
+                <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg, #6D28D9, #8B5CF6)' }}>
+                  <TrendingUp className="h-3 w-3 text-white" />
                 </div>
-                <h3
-                   className="text-sm font-bold"
-                   style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-primary)' }}
-                 >
-                  Mes ayats mémorisées : {totalVersesCount} Ayat{totalVersesCount > 1 ? 's' : ''}
+                <h3 className="text-xs font-bold" style={{ color: 'var(--p-primary)' }}>
+                  Mes ayats mémorisées · {totalVersesCount} Ayat{totalVersesCount > 1 ? 's' : ''}
                 </h3>
               </div>
-              <div className="space-y-1.5">
+              <div className="space-y-1">
                 {surahSummary.map((s, idx) => {
                   const today = getTodayKey();
                   const tomorrow = new Date();
@@ -487,7 +484,7 @@ export default function MurjaPage() {
                   if (s.nextReview <= today) {
                     statusText = s.isLiaison ? 'Phase de liaison' : 'Phase de révision';
                   } else if (s.nextReview === tomorrowKey) {
-                    statusText = `Prochaine ${phaseLabel} : demain, ${formatDate(s.nextReview)}`;
+                    statusText = `Prochaine ${phaseLabel} : demain`;
                   } else {
                     statusText = `Prochaine ${phaseLabel} : ${formatDate(s.nextReview)}`;
                   }
@@ -495,38 +492,19 @@ export default function MurjaPage() {
                   return (
                     <div
                       key={`${s.name}_${idx}`}
-                      className="flex items-center justify-between px-3 py-2 rounded-lg"
+                      className="flex items-center justify-between px-2.5 py-1.5 rounded-lg"
                       style={{ background: 'var(--p-card-active)' }}
                     >
-                       <div className="flex items-center gap-2">
-                         <span className="text-xs font-bold" style={{ color: 'var(--p-primary)' }}>
-                           {s.name}
-                         </span>
-                         <span className="text-sm font-extrabold" style={{ color: 'var(--p-primary)' }}>v. {s.verseMin} à {s.verseMax}</span>
-                       </div>
-                        <div className="flex items-center gap-0.5 text-[10px] font-medium" style={{ color: 'var(--p-text-65)' }}>
-                       <span className="flex items-center gap-0.5">
-                           <CalendarDays className="h-2.5 w-2.5" />
-                           {statusText}
-                         </span>
-                       </div>
+                      <div className="flex items-center gap-1.5">
+                        <BookOpen className="h-2.5 w-2.5 flex-shrink-0" style={{ color: s.isLiaison ? '#D4AF37' : '#10B981' }} />
+                        <span className="text-[11px] font-bold" style={{ color: 'var(--p-primary)' }}>{s.name}</span>
+                        <span className="text-[11px] font-extrabold" style={{ color: 'var(--p-primary)' }}>{s.verseMin}→{s.verseMax}</span>
+                      </div>
+                      <span className="text-[9px] font-medium" style={{ color: 'var(--p-text-65)' }}>{statusText}</span>
                     </div>
                   );
                 })}
               </div>
-            </div>
-
-            {/* Actions */}
-            <div className="flex items-center justify-center gap-3">
-              <Button
-                variant="ghost"
-                onClick={refresh}
-                className="text-xs gap-1.5"
-                style={{ color: 'var(--p-primary)' }}
-              >
-                <RefreshCw className="h-3 w-3" />
-                Actualiser
-              </Button>
             </div>
           </>
         ) : (
@@ -534,22 +512,43 @@ export default function MurjaPage() {
             {/* Countdown */}
             <MurajaCountdown allChecked={allDailyChecked} nextReviews={nextReviewsForCountdown} />
 
+            {/* Success banner — conditional */}
+            <AnimatePresence>
+              {allDailyChecked && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="rounded-xl px-4 py-3 flex items-center gap-3 overflow-hidden"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(212, 175, 55, 0.08))',
+                    border: '1px solid rgba(16, 185, 129, 0.25)',
+                  }}
+                >
+                  <Sparkles className="h-5 w-5 flex-shrink-0" style={{ color: '#D4AF37' }} />
+                  <p className="text-xs font-bold" style={{ color: 'var(--p-primary)' }}>
+                    Alhamdulillah, tu as terminé tes révisions du jour ! 🤲
+                  </p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
             {/* Progress bar */}
             {totalBlocks > 0 && (
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between text-xs">
-                   <span className="font-bold" style={{ color: 'var(--p-primary)' }}>
+              <div className="space-y-1">
+                <div className="flex items-center justify-between text-[11px]">
+                  <span className="font-bold" style={{ color: 'var(--p-primary)' }}>
                     Progression du jour
                   </span>
                   <span className="font-bold" style={{ color: 'var(--p-accent)' }}>
                     {checkedCount >= totalBlocks
-                      ? 'Bravo, tu as tout révisé !'
+                      ? 'Tout révisé !'
                       : checkedCount === 0
                         ? "C'est parti !"
-                        : `Plus que ${totalBlocks - checkedCount} étape${totalBlocks - checkedCount > 1 ? 's' : ''} !`}
+                        : `${totalBlocks - checkedCount} restante${totalBlocks - checkedCount > 1 ? 's' : ''}`}
                   </span>
                 </div>
-                <div className="w-full h-2.5 rounded-full overflow-hidden" style={{ background: 'var(--p-track)' }}>
+                <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: 'var(--p-track)' }}>
                   <motion.div
                     className="h-full rounded-full"
                     style={{ background: 'var(--p-gradient-fill)' }}
@@ -560,89 +559,70 @@ export default function MurjaPage() {
               </div>
             )}
 
-            {/* Section Ar-Rabt */}
-            <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                 <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg, #B8960C, #D4AF37)', boxShadow: '0 3px 10px -2px rgba(212, 175, 55, 0.4)' }}>
-                   <Link className="h-3.5 w-3.5 text-white" />
-                 </div>
-                 <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
-                   <span className="text-lg font-extrabold" style={{ color: 'var(--p-primary)' }}>Ar-Rabt</span>{' '}
-                   <span className="text-sm font-medium" style={{ color: 'var(--p-text-75)' }}>(Liaison du jour)</span>
-                 </h2>
-                 <span className="text-[10px] font-bold px-2 py-0.5 rounded-full text-white" style={{ background: 'linear-gradient(135deg, #065F46, #10B981)' }}>
-                   {rabtVerses.length}
-                 </span>
-                 <Popover>
-                   <PopoverTrigger asChild>
-                     <button className="inline-flex items-center justify-center" aria-label="Info Ar-Rabt">
-                       <Info className="h-4 w-4" style={{ color: 'var(--p-accent)' }} />
-                     </button>
-                   </PopoverTrigger>
-                   <PopoverContent side="bottom" className="w-auto max-w-[200px] px-3 py-2 text-xs font-medium" style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', color: 'var(--p-text)' }}>
-                     Nouvelle mémorisation
-                   </PopoverContent>
-                 </Popover>
-                 <MurajaMethodModal defaultTab="rabt" />
+            {/* ── Mon Programme du Jour ── */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <h2 className="text-sm font-bold" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-primary)' }}>
+                  Mon Programme du Jour
+                </h2>
+                <span
+                  className="text-[10px] font-bold px-2 py-0.5 rounded-full text-white"
+                  style={{ background: 'linear-gradient(135deg, #065F46, #10B981)' }}
+                >
+                  {totalBlocks} portion{totalBlocks > 1 ? 's' : ''}
+                </span>
               </div>
-               <p className="text-[11px] font-medium -mt-2" style={{ color: 'var(--p-text-65)' }}>
-                 Récitation quotidienne
-               </p>
-              <MurajaChecklist
-                items={rabtVerses}
-                section="rabt"
-                checkedIds={checkedIds}
-                onCheck={handleRabtCheck}
-              />
-            </div>
 
-            {/* Section Muraja'a (Consolidation) */}
-            <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                 <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg, #065F46, #10B981)', boxShadow: '0 3px 10px -2px rgba(16, 185, 129, 0.4)' }}>
-                   <BookOpen className="h-3.5 w-3.5 text-white" />
-                 </div>
-                 <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
-                   <span className="text-lg font-extrabold" style={{ color: 'var(--p-primary)' }}>Muraja'a</span>{' '}
-                   <span className="text-sm font-medium" style={{ color: 'var(--p-text-75)' }}>(Consolidation)</span>
-                 </h2>
-                 <span className="text-[10px] font-bold px-2 py-0.5 rounded-full text-white" style={{ background: 'linear-gradient(135deg, #065F46, #10B981)' }}>
-                   {tourVerses.length}
-                 </span>
-                 <Popover>
-                   <PopoverTrigger asChild>
-                     <button className="inline-flex items-center justify-center" aria-label="Info Muraja'a">
-                       <Info className="h-4 w-4" style={{ color: 'var(--p-accent)' }} />
-                     </button>
-                   </PopoverTrigger>
-                   <PopoverContent side="bottom" className="w-auto max-w-[200px] px-3 py-2 text-xs font-medium" style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', color: 'var(--p-text)' }}>
-                     Ancienne mémorisation
-                   </PopoverContent>
-                 </Popover>
-                 <MurajaMethodModal defaultTab="sm2" />
-              </div>
-               <p className="text-[11px] font-medium -mt-2" style={{ color: 'var(--p-text-65)' }}>
-                 Ton programme du jour. Récite les versets ci-dessous pour maintenir ton niveau.
-               </p>
-               <MurajaChecklist
-                 items={tourVerses}
-                 section="tour"
-                 checkedIds={checkedIds}
-                 onCheck={handleTourCheck}
-                 onRate={handleTourRate}
-                 isCapActive={isCapActive}
-                 totalDue={totalDueCount}
-                 hasTourBlocks={allVerses.some(v => v.liaison_status === 'tour' || !v.liaison_status)}
-                 firstArrivalDate={
-                   rabtVerses.length > 0
-                     ? rabtVerses.reduce((earliest, v) => {
-                         if (!v.liaison_start_date) return earliest;
-                         return !earliest || v.liaison_start_date < earliest ? v.liaison_start_date : earliest;
-                       }, null as string | null) ?? undefined
-                     : undefined
-                 }
-                 nextTourReviews={nextTourReviews}
+              {/* Sub-section: Ar-Rabt */}
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: '#D4AF37' }} />
+                  <span className="text-xs font-bold" style={{ color: '#B8860B' }}>Ar-Rabt</span>
+                  <span className="text-[10px] font-medium" style={{ color: 'var(--p-text-60)' }}>· Liaison quotidienne</span>
+                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: 'rgba(212, 175, 55, 0.12)', color: '#B8860B' }}>
+                    {rabtVerses.length}
+                  </span>
+                  <MurajaMethodModal defaultTab="rabt" />
+                </div>
+                <MurajaChecklist
+                  items={rabtVerses}
+                  section="rabt"
+                  checkedIds={checkedIds}
+                  onCheck={handleRabtCheck}
                 />
+              </div>
+
+              {/* Sub-section: Consolidation */}
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: '#10B981' }} />
+                  <span className="text-xs font-bold" style={{ color: '#059669' }}>Consolidation</span>
+                  <span className="text-[10px] font-medium" style={{ color: 'var(--p-text-60)' }}>· Révision espacée</span>
+                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: 'rgba(16, 185, 129, 0.12)', color: '#059669' }}>
+                    {tourVerses.length}
+                  </span>
+                  <MurajaMethodModal defaultTab="sm2" />
+                </div>
+                <MurajaChecklist
+                  items={tourVerses}
+                  section="tour"
+                  checkedIds={checkedIds}
+                  onCheck={handleTourCheck}
+                  onRate={handleTourRate}
+                  isCapActive={isCapActive}
+                  totalDue={totalDueCount}
+                  hasTourBlocks={allVerses.some(v => v.liaison_status === 'tour' || !v.liaison_status)}
+                  firstArrivalDate={
+                    rabtVerses.length > 0
+                      ? rabtVerses.reduce((earliest, v) => {
+                          if (!v.liaison_start_date) return earliest;
+                          return !earliest || v.liaison_start_date < earliest ? v.liaison_start_date : earliest;
+                        }, null as string | null) ?? undefined
+                      : undefined
+                  }
+                  nextTourReviews={nextTourReviews}
+                />
+              </div>
             </div>
 
             {/* Récap hebdomadaire */}
@@ -650,76 +630,61 @@ export default function MurjaPage() {
 
             {/* Mes ayats mémorisées */}
             <div
-              className="rounded-2xl p-5 space-y-3"
+              className="rounded-2xl p-4 space-y-2.5"
               style={{
                 background: 'var(--p-card)',
                 border: '1px solid var(--p-border)',
-                boxShadow: 'var(--p-card-shadow)',
               }}
             >
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg, #6D28D9, #8B5CF6)', boxShadow: '0 3px 10px -2px rgba(139, 92, 246, 0.4)' }}>
-                  <TrendingUp className="h-3.5 w-3.5 text-white" />
+                <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg, #6D28D9, #8B5CF6)' }}>
+                  <TrendingUp className="h-3 w-3 text-white" />
                 </div>
-                <h3
-                   className="text-sm font-bold"
-                   style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-primary)' }}
-                 >
-                  Mes ayats mémorisées : {totalVersesCount} Ayat{totalVersesCount > 1 ? 's' : ''}
+                <h3 className="text-xs font-bold" style={{ color: 'var(--p-primary)' }}>
+                  Mes ayats mémorisées · {totalVersesCount} Ayat{totalVersesCount > 1 ? 's' : ''}
                 </h3>
               </div>
-              <div className="space-y-1.5">
+              <div className="space-y-1">
                 {surahSummary.map((s, idx) => {
-                  const statusText = s.isLiaison ? 'Phase de liaison' : 'Phase de révision';
                   const isLiaison = s.isLiaison;
                   const pages = pageMap[`${s.surahNumber}_${isLiaison ? 'l' : 't'}`];
                   const pageLabel = pages
                     ? pages.startPage === pages.endPage
-                      ? `p. ${pages.startPage}`
-                      : `p. ${pages.startPage}-${pages.endPage}`
+                      ? `${pages.startPage}`
+                      : `${pages.startPage}-${pages.endPage}`
                     : '';
 
                   return (
                     <div
                       key={`${s.name}_${idx}`}
-                      className="flex items-center justify-between px-3 py-2 rounded-lg"
+                      className="flex items-center justify-between px-2.5 py-1.5 rounded-lg"
                       style={{
-                        background: isLiaison ? 'rgba(212, 175, 55, 0.08)' : 'rgba(16, 185, 129, 0.08)',
-                        border: `1px solid ${isLiaison ? 'rgba(212, 175, 55, 0.2)' : 'rgba(16, 185, 129, 0.2)'}`,
+                        background: isLiaison ? 'rgba(212, 175, 55, 0.06)' : 'rgba(16, 185, 129, 0.06)',
+                        borderLeft: `2px solid ${isLiaison ? '#D4AF37' : '#10B981'}`,
                       }}
                     >
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-xs font-bold" style={{ color: 'var(--p-primary)' }}>
-                          {s.name}
-                        </span>
-                        <span className="text-sm font-extrabold" style={{ color: 'var(--p-primary)' }}>v. {s.verseMin} à {s.verseMax}</span>
+                      <div className="flex items-center gap-1.5">
+                        {isLiaison ? (
+                          <Link className="h-2.5 w-2.5 flex-shrink-0" style={{ color: '#D4AF37' }} />
+                        ) : (
+                          <BookOpen className="h-2.5 w-2.5 flex-shrink-0" style={{ color: '#10B981' }} />
+                        )}
+                        <span className="text-[11px] font-bold" style={{ color: 'var(--p-primary)' }}>{s.name}</span>
+                        <span className="text-[11px] font-extrabold" style={{ color: 'var(--p-primary)' }}>{s.verseMin}→{s.verseMax}</span>
                         {pageLabel && (
-                          <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded" style={{ background: 'var(--p-card)', color: 'var(--p-text-60)' }}>
+                          <span className="flex items-center gap-0.5 text-[9px] font-semibold px-1 py-0.5 rounded" style={{ background: 'var(--p-card)', color: 'var(--p-text-50)' }}>
+                            <FileText className="h-2 w-2" />
                             {pageLabel}
                           </span>
                         )}
                       </div>
-                      <div className="flex items-center gap-0.5 text-[10px] font-medium flex-shrink-0" style={{ color: isLiaison ? '#B8860B' : '#059669' }}>
-                        <CalendarDays className="h-2.5 w-2.5" />
-                        {statusText}
-                      </div>
+                      <span className="text-[9px] font-medium flex-shrink-0" style={{ color: isLiaison ? '#B8860B' : '#059669' }}>
+                        {isLiaison ? 'Liaison' : 'Révision'}
+                      </span>
                     </div>
                   );
                 })}
               </div>
-            </div>
-
-            {/* Actions */}
-            <div className="flex items-center justify-center gap-3">
-              <Button
-                variant="ghost"
-                onClick={refresh}
-                className="text-xs gap-1.5"
-                style={{ color: 'var(--p-primary)' }}
-              >
-                <RefreshCw className="h-3 w-3" />
-                Actualiser
-              </Button>
             </div>
           </>
         )}
