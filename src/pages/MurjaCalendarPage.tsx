@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AppLayout } from '@/components/layout/AppLayout';
-import { ArrowLeft, Check, Zap, ThumbsUp, Crown, BookOpen, Lock, ChevronDown, Sparkles } from 'lucide-react';
+import { ArrowLeft, Check, Zap, ThumbsUp, Crown, BookOpen, Lock, ChevronDown, Sparkles, Lightbulb } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useMurajaData, getSurahName, getLiaisonDaysPassed, MemorizedVerse } from '@/hooks/useMurajaData';
 import { getExactVersePage } from '@/lib/quranData';
@@ -190,7 +190,10 @@ export default function MurjaCalendarPage() {
           <p className="text-xs font-bold uppercase tracking-widest" style={{ color: labelColor }}>{label}</p>
           <span className="text-[10px] font-medium" style={{ color: 'var(--p-text-40)' }}>· {subtitle}</span>
         </div>
-        <p className="text-[10px] leading-tight" style={{ color: 'var(--p-text-30)' }}>{tooltipText}</p>
+        <div className="flex items-start gap-1.5">
+          <Lightbulb className="h-3 w-3 mt-0.5 flex-shrink-0" style={{ color: labelColor }} />
+          <p className="text-[10px] leading-tight" style={{ color: 'var(--p-text-30)' }}>{tooltipText}</p>
+        </div>
         {pending.length > 0 && (
           <div className="grid grid-cols-2 gap-3">
             {pending.map(item => renderCard(item, isRabt, true))}
@@ -307,7 +310,7 @@ export default function MurjaCalendarPage() {
             ) : (
               <div className="space-y-4">
                 {renderSection('Ar-Rabt', '#D4AF37', 'Liaison quotidienne', 'Récitez chaque jour vos versets récents (< 30 jours) pour les ancrer en mémoire.', isFutureDay ? selectedItems.rabt : pendingRabt, doneRabt, true)}
-                {renderSection('Consolidation', '#10B981', 'Révision espacée', 'Révisez vos versets anciens selon un algorithme de répétition espacée (SM-2).', isFutureDay ? selectedItems.tour : pendingTour, doneTour, false)}
+                {renderSection('Consolidation', '#10B981', 'Révision espacée', 'Révisez vos portions plus anciennes au moment idéal pour ne jamais les oublier.', isFutureDay ? selectedItems.tour : pendingTour, doneTour, false)}
               </div>
             )}
           </>

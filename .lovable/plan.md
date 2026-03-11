@@ -1,18 +1,21 @@
 
 
-## Ajouter les icônes lampe aux textes descriptifs des sections
+# Diagnostic : 404 sur /quran-reader
 
-**Fichier** : `src/pages/MurjaCalendarPage.tsx`
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-1. **Import** (ligne 4) : ajouter `Lightbulb` depuis `lucide-react`
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-2. **`renderSection`** (ligne 193) : transformer la ligne de texte descriptif en ajoutant une icône lampe devant :
-```tsx
-<div className="flex items-start gap-1.5">
-  <Lightbulb className="h-3 w-3 mt-0.5 flex-shrink-0" style={{ color: labelColor }} />
-  <p className="text-[10px] leading-tight" style={{ color: 'var(--p-text-30)' }}>{tooltipText}</p>
-</div>
-```
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-3. **Texte Consolidation** (ligne 310) : remplacer `'Révisez vos versets anciens selon un algorithme de répétition espacée (SM-2).'` par `'Révisez vos portions plus anciennes au moment idéal pour ne jamais les oublier.'`
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
