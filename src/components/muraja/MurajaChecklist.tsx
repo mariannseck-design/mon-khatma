@@ -120,7 +120,7 @@ export default function MurajaChecklist({
   const getItemColor = (item: ChecklistItem) => {
     if (section !== 'rabt') return '#10B981';
     const daysPassed = getLiaisonDaysPassed(item.liaison_start_date);
-    return daysPassed <= 7 ? '#7C3AED' : '#D4AF37';
+    return daysPassed <= 7 ? '#14B8A6' : '#D4AF37';
   };
 
   if (sortedItems.length === 0) {
