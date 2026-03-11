@@ -22,9 +22,6 @@ export default function MouradPhase1({ surahNumber, startVerse, endVerse, onVali
 
   const surah = SURAHS.find(s => s.number === surahNumber);
 
-  useEffect(() => {
-    getExactVersePage(surahNumber, startVerse).then(setPage);
-  }, [surahNumber, startVerse]);
 
   // Load translations
   useEffect(() => {

@@ -41,9 +41,6 @@ export default function MouradPhase3({ surahNumber, startVerse, endVerse, recite
 
   const surah = SURAHS.find(s => s.number === surahNumber);
 
-  useEffect(() => {
-    getExactVersePage(surahNumber, startVerse).then(setPage);
-  }, [surahNumber, startVerse]);
 
   const handleModeChange = (mode: MushafMode) => {
     setMushafModeState(mode);
