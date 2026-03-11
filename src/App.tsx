@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { useServiceWorkerUpdate } from "@/hooks/useServiceWorkerUpdate";
-import { BookOpenCheck, RefreshCw, BarChart3, Sparkles, BookOpen } from "lucide-react";
+import { BookOpenCheck, BarChart3, Sparkles, BookOpen } from "lucide-react";
 import ComingSoonGate from "./components/layout/ComingSoonGate";
 import AuthPage from "./pages/AuthPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
@@ -22,8 +22,6 @@ import AdminPage from "./pages/AdminPage";
 import ProfilPage from "./pages/ProfilPage";
 import ParametresPage from "./pages/ParametresPage";
 import HifzPage from "./pages/HifzPage";
-import MurjaPage from "./pages/MurjaPage";
-import MurjaCardsPage from "./pages/MurjaCardsPage";
 import MurjaCalendarPage from "./pages/MurjaCalendarPage";
 import HifzSuiviPage from "./pages/HifzSuiviPage";
 
@@ -93,9 +91,7 @@ function AppRoutes() {
       <Route path="/parametres" element={<ProtectedRoute><ParametresPage /></ProtectedRoute>} />
       <Route path="/dhikr" element={<ProtectedRoute><DhikrPage /></ProtectedRoute>} />
       <Route path="/hifz" element={<ProtectedRoute><ComingSoonGate title="Espace Hifz" icon={BookOpenCheck} description="Mémorise le Coran étape par étape avec un parcours guidé." hideNav>{<HifzPage />}</ComingSoonGate></ProtectedRoute>} />
-      <Route path="/muraja" element={<ProtectedRoute><ComingSoonGate title="Muraja'a" icon={RefreshCw} description="Consolide ta mémorisation grâce à la répétition espacée." hideNav>{<MurjaPage />}</ComingSoonGate></ProtectedRoute>} />
-      <Route path="/murajaa-cards" element={<ProtectedRoute><MurjaCardsPage /></ProtectedRoute>} />
-      <Route path="/murajaa-calendar" element={<ProtectedRoute><MurjaCalendarPage /></ProtectedRoute>} />
+      <Route path="/muraja" element={<ProtectedRoute><MurjaCalendarPage /></ProtectedRoute>} />
       <Route path="/hifz-suivi" element={<ProtectedRoute><ComingSoonGate title="Mon Suivi Hifz" icon={BarChart3} description="Consulte ta constance, tes versets ancrés et tes cycles.">{<HifzSuiviPage />}</ComingSoonGate></ProtectedRoute>} />
       <Route path="/sources-de-lumiere" element={<ProtectedRoute><ComingSoonGate title="Sources de Lumière" icon={Sparkles} description="Accède aux salawât, aux noms d'Allah et aux invocations lumineuses pour nourrir ton cœur.">{<SourcesDeLumierePage />}</ComingSoonGate></ProtectedRoute>} />
       <Route path="/douas" element={<ProtectedRoute><ComingSoonGate title="Mes Duas" icon={BookOpen} description="Retrouve des invocations classées par thème pour chaque moment de ta vie.">{<DouasPage />}</ComingSoonGate></ProtectedRoute>} />
