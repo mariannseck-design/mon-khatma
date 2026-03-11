@@ -1,24 +1,21 @@
 
 
-## Post-validation UX pour MurjaCalendarPage
+# Diagnostic : 404 sur /quran-reader
 
-### Modifications — `src/pages/MurjaCalendarPage.tsx`
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-1. **Tri dynamique** : Séparer les items en deux listes — `pending` (non validés) et `done` (validés via `checkedIds`). Les pending s'affichent en premier dans la grille principale.
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-2. **Section collapsible "Révisions terminées"** : Sous les cartes actives, ajouter un `Collapsible` (déjà disponible via `@radix-ui/react-collapsible`) intitulé "Révisions terminées (X)" qui contient les cartes validées avec `opacity: 0.5`. Fermé par défaut, ouvrable au tap.
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-3. **Bannière de célébration** : Quand tous les items du jour sélectionné (rabt + tour) sont validés et que c'est aujourd'hui, afficher une bannière animée (fade-in) avec le texte "Alhamdulillah ! Programme du jour terminé." en haut de la zone des tâches. Style discret : fond vert pâle, texte émeraude, icône check.
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-4. **Verrouillage jours futurs** : Déjà partiellement implémenté (opacity + Lock icon + disabled). Renforcer avec `pointer-events: none` et `cursor: not-allowed` sur les cartes futures, et retirer complètement le cercle de validation au profit d'un cadenas.
-
-5. **Logique de données** : Déjà correcte — `handleRabtCheck` met à jour `last_reviewed_at` et insère une `muraja_session`, `handleTourRate` met à jour les paramètres SM-2 et `next_review_date`. Aucun changement backend nécessaire.
-
-### Détail des changements dans le fichier
-
-- Importer `Collapsible`, `CollapsibleTrigger`, `CollapsibleContent` et `ChevronDown`
-- Refactorer `renderCards` pour ne plus rendre les items checked (ils iront dans la section collapsible)
-- Ajouter une fonction `renderCheckedCards` avec opacity 0.5, sans interaction
-- Ajouter la bannière conditionnelle `allDayChecked` avec animation framer-motion
-- Ajouter `pointerEvents: 'none'` aux cartes futures en plus du `disabled`
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

@@ -1,10 +1,11 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AppLayout } from '@/components/layout/AppLayout';
-import { ArrowLeft, Check, Zap, ThumbsUp, Crown, BookOpen, Lock } from 'lucide-react';
+import { ArrowLeft, Check, Zap, ThumbsUp, Crown, BookOpen, Lock, ChevronDown, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useMurajaData, getSurahName, getLiaisonDaysPassed, MemorizedVerse } from '@/hooks/useMurajaData';
 import { getExactVersePage } from '@/lib/quranData';
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
 
 const RATINGS = [
   { key: 'hard', label: 'Difficile', quality: 2, icon: Zap, color: '#EF4444' },
@@ -14,7 +15,7 @@ const RATINGS = [
 
 function getWeekDays(): { key: string; label: string; dayNum: number; isToday: boolean; isFuture: boolean }[] {
   const now = new Date();
-  const dayOfWeek = now.getDay(); // 0=Sun
+  const dayOfWeek = now.getDay();
   const monday = new Date(now);
   monday.setDate(now.getDate() - ((dayOfWeek + 6) % 7));
 
@@ -26,13 +27,7 @@ function getWeekDays(): { key: string; label: string; dayNum: number; isToday: b
     const d = new Date(monday);
     d.setDate(monday.getDate() + i);
     const key = d.toISOString().split('T')[0];
-    days.push({
-      key,
-      label: labels[i],
-      dayNum: d.getDate(),
-      isToday: key === todayKey,
-      isFuture: key > todayKey,
-    });
+    days.push({ key, label: labels[i], dayNum: d.getDate(), isToday: key === todayKey, isFuture: key > todayKey });
   }
   return days;
 }
@@ -47,7 +42,6 @@ export default function MurjaCalendarPage() {
   const weekDays = useMemo(() => getWeekDays(), []);
   const todayKey = new Date().toISOString().split('T')[0];
   const [selectedDay, setSelectedDay] = useState(todayKey);
-
   const [pageMap, setPageMap] = useState<Record<string, number>>({});
   const [ratingFor, setRatingFor] = useState<string | null>(null);
 
@@ -59,40 +53,46 @@ export default function MurjaCalendarPage() {
     (async () => {
       const result: Record<string, number> = {};
       for (const item of allItems) {
-        try {
-          result[item.id] = await getExactVersePage(item.surah_number, item.verse_start);
-        } catch { /* skip */ }
+        try { result[item.id] = await getExactVersePage(item.surah_number, item.verse_start); } catch { /* skip */ }
       }
       if (!cancelled) setPageMap(result);
     })();
     return () => { cancelled = true; };
   }, [allItems.length]);
 
-  // All consolidation items with their next_review_date
   const allConsolidation = useMemo(() => {
     return allVerses.filter(v => v.memorized_at < thirtyDaysCutoff);
   }, [allVerses, thirtyDaysCutoff]);
 
-  // For a given day key, which items are scheduled
   const getItemsForDay = (dayKey: string) => {
-    const rabt = rabtVerses; // rabt is daily
+    const rabt = rabtVerses;
     const tour = allConsolidation.filter(v => v.next_review_date === dayKey);
     return { rabt, tour };
   };
 
-  // Dot indicators per day
   const dayIndicators = useMemo(() => {
     const map: Record<string, { hasRabt: boolean; hasTour: boolean }> = {};
     for (const day of weekDays) {
-      const hasRabt = rabtVerses.length > 0;
-      const hasTour = allConsolidation.some(v => v.next_review_date === day.key);
-      map[day.key] = { hasRabt, hasTour };
+      map[day.key] = {
+        hasRabt: rabtVerses.length > 0,
+        hasTour: allConsolidation.some(v => v.next_review_date === day.key),
+      };
     }
     return map;
   }, [weekDays, rabtVerses, allConsolidation]);
 
   const selectedItems = getItemsForDay(selectedDay);
   const isFutureDay = selectedDay > todayKey;
+  const isToday = selectedDay === todayKey;
+
+  // Split pending vs done
+  const pendingRabt = selectedItems.rabt.filter(v => !checkedIds.includes(v.id));
+  const doneRabt = selectedItems.rabt.filter(v => checkedIds.includes(v.id));
+  const pendingTour = selectedItems.tour.filter(v => !checkedIds.includes(v.id));
+  const doneTour = selectedItems.tour.filter(v => checkedIds.includes(v.id));
+  const totalItems = selectedItems.rabt.length + selectedItems.tour.length;
+  const totalDone = doneRabt.length + doneTour.length;
+  const allDayChecked = totalItems > 0 && totalDone === totalItems && !isFutureDay;
 
   const getItemColor = (item: MemorizedVerse, isRabt: boolean) => {
     if (!isRabt) return '#10B981';
@@ -116,63 +116,85 @@ export default function MurjaCalendarPage() {
     setRatingFor(null);
   };
 
-  const renderCards = (items: MemorizedVerse[], isRabt: boolean) => {
-    if (items.length === 0) return null;
+  const renderCard = (item: MemorizedVerse, isRabt: boolean, interactive: boolean) => {
+    const color = getItemColor(item, isRabt);
+    const page = pageMap[item.id];
+    const isChecked = checkedIds.includes(item.id);
+    const checkColor = isRabt ? '#D4AF37' : '#10B981';
+    const locked = isFutureDay;
 
     return (
-      <div className="grid grid-cols-2 gap-3">
-        {items.map(item => {
-          const color = getItemColor(item, isRabt);
-          const page = pageMap[item.id];
-          const isChecked = checkedIds.includes(item.id);
-          const checkColor = isRabt ? '#D4AF37' : '#10B981';
+      <motion.button
+        key={item.id}
+        onClick={interactive ? () => handleCardTap(item.id, isRabt) : undefined}
+        className="relative rounded-2xl p-3.5 text-left transition-all"
+        style={{
+          background: 'var(--p-card)',
+          border: '1px solid var(--p-border)',
+          borderLeftWidth: '3px',
+          borderLeftColor: color,
+          opacity: locked ? 0.45 : isChecked ? 0.5 : 1,
+          pointerEvents: locked || isChecked ? 'none' : 'auto',
+          cursor: locked ? 'not-allowed' : isChecked ? 'default' : 'pointer',
+          filter: locked ? 'grayscale(30%)' : 'none',
+        }}
+        whileTap={interactive && !locked && !isChecked ? { scale: 0.96 } : {}}
+        disabled={locked || isChecked}
+        layout
+      >
+        {/* Checkbox / Lock */}
+        <div
+          className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full flex items-center justify-center transition-all"
+          style={
+            isChecked
+              ? { background: checkColor }
+              : locked
+                ? { background: 'var(--p-text-20, rgba(128,128,128,0.15))' }
+                : { border: `2px solid ${checkColor}` }
+          }
+        >
+          {isChecked && <Check className="h-3 w-3 text-white" />}
+          {locked && !isChecked && <Lock className="h-2.5 w-2.5" style={{ color: 'var(--p-text-40)' }} />}
+        </div>
 
-          return (
-            <motion.button
-              key={item.id}
-              onClick={() => handleCardTap(item.id, isRabt)}
-              className="relative rounded-2xl p-3.5 text-left transition-all"
-              style={{
-                background: 'var(--p-card)',
-                border: '1px solid var(--p-border)',
-                borderLeftWidth: '3px',
-                borderLeftColor: color,
-                opacity: isFutureDay ? 0.5 : isChecked ? 0.5 : 1,
-              }}
-              whileTap={isFutureDay || isChecked ? {} : { scale: 0.96 }}
-              disabled={isFutureDay || isChecked}
-            >
-              {/* Checkbox circle */}
-              <div
-                className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full flex items-center justify-center transition-all"
-                style={isChecked
-                  ? { background: checkColor }
-                  : isFutureDay
-                    ? { border: '1.5px solid var(--p-text-40)' }
-                    : { border: `2px solid ${checkColor}` }
-                }
-              >
-                {isChecked && <Check className="h-3 w-3 text-white" />}
-                {isFutureDay && !isChecked && (
-                  <Lock className="h-2.5 w-2.5" style={{ color: 'var(--p-text-40)' }} />
-                )}
-              </div>
+        <p className="text-sm font-bold truncate pr-6" style={{ color: 'var(--p-text)' }}>
+          {getSurahName(item.surah_number)}
+        </p>
+        <div className="flex items-center gap-1 mt-1.5 text-[11px] font-medium" style={{ color: 'var(--p-text-60)' }}>
+          <BookOpen className="h-3 w-3" style={{ color }} />
+          <span>v.{item.verse_start} → {item.verse_end}</span>
+        </div>
+        {page && (
+          <p className="text-[10px] mt-1 font-semibold" style={{ color: 'var(--p-text-50)' }}>p. {page}</p>
+        )}
+      </motion.button>
+    );
+  };
 
-              <p className="text-sm font-bold truncate pr-6" style={{ color: 'var(--p-text)' }}>
-                {getSurahName(item.surah_number)}
-              </p>
-              <div className="flex items-center gap-1 mt-1.5 text-[11px] font-medium" style={{ color: 'var(--p-text-60)' }}>
-                <BookOpen className="h-3 w-3" style={{ color }} />
-                <span>v.{item.verse_start} → {item.verse_end}</span>
+  const renderSection = (label: string, labelColor: string, pending: MemorizedVerse[], done: MemorizedVerse[], isRabt: boolean) => {
+    if (pending.length === 0 && done.length === 0) return null;
+    return (
+      <div className="space-y-2">
+        <p className="text-xs font-bold uppercase tracking-widest" style={{ color: labelColor }}>{label}</p>
+        {pending.length > 0 && (
+          <div className="grid grid-cols-2 gap-3">
+            {pending.map(item => renderCard(item, isRabt, true))}
+          </div>
+        )}
+        {done.length > 0 && !isFutureDay && (
+          <Collapsible>
+            <CollapsibleTrigger className="flex items-center gap-1.5 w-full py-1.5 text-[11px] font-semibold" style={{ color: 'var(--p-text-40)' }}>
+              <Check className="h-3 w-3" />
+              <span>Terminées ({done.length})</span>
+              <ChevronDown className="h-3 w-3 ml-auto transition-transform [[data-state=open]>&]:rotate-180" />
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <div className="grid grid-cols-2 gap-3 mt-1.5">
+                {done.map(item => renderCard(item, isRabt, false))}
               </div>
-              {page && (
-                <p className="text-[10px] mt-1 font-semibold" style={{ color: 'var(--p-text-50)' }}>
-                  p. {page}
-                </p>
-              )}
-            </motion.button>
-          );
-        })}
+            </CollapsibleContent>
+          </Collapsible>
+        )}
       </div>
     );
   };
@@ -213,24 +235,14 @@ export default function MurjaCalendarPage() {
                     key={day.key}
                     onClick={() => setSelectedDay(day.key)}
                     className="flex flex-col items-center gap-1 px-2 py-1.5 rounded-xl transition-all relative"
-                    style={{
-                      background: isSelected ? '#10B981' : 'transparent',
-                      minWidth: '40px',
-                    }}
+                    style={{ background: isSelected ? '#10B981' : 'transparent', minWidth: '40px' }}
                   >
-                    <span
-                      className="text-[10px] font-bold uppercase"
-                      style={{ color: isSelected ? '#fff' : 'var(--p-text-50)' }}
-                    >
+                    <span className="text-[10px] font-bold uppercase" style={{ color: isSelected ? '#fff' : 'var(--p-text-50)' }}>
                       {day.label}
                     </span>
-                    <span
-                      className="text-sm font-bold"
-                      style={{ color: isSelected ? '#fff' : day.isToday ? '#10B981' : 'var(--p-text)' }}
-                    >
+                    <span className="text-sm font-bold" style={{ color: isSelected ? '#fff' : day.isToday ? '#10B981' : 'var(--p-text)' }}>
                       {day.dayNum}
                     </span>
-                    {/* Dot indicators */}
                     <div className="flex gap-1 h-1.5">
                       {indicators?.hasRabt && (
                         <div className="w-1.5 h-1.5 rounded-full" style={{ background: isSelected ? 'rgba(255,255,255,0.6)' : '#D4AF37' }} />
@@ -246,33 +258,37 @@ export default function MurjaCalendarPage() {
 
             {/* Selected day label */}
             <p className="text-xs font-medium text-center" style={{ color: 'var(--p-text-50)' }}>
-              {selectedDay === todayKey ? "Aujourd'hui" : new Date(selectedDay + 'T00:00:00').toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' }).replace(/^\w/, c => c.toUpperCase())}
+              {isToday ? "Aujourd'hui" : new Date(selectedDay + 'T00:00:00').toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' }).replace(/^\w/, c => c.toUpperCase())}
               {isFutureDay && ' · Lecture seule'}
             </p>
 
+            {/* Celebration banner */}
+            <AnimatePresence>
+              {allDayChecked && isToday && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="flex items-center gap-2.5 rounded-xl px-4 py-3"
+                  style={{ background: 'color-mix(in srgb, #10B981 10%, transparent)', border: '1px solid color-mix(in srgb, #10B981 20%, transparent)' }}
+                >
+                  <Sparkles className="h-4 w-4 flex-shrink-0" style={{ color: '#10B981' }} />
+                  <p className="text-xs font-semibold" style={{ color: '#10B981' }}>
+                    Alhamdulillah ! Programme du jour terminé.
+                  </p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
             {/* Tasks */}
-            {selectedItems.rabt.length === 0 && selectedItems.tour.length === 0 ? (
+            {totalItems === 0 ? (
               <p className="text-center text-sm py-8" style={{ color: 'var(--p-text-50)' }}>
                 Aucune révision ce jour.
               </p>
             ) : (
               <div className="space-y-4">
-                {selectedItems.rabt.length > 0 && (
-                  <div className="space-y-2">
-                    <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#D4AF37' }}>
-                      Ar-Rabt
-                    </p>
-                    {renderCards(selectedItems.rabt, true)}
-                  </div>
-                )}
-                {selectedItems.tour.length > 0 && (
-                  <div className="space-y-2">
-                    <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#10B981' }}>
-                      Consolidation
-                    </p>
-                    {renderCards(selectedItems.tour, false)}
-                  </div>
-                )}
+                {renderSection('Ar-Rabt', '#D4AF37', isFutureDay ? selectedItems.rabt : pendingRabt, doneRabt, true)}
+                {renderSection('Consolidation', '#10B981', isFutureDay ? selectedItems.tour : pendingTour, doneTour, false)}
               </div>
             )}
           </>
