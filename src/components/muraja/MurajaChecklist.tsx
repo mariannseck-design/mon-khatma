@@ -201,6 +201,10 @@ export default function MurajaChecklist({
     );
   }
 
+  // Split checked vs unchecked for rabt compact mode
+  const checkedItems = section === 'rabt' ? sortedItems.filter(i => checkedIds.includes(i.id)) : [];
+  const uncheckedItems = section === 'rabt' ? sortedItems.filter(i => !checkedIds.includes(i.id)) : sortedItems;
+
   return (
     <div className="space-y-2">
       {/* Cap message */}
@@ -218,7 +222,45 @@ export default function MurajaChecklist({
         </div>
       )}
 
-      {sortedItems.map((item) => {
+      {/* Compact checked rabt items */}
+      {checkedItems.length > 0 && (
+        <div
+          className="rounded-xl px-3 py-2.5"
+          style={{
+            background: 'var(--p-card-active)',
+            border: '1px solid var(--p-border)',
+          }}
+        >
+          <div className="flex items-center gap-1.5 mb-2">
+            <Check className="h-3.5 w-3.5" style={{ color: '#10B981' }} />
+            <span className="text-[11px] font-bold" style={{ color: '#10B981' }}>
+              {checkedItems.length} portion{checkedItems.length > 1 ? 's' : ''} validée{checkedItems.length > 1 ? 's' : ''} ✓
+            </span>
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            {checkedItems.map(item => {
+              const page = pageMap[item.id];
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => page && openInReader(item.id)}
+                  className="flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-semibold transition-colors"
+                  style={{
+                    background: 'rgba(212,175,55,0.10)',
+                    border: '1px solid rgba(212,175,55,0.25)',
+                    color: '#D4AF37',
+                  }}
+                >
+                  <FileText className="h-2.5 w-2.5" />
+                  {getSurahName(item.surah_number)} {page ? `p.${page}` : `v.${item.verse_start}-${item.verse_end}`}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {uncheckedItems.map((item) => {
         const isChecked = checkedIds.includes(item.id);
         const isRating = ratingFor === item.id;
         const daysPassed = section === 'rabt' ? getLiaisonDaysPassed(item.liaison_start_date) : 0;
