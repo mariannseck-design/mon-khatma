@@ -25,7 +25,7 @@ import { useDevMode } from '@/hooks/useDevMode';
 import { useNavigate } from 'react-router-dom';
 
 export default function ProfilPage() {
-  const { user, isAdmin } = useAuth();
+  const { user, isAdmin, hasFullAccess } = useAuth();
   const [displayName, setDisplayName] = useState('');
   const [loading, setLoading] = useState(false);
   const { isDevMode, toggleDevMode } = useDevMode();
@@ -127,7 +127,7 @@ export default function ProfilPage() {
           </CardContent>
         </Card>
 
-        {isAdmin && (
+        {hasFullAccess && (
           <Card className="rounded-2xl border-dashed border-yellow-500/30">
             <CardContent className="flex items-center justify-between pt-6">
               <div>
