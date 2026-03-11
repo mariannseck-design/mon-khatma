@@ -110,9 +110,20 @@ export default function MurajaChecklist({
     setRatingFor(null);
   };
 
-  const borderLeftColor = section === 'rabt' ? '#D4AF37' : '#10B981';
+  // Sort items by Mushaf page number (ascending) when pageMap is available
+  const sortedItems = [...items].sort((a, b) => {
+    const pageA = pageMap[a.id] ?? Infinity;
+    const pageB = pageMap[b.id] ?? Infinity;
+    return pageA - pageB;
+  });
 
-  if (items.length === 0) {
+  const getItemColor = (item: ChecklistItem) => {
+    if (section !== 'rabt') return '#10B981';
+    const daysPassed = getLiaisonDaysPassed(item.liaison_start_date);
+    return daysPassed <= 7 ? '#7C3AED' : '#D4AF37';
+  };
+
+  if (sortedItems.length === 0) {
     if (section === 'tour' && hasTourBlocks) {
       return (
         <div
