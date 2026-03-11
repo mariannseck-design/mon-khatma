@@ -140,7 +140,7 @@ export default function MurajaChecklist({
             </p>
           </div>
           {nextTourReviews && nextTourReviews.length > 0 && (
-            <div className="mt-3 text-left space-y-1">
+            <div className="mt-3 text-left space-y-1.5">
               <p className="text-[10px] font-bold" style={{ color: 'var(--p-text-75)' }}>
                 Prochaine révision :
               </p>
@@ -148,11 +148,33 @@ export default function MurajaChecklist({
                 const name = SURAHS.find(s => s.number === nr.surah_number)?.name || `Sourate ${nr.surah_number}`;
                 const date = new Date(nr.next_review_date + 'T00:00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' });
                 return (
-                  <div key={i} className="flex items-center gap-1 text-[11px] font-medium" style={{ color: 'var(--p-text-60)' }}>
-                    <BookOpen className="h-2.5 w-2.5 flex-shrink-0" style={{ color: '#10B981' }} />
-                    <span>{name}</span>
-                    <span>{nr.verse_start} → {nr.verse_end}</span>
-                    <span style={{ color: 'var(--p-accent)' }}>— {date}</span>
+                  <div
+                    key={i}
+                    className="flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-xs"
+                    style={{
+                      background: 'rgba(16, 185, 129, 0.08)',
+                      border: '1px solid rgba(16, 185, 129, 0.25)',
+                    }}
+                  >
+                    <div
+                      className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
+                      style={{
+                        background: 'linear-gradient(135deg, #065F46, #10B981)',
+                        boxShadow: '0 2px 8px -2px rgba(16, 185, 129, 0.4)',
+                      }}
+                    >
+                      <BookOpen className="h-3 w-3 text-white" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <span className="font-bold truncate text-[11px]" style={{ color: 'var(--p-primary)' }}>{name}</span>
+                      <div className="flex items-center gap-1 text-[10px] font-medium" style={{ color: 'var(--p-text-60)' }}>
+                        <span>v. {nr.verse_start} → {nr.verse_end}</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1 flex-shrink-0" style={{ color: '#10B981' }}>
+                      <CalendarDays className="h-3 w-3" />
+                      <span className="font-bold text-[10px]">{date}</span>
+                    </div>
                   </div>
                 );
               })}
@@ -202,8 +224,8 @@ export default function MurajaChecklist({
   }
 
   // Split checked vs unchecked for rabt compact mode
-  const checkedItems = section === 'rabt' ? sortedItems.filter(i => checkedIds.includes(i.id)) : [];
-  const uncheckedItems = section === 'rabt' ? sortedItems.filter(i => !checkedIds.includes(i.id)) : sortedItems;
+  const checkedItems = sortedItems.filter(i => checkedIds.includes(i.id));
+  const uncheckedItems = sortedItems.filter(i => !checkedIds.includes(i.id));
 
   return (
     <div className="space-y-2">
@@ -223,42 +245,48 @@ export default function MurajaChecklist({
       )}
 
       {/* Compact checked rabt items */}
-      {checkedItems.length > 0 && (
-        <div
-          className="rounded-xl px-3 py-2.5"
-          style={{
-            background: 'var(--p-card-active)',
-            border: '1px solid var(--p-border)',
-          }}
-        >
-          <div className="flex items-center gap-1.5 mb-2">
-            <Check className="h-3.5 w-3.5" style={{ color: '#10B981' }} />
-            <span className="text-[11px] font-bold" style={{ color: '#10B981' }}>
-              {checkedItems.length} portion{checkedItems.length > 1 ? 's' : ''} validée{checkedItems.length > 1 ? 's' : ''} ✓
-            </span>
+      {checkedItems.length > 0 && (() => {
+        const isRabt = section === 'rabt';
+        const accentColor = isRabt ? '#D4AF37' : '#10B981';
+        const badgeBg = isRabt ? 'rgba(212,175,55,0.10)' : 'rgba(16,185,129,0.10)';
+        const badgeBorder = isRabt ? 'rgba(212,175,55,0.25)' : 'rgba(16,185,129,0.25)';
+        return (
+          <div
+            className="rounded-xl px-3 py-2.5"
+            style={{
+              background: 'var(--p-card-active)',
+              border: '1px solid var(--p-border)',
+            }}
+          >
+            <div className="flex items-center gap-1.5 mb-2">
+              <Check className="h-3.5 w-3.5" style={{ color: accentColor }} />
+              <span className="text-[11px] font-bold" style={{ color: accentColor }}>
+                {checkedItems.length} portion{checkedItems.length > 1 ? 's' : ''} validée{checkedItems.length > 1 ? 's' : ''} ✓
+              </span>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {checkedItems.map(item => {
+                const page = pageMap[item.id];
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => page && openInReader(item.id)}
+                    className="flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-semibold transition-colors"
+                    style={{
+                      background: badgeBg,
+                      border: `1px solid ${badgeBorder}`,
+                      color: accentColor,
+                    }}
+                  >
+                    <FileText className="h-2.5 w-2.5" />
+                    {getSurahName(item.surah_number)} {page ? `p.${page}` : `v.${item.verse_start}-${item.verse_end}`}
+                  </button>
+                );
+              })}
+            </div>
           </div>
-          <div className="flex flex-wrap gap-1.5">
-            {checkedItems.map(item => {
-              const page = pageMap[item.id];
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => page && openInReader(item.id)}
-                  className="flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-semibold transition-colors"
-                  style={{
-                    background: 'rgba(212,175,55,0.10)',
-                    border: '1px solid rgba(212,175,55,0.25)',
-                    color: '#D4AF37',
-                  }}
-                >
-                  <FileText className="h-2.5 w-2.5" />
-                  {getSurahName(item.surah_number)} {page ? `p.${page}` : `v.${item.verse_start}-${item.verse_end}`}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      )}
+        );
+      })()}
 
       {uncheckedItems.map((item) => {
         const isChecked = checkedIds.includes(item.id);
@@ -405,24 +433,46 @@ export default function MurajaChecklist({
       {/* Next upcoming tour reviews */}
       {section === 'tour' && nextTourReviews && nextTourReviews.length > 0 && items.every(item => checkedIds.includes(item.id)) && (
         <div
-          className="rounded-xl px-3 py-2.5 mt-1"
+          className="rounded-xl px-3 py-2.5 mt-1 space-y-1.5"
           style={{
             background: 'var(--p-card)',
             border: '1px solid var(--p-border)',
           }}
         >
-          <p className="text-[10px] font-bold mb-1" style={{ color: 'var(--p-text-75)' }}>
+          <p className="text-[10px] font-bold" style={{ color: 'var(--p-text-75)' }}>
             Prochaine révision :
           </p>
           {nextTourReviews.slice(0, 3).map((nr, i) => {
             const name = SURAHS.find(s => s.number === nr.surah_number)?.name || `Sourate ${nr.surah_number}`;
             const date = new Date(nr.next_review_date + 'T00:00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' });
             return (
-              <div key={i} className="flex items-center gap-1 text-[11px] font-medium" style={{ color: 'var(--p-text-60)' }}>
-                <BookOpen className="h-2.5 w-2.5 flex-shrink-0" style={{ color: '#10B981' }} />
-                <span>{name}</span>
-                <span>{nr.verse_start} → {nr.verse_end}</span>
-                <span style={{ color: 'var(--p-accent)' }}>— {date}</span>
+              <div
+                key={i}
+                className="flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-xs"
+                style={{
+                  background: 'rgba(16, 185, 129, 0.08)',
+                  border: '1px solid rgba(16, 185, 129, 0.25)',
+                }}
+              >
+                <div
+                  className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
+                  style={{
+                    background: 'linear-gradient(135deg, #065F46, #10B981)',
+                    boxShadow: '0 2px 8px -2px rgba(16, 185, 129, 0.4)',
+                  }}
+                >
+                  <BookOpen className="h-3 w-3 text-white" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <span className="font-bold truncate text-[11px]" style={{ color: 'var(--p-primary)' }}>{name}</span>
+                  <div className="flex items-center gap-1 text-[10px] font-medium" style={{ color: 'var(--p-text-60)' }}>
+                    <span>v. {nr.verse_start} → {nr.verse_end}</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-1 flex-shrink-0" style={{ color: '#10B981' }}>
+                  <CalendarDays className="h-3 w-3" />
+                  <span className="font-bold text-[10px]">{date}</span>
+                </div>
               </div>
             );
           })}
