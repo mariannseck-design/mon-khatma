@@ -417,6 +417,8 @@ export default function HifzSuiviPage() {
           {showAllJuz ? <><EyeOff className="w-3.5 h-3.5" /> Masquer les vides</> : <><Eye className="w-3.5 h-3.5" /> Voir tous les Juz</>}
         </button>
       </div>
+
+      <WeeklyCalendarBar selectedDate={selectedDate} onSelectDate={setSelectedDate} variant="floating" />
     </AppLayout>
   );
 }
