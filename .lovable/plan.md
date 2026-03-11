@@ -1,21 +1,31 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Remplacer le texte inline par un tooltip sur l'icône lampe
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+**Fichier** : `src/pages/MurjaCalendarPage.tsx`
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+1. **Import** : ajouter `Tooltip, TooltipContent, TooltipProvider, TooltipTrigger` depuis `@/components/ui/tooltip`
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+2. **`renderSection`** (lignes 193-196) : remplacer le bloc texte + lampe par une lampe cliquable avec tooltip :
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+```tsx
+<div className="flex items-center gap-2">
+  <p className="text-xs font-bold uppercase tracking-widest" style={{ color: labelColor }}>{label}</p>
+  <span className="text-[10px] font-medium" style={{ color: 'var(--p-text-40)' }}>· {subtitle}</span>
+  <TooltipProvider delayDuration={0}>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <button className="ml-auto p-1 rounded-full" style={{ color: labelColor }}>
+          <Lightbulb className="h-3.5 w-3.5" />
+        </button>
+      </TooltipTrigger>
+      <TooltipContent side="bottom" className="max-w-[220px] text-xs">
+        {tooltipText}
+      </TooltipContent>
+    </Tooltip>
+  </TooltipProvider>
+</div>
+```
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+Cela fusionne la ligne titre + lampe en une seule ligne, supprime le paragraphe descriptif, et affiche le texte au survol/tap de la lampe. Gain d'espace vertical immédiat.
 
