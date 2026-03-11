@@ -66,10 +66,18 @@ export default function MurjaCalendarPage() {
 
   const getItemsForDay = (dayKey: string) => {
     const rabt = rabtVerses;
-    const tour = dayKey === todayKey
+    const tourDue = dayKey === todayKey
       ? allConsolidation.filter(v => v.next_review_date <= dayKey)
       : allConsolidation.filter(v => v.next_review_date === dayKey);
-    return { rabt, tour };
+    // Also include items checked today whose next_review_date was already pushed forward
+    if (dayKey === todayKey) {
+      const dueIds = new Set(tourDue.map(v => v.id));
+      const checkedButPushed = allConsolidation.filter(
+        v => !dueIds.has(v.id) && checkedIds.includes(v.id)
+      );
+      return { rabt, tour: [...tourDue, ...checkedButPushed] };
+    }
+    return { rabt, tour: tourDue };
   };
 
   const dayIndicators = useMemo(() => {
