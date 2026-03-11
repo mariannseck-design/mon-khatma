@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { SURAHS } from '@/lib/surahData';
 import { getExactVersePage } from '@/lib/quranData';
 import { AppLayout } from '@/components/layout/AppLayout';
-import { ArrowLeft, ChevronDown, ChevronUp, ChevronRight, Eye, EyeOff } from 'lucide-react';
+import { ArrowLeft, ChevronDown, ChevronUp, ChevronRight, Eye, EyeOff, AlertTriangle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { format, isToday, isTomorrow, isYesterday } from 'date-fns';
 import { fr } from 'date-fns/locale';
