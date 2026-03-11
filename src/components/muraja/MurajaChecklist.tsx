@@ -326,7 +326,7 @@ export default function MurajaChecklist({
       {uncheckedItems.map((item) => {
         const isChecked = checkedIds.includes(item.id);
         const isRating = ratingFor === item.id;
-        const daysPassed = section === 'rabt' ? getLiaisonDaysPassed(item.liaison_start_date) : 0;
+        const daysPassed = section === 'rabt' ? getLiaisonDaysPassed(item.memorized_at, item.liaison_start_date) : 0;
         const itemColor = getItemColor(item);
 
         return (
