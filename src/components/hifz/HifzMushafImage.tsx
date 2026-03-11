@@ -33,6 +33,8 @@ export default function HifzMushafImage({ surahNumber, startVerse, endVerse, max
   const lastTouchCenterRef = useRef<{ x: number; y: number } | null>(null);
   const isPanningRef = useRef(false);
   const panStartRef = useRef({ x: 0, y: 0, tx: 0, ty: 0 });
+  const lastTapTimeRef = useRef(0);
+  const lastTapPosRef = useRef<{ x: number; y: number } | null>(null);
 
   useEffect(() => {
     const load = async () => {
