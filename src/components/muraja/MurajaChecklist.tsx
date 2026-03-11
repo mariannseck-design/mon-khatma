@@ -140,7 +140,7 @@ export default function MurajaChecklist({
             </p>
           </div>
           {nextTourReviews && nextTourReviews.length > 0 && (
-            <div className="mt-3 text-left space-y-1">
+            <div className="mt-3 text-left space-y-1.5">
               <p className="text-[10px] font-bold" style={{ color: 'var(--p-text-75)' }}>
                 Prochaine révision :
               </p>
@@ -148,11 +148,33 @@ export default function MurajaChecklist({
                 const name = SURAHS.find(s => s.number === nr.surah_number)?.name || `Sourate ${nr.surah_number}`;
                 const date = new Date(nr.next_review_date + 'T00:00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' });
                 return (
-                  <div key={i} className="flex items-center gap-1 text-[11px] font-medium" style={{ color: 'var(--p-text-60)' }}>
-                    <BookOpen className="h-2.5 w-2.5 flex-shrink-0" style={{ color: '#10B981' }} />
-                    <span>{name}</span>
-                    <span>{nr.verse_start} → {nr.verse_end}</span>
-                    <span style={{ color: 'var(--p-accent)' }}>— {date}</span>
+                  <div
+                    key={i}
+                    className="flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-xs"
+                    style={{
+                      background: 'rgba(16, 185, 129, 0.08)',
+                      border: '1px solid rgba(16, 185, 129, 0.25)',
+                    }}
+                  >
+                    <div
+                      className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
+                      style={{
+                        background: 'linear-gradient(135deg, #065F46, #10B981)',
+                        boxShadow: '0 2px 8px -2px rgba(16, 185, 129, 0.4)',
+                      }}
+                    >
+                      <BookOpen className="h-3 w-3 text-white" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <span className="font-bold truncate text-[11px]" style={{ color: 'var(--p-primary)' }}>{name}</span>
+                      <div className="flex items-center gap-1 text-[10px] font-medium" style={{ color: 'var(--p-text-60)' }}>
+                        <span>v. {nr.verse_start} → {nr.verse_end}</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1 flex-shrink-0" style={{ color: '#10B981' }}>
+                      <CalendarDays className="h-3 w-3" />
+                      <span className="font-bold text-[10px]">{date}</span>
+                    </div>
                   </div>
                 );
               })}
