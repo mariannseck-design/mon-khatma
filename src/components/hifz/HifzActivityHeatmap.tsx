@@ -152,8 +152,10 @@ export function HifzActivityHeatmap({ userId }: HifzActivityHeatmapProps) {
           style={{ background: 'var(--p-track)', color: 'var(--p-text-65)' }}>
           {format(new Date(hoveredDay.date), 'd MMMM yyyy', { locale: fr })} —{' '}
           {hoveredDay.memorized > 0 && `${hoveredDay.memorized} mémo`}
-          {hoveredDay.memorized > 0 && hoveredDay.reviewed > 0 && ' · '}
+          {hoveredDay.memorized > 0 && (hoveredDay.reviewed > 0 || hoveredDay.versesAdded > 0) && ' · '}
           {hoveredDay.reviewed > 0 && `${hoveredDay.reviewed} révision${hoveredDay.reviewed > 1 ? 's' : ''}`}
+          {hoveredDay.reviewed > 0 && hoveredDay.versesAdded > 0 && ' · '}
+          {hoveredDay.versesAdded > 0 && `${hoveredDay.versesAdded} verset${hoveredDay.versesAdded > 1 ? 's' : ''} ajouté${hoveredDay.versesAdded > 1 ? 's' : ''}`}
         </div>
       )}
 
