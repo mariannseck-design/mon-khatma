@@ -152,7 +152,9 @@ export default function MurjaCalendarPage() {
       
       const isConsecutive = existing?.last_active_date === yesterdayKey;
       const newStreak = isConsecutive ? (existing?.current_streak ?? 0) + 1 : 1;
-      const newLongest = Math.max(newStreak, existing?.longest_streak ?? 0);
+      const oldLongest = existing?.longest_streak ?? 0;
+      const newLongest = Math.max(newStreak, oldLongest);
+      const isBeatRecord = newStreak > oldLongest;
 
       if (existing) {
         await supabase.from('hifz_streaks').update({
@@ -170,6 +172,10 @@ export default function MurjaCalendarPage() {
       }
       setStreak(newStreak);
       setLongestStreak(newLongest);
+      if (isBeatRecord) {
+        setShowNewRecord(true);
+        setTimeout(() => setShowNewRecord(false), 4000);
+      }
     })();
   }, [allDayChecked, user?.id]);
 
