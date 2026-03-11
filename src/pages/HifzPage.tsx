@@ -407,6 +407,7 @@ export default function HifzPage() {
             </div>
           </motion.div>
         </div>
+        <DevSkipButton isDevMode={isDevMode} onSkip={handleResume} />
       </AppLayout>
     );
   }
@@ -419,6 +420,7 @@ export default function HifzPage() {
             onGoalSet={() => { setHasGoal(true); setShowGoalOnboarding(false); }}
           />
         </div>
+        <DevSkipButton isDevMode={isDevMode} onSkip={() => { setHasGoal(true); setShowGoalOnboarding(false); }} />
       </AppLayout>
     );
   }
