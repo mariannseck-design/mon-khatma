@@ -223,7 +223,7 @@ export default function HifzSuiviPage() {
     <AppLayout title="Mon Suivi Hifz" hideNav bgClassName="bg-[var(--p-bg)]">
       {/* Milestone Celebration */}
       <HifzMilestoneCelebration
-        totalAyats={totalAyats}
+        totalPages={totalPages}
         completedJuz={completedJuz}
         activeJuzCount={activeJuz.length}
       />
