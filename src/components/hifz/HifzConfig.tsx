@@ -3,6 +3,7 @@ import { BookOpen, ChevronDown, Play } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { SURAHS } from '@/lib/surahData';
 import { findNextStartingPoint } from '@/lib/hifzUtils';
+import { getPageAyahs } from '@/lib/quranData';
 import { useAuth } from '@/contexts/AuthContext';
 
 const REPETITION_LEVELS = [
@@ -20,9 +21,12 @@ interface HifzConfigProps {
 
 export default function HifzConfig({ onStart }: HifzConfigProps) {
   const { user } = useAuth();
+  const [selectionMode, setSelectionMode] = useState<'surah' | 'page'>('surah');
   const [surahNumber, setSurahNumber] = useState(114);
   const [startVerse, setStartVerse] = useState(1);
   const [endVerse, setEndVerse] = useState(6);
+  const [startPage, setStartPage] = useState(1);
+  const [endPage, setEndPage] = useState(1);
   const [repetitionLevel, setRepetitionLevel] = useState(20);
   const [showSurahList, setShowSurahList] = useState(false);
   const [suggestedPoint, setSuggestedPoint] = useState<string | null>(null);
