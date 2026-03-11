@@ -1,21 +1,20 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Ajouter les versets mémorisés à la heatmap (visible uniquement au clic)
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Approche
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+Les données de `hifz_memorized_verses.memorized_at` seront chargées en parallèle des sessions existantes, mais ne seront **pas comptées dans le `total`** qui détermine la couleur des carrés. Elles ne seront visibles que dans le tooltip quand on clique/survole un carré.
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+### Modifications — `src/components/hifz/HifzActivityHeatmap.tsx`
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+1. **Interface `DayActivity`** : Ajouter un champ `versesAdded: number` pour stocker le nombre de blocs de versets ajoutés ce jour-là.
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+2. **Requête** : Ajouter une 3e requête en parallèle sur `hifz_memorized_verses` pour récupérer `memorized_at` (groupé par date). Ne pas l'ajouter au `total` — juste stocker le compte dans `versesAdded`.
+
+3. **Tooltip** : Afficher `versesAdded` dans le tooltip existant quand > 0, ex: `« 5 versets ajoutés »`, après les infos mémo/révision existantes.
+
+4. **Couleur des carrés** : Inchangée — toujours basée sur `total` (sessions uniquement). Les versets ajoutés sont une info bonus visible au tap/hover.
+
+Un seul fichier modifié, aucun impact visuel sur la grille elle-même.
 
