@@ -6,7 +6,7 @@ import { BookOpen, BookHeart, RefreshCw, BarChart3, Play } from 'lucide-react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
-import HifzCommunityCounter from '@/components/hifz/HifzCommunityCounter';
+
 
 const COLORS = {
   emerald: '#2d6a4f',
