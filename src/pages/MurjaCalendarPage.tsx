@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AppLayout } from '@/components/layout/AppLayout';
-import { ArrowLeft, Check, Zap, ThumbsUp, Crown, BookOpen, Lock, ChevronDown, Sparkles, Lightbulb } from 'lucide-react';
+import { ArrowLeft, Check, Zap, ThumbsUp, Crown, BookOpen, Lock, ChevronDown, Sparkles, Lightbulb, Trophy } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useNavigate } from 'react-router-dom';
 import { useMurajaData, getSurahName, getLiaisonDaysPassed, MemorizedVerse } from '@/hooks/useMurajaData';
@@ -51,6 +51,7 @@ export default function MurjaCalendarPage() {
   const [ratingFor, setRatingFor] = useState<string | null>(null);
   const [streak, setStreak] = useState(0);
   const [longestStreak, setLongestStreak] = useState(0);
+  const [showNewRecord, setShowNewRecord] = useState(false);
   const streakUpdatedRef = useRef(false);
 
   // Fetch streak on mount
@@ -151,7 +152,9 @@ export default function MurjaCalendarPage() {
       
       const isConsecutive = existing?.last_active_date === yesterdayKey;
       const newStreak = isConsecutive ? (existing?.current_streak ?? 0) + 1 : 1;
-      const newLongest = Math.max(newStreak, existing?.longest_streak ?? 0);
+      const oldLongest = existing?.longest_streak ?? 0;
+      const newLongest = Math.max(newStreak, oldLongest);
+      const isBeatRecord = newStreak > oldLongest;
 
       if (existing) {
         await supabase.from('hifz_streaks').update({
@@ -169,6 +172,10 @@ export default function MurjaCalendarPage() {
       }
       setStreak(newStreak);
       setLongestStreak(newLongest);
+      if (isBeatRecord) {
+        setShowNewRecord(true);
+        setTimeout(() => setShowNewRecord(false), 4000);
+      }
     })();
   }, [allDayChecked, user?.id]);
 
@@ -454,6 +461,64 @@ export default function MurjaCalendarPage() {
                     );
                   })}
                 </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* New Record Celebration Overlay */}
+        <AnimatePresence>
+          {showNewRecord && (
+            <motion.div
+              className="fixed inset-0 z-[60] flex items-center justify-center pointer-events-none"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4 }}
+            >
+              <div className="absolute inset-0 bg-black/30 pointer-events-auto" onClick={() => setShowNewRecord(false)} />
+              <motion.div
+                className="relative flex flex-col items-center gap-3 px-8 py-6 rounded-2xl pointer-events-auto"
+                style={{ background: 'var(--p-card)', border: '2px solid #D4AF37', boxShadow: '0 0 40px rgba(212, 175, 55, 0.3)' }}
+                initial={{ scale: 0.5, y: 30, opacity: 0 }}
+                animate={{ scale: 1, y: 0, opacity: 1 }}
+                exit={{ scale: 0.8, y: -20, opacity: 0 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+              >
+                <motion.div
+                  initial={{ rotate: -20, scale: 0 }}
+                  animate={{ rotate: 0, scale: 1 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 12, delay: 0.15 }}
+                >
+                  <Trophy className="h-10 w-10" style={{ color: '#D4AF37' }} />
+                </motion.div>
+                <motion.p
+                  className="text-sm font-bold text-center"
+                  style={{ color: '#D4AF37' }}
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.25 }}
+                >
+                  Nouveau record !
+                </motion.p>
+                <motion.p
+                  className="text-2xl font-bold"
+                  style={{ color: 'var(--p-text)' }}
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: 'spring', stiffness: 350, damping: 15, delay: 0.35 }}
+                >
+                  {streak} jours 🔥
+                </motion.p>
+                <motion.p
+                  className="text-[11px] font-medium"
+                  style={{ color: 'var(--p-text-50)' }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                >
+                  Qu'Allah te garde constant(e) !
+                </motion.p>
               </motion.div>
             </motion.div>
           )}
