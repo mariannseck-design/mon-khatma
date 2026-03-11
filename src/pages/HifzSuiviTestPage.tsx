@@ -6,7 +6,7 @@ import { getExactVersePage } from '@/lib/quranData';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { ArrowLeft, ChevronDown, ChevronUp, ChevronRight, Eye, EyeOff, AlertTriangle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { format, isToday, isTomorrow, isYesterday } from 'date-fns';
+import { format, isToday, isTomorrow, isYesterday, isPast, startOfDay } from 'date-fns';
 import { fr } from 'date-fns/locale';
 
 function formatSmartDate(dateStr: string): string {
