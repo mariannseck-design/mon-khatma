@@ -58,12 +58,13 @@ export default function MurjaCalendarPage() {
     if (!user?.id) return;
     supabase
       .from('hifz_streaks')
-      .select('current_streak, last_active_date')
+      .select('current_streak, longest_streak, last_active_date')
       .eq('user_id', user.id)
       .maybeSingle()
       .then(({ data }) => {
         if (data) {
           setStreak(data.current_streak);
+          setLongestStreak(data.longest_streak);
           if (data.last_active_date === todayKey) streakUpdatedRef.current = true;
         }
       });
