@@ -415,10 +415,10 @@ export default function AccueilPage() {
                     </div>
                     <div className="flex-1">
                       <h3
-                        className="text-xl font-bold tracking-[0.08em] uppercase"
+                        className="text-base font-bold tracking-[0.08em] uppercase"
                         style={{ fontFamily: "'Inter', sans-serif", color: COLORS.goldAccent }}
                       >
-                        {activeHifzSession ? '▶️ Continuer ma session' : 'Méthode Tikrar-Istiqâmah'}
+                        {activeHifzSession ? '▶️ Continuer ma session' : <>Méthode Tikrar-ISTIQÂMAH<sup className="text-[0.6em] ml-0.5">1</sup></>}
                       </h3>
                       <p className="text-white/70 text-sm mt-1">
                         {activeHifzSession
@@ -446,7 +446,7 @@ export default function AccueilPage() {
                     </div>
                     <div className="flex-1">
                       <h3
-                        className="text-base font-bold tracking-wide"
+                        className="text-base font-bold tracking-[0.08em] uppercase"
                         style={{ fontFamily: "'Inter', sans-serif", color: COLORS.goldAccent }}
                       >
                         Méthode Oustaz Mourad

@@ -1,17 +1,21 @@
 
 
-## Uniformiser les titres Hifz sur la page d'accueil
+# Diagnostic : 404 sur /quran-reader
 
-### Changements sur `src/pages/AccueilPage.tsx`
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-**Zone 1 — Méthode Tikrar-Istiqâmah (ligne ~421)**
-- Réduire la taille : `text-xl` → `text-base`
-- Ajouter un petit "1" en exposant à côté : `Méthode Tikrar-ISTIQÂMAH¹`
-- Mettre "ISTIQÂMAH" en majuscules (déjà uppercase via la classe, mais écrire le texte correctement)
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-**Zone 2 — Méthode Oustaz Mourad (ligne ~448-452)**
-- Appliquer exactement les mêmes classes que Zone 1 : `text-base font-bold tracking-[0.08em] uppercase`
-- Texte : `Méthode Oustaz Mourad`
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-Résultat : les deux titres auront la même taille (`text-base`), le même style (bold, uppercase, tracking), et Zone 1 aura un petit "¹" en exposant.
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
