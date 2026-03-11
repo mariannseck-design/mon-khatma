@@ -292,8 +292,8 @@ export default function HifzSuiviPage() {
 
           return (
             <div key={juz.juzNumber}
-              className={`rounded-xl transition-all duration-300 cursor-pointer ${
-                expanded ? 'col-span-2 sm:col-span-3 shadow-lg' : 'hover:shadow-md'
+              className={`rounded-xl transition-all duration-300 cursor-pointer col-span-2 sm:col-span-3 ${
+                expanded ? 'shadow-lg' : 'hover:shadow-md'
               }`}
               style={{
                 background: expanded ? 'var(--p-card-active)' : 'var(--p-card)',
