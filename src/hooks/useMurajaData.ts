@@ -128,14 +128,16 @@ export function useMurajaData() {
   }, []);
 
   const rabtVerses = useMemo(() => {
-    return allVerses.filter(v => v.memorized_at >= thirtyDaysCutoff);
+    return allVerses
+      .filter(v => v.memorized_at >= thirtyDaysCutoff)
+      .sort((a, b) => a.surah_number - b.surah_number || a.verse_start - b.verse_start);
   }, [allVerses, thirtyDaysCutoff]);
 
   const { tourVerses, isCapActive, totalDueCount } = useMemo(() => {
     const today = getTodayKey();
-    const allDue = allVerses.filter(
-      v => v.memorized_at < thirtyDaysCutoff && v.next_review_date <= today
-    );
+    const allDue = allVerses
+      .filter(v => v.memorized_at < thirtyDaysCutoff && v.next_review_date <= today)
+      .sort((a, b) => a.surah_number - b.surah_number || a.verse_start - b.verse_start);
     return {
       tourVerses: allDue.slice(0, MAX_TOUR_BLOCKS_PER_DAY),
       isCapActive: allDue.length > MAX_TOUR_BLOCKS_PER_DAY,
