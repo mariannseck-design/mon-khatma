@@ -22,7 +22,6 @@ type SubPhase = 'listen' | 'repetition' | 'recording';
 
 export default function MouradPhase3({ surahNumber, startVerse, endVerse, reciterId, onValidate }: Props) {
   const [mushafMode, setMushafModeState] = useState<MushafMode>(getMouradMushafMode());
-  const [page, setPage] = useState(1);
   const [subPhase, setSubPhase] = useState<SubPhase>('listen');
   const [listenCount, setListenCount] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
