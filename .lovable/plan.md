@@ -1,35 +1,21 @@
 
 
-## Plan : Remplacer le heatmap par un résumé d'activité plus lisible
+# Diagnostic : 404 sur /quran-reader
 
-Le heatmap GitHub-style est peu parlant pour le contexte de mémorisation du Coran. Je propose de le remplacer par une **carte de statistiques récentes** compacte et immédiatement compréhensible.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Remplacement proposé
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-Supprimer `HifzActivityHeatmap` et le remplacer par une carte "Activité récente" avec :
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-1. **3 mini-stats en ligne** (style pilules) :
-   - 🔥 Série actuelle (jours consécutifs d'activité)
-   - 📖 Sessions cette semaine
-   - ✅ Versets ajoutés ce mois
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-2. **Barre de régularité hebdomadaire** : 7 cercles (L-D), remplis en émeraude si actif ce jour-là, vide sinon — simple et immédiatement lisible.
-
-### Fichiers modifiés
-
-- **`src/components/hifz/HifzActivityHeatmap.tsx`** → Renommé/réécrit en `HifzActivitySummary.tsx` avec le nouveau design
-- **`src/pages/HifzSuiviPage.tsx`** → Mise à jour de l'import
-
-### Design visuel
-
-```text
-┌─────────────────────────────────────────┐
-│  🔥 5 jours   📖 9 sessions   ✅ 12 v. │
-│                                         │
-│  L  M  M  J  V  S  D                   │
-│  ●  ●  ○  ●  ●  ●  ○    ← cette sem.  │
-└─────────────────────────────────────────┘
-```
-
-Les données proviennent des mêmes tables (`hifz_sessions`, `muraja_sessions`, `hifz_memorized_verses`). Le calcul de la série (streak) se fait côté client en itérant les jours passés.
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

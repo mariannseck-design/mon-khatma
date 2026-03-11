@@ -6,7 +6,7 @@ import { getExactVersePage } from '@/lib/quranData';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { ArrowLeft, ChevronDown, ChevronUp, ChevronRight, Eye, EyeOff, AlertTriangle } from 'lucide-react';
 import { WeeklyCalendarBar } from '@/components/hifz/WeeklyCalendarBar';
-import { HifzActivityHeatmap } from '@/components/hifz/HifzActivityHeatmap';
+import { HifzActivitySummary } from '@/components/hifz/HifzActivitySummary';
 import { HifzMilestoneCelebration } from '@/components/hifz/HifzMilestoneCelebration';
 import { useNavigate } from 'react-router-dom';
 import { format, isToday, isTomorrow, isYesterday, isPast, startOfDay } from 'date-fns';
@@ -272,7 +272,7 @@ export default function HifzSuiviPage() {
       {/* Activity Heatmap */}
       {user && (
         <div className="mb-6">
-          <HifzActivityHeatmap userId={user.id} />
+          <HifzActivitySummary userId={user.id} />
         </div>
       )}
 
