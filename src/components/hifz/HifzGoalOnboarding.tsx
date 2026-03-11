@@ -27,9 +27,11 @@ const WEEKLY_OPTIONS: GoalOption[] = [
   { period: 'weekly', unit: 'pages', value: 2, label: '2 pages', description: 'Un rythme soutenu', icon: '🌟' },
 ];
 
+const DAY_LABELS = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
+
 interface HifzGoalOnboardingProps {
   onGoalSet: () => void;
-  existingGoal?: { goal_period: string; goal_unit: string; goal_value: number; id: string } | null;
+  existingGoal?: { goal_period: string; goal_unit: string; goal_value: number; id: string; active_days?: number[] } | null;
 }
 
 export default function HifzGoalOnboarding({ onGoalSet, existingGoal }: HifzGoalOnboardingProps) {
@@ -44,9 +46,22 @@ export default function HifzGoalOnboarding({ onGoalSet, existingGoal }: HifzGoal
       o => o.period === existingGoal.goal_period && o.unit === existingGoal.goal_unit && o.value === existingGoal.goal_value
     ) || null;
   });
+  const [activeDays, setActiveDays] = useState<number[]>(
+    existingGoal?.active_days ?? [0, 1, 2, 3, 4, 5, 6]
+  );
   const [saving, setSaving] = useState(false);
 
   const options = tab === 'daily' ? DAILY_OPTIONS : WEEKLY_OPTIONS;
+
+  const toggleDay = (day: number) => {
+    if (activeDays.includes(day)) {
+      if (activeDays.length > 1) {
+        setActiveDays(activeDays.filter(d => d !== day));
+      }
+    } else {
+      setActiveDays([...activeDays, day].sort());
+    }
+  };
 
   const handleSave = async () => {
     if (!selected || !user) return;
@@ -54,7 +69,6 @@ export default function HifzGoalOnboarding({ onGoalSet, existingGoal }: HifzGoal
 
     try {
       if (existingGoal) {
-        // Deactivate old goal and insert new one
         await supabase.from('hifz_goals').update({ is_active: false }).eq('id', existingGoal.id);
       }
 
@@ -64,7 +78,8 @@ export default function HifzGoalOnboarding({ onGoalSet, existingGoal }: HifzGoal
         goal_unit: selected.unit,
         goal_value: selected.value,
         is_active: true,
-      });
+        active_days: selected.period === 'daily' ? activeDays : [0, 1, 2, 3, 4, 5, 6],
+      } as any);
 
       if (error) throw error;
 
@@ -164,6 +179,37 @@ export default function HifzGoalOnboarding({ onGoalSet, existingGoal }: HifzGoal
           );
         })}
       </div>
+
+      {/* Day selector - only for daily */}
+      {tab === 'daily' && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          exit={{ opacity: 0, height: 0 }}
+          className="space-y-2.5"
+        >
+          <p className="text-xs text-center text-white/50">Jours de mémorisation</p>
+          <div className="flex justify-center gap-2">
+            {DAY_LABELS.map((label, i) => {
+              const isActive = activeDays.includes(i);
+              return (
+                <button
+                  key={i}
+                  onClick={() => toggleDay(i)}
+                  className="w-9 h-9 rounded-full text-xs font-bold transition-all active:scale-90"
+                  style={{
+                    background: isActive ? 'rgba(212,175,55,0.2)' : 'transparent',
+                    border: isActive ? '2px solid #d4af37' : '1px solid rgba(255,255,255,0.15)',
+                    color: isActive ? '#d4af37' : 'rgba(255,255,255,0.4)',
+                  }}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+        </motion.div>
+      )}
 
       {/* Submit */}
       <Button

@@ -253,6 +253,7 @@ export type Database = {
       }
       hifz_goals: {
         Row: {
+          active_days: number[]
           created_at: string
           goal_period: string
           goal_unit: string
@@ -263,6 +264,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          active_days?: number[]
           created_at?: string
           goal_period: string
           goal_unit: string
@@ -273,6 +275,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          active_days?: number[]
           created_at?: string
           goal_period?: string
           goal_unit?: string
