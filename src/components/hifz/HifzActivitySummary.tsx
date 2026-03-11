@@ -123,28 +123,6 @@ export function HifzActivitySummary({ userId }: HifzActivitySummaryProps) {
 
   return (
     <div className="rounded-2xl p-4" style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', boxShadow: 'var(--p-card-shadow)' }}>
-      {/* Stats pills */}
-      <div className="flex items-center justify-between gap-2 mb-4">
-        {[
-          { emoji: '🔥', value: streak, label: `jour${streak !== 1 ? 's' : ''}` },
-          { emoji: '📖', value: weekSessions, label: `session${weekSessions !== 1 ? 's' : ''}` },
-          { emoji: '✅', value: weekPages, label: `page${weekPages !== 1 ? 's' : ''}` },
-        ].map((stat, i) => (
-          <div
-            key={i}
-            className="flex-1 flex flex-col items-center gap-0.5 rounded-xl py-2"
-            style={{ background: 'var(--p-track)' }}
-          >
-            <span className="text-lg font-bold" style={{ color: 'var(--p-text)' }}>
-              {stat.emoji} {stat.value}
-            </span>
-            <span className="text-[10px]" style={{ color: 'var(--p-text-55)' }}>
-              {stat.label}
-            </span>
-          </div>
-        ))}
-      </div>
-
       {/* Weekly consistency bar */}
       <div className="flex items-center justify-between px-2">
         {DAY_LABELS.map((label, i) => {
