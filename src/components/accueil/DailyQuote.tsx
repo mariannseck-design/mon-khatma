@@ -24,15 +24,15 @@ export default function DailyQuote() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8, delay: 0.2 }}
-      className="flex items-center gap-3 px-1 py-2"
+      className="flex flex-col items-center gap-3 px-2 py-2"
     >
-      {/* Thin vertical accent line */}
+      {/* Thin horizontal accent line */}
       <div
-        className="w-[2px] self-stretch rounded-full flex-shrink-0"
-        style={{ background: 'linear-gradient(to bottom, #d4af3700, #d4af37, #d4af3700)' }}
+        className="h-[2px] w-12 rounded-full flex-shrink-0"
+        style={{ background: 'linear-gradient(to right, #d4af3700, #d4af37, #d4af3700)' }}
       />
       <p
-        className="text-[13px] leading-relaxed italic"
+        className="text-[15px] leading-relaxed italic text-center"
         style={{ color: '#52796f', fontFamily: "'Inter', sans-serif" }}
       >
         {renderWithHonorifics(quote.text)}
