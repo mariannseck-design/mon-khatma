@@ -1,21 +1,22 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Remplacer le message "Alhamdulillah" par les badges validés (Consolidation)
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Changement
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+Dans `src/components/muraja/MurajaChecklist.tsx`, quand `sortedItems.length === 0` et `section === 'tour'` et `hasTourBlocks` (lignes 127-184) :
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+- Supprimer le message "Alhamdulillah, révisions terminées !" avec l'icône PartyPopper
+- Le remplacer par le même bloc compact de badges que le rabt (lignes 248-290), mais avec un fond **bleu-teal** (`rgba(20, 184, 166, 0.10)`, bordure `rgba(20, 184, 166, 0.25)`) pour se distinguer visuellement du rabt doré
+- Le problème : dans ce cas `sortedItems` est vide (les items ont déjà été filtrés en amont dans MurjaPage). Il faudra donc passer les items validés via une nouvelle prop ou changer l'approche.
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+**Approche retenue** : Ce cas se produit quand `items` est vide mais `hasTourBlocks` est true. Les items validés ne sont plus dans `items` car filtrés avant. Il faut passer une nouvelle prop `checkedTourItems` contenant les items tour déjà validés aujourd'hui, pour les afficher en badges compacts.
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+### Fichiers modifiés
+
+1. **`src/pages/MurjaPage.tsx`** — Passer les items tour validés au composant via une nouvelle prop `checkedTourItems`
+2. **`src/components/muraja/MurajaChecklist.tsx`** :
+   - Ajouter prop `checkedTourItems?: ChecklistItem[]`
+   - Dans le bloc vide tour (lignes 127-184), afficher ces items en badges compacts teal au lieu du message Alhamdulillah
+   - Conserver les "Prochaine révision" en dessous
 
