@@ -28,10 +28,10 @@ function getIntensity(count: number): number {
 
 const INTENSITY_STYLES: Record<number, { background: string; border: string }> = {
   0: { background: 'var(--p-track)', border: '1px solid transparent' },
-  1: { background: 'rgba(16,185,129,0.2)', border: '1px solid rgba(16,185,129,0.1)' },
-  2: { background: 'rgba(16,185,129,0.4)', border: '1px solid rgba(16,185,129,0.15)' },
-  3: { background: 'rgba(16,185,129,0.6)', border: '1px solid rgba(16,185,129,0.2)' },
-  4: { background: 'rgba(16,185,129,0.85)', border: '1px solid rgba(16,185,129,0.3)' },
+  1: { background: 'rgba(16,185,129,0.35)', border: '1px solid rgba(16,185,129,0.2)' },
+  2: { background: 'rgba(16,185,129,0.55)', border: '1px solid rgba(16,185,129,0.3)' },
+  3: { background: 'rgba(16,185,129,0.75)', border: '1px solid rgba(16,185,129,0.4)' },
+  4: { background: 'rgba(16,185,129,0.95)', border: '1px solid rgba(16,185,129,0.5)' },
 };
 
 export function HifzActivityHeatmap({ userId }: HifzActivityHeatmapProps) {
