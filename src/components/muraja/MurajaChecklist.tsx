@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, Zap, ThumbsUp, Crown, BookOpen, FileText, Info, CalendarDays, PartyPopper } from 'lucide-react';
 import { SURAHS } from '@/lib/surahData';
@@ -35,6 +35,8 @@ interface MurajaChecklistProps {
   nextTourReviews?: NextReview[];
   checkedTourItems?: ChecklistItem[];
 }
+
+type DisplayItem = ChecklistItem & { mergedWith?: ChecklistItem };
 
 const RATINGS = [
   { key: 'hard', label: 'Difficile', quality: 2, icon: Zap, colorVar: '--p-hard' },
@@ -98,28 +100,56 @@ export default function MurajaChecklist({
     if (page) navigate(`/quran-reader?page=${page}`);
   };
 
-  const handleValidate = (id: string) => {
+  const handleValidate = (id: string, mergedId?: string) => {
     if (checkedIds.includes(id)) return;
     if (section === 'tour') {
       setRatingFor(id);
+      // Store merged ID for later rating
+      if (mergedId) mergedRatingRef.current = mergedId;
     } else {
       onCheck(id);
+      if (mergedId) onCheck(mergedId);
     }
   };
+
+  const mergedRatingRef = useRef<string | null>(null);
 
   const handleRate = (quality: number, ratingKey: string) => {
     if (!ratingFor || !onRate) return;
     onRate(ratingFor, quality, ratingKey);
     onCheck(ratingFor);
+    // Also check+rate the merged item
+    if (mergedRatingRef.current) {
+      onRate(mergedRatingRef.current, quality, ratingKey);
+      onCheck(mergedRatingRef.current);
+      mergedRatingRef.current = null;
+    }
     setRatingFor(null);
   };
 
   // Sort items by Mushaf page number (ascending) when pageMap is available
-  const sortedItems = [...items].sort((a, b) => {
+  const rawSorted = [...items].sort((a, b) => {
     const pageA = pageMap[a.id] ?? Infinity;
     const pageB = pageMap[b.id] ?? Infinity;
     return pageA - pageB;
   });
+
+  // Merge Al-Fatiha with the next item so it never appears alone
+  const sortedItems: DisplayItem[] = [];
+  const isFatiha = (it: ChecklistItem) => it.surah_number === 1 && it.verse_start === 1 && it.verse_end === 7;
+
+  for (let i = 0; i < rawSorted.length; i++) {
+    if (isFatiha(rawSorted[i]) && i + 1 < rawSorted.length) {
+      // Attach Fatiha to the next item
+      sortedItems.push({ ...rawSorted[i + 1], mergedWith: rawSorted[i] });
+      i++; // skip next
+    } else if (isFatiha(rawSorted[i]) && rawSorted.length === 1) {
+      // Only Fatiha exists — show it as-is
+      sortedItems.push(rawSorted[i]);
+    } else {
+      sortedItems.push(rawSorted[i]);
+    }
+  }
 
   const getItemColor = (item: ChecklistItem) => {
     if (section !== 'rabt') return '#10B981';
@@ -258,7 +288,7 @@ export default function MurajaChecklist({
     );
   }
 
-  // Split checked vs unchecked for rabt compact mode
+  // Split checked vs unchecked — for merged items, both IDs are checked together
   const checkedItems = sortedItems.filter(i => checkedIds.includes(i.id));
   const uncheckedItems = sortedItems.filter(i => !checkedIds.includes(i.id));
 
@@ -314,7 +344,9 @@ export default function MurajaChecklist({
                     }}
                   >
                     <FileText className="h-2.5 w-2.5" />
-                    {getSurahName(item.surah_number)} {page ? `p.${page}` : `v.${item.verse_start}-${item.verse_end}`}
+                    {(item as DisplayItem).mergedWith
+                      ? `${getSurahName((item as DisplayItem).mergedWith!.surah_number)} + ${getSurahName(item.surah_number)}`
+                      : getSurahName(item.surah_number)} {page ? `p.${page}` : `v.${item.verse_start}-${item.verse_end}`}
                   </button>
                 );
               })}
@@ -328,6 +360,10 @@ export default function MurajaChecklist({
         const isRating = ratingFor === item.id;
         const daysPassed = section === 'rabt' ? getLiaisonDaysPassed(item.memorized_at, item.liaison_start_date) : 0;
         const itemColor = getItemColor(item);
+        const merged = (item as DisplayItem).mergedWith;
+        const displayName = merged
+          ? `${getSurahName(merged.surah_number)} + ${getSurahName(item.surah_number)}`
+          : getSurahName(item.surah_number);
 
         return (
           <div key={item.id}>
@@ -363,7 +399,7 @@ export default function MurajaChecklist({
                         fontWeight: isChecked ? 800 : 700,
                       }}
                     >
-                      {getSurahName(item.surah_number)}
+                      {displayName}
                     </p>
                     {pageMap[item.id] && (
                       <button
@@ -377,13 +413,19 @@ export default function MurajaChecklist({
                         title="Ouvrir dans le lecteur"
                       >
                         <FileText className="h-2.5 w-2.5" />
-                        {pageMap[item.id]}
+                        {merged ? `${pageMap[merged.id] || 1}-` : ''}{pageMap[item.id]}
                       </button>
                     )}
                   </div>
+                  {merged && (
+                    <div className="flex items-center gap-1 text-xs font-medium" style={{ color: 'var(--p-text-60)' }}>
+                      <BookOpen className="h-2.5 w-2.5 flex-shrink-0" style={{ color: itemColor }} />
+                      <span>{getSurahName(merged.surah_number)} {merged.verse_start} → {merged.verse_end}</span>
+                    </div>
+                  )}
                   <div className="flex items-center gap-1 text-xs font-medium" style={{ color: 'var(--p-text-60)' }}>
                     <BookOpen className="h-2.5 w-2.5 flex-shrink-0" style={{ color: itemColor }} />
-                    <span>{item.verse_start} → {item.verse_end}</span>
+                    <span>{merged ? `${getSurahName(item.surah_number)} ` : ''}{item.verse_start} → {item.verse_end}</span>
                     {section === 'tour' && (
                       isChecked
                         ? <span className="ml-1 font-bold" style={{ color: '#10B981' }}>· Révision faite ✓</span>
@@ -414,7 +456,7 @@ export default function MurajaChecklist({
               {/* Validation button */}
               {!isChecked && !isRating && (
                 <motion.button
-                  onClick={() => handleValidate(item.id)}
+                  onClick={() => handleValidate(item.id, merged?.id)}
                   className="w-full mt-2.5 flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-bold transition-all"
                   style={{
                     background: section === 'rabt'
