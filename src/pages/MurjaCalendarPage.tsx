@@ -465,6 +465,64 @@ export default function MurjaCalendarPage() {
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* New Record Celebration Overlay */}
+        <AnimatePresence>
+          {showNewRecord && (
+            <motion.div
+              className="fixed inset-0 z-[60] flex items-center justify-center pointer-events-none"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4 }}
+            >
+              <div className="absolute inset-0 bg-black/30 pointer-events-auto" onClick={() => setShowNewRecord(false)} />
+              <motion.div
+                className="relative flex flex-col items-center gap-3 px-8 py-6 rounded-2xl pointer-events-auto"
+                style={{ background: 'var(--p-card)', border: '2px solid #D4AF37', boxShadow: '0 0 40px rgba(212, 175, 55, 0.3)' }}
+                initial={{ scale: 0.5, y: 30, opacity: 0 }}
+                animate={{ scale: 1, y: 0, opacity: 1 }}
+                exit={{ scale: 0.8, y: -20, opacity: 0 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+              >
+                <motion.div
+                  initial={{ rotate: -20, scale: 0 }}
+                  animate={{ rotate: 0, scale: 1 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 12, delay: 0.15 }}
+                >
+                  <Trophy className="h-10 w-10" style={{ color: '#D4AF37' }} />
+                </motion.div>
+                <motion.p
+                  className="text-sm font-bold text-center"
+                  style={{ color: '#D4AF37' }}
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.25 }}
+                >
+                  Nouveau record !
+                </motion.p>
+                <motion.p
+                  className="text-2xl font-bold"
+                  style={{ color: 'var(--p-text)' }}
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: 'spring', stiffness: 350, damping: 15, delay: 0.35 }}
+                >
+                  {streak} jours 🔥
+                </motion.p>
+                <motion.p
+                  className="text-[11px] font-medium"
+                  style={{ color: 'var(--p-text-50)' }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                >
+                  Qu'Allah te garde constant(e) !
+                </motion.p>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </AppLayout>
   );
