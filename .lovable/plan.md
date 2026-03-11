@@ -1,21 +1,14 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Redirection automatique au lieu du 404
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+**Problème** : Quand un utilisateur tombe sur une URL invalide, il voit une page 404 blanche inutile.
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+**Solution** : Remplacer la page 404 par une redirection automatique intelligente :
+- Si l'utilisateur est connecté → redirige vers `/accueil`
+- Si l'utilisateur n'est pas connecté → redirige vers `/auth`
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+### Changement
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
-
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+**`src/pages/NotFound.tsx`** : Remplacer le contenu statique par un composant qui utilise `useAuth()` pour déterminer la destination, puis fait un `<Navigate>` immédiat vers `/accueil` ou `/auth`. Aucune page 404 ne sera jamais affichée.
 
