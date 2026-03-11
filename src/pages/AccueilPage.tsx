@@ -205,7 +205,7 @@ export default function AccueilPage() {
             <Link to="/planificateur" className="block mt-4">
               <div
                 className="flex items-center gap-3 rounded-xl px-4 py-3 transition-colors"
-                style={{ background: COLORS.emerald }}
+                style={{ background: `linear-gradient(135deg, ${COLORS.gold}, ${COLORS.goldAccent})` }}
               >
                 <Target className="h-5 w-5" style={{ color: COLORS.goldAccent }} />
                 <span className="text-base font-bold uppercase tracking-wide text-white">MA KHATMA <span className="font-normal text-xs normal-case text-white/70">(Mon objectif)</span></span>
