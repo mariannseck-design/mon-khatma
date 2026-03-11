@@ -411,10 +411,10 @@ export default function HifzSuiviPage() {
       <div className="flex justify-center pb-24">
         <button
           onClick={() => setShowAllJuz(!showAllJuz)}
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold transition-all hover:scale-105 active:scale-95"
-          style={{ background: 'var(--p-card)', color: 'var(--p-primary)', border: '1.5px solid var(--p-primary)' }}
+          className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[11px] font-medium transition-opacity hover:opacity-70 active:scale-95"
+          style={{ color: 'var(--p-text-55)' }}
         >
-          {showAllJuz ? <><EyeOff className="w-3.5 h-3.5" /> Masquer les vides</> : <><Eye className="w-3.5 h-3.5" /> Voir tous les Juz</>}
+          {showAllJuz ? <><EyeOff className="w-3 h-3" /> Masquer les vides</> : <><Eye className="w-3 h-3" /> Voir tous les Juz</>}
         </button>
       </div>
 
