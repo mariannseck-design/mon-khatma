@@ -249,7 +249,7 @@ export default function MurjaCalendarPage() {
             </h1>
             <p className="text-[11px] font-medium" style={{ color: 'var(--p-text-40)' }}>
               {totalItems > 0 
-                ? `${totalDone}/${totalItems} terminés`
+                ? <><motion.span key={totalDone} initial={{ scale: 1.4, color: '#10B981' }} animate={{ scale: 1, color: 'var(--p-text-40)' }} transition={{ type: 'spring', stiffness: 400, damping: 15 }}  style={{ display: 'inline-block' }}>{totalDone}</motion.span>/{totalItems} terminés</>
                 : 'Consolide ta mémorisation'}
             </p>
           </div>
