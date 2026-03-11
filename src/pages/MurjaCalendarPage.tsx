@@ -302,7 +302,7 @@ export default function MurjaCalendarPage() {
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="flex items-center gap-2.5 rounded-xl px-4 py-3"
+                  className="flex items-center gap-2.5 rounded-xl px-4 py-3 mb-2"
                   style={{ background: 'color-mix(in srgb, #10B981 10%, transparent)', border: '1px solid color-mix(in srgb, #10B981 20%, transparent)' }}
                 >
                   <Sparkles className="h-4 w-4 flex-shrink-0" style={{ color: '#10B981' }} />
