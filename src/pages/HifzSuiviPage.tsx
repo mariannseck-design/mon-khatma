@@ -256,18 +256,11 @@ export default function HifzSuiviPage() {
         </button>
       </div>
 
-      {/* Toggle + Juz Grid */}
-      <div className="flex items-center justify-between mb-3">
+      {/* Juz Grid */}
+      <div className="mb-3">
         <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--p-text-55)' }}>
           Mon Parcours par Juz
         </span>
-        <button
-          onClick={() => setShowAllJuz(!showAllJuz)}
-          className="inline-flex items-center gap-1 text-[11px] font-medium transition-colors"
-          style={{ color: 'var(--p-primary)' }}
-        >
-          {showAllJuz ? <><EyeOff className="w-3.5 h-3.5" /> Masquer les vides</> : <><Eye className="w-3.5 h-3.5" /> Voir tous les Juz</>}
-        </button>
       </div>
 
       {visibleJuz.length === 0 && (
@@ -299,8 +292,8 @@ export default function HifzSuiviPage() {
 
           return (
             <div key={juz.juzNumber}
-              className={`rounded-xl transition-all duration-300 cursor-pointer ${
-                expanded ? 'col-span-2 sm:col-span-3 shadow-lg' : 'hover:shadow-md'
+              className={`rounded-xl transition-all duration-300 cursor-pointer col-span-2 sm:col-span-3 ${
+                expanded ? 'shadow-lg' : 'hover:shadow-md'
               }`}
               style={{
                 background: expanded ? 'var(--p-card-active)' : 'var(--p-card)',
@@ -326,9 +319,9 @@ export default function HifzSuiviPage() {
 
                 <div className="flex items-center gap-3">
                   <div className="relative flex-shrink-0">
-                    <CircleProgress percentage={juz.percentage} size={expanded ? 80 : 64} />
+                    <CircleProgress percentage={juz.percentage} size={80} />
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <span className={`font-bold ${expanded ? 'text-base' : 'text-sm'}`} style={{ color: 'var(--p-primary)' }}>
+                      <span className="font-bold text-base" style={{ color: 'var(--p-primary)' }}>
                         {juz.percentage}%
                       </span>
                     </div>
@@ -392,6 +385,17 @@ export default function HifzSuiviPage() {
             </div>
           );
         })}
+      </div>
+
+      {/* Toggle Voir tous les Juz */}
+      <div className="flex justify-center pb-24">
+        <button
+          onClick={() => setShowAllJuz(!showAllJuz)}
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold transition-all hover:scale-105 active:scale-95"
+          style={{ background: 'var(--p-card)', color: 'var(--p-primary)', border: '1.5px solid var(--p-primary)' }}
+        >
+          {showAllJuz ? <><EyeOff className="w-3.5 h-3.5" /> Masquer les vides</> : <><Eye className="w-3.5 h-3.5" /> Voir tous les Juz</>}
+        </button>
       </div>
     </AppLayout>
   );
