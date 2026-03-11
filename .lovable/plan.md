@@ -1,34 +1,21 @@
 
 
-## Problème identifié
+# Diagnostic : 404 sur /quran-reader
 
-Dans `renderCard` (ligne 160), la condition `isChecked` est évaluée **avant** `locked`. Les items Ar-Rabt validés aujourd'hui sont dans `checkedIds`, donc même sur un jour futur, ils affichent la coche au lieu du cadenas.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-De plus, sur les jours futurs, les items Ar-Rabt passent en `pending` (ligne 309) mais s'ils ont été cochés aujourd'hui, `checkedIds.includes(item.id)` retourne `true` → la coche s'affiche.
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-## Correction
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-**Fichier** : `src/pages/MurjaCalendarPage.tsx`, ligne 160
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-Inverser la priorité : vérifier `locked` avant `isChecked` dans le rendu de l'icône :
-
-```tsx
-{locked ? (
-  <Lock className="h-4 w-4" style={{ color: 'var(--p-text-30)' }} />
-) : isChecked ? (
-  <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ background: checkColor }}>
-    <Check className="h-3 w-3 text-white" />
-  </div>
-) : (
-  <div className="w-5 h-5 rounded-full" style={{ border: `2px solid ${checkColor}` }} />
-)}
-```
-
-Et aussi ajuster la logique d'opacité (ligne 149) pour que `locked` prenne le dessus :
-
-```tsx
-opacity: locked ? 0.7 : isChecked ? 0.5 : 1,
-```
-
-Cette ligne est déjà correcte (locked en premier), mais le rendu de l'icône ne l'était pas. Seul le bloc conditionnel de l'icône (lignes 160-168) nécessite la correction.
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

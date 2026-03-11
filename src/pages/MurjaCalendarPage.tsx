@@ -157,12 +157,12 @@ export default function MurjaCalendarPage() {
       >
         {/* Checkbox / Lock */}
         <div className="absolute top-2.5 right-2.5 flex items-center justify-center">
-          {isChecked ? (
+          {locked ? (
+            <Lock className="h-4 w-4" style={{ color: 'var(--p-text-30)' }} />
+          ) : isChecked ? (
             <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ background: checkColor }}>
               <Check className="h-3 w-3 text-white" />
             </div>
-          ) : locked ? (
-            <Lock className="h-4 w-4" style={{ color: 'var(--p-text-30)' }} />
           ) : (
             <div className="w-5 h-5 rounded-full" style={{ border: `2px solid ${checkColor}` }} />
           )}
