@@ -24,7 +24,7 @@ const STEP_NAMES = ['Intention', 'Réveil', 'Imprégnation', 'Istiqâmah', 'Vali
 const MOURAD_PHASE_NAMES = ['Compréhension', 'Imprégnation', 'Liaison', 'Ancrage'];
 
 export default function HifzHubPage() {
-  const { user, hasFullAccess } = useAuth();
+  const { user, hasFullAccess, isAdmin } = useAuth();
   const [activeHifzSession, setActiveHifzSession] = useState<{ surahName: string; stepName: string } | null>(null);
   const [activeMouradSession, setActiveMouradSession] = useState<{ surahName: string; phaseName: string } | null>(null);
   const [pendingReviews, setPendingReviews] = useState(0);
@@ -232,7 +232,8 @@ export default function HifzHubPage() {
           </Link>
         </motion.div>
 
-        {/* Méthode Oustaz Mourad */}
+        {/* Méthode Oustaz Mourad — admin only */}
+        {isAdmin && (
         <motion.div variants={itemVariants}>
           <Link to="/methode-mourad" className="block">
             <motion.div
@@ -273,6 +274,7 @@ export default function HifzHubPage() {
             </motion.div>
           </Link>
         </motion.div>
+        )}
 
         {/* Muraja'a */}
         <motion.div variants={itemVariants}>
