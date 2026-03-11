@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Heart, Check } from 'lucide-react';
 import HifzStepWrapper from './HifzStepWrapper';
 import { SURAHS } from '@/lib/surahData';
+import { getExactVersePage } from '@/lib/quranData';
 
 interface Props {
   surahNumber: number;
@@ -16,7 +17,16 @@ interface Props {
 export default function HifzStep0Intention({ surahNumber, startVerse, endVerse, onNext, onBack, onPause }: Props) {
   const [translation, setTranslation] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [pageLabel, setPageLabel] = useState('');
   const surahName = SURAHS.find(s => s.number === surahNumber)?.name || '';
+
+  useEffect(() => {
+    getExactVersePage(surahNumber, startVerse).then(startP => {
+      getExactVersePage(surahNumber, endVerse).then(endP => {
+        setPageLabel(startP === endP ? `P.${startP}` : `P.${startP}-${endP}`);
+      });
+    });
+  }, [surahNumber, startVerse, endVerse]);
 
   useEffect(() => {
     const fetchTranslation = async () => {
@@ -60,7 +70,7 @@ export default function HifzStep0Intention({ surahNumber, startVerse, endVerse, 
           style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(212,175,55,0.15)' }}
         >
           <p className="text-xs uppercase tracking-wider text-white/40 mb-3">
-            Traduction — {surahName} (v.{startVerse}-{endVerse})
+            Traduction — {surahName} {pageLabel && `(${pageLabel}) `}(v.{startVerse}-{endVerse})
           </p>
           {loading ? (
             <div className="flex items-center justify-center py-6">
