@@ -70,7 +70,7 @@ export default function HifzStep0Intention({ surahNumber, startVerse, endVerse, 
           style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(212,175,55,0.15)' }}
         >
           <p className="text-xs uppercase tracking-wider text-white/40 mb-3">
-            Traduction — {surahName} (v.{startVerse}-{endVerse})
+            Traduction — {surahName} {pageLabel && `(${pageLabel}) `}(v.{startVerse}-{endVerse})
           </p>
           {loading ? (
             <div className="flex items-center justify-center py-6">
