@@ -11,8 +11,9 @@ import DailyQuote from '@/components/accueil/DailyQuote';
 const COLORS = {
   emerald: '#2d6a4f',
   emeraldLight: '#40916c',
-  sage: '#52796f',
-  sageLight: '#74a892',
+  emeraldDeep: '#1B4332',
+  sage: '#3a6b5a',
+  sageLight: '#5a9a80',
   gold: '#b5942e',
   goldAccent: '#d4af37',
   beige: '#faf8f5',
