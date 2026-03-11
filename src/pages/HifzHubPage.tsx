@@ -197,9 +197,14 @@ export default function HifzHubPage() {
             <motion.div
               className="relative overflow-hidden rounded-[2rem] p-7 group"
               style={{
-                background: `linear-gradient(135deg, ${COLORS.emerald} 0%, ${COLORS.emeraldLight} 100%)`,
+                background: activeHifzSession
+                  ? `linear-gradient(135deg, ${COLORS.emeraldDeep} 0%, ${COLORS.emerald} 100%)`
+                  : `linear-gradient(135deg, ${COLORS.emerald} 0%, ${COLORS.emeraldLight} 100%)`,
                 border: `2px solid ${COLORS.gold}40`,
-                boxShadow: `0 8px 32px -8px ${COLORS.emerald}50`,
+                boxShadow: activeHifzSession
+                  ? `0 8px 32px -8px ${COLORS.emeraldDeep}70`
+                  : `0 8px 32px -8px ${COLORS.emerald}50`,
+                borderLeft: activeHifzSession ? `4px solid ${COLORS.goldAccent}` : undefined,
               }}
               whileTap={{ scale: 0.97 }}
             >
@@ -212,13 +217,13 @@ export default function HifzHubPage() {
                   {activeHifzSession ? (
                     <Play className="h-8 w-8" style={{ color: COLORS.goldAccent }} />
                   ) : (
-                    <BookOpen className="h-8 w-8" style={{ color: COLORS.goldAccent }} />
+                    <BookOpen className="h-8 w-8" style={{ color: '#fff' }} />
                   )}
                 </div>
                 <div className="flex-1">
                   <h3
                     className="text-sm font-bold tracking-[0.08em] uppercase"
-                    style={{ fontFamily: "'Inter', sans-serif", color: COLORS.goldAccent }}
+                    style={{ fontFamily: "'Inter', sans-serif", color: activeHifzSession ? COLORS.goldAccent : '#fff' }}
                   >
                     {activeHifzSession ? '▶️ Continuer ma session' : <>Méthode Tikrar-ISTIQÂMAH<sup className="text-[0.6em] ml-0.5">1</sup></>}
                   </h3>
