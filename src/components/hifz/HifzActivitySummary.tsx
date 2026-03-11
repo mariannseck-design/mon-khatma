@@ -23,27 +23,27 @@ export function HifzActivitySummary({ userId }: HifzActivitySummaryProps) {
     (async () => {
       const weekStart = format(monday, 'yyyy-MM-dd');
 
-      const [sessionsRes, murajaRes, versesRes, streakDaysRes] = await Promise.all([
-        // Week sessions (hifz)
+      const [sessionsRes, murajaRes, hifzVersesRes, streakDaysRes] = await Promise.all([
+        // Week sessions (hifz) — need verse range for verse count
         supabase
           .from('hifz_sessions')
-          .select('completed_at')
+          .select('completed_at, start_verse, end_verse')
           .eq('user_id', userId)
           .not('completed_at', 'is', null)
           .gte('completed_at', weekStart),
-        // Week sessions (muraja)
+        // Week sessions (muraja) — need verses_reviewed
         supabase
           .from('muraja_sessions')
-          .select('completed_at')
+          .select('completed_at, verses_reviewed')
           .eq('user_id', userId)
           .not('completed_at', 'is', null)
           .gte('completed_at', weekStart),
-        // Month verses
+        // Week new verses
         supabase
           .from('hifz_memorized_verses')
-          .select('memorized_at')
+          .select('verse_start, verse_end')
           .eq('user_id', userId)
-          .gte('memorized_at', monthStart),
+          .gte('memorized_at', weekStart),
         // Last 60 days for streak calc
         supabase
           .from('hifz_sessions')
@@ -58,8 +58,23 @@ export function HifzActivitySummary({ userId }: HifzActivitySummaryProps) {
       const murajaCount = murajaRes.data?.length || 0;
       setWeekSessions(hifzCount + murajaCount);
 
-      // Month verses
-      setMonthVerses(versesRes.data?.length || 0);
+      // Week verses worked (memorized + revised)
+      let versesWorked = 0;
+      for (const s of sessionsRes.data || []) {
+        versesWorked += (s.end_verse - s.start_verse + 1);
+      }
+      for (const s of murajaRes.data || []) {
+        const reviewed = s.verses_reviewed as any[];
+        if (Array.isArray(reviewed)) {
+          for (const r of reviewed) {
+            versesWorked += ((r.verse_end || r.end_verse || 0) - (r.verse_start || r.start_verse || 0) + 1);
+          }
+        }
+      }
+      for (const v of hifzVersesRes.data || []) {
+        versesWorked += (v.verse_end - v.verse_start + 1);
+      }
+      setWeekVerses(versesWorked);
 
       // Week active days (0=Mon … 6=Sun)
       const activeDays = new Set<number>();
