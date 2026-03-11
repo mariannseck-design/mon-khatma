@@ -88,6 +88,7 @@ export default function HifzSuiviPage() {
   const navigate = useNavigate();
   const [memorized, setMemorized] = useState<MemorizedVerse[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [expandedJuz, setExpandedJuz] = useState<number | null>(null);
   const [versePages, setVersePages] = useState<Map<string, number>>(new Map());
   const [showAllJuz, setShowAllJuz] = useState(false);
