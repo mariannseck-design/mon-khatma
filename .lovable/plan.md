@@ -1,21 +1,37 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Créer une page test "Mon Suivi Hifz v2" avec vue par Juz
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Concept
+Inspirée de l'image : une grille de cartes par Juz (1-30), chacune avec un cercle de progression, le % mémorisé, les sourates couvertes, la rétention, et la prochaine révision. Le Juz actif (avec données) est expansé, les autres sont compacts.
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Fichiers à créer/modifier
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+1. **`src/pages/HifzSuiviTestPage.tsx`** — Nouvelle page complète :
+   - Récupère `hifz_memorized_verses` de l'utilisateur
+   - Calcule pour chaque Juz (1-30) : versets mémorisés vs total, sourates concernées, % progression
+   - Utilise `getExactVersePage` + `SURAHS` pour mapper versets → juz (pages 1-20 = Juz 1, etc.)
+   - Affiche une grille responsive de cartes Juz avec :
+     - Cercle SVG animé (progression %)
+     - Nombre de versets mémorisés / total
+     - Liste des sourates et intervalles de versets
+     - Barre de mémorisation (%)
+     - Niveau de rétention (basé sur `sm2_ease_factor` moyen)
+     - Date prochaine révision (plus proche `next_review_date`)
+     - Dernier bloc révisé (`last_reviewed_at`)
+     - Bouton "Continuer la mémorisation" / "Commencer"
+   - Style : thème sombre teal (comme l'image), cartes blanches/glassmorphism
+   - Juz avec données = carte large expandable, Juz vides = carte compacte
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+2. **`src/App.tsx`** — Ajouter route `/hifz-suivi-test` pointant vers la nouvelle page
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+### Données par Juz
+Chaque Juz = 20 pages du Mushaf. Juz 1 = pages 1-21, Juz 2 = pages 22-41, etc. On mappe chaque `hifz_memorized_verse` à son Juz via `getExactVersePage`, puis on agrège les stats.
+
+### Design (inspiré de l'image)
+- Header teal foncé avec titre centré
+- Grille scrollable horizontalement sur mobile (ou 3 colonnes sur desktop)
+- Carte active : fond blanc, cercle vert large, détails complets (sourates, rétention, révision)
+- Cartes inactives : plus petites, juste le % et "Commencer"
+- Toggle arabe/français pour les noms de sourates
 
