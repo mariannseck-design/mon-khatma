@@ -160,7 +160,8 @@ export default function HifzSuiviTestPage() {
           surahDetails.set(m.surah_number, { minVerse: m.verse_start, maxVerse: m.verse_end });
         }
 
-        if (!earliestReview || m.next_review_date < earliestReview) {
+        const alreadyReviewedToday = m.last_reviewed_at && isToday(new Date(m.last_reviewed_at));
+        if (!alreadyReviewedToday && (!earliestReview || m.next_review_date < earliestReview)) {
           earliestReview = m.next_review_date;
         }
         if (m.last_reviewed_at && (!latestReviewed || m.last_reviewed_at > latestReviewed)) {
