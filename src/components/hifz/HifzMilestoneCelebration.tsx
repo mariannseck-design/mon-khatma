@@ -20,15 +20,15 @@ interface Particle {
   rotation: number;
 }
 
-const MILESTONE_DEFS: { check: (args: { totalAyats: number; completedJuz: number[]; activeJuzCount: number }) => boolean; key: string; emoji: string; title: string; subtitle: string }[] = [
-  { key: 'first_10', check: ({ totalAyats }) => totalAyats >= 10, emoji: '🌱', title: '10 ayats mémorisées !', subtitle: 'Tes premiers pas sont posés' },
-  { key: 'first_50', check: ({ totalAyats }) => totalAyats >= 50, emoji: '⭐', title: '50 ayats mémorisées !', subtitle: 'Ma sha Allah, continue !' },
-  { key: 'first_100', check: ({ totalAyats }) => totalAyats >= 100, emoji: '🌟', title: '100 ayats mémorisées !', subtitle: 'Un cap symbolique franchi' },
+const MILESTONE_DEFS: { check: (args: { totalPages: number; completedJuz: number[]; activeJuzCount: number }) => boolean; key: string; emoji: string; title: string; subtitle: string }[] = [
+  { key: 'first_1p', check: ({ totalPages }) => totalPages >= 1, emoji: '🌱', title: '1 page mémorisée !', subtitle: 'Tes premiers pas sont posés' },
+  { key: 'first_3p', check: ({ totalPages }) => totalPages >= 3, emoji: '⭐', title: '3 pages mémorisées !', subtitle: 'Ma sha Allah, continue !' },
+  { key: 'first_7p', check: ({ totalPages }) => totalPages >= 7, emoji: '🌟', title: '7 pages mémorisées !', subtitle: 'Un cap symbolique franchi' },
   { key: 'first_juz', check: ({ completedJuz }) => completedJuz.length >= 1, emoji: '🏆', title: 'Premier Juz complet !', subtitle: 'Allahumma barik, quel accomplissement !' },
-  { key: 'first_250', check: ({ totalAyats }) => totalAyats >= 250, emoji: '💎', title: '250 ayats mémorisées !', subtitle: 'Ta persévérance porte ses fruits' },
-  { key: 'first_500', check: ({ totalAyats }) => totalAyats >= 500, emoji: '🔥', title: '500 ayats mémorisées !', subtitle: 'Demi-millier, force !' },
+  { key: 'first_17p', check: ({ totalPages }) => totalPages >= 17, emoji: '💎', title: '17 pages mémorisées !', subtitle: 'Ta persévérance porte ses fruits' },
+  { key: 'first_33p', check: ({ totalPages }) => totalPages >= 33, emoji: '🔥', title: '33 pages mémorisées !', subtitle: 'Ma sha Allah, quelle force !' },
   { key: 'two_juz', check: ({ completedJuz }) => completedJuz.length >= 2, emoji: '👑', title: '2 Juz complets !', subtitle: 'La régularité est ta force' },
-  { key: 'first_1000', check: ({ totalAyats }) => totalAyats >= 1000, emoji: '🎖️', title: '1000 ayats mémorisées !', subtitle: 'Mille versets dans ton cœur' },
+  { key: 'first_67p', check: ({ totalPages }) => totalPages >= 67, emoji: '🎖️', title: '67 pages mémorisées !', subtitle: 'SubhanAllah, quel trésor dans ton cœur' },
   { key: 'five_juz', check: ({ completedJuz }) => completedJuz.length >= 5, emoji: '🌙', title: '5 Juz complets !', subtitle: 'SubhanAllah, quel parcours !' },
 ];
 
@@ -52,12 +52,12 @@ function generateParticles(count: number): Particle[] {
 }
 
 interface HifzMilestoneCelebrationProps {
-  totalAyats: number;
-  completedJuz: number[]; // juz numbers at 100%
+  totalPages: number;
+  completedJuz: number[];
   activeJuzCount: number;
 }
 
-export function HifzMilestoneCelebration({ totalAyats, completedJuz, activeJuzCount }: HifzMilestoneCelebrationProps) {
+export function HifzMilestoneCelebration({ totalPages, completedJuz, activeJuzCount }: HifzMilestoneCelebrationProps) {
   const [shownMilestones, setShownMilestones] = useState<Set<string>>(new Set());
   const [activeMilestone, setActiveMilestone] = useState<Milestone | null>(null);
   const [particles, setParticles] = useState<Particle[]>([]);
@@ -71,11 +71,11 @@ export function HifzMilestoneCelebration({ totalAyats, completedJuz, activeJuzCo
   }, []);
 
   const newMilestone = useMemo(() => {
-    const args = { totalAyats, completedJuz, activeJuzCount };
+    const args = { totalPages, completedJuz, activeJuzCount };
     // Find the highest unlocked milestone not yet shown
     const unlocked = MILESTONE_DEFS.filter(m => m.check(args) && !shownMilestones.has(m.key));
     return unlocked.length > 0 ? unlocked[unlocked.length - 1] : null;
-  }, [totalAyats, completedJuz, activeJuzCount, shownMilestones]);
+  }, [totalPages, completedJuz, activeJuzCount, shownMilestones]);
 
   useEffect(() => {
     if (!newMilestone) return;

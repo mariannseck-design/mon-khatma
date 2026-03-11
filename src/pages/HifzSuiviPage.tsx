@@ -206,7 +206,7 @@ export default function HifzSuiviPage() {
   const activeJuz = juzData.filter(hasData);
   const visibleJuz = showAllJuz ? juzData : activeJuz;
 
-  const totalAyats = memorized.reduce((s, m) => s + (m.verse_end - m.verse_start + 1), 0);
+  const totalPages = Math.max(memorized.length > 0 ? 1 : 0, Math.round(memorized.reduce((s, m) => s + (m.verse_end - m.verse_start + 1), 0) / 15));
   const completedJuz = juzData.filter(j => j.percentage >= 100).map(j => j.juzNumber);
 
   if (loading) {
@@ -223,7 +223,7 @@ export default function HifzSuiviPage() {
     <AppLayout title="Mon Suivi Hifz" hideNav bgClassName="bg-[var(--p-bg)]">
       {/* Milestone Celebration */}
       <HifzMilestoneCelebration
-        totalAyats={totalAyats}
+        totalPages={totalPages}
         completedJuz={completedJuz}
         activeJuzCount={activeJuz.length}
       />
@@ -241,7 +241,7 @@ export default function HifzSuiviPage() {
       <div className="grid grid-cols-3 gap-3 mb-6">
         {[
           { label: 'Juz commencés', value: activeJuz.length },
-          { label: 'Ayats mémorisées', value: totalAyats },
+          { label: 'Pages mémorisées', value: totalPages },
           { label: 'Progression', value: `${activeJuz.length > 0 ? Math.round(activeJuz.reduce((s, j) => s + j.percentage, 0) / activeJuz.length) : 0}%` },
         ].map((stat, i) => (
           <div key={i} className="rounded-xl p-3 text-center" style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', boxShadow: 'var(--p-card-shadow)' }}>
@@ -354,7 +354,7 @@ export default function HifzSuiviPage() {
 
                   <div className="flex-1 min-w-0">
                     <div className="text-xs mb-1" style={{ color: 'var(--p-text-65)' }}>
-                      {juz.memorizedVerses} ayats mémorisées
+                      {Math.max(1, Math.round(juz.memorizedVerses / 15))} page{Math.round(juz.memorizedVerses / 15) > 1 ? 's' : ''} mémorisée{Math.round(juz.memorizedVerses / 15) > 1 ? 's' : ''}
                     </div>
                     <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--p-track)' }}>
                       <div className="h-full rounded-full transition-all duration-500"
