@@ -4,9 +4,9 @@ import { supabase } from '@/integrations/supabase/client';
 import { SURAHS } from '@/lib/surahData';
 import { getExactVersePage } from '@/lib/quranData';
 import { AppLayout } from '@/components/layout/AppLayout';
-import { ArrowLeft, ChevronDown, ChevronUp, ChevronRight, Eye, EyeOff } from 'lucide-react';
+import { ArrowLeft, ChevronDown, ChevronUp, ChevronRight, Eye, EyeOff, AlertTriangle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { format, isToday, isTomorrow, isYesterday } from 'date-fns';
+import { format, isToday, isTomorrow, isYesterday, isPast, startOfDay } from 'date-fns';
 import { fr } from 'date-fns/locale';
 
 function formatSmartDate(dateStr: string): string {
@@ -52,6 +52,7 @@ interface JuzData {
   nextReview: string | null;
   lastReviewed: string | null;
   retentionLabel: string;
+  isOverdue: boolean;
 }
 
 function getRetentionLabel(avgEase: number): string {
@@ -181,6 +182,8 @@ export default function HifzSuiviTestPage() {
         };
       });
 
+      const isOverdue = earliestReview ? isPast(startOfDay(new Date(earliestReview))) && !isToday(new Date(earliestReview)) : false;
+
       return {
         juzNumber: juzNum,
         totalVerses,
@@ -191,6 +194,7 @@ export default function HifzSuiviTestPage() {
         nextReview: earliestReview,
         lastReviewed: latestReviewed,
         retentionLabel: getRetentionLabel(avgEase),
+        isOverdue,
       };
     });
   }, [memorized, versePages]);
@@ -308,7 +312,14 @@ export default function HifzSuiviTestPage() {
             >
               <div className="p-4">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-semibold" style={{ color: 'var(--p-primary)' }}>Juz {juz.juzNumber}</span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs font-semibold" style={{ color: 'var(--p-primary)' }}>Juz {juz.juzNumber}</span>
+                    {juz.isOverdue && (
+                      <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[9px] font-semibold bg-red-500/15 text-red-600">
+                        <AlertTriangle className="w-2.5 h-2.5" /> En retard
+                      </span>
+                    )}
+                  </div>
                   {expanded
                     ? <ChevronUp className="w-4 h-4" style={{ color: 'var(--p-primary)' }} />
                     : <ChevronDown className="w-4 h-4" style={{ color: 'var(--p-text-55)' }} />}
@@ -364,11 +375,13 @@ export default function HifzSuiviTestPage() {
                       {juz.nextReview && (
                         <button
                           onClick={(e) => { e.stopPropagation(); navigate('/muraja'); }}
-                          className="rounded-lg p-2 text-left transition-colors hover:opacity-80 active:scale-95"
-                          style={{ background: 'var(--p-track)' }}
+                          className={`rounded-lg p-2 text-left transition-colors hover:opacity-80 active:scale-95 ${juz.isOverdue ? 'ring-1 ring-red-400/50' : ''}`}
+                          style={{ background: juz.isOverdue ? 'rgba(239,68,68,0.08)' : 'var(--p-track)' }}
                         >
-                          <div className="text-[9px] uppercase" style={{ color: 'var(--p-text-55)' }}>Prochaine révision</div>
-                          <div className="text-xs font-medium flex items-center gap-1" style={{ color: 'var(--p-primary)' }}>
+                          <div className="text-[9px] uppercase" style={{ color: juz.isOverdue ? 'rgb(220,38,38)' : 'var(--p-text-55)' }}>
+                            {juz.isOverdue ? '⚠ Révision en retard' : 'Prochaine révision'}
+                          </div>
+                          <div className="text-xs font-medium flex items-center gap-1" style={{ color: juz.isOverdue ? 'rgb(220,38,38)' : 'var(--p-primary)' }}>
                             {formatSmartDate(juz.nextReview)} <ChevronRight className="w-3 h-3" />
                           </div>
                         </button>
