@@ -293,7 +293,7 @@ export default function MurajaChecklist({
                   style={{
                     background: section === 'rabt'
                       ? (daysPassed <= 7
-                        ? 'linear-gradient(135deg, #6D28D9, #7C3AED)'
+                        ? 'linear-gradient(135deg, #0D9488, #14B8A6)'
                         : 'linear-gradient(135deg, #B8960C, #D4AF37)')
                       : 'linear-gradient(135deg, #065F46, #10B981)',
                     color: '#FFFFFF',
