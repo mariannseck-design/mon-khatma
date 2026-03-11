@@ -1,22 +1,21 @@
 
 
-## Afficher uniquement la page du bloc (pas l'intervalle)
+# Diagnostic : 404 sur /quran-reader
 
-### Problème
-Le `pageMap` regroupe tous les versets d'une même sourate+phase, donnant un intervalle large (ex: "p. 11-16"). Chaque item de révision correspond à un seul bloc (une page), donc il faut afficher la page exacte de ce bloc.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Correction — `src/pages/MurjaPage.tsx`
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-Dans le `nextReviewsForCountdown` (lignes 266-280), remplacer le lookup via `pageMap` par un appel à `getExactVersePage(v.surah_number, v.verse_start)` pour obtenir la page exacte du début du bloc.
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-Comme `getExactVersePage` est asynchrone, transformer le `.map()` synchrone en résolution async :
-- Calculer les pages en parallèle avec `Promise.all`
-- Stocker le résultat dans un state dédié ou utiliser un `useEffect` au lieu du `useMemo`
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-**Alternative plus simple** : utiliser `getApproxVersePage` (synchrone, depuis `surahData.ts`) qui donne une bonne approximation — suffisant pour un label de page unique. Cela évite de rendre le memo asynchrone.
-
-Chaque item affichera alors `p. 14` au lieu de `p. 11-16`.
-
-### Fichier modifié
-- `src/pages/MurjaPage.tsx` — bloc `nextReviewsForCountdown`, remplacer le pageMap lookup par la page exacte du `verse_start`
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
