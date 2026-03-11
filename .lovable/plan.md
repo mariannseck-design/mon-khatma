@@ -1,21 +1,20 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Étendre le Mode Testeur aux utilisatrices VIP
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Problème
+Le mode testeur (bouton Skip) est actuellement réservé aux admins (`isAdmin`). Tu veux l'ouvrir à tous les accès complets (admin + VIP).
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Modifications
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+**1. `src/hooks/useDevMode.ts`** — Remplacer `isAdmin` par `hasFullAccess` partout :
+- Import `hasFullAccess` au lieu de `isAdmin` depuis `useAuth()`
+- Gate sur `hasFullAccess` dans le `useEffect`, `toggleDevMode` et le return
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+**2. `src/pages/ProfilPage.tsx`** — Afficher le toggle Dev Mode pour les VIP aussi :
+- Remplacer la condition `{isAdmin && (` par `{hasFullAccess && (`
+- Importer `hasFullAccess` depuis `useAuth()`
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+### Résultat
+Toute utilisatrice admin ou VIP (email dans `allowed_emails`) pourra activer le mode testeur et utiliser le bouton Skip dans les sessions Hifz et Mourad.
 
