@@ -357,6 +357,10 @@ export default function MurajaChecklist({
         const isRating = ratingFor === item.id;
         const daysPassed = section === 'rabt' ? getLiaisonDaysPassed(item.memorized_at, item.liaison_start_date) : 0;
         const itemColor = getItemColor(item);
+        const merged = (item as DisplayItem).mergedWith;
+        const displayName = merged
+          ? `${getSurahName(merged.surah_number)} + ${getSurahName(item.surah_number)}`
+          : getSurahName(item.surah_number);
 
         return (
           <div key={item.id}>
@@ -392,7 +396,7 @@ export default function MurajaChecklist({
                         fontWeight: isChecked ? 800 : 700,
                       }}
                     >
-                      {getSurahName(item.surah_number)}
+                      {displayName}
                     </p>
                     {pageMap[item.id] && (
                       <button
@@ -406,13 +410,19 @@ export default function MurajaChecklist({
                         title="Ouvrir dans le lecteur"
                       >
                         <FileText className="h-2.5 w-2.5" />
-                        {pageMap[item.id]}
+                        {merged ? `${pageMap[merged.id] || 1}-` : ''}{pageMap[item.id]}
                       </button>
                     )}
                   </div>
+                  {merged && (
+                    <div className="flex items-center gap-1 text-xs font-medium" style={{ color: 'var(--p-text-60)' }}>
+                      <BookOpen className="h-2.5 w-2.5 flex-shrink-0" style={{ color: itemColor }} />
+                      <span>{getSurahName(merged.surah_number)} {merged.verse_start} → {merged.verse_end}</span>
+                    </div>
+                  )}
                   <div className="flex items-center gap-1 text-xs font-medium" style={{ color: 'var(--p-text-60)' }}>
                     <BookOpen className="h-2.5 w-2.5 flex-shrink-0" style={{ color: itemColor }} />
-                    <span>{item.verse_start} → {item.verse_end}</span>
+                    <span>{merged ? `${getSurahName(item.surah_number)} ` : ''}{item.verse_start} → {item.verse_end}</span>
                     {section === 'tour' && (
                       isChecked
                         ? <span className="ml-1 font-bold" style={{ color: '#10B981' }}>· Révision faite ✓</span>
@@ -443,7 +453,7 @@ export default function MurajaChecklist({
               {/* Validation button */}
               {!isChecked && !isRating && (
                 <motion.button
-                  onClick={() => handleValidate(item.id)}
+                  onClick={() => handleValidate(item.id, merged?.id)}
                   className="w-full mt-2.5 flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-bold transition-all"
                   style={{
                     background: section === 'rabt'
