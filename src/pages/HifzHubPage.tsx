@@ -232,18 +232,54 @@ export default function HifzHubPage() {
           </Link>
         </motion.div>
 
-        {/* Méthode Oustaz Mourad — admin only */}
-        {isAdmin && (
+        {/* Méthode Oustaz Mourad — admin only active */}
         <motion.div variants={itemVariants}>
-          <Link to="/methode-mourad" className="block">
+          {isAdmin ? (
+            <Link to="/methode-mourad" className="block">
+              <motion.div
+                className="relative overflow-hidden rounded-[2rem] p-7 group"
+                style={{
+                  background: `linear-gradient(135deg, ${COLORS.emerald} 0%, ${COLORS.emeraldLight} 100%)`,
+                  border: `2px solid ${COLORS.gold}40`,
+                  boxShadow: `0 8px 32px -8px ${COLORS.emerald}50`,
+                }}
+                whileTap={{ scale: 0.97 }}
+              >
+                <div className="absolute -bottom-4 -right-4 w-32 h-32 rounded-full blur-xl" style={{ background: `${COLORS.gold}10` }} />
+                <div className="relative z-10 flex items-center gap-5">
+                  <div
+                    className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0"
+                    style={{ background: `${COLORS.gold}22`, border: `1px solid ${COLORS.gold}35` }}
+                  >
+                    {activeMouradSession ? (
+                      <Play className="h-7 w-7" style={{ color: COLORS.goldAccent }} />
+                    ) : (
+                      <BookHeart className="h-7 w-7" style={{ color: COLORS.goldAccent }} />
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <h3
+                      className="text-sm font-bold tracking-[0.08em] uppercase"
+                      style={{ fontFamily: "'Inter', sans-serif", color: COLORS.goldAccent }}
+                    >
+                      {activeMouradSession ? '▶️ Continuer ma session' : 'Méthode Oustaz Mourad + Tikrar + Istiqâmah'}
+                    </h3>
+                    <p className="text-white/70 text-sm mt-1">
+                      {activeMouradSession
+                        ? `${activeMouradSession.surahName} — ${activeMouradSession.phaseName}`
+                        : 'Recommandé pour débutant'}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            </Link>
+          ) : (
             <motion.div
-              className="relative overflow-hidden rounded-[2rem] p-7 group"
+              className="relative overflow-hidden rounded-[2rem] p-7 opacity-60 cursor-not-allowed"
               style={{
                 background: `linear-gradient(135deg, ${COLORS.emerald} 0%, ${COLORS.emeraldLight} 100%)`,
-                border: `2px solid ${COLORS.gold}40`,
-                boxShadow: `0 8px 32px -8px ${COLORS.emerald}50`,
+                border: `2px solid ${COLORS.gold}20`,
               }}
-              whileTap={{ scale: 0.97 }}
             >
               <div className="absolute -bottom-4 -right-4 w-32 h-32 rounded-full blur-xl" style={{ background: `${COLORS.gold}10` }} />
               <div className="relative z-10 flex items-center gap-5">
@@ -251,30 +287,21 @@ export default function HifzHubPage() {
                   className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0"
                   style={{ background: `${COLORS.gold}22`, border: `1px solid ${COLORS.gold}35` }}
                 >
-                  {activeMouradSession ? (
-                    <Play className="h-7 w-7" style={{ color: COLORS.goldAccent }} />
-                  ) : (
-                    <BookHeart className="h-7 w-7" style={{ color: COLORS.goldAccent }} />
-                  )}
+                  <BookHeart className="h-7 w-7" style={{ color: COLORS.goldAccent }} />
                 </div>
                 <div className="flex-1">
                   <h3
                     className="text-sm font-bold tracking-[0.08em] uppercase"
                     style={{ fontFamily: "'Inter', sans-serif", color: COLORS.goldAccent }}
                   >
-                    {activeMouradSession ? '▶️ Continuer ma session' : 'Méthode Oustaz Mourad + Tikrar + Istiqâmah'}
+                    Méthode Oustaz Mourad + Tikrar + Istiqâmah
                   </h3>
-                  <p className="text-white/70 text-sm mt-1">
-                    {activeMouradSession
-                      ? `${activeMouradSession.surahName} — ${activeMouradSession.phaseName}`
-                      : 'Recommandé pour débutant'}
-                  </p>
+                  <p className="text-white/70 text-sm mt-1">Bientôt disponible in shaa Allah</p>
                 </div>
               </div>
             </motion.div>
-          </Link>
+          )}
         </motion.div>
-        )}
 
         {/* Muraja'a */}
         <motion.div variants={itemVariants}>
