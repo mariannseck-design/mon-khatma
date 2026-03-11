@@ -446,7 +446,7 @@ export default function AccueilPage() {
                     </div>
                     <div className="flex-1">
                       <h3
-                        className="text-base font-bold tracking-wide"
+                        className="text-base font-bold tracking-[0.08em] uppercase"
                         style={{ fontFamily: "'Inter', sans-serif", color: COLORS.goldAccent }}
                       >
                         Méthode Oustaz Mourad
