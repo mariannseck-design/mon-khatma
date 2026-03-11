@@ -29,6 +29,7 @@ import DhikrPage from "./pages/DhikrPage";
 import SourcesDeLumierePage from "./pages/SourcesDeLumierePage";
 import DouasPage from "./pages/DouasPage";
 import FavorisPage from "./pages/FavorisPage";
+import MethodeMouradPage from "./pages/MethodeMouradPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
