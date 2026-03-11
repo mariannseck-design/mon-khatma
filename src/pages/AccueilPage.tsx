@@ -20,7 +20,7 @@ import DefisCommunityCounter from '@/components/defis/DefisCommunityCounter';
 import FavoriteVersesSection from '@/components/favoris/FavoriteVersesSection';
 import { useDailyNotification } from '@/hooks/useDailyNotification';
 import { usePushSubscription } from '@/hooks/usePushSubscription';
-import DailyQuote from '@/components/accueil/DailyQuote';
+
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { toast } from 'sonner';
 
