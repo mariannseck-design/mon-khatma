@@ -1,18 +1,21 @@
 
 
-## Deux améliorations pour la section Ar-Rabt
+# Diagnostic : 404 sur /quran-reader
 
-### 1. Tri par numéro de page (ordre croissant)
-**`src/components/muraja/MurajaChecklist.tsx`** :
-- Trier les `items` par page Mushaf via `pageMap` avant le rendu. Une fois les pages résolues, créer une copie triée : les items avec page connue sont triés par page croissante, les autres restent à la fin.
-- Cela permet de réciter page 11, 12, 13 avant page 16, quel que soit le jour de liaison.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### 2. Couleur distincte pour les toutes dernières mémorisations (Jour 1-7/30)
-**`src/components/muraja/MurajaChecklist.tsx`** :
-- Pour les items rabt dont `daysPassed <= 7` (premiere semaine de liaison), utiliser une bordure gauche et un bouton d'une couleur différente : un bleu-violet doux (`#7C3AED`) au lieu du doré, signalant visuellement "memorisation de cette semaine".
-- Les items plus anciens (jour 8-30) gardent le doré moutarde habituel.
-- Le badge page et l'icone BookOpen suivent la meme logique de couleur.
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-### Fichier modifie
-- `src/components/muraja/MurajaChecklist.tsx` uniquement
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
+
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

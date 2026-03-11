@@ -110,9 +110,20 @@ export default function MurajaChecklist({
     setRatingFor(null);
   };
 
-  const borderLeftColor = section === 'rabt' ? '#D4AF37' : '#10B981';
+  // Sort items by Mushaf page number (ascending) when pageMap is available
+  const sortedItems = [...items].sort((a, b) => {
+    const pageA = pageMap[a.id] ?? Infinity;
+    const pageB = pageMap[b.id] ?? Infinity;
+    return pageA - pageB;
+  });
 
-  if (items.length === 0) {
+  const getItemColor = (item: ChecklistItem) => {
+    if (section !== 'rabt') return '#10B981';
+    const daysPassed = getLiaisonDaysPassed(item.liaison_start_date);
+    return daysPassed <= 7 ? '#7C3AED' : '#D4AF37';
+  };
+
+  if (sortedItems.length === 0) {
     if (section === 'tour' && hasTourBlocks) {
       return (
         <div
@@ -186,10 +197,11 @@ export default function MurajaChecklist({
         </div>
       )}
 
-      {items.map((item) => {
+      {sortedItems.map((item) => {
         const isChecked = checkedIds.includes(item.id);
         const isRating = ratingFor === item.id;
         const daysPassed = section === 'rabt' ? getLiaisonDaysPassed(item.liaison_start_date) : 0;
+        const itemColor = getItemColor(item);
 
         return (
           <div key={item.id}>
@@ -198,7 +210,7 @@ export default function MurajaChecklist({
               style={{
                 background: isChecked ? 'var(--p-card-active)' : 'var(--p-card)',
                 border: '1px solid var(--p-border)',
-                borderLeft: `3px solid ${borderLeftColor}`,
+                borderLeft: `3px solid ${itemColor}`,
                 opacity: isChecked ? 0.8 : 1,
               }}
             >
@@ -207,8 +219,8 @@ export default function MurajaChecklist({
                 <motion.div
                   className="w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0"
                   style={{
-                    background: isChecked ? borderLeftColor : 'transparent',
-                    border: `2px solid ${isChecked ? borderLeftColor : 'var(--p-checkbox-border)'}`,
+                    background: isChecked ? itemColor : 'transparent',
+                    border: `2px solid ${isChecked ? itemColor : 'var(--p-checkbox-border)'}`,
                   }}
                   animate={isChecked ? { scale: [1, 1.2, 1] } : {}}
                   transition={{ type: 'spring', stiffness: 400, damping: 15 }}
@@ -232,9 +244,9 @@ export default function MurajaChecklist({
                         onClick={(e) => { e.stopPropagation(); openInReader(item.id); }}
                         className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-md text-[10px] font-semibold transition-colors"
                         style={{
-                          background: section === 'rabt' ? 'rgba(212, 175, 55, 0.1)' : 'rgba(16, 185, 129, 0.1)',
-                          color: borderLeftColor,
-                          border: `1px solid ${section === 'rabt' ? 'rgba(212, 175, 55, 0.2)' : 'rgba(16, 185, 129, 0.2)'}`,
+                          background: `color-mix(in srgb, ${itemColor} 10%, transparent)`,
+                          color: itemColor,
+                          border: `1px solid color-mix(in srgb, ${itemColor} 20%, transparent)`,
                         }}
                         title="Ouvrir dans le lecteur"
                       >
@@ -244,7 +256,7 @@ export default function MurajaChecklist({
                     )}
                   </div>
                   <div className="flex items-center gap-1 text-xs font-medium" style={{ color: 'var(--p-text-60)' }}>
-                    <BookOpen className="h-2.5 w-2.5 flex-shrink-0" style={{ color: borderLeftColor }} />
+                    <BookOpen className="h-2.5 w-2.5 flex-shrink-0" style={{ color: itemColor }} />
                     <span>{item.verse_start} → {item.verse_end}</span>
                     {section === 'tour' && (
                       isChecked
@@ -280,12 +292,12 @@ export default function MurajaChecklist({
                   className="w-full mt-2.5 flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-bold transition-all"
                   style={{
                     background: section === 'rabt'
-                      ? 'linear-gradient(135deg, #B8960C, #D4AF37)'
+                      ? (daysPassed <= 7
+                        ? 'linear-gradient(135deg, #6D28D9, #7C3AED)'
+                        : 'linear-gradient(135deg, #B8960C, #D4AF37)')
                       : 'linear-gradient(135deg, #065F46, #10B981)',
                     color: '#FFFFFF',
-                    boxShadow: section === 'rabt'
-                      ? '0 2px 8px -2px rgba(212, 175, 55, 0.4)'
-                      : '0 2px 8px -2px rgba(16, 185, 129, 0.4)',
+                    boxShadow: `0 2px 8px -2px color-mix(in srgb, ${itemColor} 40%, transparent)`,
                   }}
                   whileTap={{ scale: 0.97 }}
                 >
