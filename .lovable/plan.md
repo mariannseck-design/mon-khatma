@@ -1,28 +1,21 @@
 
 
-## Différencier les cartes verrouillées (futurs) des cartes terminées (aujourd'hui)
+# Diagnostic : 404 sur /quran-reader
 
-Le code actuel dans `renderCard` (ligne 149) applique `opacity: 0.45` aux cartes verrouillées et `opacity: 0.5` aux cartes terminées — visuellement quasi identique. L'icône Lock est déjà présente (ligne 170) mais l'apparence globale reste trop similaire.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-**Fichier** : `src/pages/MurjaCalendarPage.tsx`, lignes 144-152
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-Modifier les styles inline du `motion.button` :
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-```tsx
-style={{
-  background: locked ? 'color-mix(in srgb, var(--p-card) 85%, rgba(128,128,128,0.15))' : 'var(--p-card)',
-  border: '1px solid var(--p-border)',
-  borderLeftWidth: '3px',
-  borderLeftColor: color,
-  opacity: locked ? 0.7 : isChecked ? 0.5 : 1,
-  pointerEvents: locked || isChecked ? 'none' : 'auto',
-  cursor: locked ? 'not-allowed' : isChecked ? 'default' : 'pointer',
-  filter: locked ? 'grayscale(40%)' : 'none',
-}}
-```
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-Changements :
-- **Cartes verrouillées** : opacity `0.7` (au lieu de `0.45`), fond légèrement grisé, grayscale renforcé à 40%. Elles restent visibles mais clairement "en attente".
-- **Cartes terminées** : inchangées (`opacity: 0.5`, coche verte/dorée).
-- L'icône Lock et le `pointer-events: none` / `cursor: not-allowed` sont déjà en place et restent actifs.
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
