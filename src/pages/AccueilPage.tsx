@@ -573,40 +573,6 @@ export default function AccueilPage() {
                 </motion.div>
               </Link>
             </motion.div>
-
-            {/* ═══ MES VERSETS FAVORIS ═══ */}
-            <motion.div variants={itemVariants}>
-              <FavoriteVersesSection />
-            </motion.div>
-
-            {/* ═══ NOS DÉFIS ═══ */}
-            <motion.div variants={itemVariants}>
-              <div className="flex items-center justify-between mb-3 px-1">
-                <h3
-                  className="text-sm font-bold tracking-[0.1em] uppercase"
-                  style={{ fontFamily: "'Inter', sans-serif", color: COLORS.emerald }}
-                >
-                  Nos Défis
-                </h3>
-              </div>
-              <div className="space-y-4">
-                {!hasFullAccess && (
-                  <p className="text-xs text-center font-medium" style={{ color: COLORS.gold }}>
-                    Lancement après le Ramadan 🌸
-                  </p>
-                )}
-                <DefiAlMulk disabled={!hasFullAccess} />
-                <DefiAlKahf disabled={!hasFullAccess} />
-                <DefiAlBaqara disabled={!hasFullAccess} />
-                <DefisCommunityCounter />
-              </div>
-            </motion.div>
-
-            {/* Espace Communauté */}
-            <motion.div variants={itemVariants}>
-              <Link to="/cercle" className="block">
-                <motion.div
-                  className="relative overflow-hidden rounded-[2rem] p-7 group"
                   style={{
                     background: `linear-gradient(135deg, ${COLORS.emerald} 0%, ${COLORS.emeraldLight} 100%)`,
                     border: `2px solid ${COLORS.gold}35`,
