@@ -1,21 +1,21 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Mise en page des cartes Juz
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Problème
+Quand il n'y a qu'un seul Juz actif, la carte est petite et coincée dans un coin de la grille 2 colonnes. Le bouton "Voir tous les Juz" est au-dessus, séparé de la carte.
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Changements prévus
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+**1. Carte Juz active : pleine largeur**
+- Quand une carte Juz active est affichée (non expanded), elle occupe toute la largeur (`col-span-2 sm:col-span-3`) au lieu d'une seule colonne
+- Le contenu interne s'adapte : cercle de progression plus grand (80px), texte plus lisible
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+**2. Déplacer "Voir tous les Juz" sous les cartes actives**
+- Retirer le toggle du header de section
+- Le placer en bas, après les cartes actives, sous forme de bouton centré
+- Le titre "Mon Parcours par Juz" reste seul en haut
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+### Fichier modifié
+- `src/pages/HifzSuiviPage.tsx` — layout grille + repositionnement du toggle
 
