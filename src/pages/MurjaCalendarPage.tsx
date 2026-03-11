@@ -230,7 +230,7 @@ export default function MurjaCalendarPage() {
   };
 
   return (
-    <AppLayout title="Muraja'a — Calendrier" hideNav bgClassName="bg-gradient-muraja">
+    <AppLayout title="Muraja'a" hideNav bgClassName="bg-gradient-muraja">
       <div className="max-w-md mx-auto px-4 py-5 space-y-4" style={{ backgroundColor: 'var(--p-bg)', minHeight: '100vh' }}>
         {/* Header */}
         <div className="flex items-center gap-3">
