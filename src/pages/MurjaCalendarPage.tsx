@@ -168,6 +168,7 @@ export default function MurjaCalendarPage() {
         });
       }
       setStreak(newStreak);
+      setLongestStreak(newLongest);
     })();
   }, [allDayChecked, user?.id]);
 
