@@ -80,7 +80,7 @@ function CircleProgress({ percentage, size = 72 }: { percentage: number; size?: 
   );
 }
 
-export default function HifzSuiviTestPage() {
+export default function HifzSuiviPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [memorized, setMemorized] = useState<MemorizedVerse[]>([]);
@@ -128,7 +128,6 @@ export default function HifzSuiviTestPage() {
         return s.startPage <= range.end && surahEndPage >= range.start;
       });
 
-      // Use real verse count from surah metadata
       let totalVerses = 0;
       for (const s of juzSurahs) {
         totalVerses += s.versesCount;
@@ -205,7 +204,7 @@ export default function HifzSuiviTestPage() {
 
   if (loading) {
     return (
-      <AppLayout title="Mon Suivi Hifz v2">
+      <AppLayout title="Mon Suivi Hifz">
         <div className="flex items-center justify-center py-20">
           <div className="w-8 h-8 border-4 rounded-full animate-spin" style={{ borderColor: 'var(--p-primary)', borderTopColor: 'transparent' }} />
         </div>
@@ -214,14 +213,14 @@ export default function HifzSuiviTestPage() {
   }
 
   return (
-    <AppLayout title="Mon Suivi Hifz v2" hideNav bgClassName="bg-[var(--p-bg)]">
+    <AppLayout title="Mon Suivi Hifz" hideNav bgClassName="bg-[var(--p-bg)]">
       {/* Header */}
       <div className="flex items-center gap-3 pt-4 pb-6">
         <button onClick={() => navigate(-1)} className="transition-colors" style={{ color: 'var(--p-primary)' }}>
           <ArrowLeft className="w-5 h-5" />
         </button>
         <h1 className="text-xl font-bold tracking-wide" style={{ color: 'var(--p-text)' }}>
-          📖 Vue par Juz
+          📖 Mon Suivi Hifz
         </h1>
       </div>
 
@@ -260,7 +259,7 @@ export default function HifzSuiviTestPage() {
       {/* Toggle + Juz Grid */}
       <div className="flex items-center justify-between mb-3">
         <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--p-text-55)' }}>
-          Détail par Juz
+          Mon Parcours par Juz
         </span>
         <button
           onClick={() => setShowAllJuz(!showAllJuz)}

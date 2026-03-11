@@ -24,7 +24,6 @@ import ParametresPage from "./pages/ParametresPage";
 import HifzPage from "./pages/HifzPage";
 import MurjaCalendarPage from "./pages/MurjaCalendarPage";
 import HifzSuiviPage from "./pages/HifzSuiviPage";
-import HifzSuiviTestPage from "./pages/HifzSuiviTestPage";
 
 import DhikrPage from "./pages/DhikrPage";
 import SourcesDeLumierePage from "./pages/SourcesDeLumierePage";
