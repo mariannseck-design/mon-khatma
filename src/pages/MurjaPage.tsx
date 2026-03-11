@@ -529,14 +529,6 @@ export default function MurjaPage() {
             {/* Countdown */}
             <MurajaCountdown allChecked={allDailyChecked} nextReviews={nextReviewsForCountdown} />
 
-  const todayReviewedTourItems = useMemo(() => {
-    const today = getTodayKey();
-    return allVerses.filter(v =>
-      (v.liaison_status === 'tour' || !v.liaison_status) &&
-      v.last_reviewed_at?.startsWith(today)
-    );
-  }, [allVerses]);
-
 
             {/* Progress bar */}
             {totalBlocks > 0 && (
