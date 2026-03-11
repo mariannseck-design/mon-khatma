@@ -1,21 +1,21 @@
 
 
-## Correction du compteur sur les jours futurs
+# Diagnostic : 404 sur /quran-reader
 
-**Problème** : `checkedIds` stocke les IDs cochés aujourd'hui dans localStorage. Comme les items Ar-Rabt sont les mêmes chaque jour, quand on regarde un jour futur, le compteur affiche "9/10" car les mêmes IDs sont trouvés dans `checkedIds`.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-**Solution** : Sur les jours futurs (`isFutureDay`), forcer `totalDone = 0` car aucune révision ne peut être faite à l'avance.
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-**Fichier** : `src/pages/MurjaCalendarPage.tsx`, ligne 108
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-Remplacer :
-```tsx
-const totalDone = doneRabt.length + doneTour.length;
-```
-Par :
-```tsx
-const totalDone = isFutureDay ? 0 : doneRabt.length + doneTour.length;
-```
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-Cela garantit que le compteur affiche "0/X terminés" pour les jours à venir.
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
