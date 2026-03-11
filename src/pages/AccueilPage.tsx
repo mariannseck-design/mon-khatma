@@ -16,11 +16,11 @@ import DefiAlMulk from '@/components/defis/DefiAlMulk';
 import DefiAlKahf from '@/components/defis/DefiAlKahf';
 import DefiAlBaqara from '@/components/defis/DefiAlBaqara';
 import DefisCommunityCounter from '@/components/defis/DefisCommunityCounter';
-import HifzCommunityCounter from '@/components/hifz/HifzCommunityCounter';
+
 import FavoriteVersesSection from '@/components/favoris/FavoriteVersesSection';
 import { useDailyNotification } from '@/hooks/useDailyNotification';
 import { usePushSubscription } from '@/hooks/usePushSubscription';
-import DailyQuote from '@/components/accueil/DailyQuote';
+
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { toast } from 'sonner';
 
@@ -72,84 +72,16 @@ export default function AccueilPage() {
   const [todayProgress, setTodayProgress] = useState(0);
   const [weeklyStreak, setWeeklyStreak] = useState(0);
   const [readingGoal, setReadingGoal] = useState<{ first_name: string; daily_pages: number } | null>(null);
-  const [activeHifzSession, setActiveHifzSession] = useState<{ surahName: string; stepName: string } | null>(null);
-  const [pendingReviews, setPendingReviews] = useState(0);
-  const [hasStartedHifz, setHasStartedHifz] = useState(false);
 
-  const STEP_NAMES = ['Intention', 'Réveil', 'Imprégnation', 'Istiqâmah', 'Validation'];
+
 
   useEffect(() => {
     if (user) {
       fetchProfile();
       fetchProgress();
       fetchReadingGoal();
-      fetchPendingReviews();
     }
-    // Check for active hifz session (localStorage first, then DB)
-    detectActiveHifzSession();
   }, [user]);
-
-  const fetchPendingReviews = async () => {
-    if (!user) return;
-    try {
-      const today = new Date().toISOString().split('T')[0];
-      const { count } = await supabase
-        .from('hifz_memorized_verses')
-        .select('*', { count: 'exact', head: true })
-        .eq('user_id', user.id)
-        .lte('next_review_date', today);
-      setPendingReviews(count || 0);
-
-      // Check if user has any memorized verses at all
-      const { count: totalCount } = await supabase
-        .from('hifz_memorized_verses')
-        .select('*', { count: 'exact', head: true })
-        .eq('user_id', user.id);
-      setHasStartedHifz((totalCount || 0) > 0);
-    } catch {
-      // ignore
-    }
-  };
-
-  const detectActiveHifzSession = async () => {
-    try {
-      const raw = localStorage.getItem('hifz_active_session');
-      if (raw) {
-        const data = JSON.parse(raw);
-        if (data.session && typeof data.step === 'number' && data.step >= 0 && data.step <= 4) {
-          if (Date.now() - (data.ts || 0) < 24 * 60 * 60 * 1000) {
-            const surahData = await import('@/lib/surahData');
-            const surah = surahData.SURAHS.find((s: any) => s.number === data.session.surahNumber);
-            setActiveHifzSession({
-              surahName: surah?.name || `Sourate ${data.session.surahNumber}`,
-              stepName: STEP_NAMES[data.step] || `Étape ${data.step}`,
-            });
-            return;
-          }
-        }
-      }
-      if (user) {
-        const { data: dbSession } = await supabase
-          .from('hifz_sessions')
-          .select('surah_number, current_step')
-          .eq('user_id', user.id)
-          .is('completed_at', null)
-          .order('created_at', { ascending: false })
-          .limit(1)
-          .maybeSingle();
-        if (dbSession && dbSession.current_step >= 0 && dbSession.current_step <= 4) {
-          const surahData = await import('@/lib/surahData');
-          const surah = surahData.SURAHS.find((s: any) => s.number === dbSession.surah_number);
-          setActiveHifzSession({
-            surahName: surah?.name || `Sourate ${dbSession.surah_number}`,
-            stepName: STEP_NAMES[dbSession.current_step] || `Étape ${dbSession.current_step}`,
-          });
-        }
-      }
-    } catch {
-      // ignore
-    }
-  };
 
   const fetchReadingGoal = async () => {
     if (!user) return;
@@ -216,12 +148,6 @@ export default function AccueilPage() {
           <p className="text-muted-foreground text-base mt-1">{greeting()}</p>
         </motion.div>
 
-        {/* Citation du jour — uniquement si l'utilisateur a commencé la mémorisation */}
-        {hasStartedHifz && (
-          <motion.div variants={itemVariants}>
-            <DailyQuote />
-          </motion.div>
-        )}
 
         {/* EN-TÊTE FONDATEUR — Pages lues + Ma Tillawah fusionnées */}
         <motion.div variants={itemVariants}>
