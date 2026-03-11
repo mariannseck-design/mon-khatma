@@ -214,7 +214,7 @@ export default function MurjaPage() {
         return a.verseMin - b.verseMin || a.name.localeCompare(b.name);
       }),
     };
-  }, [allVerses]);
+  }, [allVerses, thirtyDaysCutoff]);
 
   const [pageMap, setPageMap] = useState<Record<string, { startPage: number; endPage: number }>>({});
   useEffect(() => {
