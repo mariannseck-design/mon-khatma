@@ -32,6 +32,7 @@ interface MurajaChecklistProps {
   hasTourBlocks?: boolean;
   firstArrivalDate?: string;
   nextTourReviews?: NextReview[];
+  checkedTourItems?: ChecklistItem[];
 }
 
 const RATINGS = [
