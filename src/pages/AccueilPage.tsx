@@ -350,21 +350,6 @@ export default function AccueilPage() {
           )}
         </motion.div>
 
-        {/* ═══ BARRE MA KHATMA ═══ */}
-        <motion.div variants={itemVariants}>
-          <div
-            className="rounded-2xl py-3 px-5 text-center"
-            style={{ background: COLORS.emerald }}
-          >
-            <span
-              className="text-sm font-bold tracking-[0.12em] uppercase text-white"
-              style={{ fontFamily: "'Inter', sans-serif" }}
-            >
-              Ma Khatma
-            </span>
-          </div>
-        </motion.div>
-
         {/* Ma Tillawah */}
 
         {/* ═══ MES VERSETS FAVORIS ═══ */}
