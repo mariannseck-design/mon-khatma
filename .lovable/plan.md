@@ -1,21 +1,22 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Remplacer "versets/ayats" par "pages" sur toute la page Suivi Hifz
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Changements
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+**1. `src/pages/HifzSuiviPage.tsx`**
+- Ligne 209 : `totalAyats` → `totalPages` = `Math.max(1, Math.round(totalAyats / 15))` (≈15 versets/page)
+- Ligne 244 : Label `'Ayats mémorisées'` → `'Pages mémorisées'`
+- Ligne 357 : `{juz.memorizedVerses} ayats mémorisées` → convertir en pages : `{Math.max(1, Math.round(juz.memorizedVerses / 15))} page(s) mémorisée(s)`
+- Passer `totalPages` au lieu de `totalAyats` au composant `HifzMilestoneCelebration`
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+**2. `src/components/hifz/HifzMilestoneCelebration.tsx`**
+- Renommer le prop `totalAyats` → `totalPages`
+- Adapter les seuils des milestones (10 ayats → 1 page, 50 → 3, 100 → 7, 250 → 17, 500 → 33, 1000 → 67)
+- Changer tous les labels : `"X ayats mémorisées"` → `"X pages mémorisées"`
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+**3. `src/components/hifz/HifzActivitySummary.tsx`** — déjà fait (pages), rien à changer.
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+### Fichiers hors scope (non visibles sur cette page)
+Les composants `HifzStep5Liaison`, `HifzStep6Tour`, `HifzDiagnostic`, `HifzConfig` contiennent aussi "verset" mais sont dans le tunnel de mémorisation, pas sur la page Suivi. Je les laisse intacts sauf demande contraire — "verset" reste le terme technique correct dans le contexte d'un exercice de mémorisation.
 
