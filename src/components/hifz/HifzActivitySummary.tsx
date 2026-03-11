@@ -141,7 +141,7 @@ export function HifzActivitySummary({ userId }: HifzActivitySummaryProps) {
         {[
           { emoji: '🔥', value: streak, label: `jour${streak !== 1 ? 's' : ''}` },
           { emoji: '📖', value: weekSessions, label: `session${weekSessions !== 1 ? 's' : ''}` },
-          { emoji: '✅', value: monthVerses, label: `verset${monthVerses !== 1 ? 's' : ''}` },
+          { emoji: '✅', value: weekVerses, label: `verset${weekVerses !== 1 ? 's' : ''}` },
         ].map((stat, i) => (
           <div
             key={i}
