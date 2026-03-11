@@ -604,7 +604,7 @@ export default function MurjaPage() {
                   <span className="text-xs font-bold" style={{ color: '#059669' }}>Consolidation</span>
                   <span className="text-[11px] font-bold" style={{ color: 'var(--p-text-60)' }}>· Révision espacée</span>
                   <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: 'rgba(16, 185, 129, 0.12)', color: '#059669' }}>
-                    {tourVerses.length}
+                    {tourVerses.length + todayReviewedTourItems.length}
                   </span>
                   <MurajaMethodModal defaultTab="sm2" />
                 </div>
