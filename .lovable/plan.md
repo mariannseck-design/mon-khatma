@@ -1,21 +1,35 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Bug : Les révisions en retard ne s'affichent pas
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Cause
+Dans `getItemsForDay`, le filtre utilise `next_review_date === dayKey` (correspondance exacte). Les items en retard (dont la `next_review_date` est antérieure à aujourd'hui) ne correspondent à aucun jour du calendrier et sont donc invisibles.
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+Le hook `useMurajaData` utilise `next_review_date <= today` pour inclure les items en retard, mais la page calendrier ne le fait pas.
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+### Correction — `src/pages/MurjaCalendarPage.tsx`
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+1. **`getItemsForDay`** : Pour le jour "aujourd'hui", inclure tous les items de consolidation dont `next_review_date <= todayKey` (en retard + du jour). Pour les autres jours, garder le filtre exact `=== dayKey`.
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+2. **`dayIndicators`** : Même logique — le point vert pour aujourd'hui doit aussi refléter les items en retard.
+
+### Changement concret
+
+```typescript
+// Ligne 67-71, remplacer :
+const getItemsForDay = (dayKey: string) => {
+  const rabt = rabtVerses;
+  const tour = dayKey === todayKey
+    ? allConsolidation.filter(v => v.next_review_date <= dayKey)
+    : allConsolidation.filter(v => v.next_review_date === dayKey);
+  return { rabt, tour };
+};
+```
+
+Et dans `dayIndicators` :
+```typescript
+hasTour: day.key === todayKey
+  ? allConsolidation.some(v => v.next_review_date <= day.key)
+  : allConsolidation.some(v => v.next_review_date === day.key),
+```
 
