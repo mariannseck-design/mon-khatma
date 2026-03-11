@@ -38,6 +38,7 @@ function getWeekDays(): { key: string; label: string; dayNum: number; isToday: b
 
 export default function MurjaCalendarPage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const {
     loading, allVerses, checkedIds, rabtVerses, tourVerses, thirtyDaysCutoff,
     handleRabtCheck, handleTourRate, handleTourCheck,
@@ -48,6 +49,24 @@ export default function MurjaCalendarPage() {
   const [selectedDay, setSelectedDay] = useState(todayKey);
   const [pageMap, setPageMap] = useState<Record<string, number>>({});
   const [ratingFor, setRatingFor] = useState<string | null>(null);
+  const [streak, setStreak] = useState(0);
+  const streakUpdatedRef = useRef(false);
+
+  // Fetch streak on mount
+  useEffect(() => {
+    if (!user?.id) return;
+    supabase
+      .from('hifz_streaks')
+      .select('current_streak, last_active_date')
+      .eq('user_id', user.id)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (data) {
+          setStreak(data.current_streak);
+          if (data.last_active_date === todayKey) streakUpdatedRef.current = true;
+        }
+      });
+  }, [user?.id]);
 
   const allItems = [...rabtVerses, ...tourVerses];
 
