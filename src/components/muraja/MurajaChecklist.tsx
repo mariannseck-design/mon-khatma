@@ -66,6 +66,7 @@ export default function MurajaChecklist({
   hasTourBlocks,
   firstArrivalDate,
   nextTourReviews,
+  checkedTourItems,
 }: MurajaChecklistProps) {
   const navigate = useNavigate();
   const [ratingFor, setRatingFor] = useState<string | null>(null);
