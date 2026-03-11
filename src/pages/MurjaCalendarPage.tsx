@@ -235,7 +235,7 @@ export default function MurjaCalendarPage() {
         {/* Header */}
         <div className="flex items-center gap-3">
           <button
-            onClick={() => navigate('/muraja')}
+            onClick={() => navigate('/accueil')}
             className="w-8 h-8 rounded-lg flex items-center justify-center"
             style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)' }}
           >
