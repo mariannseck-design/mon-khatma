@@ -214,7 +214,7 @@ export default function HifzSuiviPage() {
   const progressPct = goal ? Math.min((periodProgress / goal.goal_value) * 100, 100) : 0;
 
   // ── Global progress ──
-  const globalPct = totalVerses > 0 ? Math.min(totalVerses / 6236, 1) : 0;
+  const globalPct = pageCount > 0 ? Math.min(pageCount / 604, 1) : 0;
   const bigR = 70;
   const bigCirc = 2 * Math.PI * bigR;
   const bigOffset = bigCirc * (1 - globalPct);
@@ -269,8 +269,9 @@ export default function HifzSuiviPage() {
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
                   <span className="text-2xl font-bold" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--p-primary)' }}>
-                    {totalVerses}
+                    {pageCount}
                   </span>
+                  <span className="text-xs" style={{ color: 'var(--p-text-65)' }}>pages</span>
                 </div>
               </div>
               <span className="text-xs font-semibold mt-2" style={{ color: 'var(--p-text-65)' }}>
