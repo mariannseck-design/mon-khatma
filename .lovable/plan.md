@@ -1,20 +1,21 @@
 
 
-## Ajouter la sélection par page Mushaf dans HifzConfig
+# Diagnostic : 404 sur /quran-reader
 
-### Approche
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-Ajouter un toggle **Sourate / Page** en haut du formulaire. En mode "Page", remplacer le sélecteur de sourate et les champs versets par des champs **Page début** et **Page fin** (1-604). Une seule page est possible (même valeur début/fin).
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-Au clic sur "Commencer", les pages sont converties en surah/versets via `getPageAyahs` (déjà disponible dans `quranData.ts`), puis le `onStart` existant est appelé normalement. Si la plage couvre plusieurs sourates, on prend la première sourate trouvée sur la page de début.
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-### Modifications — `src/components/hifz/HifzConfig.tsx`
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-1. **Nouveau state** : `selectionMode: 'surah' | 'page'`, `startPage`, `endPage`
-2. **Toggle UI** : Deux boutons "Sourate" / "Page" stylés comme les niveaux de répétition (gold active)
-3. **Mode Page** : Affiche 2 champs numériques (Page début / Page fin, 1-604) au lieu du sélecteur de sourate + versets
-4. **Logique onStart** : En mode page, appel async à `getPageAyahs` pour résoudre la première sourate et la plage de versets de la page, puis appel `onStart({ surahNumber, startVerse, endVerse, repetitionLevel })`
-5. **Import** : Ajouter `getPageAyahs` depuis `@/lib/quranData`
-
-Aucun autre fichier modifié. Le reste du tunnel Hifz reçoit toujours le même format `{ surahNumber, startVerse, endVerse, repetitionLevel }`.
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
