@@ -312,7 +312,14 @@ export default function HifzSuiviTestPage() {
             >
               <div className="p-4">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-semibold" style={{ color: 'var(--p-primary)' }}>Juz {juz.juzNumber}</span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs font-semibold" style={{ color: 'var(--p-primary)' }}>Juz {juz.juzNumber}</span>
+                    {juz.isOverdue && (
+                      <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[9px] font-semibold bg-red-500/15 text-red-600">
+                        <AlertTriangle className="w-2.5 h-2.5" /> En retard
+                      </span>
+                    )}
+                  </div>
                   {expanded
                     ? <ChevronUp className="w-4 h-4" style={{ color: 'var(--p-primary)' }} />
                     : <ChevronDown className="w-4 h-4" style={{ color: 'var(--p-text-55)' }} />}
