@@ -17,7 +17,16 @@ interface Props {
 export default function HifzStep0Intention({ surahNumber, startVerse, endVerse, onNext, onBack, onPause }: Props) {
   const [translation, setTranslation] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [pageLabel, setPageLabel] = useState('');
   const surahName = SURAHS.find(s => s.number === surahNumber)?.name || '';
+
+  useEffect(() => {
+    getExactVersePage(surahNumber, startVerse).then(startP => {
+      getExactVersePage(surahNumber, endVerse).then(endP => {
+        setPageLabel(startP === endP ? `P.${startP}` : `P.${startP}-${endP}`);
+      });
+    });
+  }, [surahNumber, startVerse, endVerse]);
 
   useEffect(() => {
     const fetchTranslation = async () => {
