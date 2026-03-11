@@ -124,11 +124,6 @@ export default function HifzHubPage() {
     <AppLayout title="Hifz">
       <motion.div className="space-y-4 pb-6 pt-2" variants={containerVariants} initial="hidden" animate="visible">
 
-        {/* Community counter */}
-        <motion.div variants={itemVariants}>
-          <HifzCommunityCounter />
-        </motion.div>
-
         {/* Méthode Tikrar-ISTIQÂMAH */}
         <motion.div variants={itemVariants}>
           <Link to="/hifz" className="block">
