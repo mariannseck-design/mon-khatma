@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Brain, Mic, Check, Play, Pause, RotateCcw } from 'lucide-react';
 import { SURAHS } from '@/lib/surahData';
-import { getExactVersePage } from '@/lib/quranData';
+
 import { RECITERS } from '@/hooks/useQuranAudio';
 import { useVoiceRecorder } from '@/hooks/useVoiceRecorder';
 import MouradMushafToggle, { type MushafMode, getMouradMushafMode, setMouradMushafMode } from './MouradMushafToggle';
