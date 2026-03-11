@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AppLayout } from '@/components/layout/AppLayout';
-import { ArrowLeft, Check, Zap, ThumbsUp, Crown, BookOpen, Lock, ChevronDown, Sparkles } from 'lucide-react';
+import { ArrowLeft, Check, Zap, ThumbsUp, Crown, BookOpen, Lock, ChevronDown, Sparkles, Lightbulb } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useMurajaData, getSurahName, getLiaisonDaysPassed, MemorizedVerse } from '@/hooks/useMurajaData';
 import { getExactVersePage } from '@/lib/quranData';
