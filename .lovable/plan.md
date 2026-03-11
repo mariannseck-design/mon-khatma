@@ -1,21 +1,29 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Renommer les deux zones de la carte Hifz
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Modifications (AccueilPage.tsx, lignes 400-457)
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+**Zone 1 — "Espace Hifz" → "Méthode Tikrar-Istiqâmah"**
+- Ligne 421 : remplacer `'Espace Hifz'` par `'Méthode Tikrar-Istiqâmah'`
+- Ligne 426 : retirer le sous-titre `'Mémoriser le Noble Coran'` → laisser vide ou supprimer le `<p>` quand pas de session active
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+**Zone 2 — "Méthode Oustaz Mourad"**
+- Ligne 454-456 : remplacer le sous-titre `'Parcours guidé de mémorisation'` par `'Recommandé pour débutant'`
+- Pas d'autre changement
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+### Résultat visuel
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+```text
+┌──────────────────────────────────┐
+│  📖 Méthode Tikrar-Istiqâmah    │  → /hifz
+│     (pas de sous-titre)          │
+│──────────────────────────────────│
+│  💚 Méthode Oustaz Mourad        │  → /methode-mourad
+│     Recommandé pour débutant     │
+└──────────────────────────────────┘
+```
+
+### Fichier modifié
+`src/pages/AccueilPage.tsx` — 3 lignes changées
 
