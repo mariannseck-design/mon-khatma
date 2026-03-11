@@ -55,7 +55,7 @@ export default function HifzSuiviPage() {
   const { user } = useAuth();
   const [streak, setStreak] = useState({ current: 0, longest: 0, tours: 0 });
   const [totalVerses, setTotalVerses] = useState(0);
-  const [weeklyData, setWeeklyData] = useState<{ day: string; hifz: number; muraja: number; date: string }[]>([]);
+  const [weeklyData, setWeeklyData] = useState<{ day: string; hifz: number; muraja: number; date: string; surahs: { name: string; startVerse: number; endVerse: number; startPage: number; endPage: number }[] }[]>([]);
   const [loading, setLoading] = useState(true);
   const [goal, setGoal] = useState<HifzGoal | null>(null);
   const [periodProgress, setPeriodProgress] = useState(0);
