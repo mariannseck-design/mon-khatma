@@ -1,12 +1,21 @@
 
 
-## Diagnostic
+# Diagnostic : 404 sur /quran-reader
 
-La page d'accueil est maintenant `AuthPage` (page de connexion), qui **n'utilise pas `AppLayout`**. Or, le composant `InstallBanner` (la bannière d'installation PWA) est uniquement inclus dans `AppLayout`. Résultat : les utilisateurs non connectés ne voient plus la bannière d'installation.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-## Correction
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-**`src/pages/AuthPage.tsx`** : Ajouter `<InstallBanner />` en haut du rendu de la page, avant le contenu principal. Ainsi, la bannière d'installation (avec détection Android/iOS, bouton "Installer" sur Android, guide Safari sur iPhone) s'affiche aussi sur la page de connexion.
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-C'est un ajout de 2 lignes (import + composant).
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

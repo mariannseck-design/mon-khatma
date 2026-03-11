@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
+import { InstallBanner } from '@/components/pwa/InstallBanner';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
@@ -154,7 +155,9 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[hsl(40,33%,97%)] to-[hsl(140,20%,95%)] flex items-center justify-center p-6">
+    <div className="min-h-screen bg-gradient-to-b from-[hsl(40,33%,97%)] to-[hsl(140,20%,95%)] flex flex-col">
+      <InstallBanner />
+      <div className="flex-1 flex items-center justify-center p-6">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -232,6 +235,7 @@ export default function AuthPage() {
           Besoin d'aide ? Contacte-nous
         </a>
       </motion.div>
+      </div>
     </div>
   );
 }
