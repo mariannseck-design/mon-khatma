@@ -1,28 +1,21 @@
 
 
-# Afficher les versets Ar-Rabt pour les jours futurs
+# Diagnostic : 404 sur /quran-reader
 
-## Problème
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-`rabtVerses` dans `useMurajaData` filtre avec `< today`, donc les versets mémorisés aujourd'hui sont exclus. C'est correct pour aujourd'hui (J+1), mais quand on sélectionne un jour futur dans le calendrier, ces versets devraient apparaître car `liaison_start_date < jour_futur`.
-
-Le code `getItemsForDay` utilise toujours `rabtVerses` (filtré pour aujourd'hui) quel que soit le jour sélectionné.
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
 ## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-**Fichier** : `src/pages/MurjaCalendarPage.tsx`
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-Dans `getItemsForDay`, calculer les versets rabt dynamiquement en fonction du `dayKey` sélectionné au lieu d'utiliser le `rabtVerses` pré-filtré :
-
-```ts
-const getItemsForDay = (dayKey: string) => {
-  // Compute rabt for the specific day: memorized in last 30 days AND liaison_start_date < dayKey
-  const rabt = allVerses
-    .filter(v => v.memorized_at >= thirtyDaysCutoff && (v.liaison_start_date || v.memorized_at.split('T')[0]) < dayKey)
-    .sort((a, b) => a.surah_number - b.surah_number || a.verse_start - b.verse_start);
-  // ... rest unchanged
-};
-```
-
-Même correction pour `dayIndicators` : remplacer `rabtVerses.length > 0` par un calcul par jour.
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

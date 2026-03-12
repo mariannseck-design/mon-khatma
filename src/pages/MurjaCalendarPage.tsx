@@ -90,8 +90,14 @@ export default function MurjaCalendarPage() {
     return allVerses.filter(v => v.memorized_at < thirtyDaysCutoff);
   }, [allVerses, thirtyDaysCutoff]);
 
+  const getRabtForDay = (dayKey: string) => {
+    return allVerses
+      .filter(v => v.memorized_at >= thirtyDaysCutoff && (v.liaison_start_date || v.memorized_at.split('T')[0]) < dayKey)
+      .sort((a, b) => a.surah_number - b.surah_number || a.verse_start - b.verse_start);
+  };
+
   const getItemsForDay = (dayKey: string) => {
-    const rabt = rabtVerses;
+    const rabt = getRabtForDay(dayKey);
     const tourDue = dayKey === todayKey
       ? allConsolidation.filter(v => v.next_review_date <= dayKey)
       : allConsolidation.filter(v => v.next_review_date === dayKey);
@@ -109,15 +115,16 @@ export default function MurjaCalendarPage() {
   const dayIndicators = useMemo(() => {
     const map: Record<string, { hasRabt: boolean; hasTour: boolean }> = {};
     for (const day of weekDays) {
+      const dayRabt = allVerses.filter(v => v.memorized_at >= thirtyDaysCutoff && (v.liaison_start_date || v.memorized_at.split('T')[0]) < day.key);
       map[day.key] = {
-        hasRabt: rabtVerses.length > 0,
+        hasRabt: dayRabt.length > 0,
         hasTour: day.key === todayKey
           ? allConsolidation.some(v => v.next_review_date <= day.key)
           : allConsolidation.some(v => v.next_review_date === day.key),
       };
     }
     return map;
-  }, [weekDays, rabtVerses, allConsolidation]);
+  }, [weekDays, allVerses, thirtyDaysCutoff, allConsolidation]);
 
   const selectedItems = getItemsForDay(selectedDay);
   const isFutureDay = selectedDay > todayKey;
