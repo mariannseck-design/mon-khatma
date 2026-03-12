@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Volume2, Check, X, BookOpen, RefreshCw, Link, ChevronRight, Headphones } from 'lucide-react';
+import MiniRecorder from './MiniRecorder';
 import { useAuth } from '@/contexts/AuthContext';
 import { RECITERS, getAyahAudioUrl } from '@/hooks/useQuranAudio';
 import HifzMushafToggle, { getMushafMode, setMushafMode, type MushafMode } from '../HifzMushafToggle';
@@ -443,6 +444,8 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
             <div className="flex justify-center">
               <CircularCounter count={memoryCount} target={TARGET_REPS} color={isLiaison ? '#a78bfa' : '#d4af37'} />
             </div>
+
+            <MiniRecorder />
 
             <div className="flex items-center justify-center gap-3">
               <motion.button whileTap={{ scale: 0.95 }} onClick={handleMemoryCorrect}

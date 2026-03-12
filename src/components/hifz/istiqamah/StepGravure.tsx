@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Brain, Eye, EyeOff, Check } from 'lucide-react';
+import MiniRecorder from './MiniRecorder';
 import HifzMushafToggle, { getMushafMode, setMushafMode, type MushafMode } from '../HifzMushafToggle';
 import HifzMushafImage from '../HifzMushafImage';
 import { getVersesByRange, type LocalAyah } from '@/lib/quranData';
@@ -131,6 +132,9 @@ export default function StepGravure({ surahNumber, verseStart, verseEnd, verseLa
           </p>
         </motion.div>
       )}
+
+      {/* Mini recorder */}
+      <MiniRecorder />
 
       {/* Interactive circular counter */}
       <div className="flex justify-center">
