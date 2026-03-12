@@ -1,19 +1,10 @@
 import { useState, useEffect } from 'react';
-import { BookOpen, ChevronDown, Play } from 'lucide-react';
+import { ChevronDown, Play } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { SURAHS } from '@/lib/surahData';
 import { findNextStartingPoint } from '@/lib/hifzUtils';
 import { getPageAyahs } from '@/lib/quranData';
 import { useAuth } from '@/contexts/AuthContext';
-
-const REPETITION_LEVELS = [
-  { value: 15, label: 'Hifz 15', subtitle: 'Niveau Découverte', desc: 'Un rythme doux, idéal pour débuter ou pour les journées très chargées.' },
-  { value: 20, label: 'Hifz 20', subtitle: 'Niveau Régulier', desc: 'Le juste équilibre pour une progression constante et harmonieuse.' },
-  { value: 25, label: 'Hifz 25', subtitle: 'Niveau Soutenu', desc: 'Une intensité renforcée pour mieux fixer les versets complexes.' },
-  { value: 30, label: 'Hifz 30', subtitle: 'Niveau Intense', desc: 'Un engagement profond pour une mémorisation qui s\'ancre durablement dans le cœur.' },
-  { value: 35, label: 'Hifz 35', subtitle: 'Niveau Maîtrise', desc: 'Une préparation exigeante pour atteindre une fluidité de récitation exemplaire.' },
-  { value: 40, label: 'Hifz 40', subtitle: 'Niveau Expert', desc: 'L\'ancrage total. La voie de l\'excellence pour graver chaque lettre de façon indélébile.' },
-];
 
 interface HifzConfigProps {
   onStart: (config: { surahNumber: number; startVerse: number; endVerse: number; repetitionLevel: number }) => void;
@@ -27,7 +18,6 @@ export default function HifzConfig({ onStart }: HifzConfigProps) {
   const [endVerse, setEndVerse] = useState(6);
   const [startPage, setStartPage] = useState(1);
   const [endPage, setEndPage] = useState(1);
-  const [repetitionLevel, setRepetitionLevel] = useState(20);
   const [showSurahList, setShowSurahList] = useState(false);
   const [suggestedPoint, setSuggestedPoint] = useState<string | null>(null);
 
@@ -58,13 +48,13 @@ export default function HifzConfig({ onStart }: HifzConfigProps) {
       const firstAyah = allAyahs[0];
       const lastAyah = allAyahs[allAyahs.length - 1];
       if (firstAyah.surah.number === lastAyah.surah.number) {
-        onStart({ surahNumber: firstAyah.surah.number, startVerse: firstAyah.numberInSurah, endVerse: lastAyah.numberInSurah, repetitionLevel });
+        onStart({ surahNumber: firstAyah.surah.number, startVerse: firstAyah.numberInSurah, endVerse: lastAyah.numberInSurah, repetitionLevel: 40 });
       } else {
         const firstSurahAyahs = allAyahs.filter(a => a.surah.number === firstAyah.surah.number);
-        onStart({ surahNumber: firstAyah.surah.number, startVerse: firstSurahAyahs[0].numberInSurah, endVerse: firstSurahAyahs[firstSurahAyahs.length - 1].numberInSurah, repetitionLevel });
+        onStart({ surahNumber: firstAyah.surah.number, startVerse: firstSurahAyahs[0].numberInSurah, endVerse: firstSurahAyahs[firstSurahAyahs.length - 1].numberInSurah, repetitionLevel: 40 });
       }
     } else {
-      onStart({ surahNumber, startVerse, endVerse, repetitionLevel });
+      onStart({ surahNumber, startVerse, endVerse, repetitionLevel: 40 });
     }
   };
 
@@ -266,37 +256,6 @@ export default function HifzConfig({ onStart }: HifzConfigProps) {
           </p>
         </div>
       )}
-
-      {/* Repetition level */}
-      <div className="space-y-3">
-        <p className="text-white/50 text-xs uppercase tracking-wider">Niveau d'ancrage</p>
-        <div className="grid grid-cols-3 gap-2">
-          {REPETITION_LEVELS.map(level => (
-            <button
-              key={level.value}
-              onClick={() => setRepetitionLevel(level.value)}
-              className="rounded-xl p-3 text-center transition-all"
-              style={{
-                background: repetitionLevel === level.value
-                  ? 'rgba(212,175,55,0.25)'
-                  : 'rgba(255,255,255,0.06)',
-                border: `1px solid ${repetitionLevel === level.value ? 'rgba(212,175,55,0.6)' : 'rgba(255,255,255,0.1)'}`,
-              }}
-            >
-              <p className="text-white font-bold text-sm">{level.label}</p>
-              <p className="text-white/40 text-[10px]">{level.subtitle}</p>
-            </button>
-          ))}
-        </div>
-        <motion.p
-          key={repetitionLevel}
-          initial={{ opacity: 0, y: 5 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-white/60 text-xs text-center italic px-4"
-        >
-          {REPETITION_LEVELS.find(l => l.value === repetitionLevel)?.desc}
-        </motion.p>
-      </div>
 
       {/* Start button */}
       <motion.button
