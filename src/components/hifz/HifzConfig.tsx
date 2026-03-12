@@ -1,19 +1,10 @@
 import { useState, useEffect } from 'react';
-import { BookOpen, ChevronDown, Play } from 'lucide-react';
+import { ChevronDown, Play } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { SURAHS } from '@/lib/surahData';
 import { findNextStartingPoint } from '@/lib/hifzUtils';
 import { getPageAyahs } from '@/lib/quranData';
 import { useAuth } from '@/contexts/AuthContext';
-
-const REPETITION_LEVELS = [
-  { value: 15, label: 'Hifz 15', subtitle: 'Niveau Découverte', desc: 'Un rythme doux, idéal pour débuter ou pour les journées très chargées.' },
-  { value: 20, label: 'Hifz 20', subtitle: 'Niveau Régulier', desc: 'Le juste équilibre pour une progression constante et harmonieuse.' },
-  { value: 25, label: 'Hifz 25', subtitle: 'Niveau Soutenu', desc: 'Une intensité renforcée pour mieux fixer les versets complexes.' },
-  { value: 30, label: 'Hifz 30', subtitle: 'Niveau Intense', desc: 'Un engagement profond pour une mémorisation qui s\'ancre durablement dans le cœur.' },
-  { value: 35, label: 'Hifz 35', subtitle: 'Niveau Maîtrise', desc: 'Une préparation exigeante pour atteindre une fluidité de récitation exemplaire.' },
-  { value: 40, label: 'Hifz 40', subtitle: 'Niveau Expert', desc: 'L\'ancrage total. La voie de l\'excellence pour graver chaque lettre de façon indélébile.' },
-];
 
 interface HifzConfigProps {
   onStart: (config: { surahNumber: number; startVerse: number; endVerse: number; repetitionLevel: number }) => void;
