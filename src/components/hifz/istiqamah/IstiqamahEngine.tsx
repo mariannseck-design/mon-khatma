@@ -160,6 +160,34 @@ export default function IstiqamahEngine({
           </Popover>
         </div>
 
+        {/* Sélecteur de récitateur */}
+        <div className="flex items-center justify-center gap-2">
+          <Volume2 className="h-3.5 w-3.5 shrink-0" style={{ color: 'rgba(212,175,55,0.6)' }} />
+          <Select value={reciterId} onValueChange={handleReciterChange}>
+            <SelectTrigger
+              className="h-7 w-auto min-w-[140px] max-w-[200px] border-none bg-transparent text-xs px-2 py-0 focus:ring-0 focus:ring-offset-0"
+              style={{ color: 'rgba(212,175,55,0.8)' }}
+            >
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent
+              className="max-h-60"
+              style={{ background: '#1a2e1a', border: '1px solid rgba(212,175,55,0.3)' }}
+            >
+              {RECITERS.map(r => (
+                <SelectItem
+                  key={r.id}
+                  value={r.id}
+                  className="text-xs"
+                  style={{ color: 'rgba(255,255,255,0.85)' }}
+                >
+                  {r.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
         <AnimatePresence mode="wait">
           {renderStep()}
         </AnimatePresence>

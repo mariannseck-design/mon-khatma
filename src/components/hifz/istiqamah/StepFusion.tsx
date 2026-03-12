@@ -27,7 +27,7 @@ export default function StepFusion({ parts, onNext }: Props) {
   const isPlayingRef = useRef(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const audiosRef = useRef<string[]>([]);
-  const [reciter] = useState(() => localStorage.getItem('quran_reciter') || 'ar.alafasy');
+  const reciter = props.reciterId || localStorage.getItem('quran_reciter') || 'ar.alafasy';
 
   const globalStart = Math.min(...parts.map(p => p.verseStart));
   const globalEnd = Math.max(...parts.map(p => p.verseEnd));
