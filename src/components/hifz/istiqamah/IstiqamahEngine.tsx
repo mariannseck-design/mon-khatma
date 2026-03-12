@@ -1,11 +1,8 @@
-import { useMemo } from 'react';
 import { AnimatePresence } from 'framer-motion';
-import { Info, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Info } from 'lucide-react';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import HifzStepWrapper from '../HifzStepWrapper';
 import { useIstiqamahState } from './useIstiqamahState';
-import IstiqamahProgressBar from './IstiqamahProgressBar';
-import IstiqamahPartIndicator from './IstiqamahPartIndicator';
 import StepComprehension from './StepComprehension';
 import StepImmersion from './StepImmersion';
 import StepTikrarFinal from './StepTikrarFinal';
