@@ -257,6 +257,32 @@ export default function HifzConfig({ onStart }: HifzConfigProps) {
         </div>
       )}
 
+      {/* Summary before start */}
+      {selectionMode === 'surah' && selectedSurah && startVerse > 0 && endVerse > 0 && endVerse >= startVerse && (
+        <div className="rounded-xl px-4 py-3 flex items-center justify-between"
+          style={{ background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.2)' }}>
+          <div className="text-sm">
+            <span className="font-semibold" style={{ color: '#d4af37' }}>{selectedSurah.name}</span>
+            <span className="text-white/50 mx-1.5">·</span>
+            <span className="text-white/70">v.{startVerse}–{endVerse}</span>
+          </div>
+          <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ background: 'rgba(212,175,55,0.2)', color: '#d4af37' }}>
+            {endVerse - startVerse + 1} verset{endVerse - startVerse + 1 > 1 ? 's' : ''}
+          </span>
+        </div>
+      )}
+      {selectionMode === 'page' && startPage > 0 && endPage > 0 && endPage >= startPage && (
+        <div className="rounded-xl px-4 py-3 flex items-center justify-between"
+          style={{ background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.2)' }}>
+          <div className="text-sm">
+            <span className="font-semibold" style={{ color: '#d4af37' }}>Page{endPage > startPage ? 's' : ''} {startPage}{endPage > startPage ? `–${endPage}` : ''}</span>
+          </div>
+          <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ background: 'rgba(212,175,55,0.2)', color: '#d4af37' }}>
+            {endPage - startPage + 1} page{endPage - startPage + 1 > 1 ? 's' : ''}
+          </span>
+        </div>
+      )}
+
       {/* Start button */}
       <motion.button
         whileTap={{ scale: 0.97 }}
