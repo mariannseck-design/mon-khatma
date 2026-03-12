@@ -19,6 +19,7 @@ type FusionPhase = 'listen' | 'read' | 'recite';
 const FONT_FAMILY = "'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
 
 export default function StepFusion({ parts, reciterId, onNext }: Props) {
+  const { isAdmin } = useAuth();
   const [phase, setPhase] = useState<FusionPhase>('listen');
   const [ayahs, setAyahs] = useState<LocalAyah[]>([]);
   const [loading, setLoading] = useState(true);
