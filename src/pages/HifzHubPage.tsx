@@ -6,7 +6,7 @@ import { BookOpen, BookHeart, RefreshCw, BarChart3, Play, BookOpenCheck } from '
 import { AppLayout } from '@/components/layout/AppLayout';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
-import DailyQuote from '@/components/accueil/DailyQuote';
+
 
 const COLORS = {
   emerald: '#2d6a4f',
