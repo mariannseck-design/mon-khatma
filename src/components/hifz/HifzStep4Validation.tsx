@@ -405,7 +405,7 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
                   👁️ Jeter un œil rapide
                 </button>
                 <p className="text-[10px] font-medium" style={{ color: 'rgba(220,50,50,0.5)' }}>
-                  ⚠️ Remet vos 3 essais à zéro
+                  ⚠️ Remet vos 5 essais à zéro
                   {peekCount > 0 && ` · ${peekCount} coup${peekCount > 1 ? 's' : ''} d'œil`}
                 </p>
               </motion.div>
