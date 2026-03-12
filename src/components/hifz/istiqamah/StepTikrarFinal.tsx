@@ -55,6 +55,15 @@ export default function StepTikrarFinal({ surahNumber, verseStart, verseEnd, onN
         </p>
       </div>
 
+      {/* Instructions link */}
+      <button
+        onClick={() => setShowInstructions(true)}
+        className="text-xs underline underline-offset-2 transition-colors"
+        style={{ color: 'rgba(212,175,55,0.7)' }}
+      >
+        💡 Cliquez ici pour lire les instructions avant de commencer
+      </button>
+
       {/* Circular progress */}
       <div className="flex justify-center">
         <div className="relative w-40 h-40">
