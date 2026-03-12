@@ -294,30 +294,37 @@ export async function findNextStartingPoint(userId: string): Promise<{
 
   if (surahCoverage.size === 0) {
     const endVerse = await getPageAlignedEnd(1, 1);
+    console.log('[findNextStartingPoint] Aucune mémorisation trouvée → Al-Fatiha 1:1-' + endVerse);
     return { surahNumber: 1, startVerse: 1, endVerse, surahName: 'Al-Fatiha' };
   }
+
+  console.log('[findNextStartingPoint] Coverage:', Object.fromEntries(surahCoverage));
 
   // Check each surah in order to find the first gap
   for (const surah of SURAHS) {
     const coverage = surahCoverage.get(surah.number);
     if (!coverage) {
       const endVerse = await getPageAlignedEnd(surah.number, 1);
-      return {
+      const result = {
         surahNumber: surah.number,
         startVerse: 1,
         endVerse: Math.min(endVerse, surah.versesCount),
         surahName: surah.name,
       };
+      console.log('[findNextStartingPoint] Résultat:', result);
+      return result;
     }
     if (coverage.maxVerseEnd < surah.versesCount) {
       const startVerse = coverage.maxVerseEnd + 1;
       const endVerse = await getPageAlignedEnd(surah.number, startVerse);
-      return {
+      const result = {
         surahNumber: surah.number,
         startVerse,
         endVerse: Math.min(endVerse, surah.versesCount),
         surahName: surah.name,
       };
+      console.log('[findNextStartingPoint] Résultat:', result);
+      return result;
     }
   }
 
