@@ -101,7 +101,7 @@ export default function IstiqamahEngine({
       <div className="text-center space-y-4">
         {/* Breadcrumb */}
         <div className="flex items-center justify-center gap-1.5">
-          {(['immersion', 'comprehension', 'tikrar'] as const).map((step, i, arr) => {
+          {(['comprehension', 'immersion', 'tikrar'] as const).map((step, i, arr) => {
             const labels = { immersion: 'Mémorisation', comprehension: 'Compréhension', tikrar: 'Tikrar' };
             const isCurrent = currentNode?.type === step;
             const stepOrder = arr.indexOf(currentNode?.type ?? 'immersion');
@@ -155,7 +155,7 @@ export default function IstiqamahEngine({
               className="text-xs leading-relaxed"
               style={{ background: '#1a2e1a', border: '1px solid rgba(212,175,55,0.3)', color: 'rgba(255,255,255,0.85)' }}
             >
-              L'Istiqâmah désigne la constance et la persévérance. Le parcours vous guide verset par verset : écoute, récitation de mémoire et liaison progressive, puis compréhension du sens, avant un compteur final de 40 répétitions.
+              L'Istiqâmah désigne la constance et la persévérance. Le parcours commence par la compréhension du sens (traduction), puis la mémorisation verset par verset (écoute, récitation de mémoire et liaison progressive), avant un compteur final de 40 répétitions.
             </PopoverContent>
           </Popover>
         </div>

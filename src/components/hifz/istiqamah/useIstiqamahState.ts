@@ -33,8 +33,8 @@ export interface IstiqamahState {
  */
 function buildFlow(_parts: Part[]): FlowNode[] {
   return [
-    { type: 'immersion', partIndex: -1 },
     { type: 'comprehension', partIndex: -1 },
+    { type: 'immersion', partIndex: -1 },
     { type: 'tikrar', partIndex: -1 },
   ];
 }

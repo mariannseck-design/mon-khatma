@@ -1,23 +1,21 @@
 
 
-# Compréhension : traduction française + réordonnancement
+# Diagnostic : 404 sur /quran-reader
 
-## Problème
-1. L'étape Compréhension affiche le texte arabe au lieu de la traduction française — elle devrait montrer uniquement la traduction, sans texte arabe ni audio.
-2. L'ordre actuel est Mémorisation → Compréhension → Tikrar, mais la compréhension doit venir **avant** la mémorisation.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-## Changements
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-### 1. `src/components/hifz/istiqamah/useIstiqamahState.ts`
-Réordonner le flow : `comprehension → immersion → tikrar` au lieu de `immersion → comprehension → tikrar`.
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-### 2. `src/components/hifz/istiqamah/IstiqamahEngine.tsx`
-- Mettre à jour le breadcrumb pour refléter le nouvel ordre : `Compréhension › Mémorisation › Tikrar`
-- Mettre à jour le texte d'info de l'Istiqâmah en conséquence
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-### 3. `src/components/hifz/istiqamah/StepComprehension.tsx`
-- Supprimer le chargement du texte arabe (`getVersesByRange`)
-- Charger la traduction française depuis `api.alquran.cloud` (édition Hamidullah), comme fait dans `MouradPhase1`
-- Afficher chaque verset avec son numéro et sa traduction française (direction LTR)
-- Aucun audio, aucun texte arabe
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
