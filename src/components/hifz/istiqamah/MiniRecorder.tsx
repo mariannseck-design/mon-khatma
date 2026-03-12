@@ -37,6 +37,8 @@ export default function MiniRecorder() {
     setIsPlaying(false);
   }, [audioUrl]);
 
+  const [flashPulse, setFlashPulse] = useState(false);
+
   const startRecording = async () => {
     destroyAudio();
     try {
@@ -49,6 +51,11 @@ export default function MiniRecorder() {
       setIsRecording(true);
       setRecordingTime(0);
       timerRef.current = setInterval(() => setRecordingTime(p => p + 1), 1000);
+      // Haptic feedback
+      if (navigator.vibrate) navigator.vibrate(50);
+      // Visual flash
+      setFlashPulse(true);
+      setTimeout(() => setFlashPulse(false), 600);
     } catch { /* permission denied */ }
   };
 
@@ -78,8 +85,11 @@ export default function MiniRecorder() {
   const secs = recordingTime % 60;
 
   return (
-    <div className="rounded-xl px-3 py-2.5" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(212,175,55,0.15)' }}>
-      <style>{`@keyframes miniWaveAnim { 0% { height: 6px; } 100% { height: 18px; } }`}</style>
+    <div className="rounded-xl px-3 py-2.5 transition-all duration-300" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(212,175,55,0.15)', animation: flashPulse ? 'recFlash 0.6s ease-out' : 'none' }}>
+      <style>{`
+        @keyframes miniWaveAnim { 0% { height: 6px; } 100% { height: 18px; } }
+        @keyframes recFlash { 0% { box-shadow: 0 0 0 0 rgba(220,50,50,0.4); } 100% { box-shadow: 0 0 0 12px rgba(220,50,50,0); } }
+      `}</style>
 
       {!audioUrl ? (
         <div className="flex items-center justify-center gap-3">
