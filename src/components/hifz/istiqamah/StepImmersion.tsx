@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Volume2, Check, X, BookOpen, RefreshCw, Link, ChevronRight } from 'lucide-react';
+import { Volume2, Check, X, BookOpen, RefreshCw, Link, ChevronRight, Headphones } from 'lucide-react';
 import { RECITERS, getAyahAudioUrl } from '@/hooks/useQuranAudio';
 import HifzMushafToggle, { getMushafMode, setMushafMode, type MushafMode } from '../HifzMushafToggle';
 import HifzMushafImage from '../HifzMushafImage';
