@@ -1,4 +1,4 @@
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Info } from 'lucide-react';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import HifzStepWrapper from '../HifzStepWrapper';
@@ -98,15 +98,22 @@ export default function IstiqamahEngine({
             const isDone = i < stepOrder;
             return (
               <span key={step} className="flex items-center gap-1.5">
-                <span
-                  className="text-[11px] font-semibold tracking-wide transition-all"
+                <motion.span
+                  layout
+                  initial={false}
+                  animate={{
+                    scale: isCurrent ? 1.15 : 1,
+                    textShadow: isCurrent ? '0 0 8px rgba(212,175,55,0.6)' : '0 0 0px transparent',
+                  }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                  className="text-[11px] font-semibold tracking-wide"
                   style={{
                     color: isCurrent ? '#d4af37' : isDone ? 'rgba(212,175,55,0.5)' : 'rgba(255,255,255,0.25)',
                     textDecoration: isDone ? 'line-through' : 'none',
                   }}
                 >
                   {labels[step]}
-                </span>
+                </motion.span>
                 {i < arr.length - 1 && (
                   <span className="text-[10px]" style={{ color: 'rgba(255,255,255,0.2)' }}>›</span>
                 )}
