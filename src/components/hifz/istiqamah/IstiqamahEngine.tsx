@@ -106,38 +106,6 @@ export default function IstiqamahEngine({
           </Popover>
         </div>
 
-        <IstiqamahProgressBar
-          progress={progress}
-          currentStep={currentNodeIndex + 1}
-          totalSteps={totalNodes}
-          label={stepLabel}
-        />
-
-        {/* Navigation arrows */}
-        <div className="flex items-center justify-between px-2">
-          <button
-            onClick={back}
-            disabled={currentNodeIndex === 0}
-            className="p-2 rounded-xl transition-all active:scale-95 disabled:opacity-20"
-            style={{ background: 'rgba(255,255,255,0.08)' }}
-          >
-            <ChevronLeft className="h-5 w-5" style={{ color: 'rgba(255,255,255,0.7)' }} />
-          </button>
-          <span className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.5)' }}>
-            {stepLabel}
-            {currentPart ? ` — Verset ${currentPart.verseStart}` : ''}
-          </span>
-          <div className="w-9" /> {/* Spacer to keep label centered */}
-        </div>
-
-        {parts.length > 1 && (
-          <IstiqamahPartIndicator
-            parts={parts}
-            activePartIndex={currentNode?.partIndex ?? -1}
-            completedParts={completedParts}
-          />
-        )}
-
         <AnimatePresence mode="wait">
           {renderStep()}
         </AnimatePresence>
