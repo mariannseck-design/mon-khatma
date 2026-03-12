@@ -242,7 +242,7 @@ export default function HifzHubPage() {
                     <p className="text-white/70 text-sm mt-1">
                       {activeHifzSession
                         ? `${activeHifzSession.surahName} — ${activeHifzSession.stepName}`
-                        : 'Apprendre et mémoriser le Coran'}
+                        : 'Graver le Coran dans les cœurs'}
                     </p>
                   </div>
                 </div>
