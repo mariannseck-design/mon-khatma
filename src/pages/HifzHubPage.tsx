@@ -25,7 +25,7 @@ const STEP_NAMES = ['Intention', 'Réveil', 'Imprégnation', 'Istiqâmah', 'Vali
 const MOURAD_PHASE_NAMES = ['Compréhension', 'Imprégnation', 'Liaison', 'Ancrage'];
 
 export default function HifzHubPage() {
-  const { user, hasFullAccess, isAdmin } = useAuth();
+  const { user, hasFullAccess, isAdmin, accessLoading } = useAuth();
   const [activeHifzSession, setActiveHifzSession] = useState<{ surahName: string; stepName: string } | null>(null);
   const [activeMouradSession, setActiveMouradSession] = useState<{ surahName: string; phaseName: string } | null>(null);
   const [pendingReviews, setPendingReviews] = useState(0);
