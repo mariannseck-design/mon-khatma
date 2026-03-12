@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Volume2, Check, X, BookOpen, RefreshCw, Link, ChevronRight, Headphones } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 import { RECITERS, getAyahAudioUrl } from '@/hooks/useQuranAudio';
 import HifzMushafToggle, { getMushafMode, setMushafMode, type MushafMode } from '../HifzMushafToggle';
 import HifzMushafImage from '../HifzMushafImage';
@@ -35,6 +36,8 @@ const TARGET_REPS = 3;
 const FONT_FAMILY = "'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
 
 export default function StepImmersion({ surahNumber, verseStart, verseEnd, reciterId, onNext }: Props) {
+  const { isAdmin } = useAuth();
+  const minReps = isAdmin ? 1 : TARGET_REPS;
   const totalVerses = verseEnd - verseStart + 1;
   const [currentVerseIndex, setCurrentVerseIndex] = useState(0);
   const [phase, setPhase] = useState<Phase>('listen');
@@ -56,8 +59,8 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
   const currentVerse = verseStart + currentVerseIndex;
   const isLiaison = phase.startsWith('liaison');
   const minReached = isLiaison
-    ? (phase === 'liaison-listen' ? listenCount >= TARGET_REPS : memoryCount >= TARGET_REPS)
-    : (phase === 'listen' ? listenCount >= TARGET_REPS : memoryCount >= TARGET_REPS);
+    ? (phase === 'liaison-listen' ? listenCount >= minReps : memoryCount >= minReps)
+    : (phase === 'listen' ? listenCount >= minReps : memoryCount >= minReps);
 
   useEffect(() => {
     setLoading(true);
