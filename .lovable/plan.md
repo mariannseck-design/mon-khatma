@@ -1,21 +1,20 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+# Deux corrections dans StepImmersion
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+## 1. Texte de la phase Écoute
+Le titre actuel "Écouter & répéter" et le sous-titre "Écoutez ce verset avec le récitateur" ne mentionnent pas le Mushaf.
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+**Changement :**
+- Titre → `"Écouter, lire & répéter"`
+- Sous-titre → `"Écoute le récitateur en suivant sur le Mushaf, puis répète"`
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+## 2. Basmala : ne jamais l'inclure comme verset à mémoriser
+Actuellement, en mode texte, le verset 1 affiche la Basmala collée au texte. Il faut :
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+- **Afficher la Basmala en en-tête décoratif** (comme dans QuranTextView) quand `verseStart === 1` et `surahNumber ∉ {1, 9}`
+- **Retirer la Basmala du texte du verset 1** via la fonction `stripLeadingBasmala` (déjà utilisée ailleurs dans le projet)
+- Cela concerne uniquement le rendu texte dans `renderMushaf()` — les modes image et physique ne sont pas affectés
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+**Fichier modifié : `src/components/hifz/istiqamah/StepImmersion.tsx`**
 
