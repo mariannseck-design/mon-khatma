@@ -156,7 +156,7 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
     setShowPeek(true);
     setPeekCount(prev => prev + 1);
     setSuccesses(0);
-    toast({ title: 'Compteur remis à zéro', description: 'Les 3 essais doivent être réussis de mémoire pure, sans aucune aide.' });
+    toast({ title: 'Compteur remis à zéro', description: 'Les 5 essais doivent être réussis de mémoire pure, sans aucune aide.' });
   };
 
   const mins = Math.floor(recordingTime / 60);
