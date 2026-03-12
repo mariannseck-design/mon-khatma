@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, useRef, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -7,6 +7,7 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
+  accessLoading: boolean;
   isAdmin: boolean;
   hasFullAccess: boolean;
   signUp: (email: string, password: string, displayName?: string) => Promise<{ error: Error | null }>;
@@ -21,73 +22,93 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [accessLoading, setAccessLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isAllowedEmail, setIsAllowedEmail] = useState(false);
 
+  // Sequence guard to ignore stale async responses
+  const accessSeqRef = useRef(0);
+
+  const resolveAccess = async (userId: string, email: string | undefined, seq: number) => {
+    setAccessLoading(true);
+    // Reset immediately — fail closed
+    setIsAdmin(false);
+    setIsAllowedEmail(false);
+
+    try {
+      const [adminResult, emailResult] = await Promise.all([
+        supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', userId)
+          .eq('role', 'admin')
+          .maybeSingle(),
+        email
+          ? supabase.rpc('is_allowed_email', { _email: email })
+          : Promise.resolve({ data: false }),
+      ]);
+
+      // Only apply if this is still the latest check
+      if (seq !== accessSeqRef.current) return;
+
+      setIsAdmin(!!adminResult.data);
+      setIsAllowedEmail(!!emailResult.data);
+    } catch (error) {
+      if (import.meta.env.DEV) console.error('Error resolving access:', error);
+      if (seq !== accessSeqRef.current) return;
+      setIsAdmin(false);
+      setIsAllowedEmail(false);
+    } finally {
+      if (seq === accessSeqRef.current) {
+        setAccessLoading(false);
+      }
+    }
+  };
+
   useEffect(() => {
-    // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      (_event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
 
-        // Defer role check to avoid deadlock
+        // Increment sequence to invalidate any in-flight checks
+        const seq = ++accessSeqRef.current;
+
         if (session?.user) {
+          // Reset immediately, then resolve
+          setIsAdmin(false);
+          setIsAllowedEmail(false);
+          setAccessLoading(true);
           setTimeout(() => {
-            checkAdminRole(session.user.id);
-            checkAllowedEmail(session.user.email);
+            resolveAccess(session.user.id, session.user.email, seq);
             ensureProfile(session.user.id);
           }, 0);
         } else {
           setIsAdmin(false);
           setIsAllowedEmail(false);
+          setAccessLoading(false);
         }
       }
     );
 
-    // THEN check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
+
+      const seq = ++accessSeqRef.current;
       
       if (session?.user) {
-        checkAdminRole(session.user.id);
-        checkAllowedEmail(session.user.email);
+        resolveAccess(session.user.id, session.user.email, seq);
         ensureProfile(session.user.id);
+      } else {
+        setAccessLoading(false);
       }
     });
 
     return () => subscription.unsubscribe();
   }, []);
-
-  const checkAdminRole = async (userId: string) => {
-    try {
-      const { data } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', userId)
-        .eq('role', 'admin')
-        .maybeSingle();
-      
-      setIsAdmin(!!data);
-    } catch (error) {
-      if (import.meta.env.DEV) console.error('Error checking admin role:', error);
-      setIsAdmin(false);
-    }
-  };
-
-  const checkAllowedEmail = async (email: string | undefined) => {
-    if (!email) { setIsAllowedEmail(false); return; }
-    try {
-      const { data } = await supabase.rpc('is_allowed_email', { _email: email });
-      setIsAllowedEmail(!!data);
-    } catch (error) {
-      if (import.meta.env.DEV) console.error('Error checking allowed email:', error);
-      setIsAllowedEmail(false);
-    }
-  };
 
   const ensureProfile = async (userId: string) => {
     try {
@@ -98,7 +119,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         .maybeSingle();
 
       if (!existingProfile) {
-        // Get display_name from user metadata (set during signup)
         const { data: { user } } = await supabase.auth.getUser();
         const displayName = user?.user_metadata?.display_name || null;
         
@@ -137,8 +157,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    // Reset access immediately on sign out
+    const seq = ++accessSeqRef.current;
     setIsAdmin(false);
+    setIsAllowedEmail(false);
+    setAccessLoading(false);
+    await supabase.auth.signOut();
   };
 
   const resendConfirmation = async (email: string) => {
@@ -156,7 +180,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       <AuthContext.Provider value={{ 
         user, 
         session, 
-        loading, 
+        loading,
+        accessLoading,
         isAdmin,
         hasFullAccess,
         signUp, 
@@ -172,12 +197,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    // Return safe defaults instead of crashing — handles edge cases
-    // where components render before AuthProvider is mounted
     return {
       user: null,
       session: null,
       loading: true,
+      accessLoading: true,
       isAdmin: false,
       hasFullAccess: false,
       signUp: async () => ({ error: new Error('Auth not initialized') }),
