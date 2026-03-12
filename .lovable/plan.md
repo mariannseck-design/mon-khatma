@@ -1,21 +1,17 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+# Réinitialisation du Tikrar après expiration des 24h
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+## Changement unique : `src/components/hifz/HifzStep5Tikrar.tsx`
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Détection de l'expiration
+- Ajouter un état `expired` calculé dans le `useEffect` du countdown : si `Date.now() > startedAt + 24h` et `count < 40`, passer `expired = true`
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+### UI d'expiration
+- Quand `expired === true` et `count < 40`, masquer le bouton "J'ai récité" et afficher à la place :
+  - Un message d'avertissement : "⏰ Les 24h sont écoulées. Tu avais atteint **{count}/40** récitations. Recommence pour sceller ta mémorisation."
+  - Un bouton "Recommencer le Tikrar" (icône `RotateCw`) qui remet `count` à 0 et `startedAt` à `Date.now()`, et persiste ces valeurs via `onUpdateStatus`
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
-
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+### Bouton "J'ai récité" désactivé après expiration
+- Le `handleRecite` vérifie aussi `expired` avant d'incrémenter
 
