@@ -19,7 +19,6 @@ export default function HifzConfig({ onStart }: HifzConfigProps) {
   const [startPage, setStartPage] = useState(1);
   const [endPage, setEndPage] = useState(1);
   const [showSurahList, setShowSurahList] = useState(false);
-  const [showSurahList, setShowSurahList] = useState(false);
   const [suggestedPoint, setSuggestedPoint] = useState<string | null>(null);
 
   // Auto-suggest starting point based on memorized verses
