@@ -18,7 +18,7 @@ export default function HifzConfig({ onStart }: HifzConfigProps) {
   const [endVerse, setEndVerse] = useState(6);
   const [startPage, setStartPage] = useState(1);
   const [endPage, setEndPage] = useState(1);
-  const [repetitionLevel, setRepetitionLevel] = useState(20);
+  const [showSurahList, setShowSurahList] = useState(false);
   const [showSurahList, setShowSurahList] = useState(false);
   const [suggestedPoint, setSuggestedPoint] = useState<string | null>(null);
 
