@@ -1,25 +1,21 @@
 
 
-# Ar-Rabt doit commencer à J+1
+# Diagnostic : 404 sur /quran-reader
 
-## Problème
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-Quand le Tikrar est terminé, le verset est inséré avec `memorized_at = aujourd'hui` et `liaison_start_date = aujourd'hui`. Le filtre Ar-Rabt dans `useMurajaData` montre tous les versets mémorisés dans les 30 derniers jours, donc le verset apparaît immédiatement le jour même au lieu du lendemain.
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
 ## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-Modifier le filtre `rabtVerses` dans `useMurajaData.ts` pour exclure les versets dont `liaison_start_date` est aujourd'hui (c'est-à-dire ne montrer que ceux dont la date de début est strictement antérieure à aujourd'hui).
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-**Fichier** : `src/hooks/useMurajaData.ts`
-
-Changer le filtre rabtVerses :
-```ts
-// Avant
-.filter(v => v.memorized_at >= thirtyDaysCutoff)
-
-// Après  
-.filter(v => v.memorized_at >= thirtyDaysCutoff && (v.liaison_start_date || v.memorized_at.split('T')[0]) < getTodayKey())
-```
-
-Cela garantit que les versets mémorisés aujourd'hui n'apparaissent dans Ar-Rabt qu'à partir de demain, sans toucher aux dates enregistrées en base.
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
