@@ -1,21 +1,18 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+# Étape 4 Validation : 5 essais + "SANS REGARDER LE MUSHAF" en exergue
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+## Changements dans `src/components/hifz/HifzStep4Validation.tsx`
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### 1. Passer de 3 à 5 récitations consécutives
+- Remplacer toutes les références à `3` par `5` (seuil de validation, badges, textes)
+- Les badges passent de 3 cercles à 5 cercles
+- `handleSuccess` : `next >= 5` au lieu de `next >= 3`
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+### 2. Mettre "SANS REGARDER LE MUSHAF" en exergue
+- Dans l'instruction principale (ligne 313), reformuler : "Enregistre-toi **5 fois de suite**" puis `<span>` rouge vif (`#ef5350`, `fontWeight: 700`, majuscules) pour "SANS REGARDER LE MUSHAF"
+- Remplacer "sans regarder le Coran" par "SANS REGARDER LE MUSHAF"
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
-
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+### 3. Autoriser l'utilisateur à continuer au-delà de 5
+- Le bouton "Continuer à réciter" existe déjà (bonus mode) — il suffit de mettre à jour les compteurs pour refléter 5 au lieu de 3
 
