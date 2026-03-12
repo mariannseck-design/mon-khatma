@@ -48,13 +48,13 @@ export default function HifzConfig({ onStart }: HifzConfigProps) {
       const firstAyah = allAyahs[0];
       const lastAyah = allAyahs[allAyahs.length - 1];
       if (firstAyah.surah.number === lastAyah.surah.number) {
-        onStart({ surahNumber: firstAyah.surah.number, startVerse: firstAyah.numberInSurah, endVerse: lastAyah.numberInSurah, repetitionLevel });
+        onStart({ surahNumber: firstAyah.surah.number, startVerse: firstAyah.numberInSurah, endVerse: lastAyah.numberInSurah, repetitionLevel: 40 });
       } else {
         const firstSurahAyahs = allAyahs.filter(a => a.surah.number === firstAyah.surah.number);
-        onStart({ surahNumber: firstAyah.surah.number, startVerse: firstSurahAyahs[0].numberInSurah, endVerse: firstSurahAyahs[firstSurahAyahs.length - 1].numberInSurah, repetitionLevel });
+        onStart({ surahNumber: firstAyah.surah.number, startVerse: firstSurahAyahs[0].numberInSurah, endVerse: firstSurahAyahs[firstSurahAyahs.length - 1].numberInSurah, repetitionLevel: 40 });
       }
     } else {
-      onStart({ surahNumber, startVerse, endVerse, repetitionLevel });
+      onStart({ surahNumber, startVerse, endVerse, repetitionLevel: 40 });
     }
   };
 
