@@ -1,21 +1,16 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+# Réorganiser les sections de la modale d'instructions Tikrar
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+## Changement
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+**Fichier** : `src/components/hifz/TikrarInstructionsModal.tsx`
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+Déplacer la **Section C (Gérez votre énergie)** avant la Section A, pour qu'elle apparaisse en premier dans la modale. L'ordre devient :
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+1. Section C — Gérez votre énergie (actuellement en bas, lignes 106-131)
+2. Section A — Choisissez votre rythme
+3. Section B — La règle de l'excellence
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+Aucun changement de contenu, juste une réorganisation de l'ordre des blocs.
 
