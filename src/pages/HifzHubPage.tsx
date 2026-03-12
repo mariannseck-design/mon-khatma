@@ -313,7 +313,7 @@ export default function HifzHubPage() {
                     <p className="text-white/70 text-sm mt-1">
                       {activeMouradSession
                         ? `${activeMouradSession.surahName} — ${activeMouradSession.phaseName}`
-                        : 'Recommandé pour débutant'}
+                        : 'Graver le Coran dans les cœurs'}
                     </p>
                   </div>
                 </div>

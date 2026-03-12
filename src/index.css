@@ -395,8 +395,9 @@
 
 /* ISTIQÂMAH shimmer effect */
 @keyframes istiqamah-shine {
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
+  0%, 15% { background-position: 200% center; }
+  30% { background-position: -200% center; }
+  31%, 100% { background-position: -200% center; }
 }
 
 .istiqamah-shimmer {
@@ -412,5 +413,5 @@
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: istiqamah-shine 4s ease-in-out infinite;
+  animation: istiqamah-shine 6s ease-in-out infinite;
 }
