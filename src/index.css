@@ -392,3 +392,25 @@
     display: none;
   }
 }
+
+/* ISTIQÂMAH shimmer effect */
+@keyframes istiqamah-shine {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.istiqamah-shimmer {
+  background: linear-gradient(
+    90deg,
+    #d4af37 0%,
+    #f5e6a3 40%,
+    #fff8dc 50%,
+    #f5e6a3 60%,
+    #d4af37 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: istiqamah-shine 4s ease-in-out infinite;
+}
