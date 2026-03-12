@@ -106,13 +106,20 @@ export default function IstiqamahEngine({
                     textShadow: isCurrent ? '0 0 8px rgba(212,175,55,0.6)' : '0 0 0px transparent',
                   }}
                   transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                  className="text-[11px] font-semibold tracking-wide"
+                  className="relative text-[11px] font-semibold tracking-wide pb-1"
                   style={{
                     color: isCurrent ? '#d4af37' : isDone ? 'rgba(212,175,55,0.5)' : 'rgba(255,255,255,0.25)',
                     textDecoration: isDone ? 'line-through' : 'none',
                   }}
                 >
                   {labels[step]}
+                  <motion.span
+                    className="absolute bottom-0 left-0 h-[2px] rounded-full"
+                    style={{ background: 'linear-gradient(90deg, rgba(212,175,55,0.8), rgba(212,175,55,0.3))' }}
+                    initial={false}
+                    animate={{ width: isCurrent ? '100%' : '0%', opacity: isCurrent ? 1 : 0 }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                  />
                 </motion.span>
                 {i < arr.length - 1 && (
                   <span className="text-[10px]" style={{ color: 'rgba(255,255,255,0.2)' }}>›</span>
