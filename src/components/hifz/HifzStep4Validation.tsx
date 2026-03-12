@@ -132,8 +132,8 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
     setTotalAttempts(prev => prev + 1);
     setTotalSuccesses(prev => prev + 1);
     const next = successes + 1;
-    if (next >= 3) {
-      setSuccesses(3);
+    if (next >= 5) {
+      setSuccesses(5);
       setValidated(true);
     } else {
       setSuccesses(next);
@@ -156,7 +156,7 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
     setShowPeek(true);
     setPeekCount(prev => prev + 1);
     setSuccesses(0);
-    toast({ title: 'Compteur remis à zéro', description: 'Les 3 essais doivent être réussis de mémoire pure, sans aucune aide.' });
+    toast({ title: 'Compteur remis à zéro', description: 'Les 5 essais doivent être réussis de mémoire pure, sans aucune aide.' });
   };
 
   const mins = Math.floor(recordingTime / 60);
@@ -260,8 +260,8 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
           </motion.div>
 
           <div className="flex justify-center gap-2">
-            {[0, 1, 2].map(i => (
-              <div key={i} className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"
+            {[0, 1, 2, 3, 4].map(i => (
+              <div key={i} className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold"
                 style={{ background: 'rgba(212,175,55,0.2)', border: '2px solid #D4AF37', color: '#D4AF37' }}>✓</div>
             ))}
           </div>
@@ -270,7 +270,7 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
             Votre mémorisation est scellée<br />par la grâce d'Allah
           </p>
           <p className="text-sm" style={{ color: '#065F46' }}>
-            3{bonusCount > 0 ? ` + ${bonusCount}` : ''} récitation{(3 + bonusCount) > 1 ? 's' : ''} parfaite{(3 + bonusCount) > 1 ? 's' : ''} sans aide
+            5{bonusCount > 0 ? ` + ${bonusCount}` : ''} récitation{(5 + bonusCount) > 1 ? 's' : ''} parfaite{(5 + bonusCount) > 1 ? 's' : ''} sans aide
           </p>
           <div className="flex justify-center gap-4 text-xs" style={{ color: 'rgba(6,95,70,0.6)' }}>
             <span>{totalAttempts} tentative{totalAttempts > 1 ? 's' : ''}</span>
@@ -310,7 +310,10 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
       <div className="space-y-5">
         {/* Instruction */}
         <p className="text-sm leading-relaxed text-center px-2" style={{ color: 'rgba(255,255,255,0.7)' }}>
-          Enregistre-toi <strong>3 fois de suite</strong> sans regarder le Coran.
+          Enregistre-toi <strong>5 fois de suite</strong>{' '}
+          <span style={{ color: '#ef5350', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            SANS REGARDER LE MUSHAF
+          </span>.
           Si tu regardes, le compteur se réinitialise.
         </p>
 
@@ -334,7 +337,7 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
                 transition={{ duration: 0.2 }}
               >
                 <p className="text-xs leading-relaxed italic text-center px-4 pb-2" style={{ color: 'rgba(255,255,255,0.6)' }}>
-                  « Si vous éprouvez le moindre doute lors de la récitation, c'est le signe que l'ancrage n'est pas encore solide. Regardez le texte, puis recommencez votre série de 3 à zéro. Cette rigueur est le secret d'une mémoire inaltérable. »
+                  « Si vous éprouvez le moindre doute lors de la récitation, c'est le signe que l'ancrage n'est pas encore solide. Regardez le texte, puis recommencez votre série de 5 à zéro. Cette rigueur est le secret d'une mémoire inaltérable. »
                 </p>
                 <div className="flex items-center justify-center gap-1.5 pb-3">
                   <Lock className="h-2.5 w-2.5" style={{ color: 'rgba(255,255,255,0.3)' }} />
@@ -349,7 +352,7 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
 
         {/* ── Badges 1-2-3 ── */}
         <div className="flex items-center justify-center gap-4">
-          {[0, 1, 2].map(i => {
+          {[0, 1, 2, 3, 4].map(i => {
             const done = i < successes;
             const active = i === successes;
             return (
@@ -357,7 +360,7 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
                 key={i}
                 animate={done ? { scale: [1, 1.2, 1] } : {}}
                 transition={{ duration: 0.4 }}
-                className="w-11 h-11 rounded-full flex items-center justify-center text-sm font-bold"
+                className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold"
                 style={{
                   background: done ? 'rgba(212,175,55,0.25)' : 'rgba(255,255,255,0.06)',
                   border: `2.5px solid ${done ? '#D4AF37' : active ? 'rgba(212,175,55,0.5)' : 'rgba(255,255,255,0.12)'}`,
@@ -365,13 +368,13 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
                   boxShadow: active ? '0 0 12px rgba(212,175,55,0.2)' : 'none',
                 }}
               >
-                {done ? <Check className="h-5 w-5" /> : `${i + 1}`}
+                {done ? <Check className="h-4 w-4" /> : `${i + 1}`}
               </motion.div>
             );
           })}
         </div>
         <p className="text-xs text-center" style={{ color: 'rgba(255,255,255,0.35)' }}>
-          Essai {Math.min(successes + 1, 3)}/3
+          Essai {Math.min(successes + 1, 5)}/5
           {totalAttempts > 0 && ` · ${totalAttempts} tentative${totalAttempts > 1 ? 's' : ''} au total`}
         </p>
 
@@ -402,7 +405,7 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
                   👁️ Jeter un œil rapide
                 </button>
                 <p className="text-[10px] font-medium" style={{ color: 'rgba(220,50,50,0.5)' }}>
-                  ⚠️ Remet vos 3 essais à zéro
+                  ⚠️ Remet vos 5 essais à zéro
                   {peekCount > 0 && ` · ${peekCount} coup${peekCount > 1 ? 's' : ''} d'œil`}
                 </p>
               </motion.div>
@@ -499,7 +502,7 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
                 className="w-full rounded-xl py-3 font-semibold text-sm"
                 style={{ background: '#065F46', color: '#FDFBF7' }}
               >
-                Valider mon Hifz ✨ ({3 + bonusCount} récitations)
+                Valider mon Hifz ✨ ({5 + bonusCount} récitations)
               </motion.button>
             )}
           </div>
