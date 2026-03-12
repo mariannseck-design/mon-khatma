@@ -86,7 +86,10 @@ export default function MiniRecorder() {
 
   return (
     <div className="rounded-xl px-3 py-2.5" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(212,175,55,0.15)' }}>
-      <style>{`@keyframes miniWaveAnim { 0% { height: 6px; } 100% { height: 18px; } }`}</style>
+      <style>{`
+        @keyframes miniWaveAnim { 0% { height: 6px; } 100% { height: 18px; } }
+        @keyframes recFlash { 0% { box-shadow: 0 0 0 0 rgba(220,50,50,0.4); } 100% { box-shadow: 0 0 0 12px rgba(220,50,50,0); } }
+      `}</style>
 
       {!audioUrl ? (
         <div className="flex items-center justify-center gap-3">
