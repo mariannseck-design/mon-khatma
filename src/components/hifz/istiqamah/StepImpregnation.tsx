@@ -11,6 +11,7 @@ interface Props {
   verseStart: number;
   verseEnd: number;
   verseLabel?: string;
+  reciterId?: string;
   onNext: () => void;
 }
 
