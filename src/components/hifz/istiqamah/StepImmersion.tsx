@@ -474,7 +474,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
             <div className="rounded-xl px-4 py-2.5 mx-auto max-w-sm"
               style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
               <p className="text-[11px] italic leading-relaxed text-center" style={{ color: 'rgba(255,255,255,0.4)' }}>
-                Récitation {memoryCount + 1} — Fermez les yeux et récitez à voix haute
+                Récitation {memoryCount + 1} — Récitez de mémoire, sans regarder le Mushaf ni écouter l'audio
               </p>
             </div>
           </motion.div>
