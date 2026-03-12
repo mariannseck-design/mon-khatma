@@ -38,11 +38,6 @@ export default function IstiqamahEngine({
     if (!currentNode) return set;
     for (let i = 0; i < parts.length; i++) {
       if (currentNode.partIndex > i) set.add(i);
-      if (currentNode.type === 'fusion' && currentNode.fusionRange) {
-        for (const idx of currentNode.fusionRange) {
-          if (idx < (currentNode.fusionRange[currentNode.fusionRange.length - 1])) set.add(idx);
-        }
-      }
       if (currentNode.type === 'tikrar') set.add(i);
     }
     return set;
