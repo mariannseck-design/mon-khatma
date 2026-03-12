@@ -115,15 +115,16 @@ export default function MurjaCalendarPage() {
   const dayIndicators = useMemo(() => {
     const map: Record<string, { hasRabt: boolean; hasTour: boolean }> = {};
     for (const day of weekDays) {
+      const dayRabt = allVerses.filter(v => v.memorized_at >= thirtyDaysCutoff && (v.liaison_start_date || v.memorized_at.split('T')[0]) < day.key);
       map[day.key] = {
-        hasRabt: rabtVerses.length > 0,
+        hasRabt: dayRabt.length > 0,
         hasTour: day.key === todayKey
           ? allConsolidation.some(v => v.next_review_date <= day.key)
           : allConsolidation.some(v => v.next_review_date === day.key),
       };
     }
     return map;
-  }, [weekDays, rabtVerses, allConsolidation]);
+  }, [weekDays, allVerses, thirtyDaysCutoff, allConsolidation]);
 
   const selectedItems = getItemsForDay(selectedDay);
   const isFutureDay = selectedDay > todayKey;
