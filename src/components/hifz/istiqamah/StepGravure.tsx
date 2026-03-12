@@ -16,7 +16,7 @@ interface Props {
 const FONT_FAMILY = "'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
 const TARGET = 5;
 
-export default function StepGravure({ surahNumber, verseStart, verseEnd, onNext }: Props) {
+export default function StepGravure({ surahNumber, verseStart, verseEnd, verseLabel, onNext }: Props) {
   const [count, setCount] = useState(0);
   const [peekMode, setPeekMode] = useState(false);
   const [mushafMode, setMushafModeState] = useState<MushafMode>(getMushafMode);
