@@ -140,10 +140,6 @@ export default function HifzHubPage() {
           <div className="w-14 h-px" style={{ background: `linear-gradient(90deg, transparent, ${COLORS.goldAccent}, transparent)` }} />
         </motion.div>
 
-        {/* Citation du jour */}
-        <motion.div variants={itemVariants}>
-          <DailyQuote />
-        </motion.div>
 
         {/* Le Noble Coran */}
         <motion.div variants={itemVariants}>
