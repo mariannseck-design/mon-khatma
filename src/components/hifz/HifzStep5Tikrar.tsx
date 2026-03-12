@@ -39,21 +39,29 @@ export default function HifzStep5Tikrar({
   const savedStart = stepStatus?.tikrar_started_at ?? Date.now();
 
   const [count, setCount] = useState<number>(saved);
-  const [startedAt] = useState<number>(savedStart);
+  const [startedAt, setStartedAt] = useState<number>(savedStart);
   const [remaining, setRemaining] = useState('');
   const [motivMsg, setMotivMsg] = useState<string | null>(null);
   const [showMotiv, setShowMotiv] = useState(false);
+  const [expired, setExpired] = useState(false);
 
   // Countdown timer
   useEffect(() => {
     const tick = () => {
       const deadline = startedAt + 24 * 3600 * 1000;
-      setRemaining(formatCountdown(deadline - Date.now()));
+      const diff = deadline - Date.now();
+      if (diff <= 0 && count < TOTAL_REPS) {
+        setExpired(true);
+        setRemaining('0h 00min');
+      } else {
+        setExpired(false);
+        setRemaining(formatCountdown(diff));
+      }
     };
     tick();
     const id = setInterval(tick, 60000);
     return () => clearInterval(id);
-  }, [startedAt]);
+  }, [startedAt, count]);
 
   // Persist count
   useEffect(() => {
@@ -65,7 +73,7 @@ export default function HifzStep5Tikrar({
   }, [count]);
 
   const handleRecite = useCallback(() => {
-    if (count >= TOTAL_REPS) return;
+    if (count >= TOTAL_REPS || expired) return;
     const next = count + 1;
     setCount(next);
 
@@ -77,7 +85,19 @@ export default function HifzStep5Tikrar({
       setShowMotiv(true);
       setTimeout(() => setShowMotiv(false), 3000);
     }
-  }, [count]);
+  }, [count, expired]);
+
+  const handleReset = useCallback(() => {
+    const now = Date.now();
+    setCount(0);
+    setStartedAt(now);
+    setExpired(false);
+    onUpdateStatus?.({
+      ...stepStatus,
+      tikrar_count: 0,
+      tikrar_started_at: now,
+    });
+  }, [stepStatus, onUpdateStatus]);
 
   const balance = TOTAL_REPS - count;
   const progress = (count / TOTAL_REPS) * 100;
@@ -160,7 +180,30 @@ export default function HifzStep5Tikrar({
         )}
 
         {/* Action buttons */}
-        {!isComplete ? (
+        {expired && !isComplete ? (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-3"
+          >
+            <p className="text-sm leading-relaxed px-4" style={{ color: '#f87171' }}>
+              ⏰ Les 24h sont écoulées. Tu avais atteint <strong>{count}/{TOTAL_REPS}</strong> récitations. Recommence pour sceller ta mémorisation.
+            </p>
+            <motion.button
+              whileTap={{ scale: 0.93 }}
+              onClick={handleReset}
+              className="mx-auto flex items-center gap-2 px-8 py-3.5 rounded-2xl font-bold text-sm transition-all"
+              style={{
+                background: 'linear-gradient(135deg, #d4af37, #c9a030)',
+                color: '#1a2e1a',
+                boxShadow: '0 6px 20px rgba(212,175,55,0.35)',
+              }}
+            >
+              <RotateCw className="h-5 w-5" />
+              Recommencer le Tikrar
+            </motion.button>
+          </motion.div>
+        ) : !isComplete ? (
           <motion.button
             whileTap={{ scale: 0.93 }}
             onClick={handleRecite}
