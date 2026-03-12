@@ -129,8 +129,8 @@ export default function HifzHubPage() {
         <motion.div variants={itemVariants} className="flex flex-col items-center gap-2 py-4">
           <div className="w-14 h-px" style={{ background: `linear-gradient(90deg, transparent, ${COLORS.goldAccent}, transparent)` }} />
           <h2
-            className="text-lg font-semibold tracking-[0.25em] uppercase"
-            style={{ fontFamily: "'Inter', sans-serif", color: COLORS.goldAccent }}
+            className="text-lg font-semibold tracking-[0.25em] uppercase istiqamah-shimmer"
+            style={{ fontFamily: "'Inter', sans-serif" }}
           >
             ISTIQÂMAH
           </h2>
