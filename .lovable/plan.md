@@ -1,21 +1,19 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+# Permettre aux admins de passer après 1 écoute
 
 ## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+`StepImmersion.tsx` impose `TARGET_REPS = 3` écoutes minimum (et 3 récitations de mémoire) avant de pouvoir avancer. L'admin doit pouvoir passer après 1 seule écoute/récitation.
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+## Plan
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+**Fichier : `src/components/hifz/istiqamah/StepImmersion.tsx`**
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+1. Importer `useAuth` depuis `@/contexts/AuthContext`
+2. Récupérer `isAdmin` via `const { isAdmin } = useAuth()`
+3. Calculer le seuil dynamique : `const minReps = isAdmin ? 1 : TARGET_REPS`
+4. Remplacer `TARGET_REPS` par `minReps` dans le calcul de `minReached` (ligne 58-60)
+
+Aucun autre fichier à modifier — le bouton "Passer à la récitation" apparaîtra dès 1 écoute pour les admins.
 
