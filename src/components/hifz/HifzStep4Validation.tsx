@@ -270,7 +270,7 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
             Votre mémorisation est scellée<br />par la grâce d'Allah
           </p>
           <p className="text-sm" style={{ color: '#065F46' }}>
-            3{bonusCount > 0 ? ` + ${bonusCount}` : ''} récitation{(3 + bonusCount) > 1 ? 's' : ''} parfaite{(3 + bonusCount) > 1 ? 's' : ''} sans aide
+            5{bonusCount > 0 ? ` + ${bonusCount}` : ''} récitation{(5 + bonusCount) > 1 ? 's' : ''} parfaite{(5 + bonusCount) > 1 ? 's' : ''} sans aide
           </p>
           <div className="flex justify-center gap-4 text-xs" style={{ color: 'rgba(6,95,70,0.6)' }}>
             <span>{totalAttempts} tentative{totalAttempts > 1 ? 's' : ''}</span>
