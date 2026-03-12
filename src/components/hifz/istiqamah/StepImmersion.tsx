@@ -25,6 +25,7 @@ interface Props {
   surahNumber: number;
   verseStart: number;
   verseEnd: number;
+  reciterId?: string;
   onNext: () => void;
 }
 
