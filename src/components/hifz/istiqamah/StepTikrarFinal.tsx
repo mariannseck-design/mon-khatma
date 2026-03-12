@@ -128,6 +128,12 @@ export default function StepTikrarFinal({ surahNumber, verseStart, verseEnd, onN
           Valider — Allahumma barik
         </motion.button>
       )}
+
+      {/* Instructions modal */}
+      <TikrarInstructionsModal
+        open={showInstructions}
+        onClose={() => setShowInstructions(false)}
+      />
     </motion.div>
   );
 }
