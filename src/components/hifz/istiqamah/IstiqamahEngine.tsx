@@ -119,7 +119,7 @@ export default function IstiqamahEngine({
               className="text-xs leading-relaxed"
               style={{ background: '#1a2e1a', border: '1px solid rgba(212,175,55,0.3)', color: 'rgba(255,255,255,0.85)' }}
             >
-              L'Istiqâmah désigne la constance et la persévérance. Le parcours commence par l'écoute et la compréhension du passage, puis vous guide verset par verset à travers l'imprégnation, la lecture autonome et la récitation de mémoire, en fusionnant progressivement les versets avant un compteur final de 40 répétitions.
+              L'Istiqâmah désigne la constance et la persévérance. Le parcours vous guide verset par verset : écoute, récitation de mémoire et liaison progressive, puis compréhension du sens, avant un compteur final de 40 répétitions.
             </PopoverContent>
           </Popover>
         </div>
