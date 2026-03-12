@@ -125,6 +125,21 @@ export default function HifzHubPage() {
     <AppLayout title="Hifz">
       <motion.div className="space-y-4 pb-6 pt-2" variants={containerVariants} initial="hidden" animate="visible">
 
+        {/* En-tête ISTIQÂMAH */}
+        <motion.div variants={itemVariants} className="flex flex-col items-center gap-2 py-4">
+          <div className="w-14 h-px" style={{ background: `linear-gradient(90deg, transparent, ${COLORS.goldAccent}, transparent)` }} />
+          <h2
+            className="text-lg font-semibold tracking-[0.25em] uppercase"
+            style={{ fontFamily: "'Inter', sans-serif", color: COLORS.goldAccent }}
+          >
+            ISTIQÂMAH
+          </h2>
+          <p className="text-xs italic" style={{ color: `${COLORS.sage}bb` }}>
+            La constance mène à l'excellence
+          </p>
+          <div className="w-14 h-px" style={{ background: `linear-gradient(90deg, transparent, ${COLORS.goldAccent}, transparent)` }} />
+        </motion.div>
+
         {/* Citation du jour */}
         <motion.div variants={itemVariants}>
           <DailyQuote />
