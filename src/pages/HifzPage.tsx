@@ -446,8 +446,25 @@ export default function HifzPage() {
         {!showBreathingPause && step === 1 && <HifzStep1Revision onNext={() => updateStep(2)} onBack={() => setStep(0)} onPause={handlePause} />}
         {!showBreathingPause && step === 2 && <HifzStep2Impregnation surahNumber={session.surahNumber} startVerse={session.startVerse} endVerse={session.endVerse} onNext={() => updateStep(3)} onBack={() => setStep(1)} onPause={handlePause} />}
         {!showBreathingPause && step === 3 && <IstiqamahEngine surahNumber={session.surahNumber} startVerse={session.startVerse} endVerse={session.endVerse} repetitionLevel={session.repetitionLevel} onNext={handleStep3Complete} onBack={() => setStep(2)} onPause={handlePause} />}
-        {!showBreathingPause && step === 4 && <HifzStep4Validation surahNumber={session.surahNumber} startVerse={session.startVerse} endVerse={session.endVerse} onNext={completeSession} onBack={() => setStep(3)} onPause={handlePause} />}
-        {step === 5 && <HifzSuccess stepTimes={stepTimesRef.current} />}
+        {!showBreathingPause && step === 4 && <HifzStep4Validation surahNumber={session.surahNumber} startVerse={session.startVerse} endVerse={session.endVerse} onNext={() => updateStep(5)} onBack={() => setStep(3)} onPause={handlePause} />}
+        {!showBreathingPause && step === 5 && (
+          <HifzStep5Tikrar
+            surahNumber={session.surahNumber}
+            startVerse={session.startVerse}
+            endVerse={session.endVerse}
+            onNext={completeSession}
+            onBack={() => setStep(4)}
+            onPause={handlePause}
+            stepStatus={typeof stepTimesRef.current === 'object' ? stepTimesRef.current : {}}
+            onUpdateStatus={(status) => {
+              stepTimesRef.current = { ...stepTimesRef.current, ...status };
+              if (sessionId && user) {
+                supabase.from('hifz_sessions').update({ step_status: stepTimesRef.current }).eq('id', sessionId);
+              }
+            }}
+          />
+        )}
+        {step === 6 && <HifzSuccess stepTimes={stepTimesRef.current} />}
       </div>
       {step >= 0 && step <= 5 && (
         <DevSkipButton isDevMode={isDevMode} onSkip={() => {
