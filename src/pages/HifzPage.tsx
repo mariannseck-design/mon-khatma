@@ -444,7 +444,7 @@ export default function HifzPage() {
         {!showBreathingPause && step === 0 && <HifzStep0Intention surahNumber={session.surahNumber} startVerse={session.startVerse} endVerse={session.endVerse} onNext={() => updateStep(1)} onBack={() => setStep(-1)} onPause={handlePause} />}
         {!showBreathingPause && step === 1 && <HifzStep1Revision onNext={() => updateStep(2)} onBack={() => setStep(0)} onPause={handlePause} />}
         {!showBreathingPause && step === 2 && <HifzStep2Impregnation surahNumber={session.surahNumber} startVerse={session.startVerse} endVerse={session.endVerse} onNext={() => updateStep(3)} onBack={() => setStep(1)} onPause={handlePause} />}
-        {!showBreathingPause && step === 3 && <HifzStep3Memorisation surahNumber={session.surahNumber} startVerse={session.startVerse} endVerse={session.endVerse} repetitionLevel={session.repetitionLevel} onNext={handleStep3Complete} onBack={() => setStep(2)} onPause={handlePause} />}
+        {!showBreathingPause && step === 3 && <IstiqamahEngine surahNumber={session.surahNumber} startVerse={session.startVerse} endVerse={session.endVerse} repetitionLevel={session.repetitionLevel} onNext={handleStep3Complete} onBack={() => setStep(2)} onPause={handlePause} />}
         {!showBreathingPause && step === 4 && <HifzStep4Validation surahNumber={session.surahNumber} startVerse={session.startVerse} endVerse={session.endVerse} onNext={completeSession} onBack={() => setStep(3)} onPause={handlePause} />}
         {step === 5 && <HifzSuccess stepTimes={stepTimesRef.current} />}
       </div>
