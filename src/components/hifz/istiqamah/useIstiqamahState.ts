@@ -4,10 +4,6 @@ import { splitIntoParts, type Part } from './partSplitter';
 export type StepName =
   | 'immersion'
   | 'comprehension'
-  | 'impregnation'
-  | 'autonomie'
-  | 'gravure'
-  | 'fusion'
   | 'tikrar';
 
 interface FlowNode {
@@ -30,40 +26,17 @@ export interface IstiqamahState {
 }
 
 /**
- * New verse-by-verse flow:
- *  1. Immersion (global)
- *  2. Comprehension (global)
- *  For each verse i:
- *    3. Impregnation (verse i)
- *    4. Autonomie (verse i)
- *    5. Gravure (verse i)
- *    6. Fusion (verses 0..i) — only after verse 2+
- *  Final: Tikrar
+ * Simplified flow — StepImmersion handles all verse-by-verse memorization + liaison:
+ *  1. Immersion (verse-by-verse listen/memory/liaison — all handled internally)
+ *  2. Comprehension (global tafsir/translation)
+ *  3. Tikrar Final (40 repetitions)
  */
-function buildFlow(parts: Part[]): FlowNode[] {
-  const flow: FlowNode[] = [];
-
-  // Global preparation
-  flow.push({ type: 'immersion', partIndex: -1 });
-  flow.push({ type: 'comprehension', partIndex: -1 });
-
-  // Per-verse cycle
-  for (let i = 0; i < parts.length; i++) {
-    flow.push({ type: 'impregnation', partIndex: i });
-    flow.push({ type: 'autonomie', partIndex: i });
-    flow.push({ type: 'gravure', partIndex: i });
-
-    // Fusion after 2nd verse and each subsequent
-    if (i > 0) {
-      const fusionRange = Array.from({ length: i + 1 }, (_, k) => k);
-      flow.push({ type: 'fusion', partIndex: -1, fusionRange });
-    }
-  }
-
-  // Final tikrar
-  flow.push({ type: 'tikrar', partIndex: -1 });
-
-  return flow;
+function buildFlow(_parts: Part[]): FlowNode[] {
+  return [
+    { type: 'immersion', partIndex: -1 },
+    { type: 'comprehension', partIndex: -1 },
+    { type: 'tikrar', partIndex: -1 },
+  ];
 }
 
 export function useIstiqamahState(

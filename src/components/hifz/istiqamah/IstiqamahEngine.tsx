@@ -8,10 +8,6 @@ import IstiqamahProgressBar from './IstiqamahProgressBar';
 import IstiqamahPartIndicator from './IstiqamahPartIndicator';
 import StepComprehension from './StepComprehension';
 import StepImmersion from './StepImmersion';
-import StepImpregnation from './StepImpregnation';
-import StepAutonomie from './StepAutonomie';
-import StepGravure from './StepGravure';
-import StepFusion from './StepFusion';
 import StepTikrarFinal from './StepTikrarFinal';
 
 interface Props {
@@ -25,12 +21,8 @@ interface Props {
 }
 
 const STEP_LABELS: Record<string, string> = {
-  immersion: 'Préparer l\'oreille',
+  immersion: 'Mémorisation',
   comprehension: 'Comprendre le message',
-  impregnation: 'Imprégnation',
-  autonomie: 'Récitation assistée',
-  gravure: 'Essai de mémoire',
-  fusion: 'Créer le lien',
   tikrar: 'Tikrar Final',
 };
 
@@ -46,11 +38,6 @@ export default function IstiqamahEngine({
     if (!currentNode) return set;
     for (let i = 0; i < parts.length; i++) {
       if (currentNode.partIndex > i) set.add(i);
-      if (currentNode.type === 'fusion' && currentNode.fusionRange) {
-        for (const idx of currentNode.fusionRange) {
-          if (idx < (currentNode.fusionRange[currentNode.fusionRange.length - 1])) set.add(idx);
-        }
-      }
       if (currentNode.type === 'tikrar') set.add(i);
     }
     return set;
@@ -96,51 +83,6 @@ export default function IstiqamahEngine({
           />
         );
 
-      case 'impregnation':
-        return currentPart ? (
-          <StepImpregnation
-            key={`imp-${currentPart.partIndex}`}
-            surahNumber={currentPart.surahNumber}
-            verseStart={currentPart.verseStart}
-            verseEnd={currentPart.verseEnd}
-            verseLabel={verseLabel}
-            onNext={next}
-          />
-        ) : null;
-
-      case 'autonomie':
-        return currentPart ? (
-          <StepAutonomie
-            key={`aut-${currentPart.partIndex}`}
-            surahNumber={currentPart.surahNumber}
-            verseStart={currentPart.verseStart}
-            verseEnd={currentPart.verseEnd}
-            verseLabel={verseLabel}
-            onNext={next}
-          />
-        ) : null;
-
-      case 'gravure':
-        return currentPart ? (
-          <StepGravure
-            key={`grav-${currentPart.partIndex}`}
-            surahNumber={currentPart.surahNumber}
-            verseStart={currentPart.verseStart}
-            verseEnd={currentPart.verseEnd}
-            verseLabel={verseLabel}
-            onNext={next}
-          />
-        ) : null;
-
-      case 'fusion':
-        return (
-          <StepFusion
-            key={`fus-${currentNodeIndex}`}
-            parts={fusionParts}
-            onNext={next}
-          />
-        );
-
       case 'tikrar':
         return (
           <StepTikrarFinal
@@ -172,7 +114,7 @@ export default function IstiqamahEngine({
               className="text-xs leading-relaxed"
               style={{ background: '#1a2e1a', border: '1px solid rgba(212,175,55,0.3)', color: 'rgba(255,255,255,0.85)' }}
             >
-              L'Istiqâmah désigne la constance et la persévérance. Le parcours commence par l'écoute et la compréhension du passage, puis vous guide verset par verset à travers l'imprégnation, la lecture autonome et la récitation de mémoire, en fusionnant progressivement les versets avant un compteur final de 40 répétitions.
+              L'Istiqâmah désigne la constance et la persévérance. Le parcours vous guide verset par verset : écoute, récitation de mémoire et liaison progressive, puis compréhension du sens, avant un compteur final de 40 répétitions.
             </PopoverContent>
           </Popover>
         </div>
