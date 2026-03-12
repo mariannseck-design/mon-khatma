@@ -88,51 +88,6 @@ export default function IstiqamahEngine({
           />
         );
 
-      case 'impregnation':
-        return currentPart ? (
-          <StepImpregnation
-            key={`imp-${currentPart.partIndex}`}
-            surahNumber={currentPart.surahNumber}
-            verseStart={currentPart.verseStart}
-            verseEnd={currentPart.verseEnd}
-            verseLabel={verseLabel}
-            onNext={next}
-          />
-        ) : null;
-
-      case 'autonomie':
-        return currentPart ? (
-          <StepAutonomie
-            key={`aut-${currentPart.partIndex}`}
-            surahNumber={currentPart.surahNumber}
-            verseStart={currentPart.verseStart}
-            verseEnd={currentPart.verseEnd}
-            verseLabel={verseLabel}
-            onNext={next}
-          />
-        ) : null;
-
-      case 'gravure':
-        return currentPart ? (
-          <StepGravure
-            key={`grav-${currentPart.partIndex}`}
-            surahNumber={currentPart.surahNumber}
-            verseStart={currentPart.verseStart}
-            verseEnd={currentPart.verseEnd}
-            verseLabel={verseLabel}
-            onNext={next}
-          />
-        ) : null;
-
-      case 'fusion':
-        return (
-          <StepFusion
-            key={`fus-${currentNodeIndex}`}
-            parts={fusionParts}
-            onNext={next}
-          />
-        );
-
       case 'tikrar':
         return (
           <StepTikrarFinal
