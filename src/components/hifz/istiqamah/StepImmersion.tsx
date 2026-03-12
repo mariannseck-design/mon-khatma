@@ -59,8 +59,8 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
   const currentVerse = verseStart + currentVerseIndex;
   const isLiaison = phase.startsWith('liaison');
   const minReached = isLiaison
-    ? (phase === 'liaison-listen' ? listenCount >= TARGET_REPS : memoryCount >= TARGET_REPS)
-    : (phase === 'listen' ? listenCount >= TARGET_REPS : memoryCount >= TARGET_REPS);
+    ? (phase === 'liaison-listen' ? listenCount >= minReps : memoryCount >= minReps)
+    : (phase === 'listen' ? listenCount >= minReps : memoryCount >= minReps);
 
   useEffect(() => {
     setLoading(true);
