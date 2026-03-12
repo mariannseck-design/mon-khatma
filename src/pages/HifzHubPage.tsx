@@ -164,8 +164,8 @@ export default function HifzHubPage() {
                   </div>
                   <div className="flex-1 text-center">
                     <h3
-                      className="text-xl font-bold tracking-[0.1em] uppercase"
-                      style={{ fontFamily: "'Inter', sans-serif", color: COLORS.goldAccent }}
+                      className="text-xl font-bold tracking-[0.1em] uppercase istiqamah-shimmer"
+                      style={{ fontFamily: "'Inter', sans-serif" }}
                     >
                       Le Noble Coran
                     </h3>
