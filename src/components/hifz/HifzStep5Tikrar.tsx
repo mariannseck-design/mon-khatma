@@ -39,10 +39,11 @@ export default function HifzStep5Tikrar({
   const savedStart = stepStatus?.tikrar_started_at ?? Date.now();
 
   const [count, setCount] = useState<number>(saved);
-  const [startedAt] = useState<number>(savedStart);
+  const [startedAt, setStartedAt] = useState<number>(savedStart);
   const [remaining, setRemaining] = useState('');
   const [motivMsg, setMotivMsg] = useState<string | null>(null);
   const [showMotiv, setShowMotiv] = useState(false);
+  const [expired, setExpired] = useState(false);
 
   // Countdown timer
   useEffect(() => {
