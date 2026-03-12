@@ -359,17 +359,19 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, onNex
         </div>
       </div>
 
-      {/* Verse progress pills */}
-      <div className="flex items-center justify-center gap-1.5 flex-wrap">
-        {Array.from({ length: totalVerses }, (_, i) => (
-          <div key={i} className="h-2 rounded-full transition-all duration-300"
-            style={{
-              width: i === currentVerseIndex ? '24px' : '10px',
-              background: i < currentVerseIndex ? '#d4af37' : i === currentVerseIndex ? '#4ecdc4' : 'rgba(255,255,255,0.15)',
-            }}
-          />
-        ))}
-      </div>
+      {/* Verse progress pills — hidden when too many */}
+      {totalVerses <= 10 && (
+        <div className="flex items-center justify-center gap-1.5 flex-wrap">
+          {Array.from({ length: totalVerses }, (_, i) => (
+            <div key={i} className="h-2 rounded-full transition-all duration-300"
+              style={{
+                width: i === currentVerseIndex ? '24px' : '10px',
+                background: i < currentVerseIndex ? '#d4af37' : i === currentVerseIndex ? '#4ecdc4' : 'rgba(255,255,255,0.15)',
+              }}
+            />
+          ))}
+        </div>
+      )}
 
       {/* Verse/liaison indicator */}
       <div className="text-center">
