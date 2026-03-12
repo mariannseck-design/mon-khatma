@@ -264,18 +264,37 @@ export async function findNextStartingPoint(userId: string): Promise<{
     .order('surah_number', { ascending: true })
     .order('verse_start', { ascending: true });
 
-  if (!memorized || memorized.length === 0) {
-    const endVerse = await getPageAlignedEnd(1, 1);
-    return { surahNumber: 1, startVerse: 1, endVerse, surahName: 'Al-Fatiha' };
+  // Also check completed sessions as fallback
+  const { data: completedSessions } = await supabase
+    .from('hifz_sessions')
+    .select('surah_number, start_verse, end_verse')
+    .eq('user_id', userId)
+    .not('completed_at', 'is', null);
+
+  // Build a set of fully memorized surahs from both sources
+  const surahCoverage = new Map<number, { maxVerseEnd: number }>();
+
+  if (memorized) {
+    for (const m of memorized) {
+      const current = surahCoverage.get(m.surah_number);
+      if (!current || m.verse_end > current.maxVerseEnd) {
+        surahCoverage.set(m.surah_number, { maxVerseEnd: m.verse_end });
+      }
+    }
   }
 
-  // Build a set of fully memorized surahs
-  const surahCoverage = new Map<number, { maxVerseEnd: number }>();
-  for (const m of memorized) {
-    const current = surahCoverage.get(m.surah_number);
-    if (!current || m.verse_end > current.maxVerseEnd) {
-      surahCoverage.set(m.surah_number, { maxVerseEnd: m.verse_end });
+  if (completedSessions) {
+    for (const s of completedSessions) {
+      const current = surahCoverage.get(s.surah_number);
+      if (!current || s.end_verse > current.maxVerseEnd) {
+        surahCoverage.set(s.surah_number, { maxVerseEnd: s.end_verse });
+      }
     }
+  }
+
+  if (surahCoverage.size === 0) {
+    const endVerse = await getPageAlignedEnd(1, 1);
+    return { surahNumber: 1, startVerse: 1, endVerse, surahName: 'Al-Fatiha' };
   }
 
   // Check each surah in order to find the first gap
