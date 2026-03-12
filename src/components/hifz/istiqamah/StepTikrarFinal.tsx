@@ -14,10 +14,12 @@ interface Props {
 const TIKRAR_TARGET = 40;
 
 export default function StepTikrarFinal({ surahNumber, verseStart, verseEnd, onNext }: Props) {
+  const { isAdmin } = useAuth();
+  const minTarget = isAdmin ? 1 : TIKRAR_TARGET;
   const [inputValue, setInputValue] = useState('');
   const reps = Math.max(0, Math.min(parseInt(inputValue) || 0, TIKRAR_TARGET));
-  const remaining = TIKRAR_TARGET - reps;
-  const progress = (reps / TIKRAR_TARGET) * 100;
+  const remaining = Math.max(0, minTarget - reps);
+  const progress = (reps / minTarget) * 100;
   const surahName = SURAHS.find(s => s.number === surahNumber)?.name || '';
 
   return (

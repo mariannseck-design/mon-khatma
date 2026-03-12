@@ -207,6 +207,17 @@ export default function StepFusion({ parts, reciterId, onNext }: Props) {
         )}
       </AnimatePresence>
 
+      {isAdmin && phase !== 'recite' && (
+        <motion.button
+          whileTap={{ scale: 0.97 }}
+          onClick={onNext}
+          className="w-full rounded-2xl py-2.5 flex items-center justify-center gap-2 font-medium text-xs"
+          style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(212,175,55,0.2)', color: '#d4af37' }}
+        >
+          <FastForward className="h-3.5 w-3.5" />
+          Skip admin
+        </motion.button>
+      )}
       <motion.button
         whileTap={{ scale: 0.97 }}
         onClick={advancePhase}
