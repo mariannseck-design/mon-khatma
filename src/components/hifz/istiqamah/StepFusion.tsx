@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Layers, Volume2, Eye, EyeOff, Check } from 'lucide-react';
+import { Layers, Volume2, Eye, EyeOff, Check, FastForward } from 'lucide-react';
 import HifzMushafToggle, { getMushafMode, setMushafMode, type MushafMode } from '../HifzMushafToggle';
+import { useAuth } from '@/contexts/AuthContext';
 import HifzMushafImage from '../HifzMushafImage';
 import { getVersesByRange, type LocalAyah } from '@/lib/quranData';
 import { getAyahAudioUrl } from '@/hooks/useQuranAudio';
@@ -18,6 +19,7 @@ type FusionPhase = 'listen' | 'read' | 'recite';
 const FONT_FAMILY = "'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
 
 export default function StepFusion({ parts, reciterId, onNext }: Props) {
+  const { isAdmin } = useAuth();
   const [phase, setPhase] = useState<FusionPhase>('listen');
   const [ayahs, setAyahs] = useState<LocalAyah[]>([]);
   const [loading, setLoading] = useState(true);
@@ -205,6 +207,17 @@ export default function StepFusion({ parts, reciterId, onNext }: Props) {
         )}
       </AnimatePresence>
 
+      {isAdmin && phase !== 'recite' && (
+        <motion.button
+          whileTap={{ scale: 0.97 }}
+          onClick={onNext}
+          className="w-full rounded-2xl py-2.5 flex items-center justify-center gap-2 font-medium text-xs"
+          style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(212,175,55,0.2)', color: '#d4af37' }}
+        >
+          <FastForward className="h-3.5 w-3.5" />
+          Skip admin
+        </motion.button>
+      )}
       <motion.button
         whileTap={{ scale: 0.97 }}
         onClick={advancePhase}
