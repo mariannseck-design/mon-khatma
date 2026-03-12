@@ -66,6 +66,7 @@ export default function IstiqamahEngine({
           <StepImmersion
             key="immersion-global"
             {...globalProps}
+            reciterId={reciterId}
             onNext={next}
           />
         );
