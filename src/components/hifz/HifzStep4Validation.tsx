@@ -374,7 +374,7 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
           })}
         </div>
         <p className="text-xs text-center" style={{ color: 'rgba(255,255,255,0.35)' }}>
-          Essai {Math.min(successes + 1, 3)}/3
+          Essai {Math.min(successes + 1, 5)}/5
           {totalAttempts > 0 && ` · ${totalAttempts} tentative${totalAttempts > 1 ? 's' : ''} au total`}
         </p>
 
