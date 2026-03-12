@@ -1,21 +1,33 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+# Corriger la suggestion de reprise de mémorisation
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+## Problème
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+`findNextStartingPoint()` dans `hifzUtils.ts` ne consulte que la table `hifz_memorized_verses`. Si aucun verset n'est trouvé (sessions non terminées, données non sauvegardées), il retombe sur le verset 1 de Al-Fatiha.
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+Il faut aussi considérer les **sessions terminées** (`hifz_sessions` avec `completed_at` non null) comme source de progression.
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+## Plan
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+**Fichier : `src/lib/hifzUtils.ts` — fonction `findNextStartingPoint`**
+
+1. Après la requête sur `hifz_memorized_verses`, ajouter une requête de fallback sur `hifz_sessions` :
+   - Chercher les sessions complétées (`completed_at IS NOT NULL`) pour cet utilisateur
+   - En extraire le `surah_number`, `start_verse`, `end_verse` les plus récents
+   - Intégrer ces données dans la map `surahCoverage` (prendre le max de `verse_end` par sourate)
+
+2. Cela garantit que même si l'upsert dans `hifz_memorized_verses` a échoué, la progression est prise en compte via les sessions terminées.
+
+3. Le fallback final (sourate 1, verset 1) ne sera atteint que si l'utilisateur n'a réellement aucune donnée.
+
+```text
+findNextStartingPoint(userId)
+  ├── Query hifz_memorized_verses → surahCoverage
+  ├── Query hifz_sessions (completed) → merge into surahCoverage
+  ├── Find first gap in SURAHS order
+  └── Return { surahNumber, startVerse, endVerse }
+```
+
+Aucun autre fichier à modifier — `HifzConfig.tsx` appelle déjà `findNextStartingPoint` et applique le résultat.
 
