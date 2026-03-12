@@ -128,8 +128,9 @@ export function useMurajaData() {
   }, []);
 
   const rabtVerses = useMemo(() => {
+    const today = getTodayKey();
     return allVerses
-      .filter(v => v.memorized_at >= thirtyDaysCutoff)
+      .filter(v => v.memorized_at >= thirtyDaysCutoff && (v.liaison_start_date || v.memorized_at.split('T')[0]) < today)
       .sort((a, b) => a.surah_number - b.surah_number || a.verse_start - b.verse_start);
   }, [allVerses, thirtyDaysCutoff]);
 
