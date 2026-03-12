@@ -132,7 +132,7 @@ export default function HifzHubPage() {
 
         {/* Le Noble Coran */}
         <motion.div variants={itemVariants}>
-          {hasFullAccess ? (
+          {hasFullAccess && !accessLoading ? (
             <Link to="/quran-reader" className="block">
               <motion.div
                 className="relative overflow-hidden rounded-[2rem] p-7 group"
