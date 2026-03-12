@@ -1,11 +1,14 @@
+import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Info } from 'lucide-react';
+import { Info, Volume2 } from 'lucide-react';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import HifzStepWrapper from '../HifzStepWrapper';
 import { useIstiqamahState } from './useIstiqamahState';
 import StepComprehension from './StepComprehension';
 import StepImmersion from './StepImmersion';
 import StepTikrarFinal from './StepTikrarFinal';
+import { RECITERS } from '@/hooks/useQuranAudio';
 
 interface Props {
   surahNumber: number;
