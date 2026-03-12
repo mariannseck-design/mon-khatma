@@ -6,6 +6,21 @@ import HifzMushafToggle, { getMushafMode, setMushafMode, type MushafMode } from 
 import HifzMushafImage from '../HifzMushafImage';
 import { getVersesByRange, type LocalAyah } from '@/lib/quranData';
 
+const BASMALA_WORDS = ['بِسْمِ', 'ٱللَّهِ', 'ٱلرَّحْمَٰنِ', 'ٱلرَّحِيمِ'];
+function normalizeForComparison(s: string): string {
+  return s.replace(/[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED\u0640\u06DD\u06DE\u06E9\u06DA\u06DB\u06DC\u200E\u200F\u061C\u200B-\u200D\uFEFF]/gu, '').trim();
+}
+const BASMALA_NORMALIZED = BASMALA_WORDS.map(normalizeForComparison);
+function stripLeadingBasmala(text: string): string {
+  const trimmed = text.trimStart();
+  if (trimmed.startsWith('﷽')) return trimmed.slice(1).trimStart();
+  const words = trimmed.split(/\s+/u);
+  if (words.length < 4) return trimmed;
+  const first4 = words.slice(0, 4).map(normalizeForComparison);
+  if (first4.every((w, i) => w === BASMALA_NORMALIZED[i])) return words.slice(4).join(' ');
+  return trimmed;
+}
+
 interface Props {
   surahNumber: number;
   verseStart: number;
@@ -254,18 +269,27 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, onNex
     // Text mode
     const shownAyahs = ayahs.filter(a => versesToShow.includes(a.numberInSurah));
     if (!shownAyahs.length) return null;
+    const showBasmala = surahNumber !== 1 && surahNumber !== 9 && versesToShow.includes(1);
     return (
       <div className="rounded-xl px-4 py-4" dir="rtl" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(212,175,55,0.12)' }}>
+        {showBasmala && (
+          <p className="text-center mb-3" style={{ fontFamily: FONT_FAMILY, fontSize: '20px', color: '#2E7D32', lineHeight: 2 }}>
+            بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
+          </p>
+        )}
         <div style={{ fontFamily: FONT_FAMILY, fontSize: '22px', lineHeight: '48px', color: '#e8e0d0', textAlign: 'center' }}>
-          {shownAyahs.map((a, i) => (
-            <span key={a.numberInSurah}>
-              {a.text}{' '}
-              <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '18px', height: '18px', borderRadius: '50%', backgroundColor: '#2E7D32', color: '#fff', fontSize: '10px', fontFamily: 'system-ui', fontWeight: 700, verticalAlign: 'middle' }}>
-                {a.numberInSurah}
+          {shownAyahs.map((a, i) => {
+            const text = showBasmala && a.numberInSurah === 1 ? stripLeadingBasmala(a.text) : a.text;
+            return (
+              <span key={a.numberInSurah}>
+                {text}{' '}
+                <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '18px', height: '18px', borderRadius: '50%', backgroundColor: '#2E7D32', color: '#fff', fontSize: '10px', fontFamily: 'system-ui', fontWeight: 700, verticalAlign: 'middle' }}>
+                  {a.numberInSurah}
+                </span>
+                {i < shownAyahs.length - 1 ? ' ' : ''}
               </span>
-              {i < shownAyahs.length - 1 ? ' ' : ''}
-            </span>
-          ))}
+            );
+          })}
         </div>
       </div>
     );
@@ -348,10 +372,10 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, onNex
               icon={isLiaison ? Link : Volume2}
               iconColor={isLiaison ? '#a78bfa' : '#4ecdc4'}
               iconBg={isLiaison ? 'rgba(167,139,250,0.15)' : 'rgba(78,205,196,0.15)'}
-              title={isLiaison ? 'Liaison — Écouter' : 'Écouter & répéter'}
+              title={isLiaison ? 'Liaison — Écouter' : 'Écouter, lire & répéter'}
               subtitle={isLiaison
                 ? `Écoutez les versets ${liaisonVerses[0]}–${liaisonVerses[liaisonVerses.length - 1]} enchaînés`
-                : 'Écoutez ce verset avec le récitateur'
+                : 'Écoute le récitateur en suivant sur le Mushaf, puis répète'
               }
             />
 
