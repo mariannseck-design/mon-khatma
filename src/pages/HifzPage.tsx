@@ -10,7 +10,7 @@ import HifzDiagnostic from '@/components/hifz/HifzDiagnostic';
 import HifzStep0Intention from '@/components/hifz/HifzStep0Intention';
 import HifzStep1Revision from '@/components/hifz/HifzStep1Revision';
 import HifzStep2Impregnation from '@/components/hifz/HifzStep2Impregnation';
-import HifzStep3Memorisation from '@/components/hifz/HifzStep3Memorisation';
+import IstiqamahEngine from '@/components/hifz/istiqamah/IstiqamahEngine';
 import HifzStep4Validation from '@/components/hifz/HifzStep4Validation';
 import HifzSuccess from '@/components/hifz/HifzSuccess';
 import HifzBreathingPause from '@/components/hifz/HifzBreathingPause';
