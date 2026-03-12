@@ -82,7 +82,7 @@ export default function HifzPage() {
   const stepTimesRef = useRef<Record<string, number>>({});
 
   useEffect(() => {
-    if (session && step >= 0 && step <= 4) {
+    if (session && step >= 0 && step <= 5) {
       saveLocalSession(session, step, sessionId);
     }
   }, [session, step, sessionId]);
