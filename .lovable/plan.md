@@ -1,21 +1,19 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Restreindre Hifz aux admins uniquement, garder Muraja'a et Suivi pour les VIP
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Problème
+Actuellement, `/hifz` est derrière un `ComingSoonGate` qui laisse passer les VIP (`hasFullAccess`). L'objectif est de bloquer `/hifz` pour les VIP aussi (admin uniquement), tout en gardant `/muraja`, `/hifz-suivi` et `/hifz-hub` accessibles aux VIP.
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Changements
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+**1. `src/App.tsx`** — Route `/hifz`
+- Ajouter le prop `adminOnly` au `ComingSoonGate` existant (il est déjà dans l'interface mais pas utilisé dans la logique).
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+**2. `src/components/layout/ComingSoonGate.tsx`**
+- Modifier la condition de passage : si `adminOnly` est `true`, seuls les admins passent (`isAdmin`). Sinon, `hasFullAccess` suffit comme avant.
+- Ligne 18 : `if (adminOnly ? isAdmin : hasFullAccess) return <>{children}</>;`
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+**3. `src/pages/HifzHubPage.tsx`** — Carte "Méthode Tikrar"
+- Conditionner le lien vers `/hifz` : si `isAdmin`, le lien fonctionne normalement. Sinon, afficher "Bientôt disponible" au tap (même pattern que la carte Mourad), ou désactiver le lien avec un indicateur visuel.
 
