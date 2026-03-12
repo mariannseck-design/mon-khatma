@@ -502,7 +502,7 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
                 className="w-full rounded-xl py-3 font-semibold text-sm"
                 style={{ background: '#065F46', color: '#FDFBF7' }}
               >
-                Valider mon Hifz ✨ ({3 + bonusCount} récitations)
+                Valider mon Hifz ✨ ({5 + bonusCount} récitations)
               </motion.button>
             )}
           </div>
