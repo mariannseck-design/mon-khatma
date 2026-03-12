@@ -9,6 +9,7 @@ interface Props {
   surahNumber: number;
   verseStart: number;
   verseEnd: number;
+  verseLabel?: string;
   onNext: () => void;
 }
 
