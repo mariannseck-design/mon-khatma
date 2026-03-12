@@ -206,6 +206,20 @@ export default function HifzStep5Tikrar({
           Solde restant : <strong style={{ color: isComplete ? '#d4af37' : '#f0e6c8' }}>{balance}</strong> récitation{balance !== 1 ? 's' : ''}
         </p>
 
+        {/* Urgent warning banner */}
+        {urgentWarning && (
+          <motion.div
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="rounded-xl px-4 py-3 text-center"
+            style={{ background: 'rgba(251,146,60,0.15)', border: '1px solid rgba(251,146,60,0.3)' }}
+          >
+            <p className="text-xs font-semibold" style={{ color: '#fb923c' }}>
+              ⚠️ Plus que {remaining} avant l'expiration ! Complétez vos {balance} récitation{balance !== 1 ? 's' : ''} restante{balance !== 1 ? 's' : ''}.
+            </p>
+          </motion.div>
+        )}
+
         {/* Countdown */}
         <div className="flex items-center justify-center gap-1.5 text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>
           <Clock className="h-3.5 w-3.5" />
