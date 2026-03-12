@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { AnimatePresence } from 'framer-motion';
-import { Info } from 'lucide-react';
+import { Info, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import HifzStepWrapper from '../HifzStepWrapper';
 import { useIstiqamahState } from './useIstiqamahState';
