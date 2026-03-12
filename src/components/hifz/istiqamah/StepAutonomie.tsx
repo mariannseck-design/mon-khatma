@@ -9,12 +9,13 @@ interface Props {
   surahNumber: number;
   verseStart: number;
   verseEnd: number;
+  verseLabel?: string;
   onNext: () => void;
 }
 
 const FONT_FAMILY = "'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
 
-export default function StepAutonomie({ surahNumber, verseStart, verseEnd, onNext }: Props) {
+export default function StepAutonomie({ surahNumber, verseStart, verseEnd, verseLabel, onNext }: Props) {
   const [mushafMode, setMushafModeState] = useState<MushafMode>(getMushafMode);
   const [ayahs, setAyahs] = useState<LocalAyah[]>([]);
   const [loading, setLoading] = useState(true);
@@ -75,10 +76,10 @@ export default function StepAutonomie({ surahNumber, verseStart, verseEnd, onNex
           <Eye className="h-7 w-7" style={{ color: '#f0d060' }} />
         </div>
         <h3 className="text-base font-bold" style={{ color: '#f0e6c8', fontFamily: "'Playfair Display', serif" }}>
-          Autonomie Visuelle
+          Récitation assistée{verseLabel ? ` — ${verseLabel}` : ''}
         </h3>
         <p className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
-          Lisez seul(e) en regardant le Mushaf, sans audio
+          Récitez en regardant le Mushaf, sans audio
         </p>
       </div>
 

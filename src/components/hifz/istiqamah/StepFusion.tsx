@@ -98,9 +98,9 @@ export default function StepFusion({ parts, onNext }: Props) {
   }, [peekMode]);
 
   const phaseLabels: Record<FusionPhase, { title: string; desc: string }> = {
-    listen: { title: 'Écoute fusionnée', desc: `Écoutez les ${parts.length} parties enchaînées` },
-    read: { title: 'Lecture fusionnée', desc: 'Lisez le passage complet avec le Mushaf' },
-    recite: { title: 'Récitation fusionnée', desc: 'Récitez de mémoire le passage complet' },
+    listen: { title: 'Écoute fusionnée', desc: `Écoutez l'enchaînement des versets ${globalStart} à ${globalEnd} ensemble (5 fois)` },
+    read: { title: 'Lecture liée', desc: 'Lisez les versets en regardant le Mushaf, sans audio' },
+    recite: { title: 'Récitation liée de mémoire', desc: 'Récitez les versets de mémoire, sans regarder le texte' },
   };
 
   const showMushaf = phase === 'read' || (phase === 'recite' && peekMode);

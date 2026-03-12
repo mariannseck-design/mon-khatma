@@ -25,12 +25,12 @@ interface Props {
 }
 
 const STEP_LABELS: Record<string, string> = {
-  comprehension: "L'Éveil du Sens",
-  immersion: 'Immersion Sonore',
+  immersion: 'Préparer l\'oreille',
+  comprehension: 'Comprendre le message',
   impregnation: 'Imprégnation',
-  autonomie: 'Autonomie Visuelle',
-  gravure: 'Gravure par le cœur',
-  fusion: 'Fusion',
+  autonomie: 'Récitation assistée',
+  gravure: 'Essai de mémoire',
+  fusion: 'Créer le lien',
   tikrar: 'Tikrar Final',
 };
 
@@ -41,14 +41,11 @@ export default function IstiqamahEngine({
   const state = useIstiqamahState(surahNumber, startVerse, endVerse);
   const { parts, loading, currentNode, progress, next, back, currentPart, fusionParts, currentNodeIndex, totalNodes } = state;
 
-  // Track completed parts
   const completedParts = useMemo(() => {
     const set = new Set<number>();
     if (!currentNode) return set;
-    // All parts before the current one in the flow are done
     for (let i = 0; i < parts.length; i++) {
       if (currentNode.partIndex > i) set.add(i);
-      // If we're in fusion or tikrar, all parts up to the fusion range are done
       if (currentNode.type === 'fusion' && currentNode.fusionRange) {
         for (const idx of currentNode.fusionRange) {
           if (idx < (currentNode.fusionRange[currentNode.fusionRange.length - 1])) set.add(idx);
@@ -71,31 +68,33 @@ export default function IstiqamahEngine({
 
   const stepLabel = currentNode ? STEP_LABELS[currentNode.type] || '' : '';
 
+  // For global steps (immersion/comprehension), pass the full range
+  const globalProps = { surahNumber, verseStart: startVerse, verseEnd: endVerse };
+
+  // Verse label for per-verse steps
+  const verseLabel = currentPart ? `Verset ${currentPart.verseStart}` : '';
+
   const renderStep = () => {
     if (!currentNode) return null;
 
     switch (currentNode.type) {
-      case 'comprehension':
-        return currentPart ? (
-          <StepComprehension
-            key={`comp-${currentPart.partIndex}`}
-            surahNumber={currentPart.surahNumber}
-            verseStart={currentPart.verseStart}
-            verseEnd={currentPart.verseEnd}
-            onNext={next}
-          />
-        ) : null;
-
       case 'immersion':
-        return currentPart ? (
+        return (
           <StepImmersion
-            key={`imm-${currentPart.partIndex}`}
-            surahNumber={currentPart.surahNumber}
-            verseStart={currentPart.verseStart}
-            verseEnd={currentPart.verseEnd}
+            key="immersion-global"
+            {...globalProps}
             onNext={next}
           />
-        ) : null;
+        );
+
+      case 'comprehension':
+        return (
+          <StepComprehension
+            key="comprehension-global"
+            {...globalProps}
+            onNext={next}
+          />
+        );
 
       case 'impregnation':
         return currentPart ? (
@@ -104,6 +103,7 @@ export default function IstiqamahEngine({
             surahNumber={currentPart.surahNumber}
             verseStart={currentPart.verseStart}
             verseEnd={currentPart.verseEnd}
+            verseLabel={verseLabel}
             onNext={next}
           />
         ) : null;
@@ -115,6 +115,7 @@ export default function IstiqamahEngine({
             surahNumber={currentPart.surahNumber}
             verseStart={currentPart.verseStart}
             verseEnd={currentPart.verseEnd}
+            verseLabel={verseLabel}
             onNext={next}
           />
         ) : null;
@@ -126,6 +127,7 @@ export default function IstiqamahEngine({
             surahNumber={currentPart.surahNumber}
             verseStart={currentPart.verseStart}
             verseEnd={currentPart.verseEnd}
+            verseLabel={verseLabel}
             onNext={next}
           />
         ) : null;
@@ -158,7 +160,6 @@ export default function IstiqamahEngine({
   return (
     <HifzStepWrapper stepNumber={3} stepTitle="Istiqâmah" onBack={onBack} onPause={onPause}>
       <div className="text-center space-y-4">
-        {/* Info header */}
         <div className="flex items-center justify-center gap-2">
           <p className="text-sm font-semibold" style={{ color: '#d4af37' }}>Istiqâmah</p>
           <Popover>
@@ -171,12 +172,11 @@ export default function IstiqamahEngine({
               className="text-xs leading-relaxed"
               style={{ background: '#1a2e1a', border: '1px solid rgba(212,175,55,0.3)', color: 'rgba(255,255,255,0.85)' }}
             >
-              L'Istiqâmah désigne la constance et la persévérance. Le parcours vous guide à travers la compréhension, l'écoute, l'imprégnation, la lecture autonome et la récitation de mémoire pour chaque partie, puis fusionne progressivement les parties avant un compteur final de 40 répétitions.
+              L'Istiqâmah désigne la constance et la persévérance. Le parcours commence par l'écoute et la compréhension du passage, puis vous guide verset par verset à travers l'imprégnation, la lecture autonome et la récitation de mémoire, en fusionnant progressivement les versets avant un compteur final de 40 répétitions.
             </PopoverContent>
           </Popover>
         </div>
 
-        {/* Progress bar */}
         <IstiqamahProgressBar
           progress={progress}
           currentStep={currentNodeIndex + 1}
@@ -184,7 +184,6 @@ export default function IstiqamahEngine({
           label={stepLabel}
         />
 
-        {/* Part indicator */}
         {parts.length > 1 && (
           <IstiqamahPartIndicator
             parts={parts}
@@ -193,12 +192,10 @@ export default function IstiqamahEngine({
           />
         )}
 
-        {/* Step content */}
         <AnimatePresence mode="wait">
           {renderStep()}
         </AnimatePresence>
 
-        {/* Footer */}
         <p className="text-xs italic leading-relaxed" style={{ color: 'rgba(212,175,55,0.6)' }}>
           Bismillah, qu'Allah{' '}
           <span style={{ fontFamily: "'Amiri', serif", fontWeight: 'bold', fontSize: '1.1em' }}>(عز وجل)</span>

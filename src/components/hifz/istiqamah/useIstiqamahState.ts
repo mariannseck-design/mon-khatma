@@ -2,8 +2,8 @@ import { useState, useCallback, useEffect, useMemo } from 'react';
 import { splitIntoParts, type Part } from './partSplitter';
 
 export type StepName =
-  | 'comprehension'
   | 'immersion'
+  | 'comprehension'
   | 'impregnation'
   | 'autonomie'
   | 'gravure'
@@ -12,7 +12,7 @@ export type StepName =
 
 interface FlowNode {
   type: StepName;
-  partIndex: number; // -1 for fusion/tikrar
+  partIndex: number; // -1 for global steps (immersion, comprehension, tikrar)
   fusionRange?: number[]; // indices of parts to fuse
 }
 
@@ -29,25 +29,32 @@ export interface IstiqamahState {
   fusionParts: Part[];
 }
 
-const STEPS_PER_PART: StepName[] = [
-  'comprehension',
-  'immersion',
-  'impregnation',
-  'autonomie',
-  'gravure',
-];
-
+/**
+ * New verse-by-verse flow:
+ *  1. Immersion (global)
+ *  2. Comprehension (global)
+ *  For each verse i:
+ *    3. Impregnation (verse i)
+ *    4. Autonomie (verse i)
+ *    5. Gravure (verse i)
+ *    6. Fusion (verses 0..i) — only after verse 2+
+ *  Final: Tikrar
+ */
 function buildFlow(parts: Part[]): FlowNode[] {
   const flow: FlowNode[] = [];
 
-  for (let i = 0; i < parts.length; i++) {
-    // 5 steps for this part
-    for (const step of STEPS_PER_PART) {
-      flow.push({ type: step, partIndex: i });
-    }
+  // Global preparation
+  flow.push({ type: 'immersion', partIndex: -1 });
+  flow.push({ type: 'comprehension', partIndex: -1 });
 
-    // Fusion after part 2+ (merge all parts seen so far)
-    if (parts.length > 1 && i > 0) {
+  // Per-verse cycle
+  for (let i = 0; i < parts.length; i++) {
+    flow.push({ type: 'impregnation', partIndex: i });
+    flow.push({ type: 'autonomie', partIndex: i });
+    flow.push({ type: 'gravure', partIndex: i });
+
+    // Fusion after 2nd verse and each subsequent
+    if (i > 0) {
       const fusionRange = Array.from({ length: i + 1 }, (_, k) => k);
       flow.push({ type: 'fusion', partIndex: -1, fusionRange });
     }

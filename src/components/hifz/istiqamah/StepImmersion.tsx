@@ -98,10 +98,10 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, onNex
           <Volume2 className="h-7 w-7" style={{ color: '#4ecdc4' }} />
         </div>
         <h3 className="text-base font-bold" style={{ color: '#f0e6c8', fontFamily: "'Playfair Display', serif" }}>
-          Immersion Sonore
+          Préparer l'oreille
         </h3>
         <p className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
-          Écoutez 3 fois attentivement pour sécuriser le Tajwid
+          Écoutez le passage 3 fois attentivement pour sécuriser votre prononciation et votre Tajwid
         </p>
       </div>
 

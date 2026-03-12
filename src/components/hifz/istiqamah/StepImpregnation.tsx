@@ -10,13 +10,14 @@ interface Props {
   surahNumber: number;
   verseStart: number;
   verseEnd: number;
+  verseLabel?: string;
   onNext: () => void;
 }
 
 const FONT_FAMILY = "'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
-const TARGET = 7;
+const TARGET = 10;
 
-export default function StepImpregnation({ surahNumber, verseStart, verseEnd, onNext }: Props) {
+export default function StepImpregnation({ surahNumber, verseStart, verseEnd, verseLabel, onNext }: Props) {
   const [count, setCount] = useState(0);
   const [mushafMode, setMushafModeState] = useState<MushafMode>(getMushafMode);
   const [ayahs, setAyahs] = useState<LocalAyah[]>([]);
@@ -135,10 +136,10 @@ export default function StepImpregnation({ surahNumber, verseStart, verseEnd, on
           <RefreshCw className="h-7 w-7" style={{ color: '#45b7aa' }} />
         </div>
         <h3 className="text-base font-bold" style={{ color: '#f0e6c8', fontFamily: "'Playfair Display', serif" }}>
-          Imprégnation
+          Imprégnation{verseLabel ? ` — ${verseLabel}` : ''}
         </h3>
         <p className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
-          Répétez avec le récitateur en regardant le Mushaf
+          Écoutez et répétez 5 à 10 fois en suivant sur le Mushaf
         </p>
       </div>
 

@@ -89,7 +89,7 @@ export default function StepGravure({ surahNumber, verseStart, verseEnd, verseLa
           <Brain className="h-7 w-7" style={{ color: '#d4af37' }} />
         </div>
         <h3 className="text-base font-bold" style={{ color: '#f0e6c8', fontFamily: "'Playfair Display', serif" }}>
-          Gravure par le cœur
+          Essai de mémoire{verseLabel ? ` — ${verseLabel}` : ''}
         </h3>
         <p className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
           Récitez de mémoire — sans Mushaf ni audio
