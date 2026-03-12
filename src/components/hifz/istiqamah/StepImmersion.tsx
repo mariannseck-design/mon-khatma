@@ -124,6 +124,44 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, onNex
     }
   }, [isPlaying, isLiaison, liaisonVerses, currentVerse, stopAudio, playSequence, playSingleVerse]);
 
+  // Hint replay — plays audio once without incrementing any counter
+  const playHint = useCallback(() => {
+    if (isPlayingRef.current) return;
+    if (isLiaison) {
+      (async () => {
+        isPlayingRef.current = true;
+        sequenceAbortRef.current = false;
+        setIsPlaying(true);
+        for (const verse of liaisonVerses) {
+          if (sequenceAbortRef.current) break;
+          const url = await getAudioUrl(verse);
+          if (!url) continue;
+          await new Promise<void>((resolve) => {
+            const audio = new Audio(url);
+            audioRef.current = audio;
+            audio.onended = () => resolve();
+            audio.onerror = () => resolve();
+            audio.play().catch(() => resolve());
+          });
+        }
+        isPlayingRef.current = false;
+        setIsPlaying(false);
+      })();
+    } else {
+      (async () => {
+        const url = await getAudioUrl(currentVerse);
+        if (!url) return;
+        isPlayingRef.current = true;
+        setIsPlaying(true);
+        const audio = new Audio(url);
+        audioRef.current = audio;
+        audio.onended = () => { isPlayingRef.current = false; setIsPlaying(false); };
+        audio.onerror = () => { isPlayingRef.current = false; setIsPlaying(false); };
+        audio.play().catch(() => { isPlayingRef.current = false; setIsPlaying(false); });
+      })();
+    }
+  }, [isLiaison, liaisonVerses, currentVerse, getAudioUrl]);
+
   useEffect(() => () => { stopAudio(); }, []);
 
   // Reset on verse change
