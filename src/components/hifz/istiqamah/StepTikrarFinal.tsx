@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Star, Check } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { SURAHS } from '@/lib/surahData';
+import TikrarInstructionsModal from '../TikrarInstructionsModal';
 
 interface Props {
   surahNumber: number;
@@ -17,6 +18,7 @@ export default function StepTikrarFinal({ surahNumber, verseStart, verseEnd, onN
   const { isAdmin } = useAuth();
   const minTarget = isAdmin ? 1 : TIKRAR_TARGET;
   const [inputValue, setInputValue] = useState('');
+  const [showInstructions, setShowInstructions] = useState(false);
   const reps = Math.max(0, Math.min(parseInt(inputValue) || 0, TIKRAR_TARGET));
   const remaining = Math.max(0, minTarget - reps);
   const progress = (reps / minTarget) * 100;
@@ -52,6 +54,15 @@ export default function StepTikrarFinal({ surahNumber, verseStart, verseEnd, onN
           Règle d'or : récitation exclusivement de mémoire. N'ouvrez le Mushaf qu'en cas de doute sérieux, puis refermez-le immédiatement.
         </p>
       </div>
+
+      {/* Instructions link */}
+      <button
+        onClick={() => setShowInstructions(true)}
+        className="text-xs underline underline-offset-2 transition-colors"
+        style={{ color: 'rgba(212,175,55,0.7)' }}
+      >
+        💡 Cliquez ici pour lire les instructions avant de commencer
+      </button>
 
       {/* Circular progress */}
       <div className="flex justify-center">
@@ -117,6 +128,12 @@ export default function StepTikrarFinal({ surahNumber, verseStart, verseEnd, onN
           Valider — Allahumma barik
         </motion.button>
       )}
+
+      {/* Instructions modal */}
+      <TikrarInstructionsModal
+        open={showInstructions}
+        onClose={() => setShowInstructions(false)}
+      />
     </motion.div>
   );
 }
