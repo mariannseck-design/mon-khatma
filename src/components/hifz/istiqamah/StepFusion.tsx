@@ -141,7 +141,7 @@ export default function StepFusion({ parts, onNext }: Props) {
           <Layers className="h-7 w-7" style={{ color: '#d4af37' }} />
         </div>
         <h3 className="text-base font-bold" style={{ color: '#f0e6c8', fontFamily: "'Playfair Display', serif" }}>
-          Fusion — {parts.length} parties
+          Créer le lien — Versets {globalStart} à {globalEnd}
         </h3>
       </div>
 
