@@ -2,15 +2,9 @@ import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { RotateCw, Check, Clock } from 'lucide-react';
 import HifzStepWrapper from './HifzStepWrapper';
+import TikrarInstructionsModal from './TikrarInstructionsModal';
 
 const TOTAL_REPS = 40;
-
-const MOTIVATIONAL: Record<number, string> = {
-  10: '10 déjà ! Continue, tu es sur la bonne voie 💪',
-  20: 'Mi-chemin atteint ! La moitié est faite ✨',
-  30: 'Plus que 10 ! Le Tikrar scelle ta mémoire 🔒',
-  39: 'Dernière récitation ! Allahoumma bârik 🤲',
-};
 
 function formatCountdown(ms: number): string {
   if (ms <= 0) return '0h 00min';
@@ -38,12 +32,16 @@ export default function HifzStep5Tikrar({
   const saved = stepStatus?.tikrar_count ?? 0;
   const savedStart = stepStatus?.tikrar_started_at ?? Date.now();
 
-  const [count, setCount] = useState<number>(saved);
+  const [inputValue, setInputValue] = useState<string>(String(saved || ''));
   const [startedAt, setStartedAt] = useState<number>(savedStart);
   const [remaining, setRemaining] = useState('');
-  const [motivMsg, setMotivMsg] = useState<string | null>(null);
-  const [showMotiv, setShowMotiv] = useState(false);
   const [expired, setExpired] = useState(false);
+  const [showInstructions, setShowInstructions] = useState(false);
+
+  const count = Math.max(0, Math.min(parseInt(inputValue) || 0, TOTAL_REPS));
+  const balance = TOTAL_REPS - count;
+  const progress = (count / TOTAL_REPS) * 100;
+  const isComplete = count >= TOTAL_REPS;
 
   // Countdown timer
   useEffect(() => {
@@ -72,24 +70,13 @@ export default function HifzStep5Tikrar({
     });
   }, [count]);
 
-  const handleRecite = useCallback(() => {
-    if (count >= TOTAL_REPS || expired) return;
-    const next = count + 1;
-    setCount(next);
-
-    if (navigator.vibrate) navigator.vibrate(30);
-
-    const msg = MOTIVATIONAL[next];
-    if (msg) {
-      setMotivMsg(msg);
-      setShowMotiv(true);
-      setTimeout(() => setShowMotiv(false), 3000);
-    }
-  }, [count, expired]);
+  const handleInputChange = useCallback((value: string) => {
+    setInputValue(value);
+  }, []);
 
   const handleReset = useCallback(() => {
     const now = Date.now();
-    setCount(0);
+    setInputValue('');
     setStartedAt(now);
     setExpired(false);
     onUpdateStatus?.({
@@ -98,10 +85,6 @@ export default function HifzStep5Tikrar({
       tikrar_started_at: now,
     });
   }, [stepStatus, onUpdateStatus]);
-
-  const balance = TOTAL_REPS - count;
-  const progress = (count / TOTAL_REPS) * 100;
-  const isComplete = count >= TOTAL_REPS;
 
   // Circular progress
   const radius = 54;
@@ -124,9 +107,17 @@ export default function HifzStep5Tikrar({
           Tikrar Final
         </h2>
         <p className="text-xs leading-relaxed" style={{ color: 'rgba(240,230,200,0.7)' }}>
-          Récitez cette portion <strong style={{ color: '#d4af37' }}>40 fois</strong> dans les 24h
-          pour sceller votre mémorisation.
+          Récitez cette portion <strong style={{ color: '#d4af37' }}>40 fois</strong> pour sceller votre mémorisation.
         </p>
+
+        {/* Instructions link */}
+        <button
+          onClick={() => setShowInstructions(true)}
+          className="text-xs underline underline-offset-2 transition-colors"
+          style={{ color: 'rgba(212,175,55,0.7)' }}
+        >
+          💡 Cliquez ici pour lire les instructions avant de commencer
+        </button>
 
         {/* Circular counter */}
         <div className="relative w-40 h-40 mx-auto">
@@ -155,9 +146,34 @@ export default function HifzStep5Tikrar({
           </div>
         </div>
 
+        {/* Input field */}
+        <div className="space-y-2">
+          <label className="block text-xs font-medium" style={{ color: 'rgba(255,255,255,0.5)' }}>
+            Combien de répétitions avez-vous effectuées ?
+          </label>
+          <input
+            type="number"
+            inputMode="numeric"
+            min="0"
+            max={TOTAL_REPS}
+            value={inputValue}
+            onChange={e => handleInputChange(e.target.value)}
+            onFocus={e => e.target.select()}
+            placeholder="0"
+            disabled={expired}
+            className="w-full rounded-xl px-4 py-3 text-center text-lg font-bold outline-none disabled:opacity-50"
+            style={{
+              background: 'rgba(255,255,255,0.08)',
+              border: '1px solid rgba(212,175,55,0.3)',
+              color: '#f0e6c8',
+              fontSize: '16px',
+            }}
+          />
+        </div>
+
         {/* Balance */}
         <p className="text-sm" style={{ color: 'rgba(240,230,200,0.6)' }}>
-          Solde restant : <strong style={{ color: '#f0e6c8' }}>{balance}</strong> récitation{balance !== 1 ? 's' : ''}
+          Solde restant : <strong style={{ color: isComplete ? '#d4af37' : '#f0e6c8' }}>{balance}</strong> récitation{balance !== 1 ? 's' : ''}
         </p>
 
         {/* Countdown */}
@@ -165,19 +181,6 @@ export default function HifzStep5Tikrar({
           <Clock className="h-3.5 w-3.5" />
           <span>Temps restant : {remaining}</span>
         </div>
-
-        {/* Motivational message */}
-        {showMotiv && motivMsg && (
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            className="text-sm font-medium px-4"
-            style={{ color: '#f0d060' }}
-          >
-            {motivMsg}
-          </motion.p>
-        )}
 
         {/* Action buttons */}
         {expired && !isComplete ? (
@@ -203,21 +206,7 @@ export default function HifzStep5Tikrar({
               Recommencer le Tikrar
             </motion.button>
           </motion.div>
-        ) : !isComplete ? (
-          <motion.button
-            whileTap={{ scale: 0.93 }}
-            onClick={handleRecite}
-            className="mx-auto flex items-center gap-2 px-8 py-3.5 rounded-2xl font-bold text-sm transition-all"
-            style={{
-              background: 'linear-gradient(135deg, #d4af37, #c9a030)',
-              color: '#1a2e1a',
-              boxShadow: '0 6px 20px rgba(212,175,55,0.35)',
-            }}
-          >
-            <RotateCw className="h-5 w-5" />
-            J'ai récité ✓
-          </motion.button>
-        ) : (
+        ) : isComplete ? (
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -240,8 +229,14 @@ export default function HifzStep5Tikrar({
               Valider le Tikrar
             </motion.button>
           </motion.div>
-        )}
+        ) : null}
       </div>
+
+      {/* Instructions modal */}
+      <TikrarInstructionsModal
+        open={showInstructions}
+        onClose={() => setShowInstructions(false)}
+      />
     </HifzStepWrapper>
   );
 }

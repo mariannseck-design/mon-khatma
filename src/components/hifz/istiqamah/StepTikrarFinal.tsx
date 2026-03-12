@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Star, Check } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { SURAHS } from '@/lib/surahData';
+import TikrarInstructionsModal from '../TikrarInstructionsModal';
 
 interface Props {
   surahNumber: number;
