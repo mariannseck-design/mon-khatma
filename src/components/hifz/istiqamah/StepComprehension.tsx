@@ -44,7 +44,7 @@ export default function StepComprehension({ surahNumber, verseStart, verseEnd, o
           <BookOpen className="h-7 w-7" style={{ color: '#d4af37' }} />
         </div>
         <h3 className="text-base font-bold" style={{ color: '#f0e6c8', fontFamily: "'Playfair Display', serif" }}>
-          L'Éveil du Sens
+          Comprendre le message
         </h3>
         <p className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
           {surahName} · Versets {verseStart}-{verseEnd}
@@ -56,7 +56,10 @@ export default function StepComprehension({ surahNumber, verseStart, verseEnd, o
         style={{ background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.2)' }}
       >
         <p className="text-xs font-medium leading-relaxed" style={{ color: '#d4af37' }}>
-          Lisez attentivement la traduction ci-dessous pour comprendre le sens des versets que vous allez mémoriser.
+          Consultez le Tafsir ou la traduction pour saisir le sens de ce que vous mémorisez.
+        </p>
+        <p className="text-xs mt-1 italic" style={{ color: 'rgba(212,175,55,0.7)' }}>
+          💡 Vous pouvez effectuer cette étape la veille pour laisser votre esprit s'en imprégner durant la nuit.
         </p>
       </div>
 

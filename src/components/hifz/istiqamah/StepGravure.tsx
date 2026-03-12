@@ -9,13 +9,14 @@ interface Props {
   surahNumber: number;
   verseStart: number;
   verseEnd: number;
+  verseLabel?: string;
   onNext: () => void;
 }
 
 const FONT_FAMILY = "'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
 const TARGET = 5;
 
-export default function StepGravure({ surahNumber, verseStart, verseEnd, onNext }: Props) {
+export default function StepGravure({ surahNumber, verseStart, verseEnd, verseLabel, onNext }: Props) {
   const [count, setCount] = useState(0);
   const [peekMode, setPeekMode] = useState(false);
   const [mushafMode, setMushafModeState] = useState<MushafMode>(getMushafMode);
@@ -88,7 +89,7 @@ export default function StepGravure({ surahNumber, verseStart, verseEnd, onNext 
           <Brain className="h-7 w-7" style={{ color: '#d4af37' }} />
         </div>
         <h3 className="text-base font-bold" style={{ color: '#f0e6c8', fontFamily: "'Playfair Display', serif" }}>
-          Gravure par le cœur
+          Essai de mémoire{verseLabel ? ` — ${verseLabel}` : ''}
         </h3>
         <p className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
           Récitez de mémoire — sans Mushaf ni audio

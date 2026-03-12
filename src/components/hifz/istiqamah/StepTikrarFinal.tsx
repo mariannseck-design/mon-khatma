@@ -38,11 +38,15 @@ export default function StepTikrarFinal({ surahNumber, verseStart, verseEnd, onN
         </p>
       </div>
 
-      <div className="rounded-xl px-4 py-3" style={{ background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.2)' }}>
+      <div className="rounded-xl px-4 py-3 space-y-2" style={{ background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.2)' }}>
         <p className="text-xs font-medium leading-relaxed text-center" style={{ color: '#d4af37' }}>
           Objectif : {TIKRAR_TARGET} répétitions de mémoire pour l'ensemble du passage du jour.
-          <br />
-          <span className="font-normal" style={{ color: 'rgba(212,175,55,0.7)' }}>Récitation de mémoire uniquement.</span>
+        </p>
+        <p className="text-xs leading-relaxed text-center" style={{ color: 'rgba(212,175,55,0.7)' }}>
+          💡 Divisez vos 40 répétitions en 10 sessions de 4 par heure pour rester frais !
+        </p>
+        <p className="text-xs italic leading-relaxed text-center" style={{ color: 'rgba(212,175,55,0.6)' }}>
+          Règle d'or : récitation exclusivement de mémoire. N'ouvrez le Mushaf qu'en cas de doute sérieux, puis refermez-le immédiatement.
         </p>
       </div>
 
