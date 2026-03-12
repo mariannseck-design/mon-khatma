@@ -9,6 +9,7 @@ import type { Part } from './partSplitter';
 
 interface Props {
   parts: Part[];
+  reciterId?: string;
   onNext: () => void;
 }
 
