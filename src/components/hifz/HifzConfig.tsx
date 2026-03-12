@@ -257,37 +257,6 @@ export default function HifzConfig({ onStart }: HifzConfigProps) {
         </div>
       )}
 
-      {/* Repetition level */}
-      <div className="space-y-3">
-        <p className="text-white/50 text-xs uppercase tracking-wider">Niveau d'ancrage</p>
-        <div className="grid grid-cols-3 gap-2">
-          {REPETITION_LEVELS.map(level => (
-            <button
-              key={level.value}
-              onClick={() => setRepetitionLevel(level.value)}
-              className="rounded-xl p-3 text-center transition-all"
-              style={{
-                background: repetitionLevel === level.value
-                  ? 'rgba(212,175,55,0.25)'
-                  : 'rgba(255,255,255,0.06)',
-                border: `1px solid ${repetitionLevel === level.value ? 'rgba(212,175,55,0.6)' : 'rgba(255,255,255,0.1)'}`,
-              }}
-            >
-              <p className="text-white font-bold text-sm">{level.label}</p>
-              <p className="text-white/40 text-[10px]">{level.subtitle}</p>
-            </button>
-          ))}
-        </div>
-        <motion.p
-          key={repetitionLevel}
-          initial={{ opacity: 0, y: 5 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-white/60 text-xs text-center italic px-4"
-        >
-          {REPETITION_LEVELS.find(l => l.value === repetitionLevel)?.desc}
-        </motion.p>
-      </div>
-
       {/* Start button */}
       <motion.button
         whileTap={{ scale: 0.97 }}
