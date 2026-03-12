@@ -1,21 +1,18 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+# Ajouter des flèches de navigation interne dans Istiqamah
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
-
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+## Problème
+Sur desktop, il n'y a pas de moyen simple de revenir à l'étape précédente à l'intérieur du parcours Istiqamah. Le bouton "back" du `HifzStepWrapper` quitte tout le module.
 
 ## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+Ajouter une barre de navigation avec flèches gauche/droite en haut du contenu Istiqamah (dans `IstiqamahEngine.tsx`), juste sous la barre de progression. Ces flèches appellent `state.back()` et `state.next()` pour naviguer entre les sous-étapes internes.
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+## Fichier modifié
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+**`src/components/hifz/istiqamah/IstiqamahEngine.tsx`**
+- Ajouter une rangée avec `ChevronLeft` / `ChevronRight` entre la progress bar et le contenu
+- Flèche gauche désactivée sur le premier noeud, flèche droite masquée (on ne veut pas skip en avant)
+- Style : boutons semi-transparents avec icônes blanches, cohérent avec le design émeraude/doré existant
+- Label du step affiché entre les deux flèches
 
