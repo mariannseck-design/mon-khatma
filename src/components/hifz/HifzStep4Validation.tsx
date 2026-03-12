@@ -260,8 +260,8 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
           </motion.div>
 
           <div className="flex justify-center gap-2">
-            {[0, 1, 2].map(i => (
-              <div key={i} className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"
+            {[0, 1, 2, 3, 4].map(i => (
+              <div key={i} className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold"
                 style={{ background: 'rgba(212,175,55,0.2)', border: '2px solid #D4AF37', color: '#D4AF37' }}>✓</div>
             ))}
           </div>
