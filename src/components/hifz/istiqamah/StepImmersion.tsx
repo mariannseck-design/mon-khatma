@@ -34,7 +34,7 @@ type Phase = 'listen' | 'memory' | 'error' | 'liaison-listen' | 'liaison-memory'
 const TARGET_REPS = 3;
 const FONT_FAMILY = "'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
 
-export default function StepImmersion({ surahNumber, verseStart, verseEnd, onNext }: Props) {
+export default function StepImmersion({ surahNumber, verseStart, verseEnd, reciterId, onNext }: Props) {
   const totalVerses = verseEnd - verseStart + 1;
   const [currentVerseIndex, setCurrentVerseIndex] = useState(0);
   const [phase, setPhase] = useState<Phase>('listen');
@@ -51,7 +51,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, onNex
   const isPlayingRef = useRef(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const sequenceAbortRef = useRef(false);
-  const reciter = props.reciterId || localStorage.getItem('quran_reciter') || 'ar.alafasy';
+  const reciter = reciterId || localStorage.getItem('quran_reciter') || 'ar.alafasy';
 
   const currentVerse = verseStart + currentVerseIndex;
   const isLiaison = phase.startsWith('liaison');

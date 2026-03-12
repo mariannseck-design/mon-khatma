@@ -18,7 +18,7 @@ interface Props {
 const FONT_FAMILY = "'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
 const TARGET = 10;
 
-export default function StepImpregnation({ surahNumber, verseStart, verseEnd, verseLabel, onNext }: Props) {
+export default function StepImpregnation({ surahNumber, verseStart, verseEnd, verseLabel, reciterId, onNext }: Props) {
   const [count, setCount] = useState(0);
   const [mushafMode, setMushafModeState] = useState<MushafMode>(getMushafMode);
   const [ayahs, setAyahs] = useState<LocalAyah[]>([]);
@@ -27,7 +27,7 @@ export default function StepImpregnation({ surahNumber, verseStart, verseEnd, ve
   const isPlayingRef = useRef(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const audiosRef = useRef<string[]>([]);
-  const reciter = props.reciterId || localStorage.getItem('quran_reciter') || 'ar.alafasy';
+  const reciter = reciterId || localStorage.getItem('quran_reciter') || 'ar.alafasy';
 
   useEffect(() => {
     setLoading(true);
