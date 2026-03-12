@@ -180,7 +180,30 @@ export default function HifzStep5Tikrar({
         )}
 
         {/* Action buttons */}
-        {!isComplete ? (
+        {expired && !isComplete ? (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-3"
+          >
+            <p className="text-sm leading-relaxed px-4" style={{ color: '#f87171' }}>
+              ⏰ Les 24h sont écoulées. Tu avais atteint <strong>{count}/{TOTAL_REPS}</strong> récitations. Recommence pour sceller ta mémorisation.
+            </p>
+            <motion.button
+              whileTap={{ scale: 0.93 }}
+              onClick={handleReset}
+              className="mx-auto flex items-center gap-2 px-8 py-3.5 rounded-2xl font-bold text-sm transition-all"
+              style={{
+                background: 'linear-gradient(135deg, #d4af37, #c9a030)',
+                color: '#1a2e1a',
+                boxShadow: '0 6px 20px rgba(212,175,55,0.35)',
+              }}
+            >
+              <RotateCw className="h-5 w-5" />
+              Recommencer le Tikrar
+            </motion.button>
+          </motion.div>
+        ) : !isComplete ? (
           <motion.button
             whileTap={{ scale: 0.93 }}
             onClick={handleRecite}
