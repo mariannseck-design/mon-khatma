@@ -342,6 +342,23 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, onNex
 
   return (
     <motion.div initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }} className="space-y-4">
+      {/* Global progress bar */}
+      <div className="space-y-1">
+        <div className="flex items-center justify-between text-[10px]" style={{ color: 'rgba(255,255,255,0.4)' }}>
+          <span>Progression</span>
+          <span>{currentVerseIndex}/{totalVerses} verset{totalVerses > 1 ? 's' : ''}</span>
+        </div>
+        <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
+          <motion.div
+            className="h-full rounded-full"
+            style={{ background: 'linear-gradient(90deg, #d4af37, #f0d060)' }}
+            initial={false}
+            animate={{ width: `${(currentVerseIndex / totalVerses) * 100}%` }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
+          />
+        </div>
+      </div>
+
       {/* Verse progress pills */}
       <div className="flex items-center justify-center gap-1.5 flex-wrap">
         {Array.from({ length: totalVerses }, (_, i) => (
