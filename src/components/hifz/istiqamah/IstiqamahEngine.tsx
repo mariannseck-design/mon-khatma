@@ -101,7 +101,7 @@ export default function IstiqamahEngine({
       <div className="text-center space-y-4">
         {/* Breadcrumb */}
         <div className="flex items-center justify-center gap-1.5">
-          {(['immersion', 'comprehension', 'tikrar'] as const).map((step, i, arr) => {
+          {(['comprehension', 'immersion', 'tikrar'] as const).map((step, i, arr) => {
             const labels = { immersion: 'Mémorisation', comprehension: 'Compréhension', tikrar: 'Tikrar' };
             const isCurrent = currentNode?.type === step;
             const stepOrder = arr.indexOf(currentNode?.type ?? 'immersion');
