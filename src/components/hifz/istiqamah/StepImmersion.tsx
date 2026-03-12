@@ -6,6 +6,21 @@ import HifzMushafToggle, { getMushafMode, setMushafMode, type MushafMode } from 
 import HifzMushafImage from '../HifzMushafImage';
 import { getVersesByRange, type LocalAyah } from '@/lib/quranData';
 
+const BASMALA_WORDS = ['بِسْمِ', 'ٱللَّهِ', 'ٱلرَّحْمَٰنِ', 'ٱلرَّحِيمِ'];
+function normalizeForComparison(s: string): string {
+  return s.replace(/[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED\u0640\u06DD\u06DE\u06E9\u06DA\u06DB\u06DC\u200E\u200F\u061C\u200B-\u200D\uFEFF]/gu, '').trim();
+}
+const BASMALA_NORMALIZED = BASMALA_WORDS.map(normalizeForComparison);
+function stripLeadingBasmala(text: string): string {
+  const trimmed = text.trimStart();
+  if (trimmed.startsWith('﷽')) return trimmed.slice(1).trimStart();
+  const words = trimmed.split(/\s+/u);
+  if (words.length < 4) return trimmed;
+  const first4 = words.slice(0, 4).map(normalizeForComparison);
+  if (first4.every((w, i) => w === BASMALA_NORMALIZED[i])) return words.slice(4).join(' ');
+  return trimmed;
+}
+
 interface Props {
   surahNumber: number;
   verseStart: number;
