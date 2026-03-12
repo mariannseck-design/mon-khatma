@@ -1,11 +1,8 @@
-import { useMemo } from 'react';
 import { AnimatePresence } from 'framer-motion';
-import { Info, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Info } from 'lucide-react';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import HifzStepWrapper from '../HifzStepWrapper';
 import { useIstiqamahState } from './useIstiqamahState';
-import IstiqamahProgressBar from './IstiqamahProgressBar';
-import IstiqamahPartIndicator from './IstiqamahPartIndicator';
 import StepComprehension from './StepComprehension';
 import StepImmersion from './StepImmersion';
 import StepTikrarFinal from './StepTikrarFinal';
@@ -31,17 +28,7 @@ export default function IstiqamahEngine({
   onNext, onBack, onPause,
 }: Props) {
   const state = useIstiqamahState(surahNumber, startVerse, endVerse);
-  const { parts, loading, currentNode, progress, next, back, currentPart, fusionParts, currentNodeIndex, totalNodes } = state;
-
-  const completedParts = useMemo(() => {
-    const set = new Set<number>();
-    if (!currentNode) return set;
-    for (let i = 0; i < parts.length; i++) {
-      if (currentNode.partIndex > i) set.add(i);
-      if (currentNode.type === 'tikrar') set.add(i);
-    }
-    return set;
-  }, [currentNode, parts]);
+  const { parts, loading, currentNode, next, back, currentPart, fusionParts } = state;
 
   if (loading) {
     return (
@@ -118,38 +105,6 @@ export default function IstiqamahEngine({
             </PopoverContent>
           </Popover>
         </div>
-
-        <IstiqamahProgressBar
-          progress={progress}
-          currentStep={currentNodeIndex + 1}
-          totalSteps={totalNodes}
-          label={stepLabel}
-        />
-
-        {/* Navigation arrows */}
-        <div className="flex items-center justify-between px-2">
-          <button
-            onClick={back}
-            disabled={currentNodeIndex === 0}
-            className="p-2 rounded-xl transition-all active:scale-95 disabled:opacity-20"
-            style={{ background: 'rgba(255,255,255,0.08)' }}
-          >
-            <ChevronLeft className="h-5 w-5" style={{ color: 'rgba(255,255,255,0.7)' }} />
-          </button>
-          <span className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.5)' }}>
-            {stepLabel}
-            {currentPart ? ` — Verset ${currentPart.verseStart}` : ''}
-          </span>
-          <div className="w-9" /> {/* Spacer to keep label centered */}
-        </div>
-
-        {parts.length > 1 && (
-          <IstiqamahPartIndicator
-            parts={parts}
-            activePartIndex={currentNode?.partIndex ?? -1}
-            completedParts={completedParts}
-          />
-        )}
 
         <AnimatePresence mode="wait">
           {renderStep()}
