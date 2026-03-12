@@ -92,7 +92,7 @@ function AppRoutes() {
       <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
       <Route path="/parametres" element={<ProtectedRoute><ParametresPage /></ProtectedRoute>} />
       <Route path="/dhikr" element={<ProtectedRoute><DhikrPage /></ProtectedRoute>} />
-      <Route path="/hifz" element={<ProtectedRoute><ComingSoonGate title="Espace Hifz" icon={BookOpenCheck} description="Mémorise le Coran étape par étape avec un parcours guidé." hideNav>{<HifzPage />}</ComingSoonGate></ProtectedRoute>} />
+      <Route path="/hifz" element={<ProtectedRoute><ComingSoonGate title="Espace Hifz" icon={BookOpenCheck} description="Mémorise le Coran étape par étape avec un parcours guidé." hideNav adminOnly>{<HifzPage />}</ComingSoonGate></ProtectedRoute>} />
       <Route path="/muraja" element={<ProtectedRoute><MurjaCalendarPage /></ProtectedRoute>} />
       <Route path="/hifz-suivi" element={<ProtectedRoute><HifzSuiviPage /></ProtectedRoute>} />
       <Route path="/hifz-hub" element={<ProtectedRoute><HifzHubPage /></ProtectedRoute>} />
