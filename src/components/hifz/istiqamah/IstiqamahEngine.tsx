@@ -21,12 +21,8 @@ interface Props {
 }
 
 const STEP_LABELS: Record<string, string> = {
-  immersion: 'Préparer l\'oreille',
+  immersion: 'Mémorisation',
   comprehension: 'Comprendre le message',
-  impregnation: 'Imprégnation',
-  autonomie: 'Récitation assistée',
-  gravure: 'Essai de mémoire',
-  fusion: 'Créer le lien',
   tikrar: 'Tikrar Final',
 };
 
