@@ -1,21 +1,20 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+# Ajouter un en-tête "ISTIQÂMAH" minimaliste et raffiné
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+## Ce qui sera ajouté
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+Un en-tête centré au-dessus de la carte "Méthode Tikrar-ISTIQÂMAH", composé de :
+- Un trait horizontal fin doré (séparateur décoratif)
+- Le mot **ISTIQÂMAH** en lettrage espacé, doré, élégant
+- Un sous-titre serein en italique ("La constance mène à l'excellence")
+- Le tout avec une animation d'entrée douce
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+## Fichier modifié
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
-
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+**`src/pages/HifzHubPage.tsx`** — Insérer un bloc `motion.div` entre la carte "Le Noble Coran" (ligne 192) et la carte "Méthode Tikrar" (ligne 195). Le bloc contient :
+- Un trait `<div>` fin (1px) doré centré (largeur ~60px)
+- Le texte "ISTIQÂMAH" en `tracking-[0.25em]`, couleur dorée, police Inter, taille modeste
+- Un sous-titre en italique, couleur sage atténuée
+- Style cohérent avec la palette existante (COLORS.goldAccent, COLORS.sage)
 
