@@ -73,7 +73,7 @@ export default function HifzStep5Tikrar({
   }, [count]);
 
   const handleRecite = useCallback(() => {
-    if (count >= TOTAL_REPS) return;
+    if (count >= TOTAL_REPS || expired) return;
     const next = count + 1;
     setCount(next);
 
@@ -85,7 +85,19 @@ export default function HifzStep5Tikrar({
       setShowMotiv(true);
       setTimeout(() => setShowMotiv(false), 3000);
     }
-  }, [count]);
+  }, [count, expired]);
+
+  const handleReset = useCallback(() => {
+    const now = Date.now();
+    setCount(0);
+    setStartedAt(now);
+    setExpired(false);
+    onUpdateStatus?.({
+      ...stepStatus,
+      tikrar_count: 0,
+      tikrar_started_at: now,
+    });
+  }, [stepStatus, onUpdateStatus]);
 
   const balance = TOTAL_REPS - count;
   const progress = (count / TOTAL_REPS) * 100;
