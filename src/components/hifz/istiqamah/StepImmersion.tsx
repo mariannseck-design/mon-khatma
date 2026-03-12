@@ -445,6 +445,8 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
               <CircularCounter count={memoryCount} target={TARGET_REPS} color={isLiaison ? '#a78bfa' : '#d4af37'} />
             </div>
 
+            <MiniRecorder />
+
             <div className="flex items-center justify-center gap-3">
               <motion.button whileTap={{ scale: 0.95 }} onClick={handleMemoryCorrect}
                 className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm"

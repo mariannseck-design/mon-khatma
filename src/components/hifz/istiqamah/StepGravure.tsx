@@ -133,6 +133,9 @@ export default function StepGravure({ surahNumber, verseStart, verseEnd, verseLa
         </motion.div>
       )}
 
+      {/* Mini recorder */}
+      <MiniRecorder />
+
       {/* Interactive circular counter */}
       <div className="flex justify-center">
         <div className="relative w-36 h-36">
