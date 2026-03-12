@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BookOpen, Check } from 'lucide-react';
-import { getVersesByRange, type LocalAyah } from '@/lib/quranData';
 import { SURAHS } from '@/lib/surahData';
 
 interface Props {
@@ -12,15 +11,27 @@ interface Props {
 }
 
 export default function StepComprehension({ surahNumber, verseStart, verseEnd, onNext }: Props) {
-  const [ayahs, setAyahs] = useState<LocalAyah[]>([]);
+  const [translations, setTranslations] = useState<Map<string, string>>(new Map());
   const [loading, setLoading] = useState(true);
   const [showMessage, setShowMessage] = useState(false);
   const surahName = SURAHS.find(s => s.number === surahNumber)?.name || '';
 
   useEffect(() => {
     setLoading(true);
-    getVersesByRange(surahNumber, verseStart, verseEnd)
-      .then(setAyahs)
+    fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}/fr.hamidullah`)
+      .then(r => r.json())
+      .then(data => {
+        const map = new Map<string, string>();
+        if (data.code === 200) {
+          for (const ayah of data.data.ayahs) {
+            if (ayah.numberInSurah >= verseStart && ayah.numberInSurah <= verseEnd) {
+              map.set(`${ayah.numberInSurah}`, ayah.text);
+            }
+          }
+        }
+        setTranslations(map);
+      })
+      .catch(() => {})
       .finally(() => setLoading(false));
   }, [surahNumber, verseStart, verseEnd]);
 
@@ -56,7 +67,7 @@ export default function StepComprehension({ surahNumber, verseStart, verseEnd, o
         style={{ background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.2)' }}
       >
         <p className="text-xs font-medium leading-relaxed" style={{ color: '#d4af37' }}>
-          Consultez le Tafsir ou la traduction pour saisir le sens de ce que vous mémorisez.
+          Lisez la traduction pour saisir le sens de ce que vous allez mémoriser.
         </p>
         <p className="text-xs mt-1 italic" style={{ color: 'rgba(212,175,55,0.7)' }}>
           💡 Vous pouvez effectuer cette étape la veille pour laisser votre esprit s'en imprégner durant la nuit.
@@ -70,32 +81,23 @@ export default function StepComprehension({ surahNumber, verseStart, verseEnd, o
       ) : (
         <div
           className="rounded-xl overflow-auto max-h-64 px-4 py-4 space-y-3"
-          dir="rtl"
+          dir="ltr"
           style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(212,175,55,0.12)' }}
         >
-          {ayahs.map(ayah => (
-            <div key={ayah.number} className="space-y-1.5 pb-2" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-              <p
+          {Array.from({ length: verseEnd - verseStart + 1 }, (_, i) => verseStart + i).map(v => (
+            <div key={v} className="flex items-start gap-2 pb-2" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+              <span
+                className="inline-flex items-center justify-center shrink-0 mt-0.5"
                 style={{
-                  fontFamily: "'Amiri Quran', 'Amiri', serif",
-                  fontSize: '20px',
-                  lineHeight: '42px',
-                  color: '#e8e0d0',
-                  textAlign: 'right',
+                  width: '20px', height: '20px', borderRadius: '50%',
+                  backgroundColor: '#2E7D32', color: '#fff',
+                  fontSize: '10px', fontFamily: 'system-ui', fontWeight: 700,
                 }}
               >
-                {ayah.text}
-                <span
-                  className="inline-flex items-center justify-center mx-1"
-                  style={{
-                    width: '18px', height: '18px', borderRadius: '50%',
-                    backgroundColor: '#2E7D32', color: '#fff',
-                    fontSize: '10px', fontFamily: 'system-ui', fontWeight: 700,
-                    verticalAlign: 'middle',
-                  }}
-                >
-                  {ayah.numberInSurah}
-                </span>
+                {v}
+              </span>
+              <p className="text-sm leading-relaxed" style={{ color: '#e8e0d0' }}>
+                {translations.get(`${v}`) || '...'}
               </p>
             </div>
           ))}
