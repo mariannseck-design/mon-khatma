@@ -6,7 +6,7 @@ import { BookOpen, BookHeart, RefreshCw, BarChart3, Play, BookOpenCheck } from '
 import { AppLayout } from '@/components/layout/AppLayout';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
-import DailyQuote from '@/components/accueil/DailyQuote';
+
 
 const COLORS = {
   emerald: '#2d6a4f',
@@ -140,10 +140,6 @@ export default function HifzHubPage() {
           <div className="w-14 h-px" style={{ background: `linear-gradient(90deg, transparent, ${COLORS.goldAccent}, transparent)` }} />
         </motion.div>
 
-        {/* Citation du jour */}
-        <motion.div variants={itemVariants}>
-          <DailyQuote />
-        </motion.div>
 
         {/* Le Noble Coran */}
         <motion.div variants={itemVariants}>
