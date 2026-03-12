@@ -8,10 +8,6 @@ import IstiqamahProgressBar from './IstiqamahProgressBar';
 import IstiqamahPartIndicator from './IstiqamahPartIndicator';
 import StepComprehension from './StepComprehension';
 import StepImmersion from './StepImmersion';
-import StepImpregnation from './StepImpregnation';
-import StepAutonomie from './StepAutonomie';
-import StepGravure from './StepGravure';
-import StepFusion from './StepFusion';
 import StepTikrarFinal from './StepTikrarFinal';
 
 interface Props {
