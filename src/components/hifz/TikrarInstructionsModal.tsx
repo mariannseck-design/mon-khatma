@@ -60,6 +60,33 @@ export default function TikrarInstructionsModal({ open, onClose }: Props) {
               </p>
             </div>
 
+            {/* Section C — Gérez votre énergie (en premier) */}
+            <div className="rounded-xl p-4 space-y-2" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(212,175,55,0.15)' }}>
+              <div className="flex items-center gap-2 mb-1">
+                <Heart className="h-4 w-4 shrink-0" style={{ color: '#d4af37' }} />
+                <h4 className="text-sm font-bold" style={{ color: '#f0e6c8' }}>
+                  Section C — Gérez votre énergie
+                </h4>
+              </div>
+              <p className="text-xs leading-relaxed" style={{ color: 'rgba(255,255,255,0.7)' }}>
+                Ne vous laissez pas impressionner par le nombre ! Accomplir 40 récitations est un défi d'<strong style={{ color: '#f0e6c8' }}>endurance</strong>, pas de vitesse.
+              </p>
+              <ul className="space-y-1.5 pl-1">
+                <li className="flex items-start gap-2 text-xs" style={{ color: 'rgba(255,255,255,0.7)' }}>
+                  <span style={{ color: '#d4af37' }}>•</span>
+                  <span>
+                    <strong style={{ color: '#f0e6c8' }}>Fractionnez vos sessions</strong> : vous n'êtes absolument pas obligée de faire les 40 récitations en une seule assise.
+                  </span>
+                </li>
+                <li className="flex items-start gap-2 text-xs" style={{ color: 'rgba(255,255,255,0.7)' }}>
+                  <span style={{ color: '#d4af37' }}>•</span>
+                  <span>
+                    <strong style={{ color: '#f0e6c8' }}>Écoutez votre corps</strong> : vous pouvez faire plusieurs sessions dans la journée (par exemple : 10 après chaque prière) pour maintenir une concentration totale.
+                  </span>
+                </li>
+              </ul>
+            </div>
+
             {/* Section A */}
             <div className="rounded-xl p-4 space-y-2" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(212,175,55,0.15)' }}>
               <div className="flex items-center gap-2 mb-1">
@@ -101,33 +128,6 @@ export default function TikrarInstructionsModal({ open, onClose }: Props) {
               <p className="text-xs leading-relaxed font-semibold" style={{ color: '#f87171' }}>
                 ⚠️ Important : Si vous commettez une erreur au milieu d'une sourate, vous devez impérativement la reprendre depuis le début pour valider votre répétition.
               </p>
-            </div>
-
-            {/* Section C */}
-            <div className="rounded-xl p-4 space-y-2" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(212,175,55,0.15)' }}>
-              <div className="flex items-center gap-2 mb-1">
-                <Heart className="h-4 w-4 shrink-0" style={{ color: '#d4af37' }} />
-                <h4 className="text-sm font-bold" style={{ color: '#f0e6c8' }}>
-                  Section C — Gérez votre énergie
-                </h4>
-              </div>
-              <p className="text-xs leading-relaxed" style={{ color: 'rgba(255,255,255,0.7)' }}>
-                Ne vous laissez pas impressionner par le nombre ! Accomplir 40 récitations est un défi d'<strong style={{ color: '#f0e6c8' }}>endurance</strong>, pas de vitesse.
-              </p>
-              <ul className="space-y-1.5 pl-1">
-                <li className="flex items-start gap-2 text-xs" style={{ color: 'rgba(255,255,255,0.7)' }}>
-                  <span style={{ color: '#d4af37' }}>•</span>
-                  <span>
-                    <strong style={{ color: '#f0e6c8' }}>Fractionnez vos sessions</strong> : vous n'êtes absolument pas obligée de faire les 40 récitations en une seule assise.
-                  </span>
-                </li>
-                <li className="flex items-start gap-2 text-xs" style={{ color: 'rgba(255,255,255,0.7)' }}>
-                  <span style={{ color: '#d4af37' }}>•</span>
-                  <span>
-                    <strong style={{ color: '#f0e6c8' }}>Écoutez votre corps</strong> : vous pouvez faire plusieurs sessions dans la journée (par exemple : 10 après chaque prière) pour maintenir une concentration totale.
-                  </span>
-                </li>
-              </ul>
             </div>
 
             {/* Conclusion */}
