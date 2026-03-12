@@ -49,12 +49,19 @@ export default function HifzStep5Tikrar({
   useEffect(() => {
     const tick = () => {
       const deadline = startedAt + 24 * 3600 * 1000;
-      setRemaining(formatCountdown(deadline - Date.now()));
+      const diff = deadline - Date.now();
+      if (diff <= 0 && count < TOTAL_REPS) {
+        setExpired(true);
+        setRemaining('0h 00min');
+      } else {
+        setExpired(false);
+        setRemaining(formatCountdown(diff));
+      }
     };
     tick();
     const id = setInterval(tick, 60000);
     return () => clearInterval(id);
-  }, [startedAt]);
+  }, [startedAt, count]);
 
   // Persist count
   useEffect(() => {
