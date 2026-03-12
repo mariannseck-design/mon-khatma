@@ -89,12 +89,34 @@ export default function IstiqamahEngine({
   return (
     <HifzStepWrapper stepNumber={3} stepTitle="Istiqâmah" onBack={onBack} onPause={onPause}>
       <div className="text-center space-y-4">
-        <div className="flex items-center justify-center gap-2">
-          <p className="text-sm font-semibold" style={{ color: '#d4af37' }}>Istiqâmah</p>
+        {/* Breadcrumb */}
+        <div className="flex items-center justify-center gap-1.5">
+          {(['immersion', 'comprehension', 'tikrar'] as const).map((step, i, arr) => {
+            const labels = { immersion: 'Mémorisation', comprehension: 'Compréhension', tikrar: 'Tikrar' };
+            const isCurrent = currentNode?.type === step;
+            const stepOrder = arr.indexOf(currentNode?.type ?? 'immersion');
+            const isDone = i < stepOrder;
+            return (
+              <span key={step} className="flex items-center gap-1.5">
+                <span
+                  className="text-[11px] font-semibold tracking-wide transition-all"
+                  style={{
+                    color: isCurrent ? '#d4af37' : isDone ? 'rgba(212,175,55,0.5)' : 'rgba(255,255,255,0.25)',
+                    textDecoration: isDone ? 'line-through' : 'none',
+                  }}
+                >
+                  {labels[step]}
+                </span>
+                {i < arr.length - 1 && (
+                  <span className="text-[10px]" style={{ color: 'rgba(255,255,255,0.2)' }}>›</span>
+                )}
+              </span>
+            );
+          })}
           <Popover>
             <PopoverTrigger asChild>
-              <button className="rounded-full p-0.5 transition-colors hover:bg-white/10">
-                <Info className="h-4 w-4" style={{ color: '#d4af37' }} />
+              <button className="rounded-full p-0.5 transition-colors hover:bg-white/10 ml-1">
+                <Info className="h-3.5 w-3.5" style={{ color: 'rgba(212,175,55,0.5)' }} />
               </button>
             </PopoverTrigger>
             <PopoverContent
