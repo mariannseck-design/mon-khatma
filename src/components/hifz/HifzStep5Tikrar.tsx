@@ -43,6 +43,8 @@ export default function HifzStep5Tikrar({
   const progress = (count / TOTAL_REPS) * 100;
   const isComplete = count >= TOTAL_REPS;
 
+  const [urgentWarning, setUrgentWarning] = useState(false);
+
   // Countdown timer
   useEffect(() => {
     const tick = () => {
@@ -51,15 +53,43 @@ export default function HifzStep5Tikrar({
       if (diff <= 0 && count < TOTAL_REPS) {
         setExpired(true);
         setRemaining('0h 00min');
+        setUrgentWarning(false);
       } else {
         setExpired(false);
         setRemaining(formatCountdown(diff));
+        setUrgentWarning(diff > 0 && diff <= 6 * 3600 * 1000 && count < TOTAL_REPS);
       }
     };
     tick();
     const id = setInterval(tick, 60000);
     return () => clearInterval(id);
   }, [startedAt, count]);
+
+  // Schedule browser notification 6h before expiry (18h after start)
+  useEffect(() => {
+    if (isComplete || expired) return;
+
+    const notifyAt = startedAt + 18 * 3600 * 1000; // 18h after start = 6h before expiry
+    const delay = notifyAt - Date.now();
+
+    if (delay <= 0) return; // Already past the notification time
+
+    const timeoutId = setTimeout(() => {
+      if ('Notification' in window && Notification.permission === 'granted') {
+        try {
+          new Notification('⏰ Tikrar — Plus que 6h !', {
+            body: `Il te reste ${TOTAL_REPS - count} récitation(s) à compléter avant l'expiration. Qu'Allah (عز وجل) te facilite !`,
+            icon: '/pwa-192x192.png',
+            tag: 'tikrar-expiry-warning',
+          });
+        } catch (e) {
+          // Notification API may not be available in all contexts
+        }
+      }
+    }, delay);
+
+    return () => clearTimeout(timeoutId);
+  }, [startedAt, isComplete, expired, count]);
 
   // Persist count
   useEffect(() => {
