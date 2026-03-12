@@ -372,10 +372,10 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, onNex
               icon={isLiaison ? Link : Volume2}
               iconColor={isLiaison ? '#a78bfa' : '#4ecdc4'}
               iconBg={isLiaison ? 'rgba(167,139,250,0.15)' : 'rgba(78,205,196,0.15)'}
-              title={isLiaison ? 'Liaison — Écouter' : 'Écouter & répéter'}
+              title={isLiaison ? 'Liaison — Écouter' : 'Écouter, lire & répéter'}
               subtitle={isLiaison
                 ? `Écoutez les versets ${liaisonVerses[0]}–${liaisonVerses[liaisonVerses.length - 1]} enchaînés`
-                : 'Écoutez ce verset avec le récitateur'
+                : 'Écoute le récitateur en suivant sur le Mushaf, puis répète'
               }
             />
 
