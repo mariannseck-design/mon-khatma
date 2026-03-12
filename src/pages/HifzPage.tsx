@@ -12,6 +12,7 @@ import HifzStep1Revision from '@/components/hifz/HifzStep1Revision';
 import HifzStep2Impregnation from '@/components/hifz/HifzStep2Impregnation';
 import IstiqamahEngine from '@/components/hifz/istiqamah/IstiqamahEngine';
 import HifzStep4Validation from '@/components/hifz/HifzStep4Validation';
+import HifzStep5Tikrar from '@/components/hifz/HifzStep5Tikrar';
 import HifzSuccess from '@/components/hifz/HifzSuccess';
 import HifzBreathingPause from '@/components/hifz/HifzBreathingPause';
 import DevSkipButton from '@/components/hifz/DevSkipButton';
