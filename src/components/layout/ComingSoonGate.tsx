@@ -13,7 +13,18 @@ interface ComingSoonGateProps {
 }
 
 export default function ComingSoonGate({ children, title, icon: Icon, description, hideNav, adminOnly }: ComingSoonGateProps) {
-  const { hasFullAccess, isAdmin } = useAuth();
+  const { hasFullAccess, isAdmin, accessLoading } = useAuth();
+
+  // While access is still being resolved, show loading — fail closed
+  if (accessLoading) {
+    return (
+      <AppLayout title={title} hideNav={hideNav}>
+        <div className="min-h-[70vh] flex items-center justify-center">
+          <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+        </div>
+      </AppLayout>
+    );
+  }
 
   if (adminOnly ? isAdmin : hasFullAccess) return <>{children}</>;
 

@@ -25,7 +25,7 @@ const STEP_NAMES = ['Intention', 'Réveil', 'Imprégnation', 'Istiqâmah', 'Vali
 const MOURAD_PHASE_NAMES = ['Compréhension', 'Imprégnation', 'Liaison', 'Ancrage'];
 
 export default function HifzHubPage() {
-  const { user, hasFullAccess, isAdmin } = useAuth();
+  const { user, hasFullAccess, isAdmin, accessLoading } = useAuth();
   const [activeHifzSession, setActiveHifzSession] = useState<{ surahName: string; stepName: string } | null>(null);
   const [activeMouradSession, setActiveMouradSession] = useState<{ surahName: string; phaseName: string } | null>(null);
   const [pendingReviews, setPendingReviews] = useState(0);
@@ -132,7 +132,7 @@ export default function HifzHubPage() {
 
         {/* Le Noble Coran */}
         <motion.div variants={itemVariants}>
-          {hasFullAccess ? (
+          {hasFullAccess && !accessLoading ? (
             <Link to="/quran-reader" className="block">
               <motion.div
                 className="relative overflow-hidden rounded-[2rem] p-7 group"
@@ -193,7 +193,7 @@ export default function HifzHubPage() {
 
         {/* Méthode Tikrar-ISTIQÂMAH */}
         <motion.div variants={itemVariants}>
-          {isAdmin ? (
+          {isAdmin && !accessLoading ? (
             <Link to="/hifz" className="block">
               <motion.div
                 className="relative overflow-hidden rounded-[2rem] p-7 group"
@@ -269,7 +269,7 @@ export default function HifzHubPage() {
 
         {/* Méthode Oustaz Mourad — admin only active */}
         <motion.div variants={itemVariants}>
-          {isAdmin ? (
+          {isAdmin && !accessLoading ? (
             <Link to="/methode-mourad" className="block">
               <motion.div
                 className="relative overflow-hidden rounded-[2rem] p-7 group"
