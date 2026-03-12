@@ -1,21 +1,29 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+# Refonte de la page Tikrar Final avec modale d'instructions
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+## Changements
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### 1. Refonte de `src/components/hifz/HifzStep5Tikrar.tsx`
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+**Remplacer le bouton "J'ai récité"** par un champ de saisie numérique (comme dans `StepTikrarFinal`), permettant a l'utilisateur d'entrer directement son nombre de repetitions. Le solde restant et le cercle de progression se mettent a jour en temps reel.
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+**Ajouter un lien d'instructions** sous le compteur : "Cliquez ici pour lire les instructions avant de commencer" qui ouvre une modale.
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+**Conserver** : le countdown 24h, la detection d'expiration avec reset, le bouton "Valider" qui n'apparait qu'a 40/40, la persistance via `onUpdateStatus`.
+
+### 2. Modale d'instructions (dans le meme fichier)
+
+Utiliser `framer-motion` (`AnimatePresence` + `motion.div`) pour un overlay modal elegant avec scroll interne sur mobile.
+
+Contenu structure en 3 sections :
+- **Section A** - Choisissez votre rythme (options 2/3/4 jours)
+- **Section B** - La regle de l'excellence (recitation de memoire, reprendre depuis le debut en cas d'erreur)
+- **Section C** - Gerez votre energie (fractionner les sessions, ecouter son corps)
+
+Style coherent : fond semi-transparent vert emeraude, accents dores, texte clair.
+
+### 3. Mise a jour de `StepTikrarFinal.tsx` (Istiqamah)
+
+Ajouter le meme lien d'instructions et la meme modale pour assurer la coherence entre les deux parcours.
 
