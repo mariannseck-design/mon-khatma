@@ -310,7 +310,10 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
       <div className="space-y-5">
         {/* Instruction */}
         <p className="text-sm leading-relaxed text-center px-2" style={{ color: 'rgba(255,255,255,0.7)' }}>
-          Enregistre-toi <strong>3 fois de suite</strong> sans regarder le Coran.
+          Enregistre-toi <strong>5 fois de suite</strong>{' '}
+          <span style={{ color: '#ef5350', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            SANS REGARDER LE MUSHAF
+          </span>.
           Si tu regardes, le compteur se réinitialise.
         </p>
 
