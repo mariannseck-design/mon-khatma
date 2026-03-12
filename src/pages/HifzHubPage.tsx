@@ -269,7 +269,7 @@ export default function HifzHubPage() {
 
         {/* Méthode Oustaz Mourad — admin only active */}
         <motion.div variants={itemVariants}>
-          {isAdmin ? (
+          {isAdmin && !accessLoading ? (
             <Link to="/methode-mourad" className="block">
               <motion.div
                 className="relative overflow-hidden rounded-[2rem] p-7 group"
