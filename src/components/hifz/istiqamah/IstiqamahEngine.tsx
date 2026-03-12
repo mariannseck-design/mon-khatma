@@ -112,6 +112,14 @@ export default function IstiqamahEngine({
                     textDecoration: isDone ? 'line-through' : 'none',
                   }}
                 >
+                  {isCurrent && (
+                    <motion.span
+                      className="inline-block w-1.5 h-1.5 rounded-full mr-1 align-middle"
+                      style={{ background: '#d4af37', boxShadow: '0 0 6px rgba(212,175,55,0.8)' }}
+                      animate={{ opacity: [1, 0.4, 1], scale: [1, 1.3, 1] }}
+                      transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+                    />
+                  )}
                   {labels[step]}
                   <motion.span
                     className="absolute bottom-0 left-0 h-[2px] rounded-full"
