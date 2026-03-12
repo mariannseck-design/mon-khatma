@@ -90,8 +90,14 @@ export default function MurjaCalendarPage() {
     return allVerses.filter(v => v.memorized_at < thirtyDaysCutoff);
   }, [allVerses, thirtyDaysCutoff]);
 
+  const getRabtForDay = (dayKey: string) => {
+    return allVerses
+      .filter(v => v.memorized_at >= thirtyDaysCutoff && (v.liaison_start_date || v.memorized_at.split('T')[0]) < dayKey)
+      .sort((a, b) => a.surah_number - b.surah_number || a.verse_start - b.verse_start);
+  };
+
   const getItemsForDay = (dayKey: string) => {
-    const rabt = rabtVerses;
+    const rabt = getRabtForDay(dayKey);
     const tourDue = dayKey === todayKey
       ? allConsolidation.filter(v => v.next_review_date <= dayKey)
       : allConsolidation.filter(v => v.next_review_date === dayKey);
