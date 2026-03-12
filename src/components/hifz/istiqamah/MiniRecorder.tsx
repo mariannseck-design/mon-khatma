@@ -37,6 +37,8 @@ export default function MiniRecorder() {
     setIsPlaying(false);
   }, [audioUrl]);
 
+  const [flashPulse, setFlashPulse] = useState(false);
+
   const startRecording = async () => {
     destroyAudio();
     try {
@@ -49,6 +51,11 @@ export default function MiniRecorder() {
       setIsRecording(true);
       setRecordingTime(0);
       timerRef.current = setInterval(() => setRecordingTime(p => p + 1), 1000);
+      // Haptic feedback
+      if (navigator.vibrate) navigator.vibrate(50);
+      // Visual flash
+      setFlashPulse(true);
+      setTimeout(() => setFlashPulse(false), 600);
     } catch { /* permission denied */ }
   };
 
