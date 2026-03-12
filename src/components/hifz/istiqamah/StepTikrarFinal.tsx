@@ -18,6 +18,7 @@ export default function StepTikrarFinal({ surahNumber, verseStart, verseEnd, onN
   const { isAdmin } = useAuth();
   const minTarget = isAdmin ? 1 : TIKRAR_TARGET;
   const [inputValue, setInputValue] = useState('');
+  const [showInstructions, setShowInstructions] = useState(false);
   const reps = Math.max(0, Math.min(parseInt(inputValue) || 0, TIKRAR_TARGET));
   const remaining = Math.max(0, minTarget - reps);
   const progress = (reps / minTarget) * 100;
