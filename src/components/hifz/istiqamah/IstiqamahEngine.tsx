@@ -28,17 +28,7 @@ export default function IstiqamahEngine({
   onNext, onBack, onPause,
 }: Props) {
   const state = useIstiqamahState(surahNumber, startVerse, endVerse);
-  const { parts, loading, currentNode, progress, next, back, currentPart, fusionParts, currentNodeIndex, totalNodes } = state;
-
-  const completedParts = useMemo(() => {
-    const set = new Set<number>();
-    if (!currentNode) return set;
-    for (let i = 0; i < parts.length; i++) {
-      if (currentNode.partIndex > i) set.add(i);
-      if (currentNode.type === 'tikrar') set.add(i);
-    }
-    return set;
-  }, [currentNode, parts]);
+  const { parts, loading, currentNode, next, back, currentPart, fusionParts } = state;
 
   if (loading) {
     return (
