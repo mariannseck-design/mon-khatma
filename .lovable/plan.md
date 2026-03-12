@@ -1,21 +1,15 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+# Déplacer l'en-tête ISTIQÂMAH en haut de la page
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+## Changement
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+Déplacer le bloc "En-tête ISTIQÂMAH" (lignes 194-206) juste après l'ouverture du `motion.div` container (ligne 126), avant la citation du jour. Cela positionne le titre du programme tout en haut de la page.
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+## Fichier modifié
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
-
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+**`src/pages/HifzHubPage.tsx`**
+- Supprimer le bloc ISTIQÂMAH de sa position actuelle (entre Le Noble Coran et Méthode Tikrar)
+- L'insérer juste après la ligne 126 (`<motion.div className="space-y-4...">`)
+- Garder le même style et animation
 
