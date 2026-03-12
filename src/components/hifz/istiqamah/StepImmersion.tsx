@@ -36,6 +36,8 @@ const TARGET_REPS = 3;
 const FONT_FAMILY = "'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
 
 export default function StepImmersion({ surahNumber, verseStart, verseEnd, reciterId, onNext }: Props) {
+  const { isAdmin } = useAuth();
+  const minReps = isAdmin ? 1 : TARGET_REPS;
   const totalVerses = verseEnd - verseStart + 1;
   const [currentVerseIndex, setCurrentVerseIndex] = useState(0);
   const [phase, setPhase] = useState<Phase>('listen');
