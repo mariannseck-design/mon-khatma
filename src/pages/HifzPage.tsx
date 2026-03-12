@@ -61,7 +61,7 @@ function clearLocalSession() {
 
 const STEP_NAMES = [
   'Intention', 'Réveil', 'Imprégnation', 'Istiqâmah',
-  'Validation',
+  'Validation', 'Tikrar',
 ];
 
 export default function HifzPage() {
