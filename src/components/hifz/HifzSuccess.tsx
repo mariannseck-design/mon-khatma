@@ -8,6 +8,7 @@ const STEP_LABELS: Record<number, string> = {
   2: 'Imprégnation',
   3: 'Istiqâmah',
   4: 'Validation',
+  5: 'Tikrar',
 };
 
 function formatDuration(seconds: number): string {
