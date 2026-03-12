@@ -1,11 +1,14 @@
+import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Info } from 'lucide-react';
+import { Info, Volume2 } from 'lucide-react';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import HifzStepWrapper from '../HifzStepWrapper';
 import { useIstiqamahState } from './useIstiqamahState';
 import StepComprehension from './StepComprehension';
 import StepImmersion from './StepImmersion';
 import StepTikrarFinal from './StepTikrarFinal';
+import { RECITERS } from '@/hooks/useQuranAudio';
 
 interface Props {
   surahNumber: number;
@@ -27,8 +30,14 @@ export default function IstiqamahEngine({
   surahNumber, startVerse, endVerse, repetitionLevel,
   onNext, onBack, onPause,
 }: Props) {
+  const [reciterId, setReciterId] = useState(() => localStorage.getItem('quran_reciter') || RECITERS[0].id);
   const state = useIstiqamahState(surahNumber, startVerse, endVerse);
   const { parts, loading, currentNode, next, back, currentPart, fusionParts } = state;
+
+  const handleReciterChange = (id: string) => {
+    setReciterId(id);
+    localStorage.setItem('quran_reciter', id);
+  };
 
   if (loading) {
     return (
@@ -57,6 +66,7 @@ export default function IstiqamahEngine({
           <StepImmersion
             key="immersion-global"
             {...globalProps}
+            reciterId={reciterId}
             onNext={next}
           />
         );
@@ -148,6 +158,34 @@ export default function IstiqamahEngine({
               L'Istiqâmah désigne la constance et la persévérance. Le parcours vous guide verset par verset : écoute, récitation de mémoire et liaison progressive, puis compréhension du sens, avant un compteur final de 40 répétitions.
             </PopoverContent>
           </Popover>
+        </div>
+
+        {/* Sélecteur de récitateur */}
+        <div className="flex items-center justify-center gap-2">
+          <Volume2 className="h-3.5 w-3.5 shrink-0" style={{ color: 'rgba(212,175,55,0.6)' }} />
+          <Select value={reciterId} onValueChange={handleReciterChange}>
+            <SelectTrigger
+              className="h-7 w-auto min-w-[140px] max-w-[200px] border-none bg-transparent text-xs px-2 py-0 focus:ring-0 focus:ring-offset-0"
+              style={{ color: 'rgba(212,175,55,0.8)' }}
+            >
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent
+              className="max-h-60"
+              style={{ background: '#1a2e1a', border: '1px solid rgba(212,175,55,0.3)' }}
+            >
+              {RECITERS.map(r => (
+                <SelectItem
+                  key={r.id}
+                  value={r.id}
+                  className="text-xs"
+                  style={{ color: 'rgba(255,255,255,0.85)' }}
+                >
+                  {r.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         <AnimatePresence mode="wait">

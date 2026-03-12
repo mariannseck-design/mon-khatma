@@ -1,26 +1,21 @@
 
 
-# Ajouter un sélecteur de récitateur dans l'étape Mémorisation (Istiqâmah)
+# Diagnostic : 404 sur /quran-reader
 
 ## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-L'étape Istiqâmah (StepImmersion, StepImpregnation, StepFusion, StepTikrarFinal) lit le récitateur depuis `localStorage('quran_reciter')` mais **n'offre aucune UI pour le changer**. Seule l'étape 2 (Imprégnation — `HifzStep2Impregnation`) et l'ancien step 3 (`HifzStep3Memorisation`) ont un `<select>` de récitateur.
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-## Plan
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-**Fichier : `src/components/hifz/istiqamah/IstiqamahEngine.tsx`**
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-Ajouter un sélecteur de récitateur compact dans le header de l'engine, juste sous le fil d'Ariane :
-
-1. Importer `RECITERS` depuis `@/hooks/useQuranAudio` et `ChevronDown` depuis lucide.
-2. Ajouter un état `reciter` initialisé depuis localStorage + un setter qui persiste dans localStorage.
-3. Rendre un petit `<select>` stylisé (fond transparent, texte doré, discret) entre le breadcrumb et le contenu.
-4. Passer `reciter` + `onReciterChange` en prop aux sous-étapes (`StepImmersion`, `StepImpregnation`, `StepFusion`, `StepTikrarFinal`).
-
-**Fichiers : `StepImmersion.tsx`, `StepImpregnation.tsx`, `StepFusion.tsx`, `StepTikrarFinal.tsx`**
-
-- Accepter une prop optionnelle `reciterId?: string` qui, si présente, remplace la lecture localStorage.
-- Modifier `const [reciter]` pour utiliser la prop en priorité : `props.reciterId || localStorage.getItem(...)`.
-
-Cela maintient la rétro-compatibilité tout en donnant le contrôle depuis l'engine.
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

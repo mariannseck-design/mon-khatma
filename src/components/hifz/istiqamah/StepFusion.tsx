@@ -9,6 +9,7 @@ import type { Part } from './partSplitter';
 
 interface Props {
   parts: Part[];
+  reciterId?: string;
   onNext: () => void;
 }
 
@@ -16,7 +17,7 @@ type FusionPhase = 'listen' | 'read' | 'recite';
 
 const FONT_FAMILY = "'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
 
-export default function StepFusion({ parts, onNext }: Props) {
+export default function StepFusion({ parts, reciterId, onNext }: Props) {
   const [phase, setPhase] = useState<FusionPhase>('listen');
   const [ayahs, setAyahs] = useState<LocalAyah[]>([]);
   const [loading, setLoading] = useState(true);
@@ -26,7 +27,7 @@ export default function StepFusion({ parts, onNext }: Props) {
   const isPlayingRef = useRef(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const audiosRef = useRef<string[]>([]);
-  const [reciter] = useState(() => localStorage.getItem('quran_reciter') || 'ar.alafasy');
+  const reciter = reciterId || localStorage.getItem('quran_reciter') || 'ar.alafasy';
 
   const globalStart = Math.min(...parts.map(p => p.verseStart));
   const globalEnd = Math.max(...parts.map(p => p.verseEnd));
