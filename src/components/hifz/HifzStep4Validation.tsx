@@ -352,7 +352,7 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
 
         {/* ── Badges 1-2-3 ── */}
         <div className="flex items-center justify-center gap-4">
-          {[0, 1, 2].map(i => {
+          {[0, 1, 2, 3, 4].map(i => {
             const done = i < successes;
             const active = i === successes;
             return (
@@ -360,7 +360,7 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
                 key={i}
                 animate={done ? { scale: [1, 1.2, 1] } : {}}
                 transition={{ duration: 0.4 }}
-                className="w-11 h-11 rounded-full flex items-center justify-center text-sm font-bold"
+                className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold"
                 style={{
                   background: done ? 'rgba(212,175,55,0.25)' : 'rgba(255,255,255,0.06)',
                   border: `2.5px solid ${done ? '#D4AF37' : active ? 'rgba(212,175,55,0.5)' : 'rgba(255,255,255,0.12)'}`,
@@ -368,7 +368,7 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
                   boxShadow: active ? '0 0 12px rgba(212,175,55,0.2)' : 'none',
                 }}
               >
-                {done ? <Check className="h-5 w-5" /> : `${i + 1}`}
+                {done ? <Check className="h-4 w-4" /> : `${i + 1}`}
               </motion.div>
             );
           })}
