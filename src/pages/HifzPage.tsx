@@ -466,12 +466,13 @@ export default function HifzPage() {
         )}
         {step === 6 && <HifzSuccess stepTimes={stepTimesRef.current} />}
       </div>
-      {step >= 0 && step <= 5 && (
+      {step >= 0 && step <= 6 && (
         <DevSkipButton isDevMode={isDevMode} onSkip={() => {
           if (showBreathingPause) { handleBreathingComplete(); }
           else if (step < 4) { updateStep(step + 1); }
-          else if (step === 4) { completeSession(); }
-          else if (step === 5) { navigate('/muraja'); }
+          else if (step === 4) { updateStep(5); }
+          else if (step === 5) { completeSession(); }
+          else if (step === 6) { navigate('/muraja'); }
         }} />
       )}
     </AppLayout>
