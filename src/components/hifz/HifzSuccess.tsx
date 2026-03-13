@@ -1,6 +1,22 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Star, ArrowLeft, Clock } from 'lucide-react';
+import { Star, Clock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+
+const SUCCESS_MESSAGES = [
+  {
+    title: 'Alhamdulillah ! Objectif atteint. 🌟',
+    text: ['Vous venez de sceller ces versets dans votre cœur par la répétition. Qu\'Allah ', '(عز وجل)', ' accepte vos efforts, illumine votre poitrine par Son Livre et vous facilite la suite.'],
+  },
+  {
+    title: 'Masha\'Allah, un grand pas en avant !',
+    text: ['Vos 40 répétitions sont terminées. Qu\'Allah ', '(عز وجل)', ' ancre fermement ces paroles dans votre mémoire. Il est temps de planifier vos révisions quotidiennes.'],
+  },
+  {
+    title: 'Phase de Tikrâr terminée !',
+    text: ['Félicitations pour votre constance. La mémorisation initiale est validée. Qu\'Allah ', '(عز وجل)', ' bénisse votre temps. Passons à la phase d\'ancrage.'],
+  },
+];
 
 const STEP_LABELS: Record<number, string> = {
   0: 'Intention',
@@ -24,6 +40,7 @@ interface Props {
 
 export default function HifzSuccess({ stepTimes }: Props) {
   const navigate = useNavigate();
+  const [message] = useState(() => SUCCESS_MESSAGES[Math.floor(Math.random() * SUCCESS_MESSAGES.length)]);
 
   const times: { step: number; label: string; seconds: number }[] = [];
   let totalSeconds = 0;
@@ -73,11 +90,13 @@ export default function HifzSuccess({ stepTimes }: Props) {
         className="text-2xl font-bold tracking-[0.15em] uppercase"
         style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#d4af37' }}
       >
-        Hifz Validé !
+        {message.title}
       </h1>
 
       <p className="text-white/80 text-sm leading-relaxed px-4">
-        C'est validé ! Retrouvez ces versets demain dans votre « Réveil de la Veille » et pendant 30 jours dans votre « Liaison » (1 récitation par jour) pour un ancrage parfait.
+        {message.text[0]}
+        <span style={{ fontFamily: "'Amiri', serif", fontWeight: 'bold', fontSize: '1.1em' }}>{message.text[1]}</span>
+        {message.text[2]}
       </p>
 
       {/* Time recap */}
@@ -123,31 +142,18 @@ export default function HifzSuccess({ stepTimes }: Props) {
         </motion.div>
       )}
 
-      {/* CTA: Go to revision */}
+      {/* Single CTA */}
       <motion.button
         whileTap={{ scale: 0.97 }}
-        onClick={() => navigate('/muraja')}
-        className="mx-auto px-6 py-3 rounded-2xl flex items-center gap-2 font-semibold text-sm"
-        style={{
-          background: 'rgba(255,255,255,0.1)',
-          color: '#d4af37',
-          border: '1px solid rgba(212,175,55,0.3)',
-        }}
-      >
-        📖 Entretien & Révision
-      </motion.button>
-
-      <motion.button
-        whileTap={{ scale: 0.97 }}
-        onClick={() => navigate('/accueil')}
-        className="mx-auto px-6 py-3 rounded-2xl flex items-center gap-2 font-semibold"
+        onClick={() => navigate('/muraja/rabt')}
+        className="mx-auto px-8 py-4 rounded-2xl flex items-center justify-center gap-2 font-bold text-base w-full max-w-xs"
         style={{
           background: 'linear-gradient(135deg, #d4af37, #b8962e)',
           color: '#1a2e1a',
+          boxShadow: '0 6px 20px rgba(212,175,55,0.4)',
         }}
       >
-        <ArrowLeft className="h-5 w-5" />
-        Retour à l'accueil
+        Transférer vers la consolidation (Ar-Rabt)
       </motion.button>
     </motion.div>
   );
