@@ -267,7 +267,10 @@ export default function HifzPage() {
       stepTimesRef.current[`step_${step}_time`] = elapsedSeconds;
     }
 
+    // IMMÉDIAT : afficher succès + bloquer les sauvegardes localStorage
+    completedRef.current = true;
     clearLocalSession();
+    setStep(4);
 
     if (sessionId && user) {
       await supabase.from('hifz_sessions').update({
