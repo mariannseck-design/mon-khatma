@@ -129,6 +129,9 @@ export default function HifzStep5Tikrar({
       onBack={onBack}
       onPause={onPause}
       totalSteps={5}
+      surahNumber={surahNumber}
+      startVerse={startVerse}
+      endVerse={endVerse}
     >
       <PomodoroTimer />
       <div className="text-center space-y-5">

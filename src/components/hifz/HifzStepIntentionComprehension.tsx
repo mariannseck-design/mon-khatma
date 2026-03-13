@@ -52,7 +52,7 @@ export default function HifzStepIntentionComprehension({ surahNumber, startVerse
   }, [surahNumber, startVerse, endVerse]);
 
   return (
-    <HifzStepWrapper stepNumber={2} stepTitle="Intention et Compréhension" onBack={onBack} onPause={onPause} totalSteps={5}>
+    <HifzStepWrapper stepNumber={2} stepTitle="Intention et Compréhension" onBack={onBack} onPause={onPause} totalSteps={5} surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse}>
       <div className="text-center space-y-4">
         <div
           className="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center"

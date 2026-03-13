@@ -14,7 +14,7 @@ export default function HifzStepMemorisation({ surahNumber, startVerse, endVerse
   const reciterId = localStorage.getItem('quran_reciter') || 'ar.alafasy';
 
   return (
-    <HifzStepWrapper stepNumber={4} stepTitle="Mémorisation" onBack={onBack} onPause={onPause} totalSteps={5}>
+    <HifzStepWrapper stepNumber={4} stepTitle="Mémorisation" onBack={onBack} onPause={onPause} totalSteps={5} surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse}>
       <StepImmersion
         surahNumber={surahNumber}
         verseStart={startVerse}
