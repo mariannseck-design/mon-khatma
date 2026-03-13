@@ -242,6 +242,24 @@ export default function MurajaHubPage() {
               </p>
             </motion.button>
            </div>
+
+            {/* Continuer la mémorisation */}
+            <motion.button
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              onClick={() => navigate('/hifz')}
+              className="w-full rounded-full py-3.5 px-6 flex items-center justify-center gap-2 font-semibold text-sm"
+              style={{
+                background: 'var(--p-primary)',
+                color: 'white',
+                boxShadow: '0 4px 14px rgba(16,185,129,0.3)',
+              }}
+              whileTap={{ scale: 0.96 }}
+            >
+              Continuer la mémorisation
+              <ChevronRight className="h-4 w-4" />
+            </motion.button>
           </>
         )}
       </div>
