@@ -101,13 +101,13 @@ export default function StepFusion({ parts, reciterId, onNext }: Props) {
   }, [peekMode]);
 
   const phaseLabels: Record<FusionPhase, { title: string; desc: React.ReactNode }> = {
-    listen: { title: 'Écoute fusionnée', desc: `Écoutez l'enchaînement des versets ${globalStart} à ${globalEnd} ensemble (5 fois)` },
+    listen: { title: 'Écoute fusionnée', desc: `Écoutez l'enchaînement des versets ${globalStart} à ${globalEnd} en suivant sur le Mushaf (5 fois)` },
     repeat: { title: 'Écoute et répétition', desc: 'Écoutez et répétez en suivant sur le Mushaf' },
     read: { title: 'Lecture liée', desc: 'Lisez les versets en regardant le Mushaf, sans audio' },
     recite: { title: 'Récitation liée de mémoire', desc: <>Récitez les versets de mémoire, <span style={{ color: '#ef5350', fontWeight: 600 }}>sans regarder le Mushaf ni écouter l'audio</span></> },
   };
 
-  const showMushaf = phase === 'repeat' || phase === 'read' || (phase === 'recite' && peekMode);
+  const showMushaf = phase === 'listen' || phase === 'repeat' || phase === 'read' || (phase === 'recite' && peekMode);
 
   const renderMushaf = () => {
     if (loading) return <div className="flex items-center justify-center py-6"><div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: '#d4af37', borderTopColor: 'transparent' }} /></div>;
@@ -162,7 +162,7 @@ export default function StepFusion({ parts, reciterId, onNext }: Props) {
               color: phase === p ? '#d4af37' : 'rgba(255,255,255,0.35)',
             }}
           >
-            {i + 1}. {p === 'listen' ? 'Écoute' : p === 'repeat' ? 'Répétition' : p === 'read' ? 'Lecture' : 'Récitation'}
+            {i + 1}. {p === 'listen' ? 'Écoute + Mushaf' : p === 'repeat' ? 'Répétition' : p === 'read' ? 'Lecture' : 'Récitation'}
           </div>
         ))}
       </div>

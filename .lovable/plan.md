@@ -1,19 +1,21 @@
 
 
-## Plan : Renommer la phase "Écoute" en "Écoute + Lecture Mushaf" et afficher le Mushaf
+# Diagnostic : 404 sur /quran-reader
 
-### Fichier : `src/components/hifz/istiqamah/StepFusion.tsx`
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-Deux changements :
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-1. **Renommer l'onglet** : ligne 165, changer `'Écoute'` en `'Écoute + Mushaf'` (court pour tenir dans l'onglet).
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-2. **Afficher le Mushaf dès la phase listen** : ligne 110, ajouter `phase === 'listen'` dans la condition `showMushaf` :
-   ```
-   const showMushaf = phase === 'listen' || phase === 'repeat' || phase === 'read' || (phase === 'recite' && peekMode);
-   ```
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-3. **Mettre à jour la description** (ligne 104) : changer en `"Écoutez l'enchaînement des versets en suivant sur le Mushaf (5 fois)"`.
-
-Aucun autre fichier ne change.
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
