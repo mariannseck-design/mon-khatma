@@ -477,7 +477,7 @@ export default function HifzStepIntentionImpregnation({ surahNumber, startVerse,
           }}
         >
           <Check className="h-5 w-5" />
-          J'ai lu, écouté et compris — Bismillah
+          Je suis prêt(e) — Bismillah
         </motion.button>
       </div>
     </HifzStepWrapper>

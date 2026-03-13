@@ -159,6 +159,9 @@ export default function StepComprehension({ surahNumber, verseStart, verseEnd, o
               <ArrowRight className="h-4 w-4" />
               Commencer la mémorisation
             </motion.button>
+            <p className="text-xs text-center" style={{ color: 'rgba(255,255,255,0.55)' }}>
+              En route vers un Hifz scellé.
+            </p>
           </motion.div>
         )}
       </AnimatePresence>
