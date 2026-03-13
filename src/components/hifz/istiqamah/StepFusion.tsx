@@ -172,7 +172,7 @@ export default function StepFusion({ parts, reciterId, onNext }: Props) {
         </p>
       </div>
 
-      {phase === 'listen' && (
+      {(phase === 'listen' || phase === 'repeat') && (
         <div className="flex justify-center">
           <motion.button
             whileTap={{ scale: 0.9 }}
