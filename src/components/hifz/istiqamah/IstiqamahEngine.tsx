@@ -162,8 +162,8 @@ export default function IstiqamahEngine({
           })}
           <Popover>
             <PopoverTrigger asChild>
-              <button className="rounded-full p-0.5 transition-colors hover:bg-white/10 ml-1">
-                <Info className="h-3.5 w-3.5" style={{ color: 'rgba(212,175,55,0.5)' }} />
+              <button className="rounded-full p-1 transition-colors hover:bg-white/10 ml-1" style={{ background: 'rgba(212,175,55,0.15)', border: '1px solid rgba(212,175,55,0.3)' }}>
+                <Info className="h-4 w-4" style={{ color: '#d4af37' }} />
               </button>
             </PopoverTrigger>
             <PopoverContent
