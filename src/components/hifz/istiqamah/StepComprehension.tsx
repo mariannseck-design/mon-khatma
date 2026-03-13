@@ -134,7 +134,8 @@ export default function StepComprehension({ surahNumber, verseStart, verseEnd, o
         <motion.button
           whileTap={{ scale: 0.97 }}
           onClick={handleConfirm}
-          className="w-full rounded-2xl py-3.5 flex items-center justify-center gap-2 font-semibold text-sm transition-all"
+          disabled={confirmed}
+          className="w-full rounded-2xl py-3.5 flex items-center justify-center gap-2 font-semibold text-sm transition-all disabled:opacity-50 disabled:pointer-events-none"
           style={{ background: 'linear-gradient(135deg, #d4af37, #b8962e)', color: '#1a2e1a' }}
         >
           <Check className="h-4 w-4" />

@@ -70,9 +70,13 @@ export function useIstiqamahState(
     return currentNode.fusionRange.map((i) => parts[i]).filter(Boolean);
   }, [currentNode, parts]);
 
-  const next = useCallback(() => {
-    setCurrentNodeIndex((i) => Math.min(i + 1, flow.length - 1));
-  }, [flow.length]);
+  const next = useCallback((fromStep?: StepName) => {
+    setCurrentNodeIndex((i) => {
+      // If a source step is provided, only advance if we're currently on that step
+      if (fromStep && flow[i]?.type !== fromStep) return i;
+      return Math.min(i + 1, flow.length - 1);
+    });
+  }, [flow]);
 
   const back = useCallback(() => {
     setCurrentNodeIndex((i) => Math.max(i - 1, 0));
