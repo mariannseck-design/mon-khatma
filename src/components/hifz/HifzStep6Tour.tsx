@@ -200,7 +200,7 @@ export default function HifzStep6Tour({ onComplete, onBack }: Props) {
 
               {/* Difficulty buttons */}
               <p className="text-white/60 text-sm">
-                Comment s'est passée ta récitation ?
+                Comment s'est passée votre récitation ?
               </p>
 
               <div className="grid grid-cols-2 gap-3">

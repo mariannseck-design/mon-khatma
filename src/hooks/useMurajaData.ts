@@ -58,6 +58,8 @@ function computeSM2(quality: number, repetitions: number, easeFactor: number, in
   }
 
   if (newEF < config.minEase) newEF = config.minEase;
+  // Cap absolu à 40 jours
+  newInterval = Math.min(config.maxInterval, newInterval);
   return { interval: newInterval, easeFactor: newEF, repetitions: newReps };
 }
 

@@ -11,10 +11,10 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 
 const RATINGS = [
-  { key: 'hard', label: 'Difficile', quality: 2, icon: Zap, color: '#EF4444' },
-  { key: 'good', label: 'Moyen', quality: 3, icon: ThumbsUp, color: '#F59E0B' },
-  { key: 'easy', label: 'Facile', quality: 4, icon: Crown, color: '#10B981' },
-  { key: 'very_easy', label: 'Très facile', quality: 5, icon: Star, color: '#3B82F6' },
+  { key: 'hard', label: '🔴 Difficile - Demain', quality: 2, icon: Zap, color: '#EF4444' },
+  { key: 'good', label: '🟠 Moyen - 3 jours', quality: 3, icon: ThumbsUp, color: '#F59E0B' },
+  { key: 'easy', label: '🟢 Facile - 7 jours', quality: 4, icon: Crown, color: '#10B981' },
+  { key: 'very_easy', label: '🔵 Très Facile - 15 jours', quality: 5, icon: Star, color: '#3B82F6' },
 ] as const;
 
 function getWeekDays() {
