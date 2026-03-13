@@ -1,21 +1,20 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Activer Hifz pour les VIP
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+Le `/hifz` utilise `ComingSoonGate` avec `adminOnly`, ce qui le restreint aux admins uniquement. Il suffit de retirer la prop `adminOnly` pour que le gate utilise `hasFullAccess` (Admin + VIP).
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Changement
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+**`src/App.tsx`** (ligne 98) : Retirer `adminOnly` de la route `/hifz`
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+```tsx
+// Avant
+<ComingSoonGate title="Espace Hifz" ... adminOnly>
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+// Après
+<ComingSoonGate title="Espace Hifz" ...>
+```
+
+Cela permettra aux VIP d'accéder à l'Espace Hifz (méthode Tikrar) via la condition `hasFullAccess` déjà en place dans `ComingSoonGate`.
 
