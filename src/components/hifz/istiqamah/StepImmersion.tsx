@@ -261,8 +261,9 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
       setPhase('liaison-listen');
     } else {
       // First verse done, go to next
-      if (currentVerseIndex + 1 >= totalVerses) {
-        onNext();
+    if (currentVerseIndex + 1 >= totalVerses) {
+      localStorage.removeItem(IMMERSION_KEY);
+      onNext();
       } else {
         setCurrentVerseIndex(prev => prev + 1);
       }
