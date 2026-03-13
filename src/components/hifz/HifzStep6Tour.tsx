@@ -88,22 +88,23 @@ export default function HifzStep6Tour({ onComplete, onBack }: Props) {
     if (!block || !user) { onComplete(difficulty); return; }
 
     // SM-2 algorithm
+    const cfg = getSM2Config();
     let { sm2_interval: interval, sm2_ease_factor: ease, sm2_repetitions: reps } = block;
 
     if (difficulty === 'hard') {
-      interval = 1;
-      ease = Math.max(1.3, ease - 0.15);
+      interval = cfg.interval1;
+      ease = Math.max(cfg.minEase, ease - 0.15);
       reps = 0;
     } else if (difficulty === 'good') {
       reps += 1;
-      if (reps === 1) interval = 1;
-      else if (reps === 2) interval = 6;
+      if (reps === 1) interval = cfg.interval1;
+      else if (reps === 2) interval = cfg.interval2;
       else interval = Math.round(interval * ease);
     } else {
       // easy
       reps += 1;
-      if (reps === 1) interval = 1;
-      else if (reps === 2) interval = 6;
+      if (reps === 1) interval = cfg.interval1;
+      else if (reps === 2) interval = cfg.interval2;
       else interval = Math.round(interval * ease * 1.3);
       ease += 0.15;
     }
