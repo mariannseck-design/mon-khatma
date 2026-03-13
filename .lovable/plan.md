@@ -1,26 +1,21 @@
 
 
-## Modifications textuelles sur 2 écrans Hifz
+# Diagnostic : 404 sur /quran-reader
 
-### 1. `src/components/hifz/HifzStepIntentionImpregnation.tsx`
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-**Texte sous le cœur (ligne ~216)** :
-- Ancien : `Purifie ton intention pour Allah (عز وجل). Lis, écoute et comprends le sens des versets avant de mémoriser.`
-- Nouveau : `Purifie ton intention pour Allah (عز وجل) et imprègne-toi de ces versets.`
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-**Bouton principal (ligne ~282)** :
-- Ancien : `J'ai lu, écouté et compris — Bismillah`
-- Nouveau : `Je suis prêt(e) — Bismillah`
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-### 2. `src/components/hifz/istiqamah/StepComprehension.tsx`
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-**Titre "Comprendre le message" (ligne 65-66)** :
-- Changer la couleur de `#f0e6c8` (doré) → `#ffffff` (blanc)
-
-**Sous le bouton jaune "J'ai compris le sens" (après ligne 126)** :
-- Ajouter un texte motivationnel : `En route vers un Hifz scellé.`
-- Style : petite police (`text-xs`), couleur crème (`rgba(255,255,255,0.55)`), centré, sous le bouton
-
-**Aussi sous le bouton vert "Commencer la mémorisation" (après ligne 153)** :
-- Même texte motivationnel pour cohérence
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

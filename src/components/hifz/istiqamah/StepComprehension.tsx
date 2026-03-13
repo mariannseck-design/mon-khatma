@@ -62,7 +62,7 @@ export default function StepComprehension({ surahNumber, verseStart, verseEnd, o
         >
           <BookOpen className="h-7 w-7" style={{ color: '#d4af37' }} />
         </div>
-        <h3 className="text-base font-bold" style={{ color: '#f0e6c8', fontFamily: "'Playfair Display', serif" }}>
+        <h3 className="text-base font-bold" style={{ color: '#ffffff', fontFamily: "'Playfair Display', serif" }}>
           Comprendre le message
         </h3>
         <p className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
@@ -125,6 +125,14 @@ export default function StepComprehension({ surahNumber, verseStart, verseEnd, o
         </motion.button>
       )}
 
+      {!confirmed && !loading && (
+        <p className="text-xs text-center" style={{ color: 'rgba(255,255,255,0.55)' }}>
+          En route vers un Hifz scellé.
+        </p>
+      )}
+
+
+
       {/* Step 2: Explicit button to proceed to memorisation */}
       <AnimatePresence>
         {confirmed && (
@@ -151,6 +159,9 @@ export default function StepComprehension({ surahNumber, verseStart, verseEnd, o
               <ArrowRight className="h-4 w-4" />
               Commencer la mémorisation
             </motion.button>
+            <p className="text-xs text-center" style={{ color: 'rgba(255,255,255,0.55)' }}>
+              En route vers un Hifz scellé.
+            </p>
           </motion.div>
         )}
       </AnimatePresence>
