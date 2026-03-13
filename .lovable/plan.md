@@ -1,30 +1,21 @@
 
 
-## Plan : Ajouter une flèche retour discrète sur les pages Hifz
+# Diagnostic : 404 sur /quran-reader
 
-### Modification
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-**`src/components/hifz/HifzStepWrapper.tsx`** — Ajouter un bouton flèche `ChevronLeft` (déjà importé) en haut à gauche du wrapper, très discret :
-- Position absolue ou relative, aligné à gauche au-dessus du badge verset
-- Icône `ChevronLeft` en 16px, opacité 0.25, qui passe à 0.4 au hover
-- Appelle `onBack` au clic
-- Apparaît avec un délai comme le bouton "Retourner à l'accueil"
-- Style cohérent avec le design existant (couleur blanche très atténuée)
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-```tsx
-{onBack && (
-  <motion.button
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    transition={{ delay: 0.5 }}
-    onClick={onBack}
-    className="absolute top-0 left-0 p-2 transition-all active:scale-90"
-    style={{ color: 'rgba(255,255,255,0.25)' }}
-  >
-    <ChevronLeft className="h-5 w-5" />
-  </motion.button>
-)}
-```
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-Le conteneur principal passera en `relative` pour positionner la flèche correctement.
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

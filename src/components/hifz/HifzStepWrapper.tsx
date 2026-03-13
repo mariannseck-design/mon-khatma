@@ -55,8 +55,20 @@ export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBac
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -20 }}
-      className="space-y-5"
+      className="space-y-5 relative"
     >
+      {onBack && (
+        <motion.button
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          onClick={onBack}
+          className="absolute -top-1 left-0 p-1.5 transition-all active:scale-90 hover:opacity-60"
+          style={{ color: 'rgba(255,255,255,0.25)' }}
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </motion.button>
+      )}
       {verseInfo && (
         <div className="flex justify-center">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full"
