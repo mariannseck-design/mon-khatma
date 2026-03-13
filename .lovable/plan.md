@@ -1,21 +1,27 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Ajouter une phase « Écoute + Répétition » dans StepFusion
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Problème
+Actuellement les phases de liaison (fusion) sont : Écoute → Lecture → Récitation. Il manque une étape intermédiaire où l'utilisateur écoute ET répète en regardant le Mushaf, avant de passer à la récitation de mémoire.
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Solution
+Ajouter une 4e phase `repeat` entre `listen` et `read`, avec audio + Mushaf affichés simultanément.
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+### Fichier : `src/components/hifz/istiqamah/StepFusion.tsx`
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+1. **Modifier le type** : `FusionPhase = 'listen' | 'repeat' | 'read' | 'recite'`
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+2. **Ajouter le label** :
+   - `repeat` : « Écoutez et répétez en suivant sur le Mushaf »
+
+3. **Afficher le Mushaf + audio** pour la phase `repeat` :
+   - `showMushaf` inclut `repeat`
+   - Le bouton audio est visible pour `listen` ET `repeat`
+
+4. **Mettre à jour les onglets** : 4 phases au lieu de 3 (Écoute → Répétition → Lecture → Récitation)
+
+5. **Mettre à jour `advancePhase`** : `listen → repeat → read → recite → onNext`
+
+Aucun autre fichier ne change.
 
