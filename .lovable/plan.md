@@ -1,12 +1,21 @@
 
 
-## Plan : Masquer la carte Méthode Oustaz Mourad (réactivable)
+# Diagnostic : 404 sur /quran-reader
 
-Commenter le bloc JSX de la carte Mourad (lignes 298-367) dans `HifzHubPage.tsx` en l'enveloppant dans un flag booléen `SHOW_MOURAD_CARD = false`. Le code reste intact, il suffit de passer le flag à `true` pour la réactiver.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Fichier : `src/pages/HifzHubPage.tsx`
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-1. Ajouter une constante `const SHOW_MOURAD_CARD = false;` en haut du fichier (après les imports)
-2. Envelopper le bloc `<motion.div>` Mourad (lignes 298-367) dans `{SHOW_MOURAD_CARD && ( ... )}`
-3. La logique `detectActiveMouradSession` et le state associé restent en place (pas d'effet de bord si la carte est masquée)
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
+
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

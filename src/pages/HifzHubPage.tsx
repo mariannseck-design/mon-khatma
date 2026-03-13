@@ -22,6 +22,7 @@ const COLORS = {
   greenMist: '#dde5d4',
 };
 
+const SHOW_MOURAD_CARD = false;
 const STEP_NAMES = ['Intention', 'Réveil', 'Imprégnation', 'Istiqâmah', 'Validation'];
 const MOURAD_PHASE_NAMES = ['Compréhension', 'Imprégnation', 'Liaison', 'Ancrage'];
 
@@ -295,8 +296,8 @@ export default function HifzHubPage() {
           )}
         </motion.div>
 
-        {/* Méthode Oustaz Mourad — admin only active */}
-        <motion.div variants={itemVariants}>
+        {/* Méthode Oustaz Mourad — admin only active (masquée, SHOW_MOURAD_CARD = false) */}
+        {SHOW_MOURAD_CARD && <motion.div variants={itemVariants}>
           {isAdmin && !accessLoading ? (
             <Link to="/methode-mourad" className="block">
               <motion.div
@@ -364,7 +365,7 @@ export default function HifzHubPage() {
               </div>
             </motion.div>
           )}
-        </motion.div>
+        </motion.div>}
 
         {/* Muraja'a */}
         <motion.div variants={itemVariants}>
