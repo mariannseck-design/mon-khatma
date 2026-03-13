@@ -1,22 +1,21 @@
 
 
-## Plan : Remplacer les deux indicateurs de progression par des boutons-pastilles de versets
+# Diagnostic : 404 sur /quran-reader
 
-### Constat actuel (lignes 417-454)
-Deux éléments redondants :
-1. Une barre de progression linéaire ("Progression — 0/7 versets")
-2. Des petits dots/pills en dessous
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Proposition
-Supprimer ces deux blocs et les remplacer par une **rangée unique de boutons-pastilles numérotés** (un par verset), style compact et élégant :
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-- Chaque pastille affiche le numéro du verset
-- **Fait** : fond doré, icône check
-- **En cours** : bordure dorée animée (pulse), fond doré translucide
-- **À faire** : fond gris translucide, texte discret
-- Le compteur "X/Y versets" est intégré directement dans cette rangée (implicite par les pastilles)
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-### Fichier : `src/components/hifz/istiqamah/StepImmersion.tsx`
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-Remplacer les lignes 416-454 (barre de progression + pills) par un seul bloc de boutons-pastilles numérotés avec les 3 états visuels décrits ci-dessus. Les pastilles ne sont pas cliquables (progression linéaire), elles servent uniquement d'indicateur visuel.
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

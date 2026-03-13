@@ -413,36 +413,40 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
       {/* Pomodoro Timer */}
       <PomodoroTimer />
 
-      {/* Global progress bar */}
-      <div className="space-y-1">
-        <div className="flex items-center justify-between text-[10px]" style={{ color: 'rgba(255,255,255,0.4)' }}>
-          <span>Progression</span>
-          <span>{currentVerseIndex}/{totalVerses} verset{totalVerses > 1 ? 's' : ''}</span>
-        </div>
-        <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
-          <motion.div
-            className="h-full rounded-full"
-            style={{ background: 'linear-gradient(90deg, #d4af37, #f0d060)' }}
-            initial={false}
-            animate={{ width: `${(currentVerseIndex / totalVerses) * 100}%` }}
-            transition={{ duration: 0.5, ease: 'easeOut' }}
-          />
-        </div>
-      </div>
-
-      {/* Verse progress pills — hidden when too many */}
-      {totalVerses <= 10 && (
-        <div className="flex items-center justify-center gap-1.5 flex-wrap">
-          {Array.from({ length: totalVerses }, (_, i) => (
-            <div key={i} className="h-2 rounded-full transition-all duration-300"
+      {/* Verse progress pastilles */}
+      <div className="flex items-center justify-center gap-1.5 flex-wrap">
+        {Array.from({ length: totalVerses }, (_, i) => {
+          const isDone = i < currentVerseIndex;
+          const isCurrent = i === currentVerseIndex;
+          const verseNum = verseStart + i;
+          return (
+            <motion.div
+              key={i}
+              className="flex items-center justify-center rounded-full text-[10px] font-bold select-none"
               style={{
-                width: i === currentVerseIndex ? '24px' : '10px',
-                background: i < currentVerseIndex ? '#d4af37' : i === currentVerseIndex ? '#4ecdc4' : 'rgba(255,255,255,0.15)',
+                width: 28,
+                height: 28,
+                background: isDone
+                  ? 'linear-gradient(135deg, #d4af37, #f0d060)'
+                  : isCurrent
+                    ? 'rgba(212,175,55,0.15)'
+                    : 'rgba(255,255,255,0.06)',
+                border: isCurrent
+                  ? '2px solid rgba(212,175,55,0.6)'
+                  : isDone
+                    ? 'none'
+                    : '1px solid rgba(255,255,255,0.1)',
+                color: isDone ? '#1a2e1a' : isCurrent ? '#d4af37' : 'rgba(255,255,255,0.3)',
+                boxShadow: isCurrent ? '0 0 8px rgba(212,175,55,0.3)' : 'none',
               }}
-            />
-          ))}
-        </div>
-      )}
+              animate={isCurrent ? { borderColor: ['rgba(212,175,55,0.3)', 'rgba(212,175,55,0.8)', 'rgba(212,175,55,0.3)'] } : {}}
+              transition={isCurrent ? { duration: 2, repeat: Infinity, ease: 'easeInOut' } : {}}
+            >
+              {isDone ? <Check className="h-3.5 w-3.5" /> : verseNum}
+            </motion.div>
+          );
+        })}
+      </div>
 
 
       <AnimatePresence mode="wait">
