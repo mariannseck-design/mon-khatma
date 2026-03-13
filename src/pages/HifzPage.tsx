@@ -121,7 +121,7 @@ export default function HifzPage() {
       if (!goalData) setShowGoalOnboarding(true);
 
       const local = loadLocalSession();
-      if (local && local.step >= 0 && local.step <= 5) {
+      if (local && local.step >= 0 && local.step <= 3) {
         setPendingResume(local);
         setShowResumePrompt(true);
         setRestoringSession(false);
