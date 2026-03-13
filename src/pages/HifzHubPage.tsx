@@ -109,7 +109,7 @@ export default function HifzHubPage() {
     try {
       const { data: dbSession } = await supabase
         .from('mourad_sessions')
-        .select('surah_number, current_phase')
+        .select('surah_number, current_phase, verse_start, verse_end')
         .eq('user_id', user.id)
         .is('completed_at', null)
         .order('created_at', { ascending: false })
@@ -118,9 +118,11 @@ export default function HifzHubPage() {
       if (dbSession && dbSession.current_phase >= 0 && dbSession.current_phase <= 3) {
         const surahData = await import('@/lib/surahData');
         const surah = surahData.SURAHS.find((s: any) => s.number === dbSession.surah_number);
+        const pageLabel = await resolvePageLabel(dbSession.surah_number, dbSession.verse_start, dbSession.verse_end);
         setActiveMouradSession({
           surahName: surah?.name || `Sourate ${dbSession.surah_number}`,
           phaseName: MOURAD_PHASE_NAMES[dbSession.current_phase] || `Phase ${dbSession.current_phase}`,
+          pageLabel,
         });
       }
     } catch { /* ignore */ }
