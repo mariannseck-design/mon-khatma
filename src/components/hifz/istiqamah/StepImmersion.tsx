@@ -89,22 +89,31 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
     setIsPlaying(false);
   }, []);
 
-  // Play a single verse
+  // Play a single verse in auto-loop (replays until user pauses)
   const playSingleVerse = useCallback(async (verse: number) => {
     if (isPlayingRef.current) return;
     const url = await getAudioUrl(verse);
     if (!url) return;
     isPlayingRef.current = true;
+    sequenceAbortRef.current = false;
     setIsPlaying(true);
-    const audio = new Audio(url);
-    audioRef.current = audio;
-    audio.onended = () => {
-      isPlayingRef.current = false;
-      setIsPlaying(false);
-      setListenCount(prev => prev + 1);
+
+    const playOnce = () => {
+      const audio = new Audio(url);
+      audioRef.current = audio;
+      audio.onended = () => {
+        setListenCount(prev => prev + 1);
+        if (!sequenceAbortRef.current && isPlayingRef.current) {
+          playOnce(); // auto-loop
+        } else {
+          isPlayingRef.current = false;
+          setIsPlaying(false);
+        }
+      };
+      audio.onerror = () => { isPlayingRef.current = false; setIsPlaying(false); };
+      audio.play().catch(() => { isPlayingRef.current = false; setIsPlaying(false); });
     };
-    audio.onerror = () => { isPlayingRef.current = false; setIsPlaying(false); };
-    audio.play().catch(() => { isPlayingRef.current = false; setIsPlaying(false); });
+    playOnce();
   }, [getAudioUrl]);
 
   // Play a sequence of verses (for liaison)
