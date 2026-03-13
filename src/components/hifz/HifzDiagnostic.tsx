@@ -358,6 +358,23 @@ export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticPro
     onSkip();
   };
 
+  // Resolve page labels for confirmation screen
+  const [confirmPageLabels, setConfirmPageLabels] = useState<Record<string, string>>({});
+  useEffect(() => {
+    if (step !== 'confirming') return;
+    const allBlocks = [...solidBlocks.map((b, i) => ({ ...b, key: `s${i}` })), ...recentBlocks.map((b, i) => ({ ...b, key: `r${i}` }))];
+    if (allBlocks.length === 0) return;
+    (async () => {
+      const labels: Record<string, string> = {};
+      for (const b of allBlocks) {
+        const pStart = await getExactVersePage(b.surahNumber, b.verseStart);
+        const pEnd = await getExactVersePage(b.surahNumber, b.verseEnd);
+        labels[b.key] = pStart === pEnd ? `p. ${pStart}` : `p. ${pStart}–${pEnd}`;
+      }
+      setConfirmPageLabels(labels);
+    })();
+  }, [step, solidBlocks, recentBlocks]);
+
   const pageAnim = {
     initial: { opacity: 0, y: 20 },
     animate: { opacity: 1, y: 0 },
