@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Shield, Check, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
+import { getSM2Config } from '@/lib/sm2Config';
 import { SURAHS } from '@/lib/surahData';
 import HifzStepWrapper from './HifzStepWrapper';
 
