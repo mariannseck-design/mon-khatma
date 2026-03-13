@@ -151,7 +151,7 @@ export default function StepFusion({ parts, reciterId, onNext }: Props) {
 
       {/* Phase tabs */}
       <div className="flex justify-center gap-1">
-        {(['listen', 'read', 'recite'] as FusionPhase[]).map((p, i) => (
+        {(['listen', 'repeat', 'read', 'recite'] as FusionPhase[]).map((p, i) => (
           <div
             key={p}
             className="px-3 py-1.5 rounded-lg text-[10px] font-medium"
