@@ -41,10 +41,17 @@ export default function HifzStep5Liaison({ onNext, onBack }: Props) {
         .order('verse_start', { ascending: true });
 
       if (data) {
-        setBlocks(data.map(b => ({
-          ...b,
-          surahName: SURAHS.find(s => s.number === b.surah_number)?.name || `Sourate ${b.surah_number}`,
-        })));
+        const mapped = await Promise.all(data.map(async b => {
+          const pStart = await getExactVersePage(b.surah_number, b.verse_start);
+          const pEnd = await getExactVersePage(b.surah_number, b.verse_end);
+          const pageLabel = pStart === pEnd ? `p. ${pStart}` : `p. ${pStart}–${pEnd}`;
+          return {
+            ...b,
+            surahName: SURAHS.find(s => s.number === b.surah_number)?.name || `Sourate ${b.surah_number}`,
+            pageLabel,
+          };
+        }));
+        setBlocks(mapped);
       }
       setLoading(false);
     };
