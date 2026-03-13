@@ -258,7 +258,7 @@ export default function HifzHubPage() {
                     </h3>
                     <p className="text-white/70 text-sm mt-1">
                       {activeHifzSession
-                        ? `${activeHifzSession.surahName} — ${activeHifzSession.stepName}`
+                        ? `${activeHifzSession.surahName} — ${activeHifzSession.stepName}${activeHifzSession.pageLabel ? ` (${activeHifzSession.pageLabel})` : ''}`
                         : 'Graver le Coran dans les cœurs'}
                     </p>
                   </div>
