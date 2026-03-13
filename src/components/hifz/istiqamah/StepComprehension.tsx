@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BookOpen, Check } from 'lucide-react';
 import { SURAHS } from '@/lib/surahData';
@@ -15,7 +15,13 @@ export default function StepComprehension({ surahNumber, verseStart, verseEnd, o
   const [loading, setLoading] = useState(true);
   const [showMessage, setShowMessage] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
+  const lockRef = useRef(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout>>();
   const surahName = SURAHS.find(s => s.number === surahNumber)?.name || '';
+
+  useEffect(() => {
+    return () => { if (timerRef.current) clearTimeout(timerRef.current); };
+  }, []);
 
   useEffect(() => {
     setLoading(true);
@@ -37,10 +43,11 @@ export default function StepComprehension({ surahNumber, verseStart, verseEnd, o
   }, [surahNumber, verseStart, verseEnd]);
 
   const handleConfirm = () => {
-    if (confirmed) return;
+    if (lockRef.current) return;
+    lockRef.current = true;
     setConfirmed(true);
     setShowMessage(true);
-    setTimeout(onNext, 1800);
+    timerRef.current = setTimeout(onNext, 1800);
   };
 
   return (
@@ -127,7 +134,8 @@ export default function StepComprehension({ surahNumber, verseStart, verseEnd, o
         <motion.button
           whileTap={{ scale: 0.97 }}
           onClick={handleConfirm}
-          className="w-full rounded-2xl py-3.5 flex items-center justify-center gap-2 font-semibold text-sm transition-all"
+          disabled={confirmed}
+          className="w-full rounded-2xl py-3.5 flex items-center justify-center gap-2 font-semibold text-sm transition-all disabled:opacity-50 disabled:pointer-events-none"
           style={{ background: 'linear-gradient(135deg, #d4af37, #b8962e)', color: '#1a2e1a' }}
         >
           <Check className="h-4 w-4" />

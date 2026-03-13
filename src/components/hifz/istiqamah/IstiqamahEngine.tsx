@@ -67,7 +67,7 @@ export default function IstiqamahEngine({
             key="immersion-global"
             {...globalProps}
             reciterId={reciterId}
-            onNext={next}
+            onNext={() => next('immersion')}
           />
         );
 
@@ -76,7 +76,7 @@ export default function IstiqamahEngine({
           <StepComprehension
             key="comprehension-global"
             {...globalProps}
-            onNext={next}
+            onNext={() => next('comprehension')}
           />
         );
 
