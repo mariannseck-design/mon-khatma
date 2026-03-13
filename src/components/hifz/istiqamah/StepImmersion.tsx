@@ -333,11 +333,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
     const startV = Math.min(...versesToShow);
     const endV = Math.max(...versesToShow);
 
-    const infoLine = verseInfoLabel ? (
-      <p className="text-[11px] text-center mb-1" style={{ color: 'rgba(255,255,255,0.45)' }}>
-        {verseInfoLabel}
-      </p>
-    ) : null;
+    const infoLine = null;
 
     if (mushafMode === 'physical') {
       return (
