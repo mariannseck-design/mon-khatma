@@ -1,29 +1,21 @@
 
 
-## Problème identifié
+# Diagnostic : 404 sur /quran-reader
 
-Le badge verset ("Al-Baqara · v.70–76 · p. 11") ne s'affiche **pas du tout** sur l'étape Mémorisation car les composants `HifzStepMemorisation` et `IstiqamahEngine` ne transmettent pas `surahNumber`, `startVerse`, `endVerse` au `HifzStepWrapper`.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-Le badge est déjà positionné en haut du wrapper (au-dessus de `{children}`, donc au-dessus des barres rondes). Il suffit de passer les props manquantes.
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-## Corrections
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-### 1. `src/components/hifz/HifzStepMemorisation.tsx`
-Ajouter `surahNumber`, `startVerse`, `endVerse` au `HifzStepWrapper` :
-```tsx
-<HifzStepWrapper stepNumber={4} stepTitle="Mémorisation" onBack={onBack} onPause={onPause} totalSteps={5}
-  surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse}>
-```
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-### 2. `src/components/hifz/istiqamah/IstiqamahEngine.tsx`
-Passer les props vers les deux usages de `HifzStepWrapper` (lignes 44 et 115) :
-```tsx
-<HifzStepWrapper stepNumber={3} stepTitle="Istiqâmah" onBack={onBack} onPause={onPause}
-  surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse}>
-```
-
-### 3. `src/components/hifz/HifzStep3Memorisation.tsx`
-Même correction — ajouter les props manquantes au `HifzStepWrapper` (ligne 422). Ce composant reçoit déjà `surahNumber`, `startVerse`, `endVerse` en props.
-
-Aucun changement de layout nécessaire dans `HifzStepWrapper` lui-même — le badge est déjà positionné avant `{children}`.
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

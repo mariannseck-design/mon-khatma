@@ -419,7 +419,7 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
   );
 
   return (
-    <HifzStepWrapper stepNumber={3} stepTitle="Istiqâmah" onBack={onBack} onPause={onPause}>
+    <HifzStepWrapper stepNumber={3} stepTitle="Istiqâmah" onBack={onBack} onPause={onPause} surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse}>
       <div className="text-center space-y-4">
         {/* Info button */}
         <div className="flex items-center justify-center gap-2">
