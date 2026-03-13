@@ -8,6 +8,7 @@ import { useMurajaData } from '@/hooks/useMurajaData';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { format, startOfWeek, addDays, isSameDay } from 'date-fns';
+import { getExactVersePage } from '@/lib/quranData';
 
 export default function MurajaHubPage() {
   const navigate = useNavigate();
@@ -69,6 +70,25 @@ export default function MurajaHubPage() {
 
   const rabtDone = rabtVerses.filter(v => checkedIds.includes(v.id)).length;
   const tourDone = tourVerses.filter(v => checkedIds.includes(v.id)).length;
+
+  const [rabtPageLabel, setRabtPageLabel] = useState('');
+  const [tourPageLabel, setTourPageLabel] = useState('');
+
+  useEffect(() => {
+    async function resolvePages(verses: typeof rabtVerses) {
+      if (verses.length === 0) return '';
+      let minPage = Infinity, maxPage = -Infinity;
+      for (const v of verses) {
+        const pStart = await getExactVersePage(v.surah_number, v.verse_start);
+        const pEnd = await getExactVersePage(v.surah_number, v.verse_end);
+        if (pStart < minPage) minPage = pStart;
+        if (pEnd > maxPage) maxPage = pEnd;
+      }
+      return minPage === maxPage ? `p. ${minPage}` : `p. ${minPage}–${maxPage}`;
+    }
+    resolvePages(rabtVerses).then(setRabtPageLabel);
+    resolvePages(tourVerses).then(setTourPageLabel);
+  }, [rabtVerses, tourVerses]);
 
   const TOTAL_QURAN_VERSES = 6236;
   const totalMemorized = useMemo(() => {
@@ -237,7 +257,9 @@ export default function MurajaHubPage() {
                 </div>
                 <div className="flex-1">
                   <p className="text-sm font-bold" style={{ color: 'var(--p-text)' }}>Ar-Rabt</p>
-                  <p className="text-[11px]" style={{ color: 'var(--p-text-50)' }}>Liaison quotidienne · 30 jours</p>
+                  <p className="text-[11px]" style={{ color: 'var(--p-text-50)' }}>
+                    Liaison quotidienne · 30 jours{rabtPageLabel ? ` · ${rabtPageLabel}` : ''}
+                  </p>
                 </div>
                 <span className="text-xs font-bold px-2 py-1 rounded-full" style={{ background: 'rgba(212,175,55,0.12)', color: '#D4AF37' }}>
                   {rabtDone}/{rabtVerses.length}
@@ -269,7 +291,9 @@ export default function MurajaHubPage() {
                 </div>
                 <div className="flex-1">
                   <p className="text-sm font-bold" style={{ color: 'var(--p-text)' }}>Consolidation</p>
-                  <p className="text-[11px]" style={{ color: 'var(--p-text-50)' }}>Révision espacée SM-2</p>
+                  <p className="text-[11px]" style={{ color: 'var(--p-text-50)' }}>
+                    Révision espacée SM-2{tourPageLabel ? ` · ${tourPageLabel}` : ''}
+                  </p>
                 </div>
                 <span className="text-xs font-bold px-2 py-1 rounded-full" style={{ background: 'rgba(16,185,129,0.12)', color: '#10B981' }}>
                   {tourDone}/{tourVerses.length}
