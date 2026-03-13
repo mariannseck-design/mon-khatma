@@ -137,7 +137,7 @@ export default function HifzPage() {
         .limit(1)
         .maybeSingle();
 
-      if (activeSession && activeSession.current_step >= 0 && activeSession.current_step <= 5) {
+      if (activeSession && activeSession.current_step >= 0 && activeSession.current_step <= 3) {
         const restored = {
           session: {
             surahNumber: activeSession.surah_number,
