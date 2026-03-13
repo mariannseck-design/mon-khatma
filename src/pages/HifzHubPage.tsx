@@ -296,8 +296,8 @@ export default function HifzHubPage() {
           )}
         </motion.div>
 
-        {/* Méthode Oustaz Mourad — admin only active */}
-        <motion.div variants={itemVariants}>
+        {/* Méthode Oustaz Mourad — admin only active (masquée, SHOW_MOURAD_CARD = false) */}
+        {SHOW_MOURAD_CARD && <motion.div variants={itemVariants}>
           {isAdmin && !accessLoading ? (
             <Link to="/methode-mourad" className="block">
               <motion.div
