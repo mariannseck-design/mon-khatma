@@ -181,6 +181,10 @@ export default function HifzPage() {
       setSession(pendingResume.session);
       setStep(pendingResume.step);
       setSessionId(pendingResume.sessionId);
+      // Restaurer le step_status (contient tikrar_started_at, tikrar_count, etc.)
+      if (pendingResume.stepStatus && typeof pendingResume.stepStatus === 'object') {
+        stepTimesRef.current = pendingResume.stepStatus;
+      }
     }
     setShowResumePrompt(false);
     setPendingResume(null);
