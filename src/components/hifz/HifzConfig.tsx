@@ -3,7 +3,7 @@ import { ChevronDown, Play } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { SURAHS } from '@/lib/surahData';
 import { findNextStartingPoint } from '@/lib/hifzUtils';
-import { getPageAyahs } from '@/lib/quranData';
+import { getPageAyahs, getExactVersePage } from '@/lib/quranData';
 import { useAuth } from '@/contexts/AuthContext';
 
 interface HifzConfigProps {
