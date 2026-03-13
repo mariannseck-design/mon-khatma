@@ -52,6 +52,14 @@ export default function HifzHubPage() {
     } catch { /* ignore */ }
   };
 
+  const resolvePageLabel = async (surahNumber: number, vStart: number, vEnd: number): Promise<string> => {
+    try {
+      const pStart = await getExactVersePage(surahNumber, vStart);
+      const pEnd = await getExactVersePage(surahNumber, vEnd);
+      return pStart === pEnd ? `p. ${pStart}` : `p. ${pStart}–${pEnd}`;
+    } catch { return ''; }
+  };
+
   const detectActiveHifzSession = async () => {
     try {
       const raw = localStorage.getItem('hifz_active_session');
@@ -61,9 +69,13 @@ export default function HifzHubPage() {
           if (Date.now() - (data.ts || 0) < 24 * 60 * 60 * 1000) {
             const surahData = await import('@/lib/surahData');
             const surah = surahData.SURAHS.find((s: any) => s.number === data.session.surahNumber);
+            const pageLabel = data.session.startVerse && data.session.endVerse
+              ? await resolvePageLabel(data.session.surahNumber, data.session.startVerse, data.session.endVerse)
+              : '';
             setActiveHifzSession({
               surahName: surah?.name || `Sourate ${data.session.surahNumber}`,
               stepName: STEP_NAMES[data.step] || `Étape ${data.step}`,
+              pageLabel,
             });
             return;
           }
@@ -72,7 +84,7 @@ export default function HifzHubPage() {
       if (user) {
         const { data: dbSession } = await supabase
           .from('hifz_sessions')
-          .select('surah_number, current_step')
+          .select('surah_number, current_step, start_verse, end_verse')
           .eq('user_id', user.id)
           .is('completed_at', null)
           .order('created_at', { ascending: false })
@@ -81,9 +93,11 @@ export default function HifzHubPage() {
         if (dbSession && dbSession.current_step >= 0 && dbSession.current_step <= 4) {
           const surahData = await import('@/lib/surahData');
           const surah = surahData.SURAHS.find((s: any) => s.number === dbSession.surah_number);
+          const pageLabel = await resolvePageLabel(dbSession.surah_number, dbSession.start_verse, dbSession.end_verse);
           setActiveHifzSession({
             surahName: surah?.name || `Sourate ${dbSession.surah_number}`,
             stepName: STEP_NAMES[dbSession.current_step] || `Étape ${dbSession.current_step}`,
+            pageLabel,
           });
         }
       }
