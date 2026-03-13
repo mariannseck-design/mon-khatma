@@ -7,7 +7,7 @@ import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Moon, Sun, Type, AlertTriangle } from 'lucide-react';
+import { Moon, Sun, Type, AlertTriangle, Brain, RotateCcw } from 'lucide-react';
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
@@ -16,6 +16,7 @@ import {
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
+import { getSM2Config, saveSM2Config, resetSM2Config, getSM2Defaults } from '@/lib/sm2Config';
 
 export default function ParametresPage() {
   const { user } = useAuth();
