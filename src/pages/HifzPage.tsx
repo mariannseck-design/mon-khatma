@@ -255,6 +255,7 @@ export default function HifzPage() {
       if (session) {
         try {
           const today = new Date().toISOString().split('T')[0];
+          const sm2Cfg = getSM2Config();
           const { error: upsertError } = await supabase.from('hifz_memorized_verses').upsert({
             user_id: user.id,
             surah_number: session.surahNumber,
