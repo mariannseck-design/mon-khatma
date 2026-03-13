@@ -14,7 +14,7 @@ interface Props {
   onNext: () => void;
 }
 
-type FusionPhase = 'listen' | 'read' | 'recite';
+type FusionPhase = 'listen' | 'repeat' | 'read' | 'recite';
 
 const FONT_FAMILY = "'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
 
