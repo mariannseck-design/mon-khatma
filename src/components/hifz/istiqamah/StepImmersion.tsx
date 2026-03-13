@@ -465,7 +465,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
               title={isLiaison ? 'Liaison — Écouter' : 'Écouter, lire & répéter'}
               subtitle={isLiaison
                 ? `Écoutez les versets ${liaisonVerses[0]}–${liaisonVerses[liaisonVerses.length - 1]} enchaînés`
-                : 'Écoute le récitateur en suivant sur le Mushaf, puis répète en même temps'
+                : 'Écoute le récitateur en suivant sur le Mushaf, puis répète'
               }
             />
 
