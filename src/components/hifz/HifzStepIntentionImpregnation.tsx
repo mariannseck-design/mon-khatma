@@ -274,7 +274,7 @@ export default function HifzStepIntentionImpregnation({ surahNumber, startVerse,
         </div>
 
         <p className="text-white/80 text-sm leading-relaxed px-2">
-          Purifie ton intention pour Allah (عز وجل). Lis, écoute et comprends le sens des versets avant de mémoriser.
+          Purifie ton intention pour Allah (عز وجل) et imprègne-toi de ces versets.
         </p>
 
         {/* Mushaf mode toggle + display */}
