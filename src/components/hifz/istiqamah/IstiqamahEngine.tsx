@@ -41,7 +41,7 @@ export default function IstiqamahEngine({
 
   if (loading) {
     return (
-      <HifzStepWrapper stepNumber={3} stepTitle="Istiqâmah" onBack={onBack} onPause={onPause}>
+        <HifzStepWrapper stepNumber={3} stepTitle="Istiqâmah" onBack={onBack} onPause={onPause} surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse}>
         <div className="flex items-center justify-center py-16">
           <div className="w-8 h-8 border-4 rounded-full animate-spin" style={{ borderColor: '#d4af37', borderTopColor: 'transparent' }} />
         </div>
