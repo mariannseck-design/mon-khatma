@@ -293,7 +293,9 @@ export async function findNextStartingPoint(userId: string, goalVerseCount?: num
   }
 
   if (surahCoverage.size === 0) {
-    const endVerse = await getPageAlignedEnd(1, 1);
+    const endVerse = goalVerseCount
+      ? Math.min(goalVerseCount, 7)
+      : await getPageAlignedEnd(1, 1);
     console.log('[findNextStartingPoint] Aucune mémorisation trouvée → Al-Fatiha 1:1-' + endVerse);
     return { surahNumber: 1, startVerse: 1, endVerse, surahName: 'Al-Fatiha' };
   }
