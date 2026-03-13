@@ -251,7 +251,7 @@ export async function graduateLiaisonBlocks(userId: string) {
  * Find the first non-memorized starting point after the user's memorized content.
  * Returns { surahNumber, startVerse } for the next Hifz session.
  */
-export async function findNextStartingPoint(userId: string): Promise<{
+export async function findNextStartingPoint(userId: string, goalVerseCount?: number): Promise<{
   surahNumber: number;
   startVerse: number;
   endVerse: number;
