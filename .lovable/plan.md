@@ -1,21 +1,17 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Diagnostic : bouton retour sur HifzConfig
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Constat
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+Le code est **déjà correct** : le bouton retour sur la page 1/5 (HifzConfig) appelle bien `navigate('/hifz-hub')` (ligne 482 de HifzPage.tsx), et la route `/hifz-hub` existe (App.tsx ligne 103).
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+Le problème est très probablement un **cache du Service Worker** qui sert une ancienne version du fichier. Le fichier `public/version.json` a été mis à jour récemment mais le SW peut encore servir l'ancien bundle.
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+### Plan
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+1. **Forcer un bump de version** dans `public/version.json` pour déclencher une mise à jour du Service Worker
+2. **Aucun changement de logique nécessaire** — le code `navigate('/hifz-hub')` est déjà en place
+
+Si après le bump de version et un rechargement forcé (Ctrl+Shift+R) le problème persiste, il faudra investiguer le Service Worker (`public/sw-push.js`) pour vérifier s'il intercepte la navigation.
 
