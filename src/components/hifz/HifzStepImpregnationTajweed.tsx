@@ -198,13 +198,22 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
         ayahsRef.current = data.data.ayahs
           .filter((a: any) => a.numberInSurah >= startVerse && a.numberInSurah <= endVerse)
           .map((a: any) => ({ audio: a.audio, numberInSurah: a.numberInSurah }));
+      } else {
+        console.warn('[HifzTajweed] API returned non-200:', data.code);
       }
-    } catch { /* ignore */ }
+    } catch (err) {
+      console.warn('[HifzTajweed] fetchAudio error:', err);
+    }
   }, [surahNumber, startVerse, endVerse, reciter]);
 
   useEffect(() => { fetchAudio(); }, [fetchAudio]);
 
   const playNextAyah = useCallback((idx: number) => {
+    if (!ayahsRef.current.length) {
+      console.warn('[HifzTajweed] No audio loaded yet');
+      setIsPlaying(false);
+      return;
+    }
     if (idx >= ayahsRef.current.length) {
       setListenCount(prev => prev + 1);
       indexRef.current = 0;
@@ -216,7 +225,10 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
     const audio = new Audio(ayahsRef.current[idx].audio);
     audioRef.current = audio;
     audio.onended = () => playNextAyah(idx + 1);
-    audio.onerror = () => playNextAyah(idx + 1);
+    audio.onerror = () => {
+      console.warn('[HifzTajweed] Audio error for ayah', idx);
+      playNextAyah(idx + 1);
+    };
     audio.play().catch(() => setIsPlaying(false));
   }, []);
 
