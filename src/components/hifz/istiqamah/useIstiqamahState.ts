@@ -24,6 +24,7 @@ export interface IstiqamahState {
   currentPart: Part | null;
   fusionParts: Part[];
   immersionCompleted: boolean;
+  clearState: () => void;
 }
 
 // Strict linear flow: comprehension → immersion → tikrar
@@ -40,6 +41,44 @@ const ALLOWED_NEXT: Record<StepName, StepName> = {
   tikrar: 'tikrar', // terminal
 };
 
+const ISTIQAMAH_KEY = 'hifz_istiqamah_state';
+
+function fingerprint(surah: number, vStart: number, vEnd: number) {
+  return `${surah}:${vStart}-${vEnd}`;
+}
+
+function saveIstiqamahState(surah: number, vStart: number, vEnd: number, nodeIndex: number, immersionDone: boolean) {
+  try {
+    localStorage.setItem(ISTIQAMAH_KEY, JSON.stringify({
+      fp: fingerprint(surah, vStart, vEnd),
+      nodeIndex,
+      immersionDone,
+      ts: Date.now(),
+    }));
+  } catch {}
+}
+
+function loadIstiqamahState(surah: number, vStart: number, vEnd: number): { nodeIndex: number; immersionDone: boolean } | null {
+  try {
+    const raw = localStorage.getItem(ISTIQAMAH_KEY);
+    if (!raw) return null;
+    const data = JSON.parse(raw);
+    if (data.fp !== fingerprint(surah, vStart, vEnd)) return null;
+    if (Date.now() - (data.ts || 0) > 24 * 60 * 60 * 1000) {
+      localStorage.removeItem(ISTIQAMAH_KEY);
+      return null;
+    }
+    return { nodeIndex: data.nodeIndex ?? 0, immersionDone: data.immersionDone ?? false };
+  } catch {
+    return null;
+  }
+}
+
+export function clearIstiqamahStorage() {
+  localStorage.removeItem(ISTIQAMAH_KEY);
+  localStorage.removeItem('hifz_immersion_state');
+}
+
 export function useIstiqamahState(
   surahNumber: number,
   verseStart: number,
@@ -50,15 +89,30 @@ export function useIstiqamahState(
   const [currentNodeIndex, setCurrentNodeIndex] = useState(0);
   const [immersionCompleted, setImmersionCompleted] = useState(false);
 
+  // Restore persisted state on mount
   useEffect(() => {
     setLoading(true);
-    splitIntoParts(surahNumber, verseStart, verseEnd).then((p) => {
-      setParts(p);
+    const saved = loadIstiqamahState(surahNumber, verseStart, verseEnd);
+    if (saved) {
+      setCurrentNodeIndex(saved.nodeIndex);
+      setImmersionCompleted(saved.immersionDone);
+      console.log(`[Istiqamah] Restored state: nodeIndex=${saved.nodeIndex}, immersionDone=${saved.immersionDone}`);
+    } else {
       setCurrentNodeIndex(0);
       setImmersionCompleted(false);
+    }
+    splitIntoParts(surahNumber, verseStart, verseEnd).then((p) => {
+      setParts(p);
       setLoading(false);
     });
   }, [surahNumber, verseStart, verseEnd]);
+
+  // Persist state on changes
+  useEffect(() => {
+    if (!loading) {
+      saveIstiqamahState(surahNumber, verseStart, verseEnd, currentNodeIndex, immersionCompleted);
+    }
+  }, [currentNodeIndex, immersionCompleted, loading, surahNumber, verseStart, verseEnd]);
 
   const flow = FLOW;
   const currentNode = flow[currentNodeIndex] ?? null;
@@ -120,6 +174,10 @@ export function useIstiqamahState(
     setCurrentNodeIndex((i) => Math.max(i - 1, 0));
   }, []);
 
+  const clearState = useCallback(() => {
+    clearIstiqamahStorage();
+  }, []);
+
   return {
     parts,
     loading,
@@ -132,5 +190,6 @@ export function useIstiqamahState(
     currentPart,
     fusionParts,
     immersionCompleted,
+    clearState,
   };
 }

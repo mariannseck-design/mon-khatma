@@ -56,6 +56,8 @@ function loadLocalSession(): { session: HifzSession; step: number; sessionId: st
 
 function clearLocalSession() {
   localStorage.removeItem(LOCAL_KEY);
+  localStorage.removeItem('hifz_istiqamah_state');
+  localStorage.removeItem('hifz_immersion_state');
 }
 
 const STEP_NAMES = [
