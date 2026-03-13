@@ -377,7 +377,6 @@ export default function HifzSuiviPage() {
                               {s.name} <span style={{ color: 'var(--p-text-55)' }}>{s.verseRange}</span>
                               <span style={{ color: 'var(--p-text-40)' }}>({s.pageLabel})</span>
                             </span>
-                            </span>
                           ))}
                         </div>
                       </div>
