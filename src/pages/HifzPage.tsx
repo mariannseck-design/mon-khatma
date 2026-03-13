@@ -245,7 +245,7 @@ export default function HifzPage() {
 
     if (sessionId && user) {
       await supabase.from('hifz_sessions').update({
-        current_step: 5,
+        current_step: 3,
         completed_at: new Date().toISOString(),
         step_status: { ...stepTimesRef.current, completed: true },
       }).eq('id', sessionId);
