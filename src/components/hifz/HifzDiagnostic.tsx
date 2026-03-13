@@ -138,7 +138,7 @@ const goldBorderActive = 'rgba(212,175,55,0.6)';
 const glassBg = 'rgba(255,255,255,0.08)';
 const glassBorder = 'rgba(255,255,255,0.12)';
 
-export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticProps) {
+export default function HifzDiagnostic({ onComplete, onSkip, onBack }: HifzDiagnosticProps) {
   const { user } = useAuth();
   const [step, setStep] = useState<DiagnosticStep>('choose-category');
   const [activeTab, setActiveTab] = useState<TabId>('pages');
