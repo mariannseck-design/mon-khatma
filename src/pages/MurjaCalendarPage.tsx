@@ -262,6 +262,30 @@ export default function MurjaCalendarPage() {
         {page && (
           <p className="text-[10px] mt-1 font-semibold" style={{ color: 'var(--p-text-50)' }}>p. {page}</p>
         )}
+        {/* Next review date */}
+        {!isRabt && item.next_review_date && (
+          <div className="flex items-center gap-1 mt-1" style={{ color: 'var(--p-text-40)' }}>
+            <CalendarClock className="h-3 w-3" />
+            <span className="text-[10px] font-medium">
+              {(() => {
+                const next = new Date(item.next_review_date + 'T00:00:00');
+                const today = new Date(); today.setHours(0,0,0,0);
+                const diff = Math.round((next.getTime() - today.getTime()) / 86400000);
+                if (diff <= 0) return "Aujourd'hui";
+                if (diff === 1) return 'Demain';
+                return `Dans ${diff}j`;
+              })()}
+            </span>
+          </div>
+        )}
+        {isRabt && (
+          <div className="flex items-center gap-1 mt-1" style={{ color: 'var(--p-text-40)' }}>
+            <CalendarClock className="h-3 w-3" />
+            <span className="text-[10px] font-medium">
+              J{getLiaisonDaysPassed(item.memorized_at, item.liaison_start_date)}/30
+            </span>
+          </div>
+        )}
       </motion.button>
     );
   };
