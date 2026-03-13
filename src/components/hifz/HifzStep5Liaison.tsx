@@ -103,7 +103,7 @@ export default function HifzStep5Liaison({ onNext, onBack }: Props) {
                       {b.surahName}
                     </p>
                     <p className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
-                      Versets {b.verse_start} → {b.verse_end}
+                      Versets {b.verse_start} → {b.verse_end} {b.pageLabel && <span className="opacity-70">({b.pageLabel})</span>}
                     </p>
                   </div>
                 </div>

@@ -417,19 +417,7 @@ export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticPro
           Pour chaque passage récent, indiquez depuis combien de jours vous le récitez quotidiennement. L'application calculera le reliquat de Liaison.
         </p>
 
-        <div className="space-y-3 max-h-[50vh] overflow-y-auto">
-          {recentBlocks.map((b, i) => {
-            const s = SURAHS.find(s => s.number === b.surahNumber);
-            const days = recentDaysMap.get(i) || 1;
-            const remaining = 30 - days;
-            return (
-              <div key={i} className="rounded-2xl p-4 space-y-3"
-                style={{ background: glassBg, border: '1px solid rgba(74,222,128,0.2)' }}>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-bold text-white">
-                    {s?.name || `S.${b.surahNumber}`} — v.{b.verseStart}→{b.verseEnd}
-                  </span>
-                </div>
+        <RecentBlocksWithPages blocks={recentBlocks} recentDaysMap={recentDaysMap} setRecentDaysMap={setRecentDaysMap} glassBg={glassBg} />
                 <div>
                   <p className="text-[10px] text-white/50 mb-2">
                     Depuis combien de jours récitez-vous ce passage ?
