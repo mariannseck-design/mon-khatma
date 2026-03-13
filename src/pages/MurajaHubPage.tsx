@@ -241,7 +241,8 @@ export default function MurajaHubPage() {
                 Révise tes portions anciennes au moment optimal selon l'algorithme.
               </p>
             </motion.button>
-          </div>
+           </div>
+          </>
         )}
       </div>
     </AppLayout>
