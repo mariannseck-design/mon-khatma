@@ -8,10 +8,10 @@ import { SURAHS } from '@/lib/surahData';
 import HifzStepWrapper from './HifzStepWrapper';
 
 const DIFFICULTY_BUTTONS = [
-  { value: 'hard', label: 'Difficile', color: '#dc6464', bg: 'rgba(220,100,100,0.15)', border: 'rgba(220,100,100,0.3)' },
-  { value: 'good', label: 'Moyen', color: '#d4af37', bg: 'rgba(212,175,55,0.15)', border: 'rgba(212,175,55,0.3)' },
-  { value: 'easy', label: 'Facile', color: '#50c878', bg: 'rgba(80,200,120,0.15)', border: 'rgba(80,200,120,0.3)' },
-  { value: 'very_easy', label: 'Très facile', color: '#3b82f6', bg: 'rgba(59,130,246,0.15)', border: 'rgba(59,130,246,0.3)' },
+  { value: 'hard', label: '🔴 Difficile - Demain', color: '#dc6464', bg: 'rgba(220,100,100,0.15)', border: 'rgba(220,100,100,0.3)' },
+  { value: 'good', label: '🟠 Moyen - Dans 3 jours', color: '#d4af37', bg: 'rgba(212,175,55,0.15)', border: 'rgba(212,175,55,0.3)' },
+  { value: 'easy', label: '🟢 Facile - Dans 7 jours', color: '#50c878', bg: 'rgba(80,200,120,0.15)', border: 'rgba(80,200,120,0.3)' },
+  { value: 'very_easy', label: '🔵 Très Facile - Dans 15 jours', color: '#3b82f6', bg: 'rgba(59,130,246,0.15)', border: 'rgba(59,130,246,0.3)' },
 ];
 
 interface ReviewBlock {
