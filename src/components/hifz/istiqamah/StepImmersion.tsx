@@ -423,14 +423,35 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
 
             <div className="flex flex-col items-center gap-3">
               <CircularCounter count={listenCount} target={TARGET_REPS} color={isLiaison ? '#a78bfa' : '#4ecdc4'} />
-              <motion.button whileTap={{ scale: 0.9 }} onClick={handlePlay}
-                className="w-16 h-16 rounded-full flex items-center justify-center"
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                onClick={handlePlay}
+                className="flex items-center gap-2 px-5 py-2 rounded-full text-xs font-semibold tracking-wide"
                 style={{
-                  background: isPlaying ? 'rgba(78,205,196,0.2)' : 'rgba(212,175,55,0.15)',
-                  border: `2px solid ${isPlaying ? 'rgba(78,205,196,0.5)' : 'rgba(212,175,55,0.4)'}`,
+                  background: isPlaying ? 'rgba(78,205,196,0.12)' : 'rgba(212,175,55,0.1)',
+                  border: `1px solid ${isPlaying ? 'rgba(78,205,196,0.3)' : 'rgba(212,175,55,0.25)'}`,
+                  color: isPlaying ? '#4ecdc4' : 'rgba(255,255,255,0.6)',
                 }}
               >
-                <Volume2 className="h-7 w-7" style={{ color: isPlaying ? '#4ecdc4' : '#d4af37' }} />
+                {isPlaying ? (
+                  <>
+                    <motion.span
+                      className="flex items-center gap-[3px]"
+                      animate={{ opacity: [1, 0.4, 1] }}
+                      transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' }}
+                    >
+                      <span className="w-[3px] h-3 rounded-full" style={{ background: '#4ecdc4' }} />
+                      <span className="w-[3px] h-4 rounded-full" style={{ background: '#4ecdc4' }} />
+                      <span className="w-[3px] h-2.5 rounded-full" style={{ background: '#4ecdc4' }} />
+                    </motion.span>
+                    Pause
+                  </>
+                ) : (
+                  <>
+                    <Headphones className="h-3.5 w-3.5" />
+                    Écouter
+                  </>
+                )}
               </motion.button>
               {minReached && (
                 <ContinueButton onClick={handleContinueListen} label="Passer à la récitation" />
