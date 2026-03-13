@@ -627,6 +627,17 @@ export default function HifzDiagnostic({ onComplete, onSkip, onBack }: HifzDiagn
   // ─── CATEGORY CHOICE SCREEN ───
   return (
     <motion.div {...pageAnim} className="flex flex-col min-h-[75vh]">
+      {/* Back button */}
+      {onBack && (
+        <button
+          onClick={onBack}
+          className="flex items-center gap-1 p-2 rounded-lg transition-all active:scale-95 hover:bg-white/10 self-start mb-2"
+          style={{ color: 'rgba(255,255,255,0.6)' }}
+        >
+          <ArrowLeft className="h-5 w-5" />
+          <span className="text-xs uppercase tracking-wider">Retour</span>
+        </button>
+      )}
       {/* Header */}
       <div className="text-center space-y-3 mb-6">
         <div className="flex justify-center">
