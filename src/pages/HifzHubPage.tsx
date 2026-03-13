@@ -22,6 +22,7 @@ const COLORS = {
   greenMist: '#dde5d4',
 };
 
+const SHOW_MOURAD_CARD = false;
 const STEP_NAMES = ['Intention', 'Réveil', 'Imprégnation', 'Istiqâmah', 'Validation'];
 const MOURAD_PHASE_NAMES = ['Compréhension', 'Imprégnation', 'Liaison', 'Ancrage'];
 
