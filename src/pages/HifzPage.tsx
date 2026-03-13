@@ -238,7 +238,7 @@ export default function HifzPage() {
 
   const handlePause = useCallback(async () => {
     if (session && step >= 0 && step <= 3) {
-      saveLocalSession(session, step, sessionId);
+      saveLocalSession(session, step, sessionId, stepTimesRef.current);
       if (sessionId && user) {
         await supabase.from('hifz_sessions').update({
           current_step: step,
