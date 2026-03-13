@@ -18,9 +18,36 @@ import {
 
 type TimerStatus = 'idle' | 'focus' | 'paused' | 'break';
 
-const BREAK_DURATION = 5 * 60; // 5 minutes
+const BREAK_DURATION = 5 * 60;
+const SS_STATUS = 'pomodoro_status';
+const SS_END = 'pomodoro_endTimestamp';
+const SS_TIMELEFT = 'pomodoro_timeLeft';
+const SS_DURATION = 'pomodoro_focusDuration';
+
+function readStorage(): { status: TimerStatus; endTimestamp: number; timeLeft: number; focusDuration: number } {
+  const status = (sessionStorage.getItem(SS_STATUS) as TimerStatus) || 'idle';
+  const endTimestamp = Number(sessionStorage.getItem(SS_END) || 0);
+  const timeLeft = Number(sessionStorage.getItem(SS_TIMELEFT) || 0);
+  const focusDuration = Number(sessionStorage.getItem(SS_DURATION) || 25 * 60);
+  return { status, endTimestamp, timeLeft, focusDuration };
+}
+
+function clearStorage() {
+  sessionStorage.removeItem(SS_STATUS);
+  sessionStorage.removeItem(SS_END);
+  sessionStorage.removeItem(SS_TIMELEFT);
+  sessionStorage.removeItem(SS_DURATION);
+}
+
+function saveStorage(status: TimerStatus, focusDuration: number, endTimestamp: number, timeLeft: number) {
+  sessionStorage.setItem(SS_STATUS, status);
+  sessionStorage.setItem(SS_DURATION, String(focusDuration));
+  sessionStorage.setItem(SS_END, String(endTimestamp));
+  sessionStorage.setItem(SS_TIMELEFT, String(timeLeft));
+}
 
 export default function PomodoroTimer() {
+  const [initialized, setInitialized] = useState(false);
   const [status, setStatus] = useState<TimerStatus>('idle');
   const [timeLeft, setTimeLeft] = useState(0);
   const [focusDuration, setFocusDuration] = useState(25 * 60);
@@ -28,6 +55,7 @@ export default function PomodoroTimer() {
   const [showCustom, setShowCustom] = useState(false);
   const [notification, setNotification] = useState<'focus-done' | 'break-done' | null>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const endTimestampRef = useRef(0);
 
   const clearTimer = useCallback(() => {
     if (intervalRef.current) {
@@ -40,34 +68,88 @@ export default function PomodoroTimer() {
     try { navigator.vibrate?.(30); } catch {}
   };
 
+  // Restore state on mount
+  useEffect(() => {
+    const stored = readStorage();
+    if (stored.status === 'idle') {
+      setInitialized(true);
+      return;
+    }
+    setFocusDuration(stored.focusDuration);
+
+    if (stored.status === 'paused') {
+      setTimeLeft(stored.timeLeft);
+      setStatus('paused');
+    } else if (stored.status === 'focus' || stored.status === 'break') {
+      const remaining = Math.ceil((stored.endTimestamp - Date.now()) / 1000);
+      if (remaining > 0) {
+        endTimestampRef.current = stored.endTimestamp;
+        setTimeLeft(remaining);
+        setStatus(stored.status);
+      } else {
+        // Timer expired while away
+        vibrateGently();
+        if (stored.status === 'focus') {
+          setNotification('focus-done');
+          setStatus('paused');
+          setTimeLeft(0);
+        } else {
+          setNotification('break-done');
+          setStatus('idle');
+          setTimeLeft(0);
+          clearStorage();
+          setTimeout(() => setNotification(prev => prev === 'break-done' ? null : prev), 5000);
+        }
+      }
+    }
+    setInitialized(true);
+  }, []);
+
   // Tick
   useEffect(() => {
+    if (!initialized) return;
     if (status === 'focus' || status === 'break') {
       clearTimer();
       intervalRef.current = setInterval(() => {
-        setTimeLeft(prev => {
-          if (prev <= 1) {
-            clearTimer();
-            vibrateGently();
-            if (status === 'focus') {
-              setNotification('focus-done');
-              setStatus('paused');
-            } else {
-              setNotification('break-done');
-              setStatus('idle');
-              // auto-dismiss after 5s
-              setTimeout(() => setNotification(prev => prev === 'break-done' ? null : prev), 5000);
-            }
-            return 0;
+        const remaining = Math.ceil((endTimestampRef.current - Date.now()) / 1000);
+        if (remaining <= 0) {
+          clearTimer();
+          vibrateGently();
+          if (status === 'focus') {
+            setNotification('focus-done');
+            setStatus('paused');
+            setTimeLeft(0);
+            saveStorage('paused', focusDuration, 0, 0);
+          } else {
+            setNotification('break-done');
+            setStatus('idle');
+            setTimeLeft(0);
+            clearStorage();
+            setTimeout(() => setNotification(prev => prev === 'break-done' ? null : prev), 5000);
           }
-          return prev - 1;
-        });
+        } else {
+          setTimeLeft(remaining);
+        }
       }, 1000);
     }
     return clearTimer;
-  }, [status, clearTimer]);
+  }, [status, initialized, clearTimer, focusDuration]);
+
+  // Persist to sessionStorage on status/timeLeft changes
+  useEffect(() => {
+    if (!initialized) return;
+    if (status === 'idle') {
+      clearStorage();
+    } else if (status === 'paused') {
+      saveStorage('paused', focusDuration, 0, timeLeft);
+    } else {
+      saveStorage(status, focusDuration, endTimestampRef.current, timeLeft);
+    }
+  }, [status, timeLeft, focusDuration, initialized]);
 
   const startFocus = (seconds: number) => {
+    const end = Date.now() + seconds * 1000;
+    endTimestampRef.current = end;
     setFocusDuration(seconds);
     setTimeLeft(seconds);
     setStatus('focus');
@@ -77,14 +159,21 @@ export default function PomodoroTimer() {
   };
 
   const startBreak = () => {
+    const end = Date.now() + BREAK_DURATION * 1000;
+    endTimestampRef.current = end;
     setTimeLeft(BREAK_DURATION);
     setStatus('break');
     setNotification(null);
   };
 
   const togglePause = () => {
-    if (status === 'focus') setStatus('paused');
-    else if (status === 'paused' && timeLeft > 0) setStatus('focus');
+    if (status === 'focus') {
+      setStatus('paused');
+    } else if (status === 'paused' && timeLeft > 0) {
+      const end = Date.now() + timeLeft * 1000;
+      endTimestampRef.current = end;
+      setStatus('focus');
+    }
   };
 
   const reset = () => {
@@ -92,6 +181,7 @@ export default function PomodoroTimer() {
     setStatus('idle');
     setTimeLeft(0);
     setNotification(null);
+    clearStorage();
   };
 
   const formatTime = (s: number) => {
