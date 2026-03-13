@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useMurajaData, getSurahName, getLiaisonDaysPassed, MemorizedVerse } from '@/hooks/useMurajaData';
 import { getExactVersePage } from '@/lib/quranData';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
+import MurajaHistory from '@/components/muraja/MurajaHistory';
 
 function getWeekDays() {
   const now = new Date();
