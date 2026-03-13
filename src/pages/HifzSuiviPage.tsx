@@ -144,7 +144,7 @@ export default function HifzSuiviPage() {
       });
 
       let memorizedVerseCount = 0;
-      const surahDetails = new Map<number, { minVerse: number; maxVerse: number }>();
+      const surahDetails = new Map<number, { minVerse: number; maxVerse: number; minPage: number; maxPage: number }>();
       let easeSum = 0;
       let easeCount = 0;
       let earliestReview: string | null = null;
@@ -156,12 +156,17 @@ export default function HifzSuiviPage() {
         easeSum += m.sm2_ease_factor;
         easeCount++;
 
+        const startPage = versePages.get(`${m.id}_start`) || 0;
+        const endPage = versePages.get(`${m.id}_end`) || 0;
+
         const existing = surahDetails.get(m.surah_number);
         if (existing) {
           existing.minVerse = Math.min(existing.minVerse, m.verse_start);
           existing.maxVerse = Math.max(existing.maxVerse, m.verse_end);
+          existing.minPage = Math.min(existing.minPage, startPage);
+          existing.maxPage = Math.max(existing.maxPage, endPage);
         } else {
-          surahDetails.set(m.surah_number, { minVerse: m.verse_start, maxVerse: m.verse_end });
+          surahDetails.set(m.surah_number, { minVerse: m.verse_start, maxVerse: m.verse_end, minPage: startPage, maxPage: endPage });
         }
 
         const alreadyReviewedToday = m.last_reviewed_at && isToday(new Date(m.last_reviewed_at));
