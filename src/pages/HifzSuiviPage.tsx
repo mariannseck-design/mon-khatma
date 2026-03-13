@@ -375,6 +375,8 @@ export default function HifzSuiviPage() {
                             <span key={i} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px]"
                               style={{ background: 'var(--p-track)', color: 'var(--p-primary)' }}>
                               {s.name} <span style={{ color: 'var(--p-text-55)' }}>{s.verseRange}</span>
+                              <span style={{ color: 'var(--p-text-40)' }}>({s.pageLabel})</span>
+                            </span>
                             </span>
                           ))}
                         </div>
