@@ -200,7 +200,7 @@ export default function HifzStep6Tour({ onComplete, onBack }: Props) {
                 Comment s'est passée ta récitation ?
               </p>
 
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-2 gap-3">
                 {DIFFICULTY_BUTTONS.map(btn => (
                   <motion.button
                     key={btn.value}
