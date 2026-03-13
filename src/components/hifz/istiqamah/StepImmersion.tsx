@@ -273,6 +273,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
   // After liaison validated
   const advanceAfterLiaison = useCallback(() => {
     if (currentVerseIndex + 1 >= totalVerses) {
+      localStorage.removeItem(IMMERSION_KEY);
       onNext();
     } else {
       setCurrentVerseIndex(prev => prev + 1);

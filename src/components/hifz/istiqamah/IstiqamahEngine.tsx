@@ -99,7 +99,7 @@ export default function IstiqamahEngine({
             surahNumber={surahNumber}
             verseStart={startVerse}
             verseEnd={endVerse}
-            onNext={onNext}
+            onNext={() => { clearState(); onNext(); }}
           />
         );
 
