@@ -136,6 +136,8 @@ export default function ParametresPage() {
                   setSm2Ease(sm2Defaults.initialEase);
                   setSm2Int1(sm2Defaults.interval1);
                   setSm2Int2(sm2Defaults.interval2);
+                  setSm2Int3(sm2Defaults.interval3);
+                  setSm2Int4(sm2Defaults.interval4);
                   toast({ title: '↩️ Valeurs par défaut restaurées' });
                 }}
               >
