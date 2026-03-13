@@ -116,6 +116,7 @@ export default function MurajaHubPage() {
             <div className="w-8 h-8 border-4 rounded-full animate-spin" style={{ borderColor: 'var(--p-primary)', borderTopColor: 'transparent' }} />
           </div>
         ) : (
+          <>
           {/* Weekly Recap */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
@@ -176,7 +177,7 @@ export default function MurajaHubPage() {
               </div>
             </motion.div>
 
-          <div className="space-y-4 pt-2">
+          <div className="space-y-4">
             {/* Ar-Rabt Card */}
             <motion.button
               initial={{ opacity: 0, y: 12 }}
