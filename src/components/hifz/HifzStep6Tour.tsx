@@ -98,15 +98,18 @@ export default function HifzStep6Tour({ onComplete, onBack }: Props) {
       reps = 0;
     } else if (difficulty === 'good') {
       reps += 1;
-      if (reps === 1) interval = cfg.interval1;
-      else if (reps === 2) interval = cfg.interval2;
+      if (reps === 1) interval = cfg.interval2;
       else interval = Math.round(interval * ease);
-    } else {
-      // easy
+    } else if (difficulty === 'easy') {
       reps += 1;
-      if (reps === 1) interval = cfg.interval1;
-      else if (reps === 2) interval = cfg.interval2;
+      if (reps === 1) interval = cfg.interval3;
       else interval = Math.round(interval * ease * 1.3);
+      ease += 0.10;
+    } else {
+      // very_easy
+      reps += 1;
+      if (reps === 1) interval = cfg.interval4;
+      else interval = Math.round(interval * ease * 1.5);
       ease += 0.15;
     }
 
