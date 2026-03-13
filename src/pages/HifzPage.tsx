@@ -34,8 +34,8 @@ const GRADIENT_STYLE = {
 
 const LOCAL_KEY = 'hifz_active_session';
 
-function saveLocalSession(session: HifzSession, step: number, sessionId: string | null) {
-  localStorage.setItem(LOCAL_KEY, JSON.stringify({ session, step, sessionId, ts: Date.now() }));
+function saveLocalSession(session: HifzSession, step: number, sessionId: string | null, stepStatus?: Record<string, any>) {
+  localStorage.setItem(LOCAL_KEY, JSON.stringify({ session, step, sessionId, stepStatus, ts: Date.now() }));
 }
 
 function loadLocalSession(): { session: HifzSession; step: number; sessionId: string | null } | null {
