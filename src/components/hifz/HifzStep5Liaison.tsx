@@ -4,6 +4,7 @@ import { Link2, Check, Loader2 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { SURAHS } from '@/lib/surahData';
+import { getExactVersePage } from '@/lib/quranData';
 import HifzStepWrapper from './HifzStepWrapper';
 
 interface VerseBlock {
