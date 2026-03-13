@@ -8,9 +8,9 @@ import { getSM2Config } from '@/lib/sm2Config';
 import HifzConfig from '@/components/hifz/HifzConfig';
 import HifzGoalOnboarding from '@/components/hifz/HifzGoalOnboarding';
 import HifzDiagnostic from '@/components/hifz/HifzDiagnostic';
-import HifzStepIntentionImpregnation from '@/components/hifz/HifzStepIntentionImpregnation';
-import IstiqamahEngine from '@/components/hifz/istiqamah/IstiqamahEngine';
-import HifzStep4Validation from '@/components/hifz/HifzStep4Validation';
+import HifzStepIntentionComprehension from '@/components/hifz/HifzStepIntentionComprehension';
+import HifzStepImpregnationTajweed from '@/components/hifz/HifzStepImpregnationTajweed';
+import HifzStepMemorisation from '@/components/hifz/HifzStepMemorisation';
 import HifzStep5Tikrar from '@/components/hifz/HifzStep5Tikrar';
 import HifzSuccess from '@/components/hifz/HifzSuccess';
 import HifzBreathingPause from '@/components/hifz/HifzBreathingPause';
@@ -61,8 +61,10 @@ function clearLocalSession() {
 }
 
 const STEP_NAMES = [
-  'Intention & Imprégnation', 'Istiqâmah',
-  'Validation', 'Tikrar',
+  'Intention et Compréhension',
+  'Imprégnation',
+  'Mémorisation',
+  'Tikrâr',
 ];
 
 export default function HifzPage() {
@@ -82,6 +84,7 @@ export default function HifzPage() {
   const stepStartRef = useRef<number>(Date.now());
   const stepTimesRef = useRef<Record<string, number>>({});
 
+  // Save session progress locally
   useEffect(() => {
     if (session && step >= 0 && step <= 3) {
       saveLocalSession(session, step, sessionId);
@@ -98,6 +101,7 @@ export default function HifzPage() {
     return () => document.removeEventListener('visibilitychange', handler);
   }, [session, step, sessionId]);
 
+  // Init: check goal, restore session
   useEffect(() => {
     if (!user) { setHasGoal(true); setRestoringSession(false); return; }
     const init = async () => {
@@ -227,7 +231,8 @@ export default function HifzPage() {
     navigate('/accueil');
   }, [session, step, sessionId, user, navigate]);
 
-  const handleStep1Complete = useCallback(() => {
+  // After step 1 (Imprégnation), show breathing pause before step 2 (Mémorisation)
+  const handleImpregnationComplete = useCallback(() => {
     setShowBreathingPause(true);
   }, []);
 
@@ -236,7 +241,7 @@ export default function HifzPage() {
     updateStep(2);
   }, [updateStep]);
 
-  // Complete session after step 4 (no more steps 5-6 in this tunnel)
+  // Complete session after Tikrâr (step 3)
   const completeSession = useCallback(async () => {
     const elapsedSeconds = Math.floor((Date.now() - stepStartRef.current) / 1000);
     if (step >= 0) {
@@ -247,7 +252,7 @@ export default function HifzPage() {
 
     if (sessionId && user) {
       await supabase.from('hifz_sessions').update({
-        current_step: 3,
+        current_step: 4,
         completed_at: new Date().toISOString(),
         step_status: { ...stepTimesRef.current, completed: true },
       }).eq('id', sessionId);
@@ -315,7 +320,7 @@ export default function HifzPage() {
         });
       }
     }
-    setStep(4); // 4 = success screen now
+    setStep(4); // success screen
   }, [sessionId, user, session, step]);
 
   const devModeBadge = isDevMode && (
@@ -367,7 +372,7 @@ export default function HifzPage() {
 
   if (showResumePrompt && pendingResume) {
     const surah = SURAHS.find(s => s.number === pendingResume.session.surahNumber);
-    const stepName = STEP_NAMES[pendingResume.step] || `Étape ${pendingResume.step}`;
+    const stepName = STEP_NAMES[pendingResume.step] || `Étape ${pendingResume.step + 2}`;
     return (
       <AppLayout title="Espace Hifz" hideNav>
         <div className="min-h-[80vh] rounded-[2rem] p-6 mx-[-4px]" style={GRADIENT_STYLE}>
@@ -444,9 +449,44 @@ export default function HifzPage() {
       <div className="min-h-[80vh] rounded-[2rem] p-6 mx-[-4px]" style={GRADIENT_STYLE}>
         {devModeBadge}
         {showBreathingPause && <HifzBreathingPause onComplete={handleBreathingComplete} />}
-        {!showBreathingPause && step === 0 && <HifzStepIntentionImpregnation surahNumber={session.surahNumber} startVerse={session.startVerse} endVerse={session.endVerse} onNext={() => updateStep(1)} onBack={() => setStep(-1)} onPause={handlePause} />}
-        {!showBreathingPause && step === 1 && <IstiqamahEngine surahNumber={session.surahNumber} startVerse={session.startVerse} endVerse={session.endVerse} repetitionLevel={session.repetitionLevel} onNext={handleStep1Complete} onBack={() => setStep(0)} onPause={handlePause} />}
-        {!showBreathingPause && step === 2 && <HifzStep4Validation surahNumber={session.surahNumber} startVerse={session.startVerse} endVerse={session.endVerse} onNext={() => updateStep(3)} onBack={() => setStep(1)} onPause={handlePause} />}
+
+        {/* Step 0 → Étape 2/5 : Intention et Compréhension */}
+        {!showBreathingPause && step === 0 && (
+          <HifzStepIntentionComprehension
+            surahNumber={session.surahNumber}
+            startVerse={session.startVerse}
+            endVerse={session.endVerse}
+            onNext={() => updateStep(1)}
+            onBack={() => setStep(-1)}
+            onPause={handlePause}
+          />
+        )}
+
+        {/* Step 1 → Étape 3/5 : Imprégnation de la récitation et du Tajweed */}
+        {!showBreathingPause && step === 1 && (
+          <HifzStepImpregnationTajweed
+            surahNumber={session.surahNumber}
+            startVerse={session.startVerse}
+            endVerse={session.endVerse}
+            onNext={handleImpregnationComplete}
+            onBack={() => setStep(0)}
+            onPause={handlePause}
+          />
+        )}
+
+        {/* Step 2 → Étape 4/5 : Mémorisation */}
+        {!showBreathingPause && step === 2 && (
+          <HifzStepMemorisation
+            surahNumber={session.surahNumber}
+            startVerse={session.startVerse}
+            endVerse={session.endVerse}
+            onNext={() => updateStep(3)}
+            onBack={() => setStep(1)}
+            onPause={handlePause}
+          />
+        )}
+
+        {/* Step 3 → Étape 5/5 : Tikrâr */}
         {!showBreathingPause && step === 3 && (
           <HifzStep5Tikrar
             surahNumber={session.surahNumber}
@@ -464,13 +504,16 @@ export default function HifzPage() {
             }}
           />
         )}
+
+        {/* Step 4 → Succès */}
         {step === 4 && <HifzSuccess stepTimes={stepTimesRef.current} />}
       </div>
-      {step >= 0 && step <= 4 && step !== 1 && (
+      {step >= 0 && step <= 4 && (
         <DevSkipButton isDevMode={isDevMode} onSkip={() => {
-          console.log(`[DevSkip] 🔀 Skip déclenché à step=${step}, breathing=${showBreathingPause}`);
+          console.log(`[DevSkip] 🔀 Skip à step=${step}, breathing=${showBreathingPause}`);
           if (showBreathingPause) { handleBreathingComplete(); }
           else if (step === 0) { updateStep(1); }
+          else if (step === 1) { handleImpregnationComplete(); }
           else if (step === 2) { updateStep(3); }
           else if (step === 3) { completeSession(); }
           else if (step === 4) { navigate('/muraja'); }

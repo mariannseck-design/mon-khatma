@@ -125,10 +125,10 @@ export default function HifzStep5Tikrar({
   return (
     <HifzStepWrapper
       stepNumber={5}
-      stepTitle="Tikrar"
+      stepTitle="Tikrâr"
       onBack={onBack}
       onPause={onPause}
-      totalSteps={6}
+      totalSteps={5}
     >
       <PomodoroTimer />
       <div className="text-center space-y-5">
