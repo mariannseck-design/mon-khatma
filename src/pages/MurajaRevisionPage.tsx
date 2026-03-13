@@ -273,6 +273,8 @@ export default function MurajaRevisionPage() {
                 )}
               </div>
             )}
+
+            <MurajaHistory sessionType="tour" accentColor="#10B981" />
           </>
         )}
 

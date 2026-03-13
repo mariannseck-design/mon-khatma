@@ -183,6 +183,8 @@ export default function MurajaRabtPage() {
                 )}
               </div>
             )}
+
+            <MurajaHistory sessionType="rabt" accentColor="#D4AF37" />
           </>
         )}
       </div>
