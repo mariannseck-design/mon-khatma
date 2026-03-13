@@ -135,12 +135,16 @@ export default function HifzStep5Tikrar({
     >
       <PomodoroTimer />
       <div className="text-center space-y-5">
-        <h2
-          className="text-lg font-bold"
-          style={{ color: '#f0e6c8', fontFamily: "'Playfair Display', serif" }}
-        >
-          Tikrâr
-        </h2>
+        <div className="flex flex-col items-center gap-0.5">
+          <div className="flex items-center gap-3">
+            <div className="h-[1px] w-8 bg-gradient-to-r from-transparent to-[rgba(212,175,55,0.4)]" />
+            <span className="text-2xl" style={{ color: '#d4af37', fontFamily: "'Amiri', serif" }}>تِكْرَار</span>
+            <div className="h-[1px] w-8 bg-gradient-to-l from-transparent to-[rgba(212,175,55,0.4)]" />
+          </div>
+          <span className="text-[10px] tracking-[0.2em] uppercase font-medium" style={{ color: 'rgba(212,175,55,0.6)' }}>
+            Tikrâr
+          </span>
+        </div>
         <p className="text-xs leading-relaxed" style={{ color: 'rgba(240,230,200,0.7)' }}>
           Récitez cette portion <strong style={{ color: '#d4af37' }}>40 fois</strong> pour sceller votre mémorisation.
         </p>
