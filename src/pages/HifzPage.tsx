@@ -213,7 +213,7 @@ export default function HifzPage() {
   }, [sessionId, user, step]);
 
   const handlePause = useCallback(async () => {
-    if (session && step >= 0 && step <= 5) {
+    if (session && step >= 0 && step <= 3) {
       saveLocalSession(session, step, sessionId);
       if (sessionId && user) {
         await supabase.from('hifz_sessions').update({
