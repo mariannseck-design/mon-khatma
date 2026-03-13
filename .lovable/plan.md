@@ -1,16 +1,21 @@
 
 
-## Plan : Corriger le compteur J/30 et l'apparition des versets dans Ar-Rabt
+# Diagnostic : 404 sur /quran-reader
 
-### Problèmes identifiés
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-1. **J0/30 au lieu de J1/30** : `getLiaisonDaysPassed` calcule `floor((now - start) / 86400000)` → le jour même donne 0. Il faut ajouter +1 pour que le jour de validation compte comme J1.
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-2. **Les versets apparaissent sur les jours précédents** : Le filtre `rabtVerses` utilise `< today` ce qui exclut les versets mémorisés aujourd'hui. Mais le problème signalé est l'inverse — les versets mémorisés aujourd'hui ne devraient PAS apparaître avant demain dans Ar-Rabt (c'est correct). Cependant le compteur doit quand même afficher J1/30 le lendemain quand ils apparaissent.
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-### Changements
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-**`src/hooks/useMurajaData.ts`** — fonction `getLiaisonDaysPassed` :
-- Changer le calcul pour compter J1 dès le lendemain de la mémorisation : `Math.min(30, Math.max(1, ...))` au lieu de `Math.max(0, ...)`
-- Cela garantit que le premier jour d'apparition dans Ar-Rabt affiche J1/30 (pas J0/30)
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
