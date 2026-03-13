@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { BookOpen, Calendar, Target, Sparkles } from 'lucide-react';
+import { BookOpen, Calendar, Target, Sparkles, ChevronLeft } from 'lucide-react';
 
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -31,10 +31,11 @@ const DAY_LABELS = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
 
 interface HifzGoalOnboardingProps {
   onGoalSet: () => void;
+  onBack?: () => void;
   existingGoal?: { goal_period: string; goal_unit: string; goal_value: number; id: string; active_days?: number[] } | null;
 }
 
-export default function HifzGoalOnboarding({ onGoalSet, existingGoal }: HifzGoalOnboardingProps) {
+export default function HifzGoalOnboarding({ onGoalSet, onBack, existingGoal }: HifzGoalOnboardingProps) {
   const { user } = useAuth();
   const [tab, setTab] = useState<'daily' | 'weekly'>(
     (existingGoal?.goal_period as 'daily' | 'weekly') || 'daily'
@@ -102,6 +103,18 @@ export default function HifzGoalOnboarding({ onGoalSet, existingGoal }: HifzGoal
       animate={{ opacity: 1, y: 0 }}
       className="space-y-6"
     >
+      {/* Back button */}
+      {onBack && (
+        <button
+          onClick={onBack}
+          className="flex items-center gap-1.5 text-sm transition-all active:scale-95 mb-2"
+          style={{ color: 'rgba(255,255,255,0.6)' }}
+        >
+          <ChevronLeft className="h-5 w-5" />
+          <span>Retour</span>
+        </button>
+      )}
+
       {/* Header */}
       <div className="text-center space-y-3">
         <div className="flex justify-center">

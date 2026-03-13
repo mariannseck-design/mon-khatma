@@ -116,17 +116,27 @@ export default function HifzPage() {
     return () => document.removeEventListener('visibilitychange', handler);
   }, [session, step, sessionId]);
 
-  // Intercept browser/Android back button to go to /hifz-hub instead of history
+  const [cameFromDiagnostic, setCameFromDiagnostic] = useState(false);
+
+  // Intercept browser/Android back button for ALL pre-session screens
   useEffect(() => {
-    if (step === -1 && !showDiagnostic && !showGoalOnboarding && !showResumePrompt) {
-      window.history.pushState(null, '', window.location.href);
-      const handlePopState = () => {
+    const isPreSession = step === -1 || showDiagnostic || showGoalOnboarding || showResumePrompt;
+    if (!isPreSession) return;
+
+    window.history.pushState(null, '', window.location.href);
+    const handlePopState = () => {
+      if (showGoalOnboarding && cameFromDiagnostic) {
+        setShowGoalOnboarding(false);
+        setShowDiagnostic(true);
+      } else {
         navigate('/hifz-hub', { replace: true });
-      };
-      window.addEventListener('popstate', handlePopState);
-      return () => window.removeEventListener('popstate', handlePopState);
-    }
-  }, [step, showDiagnostic, showGoalOnboarding, showResumePrompt, navigate]);
+      }
+      // Re-push state to keep intercepting
+      window.history.pushState(null, '', window.location.href);
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [step, showDiagnostic, showGoalOnboarding, showResumePrompt, cameFromDiagnostic, navigate]);
 
   // Init: check goal, restore session
   useEffect(() => {
@@ -400,6 +410,7 @@ export default function HifzPage() {
           <HifzDiagnostic
             onComplete={() => {
               setShowDiagnostic(false);
+              setCameFromDiagnostic(true);
               if (user) {
                 supabase.from('hifz_goals').select('id').eq('user_id', user.id).eq('is_active', true).maybeSingle().then(({ data }) => {
                   setHasGoal(!!data);
@@ -409,6 +420,7 @@ export default function HifzPage() {
             }}
             onSkip={() => {
               setShowDiagnostic(false);
+              setCameFromDiagnostic(true);
               if (user) {
                 supabase.from('hifz_goals').select('id').eq('user_id', user.id).eq('is_active', true).maybeSingle().then(({ data }) => {
                   setHasGoal(!!data);
@@ -478,7 +490,15 @@ export default function HifzPage() {
       <AppLayout title="Espace Hifz" hideNav>
         <div className="min-h-[80vh] rounded-[2rem] p-6 mx-[-4px]" style={GRADIENT_STYLE}>
           <HifzGoalOnboarding
-            onGoalSet={() => { setHasGoal(true); setShowGoalOnboarding(false); }}
+            onGoalSet={() => { setHasGoal(true); setShowGoalOnboarding(false); setCameFromDiagnostic(false); }}
+            onBack={() => {
+              if (cameFromDiagnostic) {
+                setShowGoalOnboarding(false);
+                setShowDiagnostic(true);
+              } else {
+                navigate('/hifz-hub');
+              }
+            }}
           />
         </div>
         <DevSkipButton isDevMode={isDevMode} onSkip={() => { setHasGoal(true); setShowGoalOnboarding(false); }} />
