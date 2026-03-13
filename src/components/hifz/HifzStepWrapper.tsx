@@ -69,25 +69,20 @@ export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBac
 
       {children}
 
-      {/* Pause button */}
+      {/* Return to home — discreet, bottom-right */}
       {onPause && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1 }}
-          className="flex justify-center pt-4"
+          transition={{ delay: 1.5 }}
+          className="flex justify-end pt-2"
         >
           <button
             onClick={onPause}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-medium transition-all active:scale-95"
-            style={{
-              background: 'rgba(255,255,255,0.08)',
-              color: 'rgba(240,230,200,0.6)',
-              border: '1px solid rgba(240,230,200,0.15)',
-            }}
+            className="text-[10px] tracking-wide transition-all active:scale-95"
+            style={{ color: 'rgba(255,255,255,0.25)' }}
           >
-            <Pause className="h-3.5 w-3.5" />
-            Pause
+            ← Retourner à l'accueil
           </button>
         </motion.div>
       )}
