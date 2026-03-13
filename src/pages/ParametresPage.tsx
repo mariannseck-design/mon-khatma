@@ -166,7 +166,7 @@ export default function ParametresPage() {
 
               <div>
                 <div className="flex justify-between text-xs mb-1">
-                  <span className="text-muted-foreground">1er intervalle</span>
+                  <span className="text-muted-foreground">Difficile (1er intervalle)</span>
                   <span className="font-medium text-foreground">{sm2Int1} jour{sm2Int1 > 1 ? 's' : ''}</span>
                 </div>
                 <Slider
@@ -181,14 +181,44 @@ export default function ParametresPage() {
 
               <div>
                 <div className="flex justify-between text-xs mb-1">
-                  <span className="text-muted-foreground">2e intervalle</span>
+                  <span className="text-muted-foreground">Moyen (2e intervalle)</span>
                   <span className="font-medium text-foreground">{sm2Int2} jours</span>
                 </div>
                 <Slider
                   value={[sm2Int2]}
                   onValueChange={([v]) => { setSm2Int2(v); saveSM2Config({ interval2: v }); }}
-                  min={3}
-                  max={10}
+                  min={2}
+                  max={7}
+                  step={1}
+                  className="w-full"
+                />
+              </div>
+
+              <div>
+                <div className="flex justify-between text-xs mb-1">
+                  <span className="text-muted-foreground">Facile (3e intervalle)</span>
+                  <span className="font-medium text-foreground">{sm2Int3} jours</span>
+                </div>
+                <Slider
+                  value={[sm2Int3]}
+                  onValueChange={([v]) => { setSm2Int3(v); saveSM2Config({ interval3: v }); }}
+                  min={5}
+                  max={14}
+                  step={1}
+                  className="w-full"
+                />
+              </div>
+
+              <div>
+                <div className="flex justify-between text-xs mb-1">
+                  <span className="text-muted-foreground">Très facile (4e intervalle)</span>
+                  <span className="font-medium text-foreground">{sm2Int4} jours</span>
+                </div>
+                <Slider
+                  value={[sm2Int4]}
+                  onValueChange={([v]) => { setSm2Int4(v); saveSM2Config({ interval4: v }); }}
+                  min={10}
+                  max={21}
                   step={1}
                   className="w-full"
                 />
