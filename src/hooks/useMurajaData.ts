@@ -261,10 +261,10 @@ export function getSurahName(num: number) {
   return SURAHS.find(s => s.number === num)?.name || `Sourate ${num}`;
 }
 
-export function getLiaisonDaysPassed(memorizedAt?: string | null, startDate?: string | null): number {
+export function getLiaisonDaysPassed(memorizedAt?: string | null, startDate?: string | null, referenceDate?: string): number {
   const dateStr = memorizedAt || startDate;
   if (!dateStr) return 0;
   const start = new Date(dateStr.length === 10 ? dateStr + 'T00:00:00' : dateStr);
-  const now = new Date();
+  const now = referenceDate ? new Date(referenceDate + 'T00:00:00') : new Date();
   return Math.min(30, Math.max(1, Math.floor((now.getTime() - start.getTime()) / 86400000)));
 }
