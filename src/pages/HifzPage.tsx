@@ -81,9 +81,21 @@ export default function HifzPage() {
   const [showResumePrompt, setShowResumePrompt] = useState(false);
   const [showBreathingPause, setShowBreathingPause] = useState(false);
   const [pendingResume, setPendingResume] = useState<{ session: HifzSession; step: number; sessionId: string | null } | null>(null);
+  const [resumePageLabel, setResumePageLabel] = useState('');
   const { isDevMode } = useDevMode();
   const stepStartRef = useRef<number>(Date.now());
   const stepTimesRef = useRef<Record<string, number>>({});
+
+  // Resolve page label for resume prompt
+  useEffect(() => {
+    if (!pendingResume) { setResumePageLabel(''); return; }
+    const { surahNumber, startVerse, endVerse } = pendingResume.session;
+    (async () => {
+      const pStart = await getExactVersePage(surahNumber, startVerse);
+      const pEnd = await getExactVersePage(surahNumber, endVerse);
+      setResumePageLabel(pStart === pEnd ? `p. ${pStart}` : `p. ${pStart}–${pEnd}`);
+    })();
+  }, [pendingResume]);
 
   // Save session progress locally
   useEffect(() => {
