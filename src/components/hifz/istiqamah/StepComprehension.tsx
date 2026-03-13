@@ -15,7 +15,13 @@ export default function StepComprehension({ surahNumber, verseStart, verseEnd, o
   const [loading, setLoading] = useState(true);
   const [showMessage, setShowMessage] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
+  const lockRef = useRef(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout>>();
   const surahName = SURAHS.find(s => s.number === surahNumber)?.name || '';
+
+  useEffect(() => {
+    return () => { if (timerRef.current) clearTimeout(timerRef.current); };
+  }, []);
 
   useEffect(() => {
     setLoading(true);
