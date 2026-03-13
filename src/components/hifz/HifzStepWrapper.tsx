@@ -1,6 +1,8 @@
 import { ReactNode, useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronLeft, Clock, Pause } from 'lucide-react';
+import { ChevronLeft, Clock } from 'lucide-react';
+import { getExactVersePage } from '@/lib/quranData';
+import { SURAHS } from '@/lib/surahData';
 
 interface HifzStepWrapperProps {
   stepNumber: number;
@@ -9,6 +11,9 @@ interface HifzStepWrapperProps {
   onBack?: () => void;
   onPause?: () => void;
   totalSteps?: number;
+  surahNumber?: number;
+  startVerse?: number;
+  endVerse?: number;
 }
 
 function formatTime(seconds: number): string {
