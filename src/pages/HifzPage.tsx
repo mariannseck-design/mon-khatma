@@ -405,6 +405,7 @@ export default function HifzPage() {
               </p>
               <p className="text-xs" style={{ color: 'rgba(240,230,200,0.7)' }}>
                 Versets {pendingResume.session.startVerse} → {pendingResume.session.endVerse}
+                {resumePageLabel && <span style={{ color: 'rgba(240,230,200,0.5)' }}> · {resumePageLabel}</span>}
               </p>
               <p className="text-xs" style={{ color: 'rgba(240,230,200,0.7)' }}>
                 Étape : <span className="font-semibold" style={{ color: '#f0e6c8' }}>{stepName}</span>
