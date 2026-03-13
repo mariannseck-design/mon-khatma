@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ChevronDown, Play } from 'lucide-react';
+import { ChevronDown, ChevronLeft, Play } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { SURAHS } from '@/lib/surahData';
 import { findNextStartingPoint } from '@/lib/hifzUtils';
@@ -8,9 +8,11 @@ import { useAuth } from '@/contexts/AuthContext';
 
 interface HifzConfigProps {
   onStart: (config: { surahNumber: number; startVerse: number; endVerse: number; repetitionLevel: number }) => void;
+  onBack?: () => void;
+  goalVerseCount?: number;
 }
 
-export default function HifzConfig({ onStart }: HifzConfigProps) {
+export default function HifzConfig({ onStart, onBack, goalVerseCount }: HifzConfigProps) {
   const { user } = useAuth();
   const [selectionMode, setSelectionMode] = useState<'surah' | 'page'>('surah');
   const [surahNumber, setSurahNumber] = useState(114);
