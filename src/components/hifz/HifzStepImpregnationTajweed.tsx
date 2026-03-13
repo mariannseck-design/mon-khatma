@@ -198,8 +198,12 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
         ayahsRef.current = data.data.ayahs
           .filter((a: any) => a.numberInSurah >= startVerse && a.numberInSurah <= endVerse)
           .map((a: any) => ({ audio: a.audio, numberInSurah: a.numberInSurah }));
+      } else {
+        console.warn('[HifzTajweed] API returned non-200:', data.code);
       }
-    } catch { /* ignore */ }
+    } catch (err) {
+      console.warn('[HifzTajweed] fetchAudio error:', err);
+    }
   }, [surahNumber, startVerse, endVerse, reciter]);
 
   useEffect(() => { fetchAudio(); }, [fetchAudio]);
