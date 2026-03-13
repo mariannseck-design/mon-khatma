@@ -50,7 +50,7 @@ interface JuzData {
   totalVerses: number;
   memorizedVerses: number;
   percentage: number;
-  surahs: { number: number; name: string; verseRange: string }[];
+  surahs: { number: number; name: string; verseRange: string; pageLabel: string }[];
   avgEase: number;
   nextReview: string | null;
   lastReviewed: string | null;
