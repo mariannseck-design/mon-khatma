@@ -479,7 +479,7 @@ export default function HifzPage() {
       <AppLayout title="Espace Hifz" hideNav>
         <div className="min-h-[80vh] rounded-[2rem] p-6 mx-[-4px]" style={GRADIENT_STYLE}>
           {devModeBadge}
-          <HifzConfig onStart={startSession} />
+          <HifzConfig onStart={startSession} onBack={() => navigate('/hifz-hub')} goalVerseCount={goalVerseCount} />
         </div>
       </AppLayout>
     );
