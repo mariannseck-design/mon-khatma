@@ -468,6 +468,9 @@ export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticPro
                     <span className="flex items-center gap-2">
                       <Clock className="h-3.5 w-3.5 flex-shrink-0" style={{ color: '#4ade80' }} />
                       {s?.name || `S.${b.surahNumber}`} — v.{b.verseStart}→{b.verseEnd}
+                      {confirmPageLabels[`r${i}`] && (
+                        <span className="text-[10px] text-white/40">{confirmPageLabels[`r${i}`]}</span>
+                      )}
                     </span>
                     <span className="text-[10px] font-medium" style={{ color: '#4ade80' }}>
                       {remaining}j restants
