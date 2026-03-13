@@ -34,8 +34,8 @@ const GRADIENT_STYLE = {
 
 const LOCAL_KEY = 'hifz_active_session';
 
-function saveLocalSession(session: HifzSession, step: number, sessionId: string | null) {
-  localStorage.setItem(LOCAL_KEY, JSON.stringify({ session, step, sessionId, ts: Date.now() }));
+function saveLocalSession(session: HifzSession, step: number, sessionId: string | null, stepStatus?: Record<string, any>) {
+  localStorage.setItem(LOCAL_KEY, JSON.stringify({ session, step, sessionId, stepStatus, ts: Date.now() }));
 }
 
 function loadLocalSession(): { session: HifzSession; step: number; sessionId: string | null } | null {
@@ -80,7 +80,7 @@ export default function HifzPage() {
   const [restoringSession, setRestoringSession] = useState(true);
   const [showResumePrompt, setShowResumePrompt] = useState(false);
   const [showBreathingPause, setShowBreathingPause] = useState(false);
-  const [pendingResume, setPendingResume] = useState<{ session: HifzSession; step: number; sessionId: string | null } | null>(null);
+  const [pendingResume, setPendingResume] = useState<{ session: HifzSession; step: number; sessionId: string | null; stepStatus?: Record<string, any> } | null>(null);
   const [resumePageLabel, setResumePageLabel] = useState('');
   const { isDevMode } = useDevMode();
   const stepStartRef = useRef<number>(Date.now());
@@ -100,14 +100,14 @@ export default function HifzPage() {
   // Save session progress locally
   useEffect(() => {
     if (session && step >= 0 && step <= 3) {
-      saveLocalSession(session, step, sessionId);
+      saveLocalSession(session, step, sessionId, stepTimesRef.current);
     }
   }, [session, step, sessionId]);
 
   useEffect(() => {
     const handler = () => {
       if (document.visibilityState === 'visible' && session && step >= 0 && step <= 3) {
-        saveLocalSession(session, step, sessionId);
+        saveLocalSession(session, step, sessionId, stepTimesRef.current);
       }
     };
     document.addEventListener('visibilitychange', handler);
@@ -166,6 +166,7 @@ export default function HifzPage() {
           },
           step: activeSession.current_step,
           sessionId: activeSession.id,
+          stepStatus: activeSession.step_status as Record<string, any> | undefined,
         };
         setPendingResume(restored);
         setShowResumePrompt(true);
@@ -180,6 +181,10 @@ export default function HifzPage() {
       setSession(pendingResume.session);
       setStep(pendingResume.step);
       setSessionId(pendingResume.sessionId);
+      // Restaurer le step_status (contient tikrar_started_at, tikrar_count, etc.)
+      if (pendingResume.stepStatus && typeof pendingResume.stepStatus === 'object') {
+        stepTimesRef.current = pendingResume.stepStatus;
+      }
     }
     setShowResumePrompt(false);
     setPendingResume(null);
@@ -233,7 +238,7 @@ export default function HifzPage() {
 
   const handlePause = useCallback(async () => {
     if (session && step >= 0 && step <= 3) {
-      saveLocalSession(session, step, sessionId);
+      saveLocalSession(session, step, sessionId, stepTimesRef.current);
       if (sessionId && user) {
         await supabase.from('hifz_sessions').update({
           current_step: step,
