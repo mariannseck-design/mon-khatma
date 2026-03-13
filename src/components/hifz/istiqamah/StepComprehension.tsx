@@ -14,6 +14,7 @@ export default function StepComprehension({ surahNumber, verseStart, verseEnd, o
   const [translations, setTranslations] = useState<Map<string, string>>(new Map());
   const [loading, setLoading] = useState(true);
   const [showMessage, setShowMessage] = useState(false);
+  const [confirmed, setConfirmed] = useState(false);
   const surahName = SURAHS.find(s => s.number === surahNumber)?.name || '';
 
   useEffect(() => {
@@ -36,6 +37,8 @@ export default function StepComprehension({ surahNumber, verseStart, verseEnd, o
   }, [surahNumber, verseStart, verseEnd]);
 
   const handleConfirm = () => {
+    if (confirmed) return;
+    setConfirmed(true);
     setShowMessage(true);
     setTimeout(onNext, 1800);
   };
