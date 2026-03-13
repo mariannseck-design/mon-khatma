@@ -43,10 +43,11 @@ export default function StepComprehension({ surahNumber, verseStart, verseEnd, o
   }, [surahNumber, verseStart, verseEnd]);
 
   const handleConfirm = () => {
-    if (confirmed) return;
+    if (lockRef.current) return;
+    lockRef.current = true;
     setConfirmed(true);
     setShowMessage(true);
-    setTimeout(onNext, 1800);
+    timerRef.current = setTimeout(onNext, 1800);
   };
 
   return (
