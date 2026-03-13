@@ -225,13 +225,13 @@ export default function HifzPage() {
     navigate('/accueil');
   }, [session, step, sessionId, user, navigate]);
 
-  const handleStep3Complete = useCallback(() => {
+  const handleStep1Complete = useCallback(() => {
     setShowBreathingPause(true);
   }, []);
 
   const handleBreathingComplete = useCallback(() => {
     setShowBreathingPause(false);
-    updateStep(4);
+    updateStep(2);
   }, [updateStep]);
 
   // Complete session after step 4 (no more steps 5-6 in this tunnel)
