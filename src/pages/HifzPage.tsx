@@ -100,7 +100,7 @@ export default function HifzPage() {
   // Save session progress locally
   useEffect(() => {
     if (session && step >= 0 && step <= 3) {
-      saveLocalSession(session, step, sessionId);
+      saveLocalSession(session, step, sessionId, stepTimesRef.current);
     }
   }, [session, step, sessionId]);
 
