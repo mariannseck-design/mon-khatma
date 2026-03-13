@@ -1,21 +1,32 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Problème
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+L'affichage sourate/versets/page dans `HifzStepWrapper.tsx` (utilisé par toutes les étapes du flux classique, dont Tikrâr) est un simple `<p>` gris sans style particulier (ligne 89-92). Le badge doré n'a été ajouté que dans `StepTikrarFinal.tsx` (flux Istiqamah).
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+## Correction
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+**Fichier : `src/components/hifz/HifzStepWrapper.tsx`** — Lignes 89-93
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+Remplacer le `<p>` simple par un badge doré identique à celui de StepTikrarFinal :
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+```tsx
+// Avant
+<p className="text-[11px] text-center -mt-3" style={{ color: 'rgba(255,255,255,0.45)' }}>
+  {verseInfo}
+</p>
+
+// Après
+<div className="flex justify-center -mt-3">
+  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full"
+       style={{ background: 'rgba(212,175,55,0.12)', border: '1px solid rgba(212,175,55,0.25)' }}>
+    <span className="text-xs" style={{ color: '#d4af37' }}>📖</span>
+    <span className="text-xs font-medium" style={{ color: 'rgba(212,175,55,0.85)' }}>
+      {verseInfo}
+    </span>
+  </div>
+</div>
+```
+
+Un seul fichier, un seul bloc modifié. Ce changement s'applique à **toutes** les étapes du flux classique (pas seulement Tikrâr).
 
