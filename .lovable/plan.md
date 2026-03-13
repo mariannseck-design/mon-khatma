@@ -1,14 +1,21 @@
 
 
-## Plan : Afficher un message d'aide Pomodoro à chaque début de session
+# Diagnostic : 404 sur /quran-reader
 
-### Constat
-Le bouton Pomodoro est discret (opacité 50%) et le message d'aide n'existe plus que dans l'attribut `title` du bouton (invisible sur mobile). Il faut ajouter un texte visible invitant l'utilisateur à activer le Pomodoro.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Changement
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-**`src/components/hifz/PomodoroTimer.tsx`** :
-- Quand le timer est en état `idle`, afficher sous le bouton un petit texte doré discret : *"⏱ Cliquez ici pour activer le minuteur Pomodoro"*
-- Ce texte disparaît dès que le timer est activé (état `focus`, `paused` ou `break`)
-- Style : `text-[10px]`, couleur dorée à 45% d'opacité, centré à droite sous le bouton
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
+
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
