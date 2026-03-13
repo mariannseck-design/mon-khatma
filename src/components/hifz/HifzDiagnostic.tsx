@@ -11,6 +11,7 @@ import { toast } from '@/hooks/use-toast';
 interface HifzDiagnosticProps {
   onComplete: () => void;
   onSkip: () => void;
+  onBack?: () => void;
 }
 
 type TabId = 'pages' | 'juz' | 'surahs';
