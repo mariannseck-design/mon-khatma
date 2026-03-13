@@ -207,11 +207,6 @@ export default function IstiqamahEngine({
           {renderStep()}
         </AnimatePresence>
 
-        <p className="text-xs italic leading-relaxed" style={{ color: 'rgba(212,175,55,0.6)' }}>
-          Bismillah, qu'Allah{' '}
-          <span style={{ fontFamily: "'Amiri', serif", fontWeight: 'bold', fontSize: '1.1em' }}>(عز وجل)</span>
-          {' '}facilite, amine.
-        </p>
       </div>
     </HifzStepWrapper>
   );
