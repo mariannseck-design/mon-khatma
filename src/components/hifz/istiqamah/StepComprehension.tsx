@@ -74,10 +74,10 @@ export default function StepComprehension({ surahNumber, verseStart, verseEnd, o
         className="rounded-xl px-4 py-3"
         style={{ background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.2)' }}
       >
-        <p className="text-xs font-medium leading-relaxed" style={{ color: '#d4af37' }}>
+        <p className="text-xs font-bold leading-relaxed" style={{ color: '#d4af37' }}>
           Lisez la traduction pour saisir le sens de ce que vous allez mémoriser.
         </p>
-        <p className="text-xs mt-1 italic" style={{ color: 'rgba(212,175,55,0.7)' }}>
+        <p className="text-xs mt-1 italic font-semibold" style={{ color: 'rgba(212,175,55,0.7)' }}>
           💡 Vous pouvez effectuer cette étape la veille pour laisser votre esprit s'en imprégner durant la nuit.
         </p>
       </div>
