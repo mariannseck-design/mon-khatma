@@ -183,10 +183,12 @@ export default function HifzSuiviPage() {
 
       const surahs = Array.from(surahDetails.entries()).map(([num, r]) => {
         const s = SURAHS.find(s => s.number === num);
+        const pageLabel = r.minPage === r.maxPage ? `p. ${r.minPage}` : `p. ${r.minPage}–${r.maxPage}`;
         return {
           number: num,
           name: s?.name || `Surah ${num}`,
           verseRange: `v.${r.minVerse}-${r.maxVerse}`,
+          pageLabel,
         };
       });
 
