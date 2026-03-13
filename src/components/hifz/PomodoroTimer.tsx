@@ -105,59 +105,56 @@ export default function PomodoroTimer() {
 
   return (
     <div className="space-y-2">
-      {/* Timer bar */}
-      <div
-        className="flex items-center justify-center gap-3 rounded-xl px-4 py-2 cursor-pointer select-none"
-        style={{
-          background: isBreak
-            ? 'rgba(46,125,50,0.12)'
-            : 'rgba(212,175,55,0.08)',
-          border: `1px solid ${isBreak ? 'rgba(46,125,50,0.3)' : 'rgba(212,175,55,0.2)'}`,
-        }}
-        onClick={!isActive ? () => setShowDialog(true) : undefined}
-      >
-        <Timer className="h-4 w-4" style={{ color: isBreak ? '#4CAF50' : '#d4af37', opacity: 0.7 }} />
-
+      {/* Compact timer */}
+      <div className="flex items-center justify-end">
         {!isActive ? (
-          <div className="flex flex-col items-center">
-            <span className="text-xs font-medium" style={{ color: 'rgba(212,175,55,0.6)' }}>
-              Minuteur Pomodoro
+          <button
+            onClick={() => setShowDialog(true)}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg transition-colors cursor-pointer select-none"
+            style={{ background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.15)' }}
+            title="Minuteur Pomodoro — Cliquez pour activer"
+          >
+            <Timer className="h-3.5 w-3.5" style={{ color: 'rgba(212,175,55,0.5)' }} />
+            <span className="text-[10px] font-medium" style={{ color: 'rgba(212,175,55,0.5)' }}>
+              Pomodoro
             </span>
-            <span className="text-[10px]" style={{ color: 'rgba(212,175,55,0.4)' }}>
-              Cliquez ici pour activer le minuteur et optimiser votre concentration.
-            </span>
-          </div>
+          </button>
         ) : (
-          <>
-            <span className="text-sm font-bold tabular-nums" style={{ color: isBreak ? '#4CAF50' : '#d4af37' }}>
+          <div
+            className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg select-none"
+            style={{
+              background: isBreak ? 'rgba(46,125,50,0.12)' : 'rgba(212,175,55,0.08)',
+              border: `1px solid ${isBreak ? 'rgba(46,125,50,0.3)' : 'rgba(212,175,55,0.2)'}`,
+            }}
+          >
+            <Timer className="h-3.5 w-3.5" style={{ color: isBreak ? '#4CAF50' : '#d4af37', opacity: 0.7 }} />
+            <span className="text-xs font-bold tabular-nums" style={{ color: isBreak ? '#4CAF50' : '#d4af37' }}>
               {formatTime(timeLeft)}
             </span>
-            <span className="text-[10px]" style={{ color: 'rgba(255,255,255,0.35)' }}>
+            <span className="text-[9px]" style={{ color: 'rgba(255,255,255,0.35)' }}>
               {isBreak ? 'Pause' : 'Focus'}
             </span>
-            <div className="flex items-center gap-1 ml-1">
-              {!isBreak && (
-                <button
-                  onClick={(e) => { e.stopPropagation(); togglePause(); }}
-                  className="p-1.5 rounded-lg transition-colors"
-                  style={{ background: 'rgba(255,255,255,0.06)' }}
-                >
-                  {status === 'paused' ? (
-                    <Play className="h-3.5 w-3.5" style={{ color: '#d4af37' }} />
-                  ) : (
-                    <Pause className="h-3.5 w-3.5" style={{ color: '#d4af37' }} />
-                  )}
-                </button>
-              )}
+            {!isBreak && (
               <button
-                onClick={(e) => { e.stopPropagation(); reset(); }}
-                className="p-1.5 rounded-lg transition-colors"
+                onClick={togglePause}
+                className="p-1 rounded-md transition-colors"
                 style={{ background: 'rgba(255,255,255,0.06)' }}
               >
-                <RotateCcw className="h-3.5 w-3.5" style={{ color: 'rgba(255,255,255,0.5)' }} />
+                {status === 'paused' ? (
+                  <Play className="h-3 w-3" style={{ color: '#d4af37' }} />
+                ) : (
+                  <Pause className="h-3 w-3" style={{ color: '#d4af37' }} />
+                )}
               </button>
-            </div>
-          </>
+            )}
+            <button
+              onClick={reset}
+              className="p-1 rounded-md transition-colors"
+              style={{ background: 'rgba(255,255,255,0.06)' }}
+            >
+              <RotateCcw className="h-3 w-3" style={{ color: 'rgba(255,255,255,0.5)' }} />
+            </button>
+          </div>
         )}
       </div>
 
