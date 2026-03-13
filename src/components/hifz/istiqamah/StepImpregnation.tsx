@@ -77,6 +77,7 @@ export default function StepImpregnation({ surahNumber, verseStart, verseEnd, ve
       isPlayingRef.current = false;
       audioRef.current?.pause();
       setIsPlaying(false);
+      setCurrentAyahIndex(-1);
     } else {
       isPlayingRef.current = true;
       setIsPlaying(true);
