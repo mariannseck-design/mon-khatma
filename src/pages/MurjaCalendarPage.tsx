@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AppLayout } from '@/components/layout/AppLayout';
-import { ArrowLeft, Check, Zap, ThumbsUp, Crown, BookOpen, Lock, ChevronDown, Sparkles, Lightbulb, Trophy } from 'lucide-react';
+import { ArrowLeft, Check, Zap, ThumbsUp, Crown, BookOpen, Lock, ChevronDown, Sparkles, Lightbulb, Trophy, CalendarClock } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useNavigate } from 'react-router-dom';
 import { useMurajaData, getSurahName, getLiaisonDaysPassed, MemorizedVerse } from '@/hooks/useMurajaData';
@@ -261,6 +261,30 @@ export default function MurjaCalendarPage() {
         </div>
         {page && (
           <p className="text-[10px] mt-1 font-semibold" style={{ color: 'var(--p-text-50)' }}>p. {page}</p>
+        )}
+        {/* Next review date */}
+        {!isRabt && item.next_review_date && (
+          <div className="flex items-center gap-1 mt-1" style={{ color: 'var(--p-text-40)' }}>
+            <CalendarClock className="h-3 w-3" />
+            <span className="text-[10px] font-medium">
+              {(() => {
+                const next = new Date(item.next_review_date + 'T00:00:00');
+                const today = new Date(); today.setHours(0,0,0,0);
+                const diff = Math.round((next.getTime() - today.getTime()) / 86400000);
+                if (diff <= 0) return "Aujourd'hui";
+                if (diff === 1) return 'Demain';
+                return `Dans ${diff}j`;
+              })()}
+            </span>
+          </div>
+        )}
+        {isRabt && (
+          <div className="flex items-center gap-1 mt-1" style={{ color: 'var(--p-text-40)' }}>
+            <CalendarClock className="h-3 w-3" />
+            <span className="text-[10px] font-medium">
+              J{getLiaisonDaysPassed(item.memorized_at, item.liaison_start_date)}/30
+            </span>
+          </div>
         )}
       </motion.button>
     );
