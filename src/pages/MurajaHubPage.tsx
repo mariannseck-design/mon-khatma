@@ -116,6 +116,66 @@ export default function MurajaHubPage() {
             <div className="w-8 h-8 border-4 rounded-full animate-spin" style={{ borderColor: 'var(--p-primary)', borderTopColor: 'transparent' }} />
           </div>
         ) : (
+          {/* Weekly Recap */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="rounded-2xl p-4 space-y-3"
+              style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', boxShadow: 'var(--p-card-shadow)' }}
+            >
+              <p className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--p-text-40)' }}>
+                Cette semaine
+              </p>
+
+              {/* Stats row */}
+              <div className="flex items-center justify-around">
+                <div className="flex flex-col items-center gap-0.5">
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(16,185,129,0.12)' }}>
+                    <BarChart3 className="h-4 w-4" style={{ color: '#10B981' }} />
+                  </div>
+                  <span className="text-sm font-bold" style={{ color: 'var(--p-text)' }}>{weekSessions}</span>
+                  <span className="text-[9px]" style={{ color: 'var(--p-text-40)' }}>sessions</span>
+                </div>
+                <div className="flex flex-col items-center gap-0.5">
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(212,175,55,0.12)' }}>
+                    <BookOpen className="h-4 w-4" style={{ color: '#D4AF37' }} />
+                  </div>
+                  <span className="text-sm font-bold" style={{ color: 'var(--p-text)' }}>{weekVerses}</span>
+                  <span className="text-[9px]" style={{ color: 'var(--p-text-40)' }}>versets</span>
+                </div>
+                <div className="flex flex-col items-center gap-0.5">
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(99,102,241,0.12)' }}>
+                    <CalendarDays className="h-4 w-4" style={{ color: '#6366F1' }} />
+                  </div>
+                  <span className="text-sm font-bold" style={{ color: 'var(--p-text)' }}>{weekActiveDays.size}/7</span>
+                  <span className="text-[9px]" style={{ color: 'var(--p-text-40)' }}>jours actifs</span>
+                </div>
+              </div>
+
+              {/* Day dots */}
+              <div className="flex items-center justify-between px-2 pt-1">
+                {['L','M','M','J','V','S','D'].map((label, i) => {
+                  const isActive = weekActiveDays.has(i);
+                  const isToday = isSameDay(addDays(monday, i), today);
+                  return (
+                    <div key={i} className="flex flex-col items-center gap-1">
+                      <span className="text-[10px] font-medium" style={{ color: 'var(--p-text-55)' }}>{label}</span>
+                      <div
+                        className="w-5 h-5 rounded-full flex items-center justify-center"
+                        style={{
+                          background: isActive ? 'rgba(16,185,129,0.85)' : 'var(--p-track)',
+                          border: isToday && !isActive ? '2px solid rgba(16,185,129,0.6)' : '1px solid transparent',
+                          boxShadow: isActive ? '0 0 6px rgba(16,185,129,0.3)' : 'none',
+                        }}
+                      >
+                        {isActive && <div className="w-1.5 h-1.5 rounded-full" style={{ background: 'white' }} />}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </motion.div>
+
           <div className="space-y-4 pt-2">
             {/* Ar-Rabt Card */}
             <motion.button
