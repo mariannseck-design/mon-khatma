@@ -32,7 +32,7 @@ export default function IstiqamahEngine({
 }: Props) {
   const [reciterId, setReciterId] = useState(() => localStorage.getItem('quran_reciter') || RECITERS[0].id);
   const state = useIstiqamahState(surahNumber, startVerse, endVerse);
-  const { parts, loading, currentNode, next, back, currentPart, fusionParts, immersionCompleted } = state;
+  const { parts, loading, currentNode, next, back, currentPart, fusionParts, immersionCompleted, clearState } = state;
 
   const handleReciterChange = (id: string) => {
     setReciterId(id);
