@@ -436,7 +436,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
           <path d="M0 5 Q12 10 24 5 Q36 0 48 5" stroke="#d4af37" strokeWidth="1.5" strokeOpacity="0.5" fill="none" />
         </svg>
       </div>
-      <h3 className="text-sm font-bold" style={{ color: '#f0e6c8', fontFamily: "'Playfair Display', serif" }}>{title}</h3>
+      <h3 className="text-sm font-bold leading-snug px-2" style={{ color: '#f0e6c8', fontFamily: "'Playfair Display', serif" }}>{title}</h3>
       <p className="text-[11px]" style={{ color: 'rgba(255,255,255,0.45)' }}>{subtitle}</p>
     </div>
   );
