@@ -60,7 +60,7 @@ export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBac
               className="h-full rounded-full"
               style={{ background: 'linear-gradient(90deg, #d4af37, #f0d060)' }}
               initial={{ width: 0 }}
-              animate={{ width: `${((stepNumber + 1) / totalSteps) * 100}%` }}
+              animate={{ width: `${(stepNumber / totalSteps) * 100}%` }}
               transition={{ duration: 0.5 }}
             />
           </div>

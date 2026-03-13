@@ -76,6 +76,9 @@ export default function HifzConfig({ onStart }: HifzConfigProps) {
     <div className="space-y-6">
       {/* Title */}
       <div className="text-center space-y-2">
+        <p className="text-xs uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.4)' }}>
+          Étape 1/5 · Choix des versets
+        </p>
         <h1
           className="text-2xl font-bold tracking-[0.1em] uppercase"
           style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#d4af37' }}
