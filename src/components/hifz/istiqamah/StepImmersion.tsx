@@ -396,12 +396,15 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
   );
 
   // Header for each phase
-  const PhaseHeader = ({ icon: Icon, iconColor, iconBg, title, subtitle }: { icon: any; iconColor: string; iconBg: string; title: string; subtitle: string }) => (
+  const PhaseHeader = ({ title, subtitle }: { title: string; subtitle: string }) => (
     <div className="text-center space-y-1">
-      <div className="flex items-center justify-center gap-2 mb-0.5">
-        <span className="h-px w-8 rounded-full" style={{ background: `linear-gradient(90deg, transparent, ${iconColor}40)` }} />
-        <Icon className="h-4 w-4" style={{ color: iconColor, opacity: 0.7 }} />
-        <span className="h-px w-8 rounded-full" style={{ background: `linear-gradient(90deg, ${iconColor}40, transparent)` }} />
+      <div className="flex items-center justify-center gap-3 mb-0.5">
+        <svg width="32" height="6" viewBox="0 0 32 6" fill="none">
+          <path d="M0 3 Q8 0 16 3 Q24 6 32 3" stroke="#d4af37" strokeWidth="1" strokeOpacity="0.3" fill="none" />
+        </svg>
+        <svg width="32" height="6" viewBox="0 0 32 6" fill="none">
+          <path d="M0 3 Q8 6 16 3 Q24 0 32 3" stroke="#d4af37" strokeWidth="1" strokeOpacity="0.3" fill="none" />
+        </svg>
       </div>
       <h3 className="text-sm font-bold" style={{ color: '#f0e6c8', fontFamily: "'Playfair Display', serif" }}>{title}</h3>
       <p className="text-[11px]" style={{ color: 'rgba(255,255,255,0.45)' }}>{subtitle}</p>
@@ -454,9 +457,6 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
         {(phase === 'listen' || phase === 'liaison-listen') && (
           <motion.div key={phase} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-4">
             <PhaseHeader
-              icon={isLiaison ? Link : Volume2}
-              iconColor={isLiaison ? '#a78bfa' : '#4ecdc4'}
-              iconBg={isLiaison ? 'rgba(167,139,250,0.15)' : 'rgba(78,205,196,0.15)'}
               title={isLiaison ? 'Liaison — Écouter' : 'Écouter, lire & répéter'}
               subtitle={isLiaison
                 ? `Écoutez les versets ${liaisonVerses[0]}–${liaisonVerses[liaisonVerses.length - 1]} enchaînés`
@@ -513,9 +513,6 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
         {(phase === 'memory' || phase === 'liaison-memory') && (
           <motion.div key={phase} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-4">
             <PhaseHeader
-              icon={isLiaison ? Link : BookOpen}
-              iconColor={isLiaison ? '#a78bfa' : '#d4af37'}
-              iconBg={isLiaison ? 'rgba(167,139,250,0.15)' : 'rgba(212,175,55,0.15)'}
               title={isLiaison ? 'Liaison — Réciter' : 'Réciter de mémoire'}
               subtitle={isLiaison
                 ? `Récitez les versets ${liaisonVerses[0]}–${liaisonVerses[liaisonVerses.length - 1]} enchaînés`
@@ -572,9 +569,6 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
         {(phase === 'error' || phase === 'liaison-error') && (
           <motion.div key={phase} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-4">
             <PhaseHeader
-              icon={RefreshCw}
-              iconColor="#ef5350"
-              iconBg="rgba(211,47,47,0.12)"
               title={isLiaison ? 'Relire les versets' : 'Relire le verset'}
               subtitle="Pas de panique ! Relis attentivement puis recommence"
             />
