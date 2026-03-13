@@ -447,7 +447,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
       <PomodoroTimer />
 
       {/* Verse progress pastilles */}
-      <div className="flex items-center justify-center gap-1.5 flex-wrap">
+      <div className={`flex items-center gap-1.5 ${totalVerses > 10 ? 'overflow-x-auto pb-1 justify-start px-2' : 'justify-center flex-wrap'}`} style={totalVerses > 10 ? { scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' } as React.CSSProperties : undefined}>
         {Array.from({ length: totalVerses }, (_, i) => {
           const isDone = i < currentVerseIndex;
           const isCurrent = i === currentVerseIndex;
