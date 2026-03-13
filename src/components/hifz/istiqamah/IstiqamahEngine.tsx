@@ -52,7 +52,12 @@ export default function IstiqamahEngine({
   const globalProps = { surahNumber, verseStart: startVerse, verseEnd: endVerse };
 
   const renderStep = () => {
-    if (!currentNode) return null;
+    if (!currentNode) {
+      console.log('[IstiqamahEngine] ⚠️ currentNode is null');
+      return null;
+    }
+
+    console.log(`[IstiqamahEngine] 🎯 Rendering step: ${currentNode.type} (index=${state.currentNodeIndex}, immersionCompleted=${immersionCompleted})`);
 
     // DEFENSE IN DEPTH: If tikrar is requested but immersion wasn't completed, force immersion
     if (currentNode.type === 'tikrar' && !immersionCompleted) {

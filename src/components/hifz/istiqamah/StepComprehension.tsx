@@ -40,9 +40,11 @@ export default function StepComprehension({ surahNumber, verseStart, verseEnd, o
     if (lockRef.current) return;
     lockRef.current = true;
     setConfirmed(true);
+    console.log('[StepComprehension] ✅ Compréhension confirmée, bouton mémorisation affiché');
   };
 
   const handleStartMemorisation = () => {
+    console.log('[StepComprehension] ▶️ Bouton "Commencer la mémorisation" cliqué → appel onNext()');
     onNext();
   };
 
