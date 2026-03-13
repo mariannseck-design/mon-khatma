@@ -457,9 +457,6 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
         {(phase === 'listen' || phase === 'liaison-listen') && (
           <motion.div key={phase} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-4">
             <PhaseHeader
-              icon={isLiaison ? Link : Volume2}
-              iconColor={isLiaison ? '#a78bfa' : '#4ecdc4'}
-              iconBg={isLiaison ? 'rgba(167,139,250,0.15)' : 'rgba(78,205,196,0.15)'}
               title={isLiaison ? 'Liaison — Écouter' : 'Écouter, lire & répéter'}
               subtitle={isLiaison
                 ? `Écoutez les versets ${liaisonVerses[0]}–${liaisonVerses[liaisonVerses.length - 1]} enchaînés`
