@@ -119,9 +119,14 @@ export default function PomodoroTimer() {
         <Timer className="h-4 w-4" style={{ color: isBreak ? '#4CAF50' : '#d4af37', opacity: 0.7 }} />
 
         {!isActive ? (
-          <span className="text-xs font-medium" style={{ color: 'rgba(212,175,55,0.6)' }}>
-            Minuteur Pomodoro
-          </span>
+          <div className="flex flex-col items-center">
+            <span className="text-xs font-medium" style={{ color: 'rgba(212,175,55,0.6)' }}>
+              Minuteur Pomodoro
+            </span>
+            <span className="text-[10px]" style={{ color: 'rgba(212,175,55,0.4)' }}>
+              Cliquez ici pour activer le minuteur et optimiser votre concentration.
+            </span>
+          </div>
         ) : (
           <>
             <span className="text-sm font-bold tabular-nums" style={{ color: isBreak ? '#4CAF50' : '#d4af37' }}>
