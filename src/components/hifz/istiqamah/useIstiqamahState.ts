@@ -174,6 +174,10 @@ export function useIstiqamahState(
     setCurrentNodeIndex((i) => Math.max(i - 1, 0));
   }, []);
 
+  const clearState = useCallback(() => {
+    clearIstiqamahStorage();
+  }, []);
+
   return {
     parts,
     loading,
@@ -186,5 +190,6 @@ export function useIstiqamahState(
     currentPart,
     fusionParts,
     immersionCompleted,
+    clearState,
   };
 }
