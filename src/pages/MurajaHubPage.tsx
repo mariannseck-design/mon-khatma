@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { AppLayout } from '@/components/layout/AppLayout';
-import { ArrowLeft, Link2, RefreshCw, BookOpen, CalendarDays, BarChart3 } from 'lucide-react';
+import { ArrowLeft, Link2, RefreshCw, BookOpen, CalendarDays, BarChart3, ChevronRight } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useNavigate } from 'react-router-dom';
 import { useMurajaData } from '@/hooks/useMurajaData';
