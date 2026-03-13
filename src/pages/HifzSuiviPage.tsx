@@ -50,7 +50,7 @@ interface JuzData {
   totalVerses: number;
   memorizedVerses: number;
   percentage: number;
-  surahs: { number: number; name: string; verseRange: string }[];
+  surahs: { number: number; name: string; verseRange: string; pageLabel: string }[];
   avgEase: number;
   nextReview: string | null;
   lastReviewed: string | null;
@@ -144,7 +144,7 @@ export default function HifzSuiviPage() {
       });
 
       let memorizedVerseCount = 0;
-      const surahDetails = new Map<number, { minVerse: number; maxVerse: number }>();
+      const surahDetails = new Map<number, { minVerse: number; maxVerse: number; minPage: number; maxPage: number }>();
       let easeSum = 0;
       let easeCount = 0;
       let earliestReview: string | null = null;
@@ -156,12 +156,17 @@ export default function HifzSuiviPage() {
         easeSum += m.sm2_ease_factor;
         easeCount++;
 
+        const startPage = versePages.get(`${m.id}_start`) || 0;
+        const endPage = versePages.get(`${m.id}_end`) || 0;
+
         const existing = surahDetails.get(m.surah_number);
         if (existing) {
           existing.minVerse = Math.min(existing.minVerse, m.verse_start);
           existing.maxVerse = Math.max(existing.maxVerse, m.verse_end);
+          existing.minPage = Math.min(existing.minPage, startPage);
+          existing.maxPage = Math.max(existing.maxPage, endPage);
         } else {
-          surahDetails.set(m.surah_number, { minVerse: m.verse_start, maxVerse: m.verse_end });
+          surahDetails.set(m.surah_number, { minVerse: m.verse_start, maxVerse: m.verse_end, minPage: startPage, maxPage: endPage });
         }
 
         const alreadyReviewedToday = m.last_reviewed_at && isToday(new Date(m.last_reviewed_at));
@@ -178,10 +183,12 @@ export default function HifzSuiviPage() {
 
       const surahs = Array.from(surahDetails.entries()).map(([num, r]) => {
         const s = SURAHS.find(s => s.number === num);
+        const pageLabel = r.minPage === r.maxPage ? `p. ${r.minPage}` : `p. ${r.minPage}–${r.maxPage}`;
         return {
           number: num,
           name: s?.name || `Surah ${num}`,
           verseRange: `v.${r.minVerse}-${r.maxVerse}`,
+          pageLabel,
         };
       });
 
@@ -368,6 +375,7 @@ export default function HifzSuiviPage() {
                             <span key={i} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px]"
                               style={{ background: 'var(--p-track)', color: 'var(--p-primary)' }}>
                               {s.name} <span style={{ color: 'var(--p-text-55)' }}>{s.verseRange}</span>
+                              <span style={{ color: 'var(--p-text-40)' }}>({s.pageLabel})</span>
                             </span>
                           ))}
                         </div>

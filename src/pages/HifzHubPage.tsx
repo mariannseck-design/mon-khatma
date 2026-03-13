@@ -6,6 +6,7 @@ import { BookOpen, BookHeart, RefreshCw, BarChart3, Play, BookOpenCheck } from '
 import { AppLayout } from '@/components/layout/AppLayout';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
+import { getExactVersePage } from '@/lib/quranData';
 
 
 const COLORS = {
@@ -26,8 +27,8 @@ const MOURAD_PHASE_NAMES = ['Compréhension', 'Imprégnation', 'Liaison', 'Ancra
 
 export default function HifzHubPage() {
   const { user, hasFullAccess, isAdmin, accessLoading } = useAuth();
-  const [activeHifzSession, setActiveHifzSession] = useState<{ surahName: string; stepName: string } | null>(null);
-  const [activeMouradSession, setActiveMouradSession] = useState<{ surahName: string; phaseName: string } | null>(null);
+  const [activeHifzSession, setActiveHifzSession] = useState<{ surahName: string; stepName: string; pageLabel?: string } | null>(null);
+  const [activeMouradSession, setActiveMouradSession] = useState<{ surahName: string; phaseName: string; pageLabel?: string } | null>(null);
   const [pendingReviews, setPendingReviews] = useState(0);
 
   useEffect(() => {
@@ -51,6 +52,14 @@ export default function HifzHubPage() {
     } catch { /* ignore */ }
   };
 
+  const resolvePageLabel = async (surahNumber: number, vStart: number, vEnd: number): Promise<string> => {
+    try {
+      const pStart = await getExactVersePage(surahNumber, vStart);
+      const pEnd = await getExactVersePage(surahNumber, vEnd);
+      return pStart === pEnd ? `p. ${pStart}` : `p. ${pStart}–${pEnd}`;
+    } catch { return ''; }
+  };
+
   const detectActiveHifzSession = async () => {
     try {
       const raw = localStorage.getItem('hifz_active_session');
@@ -60,9 +69,13 @@ export default function HifzHubPage() {
           if (Date.now() - (data.ts || 0) < 24 * 60 * 60 * 1000) {
             const surahData = await import('@/lib/surahData');
             const surah = surahData.SURAHS.find((s: any) => s.number === data.session.surahNumber);
+            const pageLabel = data.session.startVerse && data.session.endVerse
+              ? await resolvePageLabel(data.session.surahNumber, data.session.startVerse, data.session.endVerse)
+              : '';
             setActiveHifzSession({
               surahName: surah?.name || `Sourate ${data.session.surahNumber}`,
               stepName: STEP_NAMES[data.step] || `Étape ${data.step}`,
+              pageLabel,
             });
             return;
           }
@@ -71,7 +84,7 @@ export default function HifzHubPage() {
       if (user) {
         const { data: dbSession } = await supabase
           .from('hifz_sessions')
-          .select('surah_number, current_step')
+          .select('surah_number, current_step, start_verse, end_verse')
           .eq('user_id', user.id)
           .is('completed_at', null)
           .order('created_at', { ascending: false })
@@ -80,9 +93,11 @@ export default function HifzHubPage() {
         if (dbSession && dbSession.current_step >= 0 && dbSession.current_step <= 4) {
           const surahData = await import('@/lib/surahData');
           const surah = surahData.SURAHS.find((s: any) => s.number === dbSession.surah_number);
+          const pageLabel = await resolvePageLabel(dbSession.surah_number, dbSession.start_verse, dbSession.end_verse);
           setActiveHifzSession({
             surahName: surah?.name || `Sourate ${dbSession.surah_number}`,
             stepName: STEP_NAMES[dbSession.current_step] || `Étape ${dbSession.current_step}`,
+            pageLabel,
           });
         }
       }
@@ -94,7 +109,7 @@ export default function HifzHubPage() {
     try {
       const { data: dbSession } = await supabase
         .from('mourad_sessions')
-        .select('surah_number, current_phase')
+        .select('surah_number, current_phase, verse_start, verse_end')
         .eq('user_id', user.id)
         .is('completed_at', null)
         .order('created_at', { ascending: false })
@@ -103,9 +118,11 @@ export default function HifzHubPage() {
       if (dbSession && dbSession.current_phase >= 0 && dbSession.current_phase <= 3) {
         const surahData = await import('@/lib/surahData');
         const surah = surahData.SURAHS.find((s: any) => s.number === dbSession.surah_number);
+        const pageLabel = await resolvePageLabel(dbSession.surah_number, dbSession.verse_start, dbSession.verse_end);
         setActiveMouradSession({
           surahName: surah?.name || `Sourate ${dbSession.surah_number}`,
           phaseName: MOURAD_PHASE_NAMES[dbSession.current_phase] || `Phase ${dbSession.current_phase}`,
+          pageLabel,
         });
       }
     } catch { /* ignore */ }
@@ -241,7 +258,7 @@ export default function HifzHubPage() {
                     </h3>
                     <p className="text-white/70 text-sm mt-1">
                       {activeHifzSession
-                        ? `${activeHifzSession.surahName} — ${activeHifzSession.stepName}`
+                        ? `${activeHifzSession.surahName} — ${activeHifzSession.stepName}${activeHifzSession.pageLabel ? ` (${activeHifzSession.pageLabel})` : ''}`
                         : 'Graver le Coran dans les cœurs'}
                     </p>
                   </div>
@@ -312,7 +329,7 @@ export default function HifzHubPage() {
                     </h3>
                     <p className="text-white/70 text-sm mt-1">
                       {activeMouradSession
-                        ? `${activeMouradSession.surahName} — ${activeMouradSession.phaseName}`
+                        ? `${activeMouradSession.surahName} — ${activeMouradSession.phaseName}${activeMouradSession.pageLabel ? ` (${activeMouradSession.pageLabel})` : ''}`
                         : 'Graver le Coran dans les cœurs'}
                     </p>
                   </div>
