@@ -8,8 +8,8 @@ export type StepName =
 
 interface FlowNode {
   type: StepName;
-  partIndex: number; // -1 for global steps (immersion, comprehension, tikrar)
-  fusionRange?: number[]; // indices of parts to fuse
+  partIndex: number;
+  fusionRange?: number[];
 }
 
 export interface IstiqamahState {
@@ -23,21 +23,22 @@ export interface IstiqamahState {
   back: () => void;
   currentPart: Part | null;
   fusionParts: Part[];
+  immersionCompleted: boolean;
 }
 
-/**
- * Simplified flow — StepImmersion handles all verse-by-verse memorization + liaison:
- *  1. Immersion (verse-by-verse listen/memory/liaison — all handled internally)
- *  2. Comprehension (global tafsir/translation)
- *  3. Tikrar Final (40 repetitions)
- */
-function buildFlow(_parts: Part[]): FlowNode[] {
-  return [
-    { type: 'comprehension', partIndex: -1 },
-    { type: 'immersion', partIndex: -1 },
-    { type: 'tikrar', partIndex: -1 },
-  ];
-}
+// Strict linear flow: comprehension → immersion → tikrar
+const FLOW: FlowNode[] = [
+  { type: 'comprehension', partIndex: -1 },
+  { type: 'immersion', partIndex: -1 },
+  { type: 'tikrar', partIndex: -1 },
+];
+
+// Allowed transitions map
+const ALLOWED_NEXT: Record<StepName, StepName> = {
+  comprehension: 'immersion',
+  immersion: 'tikrar',
+  tikrar: 'tikrar', // terminal
+};
 
 export function useIstiqamahState(
   surahNumber: number,
@@ -47,18 +48,19 @@ export function useIstiqamahState(
   const [parts, setParts] = useState<Part[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentNodeIndex, setCurrentNodeIndex] = useState(0);
+  const [immersionCompleted, setImmersionCompleted] = useState(false);
 
   useEffect(() => {
     setLoading(true);
     splitIntoParts(surahNumber, verseStart, verseEnd).then((p) => {
       setParts(p);
       setCurrentNodeIndex(0);
+      setImmersionCompleted(false);
       setLoading(false);
     });
   }, [surahNumber, verseStart, verseEnd]);
 
-  const flow = useMemo(() => buildFlow(parts), [parts]);
-
+  const flow = FLOW;
   const currentNode = flow[currentNodeIndex] ?? null;
   const totalNodes = flow.length;
   const progress = totalNodes > 0 ? ((currentNodeIndex + 1) / totalNodes) * 100 : 0;
@@ -72,11 +74,47 @@ export function useIstiqamahState(
 
   const next = useCallback((fromStep?: StepName) => {
     setCurrentNodeIndex((i) => {
-      // If a source step is provided, only advance if we're currently on that step
-      if (fromStep && flow[i]?.type !== fromStep) return i;
-      return Math.min(i + 1, flow.length - 1);
+      const current = flow[i];
+      if (!current) return i;
+
+      // If fromStep is provided, it MUST match the current step
+      if (fromStep && current.type !== fromStep) {
+        console.warn(`[Istiqamah] Blocked transition: fromStep=${fromStep} but current=${current.type}`);
+        return i;
+      }
+
+      // Check allowed transition
+      const nextAllowed = ALLOWED_NEXT[current.type];
+      const nextIndex = i + 1;
+      const nextNode = flow[nextIndex];
+
+      if (!nextNode) return i; // already at end
+
+      if (nextNode.type !== nextAllowed) {
+        console.warn(`[Istiqamah] Blocked: ${current.type} → ${nextNode.type}, expected → ${nextAllowed}`);
+        return i;
+      }
+
+      // If moving to tikrar, immersion must be completed
+      if (nextNode.type === 'tikrar' && !immersionCompleted) {
+        // Mark immersion as completed since we're transitioning FROM immersion
+        if (current.type === 'immersion') {
+          // Will be set below after state update
+        } else {
+          console.warn(`[Istiqamah] Blocked tikrar: immersion not completed`);
+          return i;
+        }
+      }
+
+      // Mark immersion as completed when leaving it
+      if (current.type === 'immersion') {
+        setImmersionCompleted(true);
+      }
+
+      console.log(`[Istiqamah] Transition: ${current.type} → ${nextNode.type} (index ${i} → ${nextIndex})`);
+      return nextIndex;
     });
-  }, [flow]);
+  }, [flow, immersionCompleted]);
 
   const back = useCallback(() => {
     setCurrentNodeIndex((i) => Math.max(i - 1, 0));
@@ -93,5 +131,6 @@ export function useIstiqamahState(
     back,
     currentPart,
     fusionParts,
+    immersionCompleted,
   };
 }
