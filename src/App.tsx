@@ -25,7 +25,7 @@ import HifzPage from "./pages/HifzPage";
 import MurajaHubPage from "./pages/MurajaHubPage";
 import MurajaRabtPage from "./pages/MurajaRabtPage";
 import MurajaRevisionPage from "./pages/MurajaRevisionPage";
-import MurjaCalendarPage from "./pages/MurjaCalendarPage";
+
 import HifzSuiviPage from "./pages/HifzSuiviPage";
 import HifzHubPage from "./pages/HifzHubPage";
 
