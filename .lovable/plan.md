@@ -1,21 +1,21 @@
 
 
-## Plan : Corriger le titre dans StepImmersion.tsx
+# Diagnostic : 404 sur /quran-reader
 
-### Constat
-Le titre "Liaison — Écouter" que tu vois vient de `src/components/hifz/istiqamah/StepImmersion.tsx` (ligne 490), pas de StepFusion.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Changement
-**Fichier : `src/components/hifz/istiqamah/StepImmersion.tsx`** — Ligne 490
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-Remplacer :
-```
-'Liaison — Écouter'
-```
-Par :
-```
-'Liaison — Écoute + Mushaf + Répétition'
-```
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-Un seul changement, une seule ligne.
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
