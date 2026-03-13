@@ -3,7 +3,7 @@ import { ChevronDown, Play } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { SURAHS } from '@/lib/surahData';
 import { findNextStartingPoint } from '@/lib/hifzUtils';
-import { getPageAyahs } from '@/lib/quranData';
+import { getPageAyahs, getExactVersePage } from '@/lib/quranData';
 import { useAuth } from '@/contexts/AuthContext';
 
 interface HifzConfigProps {
@@ -20,6 +20,7 @@ export default function HifzConfig({ onStart }: HifzConfigProps) {
   const [endPage, setEndPage] = useState(1);
   const [showSurahList, setShowSurahList] = useState(false);
   const [suggestedPoint, setSuggestedPoint] = useState<string | null>(null);
+  const [pageLabel, setPageLabel] = useState('');
 
   // Auto-suggest starting point based on memorized verses
   useEffect(() => {
@@ -36,6 +37,19 @@ export default function HifzConfig({ onStart }: HifzConfigProps) {
 
   const selectedSurah = SURAHS.find(s => s.number === surahNumber);
   const maxVerse = selectedSurah?.versesCount ?? 999;
+
+  // Resolve page label for surah mode summary
+  useEffect(() => {
+    if (selectionMode !== 'surah' || startVerse <= 0 || endVerse <= 0 || endVerse < startVerse) {
+      setPageLabel('');
+      return;
+    }
+    (async () => {
+      const pStart = await getExactVersePage(surahNumber, startVerse);
+      const pEnd = await getExactVersePage(surahNumber, endVerse);
+      setPageLabel(pStart === pEnd ? `p. ${pStart}` : `p. ${pStart}–${pEnd}`);
+    })();
+  }, [selectionMode, surahNumber, startVerse, endVerse]);
 
   const handleStart = async () => {
     if (selectionMode === 'page') {
@@ -265,6 +279,12 @@ export default function HifzConfig({ onStart }: HifzConfigProps) {
             <span className="font-semibold" style={{ color: '#d4af37' }}>{selectedSurah.name}</span>
             <span className="text-white/50 mx-1.5">·</span>
             <span className="text-white/70">v.{startVerse}–{endVerse}</span>
+            {pageLabel && (
+              <>
+                <span className="text-white/50 mx-1.5">·</span>
+                <span className="text-white/50">{pageLabel}</span>
+              </>
+            )}
           </div>
           <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ background: 'rgba(212,175,55,0.2)', color: '#d4af37' }}>
             {endVerse - startVerse + 1} verset{endVerse - startVerse + 1 > 1 ? 's' : ''}
