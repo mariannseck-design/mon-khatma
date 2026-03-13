@@ -107,7 +107,7 @@ export default function StepFusion({ parts, reciterId, onNext }: Props) {
     recite: { title: 'Récitation liée de mémoire', desc: <>Récitez les versets de mémoire, <span style={{ color: '#ef5350', fontWeight: 600 }}>sans regarder le Mushaf ni écouter l'audio</span></> },
   };
 
-  const showMushaf = phase === 'repeat' || phase === 'read' || (phase === 'recite' && peekMode);
+  const showMushaf = phase === 'listen' || phase === 'repeat' || phase === 'read' || (phase === 'recite' && peekMode);
 
   const renderMushaf = () => {
     if (loading) return <div className="flex items-center justify-center py-6"><div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: '#d4af37', borderTopColor: 'transparent' }} /></div>;
