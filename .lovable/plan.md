@@ -1,21 +1,26 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Audio en boucle automatique sur l'écran Intention & Imprégnation
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Problème
+Actuellement, quand tous les versets ont été lus, l'audio s'arrête et l'utilisateur doit recliquer sur Play. L'utilisateur veut que l'audio boucle automatiquement (relance depuis le début) jusqu'à ce qu'il appuie sur Pause.
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Changement
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+**`src/components/hifz/HifzStepIntentionImpregnation.tsx`** — modifier `playNextAyah` (ligne 234-249) :
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+Quand `idx >= ayahsRef.current.length` : au lieu d'arrêter la lecture, incrémenter le compteur d'écoute et relancer depuis `idx = 0` (boucle). L'audio ne s'arrête que si l'utilisateur clique Pause.
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+```text
+playNextAyah(idx):
+  if idx >= total:
+    listenCount++
+    indexRef = 0
+    playNextAyah(0)    ← boucle au lieu de stop
+  else:
+    play ayah[idx]
+    onended → playNextAyah(idx+1)
+```
+
+Un seul bloc de ~5 lignes modifié, aucun autre fichier impacté.
 
