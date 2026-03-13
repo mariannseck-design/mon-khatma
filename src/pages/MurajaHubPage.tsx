@@ -70,6 +70,14 @@ export default function MurajaHubPage() {
   const rabtDone = rabtVerses.filter(v => checkedIds.includes(v.id)).length;
   const tourDone = tourVerses.filter(v => checkedIds.includes(v.id)).length;
 
+  const TOTAL_QURAN_VERSES = 6236;
+  const totalMemorized = useMemo(() => {
+    return allVerses.reduce((sum, v) => sum + (v.verse_end - v.verse_start + 1), 0);
+  }, [allVerses]);
+  const progressPercent = Math.min(100, (totalMemorized / TOTAL_QURAN_VERSES) * 100);
+  const totalPages = Math.max(totalMemorized > 0 ? 1 : 0, Math.round(totalMemorized / 15));
+  const totalJuz = Math.round((totalMemorized / TOTAL_QURAN_VERSES) * 30 * 10) / 10;
+
   return (
     <AppLayout title="Muraja'a" hideNav bgClassName="bg-gradient-muraja">
       <div className="max-w-md mx-auto px-4 py-5 space-y-5" style={{ backgroundColor: 'var(--p-bg)', minHeight: '100vh' }}>
