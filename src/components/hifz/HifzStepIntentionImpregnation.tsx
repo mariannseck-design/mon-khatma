@@ -160,7 +160,7 @@ export default function HifzStepIntentionImpregnation({ surahNumber, startVerse,
           textRendering: 'optimizeLegibility',
         }}
       >
-        {ayahs.map((ayah) => {
+        {ayahs.map((ayah, idx) => {
           const needsStrip = ayah.numberInSurah === 1 && surahNumber !== 1 && surahNumber !== 9;
           let displayText = ayah.text;
           let charOffset = 0;
@@ -173,8 +173,19 @@ export default function HifzStepIntentionImpregnation({ surahNumber, startVerse,
             ? renderTajweedText(displayText, ayah.tajweed, charOffset)
             : displayText;
 
+          const isActive = isPlaying && currentAyahIndex === idx;
+
           return (
-            <span key={ayah.number}>
+            <span
+              key={ayah.number}
+              style={{
+                borderRadius: '6px',
+                padding: isActive ? '2px 4px' : undefined,
+                backgroundColor: isActive ? 'rgba(212,175,55,0.15)' : undefined,
+                boxShadow: isActive ? '0 0 12px rgba(212,175,55,0.2)' : undefined,
+                transition: 'background-color 0.3s ease, box-shadow 0.3s ease',
+              }}
+            >
               {textContent}
               {' '}
               <span
@@ -185,7 +196,7 @@ export default function HifzStepIntentionImpregnation({ surahNumber, startVerse,
                   width: '18px',
                   height: '18px',
                   borderRadius: '50%',
-                  backgroundColor: '#2E7D32',
+                  backgroundColor: isActive ? '#d4af37' : '#2E7D32',
                   color: '#ffffff',
                   fontSize: '10px',
                   fontFamily: 'system-ui, sans-serif',
@@ -195,6 +206,7 @@ export default function HifzStepIntentionImpregnation({ surahNumber, startVerse,
                   margin: '0 3px',
                   userSelect: 'none',
                   flexShrink: 0,
+                  transition: 'background-color 0.3s ease',
                 }}
               >
                 {ayah.numberInSurah}
@@ -205,7 +217,7 @@ export default function HifzStepIntentionImpregnation({ surahNumber, startVerse,
         })}
       </div>
     );
-  }, [ayahs, surahNumber, fontSizeIndex]);
+  }, [ayahs, surahNumber, fontSizeIndex, currentAyahIndex, isPlaying]);
 
   const fetchAudio = useCallback(async () => {
     try {

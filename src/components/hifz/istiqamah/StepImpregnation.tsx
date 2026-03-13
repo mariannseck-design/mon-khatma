@@ -24,6 +24,7 @@ export default function StepImpregnation({ surahNumber, verseStart, verseEnd, ve
   const [ayahs, setAyahs] = useState<LocalAyah[]>([]);
   const [loading, setLoading] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [currentAyahIndex, setCurrentAyahIndex] = useState(-1);
   const isPlayingRef = useRef(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const audiosRef = useRef<string[]>([]);
@@ -58,16 +59,17 @@ export default function StepImpregnation({ surahNumber, verseStart, verseEnd, ve
   }, [surahNumber, verseStart, verseEnd, reciter]);
 
   const playLoop = useCallback((idx: number) => {
-    if (!isPlayingRef.current) return;
+    if (!isPlayingRef.current) { setCurrentAyahIndex(-1); return; }
     if (idx >= audiosRef.current.length) {
       setTimeout(() => { if (isPlayingRef.current) playLoop(0); }, 600);
       return;
     }
+    setCurrentAyahIndex(idx);
     const audio = new Audio(audiosRef.current[idx]);
     audioRef.current = audio;
     audio.onended = () => playLoop(idx + 1);
     audio.onerror = () => playLoop(idx + 1);
-    audio.play().catch(() => { isPlayingRef.current = false; setIsPlaying(false); });
+    audio.play().catch(() => { isPlayingRef.current = false; setIsPlaying(false); setCurrentAyahIndex(-1); });
   }, []);
 
   const toggleAudio = () => {
@@ -75,6 +77,7 @@ export default function StepImpregnation({ surahNumber, verseStart, verseEnd, ve
       isPlayingRef.current = false;
       audioRef.current?.pause();
       setIsPlaying(false);
+      setCurrentAyahIndex(-1);
     } else {
       isPlayingRef.current = true;
       setIsPlaying(true);
@@ -83,7 +86,7 @@ export default function StepImpregnation({ surahNumber, verseStart, verseEnd, ve
   };
 
   useEffect(() => {
-    return () => { isPlayingRef.current = false; audioRef.current?.pause(); };
+    return () => { isPlayingRef.current = false; audioRef.current?.pause(); setCurrentAyahIndex(-1); };
   }, []);
 
   const done = count >= TARGET;
@@ -109,14 +112,33 @@ export default function StepImpregnation({ surahNumber, verseStart, verseEnd, ve
     return (
       <div className="rounded-xl overflow-auto max-h-60 px-4 py-4" dir="rtl" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(212,175,55,0.12)' }}>
         <div style={{ fontFamily: FONT_FAMILY, fontSize: '22px', lineHeight: '48px', color: '#e8e0d0', textAlign: 'justify', textAlignLast: 'center' }}>
-          {ayahs.map(a => (
-            <span key={a.number}>
-              {a.text}{' '}
-              <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '18px', height: '18px', borderRadius: '50%', backgroundColor: '#2E7D32', color: '#fff', fontSize: '10px', fontFamily: 'system-ui', fontWeight: 700, verticalAlign: 'middle', margin: '0 3px' }}>
-                {a.numberInSurah}
-              </span>{' '}
-            </span>
-          ))}
+          {ayahs.map((a, idx) => {
+            const isActive = isPlaying && currentAyahIndex === idx;
+            return (
+              <span
+                key={a.number}
+                style={{
+                  borderRadius: '6px',
+                  padding: isActive ? '2px 4px' : undefined,
+                  backgroundColor: isActive ? 'rgba(212,175,55,0.15)' : undefined,
+                  boxShadow: isActive ? '0 0 12px rgba(212,175,55,0.2)' : undefined,
+                  transition: 'background-color 0.3s ease, box-shadow 0.3s ease',
+                }}
+              >
+                {a.text}{' '}
+                <span style={{
+                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                  width: '18px', height: '18px', borderRadius: '50%',
+                  backgroundColor: isActive ? '#d4af37' : '#2E7D32',
+                  color: '#fff', fontSize: '10px', fontFamily: 'system-ui', fontWeight: 700,
+                  verticalAlign: 'middle', margin: '0 3px',
+                  transition: 'background-color 0.3s ease',
+                }}>
+                  {a.numberInSurah}
+                </span>{' '}
+              </span>
+            );
+          })}
         </div>
       </div>
     );
