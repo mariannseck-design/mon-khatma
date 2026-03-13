@@ -22,8 +22,9 @@ function formatTime(seconds: number): string {
   return `${m}:${s.toString().padStart(2, '0')}`;
 }
 
-export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBack, onPause, totalSteps = 5 }: HifzStepWrapperProps) {
+export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBack, onPause, totalSteps = 5, surahNumber, startVerse, endVerse }: HifzStepWrapperProps) {
   const [elapsed, setElapsed] = useState(0);
+  const [pageLabel, setPageLabel] = useState('');
   const startRef = useRef(Date.now());
 
   useEffect(() => {
@@ -34,6 +35,20 @@ export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBac
     }, 1000);
     return () => clearInterval(interval);
   }, [stepNumber]);
+
+  useEffect(() => {
+    if (!surahNumber || !startVerse || !endVerse) { setPageLabel(''); return; }
+    (async () => {
+      const pStart = await getExactVersePage(surahNumber, startVerse);
+      const pEnd = await getExactVersePage(surahNumber, endVerse);
+      setPageLabel(pStart === pEnd ? `p. ${pStart}` : `p. ${pStart}–${pEnd}`);
+    })();
+  }, [surahNumber, startVerse, endVerse]);
+
+  const surahName = surahNumber ? SURAHS.find(s => s.number === surahNumber)?.name : null;
+  const verseInfo = surahName && startVerse && endVerse
+    ? `${surahName} · v.${startVerse}–${endVerse}${pageLabel ? ` · ${pageLabel}` : ''}`
+    : null;
 
   return (
     <motion.div
