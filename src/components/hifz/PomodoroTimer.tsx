@@ -196,19 +196,23 @@ export default function PomodoroTimer() {
   return (
     <div className="space-y-2">
       {/* Compact timer */}
-      <div className="flex items-center justify-end">
+      <div className="flex flex-col items-end gap-1">
         {!isActive ? (
-          <button
-            onClick={() => setShowDialog(true)}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg transition-colors cursor-pointer select-none"
-            style={{ background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.15)' }}
-            title="Minuteur Pomodoro — Cliquez pour activer"
-          >
-            <Timer className="h-3.5 w-3.5" style={{ color: 'rgba(212,175,55,0.5)' }} />
-            <span className="text-[10px] font-medium" style={{ color: 'rgba(212,175,55,0.5)' }}>
-              Pomodoro
+          <>
+            <button
+              onClick={() => setShowDialog(true)}
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg transition-colors cursor-pointer select-none"
+              style={{ background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.15)' }}
+            >
+              <Timer className="h-3.5 w-3.5" style={{ color: 'rgba(212,175,55,0.5)' }} />
+              <span className="text-[10px] font-medium" style={{ color: 'rgba(212,175,55,0.5)' }}>
+                Pomodoro
+              </span>
+            </button>
+            <span className="text-[10px]" style={{ color: 'rgba(212,175,55,0.45)' }}>
+              ⏱ Cliquez ici pour activer le minuteur Pomodoro
             </span>
-          </button>
+          </>
         ) : (
           <div
             className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg select-none"
