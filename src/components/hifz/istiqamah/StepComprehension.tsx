@@ -62,7 +62,7 @@ export default function StepComprehension({ surahNumber, verseStart, verseEnd, o
         >
           <BookOpen className="h-7 w-7" style={{ color: '#d4af37' }} />
         </div>
-        <h3 className="text-base font-bold" style={{ color: '#f0e6c8', fontFamily: "'Playfair Display', serif" }}>
+        <h3 className="text-base font-bold" style={{ color: '#ffffff', fontFamily: "'Playfair Display', serif" }}>
           Comprendre le message
         </h3>
         <p className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
