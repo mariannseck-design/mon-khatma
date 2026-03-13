@@ -46,7 +46,7 @@ export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBac
         )}
         <div className="flex-1">
           <div className="flex items-center justify-between mb-1">
-            <span className="text-white/50 text-xs uppercase tracking-wider">Étape {stepNumber}/{totalSteps - 1}</span>
+            <span className="text-white/50 text-xs uppercase tracking-wider">Étape {stepNumber}/{totalSteps}</span>
             <div className="flex items-center gap-2">
               <span className="flex items-center gap-1 text-[11px] tabular-nums" style={{ color: 'rgba(255,255,255,0.4)' }}>
                 <Clock className="h-3 w-3" />
