@@ -36,21 +36,53 @@ type Phase = 'listen' | 'memory' | 'error' | 'liaison-listen' | 'liaison-memory'
 const TARGET_REPS = 3;
 const FONT_FAMILY = "'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
 
+const IMMERSION_KEY = 'hifz_immersion_state';
+
+function immersionFingerprint(surah: number, vStart: number, vEnd: number) {
+  return `${surah}:${vStart}-${vEnd}`;
+}
+
+function saveImmersionState(surah: number, vStart: number, vEnd: number, state: {
+  verseIdx: number; phase: Phase; listenCount: number; memoryCount: number; liaisonVerses: number[];
+}) {
+  try {
+    localStorage.setItem(IMMERSION_KEY, JSON.stringify({ fp: immersionFingerprint(surah, vStart, vEnd), ...state, ts: Date.now() }));
+  } catch {}
+}
+
+function loadImmersionState(surah: number, vStart: number, vEnd: number) {
+  try {
+    const raw = localStorage.getItem(IMMERSION_KEY);
+    if (!raw) return null;
+    const data = JSON.parse(raw);
+    if (data.fp !== immersionFingerprint(surah, vStart, vEnd)) return null;
+    if (Date.now() - (data.ts || 0) > 24 * 60 * 60 * 1000) {
+      localStorage.removeItem(IMMERSION_KEY);
+      return null;
+    }
+    return data as { verseIdx: number; phase: Phase; listenCount: number; memoryCount: number; liaisonVerses: number[] };
+  } catch { return null; }
+}
+
 export default function StepImmersion({ surahNumber, verseStart, verseEnd, reciterId, onNext }: Props) {
   const { isAdmin } = useAuth();
   const minReps = isAdmin ? 1 : TARGET_REPS;
   const totalVerses = verseEnd - verseStart + 1;
-  const [currentVerseIndex, setCurrentVerseIndex] = useState(0);
-  const [phase, setPhase] = useState<Phase>('listen');
-  const [listenCount, setListenCount] = useState(0);
-  const [memoryCount, setMemoryCount] = useState(0);
+
+  // Restore persisted immersion state
+  const savedImmersion = loadImmersionState(surahNumber, verseStart, verseEnd);
+
+  const [currentVerseIndex, setCurrentVerseIndex] = useState(savedImmersion?.verseIdx ?? 0);
+  const [phase, setPhase] = useState<Phase>(savedImmersion?.phase ?? 'listen');
+  const [listenCount, setListenCount] = useState(savedImmersion?.listenCount ?? 0);
+  const [memoryCount, setMemoryCount] = useState(savedImmersion?.memoryCount ?? 0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [mushafMode, setMushafModeState] = useState<MushafMode>(getMushafMode);
   const [ayahs, setAyahs] = useState<LocalAyah[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Liaison state
-  const [liaisonVerses, setLiaisonVerses] = useState<number[]>([]);
+  const [liaisonVerses, setLiaisonVerses] = useState<number[]>(savedImmersion?.liaisonVerses ?? []);
 
   const isPlayingRef = useRef(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -62,6 +94,15 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
   const minReached = isLiaison
     ? (phase === 'liaison-listen' ? listenCount >= minReps : memoryCount >= minReps)
     : (phase === 'listen' ? listenCount >= minReps : memoryCount >= minReps);
+
+  // Persist immersion state on significant changes
+  useEffect(() => {
+    if (!loading) {
+      saveImmersionState(surahNumber, verseStart, verseEnd, {
+        verseIdx: currentVerseIndex, phase, listenCount, memoryCount, liaisonVerses,
+      });
+    }
+  }, [currentVerseIndex, phase, listenCount, memoryCount, liaisonVerses, loading, surahNumber, verseStart, verseEnd]);
 
   useEffect(() => {
     setLoading(true);
