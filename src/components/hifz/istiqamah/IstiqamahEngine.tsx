@@ -112,7 +112,7 @@ export default function IstiqamahEngine({
   const effectiveStep = (currentNode?.type === 'tikrar' && !immersionCompleted) ? 'immersion' : currentNode?.type;
 
   return (
-    <HifzStepWrapper stepNumber={3} stepTitle="Istiqâmah" onBack={onBack} onPause={onPause}>
+    <HifzStepWrapper stepNumber={3} stepTitle="Istiqâmah" onBack={onBack} onPause={onPause} surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse}>
       <div className="text-center space-y-4">
         {/* Breadcrumb */}
         <div className="flex items-center justify-center gap-1.5">
