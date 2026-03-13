@@ -342,7 +342,6 @@ export default function HifzPage() {
         });
       }
     }
-    setStep(4); // success screen
   }, [sessionId, user, session, step]);
 
   const devModeBadge = isDevMode && (
