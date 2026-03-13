@@ -313,7 +313,7 @@ export default function HifzPage() {
         });
       }
     }
-    setStep(6); // 6 = success screen now
+    setStep(4); // 4 = success screen now
   }, [sessionId, user, session, step]);
 
   const devModeBadge = isDevMode && (
