@@ -58,7 +58,7 @@ export default function MurajaHistory({ sessionType, accentColor }: Props) {
       .order('created_at', { ascending: false })
       .limit(50)
       .then(({ data }) => {
-        setSessions((data as SessionRow[]) || []);
+        setSessions((data as unknown as SessionRow[]) || []);
         setLoading(false);
       });
   }, [user, sessionType]);
