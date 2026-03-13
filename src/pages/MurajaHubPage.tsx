@@ -13,7 +13,8 @@ export default function MurajaHubPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { loading, rabtVerses, tourVerses, checkedIds } = useMurajaData();
-  const todayKey = new Date().toISOString().split('T')[0];
+  const today = useMemo(() => new Date(), []);
+  const monday = useMemo(() => startOfWeek(today, { weekStartsOn: 1 }), [today]);
 
   const [streak, setStreak] = useState(0);
   const [longestStreak, setLongestStreak] = useState(0);
