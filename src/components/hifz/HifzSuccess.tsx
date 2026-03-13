@@ -82,7 +82,7 @@ export default function HifzSuccess({ stepTimes }: Props) {
           className="absolute inset-4 rounded-full flex items-center justify-center"
           style={{ background: 'rgba(212,175,55,0.2)', border: '2px solid rgba(212,175,55,0.5)' }}
         >
-          <Star className="h-10 w-10" style={{ color: '#d4af37' }} fill="#d4af37" />
+          <Flower2 className="h-10 w-10" style={{ color: '#d4af37' }} />
         </div>
       </div>
 
