@@ -1,21 +1,23 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Changements
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### 1. `src/components/hifz/HifzStep5Tikrar.tsx`
+- **Ligne 142** : Remplacer "Tikrar Final" par "Tikrâr" (le wrapper affiche déjà "Étape 5/5 · Tikrâr" et la ligne sourate/versets/page en dessous)
+- La ligne sourate/versets/page est déjà gérée par `HifzStepWrapper` — rien à ajouter ici
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### 2. `src/components/hifz/istiqamah/StepTikrarFinal.tsx`
+- **Ligne 40** : Remplacer "Le Compteur Tikrar" par "Tikrâr"
+- **Lignes 42-44** : Rendre l'affichage sourate/versets plus élégant avec un style badge/chip doré (fond semi-transparent doré, coins arrondis, icône décorative) au lieu du simple texte gris actuel
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+```text
+Avant :  Al-Baqara · Versets 70-76   (texte gris simple)
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+Après :  ╭─────────────────────────────╮
+         │  📖  Al-Baqara · v.70–76   │
+         ╰─────────────────────────────╯
+         (badge doré semi-transparent, centré)
+```
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+Deux fichiers, modifications cosmétiques uniquement.
 
