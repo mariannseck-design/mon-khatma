@@ -166,6 +166,7 @@ export default function HifzPage() {
           },
           step: activeSession.current_step,
           sessionId: activeSession.id,
+          stepStatus: activeSession.step_status as Record<string, any> | undefined,
         };
         setPendingResume(restored);
         setShowResumePrompt(true);
