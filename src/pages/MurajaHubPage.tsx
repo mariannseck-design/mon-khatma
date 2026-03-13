@@ -12,7 +12,7 @@ import { format, startOfWeek, addDays, isSameDay } from 'date-fns';
 export default function MurajaHubPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { loading, rabtVerses, tourVerses, checkedIds } = useMurajaData();
+  const { loading, rabtVerses, tourVerses, checkedIds, allVerses } = useMurajaData();
   const today = useMemo(() => new Date(), []);
   const monday = useMemo(() => startOfWeek(today, { weekStartsOn: 1 }), [today]);
 
