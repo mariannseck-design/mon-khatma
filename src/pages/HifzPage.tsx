@@ -80,7 +80,7 @@ export default function HifzPage() {
   const [restoringSession, setRestoringSession] = useState(true);
   const [showResumePrompt, setShowResumePrompt] = useState(false);
   const [showBreathingPause, setShowBreathingPause] = useState(false);
-  const [pendingResume, setPendingResume] = useState<{ session: HifzSession; step: number; sessionId: string | null } | null>(null);
+  const [pendingResume, setPendingResume] = useState<{ session: HifzSession; step: number; sessionId: string | null; stepStatus?: Record<string, any> } | null>(null);
   const [resumePageLabel, setResumePageLabel] = useState('');
   const { isDevMode } = useDevMode();
   const stepStartRef = useRef<number>(Date.now());
