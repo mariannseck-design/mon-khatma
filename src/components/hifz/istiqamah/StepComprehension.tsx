@@ -160,7 +160,7 @@ export default function StepComprehension({ surahNumber, verseStart, verseEnd, o
               Commencer la mémorisation
             </motion.button>
             <p className="text-xs text-center" style={{ color: 'rgba(255,255,255,0.55)' }}>
-              En route vers un Hifz scellé.
+              En route vers un Hifz scellé, avec l'aide d'Allah.
             </p>
           </motion.div>
         )}
