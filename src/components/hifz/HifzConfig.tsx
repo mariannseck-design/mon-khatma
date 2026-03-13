@@ -27,7 +27,7 @@ export default function HifzConfig({ onStart, onBack, goalVerseCount }: HifzConf
   // Auto-suggest starting point based on memorized verses
   useEffect(() => {
     if (!user) return;
-    findNextStartingPoint(user.id).then(point => {
+    findNextStartingPoint(user.id, goalVerseCount).then(point => {
       if (point) {
         setSurahNumber(point.surahNumber);
         setStartVerse(point.startVerse);
@@ -35,7 +35,7 @@ export default function HifzConfig({ onStart, onBack, goalVerseCount }: HifzConf
         setSuggestedPoint(point.surahName);
       }
     });
-  }, [user]);
+  }, [user, goalVerseCount]);
 
   const selectedSurah = SURAHS.find(s => s.number === surahNumber);
   const maxVerse = selectedSurah?.versesCount ?? 999;
