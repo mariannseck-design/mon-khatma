@@ -125,6 +125,36 @@ export default function MurajaHubPage() {
           </div>
         ) : (
           <>
+            {/* Global Progress */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="rounded-2xl p-4 space-y-2.5"
+              style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', boxShadow: 'var(--p-card-shadow)' }}
+            >
+              <div className="flex items-center justify-between">
+                <p className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--p-text-40)' }}>
+                  Progression globale
+                </p>
+                <span className="text-xs font-bold" style={{ color: 'var(--p-primary)' }}>
+                  {progressPercent.toFixed(1)}%
+                </span>
+              </div>
+              <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: 'var(--p-track)' }}>
+                <motion.div
+                  className="h-full rounded-full"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progressPercent}%` }}
+                  transition={{ duration: 0.8, ease: 'easeOut' }}
+                  style={{ background: 'linear-gradient(90deg, #10B981, #D4AF37)' }}
+                />
+              </div>
+              <div className="flex items-center justify-between text-[10px]" style={{ color: 'var(--p-text-50)' }}>
+                <span>{totalMemorized} versets · {totalPages} pages</span>
+                <span>{totalJuz} / 30 juz</span>
+              </div>
+            </motion.div>
+
           {/* Weekly Recap */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
