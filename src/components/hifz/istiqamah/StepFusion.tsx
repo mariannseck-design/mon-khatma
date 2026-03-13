@@ -146,7 +146,7 @@ export default function StepFusion({ parts, reciterId, onNext }: Props) {
           <Layers className="h-7 w-7" style={{ color: '#d4af37' }} />
         </div>
         <h3 className="text-base font-bold" style={{ color: '#f0e6c8', fontFamily: "'Playfair Display', serif" }}>
-          Créer le lien — Versets {globalStart} à {globalEnd}
+          Liaison — Écoute + Mushaf + Répétition
         </h3>
       </div>
 
