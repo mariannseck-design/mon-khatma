@@ -37,6 +37,8 @@ export default function ParametresPage() {
   const [sm2Ease, setSm2Ease] = useState(() => getSM2Config().initialEase);
   const [sm2Int1, setSm2Int1] = useState(() => getSM2Config().interval1);
   const [sm2Int2, setSm2Int2] = useState(() => getSM2Config().interval2);
+  const [sm2Int3, setSm2Int3] = useState(() => getSM2Config().interval3);
+  const [sm2Int4, setSm2Int4] = useState(() => getSM2Config().interval4);
 
   const toggleTheme = (checked: boolean) => {
     setIsDark(checked);
