@@ -1,21 +1,11 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Texte arabe en blanc sur les pages Hifz
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Changement
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+**`src/components/hifz/HifzStepImpregnationTajweed.tsx`** ligne 129 :
+- Changer `color: '#e8e0d0'` → `color: '#ffffff'` pour le texte arabe de base (les couleurs de tajweed resteront inchangées car elles sont appliquées en inline sur les segments annotés)
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
-
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
-
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+C'est le seul fichier concerné — les autres étapes Hifz utilisent déjà du texte blanc ou cream similaire. Cette modification rendra le texte non-tajweed en blanc pur, comme demandé.
 
