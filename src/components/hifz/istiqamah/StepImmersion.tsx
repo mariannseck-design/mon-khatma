@@ -333,17 +333,31 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
     const startV = Math.min(...versesToShow);
     const endV = Math.max(...versesToShow);
 
+    const infoLine = verseInfoLabel ? (
+      <p className="text-[11px] text-center mb-1" style={{ color: 'rgba(255,255,255,0.45)' }}>
+        {verseInfoLabel}
+      </p>
+    ) : null;
+
     if (mushafMode === 'physical') {
       return (
-        <div className="rounded-xl px-4 py-4 text-center" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(212,175,55,0.15)' }}>
-          <p className="text-xs italic" style={{ color: 'rgba(255,255,255,0.45)' }}>
-            📖 Lis {versesToShow.length > 1 ? `les versets ${startV}–${endV}` : `le verset ${startV}`} depuis ton Mushaf physique.
-          </p>
-        </div>
+        <>
+          {infoLine}
+          <div className="rounded-xl px-4 py-4 text-center" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(212,175,55,0.15)' }}>
+            <p className="text-xs italic" style={{ color: 'rgba(255,255,255,0.45)' }}>
+              📖 Lis {versesToShow.length > 1 ? `les versets ${startV}–${endV}` : `le verset ${startV}`} depuis ton Mushaf physique.
+            </p>
+          </div>
+        </>
       );
     }
     if (mushafMode === 'image') {
-      return <HifzMushafImage surahNumber={surahNumber} startVerse={startV} endVerse={endV} maxHeight="240px" />;
+      return (
+        <>
+          {infoLine}
+          <HifzMushafImage surahNumber={surahNumber} startVerse={startV} endVerse={endV} maxHeight="240px" />
+        </>
+      );
     }
     // Text mode
     const shownAyahs = ayahs.filter(a => versesToShow.includes(a.numberInSurah));
