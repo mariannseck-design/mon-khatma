@@ -16,6 +16,7 @@ import HifzSuccess from '@/components/hifz/HifzSuccess';
 import HifzBreathingPause from '@/components/hifz/HifzBreathingPause';
 import DevSkipButton from '@/components/hifz/DevSkipButton';
 import { SURAHS } from '@/lib/surahData';
+import { getExactVersePage } from '@/lib/quranData';
 import { motion } from 'framer-motion';
 
 interface HifzSession {
