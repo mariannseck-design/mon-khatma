@@ -75,7 +75,20 @@ export default function HifzConfig({ onStart, onBack, goalVerseCount }: HifzConf
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative">
+      {/* Back button */}
+      {onBack && (
+        <motion.button
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          onClick={onBack}
+          className="absolute -top-1 left-0 p-1.5 transition-all active:scale-90 hover:opacity-60"
+          style={{ color: 'rgba(255,255,255,0.25)' }}
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </motion.button>
+      )}
       {/* Title */}
       <div className="text-center space-y-2">
         <p className="text-xs uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.4)' }}>
