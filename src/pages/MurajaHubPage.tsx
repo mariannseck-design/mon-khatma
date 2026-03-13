@@ -71,6 +71,25 @@ export default function MurajaHubPage() {
   const rabtDone = rabtVerses.filter(v => checkedIds.includes(v.id)).length;
   const tourDone = tourVerses.filter(v => checkedIds.includes(v.id)).length;
 
+  const [rabtPageLabel, setRabtPageLabel] = useState('');
+  const [tourPageLabel, setTourPageLabel] = useState('');
+
+  useEffect(() => {
+    async function resolvePages(verses: typeof rabtVerses) {
+      if (verses.length === 0) return '';
+      let minPage = Infinity, maxPage = -Infinity;
+      for (const v of verses) {
+        const pStart = await getExactVersePage(v.surah_number, v.verse_start);
+        const pEnd = await getExactVersePage(v.surah_number, v.verse_end);
+        if (pStart < minPage) minPage = pStart;
+        if (pEnd > maxPage) maxPage = pEnd;
+      }
+      return minPage === maxPage ? `p. ${minPage}` : `p. ${minPage}–${maxPage}`;
+    }
+    resolvePages(rabtVerses).then(setRabtPageLabel);
+    resolvePages(tourVerses).then(setTourPageLabel);
+  }, [rabtVerses, tourVerses]);
+
   const TOTAL_QURAN_VERSES = 6236;
   const totalMemorized = useMemo(() => {
     return allVerses.reduce((sum, v) => sum + (v.verse_end - v.verse_start + 1), 0);
