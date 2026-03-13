@@ -398,12 +398,12 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
   // Header for each phase
   const PhaseHeader = ({ title, subtitle }: { title: string; subtitle: string }) => (
     <div className="text-center space-y-1">
-      <div className="flex items-center justify-center gap-3 mb-0.5">
-        <svg width="32" height="6" viewBox="0 0 32 6" fill="none">
-          <path d="M0 3 Q8 0 16 3 Q24 6 32 3" stroke="#d4af37" strokeWidth="1" strokeOpacity="0.3" fill="none" />
+      <div className="flex items-center justify-center gap-2 mb-0.5">
+        <svg width="48" height="10" viewBox="0 0 48 10" fill="none">
+          <path d="M0 5 Q12 0 24 5 Q36 10 48 5" stroke="#d4af37" strokeWidth="1.5" strokeOpacity="0.5" fill="none" />
         </svg>
-        <svg width="32" height="6" viewBox="0 0 32 6" fill="none">
-          <path d="M0 3 Q8 6 16 3 Q24 0 32 3" stroke="#d4af37" strokeWidth="1" strokeOpacity="0.3" fill="none" />
+        <svg width="48" height="10" viewBox="0 0 48 10" fill="none">
+          <path d="M0 5 Q12 10 24 5 Q36 0 48 5" stroke="#d4af37" strokeWidth="1.5" strokeOpacity="0.5" fill="none" />
         </svg>
       </div>
       <h3 className="text-sm font-bold" style={{ color: '#f0e6c8', fontFamily: "'Playfair Display', serif" }}>{title}</h3>
