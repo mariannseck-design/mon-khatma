@@ -410,6 +410,9 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
 
   return (
     <motion.div initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }} className="space-y-4">
+      {/* Pomodoro Timer */}
+      <PomodoroTimer />
+
       {/* Global progress bar */}
       <div className="space-y-1">
         <div className="flex items-center justify-between text-[10px]" style={{ color: 'rgba(255,255,255,0.4)' }}>
