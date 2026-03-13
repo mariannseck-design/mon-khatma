@@ -14,7 +14,7 @@ interface Props {
   onNext: () => void;
 }
 
-type FusionPhase = 'listen' | 'read' | 'recite';
+type FusionPhase = 'listen' | 'repeat' | 'read' | 'recite';
 
 const FONT_FAMILY = "'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
 
@@ -102,11 +102,12 @@ export default function StepFusion({ parts, reciterId, onNext }: Props) {
 
   const phaseLabels: Record<FusionPhase, { title: string; desc: React.ReactNode }> = {
     listen: { title: 'Écoute fusionnée', desc: `Écoutez l'enchaînement des versets ${globalStart} à ${globalEnd} ensemble (5 fois)` },
+    repeat: { title: 'Écoute et répétition', desc: 'Écoutez et répétez en suivant sur le Mushaf' },
     read: { title: 'Lecture liée', desc: 'Lisez les versets en regardant le Mushaf, sans audio' },
     recite: { title: 'Récitation liée de mémoire', desc: <>Récitez les versets de mémoire, <span style={{ color: '#ef5350', fontWeight: 600 }}>sans regarder le Mushaf ni écouter l'audio</span></> },
   };
 
-  const showMushaf = phase === 'read' || (phase === 'recite' && peekMode);
+  const showMushaf = phase === 'repeat' || phase === 'read' || (phase === 'recite' && peekMode);
 
   const renderMushaf = () => {
     if (loading) return <div className="flex items-center justify-center py-6"><div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: '#d4af37', borderTopColor: 'transparent' }} /></div>;
@@ -127,7 +128,8 @@ export default function StepFusion({ parts, reciterId, onNext }: Props) {
     isPlayingRef.current = false;
     audioRef.current?.pause();
     setIsPlaying(false);
-    if (phase === 'listen') setPhase('read');
+    if (phase === 'listen') setPhase('repeat');
+    else if (phase === 'repeat') setPhase('read');
     else if (phase === 'read') setPhase('recite');
     else onNext();
   };
@@ -150,7 +152,7 @@ export default function StepFusion({ parts, reciterId, onNext }: Props) {
 
       {/* Phase tabs */}
       <div className="flex justify-center gap-1">
-        {(['listen', 'read', 'recite'] as FusionPhase[]).map((p, i) => (
+        {(['listen', 'repeat', 'read', 'recite'] as FusionPhase[]).map((p, i) => (
           <div
             key={p}
             className="px-3 py-1.5 rounded-lg text-[10px] font-medium"
@@ -160,7 +162,7 @@ export default function StepFusion({ parts, reciterId, onNext }: Props) {
               color: phase === p ? '#d4af37' : 'rgba(255,255,255,0.35)',
             }}
           >
-            {i + 1}. {p === 'listen' ? 'Écoute' : p === 'read' ? 'Lecture' : 'Récitation'}
+            {i + 1}. {p === 'listen' ? 'Écoute' : p === 'repeat' ? 'Répétition' : p === 'read' ? 'Lecture' : 'Récitation'}
           </div>
         ))}
       </div>
@@ -171,7 +173,7 @@ export default function StepFusion({ parts, reciterId, onNext }: Props) {
         </p>
       </div>
 
-      {phase === 'listen' && (
+      {(phase === 'listen' || phase === 'repeat') && (
         <div className="flex justify-center">
           <motion.button
             whileTap={{ scale: 0.9 }}
