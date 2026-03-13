@@ -162,7 +162,7 @@ export default function StepFusion({ parts, reciterId, onNext }: Props) {
               color: phase === p ? '#d4af37' : 'rgba(255,255,255,0.35)',
             }}
           >
-            {i + 1}. {p === 'listen' ? 'Écoute' : p === 'repeat' ? 'Répétition' : p === 'read' ? 'Lecture' : 'Récitation'}
+            {i + 1}. {p === 'listen' ? 'Écoute + Mushaf' : p === 'repeat' ? 'Répétition' : p === 'read' ? 'Lecture' : 'Récitation'}
           </div>
         ))}
       </div>
