@@ -128,7 +128,8 @@ export default function StepFusion({ parts, reciterId, onNext }: Props) {
     isPlayingRef.current = false;
     audioRef.current?.pause();
     setIsPlaying(false);
-    if (phase === 'listen') setPhase('read');
+    if (phase === 'listen') setPhase('repeat');
+    else if (phase === 'repeat') setPhase('read');
     else if (phase === 'read') setPhase('recite');
     else onNext();
   };
