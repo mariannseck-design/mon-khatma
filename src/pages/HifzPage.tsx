@@ -263,8 +263,8 @@ export default function HifzPage() {
             next_review_date: new Date(Date.now() + 86400000).toISOString().split('T')[0],
             liaison_status: 'liaison',
             liaison_start_date: today,
-            sm2_interval: 1,
-            sm2_ease_factor: 2.5,
+            sm2_interval: sm2Cfg.interval1,
+            sm2_ease_factor: sm2Cfg.initialEase,
             sm2_repetitions: 0,
           }, { onConflict: 'user_id,surah_number,verse_start,verse_end' });
 
