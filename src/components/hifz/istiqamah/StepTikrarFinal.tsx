@@ -4,6 +4,7 @@ import { Star, Check } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { SURAHS } from '@/lib/surahData';
 import TikrarInstructionsModal from '../TikrarInstructionsModal';
+import PomodoroTimer from '../PomodoroTimer';
 
 interface Props {
   surahNumber: number;
