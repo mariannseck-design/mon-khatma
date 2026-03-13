@@ -396,12 +396,15 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
   );
 
   // Header for each phase
-  const PhaseHeader = ({ icon: Icon, iconColor, iconBg, title, subtitle }: { icon: any; iconColor: string; iconBg: string; title: string; subtitle: string }) => (
+  const PhaseHeader = ({ title, subtitle }: { title: string; subtitle: string }) => (
     <div className="text-center space-y-1">
-      <div className="flex items-center justify-center gap-2 mb-0.5">
-        <span className="h-px w-8 rounded-full" style={{ background: `linear-gradient(90deg, transparent, ${iconColor}40)` }} />
-        <Icon className="h-4 w-4" style={{ color: iconColor, opacity: 0.7 }} />
-        <span className="h-px w-8 rounded-full" style={{ background: `linear-gradient(90deg, ${iconColor}40, transparent)` }} />
+      <div className="flex items-center justify-center gap-3 mb-0.5">
+        <svg width="32" height="6" viewBox="0 0 32 6" fill="none">
+          <path d="M0 3 Q8 0 16 3 Q24 6 32 3" stroke="#d4af37" strokeWidth="1" strokeOpacity="0.3" fill="none" />
+        </svg>
+        <svg width="32" height="6" viewBox="0 0 32 6" fill="none">
+          <path d="M0 3 Q8 6 16 3 Q24 0 32 3" stroke="#d4af37" strokeWidth="1" strokeOpacity="0.3" fill="none" />
+        </svg>
       </div>
       <h3 className="text-sm font-bold" style={{ color: '#f0e6c8', fontFamily: "'Playfair Display', serif" }}>{title}</h3>
       <p className="text-[11px]" style={{ color: 'rgba(255,255,255,0.45)' }}>{subtitle}</p>
