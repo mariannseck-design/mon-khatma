@@ -1,21 +1,33 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Proposition : Titre "Tikrâr" en calligraphie arabe stylisée
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+Le problème : dans les deux flux (classique via `HifzStepWrapper` et Istiqamah via `StepTikrarFinal`), le titre "Tikrâr" est un simple `<h2>`/`<h3>` en Playfair Display — correct mais peu distinctif.
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Proposition retenue : Titre bilingue avec calligraphie arabe
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+Remplacer le titre simple par un affichage en deux lignes centré :
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+```text
+      تِكْرَار
+      Tikrâr
+```
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+- **Ligne arabe** : en grande taille (text-2xl), police Amiri (déjà chargée ou fallback serif), couleur dorée `#d4af37`
+- **Ligne latine** : en petite taille (text-xs), lettres espacées (tracking-widest), couleur dorée atténuée, en majuscules
+
+Le tout encadré par deux petits traits décoratifs dorés horizontaux de chaque côté :
+
+```text
+    ──  تِكْرَار  ──
+        TIKRÂR
+```
+
+### Fichiers modifiés
+
+1. **`src/components/hifz/HifzStep5Tikrar.tsx`** (lignes 138-143) — Remplacer le `<h2>Tikrâr</h2>` par le bloc bilingue avec décorations
+
+2. **`src/components/hifz/istiqamah/StepTikrarFinal.tsx`** (lignes 36-41) — Remplacer l'icône étoile + `<h3>Tikrâr</h3>` par le même bloc bilingue (icône étoile conservée au-dessus)
+
+Modifications purement cosmétiques, aucune logique changée.
 
