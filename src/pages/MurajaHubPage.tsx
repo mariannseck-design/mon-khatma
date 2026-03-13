@@ -8,6 +8,7 @@ import { useMurajaData } from '@/hooks/useMurajaData';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { format, startOfWeek, addDays, isSameDay } from 'date-fns';
+import { getExactVersePage } from '@/lib/quranData';
 
 export default function MurajaHubPage() {
   const navigate = useNavigate();
