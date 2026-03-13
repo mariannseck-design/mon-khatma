@@ -513,9 +513,6 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
         {(phase === 'memory' || phase === 'liaison-memory') && (
           <motion.div key={phase} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-4">
             <PhaseHeader
-              icon={isLiaison ? Link : BookOpen}
-              iconColor={isLiaison ? '#a78bfa' : '#d4af37'}
-              iconBg={isLiaison ? 'rgba(167,139,250,0.15)' : 'rgba(212,175,55,0.15)'}
               title={isLiaison ? 'Liaison — Réciter' : 'Réciter de mémoire'}
               subtitle={isLiaison
                 ? `Récitez les versets ${liaisonVerses[0]}–${liaisonVerses[liaisonVerses.length - 1]} enchaînés`
