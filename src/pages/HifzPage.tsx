@@ -59,7 +59,7 @@ function clearLocalSession() {
 }
 
 const STEP_NAMES = [
-  'Intention', 'Réveil', 'Imprégnation', 'Istiqâmah',
+  'Intention & Imprégnation', 'Istiqâmah',
   'Validation', 'Tikrar',
 ];
 
