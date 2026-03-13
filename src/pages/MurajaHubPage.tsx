@@ -1,12 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { AppLayout } from '@/components/layout/AppLayout';
-import { ArrowLeft, Link2, RefreshCw, Trophy } from 'lucide-react';
+import { ArrowLeft, Link2, RefreshCw, BookOpen, CalendarDays, BarChart3 } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useNavigate } from 'react-router-dom';
 import { useMurajaData } from '@/hooks/useMurajaData';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
+import { format, startOfWeek, addDays, isSameDay } from 'date-fns';
 
 export default function MurajaHubPage() {
   const navigate = useNavigate();
