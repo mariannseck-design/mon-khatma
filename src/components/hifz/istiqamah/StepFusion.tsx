@@ -101,7 +101,7 @@ export default function StepFusion({ parts, reciterId, onNext }: Props) {
   }, [peekMode]);
 
   const phaseLabels: Record<FusionPhase, { title: string; desc: React.ReactNode }> = {
-    listen: { title: 'Écoute fusionnée', desc: `Écoutez l'enchaînement des versets ${globalStart} à ${globalEnd} ensemble (5 fois)` },
+    listen: { title: 'Écoute fusionnée', desc: `Écoutez l'enchaînement des versets ${globalStart} à ${globalEnd} en suivant sur le Mushaf (5 fois)` },
     repeat: { title: 'Écoute et répétition', desc: 'Écoutez et répétez en suivant sur le Mushaf' },
     read: { title: 'Lecture liée', desc: 'Lisez les versets en regardant le Mushaf, sans audio' },
     recite: { title: 'Récitation liée de mémoire', desc: <>Récitez les versets de mémoire, <span style={{ color: '#ef5350', fontWeight: 600 }}>sans regarder le Mushaf ni écouter l'audio</span></> },
