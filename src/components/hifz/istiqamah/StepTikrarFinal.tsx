@@ -37,11 +37,14 @@ export default function StepTikrarFinal({ surahNumber, verseStart, verseEnd, onN
           <Star className="h-7 w-7 fill-current" style={{ color: '#d4af37' }} />
         </div>
         <h3 className="text-base font-bold" style={{ color: '#f0e6c8', fontFamily: "'Playfair Display', serif" }}>
-          Le Compteur Tikrar
+          Tikrâr
         </h3>
-        <p className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
-          {surahName} · Versets {verseStart}-{verseEnd}
-        </p>
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full mx-auto" style={{ background: 'rgba(212,175,55,0.12)', border: '1px solid rgba(212,175,55,0.25)' }}>
+          <span className="text-xs" style={{ color: '#d4af37' }}>📖</span>
+          <span className="text-xs font-medium" style={{ color: 'rgba(212,175,55,0.85)' }}>
+            {surahName} · v.{verseStart}–{verseEnd}
+          </span>
+        </div>
       </div>
 
       {/* Pomodoro Timer */}
