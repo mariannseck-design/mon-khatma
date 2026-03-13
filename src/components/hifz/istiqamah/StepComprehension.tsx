@@ -125,6 +125,14 @@ export default function StepComprehension({ surahNumber, verseStart, verseEnd, o
         </motion.button>
       )}
 
+      {!confirmed && !loading && (
+        <p className="text-xs text-center" style={{ color: 'rgba(255,255,255,0.55)' }}>
+          En route vers un Hifz scellé.
+        </p>
+      )}
+
+
+
       {/* Step 2: Explicit button to proceed to memorisation */}
       <AnimatePresence>
         {confirmed && (
