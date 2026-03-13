@@ -420,6 +420,7 @@ export default function HifzPage() {
             }}
             onSkip={() => {
               setShowDiagnostic(false);
+              setCameFromDiagnostic(true);
               if (user) {
                 supabase.from('hifz_goals').select('id').eq('user_id', user.id).eq('is_active', true).maybeSingle().then(({ data }) => {
                   setHasGoal(!!data);
