@@ -134,11 +134,14 @@ export default function HifzPage() {
 
       const { data: goalData } = await supabase
         .from('hifz_goals')
-        .select('id')
+        .select('id, goal_value, goal_unit')
         .eq('user_id', user.id)
         .eq('is_active', true)
         .maybeSingle();
       setHasGoal(!!goalData);
+      if (goalData && goalData.goal_unit === 'verses') {
+        setGoalVerseCount(goalData.goal_value);
+      }
       if (!goalData) setShowGoalOnboarding(true);
 
       const local = loadLocalSession();
