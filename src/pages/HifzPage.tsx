@@ -16,6 +16,7 @@ import HifzSuccess from '@/components/hifz/HifzSuccess';
 import HifzBreathingPause from '@/components/hifz/HifzBreathingPause';
 import DevSkipButton from '@/components/hifz/DevSkipButton';
 import { SURAHS } from '@/lib/surahData';
+import { getExactVersePage } from '@/lib/quranData';
 import { motion } from 'framer-motion';
 
 interface HifzSession {
@@ -80,9 +81,21 @@ export default function HifzPage() {
   const [showResumePrompt, setShowResumePrompt] = useState(false);
   const [showBreathingPause, setShowBreathingPause] = useState(false);
   const [pendingResume, setPendingResume] = useState<{ session: HifzSession; step: number; sessionId: string | null } | null>(null);
+  const [resumePageLabel, setResumePageLabel] = useState('');
   const { isDevMode } = useDevMode();
   const stepStartRef = useRef<number>(Date.now());
   const stepTimesRef = useRef<Record<string, number>>({});
+
+  // Resolve page label for resume prompt
+  useEffect(() => {
+    if (!pendingResume) { setResumePageLabel(''); return; }
+    const { surahNumber, startVerse, endVerse } = pendingResume.session;
+    (async () => {
+      const pStart = await getExactVersePage(surahNumber, startVerse);
+      const pEnd = await getExactVersePage(surahNumber, endVerse);
+      setResumePageLabel(pStart === pEnd ? `p. ${pStart}` : `p. ${pStart}–${pEnd}`);
+    })();
+  }, [pendingResume]);
 
   // Save session progress locally
   useEffect(() => {
@@ -392,6 +405,7 @@ export default function HifzPage() {
               </p>
               <p className="text-xs" style={{ color: 'rgba(240,230,200,0.7)' }}>
                 Versets {pendingResume.session.startVerse} → {pendingResume.session.endVerse}
+                {resumePageLabel && <span style={{ color: 'rgba(240,230,200,0.5)' }}> · {resumePageLabel}</span>}
               </p>
               <p className="text-xs" style={{ color: 'rgba(240,230,200,0.7)' }}>
                 Étape : <span className="font-semibold" style={{ color: '#f0e6c8' }}>{stepName}</span>
