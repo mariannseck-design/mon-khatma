@@ -266,5 +266,5 @@ export function getLiaisonDaysPassed(memorizedAt?: string | null, startDate?: st
   if (!dateStr) return 0;
   const start = new Date(dateStr.length === 10 ? dateStr + 'T00:00:00' : dateStr);
   const now = new Date();
-  return Math.min(30, Math.max(0, Math.floor((now.getTime() - start.getTime()) / 86400000)));
+  return Math.min(30, Math.max(1, Math.floor((now.getTime() - start.getTime()) / 86400000)));
 }
