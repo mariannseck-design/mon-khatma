@@ -466,10 +466,11 @@ export default function HifzPage() {
         )}
         {step === 6 && <HifzSuccess stepTimes={stepTimesRef.current} />}
       </div>
-      {step >= 0 && step <= 6 && (
+      {step >= 0 && step <= 6 && step !== 3 && (
         <DevSkipButton isDevMode={isDevMode} onSkip={() => {
+          console.log(`[DevSkip] 🔀 Skip déclenché à step=${step}, breathing=${showBreathingPause}`);
           if (showBreathingPause) { handleBreathingComplete(); }
-          else if (step < 4) { updateStep(step + 1); }
+          else if (step < 3) { updateStep(step + 1); }
           else if (step === 4) { updateStep(5); }
           else if (step === 5) { completeSession(); }
           else if (step === 6) { navigate('/muraja'); }
