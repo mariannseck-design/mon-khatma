@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { SURAHS, getApproxVersePage } from '@/lib/surahData';
 import { splitBlockByPages } from '@/lib/hifzUtils';
 import { getExactVersePage } from '@/lib/quranData';
+import { getSM2Config } from '@/lib/sm2Config';
 
 const MAX_TOUR_BLOCKS_PER_DAY = 10;
 
