@@ -6,7 +6,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { RECITERS, getAyahAudioUrl } from '@/hooks/useQuranAudio';
 import HifzMushafToggle, { getMushafMode, setMushafMode, type MushafMode } from '../HifzMushafToggle';
 import HifzMushafImage from '../HifzMushafImage';
-import { getVersesByRange, type LocalAyah } from '@/lib/quranData';
+import { getVersesByRange, getExactVersePage, type LocalAyah } from '@/lib/quranData';
+import { SURAHS } from '@/lib/surahData';
 import PomodoroTimer from '../PomodoroTimer';
 
 const BASMALA_WORDS = ['بِسْمِ', 'ٱللَّهِ', 'ٱلرَّحْمَٰنِ', 'ٱلرَّحِيمِ'];
@@ -81,6 +82,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
   const [mushafMode, setMushafModeState] = useState<MushafMode>(getMushafMode);
   const [ayahs, setAyahs] = useState<LocalAyah[]>([]);
   const [loading, setLoading] = useState(true);
+  const [pageLabel, setPageLabel] = useState('');
 
   // Liaison state
   const [liaisonVerses, setLiaisonVerses] = useState<number[]>(savedImmersion?.liaisonVerses ?? []);
@@ -111,6 +113,17 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
       .then(setAyahs)
       .finally(() => setLoading(false));
   }, [surahNumber, verseStart, verseEnd]);
+
+  useEffect(() => {
+    (async () => {
+      const pStart = await getExactVersePage(surahNumber, verseStart);
+      const pEnd = await getExactVersePage(surahNumber, verseEnd);
+      setPageLabel(pStart === pEnd ? `p. ${pStart}` : `p. ${pStart}–${pEnd}`);
+    })();
+  }, [surahNumber, verseStart, verseEnd]);
+
+  const surahName = SURAHS.find(s => s.number === surahNumber)?.name;
+  const verseInfoLabel = surahName ? `${surahName} · v.${verseStart}–${verseEnd}${pageLabel ? ` · ${pageLabel}` : ''}` : null;
 
   const getAudioUrl = useCallback(async (verse: number): Promise<string | null> => {
     const url = getAyahAudioUrl(reciter, surahNumber, verse);
@@ -320,44 +333,61 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
     const startV = Math.min(...versesToShow);
     const endV = Math.max(...versesToShow);
 
+    const infoLine = verseInfoLabel ? (
+      <p className="text-[11px] text-center mb-1" style={{ color: 'rgba(255,255,255,0.45)' }}>
+        {verseInfoLabel}
+      </p>
+    ) : null;
+
     if (mushafMode === 'physical') {
       return (
-        <div className="rounded-xl px-4 py-4 text-center" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(212,175,55,0.15)' }}>
-          <p className="text-xs italic" style={{ color: 'rgba(255,255,255,0.45)' }}>
-            📖 Lis {versesToShow.length > 1 ? `les versets ${startV}–${endV}` : `le verset ${startV}`} depuis ton Mushaf physique.
-          </p>
-        </div>
+        <>
+          {infoLine}
+          <div className="rounded-xl px-4 py-4 text-center" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(212,175,55,0.15)' }}>
+            <p className="text-xs italic" style={{ color: 'rgba(255,255,255,0.45)' }}>
+              📖 Lis {versesToShow.length > 1 ? `les versets ${startV}–${endV}` : `le verset ${startV}`} depuis ton Mushaf physique.
+            </p>
+          </div>
+        </>
       );
     }
     if (mushafMode === 'image') {
-      return <HifzMushafImage surahNumber={surahNumber} startVerse={startV} endVerse={endV} maxHeight="240px" />;
+      return (
+        <>
+          {infoLine}
+          <HifzMushafImage surahNumber={surahNumber} startVerse={startV} endVerse={endV} maxHeight="240px" />
+        </>
+      );
     }
     // Text mode
     const shownAyahs = ayahs.filter(a => versesToShow.includes(a.numberInSurah));
     if (!shownAyahs.length) return null;
     const showBasmala = surahNumber !== 1 && surahNumber !== 9 && versesToShow.includes(1);
     return (
-      <div className="rounded-xl px-4 py-4" dir="rtl" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(212,175,55,0.12)' }}>
-        {showBasmala && (
-          <p className="text-center mb-3" style={{ fontFamily: FONT_FAMILY, fontSize: '20px', color: '#2E7D32', lineHeight: 2 }}>
-            بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
-          </p>
-        )}
-        <div style={{ fontFamily: FONT_FAMILY, fontSize: '22px', lineHeight: '48px', color: '#e8e0d0', textAlign: 'center' }}>
-          {shownAyahs.map((a, i) => {
-            const text = showBasmala && a.numberInSurah === 1 ? stripLeadingBasmala(a.text) : a.text;
-            return (
-              <span key={a.numberInSurah}>
-                {text}{' '}
-                <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '18px', height: '18px', borderRadius: '50%', backgroundColor: '#2E7D32', color: '#fff', fontSize: '10px', fontFamily: 'system-ui', fontWeight: 700, verticalAlign: 'middle' }}>
-                  {a.numberInSurah}
+      <>
+        {infoLine}
+        <div className="rounded-xl px-4 py-4" dir="rtl" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(212,175,55,0.12)' }}>
+          {showBasmala && (
+            <p className="text-center mb-3" style={{ fontFamily: FONT_FAMILY, fontSize: '20px', color: '#2E7D32', lineHeight: 2 }}>
+              بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
+            </p>
+          )}
+          <div style={{ fontFamily: FONT_FAMILY, fontSize: '22px', lineHeight: '48px', color: '#e8e0d0', textAlign: 'center' }}>
+            {shownAyahs.map((a, i) => {
+              const text = showBasmala && a.numberInSurah === 1 ? stripLeadingBasmala(a.text) : a.text;
+              return (
+                <span key={a.numberInSurah}>
+                  {text}{' '}
+                  <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '18px', height: '18px', borderRadius: '50%', backgroundColor: '#2E7D32', color: '#fff', fontSize: '10px', fontFamily: 'system-ui', fontWeight: 700, verticalAlign: 'middle' }}>
+                    {a.numberInSurah}
+                  </span>
+                  {i < shownAyahs.length - 1 ? ' ' : ''}
                 </span>
-                {i < shownAyahs.length - 1 ? ' ' : ''}
-              </span>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
-      </div>
+      </>
     );
   };
 
