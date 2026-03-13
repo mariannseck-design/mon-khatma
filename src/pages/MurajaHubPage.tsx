@@ -141,8 +141,8 @@ export default function MurajaHubPage() {
                   <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(212,175,55,0.12)' }}>
                     <BookOpen className="h-4 w-4" style={{ color: '#D4AF37' }} />
                   </div>
-                  <span className="text-sm font-bold" style={{ color: 'var(--p-text)' }}>{weekVerses}</span>
-                  <span className="text-[9px]" style={{ color: 'var(--p-text-40)' }}>versets</span>
+                  <span className="text-sm font-bold" style={{ color: 'var(--p-text)' }}>{Math.max(weekVerses > 0 ? 1 : 0, Math.round(weekVerses / 15))}</span>
+                  <span className="text-[9px]" style={{ color: 'var(--p-text-40)' }}>pages</span>
                 </div>
                 <div className="flex flex-col items-center gap-0.5">
                   <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(99,102,241,0.12)' }}>
