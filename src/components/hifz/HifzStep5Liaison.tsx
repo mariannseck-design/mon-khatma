@@ -12,6 +12,7 @@ interface VerseBlock {
   verse_start: number;
   verse_end: number;
   surahName: string;
+  pageLabel?: string;
 }
 
 interface Props {
