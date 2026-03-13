@@ -442,18 +442,16 @@ export default function HifzPage() {
       <div className="min-h-[80vh] rounded-[2rem] p-6 mx-[-4px]" style={GRADIENT_STYLE}>
         {devModeBadge}
         {showBreathingPause && <HifzBreathingPause onComplete={handleBreathingComplete} />}
-        {!showBreathingPause && step === 0 && <HifzStep0Intention surahNumber={session.surahNumber} startVerse={session.startVerse} endVerse={session.endVerse} onNext={() => updateStep(1)} onBack={() => setStep(-1)} onPause={handlePause} />}
-        {!showBreathingPause && step === 1 && <HifzStep1Revision onNext={() => updateStep(2)} onBack={() => setStep(0)} onPause={handlePause} />}
-        {!showBreathingPause && step === 2 && <HifzStep2Impregnation surahNumber={session.surahNumber} startVerse={session.startVerse} endVerse={session.endVerse} onNext={() => updateStep(3)} onBack={() => setStep(1)} onPause={handlePause} />}
-        {!showBreathingPause && step === 3 && <IstiqamahEngine surahNumber={session.surahNumber} startVerse={session.startVerse} endVerse={session.endVerse} repetitionLevel={session.repetitionLevel} onNext={handleStep3Complete} onBack={() => setStep(2)} onPause={handlePause} />}
-        {!showBreathingPause && step === 4 && <HifzStep4Validation surahNumber={session.surahNumber} startVerse={session.startVerse} endVerse={session.endVerse} onNext={() => updateStep(5)} onBack={() => setStep(3)} onPause={handlePause} />}
-        {!showBreathingPause && step === 5 && (
+        {!showBreathingPause && step === 0 && <HifzStepIntentionImpregnation surahNumber={session.surahNumber} startVerse={session.startVerse} endVerse={session.endVerse} onNext={() => updateStep(1)} onBack={() => setStep(-1)} onPause={handlePause} />}
+        {!showBreathingPause && step === 1 && <IstiqamahEngine surahNumber={session.surahNumber} startVerse={session.startVerse} endVerse={session.endVerse} repetitionLevel={session.repetitionLevel} onNext={handleStep1Complete} onBack={() => setStep(0)} onPause={handlePause} />}
+        {!showBreathingPause && step === 2 && <HifzStep4Validation surahNumber={session.surahNumber} startVerse={session.startVerse} endVerse={session.endVerse} onNext={() => updateStep(3)} onBack={() => setStep(1)} onPause={handlePause} />}
+        {!showBreathingPause && step === 3 && (
           <HifzStep5Tikrar
             surahNumber={session.surahNumber}
             startVerse={session.startVerse}
             endVerse={session.endVerse}
             onNext={completeSession}
-            onBack={() => setStep(4)}
+            onBack={() => setStep(2)}
             onPause={handlePause}
             stepStatus={typeof stepTimesRef.current === 'object' ? stepTimesRef.current : {}}
             onUpdateStatus={(status) => {
@@ -464,7 +462,7 @@ export default function HifzPage() {
             }}
           />
         )}
-        {step === 6 && <HifzSuccess stepTimes={stepTimesRef.current} />}
+        {step === 4 && <HifzSuccess stepTimes={stepTimesRef.current} />}
       </div>
       {step >= 0 && step <= 6 && step !== 3 && (
         <DevSkipButton isDevMode={isDevMode} onSkip={() => {
