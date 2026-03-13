@@ -472,7 +472,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
               title={isLiaison ? 'Liaison — Réciter' : 'Réciter de mémoire'}
               subtitle={isLiaison
                 ? `Récitez les versets ${liaisonVerses[0]}–${liaisonVerses[liaisonVerses.length - 1]} enchaînés`
-                : 'Récitez ce verset de mémoire — sans aide'
+                : 'Récitez ce verset de mémoire (sans regarder le Mushaf et sans audio)'
               }
             />
 
@@ -514,8 +514,8 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
 
             <div className="rounded-xl px-4 py-2.5 mx-auto max-w-sm"
               style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
-              <p className="text-[11px] italic leading-relaxed text-center" style={{ color: 'rgba(255,255,255,0.4)' }}>
-                Récitation {memoryCount + 1} — Récitez de mémoire, <span style={{ color: '#ef5350', fontWeight: 600, fontStyle: 'normal' }}>sans regarder le Mushaf ni écouter l'audio</span>
+              <p className="text-[11px] font-bold leading-relaxed text-center" style={{ color: '#ffffff' }}>
+                Récitation {memoryCount + 1} — Récitez de mémoire, sans regarder le Mushaf ni écouter l'audio
               </p>
             </div>
           </motion.div>
