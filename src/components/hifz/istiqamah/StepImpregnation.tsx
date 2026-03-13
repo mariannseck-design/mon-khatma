@@ -86,7 +86,7 @@ export default function StepImpregnation({ surahNumber, verseStart, verseEnd, ve
   };
 
   useEffect(() => {
-    return () => { isPlayingRef.current = false; audioRef.current?.pause(); };
+    return () => { isPlayingRef.current = false; audioRef.current?.pause(); setCurrentAyahIndex(-1); };
   }, []);
 
   const done = count >= TARGET;
