@@ -27,8 +27,8 @@ const MOURAD_PHASE_NAMES = ['Compréhension', 'Imprégnation', 'Liaison', 'Ancra
 
 export default function HifzHubPage() {
   const { user, hasFullAccess, isAdmin, accessLoading } = useAuth();
-  const [activeHifzSession, setActiveHifzSession] = useState<{ surahName: string; stepName: string } | null>(null);
-  const [activeMouradSession, setActiveMouradSession] = useState<{ surahName: string; phaseName: string } | null>(null);
+  const [activeHifzSession, setActiveHifzSession] = useState<{ surahName: string; stepName: string; pageLabel?: string } | null>(null);
+  const [activeMouradSession, setActiveMouradSession] = useState<{ surahName: string; phaseName: string; pageLabel?: string } | null>(null);
   const [pendingReviews, setPendingReviews] = useState(0);
 
   useEffect(() => {
