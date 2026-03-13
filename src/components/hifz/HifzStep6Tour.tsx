@@ -113,6 +113,9 @@ export default function HifzStep6Tour({ onComplete, onBack }: Props) {
       ease += 0.15;
     }
 
+    // Cap absolu à 40 jours
+    interval = Math.min(cfg.maxInterval, interval);
+
     const nextDate = new Date();
     nextDate.setDate(nextDate.getDate() + interval);
 
