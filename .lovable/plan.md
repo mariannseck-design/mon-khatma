@@ -1,21 +1,28 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Diagnostic
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+Le bouton retour (chevron `<`) dans HifzConfig navigue bien vers `/hifz-hub` dans le code. Cependant, deux problèmes probables :
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+1. **Bouton quasi invisible** : opacité 0.25, icône 4×4px, apparition avec délai — très difficile à voir/taper sur mobile
+2. **Bouton retour Android** : le geste de retour natif du téléphone utilise l'historique du navigateur → retourne à l'accueil (dernière page visitée) au lieu de `/hifz-hub`
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+## Changements
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+### 1. `src/components/hifz/HifzConfig.tsx`
+Rendre le bouton retour plus visible et plus grand :
+- Augmenter l'opacité (0.25 → 0.6)
+- Agrandir la zone de tap et l'icône
+- Supprimer le délai d'apparition
+- Ajouter le texte "ÉTAPE 1/5" à côté du chevron pour former un bouton retour clair (comme dans le screenshot, le `<` et "ÉTAPE 1/5" semblent liés)
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+### 2. `src/pages/HifzPage.tsx`
+Intercepter le bouton retour du navigateur (popstate) quand on est sur HifzConfig (step === -1) pour rediriger vers `/hifz-hub` au lieu de laisser l'historique naviguer vers l'accueil.
+
+```text
+Flux corrigé :
+Accueil → Hifz Hub → /hifz (Config)
+                         ← bouton retour in-app → /hifz-hub ✓
+                         ← bouton retour Android → /hifz-hub ✓ (intercepté)
+```
 
