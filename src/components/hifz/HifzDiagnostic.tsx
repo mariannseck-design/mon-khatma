@@ -432,9 +432,14 @@ export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticPro
               {solidBlocks.map((b, i) => {
                 const s = SURAHS.find(s => s.number === b.surahNumber);
                 return (
-                  <p key={i} className="text-sm text-white/70 flex items-center gap-2">
-                    <CheckCircle2 className="h-3.5 w-3.5 flex-shrink-0" style={{ color: goldColor }} />
-                    {s?.name || `S.${b.surahNumber}`} — v.{b.verseStart}→{b.verseEnd}
+                  <p key={i} className="text-sm text-white/70 flex items-center justify-between">
+                    <span className="flex items-center gap-2">
+                      <CheckCircle2 className="h-3.5 w-3.5 flex-shrink-0" style={{ color: goldColor }} />
+                      {s?.name || `S.${b.surahNumber}`} — v.{b.verseStart}→{b.verseEnd}
+                    </span>
+                    {confirmPageLabels[`s${i}`] && (
+                      <span className="text-[10px] text-white/40">{confirmPageLabels[`s${i}`]}</span>
+                    )}
                   </p>
                 );
               })}
