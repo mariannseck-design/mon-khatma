@@ -139,7 +139,7 @@ export default function HifzStep5Tikrar({
           className="text-lg font-bold"
           style={{ color: '#f0e6c8', fontFamily: "'Playfair Display', serif" }}
         >
-          Tikrar Final
+          Tikrâr
         </h2>
         <p className="text-xs leading-relaxed" style={{ color: 'rgba(240,230,200,0.7)' }}>
           Récitez cette portion <strong style={{ color: '#d4af37' }}>40 fois</strong> pour sceller votre mémorisation.
