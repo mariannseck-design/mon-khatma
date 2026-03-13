@@ -36,9 +36,16 @@ export default function StepTikrarFinal({ surahNumber, verseStart, verseEnd, onN
         <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto" style={{ background: 'rgba(212,175,55,0.2)', border: '1px solid rgba(212,175,55,0.4)' }}>
           <Star className="h-7 w-7 fill-current" style={{ color: '#d4af37' }} />
         </div>
-        <h3 className="text-base font-bold" style={{ color: '#f0e6c8', fontFamily: "'Playfair Display', serif" }}>
-          Tikrâr
-        </h3>
+        <div className="flex flex-col items-center gap-0.5">
+          <div className="flex items-center gap-3">
+            <div className="h-[1px] w-8 bg-gradient-to-r from-transparent to-[rgba(212,175,55,0.4)]" />
+            <span className="text-2xl" style={{ color: '#d4af37', fontFamily: "'Amiri', serif" }}>تِكْرَار</span>
+            <div className="h-[1px] w-8 bg-gradient-to-l from-transparent to-[rgba(212,175,55,0.4)]" />
+          </div>
+          <span className="text-[10px] tracking-[0.2em] uppercase font-medium" style={{ color: 'rgba(212,175,55,0.6)' }}>
+            Tikrâr
+          </span>
+        </div>
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full mx-auto" style={{ background: 'rgba(212,175,55,0.12)', border: '1px solid rgba(212,175,55,0.25)' }}>
           <span className="text-xs" style={{ color: '#d4af37' }}>📖</span>
           <span className="text-xs font-medium" style={{ color: 'rgba(212,175,55,0.85)' }}>
