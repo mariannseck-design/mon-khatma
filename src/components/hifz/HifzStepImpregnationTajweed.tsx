@@ -126,7 +126,7 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
           lineHeight: '52px',
           textAlign: 'justify',
           textAlignLast: 'center',
-          color: '#e8e0d0',
+          color: '#ffffff',
           wordSpacing: '0.12em',
           fontVariantLigatures: 'common-ligatures',
           fontFeatureSettings: '"liga" 1, "calt" 1, "kern" 1',
