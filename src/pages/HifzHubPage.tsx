@@ -222,7 +222,7 @@ export default function HifzHubPage() {
 
         {/* Méthode Tikrar-ISTIQÂMAH */}
         <motion.div variants={itemVariants}>
-          {isAdmin && !accessLoading ? (
+          {hasFullAccess && !accessLoading ? (
             <Link to="/hifz" className="block">
               <motion.div
                 className="relative overflow-hidden rounded-[2rem] p-7 group"
