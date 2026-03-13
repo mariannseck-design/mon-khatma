@@ -257,7 +257,9 @@ export default function MurajaHubPage() {
                 </div>
                 <div className="flex-1">
                   <p className="text-sm font-bold" style={{ color: 'var(--p-text)' }}>Ar-Rabt</p>
-                  <p className="text-[11px]" style={{ color: 'var(--p-text-50)' }}>Liaison quotidienne · 30 jours</p>
+                  <p className="text-[11px]" style={{ color: 'var(--p-text-50)' }}>
+                    Liaison quotidienne · 30 jours{rabtPageLabel ? ` · ${rabtPageLabel}` : ''}
+                  </p>
                 </div>
                 <span className="text-xs font-bold px-2 py-1 rounded-full" style={{ background: 'rgba(212,175,55,0.12)', color: '#D4AF37' }}>
                   {rabtDone}/{rabtVerses.length}
