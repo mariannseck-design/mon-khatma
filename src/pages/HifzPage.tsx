@@ -75,6 +75,7 @@ export default function HifzPage() {
   const [session, setSession] = useState<HifzSession | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [hasGoal, setHasGoal] = useState<boolean | null>(null);
+  const [goalVerseCount, setGoalVerseCount] = useState<number | undefined>(undefined);
   const [showGoalOnboarding, setShowGoalOnboarding] = useState(false);
   const [showDiagnostic, setShowDiagnostic] = useState(false);
   const [restoringSession, setRestoringSession] = useState(true);
@@ -133,11 +134,14 @@ export default function HifzPage() {
 
       const { data: goalData } = await supabase
         .from('hifz_goals')
-        .select('id')
+        .select('id, goal_value, goal_unit')
         .eq('user_id', user.id)
         .eq('is_active', true)
         .maybeSingle();
       setHasGoal(!!goalData);
+      if (goalData && goalData.goal_unit === 'verses') {
+        setGoalVerseCount(goalData.goal_value);
+      }
       if (!goalData) setShowGoalOnboarding(true);
 
       const local = loadLocalSession();
@@ -475,7 +479,7 @@ export default function HifzPage() {
       <AppLayout title="Espace Hifz" hideNav>
         <div className="min-h-[80vh] rounded-[2rem] p-6 mx-[-4px]" style={GRADIENT_STYLE}>
           {devModeBadge}
-          <HifzConfig onStart={startSession} />
+          <HifzConfig onStart={startSession} onBack={() => navigate('/hifz-hub')} goalVerseCount={goalVerseCount} />
         </div>
       </AppLayout>
     );

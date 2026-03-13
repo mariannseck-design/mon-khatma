@@ -1,40 +1,21 @@
 
 
-## Plan : Flèche retour sur toutes les pages Hifz + correction du bug des versets
+# Diagnostic : 404 sur /quran-reader
 
-### Problème 1 : Flèche retour manquante sur la page 1/5 (HifzConfig)
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-La page de configuration (étape 1/5) n'utilise pas `HifzStepWrapper` et n'a donc pas de bouton retour. Il faut ajouter un bouton rond avec une flèche (style similaire à l'image) qui ramène au Hub Hifz.
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-**`src/components/hifz/HifzConfig.tsx`** :
-- Ajouter une prop `onBack` 
-- Ajouter un bouton rond discret en haut à gauche avec `ChevronLeft` dans un cercle semi-transparent (comme sur l'image : fond `rgba(255,255,255,0.15)`, icône blanche)
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-**`src/pages/HifzPage.tsx`** :
-- Passer `onBack={() => navigate('/hifz-hub')}` au composant `HifzConfig`
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-### Problème 2 : 6 versets au lieu de 3
-
-Le bug vient de `findNextStartingPoint()` dans `src/lib/hifzUtils.ts`. Cette fonction utilise `getPageAlignedEnd()` qui retourne **tous les versets de la même page du Mushaf** (souvent 6-7 versets), sans tenir compte de l'objectif de l'utilisateur (3 versets/jour).
-
-**`src/lib/hifzUtils.ts`** — Modifier `findNextStartingPoint` :
-- Accepter un paramètre optionnel `goalVerseCount?: number`
-- Si fourni, limiter `endVerse` à `startVerse + goalVerseCount - 1` au lieu d'utiliser `getPageAlignedEnd`
-
-**`src/pages/HifzPage.tsx`** — Au chargement :
-- Récupérer le `goal_value` et `goal_unit` de l'objectif actif de l'utilisateur
-- Si `goal_unit === 'verses'`, passer `goal_value` comme `goalVerseCount` à `findNextStartingPoint`
-
-**`src/components/hifz/HifzConfig.tsx`** — Accepter une prop `goalVerseCount` :
-- L'utiliser pour initialiser `endVerse = startVerse + goalVerseCount - 1` au lieu du défaut de 6
-
-### Détail technique
-
-```text
-Flux actuel :
-  findNextStartingPoint() → getPageAlignedEnd() → tous les versets de la page → 6-7 versets
-
-Flux corrigé :
-  findNextStartingPoint(userId, goalVerseCount=3) → startVerse + 3 - 1 = 3 versets
-```
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

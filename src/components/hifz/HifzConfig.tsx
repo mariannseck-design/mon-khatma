@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ChevronDown, Play } from 'lucide-react';
+import { ChevronDown, ChevronLeft, Play } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { SURAHS } from '@/lib/surahData';
 import { findNextStartingPoint } from '@/lib/hifzUtils';
@@ -8,9 +8,11 @@ import { useAuth } from '@/contexts/AuthContext';
 
 interface HifzConfigProps {
   onStart: (config: { surahNumber: number; startVerse: number; endVerse: number; repetitionLevel: number }) => void;
+  onBack?: () => void;
+  goalVerseCount?: number;
 }
 
-export default function HifzConfig({ onStart }: HifzConfigProps) {
+export default function HifzConfig({ onStart, onBack, goalVerseCount }: HifzConfigProps) {
   const { user } = useAuth();
   const [selectionMode, setSelectionMode] = useState<'surah' | 'page'>('surah');
   const [surahNumber, setSurahNumber] = useState(114);
@@ -25,7 +27,7 @@ export default function HifzConfig({ onStart }: HifzConfigProps) {
   // Auto-suggest starting point based on memorized verses
   useEffect(() => {
     if (!user) return;
-    findNextStartingPoint(user.id).then(point => {
+    findNextStartingPoint(user.id, goalVerseCount).then(point => {
       if (point) {
         setSurahNumber(point.surahNumber);
         setStartVerse(point.startVerse);
@@ -33,7 +35,7 @@ export default function HifzConfig({ onStart }: HifzConfigProps) {
         setSuggestedPoint(point.surahName);
       }
     });
-  }, [user]);
+  }, [user, goalVerseCount]);
 
   const selectedSurah = SURAHS.find(s => s.number === surahNumber);
   const maxVerse = selectedSurah?.versesCount ?? 999;
@@ -73,7 +75,20 @@ export default function HifzConfig({ onStart }: HifzConfigProps) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative">
+      {/* Back button */}
+      {onBack && (
+        <motion.button
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          onClick={onBack}
+          className="absolute -top-1 left-0 p-1.5 transition-all active:scale-90 hover:opacity-60"
+          style={{ color: 'rgba(255,255,255,0.25)' }}
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </motion.button>
+      )}
       {/* Title */}
       <div className="text-center space-y-2">
         <p className="text-xs uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.4)' }}>

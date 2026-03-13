@@ -251,7 +251,7 @@ export async function graduateLiaisonBlocks(userId: string) {
  * Find the first non-memorized starting point after the user's memorized content.
  * Returns { surahNumber, startVerse } for the next Hifz session.
  */
-export async function findNextStartingPoint(userId: string): Promise<{
+export async function findNextStartingPoint(userId: string, goalVerseCount?: number): Promise<{
   surahNumber: number;
   startVerse: number;
   endVerse: number;
@@ -293,7 +293,9 @@ export async function findNextStartingPoint(userId: string): Promise<{
   }
 
   if (surahCoverage.size === 0) {
-    const endVerse = await getPageAlignedEnd(1, 1);
+    const endVerse = goalVerseCount
+      ? Math.min(goalVerseCount, 7)
+      : await getPageAlignedEnd(1, 1);
     console.log('[findNextStartingPoint] Aucune mémorisation trouvée → Al-Fatiha 1:1-' + endVerse);
     return { surahNumber: 1, startVerse: 1, endVerse, surahName: 'Al-Fatiha' };
   }
@@ -304,7 +306,9 @@ export async function findNextStartingPoint(userId: string): Promise<{
   for (const surah of SURAHS) {
     const coverage = surahCoverage.get(surah.number);
     if (!coverage) {
-      const endVerse = await getPageAlignedEnd(surah.number, 1);
+      const endVerse = goalVerseCount
+        ? Math.min(goalVerseCount, surah.versesCount)
+        : await getPageAlignedEnd(surah.number, 1);
       const result = {
         surahNumber: surah.number,
         startVerse: 1,
@@ -316,7 +320,9 @@ export async function findNextStartingPoint(userId: string): Promise<{
     }
     if (coverage.maxVerseEnd < surah.versesCount) {
       const startVerse = coverage.maxVerseEnd + 1;
-      const endVerse = await getPageAlignedEnd(surah.number, startVerse);
+      const endVerse = goalVerseCount
+        ? Math.min(startVerse + goalVerseCount - 1, surah.versesCount)
+        : await getPageAlignedEnd(surah.number, startVerse);
       const result = {
         surahNumber: surah.number,
         startVerse,
