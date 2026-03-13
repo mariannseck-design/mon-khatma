@@ -85,12 +85,12 @@ export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBac
             />
           </div>
         </div>
-        {verseInfo && (
-          <p className="text-[11px] text-center mt-1" style={{ color: 'rgba(255,255,255,0.45)' }}>
-            {verseInfo}
-          </p>
-        )}
       </div>
+      {verseInfo && (
+        <p className="text-[11px] text-center -mt-3" style={{ color: 'rgba(255,255,255,0.45)' }}>
+          {verseInfo}
+        </p>
+      )}
 
       {children}
 
