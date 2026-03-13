@@ -116,6 +116,18 @@ export default function HifzPage() {
     return () => document.removeEventListener('visibilitychange', handler);
   }, [session, step, sessionId]);
 
+  // Intercept browser/Android back button to go to /hifz-hub instead of history
+  useEffect(() => {
+    if (step === -1 && !showDiagnostic && !showGoalOnboarding && !showResumePrompt) {
+      window.history.pushState(null, '', window.location.href);
+      const handlePopState = () => {
+        navigate('/hifz-hub', { replace: true });
+      };
+      window.addEventListener('popstate', handlePopState);
+      return () => window.removeEventListener('popstate', handlePopState);
+    }
+  }, [step, showDiagnostic, showGoalOnboarding, showResumePrompt, navigate]);
+
   // Init: check goal, restore session
   useEffect(() => {
     if (!user) { setHasGoal(true); setRestoringSession(false); return; }
