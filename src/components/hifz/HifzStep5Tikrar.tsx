@@ -279,7 +279,7 @@ export default function HifzStep5Tikrar({
               }}
             >
               <Check className="h-5 w-5" />
-              Valider le Tikrar
+              Valider votre Tikrar
             </motion.button>
           </motion.div>
         ) : null}
