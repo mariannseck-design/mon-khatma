@@ -420,6 +420,7 @@ export default function HifzPage() {
       <AppLayout title="Espace Hifz" hideNav>
         <div className="min-h-[80vh] rounded-[2rem] p-6 mx-[-4px]" style={GRADIENT_STYLE}>
           <HifzDiagnostic
+            onBack={() => navigate('/hifz-hub', { replace: true })}
             onComplete={() => {
               setShowDiagnostic(false);
               setCameFromDiagnostic(true);
