@@ -1,6 +1,8 @@
 import { ReactNode, useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronLeft, Clock, Pause } from 'lucide-react';
+import { ChevronLeft, Clock } from 'lucide-react';
+import { getExactVersePage } from '@/lib/quranData';
+import { SURAHS } from '@/lib/surahData';
 
 interface HifzStepWrapperProps {
   stepNumber: number;
@@ -9,6 +11,9 @@ interface HifzStepWrapperProps {
   onBack?: () => void;
   onPause?: () => void;
   totalSteps?: number;
+  surahNumber?: number;
+  startVerse?: number;
+  endVerse?: number;
 }
 
 function formatTime(seconds: number): string {
@@ -17,8 +22,9 @@ function formatTime(seconds: number): string {
   return `${m}:${s.toString().padStart(2, '0')}`;
 }
 
-export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBack, onPause, totalSteps = 5 }: HifzStepWrapperProps) {
+export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBack, onPause, totalSteps = 5, surahNumber, startVerse, endVerse }: HifzStepWrapperProps) {
   const [elapsed, setElapsed] = useState(0);
+  const [pageLabel, setPageLabel] = useState('');
   const startRef = useRef(Date.now());
 
   useEffect(() => {
@@ -29,6 +35,20 @@ export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBac
     }, 1000);
     return () => clearInterval(interval);
   }, [stepNumber]);
+
+  useEffect(() => {
+    if (!surahNumber || !startVerse || !endVerse) { setPageLabel(''); return; }
+    (async () => {
+      const pStart = await getExactVersePage(surahNumber, startVerse);
+      const pEnd = await getExactVersePage(surahNumber, endVerse);
+      setPageLabel(pStart === pEnd ? `p. ${pStart}` : `p. ${pStart}–${pEnd}`);
+    })();
+  }, [surahNumber, startVerse, endVerse]);
+
+  const surahName = surahNumber ? SURAHS.find(s => s.number === surahNumber)?.name : null;
+  const verseInfo = surahName && startVerse && endVerse
+    ? `${surahName} · v.${startVerse}–${endVerse}${pageLabel ? ` · ${pageLabel}` : ''}`
+    : null;
 
   return (
     <motion.div
@@ -65,6 +85,11 @@ export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBac
             />
           </div>
         </div>
+        {verseInfo && (
+          <p className="text-[11px] text-center mt-1" style={{ color: 'rgba(255,255,255,0.45)' }}>
+            {verseInfo}
+          </p>
+        )}
       </div>
 
       {children}

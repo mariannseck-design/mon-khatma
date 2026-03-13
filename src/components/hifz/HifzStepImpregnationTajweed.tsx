@@ -235,7 +235,7 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
   }, []);
 
   return (
-    <HifzStepWrapper stepNumber={3} stepTitle="Imprégnation du Tajweed" onBack={onBack} onPause={onPause} totalSteps={5}>
+    <HifzStepWrapper stepNumber={3} stepTitle="Imprégnation du Tajweed" onBack={onBack} onPause={onPause} totalSteps={5} surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse}>
       <div className="text-center space-y-5">
         {/* Header */}
         <div
