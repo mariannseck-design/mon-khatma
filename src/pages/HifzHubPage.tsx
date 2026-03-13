@@ -6,6 +6,7 @@ import { BookOpen, BookHeart, RefreshCw, BarChart3, Play, BookOpenCheck } from '
 import { AppLayout } from '@/components/layout/AppLayout';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
+import { getExactVersePage } from '@/lib/quranData';
 
 
 const COLORS = {
