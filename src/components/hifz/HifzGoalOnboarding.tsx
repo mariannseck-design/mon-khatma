@@ -35,7 +35,7 @@ interface HifzGoalOnboardingProps {
   existingGoal?: { goal_period: string; goal_unit: string; goal_value: number; id: string; active_days?: number[] } | null;
 }
 
-export default function HifzGoalOnboarding({ onGoalSet, existingGoal }: HifzGoalOnboardingProps) {
+export default function HifzGoalOnboarding({ onGoalSet, onBack, existingGoal }: HifzGoalOnboardingProps) {
   const { user } = useAuth();
   const [tab, setTab] = useState<'daily' | 'weekly'>(
     (existingGoal?.goal_period as 'daily' | 'weekly') || 'daily'
