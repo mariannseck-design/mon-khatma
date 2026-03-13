@@ -22,6 +22,9 @@ import AdminPage from "./pages/AdminPage";
 import ProfilPage from "./pages/ProfilPage";
 import ParametresPage from "./pages/ParametresPage";
 import HifzPage from "./pages/HifzPage";
+import MurajaHubPage from "./pages/MurajaHubPage";
+import MurajaRabtPage from "./pages/MurajaRabtPage";
+import MurajaRevisionPage from "./pages/MurajaRevisionPage";
 import MurjaCalendarPage from "./pages/MurjaCalendarPage";
 import HifzSuiviPage from "./pages/HifzSuiviPage";
 import HifzHubPage from "./pages/HifzHubPage";
@@ -93,7 +96,9 @@ function AppRoutes() {
       <Route path="/parametres" element={<ProtectedRoute><ParametresPage /></ProtectedRoute>} />
       <Route path="/dhikr" element={<ProtectedRoute><DhikrPage /></ProtectedRoute>} />
       <Route path="/hifz" element={<ProtectedRoute><ComingSoonGate title="Espace Hifz" icon={BookOpenCheck} description="Mémorise le Coran étape par étape avec un parcours guidé." hideNav adminOnly>{<HifzPage />}</ComingSoonGate></ProtectedRoute>} />
-      <Route path="/muraja" element={<ProtectedRoute><MurjaCalendarPage /></ProtectedRoute>} />
+      <Route path="/muraja" element={<ProtectedRoute><MurajaHubPage /></ProtectedRoute>} />
+      <Route path="/muraja/rabt" element={<ProtectedRoute><MurajaRabtPage /></ProtectedRoute>} />
+      <Route path="/muraja/revision" element={<ProtectedRoute><MurajaRevisionPage /></ProtectedRoute>} />
       <Route path="/hifz-suivi" element={<ProtectedRoute><HifzSuiviPage /></ProtectedRoute>} />
       <Route path="/hifz-hub" element={<ProtectedRoute><HifzHubPage /></ProtectedRoute>} />
       <Route path="/sources-de-lumiere" element={<ProtectedRoute><ComingSoonGate title="Sources de Lumière" icon={Sparkles} description="Accède aux salawât, aux noms d'Allah et aux invocations lumineuses pour nourrir ton cœur.">{<SourcesDeLumierePage />}</ComingSoonGate></ProtectedRoute>} />

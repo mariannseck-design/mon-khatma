@@ -23,21 +23,41 @@ export interface MemorizedVerse {
   liaison_start_date?: string | null;
 }
 
+/**
+ * SM-2 adapted for Hifz with 4 quality levels:
+ * quality 2 = hard, 3 = good, 4 = easy, 5 = very easy
+ */
 function computeSM2(quality: number, repetitions: number, easeFactor: number, interval: number) {
   const config = getSM2Config();
-  let newEF = easeFactor + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02));
-  if (newEF < config.minEase) newEF = config.minEase;
+  let newEF = easeFactor;
   let newInterval: number;
   let newReps: number;
-  if (quality < 3) {
+
+  if (quality <= 2) {
+    // Hard: reset
     newReps = 0;
     newInterval = config.interval1;
-  } else {
+    newEF = Math.max(config.minEase, easeFactor - 0.15);
+  } else if (quality === 3) {
+    // Good: standard progression
     newReps = repetitions + 1;
-    if (newReps === 1) newInterval = config.interval1;
-    else if (newReps === 2) newInterval = config.interval2;
+    if (newReps === 1) newInterval = config.interval2;
     else newInterval = Math.round(interval * newEF);
+  } else if (quality === 4) {
+    // Easy: slightly accelerated
+    newReps = repetitions + 1;
+    if (newReps === 1) newInterval = config.interval3;
+    else newInterval = Math.round(interval * newEF * 1.3);
+    newEF = easeFactor + 0.10;
+  } else {
+    // Very easy: max acceleration
+    newReps = repetitions + 1;
+    if (newReps === 1) newInterval = config.interval4;
+    else newInterval = Math.round(interval * newEF * 1.5);
+    newEF = easeFactor + 0.15;
   }
+
+  if (newEF < config.minEase) newEF = config.minEase;
   return { interval: newInterval, easeFactor: newEF, repetitions: newReps };
 }
 

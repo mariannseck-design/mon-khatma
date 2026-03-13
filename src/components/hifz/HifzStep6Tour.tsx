@@ -11,6 +11,7 @@ const DIFFICULTY_BUTTONS = [
   { value: 'hard', label: 'Difficile', color: '#dc6464', bg: 'rgba(220,100,100,0.15)', border: 'rgba(220,100,100,0.3)' },
   { value: 'good', label: 'Moyen', color: '#d4af37', bg: 'rgba(212,175,55,0.15)', border: 'rgba(212,175,55,0.3)' },
   { value: 'easy', label: 'Facile', color: '#50c878', bg: 'rgba(80,200,120,0.15)', border: 'rgba(80,200,120,0.3)' },
+  { value: 'very_easy', label: 'Très facile', color: '#3b82f6', bg: 'rgba(59,130,246,0.15)', border: 'rgba(59,130,246,0.3)' },
 ];
 
 interface ReviewBlock {
@@ -97,15 +98,18 @@ export default function HifzStep6Tour({ onComplete, onBack }: Props) {
       reps = 0;
     } else if (difficulty === 'good') {
       reps += 1;
-      if (reps === 1) interval = cfg.interval1;
-      else if (reps === 2) interval = cfg.interval2;
+      if (reps === 1) interval = cfg.interval2;
       else interval = Math.round(interval * ease);
-    } else {
-      // easy
+    } else if (difficulty === 'easy') {
       reps += 1;
-      if (reps === 1) interval = cfg.interval1;
-      else if (reps === 2) interval = cfg.interval2;
+      if (reps === 1) interval = cfg.interval3;
       else interval = Math.round(interval * ease * 1.3);
+      ease += 0.10;
+    } else {
+      // very_easy
+      reps += 1;
+      if (reps === 1) interval = cfg.interval4;
+      else interval = Math.round(interval * ease * 1.5);
       ease += 0.15;
     }
 
@@ -196,7 +200,7 @@ export default function HifzStep6Tour({ onComplete, onBack }: Props) {
                 Comment s'est passée ta récitation ?
               </p>
 
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-2 gap-3">
                 {DIFFICULTY_BUTTONS.map(btn => (
                   <motion.button
                     key={btn.value}
