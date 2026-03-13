@@ -32,7 +32,7 @@ export default function IstiqamahEngine({
 }: Props) {
   const [reciterId, setReciterId] = useState(() => localStorage.getItem('quran_reciter') || RECITERS[0].id);
   const state = useIstiqamahState(surahNumber, startVerse, endVerse);
-  const { parts, loading, currentNode, next, back, currentPart, fusionParts } = state;
+  const { parts, loading, currentNode, next, back, currentPart, fusionParts, immersionCompleted } = state;
 
   const handleReciterChange = (id: string) => {
     setReciterId(id);
@@ -49,18 +49,34 @@ export default function IstiqamahEngine({
     );
   }
 
-  const stepLabel = currentNode ? STEP_LABELS[currentNode.type] || '' : '';
-
-  // For global steps (immersion/comprehension), pass the full range
   const globalProps = { surahNumber, verseStart: startVerse, verseEnd: endVerse };
-
-  // Verse label for per-verse steps
-  const verseLabel = currentPart ? `Verset ${currentPart.verseStart}` : '';
 
   const renderStep = () => {
     if (!currentNode) return null;
 
+    // DEFENSE IN DEPTH: If tikrar is requested but immersion wasn't completed, force immersion
+    if (currentNode.type === 'tikrar' && !immersionCompleted) {
+      console.warn('[IstiqamahEngine] Rendering guard: tikrar requested but immersion not completed, forcing immersion');
+      return (
+        <StepImmersion
+          key="immersion-guard"
+          {...globalProps}
+          reciterId={reciterId}
+          onNext={() => next('immersion')}
+        />
+      );
+    }
+
     switch (currentNode.type) {
+      case 'comprehension':
+        return (
+          <StepComprehension
+            key="comprehension-global"
+            {...globalProps}
+            onNext={() => next('comprehension')}
+          />
+        );
+
       case 'immersion':
         return (
           <StepImmersion
@@ -68,15 +84,6 @@ export default function IstiqamahEngine({
             {...globalProps}
             reciterId={reciterId}
             onNext={() => next('immersion')}
-          />
-        );
-
-      case 'comprehension':
-        return (
-          <StepComprehension
-            key="comprehension-global"
-            {...globalProps}
-            onNext={() => next('comprehension')}
           />
         );
 
@@ -96,6 +103,9 @@ export default function IstiqamahEngine({
     }
   };
 
+  // Determine effective step for breadcrumb (accounts for rendering guard)
+  const effectiveStep = (currentNode?.type === 'tikrar' && !immersionCompleted) ? 'immersion' : currentNode?.type;
+
   return (
     <HifzStepWrapper stepNumber={3} stepTitle="Istiqâmah" onBack={onBack} onPause={onPause}>
       <div className="text-center space-y-4">
@@ -103,8 +113,8 @@ export default function IstiqamahEngine({
         <div className="flex items-center justify-center gap-1.5">
           {(['comprehension', 'immersion', 'tikrar'] as const).map((step, i, arr) => {
             const labels = { immersion: 'Mémorisation', comprehension: 'Compréhension', tikrar: 'Tikrar' };
-            const isCurrent = currentNode?.type === step;
-            const stepOrder = arr.indexOf(currentNode?.type ?? 'immersion');
+            const isCurrent = effectiveStep === step;
+            const stepOrder = arr.indexOf(effectiveStep ?? 'comprehension');
             const isDone = i < stepOrder;
             return (
               <span key={step} className="flex items-center gap-1.5">

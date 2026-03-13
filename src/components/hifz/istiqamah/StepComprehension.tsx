@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BookOpen, Check } from 'lucide-react';
+import { BookOpen, Check, ArrowRight } from 'lucide-react';
 import { SURAHS } from '@/lib/surahData';
 
 interface Props {
@@ -13,15 +13,9 @@ interface Props {
 export default function StepComprehension({ surahNumber, verseStart, verseEnd, onNext }: Props) {
   const [translations, setTranslations] = useState<Map<string, string>>(new Map());
   const [loading, setLoading] = useState(true);
-  const [showMessage, setShowMessage] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
   const lockRef = useRef(false);
-  const timerRef = useRef<ReturnType<typeof setTimeout>>();
   const surahName = SURAHS.find(s => s.number === surahNumber)?.name || '';
-
-  useEffect(() => {
-    return () => { if (timerRef.current) clearTimeout(timerRef.current); };
-  }, []);
 
   useEffect(() => {
     setLoading(true);
@@ -46,8 +40,10 @@ export default function StepComprehension({ surahNumber, verseStart, verseEnd, o
     if (lockRef.current) return;
     lockRef.current = true;
     setConfirmed(true);
-    setShowMessage(true);
-    timerRef.current = setTimeout(onNext, 1800);
+  };
+
+  const handleStartMemorisation = () => {
+    onNext();
   };
 
   return (
@@ -114,34 +110,48 @@ export default function StepComprehension({ surahNumber, verseStart, verseEnd, o
         </div>
       )}
 
-      <AnimatePresence>
-        {showMessage && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0 }}
-            className="rounded-xl px-4 py-3 text-center"
-            style={{ background: 'rgba(212,175,55,0.15)', border: '1px solid rgba(212,175,55,0.4)' }}
-          >
-            <p className="text-sm font-semibold" style={{ color: '#d4af37' }}>
-              ✨ Magnifique ! Le sens éclaire votre mémorisation.
-            </p>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {!showMessage && !loading && (
+      {/* Step 1: Confirm understanding */}
+      {!confirmed && !loading && (
         <motion.button
           whileTap={{ scale: 0.97 }}
           onClick={handleConfirm}
-          disabled={confirmed}
-          className="w-full rounded-2xl py-3.5 flex items-center justify-center gap-2 font-semibold text-sm transition-all disabled:opacity-50 disabled:pointer-events-none"
+          className="w-full rounded-2xl py-3.5 flex items-center justify-center gap-2 font-semibold text-sm transition-all"
           style={{ background: 'linear-gradient(135deg, #d4af37, #b8962e)', color: '#1a2e1a' }}
         >
           <Check className="h-4 w-4" />
           J'ai compris le sens
         </motion.button>
       )}
+
+      {/* Step 2: Explicit button to proceed to memorisation */}
+      <AnimatePresence>
+        {confirmed && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-3"
+          >
+            <div
+              className="rounded-xl px-4 py-3 text-center"
+              style={{ background: 'rgba(212,175,55,0.15)', border: '1px solid rgba(212,175,55,0.4)' }}
+            >
+              <p className="text-sm font-semibold" style={{ color: '#d4af37' }}>
+                ✨ Magnifique ! Le sens éclaire votre mémorisation.
+              </p>
+            </div>
+
+            <motion.button
+              whileTap={{ scale: 0.97 }}
+              onClick={handleStartMemorisation}
+              className="w-full rounded-2xl py-3.5 flex items-center justify-center gap-2 font-bold text-sm transition-all"
+              style={{ background: 'linear-gradient(135deg, #2E7D32, #1b5e20)', color: '#fff', boxShadow: '0 4px 15px rgba(46,125,50,0.4)' }}
+            >
+              <ArrowRight className="h-4 w-4" />
+              Commencer la mémorisation
+            </motion.button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
