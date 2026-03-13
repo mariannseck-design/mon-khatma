@@ -69,6 +69,17 @@ export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBac
         </div>
       )}
 
+      {/* Step indicator */}
+      <div className="flex items-center justify-center gap-2">
+        <span className="text-xs font-semibold tracking-wide" style={{ color: 'rgba(212,175,55,0.85)' }}>
+          Étape {stepNumber}/{totalSteps}
+        </span>
+        <span className="text-[10px]" style={{ color: 'rgba(255,255,255,0.4)' }}>—</span>
+        <span className="text-xs" style={{ color: 'rgba(255,255,255,0.6)' }}>
+          {stepTitle}
+        </span>
+      </div>
+
       {children}
 
       {/* Return to home — discreet, bottom-right */}
