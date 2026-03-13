@@ -88,7 +88,7 @@ export default function HifzPage() {
 
   useEffect(() => {
     const handler = () => {
-      if (document.visibilityState === 'visible' && session && step >= 0 && step <= 5) {
+      if (document.visibilityState === 'visible' && session && step >= 0 && step <= 3) {
         saveLocalSession(session, step, sessionId);
       }
     };
