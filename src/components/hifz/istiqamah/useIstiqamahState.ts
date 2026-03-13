@@ -18,8 +18,8 @@ export interface IstiqamahState {
   currentNodeIndex: number;
   currentNode: FlowNode | null;
   totalNodes: number;
-  progress: number; // 0-100
-  next: () => void;
+  progress: number;
+  next: (fromStep?: StepName) => void;
   back: () => void;
   currentPart: Part | null;
   fusionParts: Part[];
