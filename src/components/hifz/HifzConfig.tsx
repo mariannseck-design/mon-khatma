@@ -38,6 +38,19 @@ export default function HifzConfig({ onStart }: HifzConfigProps) {
   const selectedSurah = SURAHS.find(s => s.number === surahNumber);
   const maxVerse = selectedSurah?.versesCount ?? 999;
 
+  // Resolve page label for surah mode summary
+  useEffect(() => {
+    if (selectionMode !== 'surah' || startVerse <= 0 || endVerse <= 0 || endVerse < startVerse) {
+      setPageLabel('');
+      return;
+    }
+    (async () => {
+      const pStart = await getExactVersePage(surahNumber, startVerse);
+      const pEnd = await getExactVersePage(surahNumber, endVerse);
+      setPageLabel(pStart === pEnd ? `p. ${pStart}` : `p. ${pStart}–${pEnd}`);
+    })();
+  }, [selectionMode, surahNumber, startVerse, endVerse]);
+
   const handleStart = async () => {
     if (selectionMode === 'page') {
       const allAyahs = [];
