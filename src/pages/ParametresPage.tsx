@@ -7,7 +7,7 @@ import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Moon, Sun, Type, AlertTriangle } from 'lucide-react';
+import { Moon, Sun, Type, AlertTriangle, Brain, RotateCcw } from 'lucide-react';
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
@@ -16,6 +16,7 @@ import {
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
+import { getSM2Config, saveSM2Config, resetSM2Config, getSM2Defaults } from '@/lib/sm2Config';
 
 export default function ParametresPage() {
   const { user } = useAuth();
@@ -31,6 +32,11 @@ export default function ParametresPage() {
     const saved = localStorage.getItem('arabic-text-size');
     return saved ? parseInt(saved, 10) : 110;
   });
+
+  const sm2Defaults = getSM2Defaults();
+  const [sm2Ease, setSm2Ease] = useState(() => getSM2Config().initialEase);
+  const [sm2Int1, setSm2Int1] = useState(() => getSM2Config().interval1);
+  const [sm2Int2, setSm2Int2] = useState(() => getSM2Config().interval2);
 
   const toggleTheme = (checked: boolean) => {
     setIsDark(checked);
@@ -106,7 +112,87 @@ export default function ParametresPage() {
           </Card>
         </motion.div>
 
-        {/* Info */}
+        {/* SM-2 Spaced Repetition Config */}
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}>
+          <Card className="pastel-card p-4 space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                  <Brain className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <p className="font-medium text-foreground text-sm">Révision espacée</p>
+                  <p className="text-xs text-muted-foreground">Personnalise l'algorithme SM-2</p>
+                </div>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 w-8 p-0 text-muted-foreground"
+                onClick={() => {
+                  resetSM2Config();
+                  setSm2Ease(sm2Defaults.initialEase);
+                  setSm2Int1(sm2Defaults.interval1);
+                  setSm2Int2(sm2Defaults.interval2);
+                  toast({ title: '↩️ Valeurs par défaut restaurées' });
+                }}
+              >
+                <RotateCcw className="h-4 w-4" />
+              </Button>
+            </div>
+
+            <div className="space-y-3">
+              <div>
+                <div className="flex justify-between text-xs mb-1">
+                  <span className="text-muted-foreground">Facteur de facilité initial</span>
+                  <span className="font-medium text-foreground">{sm2Ease.toFixed(1)}</span>
+                </div>
+                <Slider
+                  value={[sm2Ease * 10]}
+                  onValueChange={([v]) => { const val = v / 10; setSm2Ease(val); saveSM2Config({ initialEase: val }); }}
+                  min={15}
+                  max={35}
+                  step={1}
+                  className="w-full"
+                />
+                <p className="text-[10px] text-muted-foreground mt-0.5">
+                  Plus élevé = intervalles qui augmentent plus vite
+                </p>
+              </div>
+
+              <div>
+                <div className="flex justify-between text-xs mb-1">
+                  <span className="text-muted-foreground">1er intervalle</span>
+                  <span className="font-medium text-foreground">{sm2Int1} jour{sm2Int1 > 1 ? 's' : ''}</span>
+                </div>
+                <Slider
+                  value={[sm2Int1]}
+                  onValueChange={([v]) => { setSm2Int1(v); saveSM2Config({ interval1: v }); }}
+                  min={1}
+                  max={3}
+                  step={1}
+                  className="w-full"
+                />
+              </div>
+
+              <div>
+                <div className="flex justify-between text-xs mb-1">
+                  <span className="text-muted-foreground">2e intervalle</span>
+                  <span className="font-medium text-foreground">{sm2Int2} jours</span>
+                </div>
+                <Slider
+                  value={[sm2Int2]}
+                  onValueChange={([v]) => { setSm2Int2(v); saveSM2Config({ interval2: v }); }}
+                  min={3}
+                  max={10}
+                  step={1}
+                  className="w-full"
+                />
+              </div>
+            </div>
+          </Card>
+        </motion.div>
+
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
           <Card className="illustrated-card bg-gradient-sky">
             <p className="text-sm text-sky-foreground/80">
