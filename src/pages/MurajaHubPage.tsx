@@ -12,7 +12,7 @@ import { format, startOfWeek, addDays, isSameDay } from 'date-fns';
 export default function MurajaHubPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { loading, rabtVerses, tourVerses, checkedIds } = useMurajaData();
+  const { loading, rabtVerses, tourVerses, checkedIds, allVerses } = useMurajaData();
   const today = useMemo(() => new Date(), []);
   const monday = useMemo(() => startOfWeek(today, { weekStartsOn: 1 }), [today]);
 
@@ -70,6 +70,14 @@ export default function MurajaHubPage() {
   const rabtDone = rabtVerses.filter(v => checkedIds.includes(v.id)).length;
   const tourDone = tourVerses.filter(v => checkedIds.includes(v.id)).length;
 
+  const TOTAL_QURAN_VERSES = 6236;
+  const totalMemorized = useMemo(() => {
+    return allVerses.reduce((sum, v) => sum + (v.verse_end - v.verse_start + 1), 0);
+  }, [allVerses]);
+  const progressPercent = Math.min(100, (totalMemorized / TOTAL_QURAN_VERSES) * 100);
+  const totalPages = Math.max(totalMemorized > 0 ? 1 : 0, Math.round(totalMemorized / 15));
+  const totalJuz = Math.round((totalMemorized / TOTAL_QURAN_VERSES) * 30 * 10) / 10;
+
   return (
     <AppLayout title="Muraja'a" hideNav bgClassName="bg-gradient-muraja">
       <div className="max-w-md mx-auto px-4 py-5 space-y-5" style={{ backgroundColor: 'var(--p-bg)', minHeight: '100vh' }}>
@@ -117,6 +125,36 @@ export default function MurajaHubPage() {
           </div>
         ) : (
           <>
+            {/* Global Progress */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="rounded-2xl p-4 space-y-2.5"
+              style={{ background: 'var(--p-card)', border: '1px solid var(--p-border)', boxShadow: 'var(--p-card-shadow)' }}
+            >
+              <div className="flex items-center justify-between">
+                <p className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--p-text-40)' }}>
+                  Progression globale
+                </p>
+                <span className="text-xs font-bold" style={{ color: 'var(--p-primary)' }}>
+                  {progressPercent.toFixed(1)}%
+                </span>
+              </div>
+              <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: 'var(--p-track)' }}>
+                <motion.div
+                  className="h-full rounded-full"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progressPercent}%` }}
+                  transition={{ duration: 0.8, ease: 'easeOut' }}
+                  style={{ background: 'linear-gradient(90deg, #10B981, #D4AF37)' }}
+                />
+              </div>
+              <div className="flex items-center justify-between text-[10px]" style={{ color: 'var(--p-text-50)' }}>
+                <span>{totalMemorized} versets · {totalPages} pages</span>
+                <span>{totalJuz} / 30 juz</span>
+              </div>
+            </motion.div>
+
           {/* Weekly Recap */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
