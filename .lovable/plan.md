@@ -1,15 +1,21 @@
 
 
-## Plan : Déplacer le badge verset au-dessus de la barre de progression
+# Diagnostic : 404 sur /quran-reader
 
-### Fichier : `src/components/hifz/HifzStepWrapper.tsx`
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-Déplacer le bloc `verseInfo` (lignes 89-99) **avant** le bloc de la barre de progression (ligne 61). Ainsi le badge « Al-Baqara · v.70–76 · p. 11 » apparaîtra juste au-dessus des barres rondes avec les numéros d'étape.
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-Concrètement, réorganiser l'ordre dans le JSX :
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-1. **D'abord** : le badge verset (capsule dorée avec 📖)
-2. **Ensuite** : la barre de progression avec le bouton retour, le timer et le titre d'étape
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-Retirer le `-mt-3` du badge puisqu'il ne sera plus collé sous la barre.
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
