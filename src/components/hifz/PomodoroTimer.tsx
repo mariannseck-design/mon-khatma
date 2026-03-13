@@ -209,7 +209,7 @@ export default function PomodoroTimer() {
                 Pomodoro
               </span>
             </button>
-            <span className="text-[10px]" style={{ color: 'rgba(212,175,55,0.45)' }}>
+            <span className="text-[10px] font-bold" style={{ color: '#ffffff' }}>
               ⏱ Cliquez ici pour activer le minuteur Pomodoro
             </span>
           </>
