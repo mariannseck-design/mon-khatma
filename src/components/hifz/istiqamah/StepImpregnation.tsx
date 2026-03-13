@@ -59,16 +59,17 @@ export default function StepImpregnation({ surahNumber, verseStart, verseEnd, ve
   }, [surahNumber, verseStart, verseEnd, reciter]);
 
   const playLoop = useCallback((idx: number) => {
-    if (!isPlayingRef.current) return;
+    if (!isPlayingRef.current) { setCurrentAyahIndex(-1); return; }
     if (idx >= audiosRef.current.length) {
       setTimeout(() => { if (isPlayingRef.current) playLoop(0); }, 600);
       return;
     }
+    setCurrentAyahIndex(idx);
     const audio = new Audio(audiosRef.current[idx]);
     audioRef.current = audio;
     audio.onended = () => playLoop(idx + 1);
     audio.onerror = () => playLoop(idx + 1);
-    audio.play().catch(() => { isPlayingRef.current = false; setIsPlaying(false); });
+    audio.play().catch(() => { isPlayingRef.current = false; setIsPlaying(false); setCurrentAyahIndex(-1); });
   }, []);
 
   const toggleAudio = () => {
