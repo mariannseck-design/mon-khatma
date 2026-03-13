@@ -24,6 +24,7 @@ export interface IstiqamahState {
   currentPart: Part | null;
   fusionParts: Part[];
   immersionCompleted: boolean;
+  clearState: () => void;
 }
 
 // Strict linear flow: comprehension → immersion → tikrar
