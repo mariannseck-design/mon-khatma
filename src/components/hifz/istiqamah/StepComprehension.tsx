@@ -37,6 +37,8 @@ export default function StepComprehension({ surahNumber, verseStart, verseEnd, o
   }, [surahNumber, verseStart, verseEnd]);
 
   const handleConfirm = () => {
+    if (confirmed) return;
+    setConfirmed(true);
     setShowMessage(true);
     setTimeout(onNext, 1800);
   };
