@@ -103,6 +103,18 @@ export default function HifzGoalOnboarding({ onGoalSet, onBack, existingGoal }: 
       animate={{ opacity: 1, y: 0 }}
       className="space-y-6"
     >
+      {/* Back button */}
+      {onBack && (
+        <button
+          onClick={onBack}
+          className="flex items-center gap-1.5 text-sm transition-all active:scale-95 mb-2"
+          style={{ color: 'rgba(255,255,255,0.6)' }}
+        >
+          <ChevronLeft className="h-5 w-5" />
+          <span>Retour</span>
+        </button>
+      )}
+
       {/* Header */}
       <div className="text-center space-y-3">
         <div className="flex justify-center">
