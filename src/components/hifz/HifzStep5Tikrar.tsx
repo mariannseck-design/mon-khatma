@@ -130,6 +130,7 @@ export default function HifzStep5Tikrar({
       onPause={onPause}
       totalSteps={6}
     >
+      <PomodoroTimer />
       <div className="text-center space-y-5">
         <h2
           className="text-lg font-bold"
