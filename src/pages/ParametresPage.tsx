@@ -114,7 +114,8 @@ export default function ParametresPage() {
           </Card>
         </motion.div>
 
-        {/* SM-2 Spaced Repetition Config */}
+        {/* SM-2 Spaced Repetition Config — hidden, awaiting new Anki prompt */}
+        {false && (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}>
           <Card className="pastel-card p-4 space-y-4">
             <div className="flex items-center justify-between">
@@ -226,6 +227,7 @@ export default function ParametresPage() {
             </div>
           </Card>
         </motion.div>
+        )}
 
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
           <Card className="illustrated-card bg-gradient-sky">
