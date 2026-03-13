@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { useMurajaData, getSurahName, MemorizedVerse } from '@/hooks/useMurajaData';
 import { getExactVersePage } from '@/lib/quranData';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
+import MurajaHistory from '@/components/muraja/MurajaHistory';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 
