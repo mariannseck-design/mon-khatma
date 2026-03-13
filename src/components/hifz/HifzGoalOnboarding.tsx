@@ -31,6 +31,7 @@ const DAY_LABELS = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
 
 interface HifzGoalOnboardingProps {
   onGoalSet: () => void;
+  onBack?: () => void;
   existingGoal?: { goal_period: string; goal_unit: string; goal_value: number; id: string; active_days?: number[] } | null;
 }
 

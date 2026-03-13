@@ -116,17 +116,27 @@ export default function HifzPage() {
     return () => document.removeEventListener('visibilitychange', handler);
   }, [session, step, sessionId]);
 
-  // Intercept browser/Android back button to go to /hifz-hub instead of history
+  const [cameFromDiagnostic, setCameFromDiagnostic] = useState(false);
+
+  // Intercept browser/Android back button for ALL pre-session screens
   useEffect(() => {
-    if (step === -1 && !showDiagnostic && !showGoalOnboarding && !showResumePrompt) {
-      window.history.pushState(null, '', window.location.href);
-      const handlePopState = () => {
+    const isPreSession = step === -1 || showDiagnostic || showGoalOnboarding || showResumePrompt;
+    if (!isPreSession) return;
+
+    window.history.pushState(null, '', window.location.href);
+    const handlePopState = () => {
+      if (showGoalOnboarding && cameFromDiagnostic) {
+        setShowGoalOnboarding(false);
+        setShowDiagnostic(true);
+      } else {
         navigate('/hifz-hub', { replace: true });
-      };
-      window.addEventListener('popstate', handlePopState);
-      return () => window.removeEventListener('popstate', handlePopState);
-    }
-  }, [step, showDiagnostic, showGoalOnboarding, showResumePrompt, navigate]);
+      }
+      // Re-push state to keep intercepting
+      window.history.pushState(null, '', window.location.href);
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [step, showDiagnostic, showGoalOnboarding, showResumePrompt, cameFromDiagnostic, navigate]);
 
   // Init: check goal, restore session
   useEffect(() => {
