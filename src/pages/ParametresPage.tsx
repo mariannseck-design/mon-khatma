@@ -33,6 +33,11 @@ export default function ParametresPage() {
     return saved ? parseInt(saved, 10) : 110;
   });
 
+  const sm2Defaults = getSM2Defaults();
+  const [sm2Ease, setSm2Ease] = useState(() => getSM2Config().initialEase);
+  const [sm2Int1, setSm2Int1] = useState(() => getSM2Config().interval1);
+  const [sm2Int2, setSm2Int2] = useState(() => getSM2Config().interval2);
+
   const toggleTheme = (checked: boolean) => {
     setIsDark(checked);
     if (checked) {
