@@ -233,10 +233,9 @@ export default function HifzStepIntentionImpregnation({ surahNumber, startVerse,
 
   const playNextAyah = useCallback((idx: number) => {
     if (idx >= ayahsRef.current.length) {
-      setIsPlaying(false);
-      setCurrentAyahIndex(-1);
       setListenCount(prev => prev + 1);
       indexRef.current = 0;
+      playNextAyah(0);
       return;
     }
     indexRef.current = idx;
