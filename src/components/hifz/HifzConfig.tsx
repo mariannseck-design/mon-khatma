@@ -279,6 +279,12 @@ export default function HifzConfig({ onStart }: HifzConfigProps) {
             <span className="font-semibold" style={{ color: '#d4af37' }}>{selectedSurah.name}</span>
             <span className="text-white/50 mx-1.5">·</span>
             <span className="text-white/70">v.{startVerse}–{endVerse}</span>
+            {pageLabel && (
+              <>
+                <span className="text-white/50 mx-1.5">·</span>
+                <span className="text-white/50">{pageLabel}</span>
+              </>
+            )}
           </div>
           <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ background: 'rgba(212,175,55,0.2)', color: '#d4af37' }}>
             {endVerse - startVerse + 1} verset{endVerse - startVerse + 1 > 1 ? 's' : ''}
