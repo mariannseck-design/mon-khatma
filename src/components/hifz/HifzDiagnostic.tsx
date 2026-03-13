@@ -1,8 +1,9 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BookOpen, CheckCircle2, Sparkles, ArrowLeft, Layers, Plus, X, ChevronDown, ChevronUp, Building2, Sprout, Clock, RotateCcw } from 'lucide-react';
 import { SURAHS } from '@/lib/surahData';
 import { surahsToVerseBlocks, pageRangeToVerseBlocks, injectMemorizedVerses } from '@/lib/hifzUtils';
+import { getExactVersePage } from '@/lib/quranData';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
@@ -53,6 +54,75 @@ JUZ_DATA.forEach((juz, i) => {
   juz.startPage = JUZ_START_PAGES[i];
   juz.endPage = (i < 29 ? JUZ_START_PAGES[i + 1] - 1 : 604);
 });
+
+function RecentBlocksList({ blocks, recentDaysMap, setRecentDaysMap, glassBg: glsBg }: {
+  blocks: BlockWithMeta[];
+  recentDaysMap: Map<number, number>;
+  setRecentDaysMap: React.Dispatch<React.SetStateAction<Map<number, number>>>;
+  glassBg: string;
+}) {
+  const [pageLabels, setPageLabels] = useState<Record<number, string>>({});
+
+  useEffect(() => {
+    const resolve = async () => {
+      const labels: Record<number, string> = {};
+      for (let i = 0; i < blocks.length; i++) {
+        const b = blocks[i];
+        const pStart = await getExactVersePage(b.surahNumber, b.verseStart);
+        const pEnd = await getExactVersePage(b.surahNumber, b.verseEnd);
+        labels[i] = pStart === pEnd ? `p. ${pStart}` : `p. ${pStart}–${pEnd}`;
+      }
+      setPageLabels(labels);
+    };
+    if (blocks.length > 0) resolve();
+  }, [blocks]);
+
+  return (
+    <div className="space-y-3 max-h-[50vh] overflow-y-auto">
+      {blocks.map((b, i) => {
+        const s = SURAHS.find(s => s.number === b.surahNumber);
+        const days = recentDaysMap.get(i) || 1;
+        const remaining = 30 - days;
+        return (
+          <div key={i} className="rounded-2xl p-4 space-y-3"
+            style={{ background: glsBg, border: '1px solid rgba(74,222,128,0.2)' }}>
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-bold text-white">
+                {s?.name || `S.${b.surahNumber}`} — v.{b.verseStart}→{b.verseEnd}
+                {pageLabels[i] && <span className="font-normal text-white/50 ml-1">({pageLabels[i]})</span>}
+              </span>
+            </div>
+            <div>
+              <p className="text-[10px] text-white/50 mb-2">
+                Depuis combien de jours récitez-vous ce passage ?
+              </p>
+              <div className="flex items-center gap-3">
+                <input
+                  type="range" min={1} max={29} value={days}
+                  onChange={e => {
+                    const val = parseInt(e.target.value);
+                    setRecentDaysMap(prev => {
+                      const next = new Map(prev);
+                      next.set(i, val);
+                      return next;
+                    });
+                  }}
+                  className="flex-1 accent-[#4ade80]"
+                />
+                <span className="text-sm font-bold w-8 text-center" style={{ color: '#4ade80' }}>{days}j</span>
+              </div>
+            </div>
+            <div className="rounded-lg px-3 py-1.5 text-center" style={{ background: 'rgba(74,222,128,0.1)', border: '1px solid rgba(74,222,128,0.2)' }}>
+              <p className="text-[11px] font-medium" style={{ color: '#4ade80' }}>
+                ➜ {remaining} jour{remaining > 1 ? 's' : ''} de Liaison restant{remaining > 1 ? 's' : ''}
+              </p>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
 
 const TABS: { id: TabId; label: string; icon: string }[] = [
   { id: 'pages', label: 'Par Pages', icon: '📄' },
@@ -416,48 +486,7 @@ export default function HifzDiagnostic({ onComplete, onSkip }: HifzDiagnosticPro
           Pour chaque passage récent, indiquez depuis combien de jours vous le récitez quotidiennement. L'application calculera le reliquat de Liaison.
         </p>
 
-        <div className="space-y-3 max-h-[50vh] overflow-y-auto">
-          {recentBlocks.map((b, i) => {
-            const s = SURAHS.find(s => s.number === b.surahNumber);
-            const days = recentDaysMap.get(i) || 1;
-            const remaining = 30 - days;
-            return (
-              <div key={i} className="rounded-2xl p-4 space-y-3"
-                style={{ background: glassBg, border: '1px solid rgba(74,222,128,0.2)' }}>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-bold text-white">
-                    {s?.name || `S.${b.surahNumber}`} — v.{b.verseStart}→{b.verseEnd}
-                  </span>
-                </div>
-                <div>
-                  <p className="text-[10px] text-white/50 mb-2">
-                    Depuis combien de jours récitez-vous ce passage ?
-                  </p>
-                  <div className="flex items-center gap-3">
-                    <input
-                      type="range" min={1} max={29} value={days}
-                      onChange={e => {
-                        const val = parseInt(e.target.value);
-                        setRecentDaysMap(prev => {
-                          const next = new Map(prev);
-                          next.set(i, val);
-                          return next;
-                        });
-                      }}
-                      className="flex-1 accent-[#4ade80]"
-                    />
-                    <span className="text-sm font-bold w-8 text-center" style={{ color: '#4ade80' }}>{days}j</span>
-                  </div>
-                </div>
-                <div className="rounded-lg px-3 py-1.5 text-center" style={{ background: 'rgba(74,222,128,0.1)', border: '1px solid rgba(74,222,128,0.2)' }}>
-                  <p className="text-[11px] font-medium" style={{ color: '#4ade80' }}>
-                    ➜ {remaining} jour{remaining > 1 ? 's' : ''} de Liaison restant{remaining > 1 ? 's' : ''}
-                  </p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+        <RecentBlocksList blocks={recentBlocks} recentDaysMap={recentDaysMap} setRecentDaysMap={setRecentDaysMap} glassBg={glassBg} />
 
         <motion.button whileTap={{ scale: 0.97 }}
           onClick={() => setStep('choose-category')}

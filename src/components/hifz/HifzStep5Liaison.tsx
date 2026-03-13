@@ -4,6 +4,7 @@ import { Link2, Check, Loader2 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { SURAHS } from '@/lib/surahData';
+import { getExactVersePage } from '@/lib/quranData';
 import HifzStepWrapper from './HifzStepWrapper';
 
 interface VerseBlock {
@@ -11,6 +12,7 @@ interface VerseBlock {
   verse_start: number;
   verse_end: number;
   surahName: string;
+  pageLabel?: string;
 }
 
 interface Props {
@@ -39,10 +41,17 @@ export default function HifzStep5Liaison({ onNext, onBack }: Props) {
         .order('verse_start', { ascending: true });
 
       if (data) {
-        setBlocks(data.map(b => ({
-          ...b,
-          surahName: SURAHS.find(s => s.number === b.surah_number)?.name || `Sourate ${b.surah_number}`,
-        })));
+        const mapped = await Promise.all(data.map(async b => {
+          const pStart = await getExactVersePage(b.surah_number, b.verse_start);
+          const pEnd = await getExactVersePage(b.surah_number, b.verse_end);
+          const pageLabel = pStart === pEnd ? `p. ${pStart}` : `p. ${pStart}–${pEnd}`;
+          return {
+            ...b,
+            surahName: SURAHS.find(s => s.number === b.surah_number)?.name || `Sourate ${b.surah_number}`,
+            pageLabel,
+          };
+        }));
+        setBlocks(mapped);
       }
       setLoading(false);
     };
@@ -94,7 +103,7 @@ export default function HifzStep5Liaison({ onNext, onBack }: Props) {
                       {b.surahName}
                     </p>
                     <p className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
-                      Versets {b.verse_start} → {b.verse_end}
+                      Versets {b.verse_start} → {b.verse_end} {b.pageLabel && <span className="opacity-70">({b.pageLabel})</span>}
                     </p>
                   </div>
                 </div>
