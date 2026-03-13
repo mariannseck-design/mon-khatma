@@ -85,6 +85,7 @@ export default function HifzPage() {
   const { isDevMode } = useDevMode();
   const stepStartRef = useRef<number>(Date.now());
   const stepTimesRef = useRef<Record<string, number>>({});
+  const completedRef = useRef(false);
 
   // Resolve page label for resume prompt
   useEffect(() => {
@@ -99,14 +100,14 @@ export default function HifzPage() {
 
   // Save session progress locally
   useEffect(() => {
-    if (session && step >= 0 && step <= 3) {
+    if (session && step >= 0 && step <= 3 && !completedRef.current) {
       saveLocalSession(session, step, sessionId, stepTimesRef.current);
     }
   }, [session, step, sessionId]);
 
   useEffect(() => {
     const handler = () => {
-      if (document.visibilityState === 'visible' && session && step >= 0 && step <= 3) {
+      if (document.visibilityState === 'visible' && session && step >= 0 && step <= 3 && !completedRef.current) {
         saveLocalSession(session, step, sessionId, stepTimesRef.current);
       }
     };
@@ -157,6 +158,14 @@ export default function HifzPage() {
         .maybeSingle();
 
       if (activeSession && activeSession.current_step >= 0 && activeSession.current_step <= 3) {
+        // Nettoyer les sessions orphelines (toutes sauf celle qu'on restaure)
+        supabase.from('hifz_sessions')
+          .update({ completed_at: new Date().toISOString(), step_status: { abandoned: true } as any })
+          .eq('user_id', user.id)
+          .is('completed_at', null)
+          .neq('id', activeSession.id)
+          .then(() => {});
+
         const restored = {
           session: {
             surahNumber: activeSession.surah_number,
@@ -170,6 +179,13 @@ export default function HifzPage() {
         };
         setPendingResume(restored);
         setShowResumePrompt(true);
+      } else {
+        // Pas de session active à restaurer → nettoyer toutes les orphelines
+        supabase.from('hifz_sessions')
+          .update({ completed_at: new Date().toISOString(), step_status: { abandoned: true } as any })
+          .eq('user_id', user.id)
+          .is('completed_at', null)
+          .then(() => {});
       }
       setRestoringSession(false);
     };
@@ -266,7 +282,10 @@ export default function HifzPage() {
       stepTimesRef.current[`step_${step}_time`] = elapsedSeconds;
     }
 
+    // IMMÉDIAT : afficher succès + bloquer les sauvegardes localStorage
+    completedRef.current = true;
     clearLocalSession();
+    setStep(4);
 
     if (sessionId && user) {
       await supabase.from('hifz_sessions').update({
@@ -338,7 +357,6 @@ export default function HifzPage() {
         });
       }
     }
-    setStep(4); // success screen
   }, [sessionId, user, session, step]);
 
   const devModeBadge = isDevMode && (
