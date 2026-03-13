@@ -4,6 +4,7 @@ import { Star, Check } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { SURAHS } from '@/lib/surahData';
 import TikrarInstructionsModal from '../TikrarInstructionsModal';
+import PomodoroTimer from '../PomodoroTimer';
 
 interface Props {
   surahNumber: number;
@@ -42,6 +43,9 @@ export default function StepTikrarFinal({ surahNumber, verseStart, verseEnd, onN
           {surahName} · Versets {verseStart}-{verseEnd}
         </p>
       </div>
+
+      {/* Pomodoro Timer */}
+      <PomodoroTimer />
 
       <div className="rounded-xl px-4 py-3 space-y-2" style={{ background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.2)' }}>
         <p className="text-xs font-medium leading-relaxed text-center" style={{ color: '#d4af37' }}>
