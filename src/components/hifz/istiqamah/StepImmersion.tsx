@@ -114,6 +114,17 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
       .finally(() => setLoading(false));
   }, [surahNumber, verseStart, verseEnd]);
 
+  useEffect(() => {
+    (async () => {
+      const pStart = await getExactVersePage(surahNumber, verseStart);
+      const pEnd = await getExactVersePage(surahNumber, verseEnd);
+      setPageLabel(pStart === pEnd ? `p. ${pStart}` : `p. ${pStart}–${pEnd}`);
+    })();
+  }, [surahNumber, verseStart, verseEnd]);
+
+  const surahName = SURAHS.find(s => s.number === surahNumber)?.name;
+  const verseInfoLabel = surahName ? `${surahName} · v.${verseStart}–${verseEnd}${pageLabel ? ` · ${pageLabel}` : ''}` : null;
+
   const getAudioUrl = useCallback(async (verse: number): Promise<string | null> => {
     const url = getAyahAudioUrl(reciter, surahNumber, verse);
     if (url) return url;
