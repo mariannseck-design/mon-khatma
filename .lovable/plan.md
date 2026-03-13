@@ -1,21 +1,32 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Ajouter les numéros de page aux blocs de versets
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+Deux écrans affichent des blocs de versets sans numéro de page. Il faut ajouter l'indication "p. X" (ou "p. X-Y" si multi-pages) à chacun.
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Fichiers modifiés
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+**1. `src/components/hifz/HifzDiagnostic.tsx`** (écran "Durée de liaison")
+- Importer `getExactVersePage` depuis `@/lib/quranData`
+- Ajouter un state `pageMap: Record<number, string>` (index du bloc → label page)
+- Dans un `useEffect` sur `recentBlocks`, résoudre la page de chaque bloc via `getExactVersePage(surahNumber, verseStart)` et `getExactVersePage(surahNumber, verseEnd)` pour afficher "p. X" ou "p. X–Y"
+- Ligne 429 : ajouter le label page après le nom de sourate/versets
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+**2. `src/components/hifz/HifzStep5Liaison.tsx`** (étape Liaison)
+- Importer `getExactVersePage` depuis `@/lib/quranData`
+- Ajouter un state `pageMap: Record<number, string>` (index → label)
+- Résoudre les pages dans le `useEffect` existant après le fetch des blocs
+- Ligne 96-98 : ajouter "p. X" sous ou à côté de "Versets X → Y"
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+### Format d'affichage
+
+```text
+Al-Baqara — v.70→119  (p. 11–18)
+```
+
+Ou sur une ligne séparée :
+```text
+Versets 70 → 119
+p. 11–18
+```
 
