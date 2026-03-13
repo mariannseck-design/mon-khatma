@@ -23,17 +23,18 @@ export interface MemorizedVerse {
 }
 
 function computeSM2(quality: number, repetitions: number, easeFactor: number, interval: number) {
+  const config = getSM2Config();
   let newEF = easeFactor + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02));
-  if (newEF < 1.3) newEF = 1.3;
+  if (newEF < config.minEase) newEF = config.minEase;
   let newInterval: number;
   let newReps: number;
   if (quality < 3) {
     newReps = 0;
-    newInterval = 1;
+    newInterval = config.interval1;
   } else {
     newReps = repetitions + 1;
-    if (newReps === 1) newInterval = 1;
-    else if (newReps === 2) newInterval = 6;
+    if (newReps === 1) newInterval = config.interval1;
+    else if (newReps === 2) newInterval = config.interval2;
     else newInterval = Math.round(interval * newEF);
   }
   return { interval: newInterval, easeFactor: newEF, repetitions: newReps };
