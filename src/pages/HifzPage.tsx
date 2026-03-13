@@ -488,7 +488,15 @@ export default function HifzPage() {
       <AppLayout title="Espace Hifz" hideNav>
         <div className="min-h-[80vh] rounded-[2rem] p-6 mx-[-4px]" style={GRADIENT_STYLE}>
           <HifzGoalOnboarding
-            onGoalSet={() => { setHasGoal(true); setShowGoalOnboarding(false); }}
+            onGoalSet={() => { setHasGoal(true); setShowGoalOnboarding(false); setCameFromDiagnostic(false); }}
+            onBack={() => {
+              if (cameFromDiagnostic) {
+                setShowGoalOnboarding(false);
+                setShowDiagnostic(true);
+              } else {
+                navigate('/hifz-hub');
+              }
+            }}
           />
         </div>
         <DevSkipButton isDevMode={isDevMode} onSkip={() => { setHasGoal(true); setShowGoalOnboarding(false); }} />
