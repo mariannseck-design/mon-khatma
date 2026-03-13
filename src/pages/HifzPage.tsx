@@ -85,6 +85,7 @@ export default function HifzPage() {
   const { isDevMode } = useDevMode();
   const stepStartRef = useRef<number>(Date.now());
   const stepTimesRef = useRef<Record<string, number>>({});
+  const completedRef = useRef(false);
 
   // Resolve page label for resume prompt
   useEffect(() => {
