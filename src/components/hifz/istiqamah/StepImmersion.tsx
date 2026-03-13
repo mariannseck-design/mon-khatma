@@ -348,9 +348,11 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
 
   // Header for each phase
   const PhaseHeader = ({ icon: Icon, iconColor, iconBg, title, subtitle }: { icon: any; iconColor: string; iconBg: string; title: string; subtitle: string }) => (
-    <div className="text-center space-y-1.5">
-      <div className="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto" style={{ background: iconBg, border: `1px solid ${iconColor}40` }}>
-        <Icon className="h-6 w-6" style={{ color: iconColor }} />
+    <div className="text-center space-y-1">
+      <div className="flex items-center justify-center gap-2 mb-0.5">
+        <span className="h-px w-8 rounded-full" style={{ background: `linear-gradient(90deg, transparent, ${iconColor}40)` }} />
+        <Icon className="h-4 w-4" style={{ color: iconColor, opacity: 0.7 }} />
+        <span className="h-px w-8 rounded-full" style={{ background: `linear-gradient(90deg, ${iconColor}40, transparent)` }} />
       </div>
       <h3 className="text-sm font-bold" style={{ color: '#f0e6c8', fontFamily: "'Playfair Display', serif" }}>{title}</h3>
       <p className="text-[11px]" style={{ color: 'rgba(255,255,255,0.45)' }}>{subtitle}</p>
