@@ -19,20 +19,53 @@ export default function MurajaHubPage() {
   const [streak, setStreak] = useState(0);
   const [longestStreak, setLongestStreak] = useState(0);
 
+  const [weekSessions, setWeekSessions] = useState(0);
+  const [weekVerses, setWeekVerses] = useState(0);
+  const [weekActiveDays, setWeekActiveDays] = useState<Set<number>>(new Set());
+
   useEffect(() => {
     if (!user?.id) return;
-    supabase
-      .from('hifz_streaks')
-      .select('current_streak, longest_streak')
-      .eq('user_id', user.id)
-      .maybeSingle()
-      .then(({ data }) => {
-        if (data) {
-          setStreak(data.current_streak);
-          setLongestStreak(data.longest_streak);
+    const weekStart = format(monday, 'yyyy-MM-dd');
+
+    Promise.all([
+      supabase
+        .from('hifz_streaks')
+        .select('current_streak, longest_streak')
+        .eq('user_id', user.id)
+        .maybeSingle(),
+      supabase
+        .from('muraja_sessions')
+        .select('completed_at, verses_reviewed')
+        .eq('user_id', user.id)
+        .not('completed_at', 'is', null)
+        .gte('completed_at', weekStart),
+    ]).then(([streakRes, murajaRes]) => {
+      if (streakRes.data) {
+        setStreak(streakRes.data.current_streak);
+        setLongestStreak(streakRes.data.longest_streak);
+      }
+
+      const sessions = murajaRes.data || [];
+      setWeekSessions(sessions.length);
+
+      let totalV = 0;
+      const activeDays = new Set<number>();
+      for (const s of sessions) {
+        const d = new Date(s.completed_at!);
+        for (let i = 0; i < 7; i++) {
+          if (isSameDay(d, addDays(monday, i))) { activeDays.add(i); break; }
         }
-      });
-  }, [user?.id]);
+        const reviewed = s.verses_reviewed as any[];
+        if (Array.isArray(reviewed)) {
+          for (const r of reviewed) {
+            totalV += ((r.end || r.verse_end || r.end_verse || 0) - (r.start || r.verse_start || r.start_verse || 0) + 1);
+          }
+        }
+      }
+      setWeekVerses(totalV);
+      setWeekActiveDays(activeDays);
+    });
+  }, [user?.id, monday]);
 
   const rabtDone = rabtVerses.filter(v => checkedIds.includes(v.id)).length;
   const tourDone = tourVerses.filter(v => checkedIds.includes(v.id)).length;
