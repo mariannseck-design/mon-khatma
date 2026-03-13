@@ -365,7 +365,7 @@ export default function HifzHubPage() {
               </div>
             </motion.div>
           )}
-        </motion.div>
+        </motion.div>}
 
         {/* Muraja'a */}
         <motion.div variants={itemVariants}>
