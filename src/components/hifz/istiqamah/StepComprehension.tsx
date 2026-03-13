@@ -121,7 +121,7 @@ export default function StepComprehension({ surahNumber, verseStart, verseEnd, o
           style={{ background: 'linear-gradient(135deg, #d4af37, #b8962e)', color: '#1a2e1a' }}
         >
           <Check className="h-4 w-4" />
-          J'ai compris le sens
+          Je commence
         </motion.button>
       )}
 
