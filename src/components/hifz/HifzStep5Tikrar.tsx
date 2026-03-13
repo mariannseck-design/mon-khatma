@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { RotateCw, Check, Clock } from 'lucide-react';
 import HifzStepWrapper from './HifzStepWrapper';
 import TikrarInstructionsModal from './TikrarInstructionsModal';
+import PomodoroTimer from './PomodoroTimer';
 
 const TOTAL_REPS = 40;
 
