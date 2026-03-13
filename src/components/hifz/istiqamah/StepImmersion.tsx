@@ -89,50 +89,62 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
     setIsPlaying(false);
   }, []);
 
-  // Play a single verse
+  // Play a single verse in auto-loop (replays until user pauses)
   const playSingleVerse = useCallback(async (verse: number) => {
     if (isPlayingRef.current) return;
     const url = await getAudioUrl(verse);
     if (!url) return;
     isPlayingRef.current = true;
+    sequenceAbortRef.current = false;
     setIsPlaying(true);
-    const audio = new Audio(url);
-    audioRef.current = audio;
-    audio.onended = () => {
-      isPlayingRef.current = false;
-      setIsPlaying(false);
-      setListenCount(prev => prev + 1);
+
+    const playOnce = () => {
+      const audio = new Audio(url);
+      audioRef.current = audio;
+      audio.onended = () => {
+        setListenCount(prev => prev + 1);
+        if (!sequenceAbortRef.current && isPlayingRef.current) {
+          playOnce(); // auto-loop
+        } else {
+          isPlayingRef.current = false;
+          setIsPlaying(false);
+        }
+      };
+      audio.onerror = () => { isPlayingRef.current = false; setIsPlaying(false); };
+      audio.play().catch(() => { isPlayingRef.current = false; setIsPlaying(false); });
     };
-    audio.onerror = () => { isPlayingRef.current = false; setIsPlaying(false); };
-    audio.play().catch(() => { isPlayingRef.current = false; setIsPlaying(false); });
+    playOnce();
   }, [getAudioUrl]);
 
-  // Play a sequence of verses (for liaison)
+  // Play a sequence of verses in auto-loop (for liaison)
   const playSequence = useCallback(async (verses: number[]) => {
     if (isPlayingRef.current) return;
     isPlayingRef.current = true;
     sequenceAbortRef.current = false;
     setIsPlaying(true);
 
-    for (const verse of verses) {
-      if (sequenceAbortRef.current) break;
-      const url = await getAudioUrl(verse);
-      if (!url) continue;
-
-      await new Promise<void>((resolve) => {
-        const audio = new Audio(url);
-        audioRef.current = audio;
-        audio.onended = () => resolve();
-        audio.onerror = () => resolve();
-        audio.play().catch(() => resolve());
-      });
-    }
-
-    isPlayingRef.current = false;
-    setIsPlaying(false);
-    if (!sequenceAbortRef.current) {
-      setListenCount(prev => prev + 1);
-    }
+    const playLoop = async () => {
+      for (const verse of verses) {
+        if (sequenceAbortRef.current || !isPlayingRef.current) return;
+        const url = await getAudioUrl(verse);
+        if (!url) continue;
+        await new Promise<void>((resolve) => {
+          const audio = new Audio(url);
+          audioRef.current = audio;
+          audio.onended = () => resolve();
+          audio.onerror = () => resolve();
+          audio.play().catch(() => resolve());
+        });
+      }
+      if (!sequenceAbortRef.current && isPlayingRef.current) {
+        setListenCount(prev => prev + 1);
+        playLoop(); // auto-loop
+      } else {
+        isPlayingRef.current = false;
+        setIsPlaying(false);
+      }
+    };
+    playLoop();
   }, [getAudioUrl]);
 
   const handlePlay = useCallback(() => {
