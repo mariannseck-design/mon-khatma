@@ -444,15 +444,6 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
         </div>
       )}
 
-      {/* Verse/liaison indicator */}
-      <div className="text-center">
-        <span className="text-[11px] uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.4)' }}>
-          {isLiaison
-            ? `Liaison — Versets ${liaisonVerses[0]}–${liaisonVerses[liaisonVerses.length - 1]}`
-            : `Verset ${currentVerse} — ${currentVerseIndex + 1}/${totalVerses}`
-          }
-        </span>
-      </div>
 
       <AnimatePresence mode="wait">
         {/* ===== LISTEN PHASE (single verse or liaison) ===== */}
