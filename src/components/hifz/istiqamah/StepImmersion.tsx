@@ -472,7 +472,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
               title={isLiaison ? 'Liaison — Réciter' : 'Réciter de mémoire'}
               subtitle={isLiaison
                 ? `Récitez les versets ${liaisonVerses[0]}–${liaisonVerses[liaisonVerses.length - 1]} enchaînés`
-                : 'Récitez ce verset de mémoire — sans aide'
+                : 'Récitez ce verset de mémoire (sans regarder le Mushaf et sans audio)'
               }
             />
 
