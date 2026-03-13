@@ -1,21 +1,40 @@
 
+Objectif: arrêter définitivement le saut Compréhension → (Validation/Tikrar) et forcer l’affichage réel de Mémorisation.
 
-# Diagnostic : 404 sur /quran-reader
+Constat confirmé (à partir de tes réponses + traces):
+- Tu observes un “saut d’étape”.
+- Le mode testeur + bouton ⏩ Skip sont visibles.
+- Les durées enregistrées sur l’étape Istiqâmah sont parfois ~1s, ce qui correspond à un contournement de l’étape, pas à un parcours normal.
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+Plan d’implémentation (court et ciblé):
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+1) Sécuriser le bouton Skip pour éviter tout déclenchement involontaire
+- Fichier: `src/components/hifz/DevSkipButton.tsx`
+- Remplacer le double-tap actuel par un appui long (ex: 1.2–1.5s) + confirmation explicite.
+- Conserver le Skip pour le mode testeur, mais supprimer les activations accidentelles.
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+2) Neutraliser Skip pendant l’étape Istiqâmah
+- Fichier: `src/pages/HifzPage.tsx`
+- Masquer temporairement le bouton Skip quand `step === 3` (Istiqâmah).
+- Résultat: impossible de sortir de Compréhension/Mémorisation par erreur pendant le tunnel interne.
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+3) Tracer la source de transition (normal vs skip)
+- Fichier: `src/pages/HifzPage.tsx`
+- Enrichir `step_status` avec un marqueur de source (`transition_source`) lors des changements d’étape.
+- But: distinguer immédiatement un saut manuel d’une transition normale.
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+4) Renforcer le diagnostic côté Istiqâmah
+- Fichiers: `src/components/hifz/istiqamah/StepComprehension.tsx`, `src/components/hifz/istiqamah/IstiqamahEngine.tsx`
+- Garder temporairement les logs existants + ajouter un log explicite si sortie d’Istiqâmah sans passage visible par immersion.
+- Retirer ces logs après validation finale.
 
+5) Validation de correction (mobile 360x627)
+- Cas A: Compréhension → clic “J’ai compris” → clic “Commencer la mémorisation” → Mémorisation affichée.
+- Cas B: taps rapides près du bas d’écran → aucun saut d’étape.
+- Cas C: Tikrar n’apparaît qu’après fin de Mémorisation.
+- Cas D: historique de session montre une durée cohérente de l’étape Istiqâmah (plus de “1 seconde”).
+
+Détails techniques (résumé):
+- Le moteur Istiqâmah est déjà linéaire et protégé; le point faible restant est l’interaction UI du mode testeur pendant cette étape.
+- Le correctif principal est donc UX/interaction (anti-misclick), pas la machine d’état.
+- On garde le mode testeur, mais on le rend sûr pour ne plus consommer de tentatives/crédits inutilement.
