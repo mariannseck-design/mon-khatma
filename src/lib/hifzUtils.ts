@@ -306,7 +306,9 @@ export async function findNextStartingPoint(userId: string, goalVerseCount?: num
   for (const surah of SURAHS) {
     const coverage = surahCoverage.get(surah.number);
     if (!coverage) {
-      const endVerse = await getPageAlignedEnd(surah.number, 1);
+      const endVerse = goalVerseCount
+        ? Math.min(goalVerseCount, surah.versesCount)
+        : await getPageAlignedEnd(surah.number, 1);
       const result = {
         surahNumber: surah.number,
         startVerse: 1,
