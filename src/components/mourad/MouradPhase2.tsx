@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Headphones, Check, Play, Pause } from 'lucide-react';
 import { SURAHS } from '@/lib/surahData';
@@ -23,6 +23,7 @@ export default function MouradPhase2({ surahNumber, startVerse, endVerse, listen
   const [mushafMode, setMushafModeState] = useState<MushafMode>(getMouradMushafMode());
   const [isPlaying, setIsPlaying] = useState(false);
   const [audioEl, setAudioEl] = useState<HTMLAudioElement | null>(null);
+  const pausedRef = useRef(false);
   const [showReciters, setShowReciters] = useState(false);
 
   const surah = SURAHS.find(s => s.number === surahNumber);
@@ -37,11 +38,23 @@ export default function MouradPhase2({ surahNumber, startVerse, endVerse, listen
 
   // Build audio URLs for the verse range
   const playAudio = useCallback(async () => {
+    // Pause
     if (isPlaying && audioEl) {
       audioEl.pause();
+      pausedRef.current = true;
       setIsPlaying(false);
       return;
     }
+
+    // Resume from pause
+    if (pausedRef.current && audioEl && !audioEl.ended) {
+      pausedRef.current = false;
+      setIsPlaying(true);
+      audioEl.play().catch(() => setIsPlaying(false));
+      return;
+    }
+
+    pausedRef.current = false;
 
     const reciter = RECITERS.find(r => r.id === reciterId) || RECITERS[0];
     let urls: string[] = [];
@@ -51,7 +64,6 @@ export default function MouradPhase2({ surahNumber, startVerse, endVerse, listen
         urls.push(`https://everyayah.com/data/${reciter.folder}/${String(surahNumber).padStart(3, '0')}${String(v).padStart(3, '0')}.mp3`);
       }
     } else {
-      // For alquran.cloud, fetch audio URLs
       try {
         const res = await fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}/${reciterId}`);
         const data = await res.json();
@@ -69,6 +81,7 @@ export default function MouradPhase2({ surahNumber, startVerse, endVerse, listen
     const playNext = () => {
       if (idx >= urls.length) {
         setIsPlaying(false);
+        setAudioEl(null);
         onListenComplete();
         return;
       }

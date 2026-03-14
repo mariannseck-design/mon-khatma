@@ -89,6 +89,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
   const [liaisonVerses, setLiaisonVerses] = useState<number[]>(savedImmersion?.liaisonVerses ?? []);
 
   const isPlayingRef = useRef(false);
+  const pausedRef = useRef(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const sequenceAbortRef = useRef(false);
   const reciter = reciterId || localStorage.getItem('quran_reciter') || 'ar.alafasy';
@@ -144,8 +145,9 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
   const stopAudio = useCallback(() => {
     sequenceAbortRef.current = true;
     isPlayingRef.current = false;
+    pausedRef.current = true;
     audioRef.current?.pause();
-    audioRef.current = null;
+    // Don't nullify audioRef — preserve for resume
     setIsPlaying(false);
   }, []);
 
@@ -209,6 +211,16 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
 
   const handlePlay = useCallback(() => {
     if (isPlaying) { stopAudio(); return; }
+    // Resume from pause if audio element still exists and not ended
+    if (pausedRef.current && audioRef.current && !audioRef.current.ended) {
+      pausedRef.current = false;
+      isPlayingRef.current = true;
+      sequenceAbortRef.current = false;
+      setIsPlaying(true);
+      audioRef.current.play().catch(() => { isPlayingRef.current = false; setIsPlaying(false); });
+      return;
+    }
+    pausedRef.current = false;
     if (isLiaison) {
       playSequence(liaisonVerses);
     } else {
@@ -254,7 +266,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
     }
   }, [isLiaison, liaisonVerses, currentVerse, getAudioUrl]);
 
-  useEffect(() => () => { stopAudio(); }, []);
+  useEffect(() => () => { isPlayingRef.current = false; pausedRef.current = false; audioRef.current?.pause(); audioRef.current = null; }, []);
 
   // Reset on verse change — only if NOT restoring from saved state
   const isInitialMount = useRef(true);
