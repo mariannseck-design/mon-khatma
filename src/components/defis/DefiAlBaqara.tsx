@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Landmark, RotateCcw, Check, BookOpen } from 'lucide-react';
+import { Landmark, RotateCcw, Check, BookOpen, Pencil } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -13,14 +14,12 @@ const COLORS = {
   beigeWarm: '#f5f0e8',
 };
 
-const GOALS = [
-  { days: 48, label: '48 jours', desc: '1 page/jour' },
-  { days: 30, label: '30 jours', desc: '~1.4 pages/jour' },
-  { days: 24, label: '24 jours', desc: '2 pages/jour' },
-  { days: 15, label: '15 jours', desc: '~3 pages/jour' },
-  { days: 7, label: '7 jours', desc: '~7 pages/jour' },
-  { days: 3, label: '3 jours', desc: '~16 pages/jour' },
-  { days: 1, label: '1 jour', desc: 'Lecture complète' },
+const BAQARA_PAGES = 48;
+
+const PRESETS = [
+  { days: 30, label: '1 mois', emoji: '🌙' },
+  { days: 14, label: '2 semaines', emoji: '⭐' },
+  { days: 7, label: '1 semaine', emoji: '🔥' },
 ];
 
 const STORAGE_KEY = 'baqara_challenge';
