@@ -265,6 +265,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
     }
     stopAudio();
     setListenCount(0);
+    setReadCount(0);
     setMemoryCount(0);
     setPhase('listen');
   }, [currentVerseIndex]);
