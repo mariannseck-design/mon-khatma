@@ -296,9 +296,21 @@ async function handleWebhook(req: Request): Promise<Response> {
   }
 
   if (!run_id) {
-    console.error('Webhook payload missing run_id')
+    run_id = crypto.randomUUID()
+    console.warn('Webhook payload missing run_id, generated fallback', { run_id })
+  }
+
+  if (payload.version && payload.version !== '1') {
+    console.warn('Unexpected payload version', { version: payload.version, run_id })
+  }
+
+  const normalized = normalizePayload(payload)
+  const emailType = normalized.emailType
+
+  if (!emailType) {
+    console.error('Webhook payload missing email action type', { run_id })
     return new Response(
-      JSON.stringify({ error: 'Invalid webhook payload' }),
+      JSON.stringify({ error: 'Invalid webhook payload: missing email action type' }),
       {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -306,28 +318,45 @@ async function handleWebhook(req: Request): Promise<Response> {
     )
   }
 
-  if (payload.version !== '1') {
-    console.error('Unsupported payload version', { version: payload.version, run_id })
-    return new Response(
-      JSON.stringify({ error: `Unsupported payload version: ${payload.version}` }),
-      {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      }
-    )
-  }
-
-  // The email action type is in payload.data.action_type (e.g., "signup", "recovery")
-  // payload.type is the hook event type ("auth")
-  const emailType = payload.data.action_type
-  console.log('Received auth event', { emailType, email: payload.data.email, run_id })
+  console.log('Received auth event', {
+    emailType,
+    rawEmailType: normalized.rawEmailType,
+    email: normalized.recipientEmail,
+    run_id,
+  })
 
   const EmailTemplate = EMAIL_TEMPLATES[emailType]
   if (!EmailTemplate) {
-    console.error('Unknown email type', { emailType, run_id })
+    console.log('Skipping unsupported auth email type', {
+      emailType,
+      rawEmailType: normalized.rawEmailType,
+      run_id,
+    })
     return new Response(
-      JSON.stringify({ error: `Unknown email type: ${emailType}` }),
-      { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      JSON.stringify({ success: true, skipped: true, reason: 'unsupported_email_type' }),
+      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    )
+  }
+
+  if (!normalized.recipientEmail) {
+    console.error('Webhook payload missing recipient email', { emailType, run_id })
+    return new Response(
+      JSON.stringify({ error: 'Invalid webhook payload: missing recipient email' }),
+      {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      }
+    )
+  }
+
+  if (emailType !== 'reauthentication' && !normalized.confirmationUrl) {
+    console.error('Webhook payload missing confirmation URL', { emailType, run_id })
+    return new Response(
+      JSON.stringify({ error: 'Invalid webhook payload: missing confirmation URL' }),
+      {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      }
     )
   }
 
