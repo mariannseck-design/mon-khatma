@@ -102,8 +102,8 @@ const PHASES = [
   {
     id: 2,
     emoji: '📖',
-    title: 'Lecture autonome',
-    consigne: 'Lisez seul(e), utilisez l\'audio en aide si besoin.',
+    title: 'Mémorisation autonome',
+    consigne: 'Mémorisez seul(e), utilisez l\'audio en aide si besoin.',
     color: '#45b7aa',
     minRep: 4,
     maxRep: 8,
