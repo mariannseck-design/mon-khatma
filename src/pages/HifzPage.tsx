@@ -572,6 +572,7 @@ export default function HifzPage() {
             onNext={handleImpregnationComplete}
             onBack={() => setStep(0)}
             onPause={handlePause}
+            phaseLabel={PHASE_LABELS[1]}
           />
         )}
 
