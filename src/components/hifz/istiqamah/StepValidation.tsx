@@ -84,6 +84,24 @@ export default function StepValidation({ surahNumber, verseStart, verseEnd, onNe
             <CheckCircle2 className="h-4 w-4" />
             J'ai récité sans faute ✓
           </motion.button>
+          {count > 0 && (
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setCount(0)}
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs transition-all"
+              style={{
+                background: 'rgba(255,255,255,0.05)',
+                border: '1px solid rgba(255,255,255,0.15)',
+                color: 'rgba(255,255,255,0.5)',
+                touchAction: 'manipulation',
+              }}
+            >
+              <RotateCcw className="h-3.5 w-3.5" />
+              Recommencer
+            </motion.button>
+          )}
         ) : (
           <AnimatePresence>
             <motion.div
