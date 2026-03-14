@@ -213,7 +213,28 @@ export default function MurajaHubPage() {
                 <span>{dominantMemorized} / {dominantTotal} versets</span>
                 <span>{totalDistinctPages} pages</span>
               </div>
-            </motion.div>
+
+              {/* Secondary surahs */}
+              {secondarySurahs.length > 0 && (
+                <div className="pt-1.5 space-y-1.5" style={{ borderTop: '1px solid var(--p-border)' }}>
+                  {secondarySurahs.map(s => (
+                    <div key={s.number} className="flex items-center gap-2">
+                      <span className="text-[10px] font-medium w-20 truncate" style={{ color: 'var(--p-text-50)' }}>
+                        {s.name}
+                      </span>
+                      <div className="flex-1 h-1 rounded-full overflow-hidden" style={{ background: 'var(--p-track)' }}>
+                        <div
+                          className="h-full rounded-full"
+                          style={{ width: `${s.percent}%`, background: s.percent === 100 ? '#D4AF37' : 'var(--p-primary)', opacity: 0.7 }}
+                        />
+                      </div>
+                      <span className="text-[9px] font-semibold tabular-nums" style={{ color: 'var(--p-text-40)' }}>
+                        {s.memorized}/{s.total}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
 
           {/* Weekly Recap */}
             <motion.div
