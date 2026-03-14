@@ -125,7 +125,7 @@ export default function HifzStep5Tikrar({
   return (
     <HifzStepWrapper
       stepNumber={5}
-      stepTitle="Tikrâr"
+      stepTitle="Tikrâr (GRANDE MÉMORISATION)"
       onBack={onBack}
       onPause={onPause}
       totalSteps={5}
