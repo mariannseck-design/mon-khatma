@@ -57,6 +57,7 @@ export default function PlanificateurPage() {
   const [setupSubmitting, setSetupSubmitting] = useState(false);
   const [setupSuccess, setSetupSuccess] = useState(false);
   const [savedSetup, setSavedSetup] = useState<{ first_name: string; daily_pages: number } | null>(null);
+  const [juzExpanded, setJuzExpanded] = useState(false);
 
   useEffect(() => {
     if (user) {
