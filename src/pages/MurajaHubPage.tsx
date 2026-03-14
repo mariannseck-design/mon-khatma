@@ -337,6 +337,18 @@ export default function MurajaHubPage() {
               Continuer la mémorisation
               <ChevronRight className="h-4 w-4" />
             </motion.button>
+
+            {/* Lien historique discret */}
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              onClick={() => navigate('/muraja/historique')}
+              className="w-full text-center text-[11px] underline underline-offset-4 py-1"
+              style={{ color: 'var(--p-text-30)' }}
+            >
+              Consulter votre historique de révision
+            </motion.button>
           </>
         )}
       </div>
