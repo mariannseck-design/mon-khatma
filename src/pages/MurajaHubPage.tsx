@@ -364,9 +364,6 @@ export default function MurajaHubPage() {
               <p className="text-[11px] leading-relaxed" style={{ color: 'var(--p-text-40)' }}>
                 Révise tes portions anciennes au moment optimal selon l'algorithme.
               </p>
-              <p className="text-[11px] mt-2 underline" style={{ color: 'var(--p-text-50)' }}>
-                Consulter votre historique de révision
-              </p>
             </motion.button>
            </div>
 
