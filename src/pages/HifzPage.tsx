@@ -266,11 +266,14 @@ export default function HifzPage() {
     setPendingResume(null);
   };
 
+  const [showRestartConfirm, setShowRestartConfirm] = useState(false);
+
   const handleRestart = () => {
     // If Phase B: keep same session config but restart at step 2 (beginning of Phase B)
     if (phaseParam === 'B' && pendingResume) {
       clearLocalSession();
       setShowResumePrompt(false);
+      setShowRestartConfirm(false);
       setPendingResume(null);
       setSession(pendingResume.session);
       setStep(2);
@@ -283,6 +286,7 @@ export default function HifzPage() {
     }
     clearLocalSession();
     setShowResumePrompt(false);
+    setShowRestartConfirm(false);
     setPendingResume(null);
     setSession(null);
     setStep(-1);
