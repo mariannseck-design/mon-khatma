@@ -257,7 +257,7 @@ export default function DefiAlBaqara({ disabled = false }: { disabled?: boolean 
                 />
                 {customDays && parseInt(customDays) > 0 && (
                   <span className="text-xs font-medium whitespace-nowrap" style={{ color: COLORS.gold }}>
-                    ~{(BAQARA_PAGES / parseInt(customDays)).toFixed(1)} p/j
+                    ~{formatPace(BAQARA_PAGES, parseInt(customDays))} p/j
                   </span>
                 )}
               </motion.div>
