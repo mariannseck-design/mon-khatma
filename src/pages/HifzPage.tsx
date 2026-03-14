@@ -66,6 +66,7 @@ const STEP_NAMES = [
   'Intention et Compréhension',
   'Imprégnation',
   'Mémorisation',
+  'Validation',
   'Tikrâr',
 ];
 
