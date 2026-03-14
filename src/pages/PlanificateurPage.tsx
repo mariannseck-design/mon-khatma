@@ -629,7 +629,7 @@ export default function PlanificateurPage() {
         <div className="relative overflow-hidden">
           <SparkleEffect isActive={showSparkles} onComplete={handleSparkleComplete} />
           <ReadingSlider
-            onLogReading={logReading}
+            onLogReading={(absolutePage) => logReading(absolutePage, true)}
             todayPages={todayPages}
             targetPages={activeGoal?.target_value || 0}
             totalPagesRead={totalPagesRead}
