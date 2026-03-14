@@ -10,7 +10,12 @@ function escapeSQL(val: unknown): string {
   if (typeof val === "boolean") return val ? "TRUE" : "FALSE";
   if (typeof val === "number") return String(val);
   if (Array.isArray(val)) {
-    // PostgreSQL array literal
+    // If array contains objects, treat as jsonb
+    const hasObjects = val.some((v) => typeof v === "object" && v !== null);
+    if (hasObjects) {
+      return `'${JSON.stringify(val).replace(/'/g, "''")}'::jsonb`;
+    }
+    // PostgreSQL array literal for primitives
     const items = val.map((v) => {
       if (typeof v === "string") return `"${v.replace(/"/g, '\\"')}"`;
       return String(v);
