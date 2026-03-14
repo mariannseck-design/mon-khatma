@@ -280,6 +280,21 @@ export default function HifzHubPage() {
                         {phaseADone && (
                           <p className="text-white/50 text-[10px] mt-1 italic">Faisable la veille · Appuyer pour revoir</p>
                         )}
+                        {/* Progress bar */}
+                        {(() => {
+                          const progress = phaseADone ? 1 : isActiveInA ? (activeHifzSession!.currentStep + 1) / 2 : 0;
+                          return (
+                            <div className="mt-3 w-full h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.15)' }}>
+                              <motion.div
+                                className="h-full rounded-full"
+                                style={{ background: phaseADone ? COLORS.goldAccent : '#fff' }}
+                                initial={{ width: 0 }}
+                                animate={{ width: `${progress * 100}%` }}
+                                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                              />
+                            </div>
+                          );
+                        })()}
                       </div>
                     </div>
                   </motion.div>
