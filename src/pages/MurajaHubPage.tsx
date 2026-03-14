@@ -101,18 +101,22 @@ export default function MurajaHubPage() {
     const total = Object.values(bySurah).reduce((a, b) => a + b, 0);
     const pages = Math.max(total > 0 ? 1 : 0, Math.round(total / 15));
 
-    if (surahNums.length === 1) {
-      const sNum = surahNums[0];
-      const surah = SURAHS.find(s => s.number === sNum);
-      const surahTotal = surah?.versesCount || total;
-      const pct = Math.min(100, (bySurah[sNum] / surahTotal) * 100);
-      return { progressLabel: getSurahName(sNum).toUpperCase(), progressPercent: pct, totalMemorized: total, totalPages: pages };
+    if (surahNums.length === 0) {
+      return { progressLabel: 'PROGRESSION ACTUELLE', progressPercent: 0, totalMemorized: 0, totalPages: 0 };
     }
 
-    // Multiple surahs: show "Progression actuelle"
-    const TOTAL_QURAN_VERSES = 6236;
-    const pct = Math.min(100, (total / TOTAL_QURAN_VERSES) * 100);
-    return { progressLabel: 'PROGRESSION ACTUELLE', progressPercent: pct, totalMemorized: total, totalPages: pages };
+    // Find the dominant surah (most memorized verses)
+    const dominantSurah = surahNums.reduce((a, b) => bySurah[a] >= bySurah[b] ? a : b);
+    const surah = SURAHS.find(s => s.number === dominantSurah);
+    const surahTotal = surah?.versesCount || total;
+    const pct = Math.min(100, (bySurah[dominantSurah] / surahTotal) * 100);
+
+    if (surahNums.length === 1) {
+      return { progressLabel: getSurahName(dominantSurah).toUpperCase(), progressPercent: pct, totalMemorized: total, totalPages: pages };
+    }
+
+    // Multiple surahs: show dominant surah progress
+    return { progressLabel: getSurahName(dominantSurah).toUpperCase(), progressPercent: pct, totalMemorized: total, totalPages: pages };
   }, [allVerses]);
 
   return (
