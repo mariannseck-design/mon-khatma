@@ -145,8 +145,9 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
   const stopAudio = useCallback(() => {
     sequenceAbortRef.current = true;
     isPlayingRef.current = false;
+    pausedRef.current = true;
     audioRef.current?.pause();
-    audioRef.current = null;
+    // Don't nullify audioRef — preserve for resume
     setIsPlaying(false);
   }, []);
 
