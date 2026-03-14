@@ -82,6 +82,8 @@ const PHASE_LABELS: Record<number, string> = {
 export default function HifzPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const phaseParam = searchParams.get('phase');
   const [step, setStep] = useState<number>(-1);
   const [session, setSession] = useState<HifzSession | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
