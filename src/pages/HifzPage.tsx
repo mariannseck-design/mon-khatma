@@ -64,12 +64,20 @@ function clearLocalSession() {
 }
 
 const STEP_NAMES = [
-  'Intention et Compréhension',
-  'Imprégnation',
-  'Mémorisation',
-  'Validation',
-  'Tikrâr (Grande Mémorisation)',
+  'Étape A · Intention et Compréhension',
+  'Étape A · Imprégnation',
+  'Étape B · Mémorisation',
+  'Étape B · Validation',
+  'Étape B · Tikrâr (Grande Mémorisation)',
 ];
+
+const PHASE_LABELS: Record<number, string> = {
+  0: 'Étape A · 1/2',
+  1: 'Étape A · 2/2',
+  2: 'Étape B · 1/3',
+  3: 'Étape B · 2/3',
+  4: 'Étape B · 3/3',
+};
 
 export default function HifzPage() {
   const { user } = useAuth();
