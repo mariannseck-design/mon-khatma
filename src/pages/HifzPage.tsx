@@ -609,6 +609,7 @@ export default function HifzPage() {
             onNext={completeSession}
             onBack={() => setStep(3)}
             onPause={handlePause}
+            phaseLabel={PHASE_LABELS[4]}
             stepStatus={typeof stepTimesRef.current === 'object' ? stepTimesRef.current : {}}
             onUpdateStatus={(status) => {
               stepTimesRef.current = { ...stepTimesRef.current, ...status };
