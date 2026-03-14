@@ -373,7 +373,7 @@ export default function MurajaHubPage() {
                 </span>
               </div>
               <p className="text-[11px] leading-relaxed" style={{ color: 'var(--p-text-40)' }}>
-                Révise tes portions anciennes au moment optimal selon l'algorithme.
+                Reviens sur tes acquis plus lointains au moment opportun pour les ancrer définitivement.
               </p>
             </motion.button>
            </div>
