@@ -1109,6 +1109,7 @@ export type Database = {
         Args: { payload: Json; queue_name: string }
         Returns: number
       }
+      get_admin_email_stats: { Args: { days_back?: number }; Returns: Json }
       get_defis_collective_stats: { Args: never; Returns: Json }
       get_hifz_collective_stats: { Args: never; Returns: Json }
       get_today_collective_stats: { Args: never; Returns: Json }
