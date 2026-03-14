@@ -618,7 +618,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
             />
 
             <div className="flex justify-center">
-              <CircularCounter count={memoryCount} target={TARGET_REPS} color={isLiaison ? '#a78bfa' : '#d4af37'} />
+              <CircularCounter count={memoryCount} target={TARGET_MEMORY} color={isLiaison ? '#a78bfa' : '#d4af37'} />
             </div>
 
             <MiniRecorder />
