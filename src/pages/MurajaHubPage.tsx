@@ -92,7 +92,7 @@ export default function MurajaHubPage() {
   }, [rabtVerses, tourVerses]);
 
   // Context-specific progress: group by surah
-  const { progressLabel, progressPercent, totalMemorized, totalPages } = useMemo(() => {
+  const { progressLabel, progressPercent, dominantMemorized, dominantTotal, totalMemorized, totalPages } = useMemo(() => {
     const bySurah: Record<number, number> = {};
     for (const v of allVerses) {
       bySurah[v.surah_number] = (bySurah[v.surah_number] || 0) + (v.verse_end - v.verse_start + 1);
@@ -102,21 +102,16 @@ export default function MurajaHubPage() {
     const pages = Math.max(total > 0 ? 1 : 0, Math.round(total / 15));
 
     if (surahNums.length === 0) {
-      return { progressLabel: 'PROGRESSION ACTUELLE', progressPercent: 0, totalMemorized: 0, totalPages: 0 };
+      return { progressLabel: 'PROGRESSION ACTUELLE', progressPercent: 0, dominantMemorized: 0, dominantTotal: 0, totalMemorized: 0, totalPages: 0 };
     }
 
-    // Find the dominant surah (most memorized verses)
     const dominantSurah = surahNums.reduce((a, b) => bySurah[a] >= bySurah[b] ? a : b);
     const surah = SURAHS.find(s => s.number === dominantSurah);
     const surahTotal = surah?.versesCount || total;
-    const pct = Math.min(100, (bySurah[dominantSurah] / surahTotal) * 100);
+    const domMem = bySurah[dominantSurah];
+    const pct = Math.min(100, (domMem / surahTotal) * 100);
 
-    if (surahNums.length === 1) {
-      return { progressLabel: getSurahName(dominantSurah).toUpperCase(), progressPercent: pct, totalMemorized: total, totalPages: pages };
-    }
-
-    // Multiple surahs: show dominant surah progress
-    return { progressLabel: getSurahName(dominantSurah).toUpperCase(), progressPercent: pct, totalMemorized: total, totalPages: pages };
+    return { progressLabel: getSurahName(dominantSurah).toUpperCase(), progressPercent: pct, dominantMemorized: domMem, dominantTotal: surahTotal, totalMemorized: total, totalPages: pages };
   }, [allVerses]);
 
   return (
@@ -191,7 +186,8 @@ export default function MurajaHubPage() {
                 />
               </div>
               <div className="flex items-center justify-between text-[10px]" style={{ color: 'var(--p-text-50)' }}>
-                <span>{totalMemorized} versets · {totalPages} pages</span>
+                <span>{dominantMemorized} / {dominantTotal} versets</span>
+                <span>{totalPages} pages</span>
               </div>
             </motion.div>
 
