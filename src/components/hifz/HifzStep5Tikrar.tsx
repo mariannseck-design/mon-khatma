@@ -130,6 +130,7 @@ export default function HifzStep5Tikrar({
       onBack={onBack}
       onPause={onPause}
       totalSteps={5}
+      phaseLabel={phaseLabel}
       surahNumber={surahNumber}
       startVerse={startVerse}
       endVerse={endVerse}
