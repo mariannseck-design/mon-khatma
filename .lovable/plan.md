@@ -1,29 +1,21 @@
 
 
-## Refonte des objectifs du défi Al-Baqara
+# Diagnostic : 404 sur /quran-reader
 
-### Problème
-Les options actuelles (48, 30, 24, 15, 7, 3, 1 jours) sont arbitraires. L'utilisateur souhaite des choix plus naturels : par semaines + option personnalisée.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Solution
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-Remplacer la grille `GOALS` par 3 propositions claires + un champ libre :
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-| Option | Durée | Rythme |
-|---|---|---|
-| 🌙 1 mois | 30 jours | ~1.5 pages/jour |
-| ⭐ 2 semaines | 14 jours | ~3.5 pages/jour |
-| 🔥 1 semaine | 7 jours | ~7 pages/jour |
-| ✏️ Personnalisé | X jours | calcul dynamique |
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-L'option "Personnalisé" affiche un input numérique (1-365 jours) avec le rythme calculé en temps réel (`~${(48/days).toFixed(1)} pages/jour`).
-
-### Fichier modifié
-
-**`src/components/defis/DefiAlBaqara.tsx`** :
-1. Remplacer le tableau `GOALS` par les 3 options prédéfinies
-2. Ajouter un état `customDays` pour l'option personnalisée
-3. Ajouter un 4e bouton "Personnalisé" qui affiche un input numérique
-4. Calculer dynamiquement la description du rythme pour l'option personnalisée
-5. Adapter `selectedGoal` pour fonctionner avec les nouvelles options ou la valeur custom
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
