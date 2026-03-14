@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, ShieldCheck, RotateCcw } from 'lucide-react';
+import { CheckCircle2, ShieldCheck, RotateCcw, ChevronLeft } from 'lucide-react';
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel,
   AlertDialogContent, AlertDialogDescription, AlertDialogFooter,
@@ -13,6 +13,7 @@ interface Props {
   verseStart: number;
   verseEnd: number;
   onNext: () => void;
+  onBack?: () => void;
 }
 
 const REQUIRED = 5;
