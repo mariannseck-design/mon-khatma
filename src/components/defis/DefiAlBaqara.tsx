@@ -125,10 +125,10 @@ export default function DefiAlBaqara({ disabled = false }: { disabled?: boolean 
     saveChallenge(state);
   };
 
-  const resetChallenge = () => {
+  const resetChallenge = useCallback(() => {
     setChallenge(null);
     saveChallenge(null);
-  };
+  }, [saveChallenge]);
 
   const toggleToday = () => {
     if (!challenge) return;
