@@ -235,6 +235,7 @@ export default function MurajaHubPage() {
                   ))}
                 </div>
               )}
+            </motion.div>
 
           {/* Weekly Recap */}
             <motion.div
