@@ -23,6 +23,7 @@ interface Props {
   onPause?: () => void;
   stepStatus?: Record<string, any>;
   onUpdateStatus?: (status: Record<string, any>) => void;
+  phaseLabel?: string;
 }
 
 export default function HifzStep5Tikrar({

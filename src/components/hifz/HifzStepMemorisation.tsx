@@ -12,9 +12,10 @@ interface Props {
   onNext: () => void;
   onBack: () => void;
   onPause?: () => void;
+  phaseLabel?: string;
 }
 
-export default function HifzStepMemorisation({ surahNumber, startVerse, endVerse, onNext, onBack, onPause }: Props) {
+export default function HifzStepMemorisation({ surahNumber, startVerse, endVerse, onNext, onBack, onPause, phaseLabel }: Props) {
   const [reciterId, setReciterId] = useState(() => localStorage.getItem('quran_reciter') || RECITERS[0].id);
 
   const handleReciterChange = (id: string) => {

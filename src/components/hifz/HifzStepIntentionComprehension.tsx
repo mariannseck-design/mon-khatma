@@ -12,9 +12,10 @@ interface Props {
   onNext: () => void;
   onBack: () => void;
   onPause?: () => void;
+  phaseLabel?: string;
 }
 
-export default function HifzStepIntentionComprehension({ surahNumber, startVerse, endVerse, onNext, onBack, onPause }: Props) {
+export default function HifzStepIntentionComprehension({ surahNumber, startVerse, endVerse, onNext, onBack, onPause, phaseLabel }: Props) {
   const [translation, setTranslation] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [pageLabel, setPageLabel] = useState('');
