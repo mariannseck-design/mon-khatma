@@ -211,6 +211,16 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
 
   const handlePlay = useCallback(() => {
     if (isPlaying) { stopAudio(); return; }
+    // Resume from pause if audio element still exists and not ended
+    if (pausedRef.current && audioRef.current && !audioRef.current.ended) {
+      pausedRef.current = false;
+      isPlayingRef.current = true;
+      sequenceAbortRef.current = false;
+      setIsPlaying(true);
+      audioRef.current.play().catch(() => { isPlayingRef.current = false; setIsPlaying(false); });
+      return;
+    }
+    pausedRef.current = false;
     if (isLiaison) {
       playSequence(liaisonVerses);
     } else {
