@@ -123,9 +123,10 @@ export default function MurajaHubPage() {
 
   // Exact Mushaf page count
   const [totalDistinctPages, setTotalDistinctPages] = useState(0);
+  const [pageRange, setPageRange] = useState('');
 
   useEffect(() => {
-    if (allVerses.length === 0) { setTotalDistinctPages(0); return; }
+    if (allVerses.length === 0) { setTotalDistinctPages(0); setPageRange(''); return; }
     (async () => {
       const pages = new Set<number>();
       for (const v of allVerses) {
@@ -134,7 +135,6 @@ export default function MurajaHubPage() {
           pages.add(p);
         }
       }
-      // Filter out isolated pages: keep only the largest contiguous cluster
       const sorted = Array.from(pages).sort((a, b) => a - b);
       let bestStart = 0, bestLen = 1, curStart = 0, curLen = 1;
       for (let i = 1; i < sorted.length; i++) {
@@ -143,6 +143,9 @@ export default function MurajaHubPage() {
       }
       if (curLen > bestLen) { bestStart = curStart; bestLen = curLen; }
       setTotalDistinctPages(bestLen);
+      const first = sorted[bestStart];
+      const last = sorted[bestStart + bestLen - 1];
+      setPageRange(first === last ? `p. ${first}` : `p. ${first}–${last}`);
     })();
   }, [allVerses]);
 
@@ -219,7 +222,7 @@ export default function MurajaHubPage() {
               </div>
               <div className="flex items-center justify-between text-[10px]" style={{ color: 'var(--p-text-50)' }}>
                 <span>{dominantMemorized} / {dominantTotal} versets</span>
-                <span>{totalDistinctPages} pages</span>
+                <span>{totalDistinctPages} pages{pageRange ? ` · ${pageRange}` : ''}</span>
               </div>
 
               {/* Secondary surahs */}
