@@ -17,6 +17,12 @@ const COLORS = {
 
 const BAQARA_PAGES = 48;
 
+function formatPace(pages: number, days: number): string {
+  const val = pages / days;
+  const rounded = Math.round(val * 2) / 2;
+  return rounded % 1 === 0 ? rounded.toString() : rounded.toFixed(1);
+}
+
 const PRESETS = [
   { days: 30, label: '1 mois', emoji: '🌙' },
   { days: 14, label: '2 semaines', emoji: '⭐' },
