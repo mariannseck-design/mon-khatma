@@ -293,6 +293,9 @@ export default function HifzPage() {
   }, [sessionId, user, step]);
 
   const handlePause = useCallback(async () => {
+    // Auto-pause the Pomodoro timer before leaving
+    pausePomodoro();
+
     if (session && step >= 0 && step <= 4) {
       saveLocalSession(session, step, sessionId, stepTimesRef.current);
       if (sessionId && user) {
