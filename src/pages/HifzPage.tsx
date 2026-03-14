@@ -605,7 +605,7 @@ export default function HifzPage() {
         )}
 
         {/* Step 5 → Succès */}
-        {step === 5 && <HifzSuccess stepTimes={stepTimesRef.current} />}
+        {step === 5 && <HifzSuccess stepTimes={stepTimesRef.current} onBackToTikrar={() => setStep(4)} />}
       </div>
       {step >= 0 && step <= 5 && (
         <DevSkipButton isDevMode={isDevMode} onSkip={() => {
