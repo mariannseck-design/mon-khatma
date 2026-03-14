@@ -222,7 +222,7 @@ export default function MurajaHubPage() {
               </div>
               <div className="flex items-center justify-between text-[10px]" style={{ color: 'var(--p-text-50)' }}>
                 <span>{dominantMemorized} / {dominantTotal} versets</span>
-                <span>{totalDistinctPages} pages{pageRange ? ` · ${pageRange}` : ''}</span>
+                {pageRange && <span>{pageRange}</span>}
               </div>
 
               {/* Secondary surahs */}
