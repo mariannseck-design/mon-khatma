@@ -90,13 +90,29 @@ export default function MurajaHubPage() {
     resolvePages(tourVerses).then(setTourPageLabel);
   }, [rabtVerses, tourVerses]);
 
-  const TOTAL_QURAN_VERSES = 6236;
-  const totalMemorized = useMemo(() => {
-    return allVerses.reduce((sum, v) => sum + (v.verse_end - v.verse_start + 1), 0);
+  // Context-specific progress: group by surah
+  const { progressLabel, progressPercent, totalMemorized, totalPages } = useMemo(() => {
+    const bySurah: Record<number, number> = {};
+    for (const v of allVerses) {
+      bySurah[v.surah_number] = (bySurah[v.surah_number] || 0) + (v.verse_end - v.verse_start + 1);
+    }
+    const surahNums = Object.keys(bySurah).map(Number);
+    const total = Object.values(bySurah).reduce((a, b) => a + b, 0);
+    const pages = Math.max(total > 0 ? 1 : 0, Math.round(total / 15));
+
+    if (surahNums.length === 1) {
+      const sNum = surahNums[0];
+      const surah = SURAHS.find(s => s.number === sNum);
+      const surahTotal = surah?.versesCount || total;
+      const pct = Math.min(100, (bySurah[sNum] / surahTotal) * 100);
+      return { progressLabel: getSurahName(sNum).toUpperCase(), progressPercent: pct, totalMemorized: total, totalPages: pages };
+    }
+
+    // Multiple surahs: show "Progression actuelle"
+    const TOTAL_QURAN_VERSES = 6236;
+    const pct = Math.min(100, (total / TOTAL_QURAN_VERSES) * 100);
+    return { progressLabel: 'PROGRESSION ACTUELLE', progressPercent: pct, totalMemorized: total, totalPages: pages };
   }, [allVerses]);
-  const progressPercent = Math.min(100, (totalMemorized / TOTAL_QURAN_VERSES) * 100);
-  const totalPages = Math.max(totalMemorized > 0 ? 1 : 0, Math.round(totalMemorized / 15));
-  const totalJuz = Math.round((totalMemorized / TOTAL_QURAN_VERSES) * 30 * 10) / 10;
 
   return (
     <AppLayout title="Muraja'a" hideNav bgClassName="bg-gradient-muraja">
