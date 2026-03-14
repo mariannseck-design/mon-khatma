@@ -92,7 +92,7 @@ export default function MurajaHubPage() {
   }, [rabtVerses, tourVerses]);
 
   // Context-specific progress: group by surah
-  const { progressLabel, progressPercent, dominantMemorized, dominantTotal, totalMemorized } = useMemo(() => {
+  const { progressLabel, progressPercent, dominantMemorized, dominantTotal, totalMemorized, secondarySurahs } = useMemo(() => {
     const bySurah: Record<number, number> = {};
     for (const v of allVerses) {
       bySurah[v.surah_number] = (bySurah[v.surah_number] || 0) + (v.verse_end - v.verse_start + 1);
@@ -101,7 +101,7 @@ export default function MurajaHubPage() {
     const total = Object.values(bySurah).reduce((a, b) => a + b, 0);
 
     if (surahNums.length === 0) {
-      return { progressLabel: 'PROGRESSION ACTUELLE', progressPercent: 0, dominantMemorized: 0, dominantTotal: 0, totalMemorized: 0 };
+      return { progressLabel: 'PROGRESSION ACTUELLE', progressPercent: 0, dominantMemorized: 0, dominantTotal: 0, totalMemorized: 0, secondarySurahs: [] };
     }
 
     const dominantSurah = surahNums.reduce((a, b) => bySurah[a] >= bySurah[b] ? a : b);
@@ -110,7 +110,15 @@ export default function MurajaHubPage() {
     const domMem = bySurah[dominantSurah];
     const pct = Math.min(100, (domMem / surahTotal) * 100);
 
-    return { progressLabel: getSurahName(dominantSurah).toUpperCase(), progressPercent: pct, dominantMemorized: domMem, dominantTotal: surahTotal, totalMemorized: total };
+    const secondary = surahNums
+      .filter(n => n !== dominantSurah)
+      .map(n => {
+        const s = SURAHS.find(x => x.number === n);
+        return { number: n, name: getSurahName(n), memorized: bySurah[n], total: s?.versesCount || bySurah[n], percent: Math.min(100, (bySurah[n] / (s?.versesCount || bySurah[n])) * 100) };
+      })
+      .sort((a, b) => b.memorized - a.memorized);
+
+    return { progressLabel: getSurahName(dominantSurah).toUpperCase(), progressPercent: pct, dominantMemorized: domMem, dominantTotal: surahTotal, totalMemorized: total, secondarySurahs: secondary };
   }, [allVerses]);
 
   // Exact Mushaf page count
