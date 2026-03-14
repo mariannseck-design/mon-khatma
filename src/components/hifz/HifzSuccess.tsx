@@ -36,9 +36,10 @@ function formatDuration(seconds: number): string {
 
 interface Props {
   stepTimes?: Record<string, number | boolean | string>;
+  onBackToTikrar?: () => void;
 }
 
-export default function HifzSuccess({ stepTimes }: Props) {
+export default function HifzSuccess({ stepTimes, onBackToTikrar }: Props) {
   const navigate = useNavigate();
   const [message] = useState(() => SUCCESS_MESSAGES[Math.floor(Math.random() * SUCCESS_MESSAGES.length)]);
 
