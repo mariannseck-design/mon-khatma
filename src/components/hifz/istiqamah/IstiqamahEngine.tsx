@@ -7,6 +7,7 @@ import HifzStepWrapper from '../HifzStepWrapper';
 import { useIstiqamahState } from './useIstiqamahState';
 import StepComprehension from './StepComprehension';
 import StepImmersion from './StepImmersion';
+import StepValidation from './StepValidation';
 import StepTikrarFinal from './StepTikrarFinal';
 import { RECITERS } from '@/hooks/useQuranAudio';
 
@@ -59,9 +60,9 @@ export default function IstiqamahEngine({
 
     console.log(`[IstiqamahEngine] 🎯 Rendering step: ${currentNode.type} (index=${state.currentNodeIndex}, immersionCompleted=${immersionCompleted})`);
 
-    // DEFENSE IN DEPTH: If tikrar is requested but immersion wasn't completed, force immersion
-    if (currentNode.type === 'tikrar' && !immersionCompleted) {
-      console.warn('[IstiqamahEngine] Rendering guard: tikrar requested but immersion not completed, forcing immersion');
+    // DEFENSE IN DEPTH: If validation/tikrar is requested but immersion wasn't completed, force immersion
+    if ((currentNode.type === 'tikrar' || currentNode.type === 'validation') && !immersionCompleted) {
+      console.warn('[IstiqamahEngine] Rendering guard: immersion not completed, forcing immersion');
       return (
         <StepImmersion
           key="immersion-guard"
@@ -92,6 +93,15 @@ export default function IstiqamahEngine({
           />
         );
 
+      case 'validation':
+        return (
+          <StepValidation
+            key="validation"
+            {...globalProps}
+            onNext={() => next('validation')}
+          />
+        );
+
       case 'tikrar':
         return (
           <StepTikrarFinal
@@ -109,15 +119,15 @@ export default function IstiqamahEngine({
   };
 
   // Determine effective step for breadcrumb (accounts for rendering guard)
-  const effectiveStep = (currentNode?.type === 'tikrar' && !immersionCompleted) ? 'immersion' : currentNode?.type;
+  const effectiveStep = ((currentNode?.type === 'tikrar' || currentNode?.type === 'validation') && !immersionCompleted) ? 'immersion' : currentNode?.type;
 
   return (
     <HifzStepWrapper stepNumber={3} stepTitle="Istiqâmah" onBack={onBack} onPause={onPause} surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse}>
       <div className="text-center space-y-4">
         {/* Breadcrumb */}
         <div className="flex items-center justify-center gap-1.5">
-          {(['comprehension', 'immersion', 'tikrar'] as const).map((step, i, arr) => {
-            const labels = { immersion: 'Mémorisation', comprehension: 'Compréhension', tikrar: 'Tikrar' };
+        {(['comprehension', 'immersion', 'validation', 'tikrar'] as const).map((step, i, arr) => {
+            const labels: Record<string, string> = { immersion: 'Mémorisation', comprehension: 'Compréhension', validation: 'Validation', tikrar: 'Grande Mémo.' };
             const isCurrent = effectiveStep === step;
             const stepOrder = arr.indexOf(effectiveStep ?? 'comprehension');
             const isDone = i < stepOrder;

@@ -4,6 +4,7 @@ import { splitIntoParts, type Part } from './partSplitter';
 export type StepName =
   | 'immersion'
   | 'comprehension'
+  | 'validation'
   | 'tikrar';
 
 interface FlowNode {
@@ -27,17 +28,19 @@ export interface IstiqamahState {
   clearState: () => void;
 }
 
-// Strict linear flow: comprehension → immersion → tikrar
+// Strict linear flow: comprehension → immersion → validation → tikrar
 const FLOW: FlowNode[] = [
   { type: 'comprehension', partIndex: -1 },
   { type: 'immersion', partIndex: -1 },
+  { type: 'validation', partIndex: -1 },
   { type: 'tikrar', partIndex: -1 },
 ];
 
 // Allowed transitions map
 const ALLOWED_NEXT: Record<StepName, StepName> = {
   comprehension: 'immersion',
-  immersion: 'tikrar',
+  immersion: 'validation',
+  validation: 'tikrar',
   tikrar: 'tikrar', // terminal
 };
 
@@ -149,13 +152,12 @@ export function useIstiqamahState(
         return i;
       }
 
-      // If moving to tikrar, immersion must be completed
-      if (nextNode.type === 'tikrar' && !immersionCompleted) {
-        // Mark immersion as completed since we're transitioning FROM immersion
+      // If moving to validation or tikrar, immersion must be completed
+      if ((nextNode.type === 'validation' || nextNode.type === 'tikrar') && !immersionCompleted) {
         if (current.type === 'immersion') {
           // Will be set below after state update
         } else {
-          console.warn(`[Istiqamah] Blocked tikrar: immersion not completed`);
+          console.warn(`[Istiqamah] Blocked ${nextNode.type}: immersion not completed`);
           return i;
         }
       }
