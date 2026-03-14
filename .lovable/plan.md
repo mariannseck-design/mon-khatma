@@ -1,21 +1,17 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Ajouter un bandeau d'information sur la page de connexion
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+Ajouter un message d'excuse/explication en haut du formulaire de connexion pour informer les utilisatrices qu'elles doivent se réinscrire suite à la migration.
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Changement
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+**Fichier : `src/pages/AuthPage.tsx`**
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+Ajouter un bandeau d'information (Alert) juste au-dessus de la Card du formulaire, visible uniquement en mode `login` et `signup`. Le message expliquera de manière bienveillante :
+- Que l'application a été mise à jour / migrée vers une nouvelle infrastructure
+- Qu'il faut se réinscrire avec le même email
+- S'excuser pour le désagrément
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+Le bandeau utilisera le composant `Alert` existant avec une icône d'information, stylé en accord avec le thème vert/doré de l'app. Il sera discret mais visible (fond léger, bordure douce).
 
