@@ -11,6 +11,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { ReadingSlider } from '@/components/planificateur/ReadingSlider';
+import { ReadingHistory } from '@/components/planificateur/ReadingHistory';
 import { TotalProgressBar } from '@/components/planificateur/TotalProgressBar';
 import { SparkleEffect } from '@/components/planificateur/SparkleEffect';
 import { SuccessModal } from '@/components/planificateur/SuccessModal';
@@ -40,6 +41,7 @@ export default function PlanificateurPage() {
   const [todayPages, setTodayPages] = useState(0);
   const [totalPagesRead, setTotalPagesRead] = useState(0);
   const [weekProgress, setWeekProgress] = useState<DailyProgress[]>([]);
+  const [allProgress, setAllProgress] = useState<DailyProgress[]>([]);
   const [isCreatingGoal, setIsCreatingGoal] = useState(false);
   const [newGoalType, setNewGoalType] = useState<'pages_per_day' | 'duration_days'>('pages_per_day');
   const [newGoalValue, setNewGoalValue] = useState(5);
@@ -145,16 +147,18 @@ export default function PlanificateurPage() {
     setTodayPages(pagesRead);
 
     // Total pages read (all time)
-    const { data: allProgress } = await supabase
+    const { data: allProgressData } = await supabase
       .from('quran_progress')
       .select('pages_read, date')
-      .eq('user_id', user.id);
-    const total = allProgress?.reduce((sum, p) => sum + p.pages_read, 0) || 0;
+      .eq('user_id', user.id)
+      .order('date', { ascending: true });
+    const total = allProgressData?.reduce((sum, p) => sum + p.pages_read, 0) || 0;
     setTotalPagesRead(total);
+    setAllProgress(allProgressData || []);
 
     // Find last reading date
-    if (allProgress && allProgress.length > 0) {
-      const dates = allProgress.map(p => p.date).sort();
+    if (allProgressData && allProgressData.length > 0) {
+      const dates = allProgressData.map(p => p.date).sort();
       setLastReadingDate(dates[dates.length - 1]);
     }
 
@@ -635,6 +639,12 @@ export default function PlanificateurPage() {
             totalPagesRead={totalPagesRead}
           />
         </div>
+
+        {/* Reading History */}
+        <ReadingHistory
+          entries={allProgress}
+          targetPages={activeGoal?.target_value}
+        />
 
         {/* Reset Button - always visible when goal or progress exists */}
         {(totalPagesRead > 0 || activeGoal || savedSetup) && (

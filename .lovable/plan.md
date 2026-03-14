@@ -1,31 +1,21 @@
 
 
-## Améliorations de la page Planificateur + Historique de lecture
+# Diagnostic : 404 sur /quran-reader
 
-### 1. Nouveau composant : Historique de lecture
-Créer `src/components/planificateur/ReadingHistory.tsx` — une carte affichant les dernières entrées de lecture depuis `quran_progress`, triées par date décroissante.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-Chaque entrée affiche :
-- La date (format "14 mars 2026")
-- Le nombre de pages lues ce jour-là
-- La sourate correspondante (via `getSurahByPage`)
-- Un indicateur visuel si l'objectif quotidien a été atteint (check vert)
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-Limité aux 10 dernières entrées, avec un style cohérent (cards arrondies, icônes).
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-### 2. Intégration dans PlanificateurPage
-- Passer `weekProgress` (déjà chargé) ou charger un historique plus complet (dernières 15 entrées)
-- Placer la section entre le ReadingSlider et le bouton de reset
-- Ajouter un état `allProgress` pour stocker l'historique complet
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-### 3. Améliorations visuelles mineures
-- Ajouter une icône d'horloge/historique pour la section
-- Style épuré avec alternance de couleurs subtile pour les lignes
-
-### Fichiers modifiés/créés
-
-| Fichier | Action |
-|---|---|
-| `src/components/planificateur/ReadingHistory.tsx` | Créer — composant historique |
-| `src/pages/PlanificateurPage.tsx` | Modifier — charger l'historique, intégrer le composant |
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
