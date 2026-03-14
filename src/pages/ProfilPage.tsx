@@ -110,6 +110,8 @@ export default function ProfilPage() {
           </CardContent>
         </Card>
 
+        <HifzProfileStats />
+
         <Card 
           className="rounded-2xl cursor-pointer hover-lift" 
           onClick={() => navigate('/rappels')}
