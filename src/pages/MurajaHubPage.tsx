@@ -365,7 +365,7 @@ export default function MurajaHubPage() {
                 <div className="flex-1">
                   <p className="text-sm font-bold" style={{ color: 'var(--p-text)' }}>Consolidation</p>
                   <p className="text-[11px]" style={{ color: 'var(--p-text-50)' }}>
-                    Révision espacée SM-2{tourPageLabel ? ` · ${tourPageLabel}` : ''}
+                    Révision espacée{tourPageLabel ? ` · ${tourPageLabel}` : ''}
                   </p>
                 </div>
                 <span className="text-xs font-bold px-2 py-1 rounded-full" style={{ background: 'rgba(16,185,129,0.12)', color: '#10B981' }}>
