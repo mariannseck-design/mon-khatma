@@ -372,16 +372,52 @@ export default function DefiAlBaqara({ disabled = false }: { disabled?: boolean 
           <BookOpen className="h-3.5 w-3.5 animate-[pulse_3s_ease-in-out_infinite]" />
           Continuer ma lecture 📖
         </motion.button>
-        {progress >= 100 && (
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center text-sm mt-3 font-semibold"
-            style={{ color: COLORS.goldAccent }}
-          >
-            🏆 Défi complété ! Allahumma barik !
-          </motion.p>
-        )}
+        <AnimatePresence>
+          {progress >= 100 && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              className="relative flex flex-col items-center gap-2 mt-4 py-4"
+            >
+              <SparkleEffect isActive={progress >= 100} />
+              <motion.div
+                initial={{ scale: 0, rotate: -20 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ type: 'spring', stiffness: 200, damping: 12, delay: 0.2 }}
+              >
+                <Trophy className="h-10 w-10" style={{ color: COLORS.goldAccent }} fill={COLORS.goldAccent} />
+              </motion.div>
+              <motion.p
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="text-base font-bold text-center"
+                style={{ color: COLORS.goldAccent }}
+              >
+                🏆 Défi complété !
+              </motion.p>
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.6 }}
+                className="text-sm text-center font-medium"
+                style={{ color: COLORS.emerald }}
+              >
+                Allahumma barik ! Tu as terminé en {challenge.checkedDays.length} jours 🌟
+              </motion.p>
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.9 }}
+                className="text-xs text-center"
+                style={{ color: `${COLORS.emerald}90` }}
+              >
+                Qu'Allah accepte et facilite la suite 🤲
+              </motion.p>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </motion.div>
   );
