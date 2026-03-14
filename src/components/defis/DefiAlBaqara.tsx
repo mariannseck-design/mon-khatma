@@ -181,21 +181,68 @@ export default function DefiAlBaqara({ disabled = false }: { disabled?: boolean 
             </div>
           </div>
 
-          <div className={`grid grid-cols-2 gap-2 mb-4 ${disabled ? 'opacity-50 pointer-events-none' : ''}`}>
-            {GOALS.map((g) => (
-              <button
-                key={g.days}
-                onClick={() => !disabled && setSelectedGoal(g.days)}
-                className="py-2.5 px-3 rounded-xl text-left transition-all"
-                style={{
-                  background: selectedGoal === g.days ? `${COLORS.gold}20` : 'rgba(255,255,255,0.6)',
-                  border: selectedGoal === g.days ? `1.5px solid ${COLORS.goldAccent}` : '1.5px solid transparent',
-                }}
+          <div className={`space-y-2 mb-4 ${disabled ? 'opacity-50 pointer-events-none' : ''}`}>
+            {PRESETS.map((g) => {
+              const pace = (BAQARA_PAGES / g.days).toFixed(1);
+              return (
+                <button
+                  key={g.days}
+                  onClick={() => !disabled && setSelectedGoal(g.days)}
+                  className="w-full py-3 px-4 rounded-xl text-left transition-all flex items-center justify-between"
+                  style={{
+                    background: selectedGoal === g.days ? `${COLORS.gold}20` : 'rgba(255,255,255,0.6)',
+                    border: selectedGoal === g.days ? `1.5px solid ${COLORS.goldAccent}` : '1.5px solid transparent',
+                  }}
+                >
+                  <span className="text-sm font-semibold flex items-center gap-2" style={{ color: COLORS.emerald }}>
+                    <span>{g.emoji}</span> {g.label}
+                  </span>
+                  <span className="text-[11px] font-medium" style={{ color: `${COLORS.emerald}90` }}>~{pace} pages/jour</span>
+                </button>
+              );
+            })}
+
+            {/* Custom option */}
+            <button
+              onClick={() => !disabled && setSelectedGoal('custom')}
+              className="w-full py-3 px-4 rounded-xl text-left transition-all"
+              style={{
+                background: selectedGoal === 'custom' ? `${COLORS.gold}20` : 'rgba(255,255,255,0.6)',
+                border: selectedGoal === 'custom' ? `1.5px solid ${COLORS.goldAccent}` : '1.5px solid transparent',
+              }}
+            >
+              <span className="text-sm font-semibold flex items-center gap-2" style={{ color: COLORS.emerald }}>
+                <Pencil className="h-3.5 w-3.5" /> Personnalisé
+              </span>
+            </button>
+
+            {selectedGoal === 'custom' && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                className="flex items-center gap-3 px-2"
               >
-                <span className="text-sm font-semibold block" style={{ color: COLORS.emerald }}>{g.label}</span>
-                <span className="text-[10px]" style={{ color: `${COLORS.emerald}70` }}>{g.desc}</span>
-              </button>
-            ))}
+                <Input
+                  type="text"
+                  inputMode="numeric"
+                  value={customDays}
+                  onChange={(e) => {
+                    if (e.target.value === '' || /^\d+$/.test(e.target.value)) {
+                      setCustomDays(e.target.value);
+                    }
+                  }}
+                  placeholder="Nombre de jours"
+                  className="h-11 text-center font-semibold border-2"
+                  style={{ borderColor: `${COLORS.gold}60` }}
+                  onFocus={(e) => e.target.select()}
+                />
+                {customDays && parseInt(customDays) > 0 && (
+                  <span className="text-xs font-medium whitespace-nowrap" style={{ color: COLORS.gold }}>
+                    ~{(BAQARA_PAGES / parseInt(customDays)).toFixed(1)} p/j
+                  </span>
+                )}
+              </motion.div>
+            )}
           </div>
 
           <Button
