@@ -84,6 +84,7 @@ export default function HifzHubPage() {
               surahName: surah?.name || `Sourate ${data.session.surahNumber}`,
               stepName: STEP_NAMES[data.step] || `Étape ${data.step}`,
               pageLabel,
+              phase: STEP_PHASE[data.step],
             });
             return;
           }
