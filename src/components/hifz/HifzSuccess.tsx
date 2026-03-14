@@ -36,9 +36,10 @@ function formatDuration(seconds: number): string {
 
 interface Props {
   stepTimes?: Record<string, number | boolean | string>;
+  onBackToTikrar?: () => void;
 }
 
-export default function HifzSuccess({ stepTimes }: Props) {
+export default function HifzSuccess({ stepTimes, onBackToTikrar }: Props) {
   const navigate = useNavigate();
   const [message] = useState(() => SUCCESS_MESSAGES[Math.floor(Math.random() * SUCCESS_MESSAGES.length)]);
 
@@ -155,6 +156,16 @@ export default function HifzSuccess({ stepTimes }: Props) {
       >
         Transférer vers la consolidation (Ar-Rabt)
       </motion.button>
+
+      {onBackToTikrar && (
+        <button
+          onClick={onBackToTikrar}
+          className="mx-auto text-[10px] underline underline-offset-4"
+          style={{ color: 'rgba(255,255,255,0.25)' }}
+        >
+          ← Revenir au Tikrâr
+        </button>
+      )}
 
     </motion.div>
   );
