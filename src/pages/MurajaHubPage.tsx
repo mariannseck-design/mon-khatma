@@ -92,7 +92,7 @@ export default function MurajaHubPage() {
   }, [rabtVerses, tourVerses]);
 
   // Context-specific progress: group by surah
-  const { progressLabel, progressPercent, dominantMemorized, dominantTotal, totalMemorized } = useMemo(() => {
+  const { progressLabel, progressPercent, dominantMemorized, dominantTotal, totalMemorized, secondarySurahs } = useMemo(() => {
     const bySurah: Record<number, number> = {};
     for (const v of allVerses) {
       bySurah[v.surah_number] = (bySurah[v.surah_number] || 0) + (v.verse_end - v.verse_start + 1);
@@ -101,7 +101,7 @@ export default function MurajaHubPage() {
     const total = Object.values(bySurah).reduce((a, b) => a + b, 0);
 
     if (surahNums.length === 0) {
-      return { progressLabel: 'PROGRESSION ACTUELLE', progressPercent: 0, dominantMemorized: 0, dominantTotal: 0, totalMemorized: 0 };
+      return { progressLabel: 'PROGRESSION ACTUELLE', progressPercent: 0, dominantMemorized: 0, dominantTotal: 0, totalMemorized: 0, secondarySurahs: [] };
     }
 
     const dominantSurah = surahNums.reduce((a, b) => bySurah[a] >= bySurah[b] ? a : b);
@@ -110,7 +110,15 @@ export default function MurajaHubPage() {
     const domMem = bySurah[dominantSurah];
     const pct = Math.min(100, (domMem / surahTotal) * 100);
 
-    return { progressLabel: getSurahName(dominantSurah).toUpperCase(), progressPercent: pct, dominantMemorized: domMem, dominantTotal: surahTotal, totalMemorized: total };
+    const secondary = surahNums
+      .filter(n => n !== dominantSurah)
+      .map(n => {
+        const s = SURAHS.find(x => x.number === n);
+        return { number: n, name: getSurahName(n), memorized: bySurah[n], total: s?.versesCount || bySurah[n], percent: Math.min(100, (bySurah[n] / (s?.versesCount || bySurah[n])) * 100) };
+      })
+      .sort((a, b) => b.memorized - a.memorized);
+
+    return { progressLabel: getSurahName(dominantSurah).toUpperCase(), progressPercent: pct, dominantMemorized: domMem, dominantTotal: surahTotal, totalMemorized: total, secondarySurahs: secondary };
   }, [allVerses]);
 
   // Exact Mushaf page count
@@ -205,6 +213,28 @@ export default function MurajaHubPage() {
                 <span>{dominantMemorized} / {dominantTotal} versets</span>
                 <span>{totalDistinctPages} pages</span>
               </div>
+
+              {/* Secondary surahs */}
+              {secondarySurahs.length > 0 && (
+                <div className="pt-1.5 space-y-1.5" style={{ borderTop: '1px solid var(--p-border)' }}>
+                  {secondarySurahs.map(s => (
+                    <div key={s.number} className="flex items-center gap-2">
+                      <span className="text-[10px] font-medium w-20 truncate" style={{ color: 'var(--p-text-50)' }}>
+                        {s.name}
+                      </span>
+                      <div className="flex-1 h-1 rounded-full overflow-hidden" style={{ background: 'var(--p-track)' }}>
+                        <div
+                          className="h-full rounded-full"
+                          style={{ width: `${s.percent}%`, background: s.percent === 100 ? '#D4AF37' : 'var(--p-primary)', opacity: 0.7 }}
+                        />
+                      </div>
+                      <span className="text-[9px] font-semibold tabular-nums" style={{ color: 'var(--p-text-40)' }}>
+                        {s.memorized}/{s.total}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </motion.div>
 
           {/* Weekly Recap */}
