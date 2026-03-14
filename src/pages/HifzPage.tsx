@@ -245,12 +245,21 @@ export default function HifzPage() {
 
   const handleResume = () => {
     if (pendingResume) {
+      let resumeStep = pendingResume.step;
+      // If phase=B requested and session is still in phase A, jump to step 2
+      if (phaseParam === 'B' && resumeStep < 2) {
+        resumeStep = 2;
+      }
       setSession(pendingResume.session);
-      setStep(pendingResume.step);
+      setStep(resumeStep);
       setSessionId(pendingResume.sessionId);
       // Restaurer le step_status (contient tikrar_started_at, tikrar_count, etc.)
       if (pendingResume.stepStatus && typeof pendingResume.stepStatus === 'object') {
         stepTimesRef.current = pendingResume.stepStatus;
+      }
+      // Persist the updated step
+      if (resumeStep !== pendingResume.step) {
+        saveLocalSession(pendingResume.session, resumeStep, pendingResume.sessionId, pendingResume.stepStatus);
       }
     }
     setShowResumePrompt(false);
