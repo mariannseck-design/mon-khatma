@@ -119,7 +119,7 @@ export default function IstiqamahEngine({
   };
 
   // Determine effective step for breadcrumb (accounts for rendering guard)
-  const effectiveStep = (currentNode?.type === 'tikrar' && !immersionCompleted) ? 'immersion' : currentNode?.type;
+  const effectiveStep = ((currentNode?.type === 'tikrar' || currentNode?.type === 'validation') && !immersionCompleted) ? 'immersion' : currentNode?.type;
 
   return (
     <HifzStepWrapper stepNumber={3} stepTitle="Istiqâmah" onBack={onBack} onPause={onPause} surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse}>
