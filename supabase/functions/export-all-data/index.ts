@@ -47,65 +47,47 @@ function generateInserts(tableName: string, rows: Record<string, unknown>[]): st
   return lines.join("\n");
 }
 
+const batches: Record<number, string[]> = {
+  1: ["profiles", "allowed_emails", "user_roles", "sisters_circles", "quran_goals", "hifz_goals", "notification_preferences", "push_subscriptions", "reading_reminders"],
+  2: ["quran_progress", "hifz_sessions", "hifz_memorized_verses", "hifz_streaks", "mourad_sessions", "muraja_sessions", "khatma_completions"],
+  3: ["circle_members", "circle_messages", "circle_message_likes", "favorite_verses"],
+  4: ["challenge_baqara", "challenge_kahf", "challenge_mulk", "mood_entries", "ramadan_reading_goals", "ramadan_daily_tasks", "ramadan_dhikr_entries", "ramadan_reviews", "ramadan_weekly_reports"],
+};
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
+    const url = new URL(req.url);
+    const batchParam = url.searchParams.get("batch");
+    const batchNum = batchParam ? parseInt(batchParam, 10) : 0;
+
+    if (!batchNum || !batches[batchNum]) {
+      return new Response(
+        `Utilisation : ?batch=1, ?batch=2, ?batch=3 ou ?batch=4\n\nBatch 1: ${batches[1].join(", ")}\nBatch 2: ${batches[2].join(", ")}\nBatch 3: ${batches[3].join(", ")}\nBatch 4: ${batches[4].join(", ")}`,
+        { headers: { ...corsHeaders, "Content-Type": "text/plain; charset=utf-8" } }
+      );
+    }
+
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    const tableOrder = [
-      // Step 1: Core
-      "profiles",
-      "allowed_emails",
-      "user_roles",
-      // Step 2: Structures
-      "sisters_circles",
-      // Step 3: Config
-      "quran_goals",
-      "hifz_goals",
-      "notification_preferences",
-      "push_subscriptions",
-      "reading_reminders",
-      // Step 4: Activity
-      "quran_progress",
-      "hifz_sessions",
-      "hifz_memorized_verses",
-      "hifz_streaks",
-      "mourad_sessions",
-      "muraja_sessions",
-      "khatma_completions",
-      // Step 5: Social
-      "circle_members",
-      "circle_messages",
-      "circle_message_likes",
-      "favorite_verses",
-      // Step 6: Challenges & Ramadan & Misc
-      "challenge_baqara",
-      "challenge_kahf",
-      "challenge_mulk",
-      "mood_entries",
-      "ramadan_reading_goals",
-      "ramadan_daily_tasks",
-      "ramadan_dhikr_entries",
-      "ramadan_reviews",
-      "ramadan_weekly_reports",
-    ];
+    const tables = batches[batchNum];
 
     const sqlParts: string[] = [
-      "-- ==========================================",
-      "-- EXPORT COMPLET - Ma Khatma",
-      "-- Généré le " + new Date().toISOString(),
-      "-- Exécuter dans Run SQL côté LIVE",
-      "-- ==========================================",
+      `-- ==========================================`,
+      `-- EXPORT BATCH ${batchNum}/4 - Ma Khatma`,
+      `-- Tables: ${tables.join(", ")}`,
+      `-- Généré le ${new Date().toISOString()}`,
+      `-- ==========================================`,
       "",
     ];
 
-    for (const table of tableOrder) {
+    for (const table of tables) {
       const { data, error } = await supabaseAdmin
         .from(table)
         .select("*")
