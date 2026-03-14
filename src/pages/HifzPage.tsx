@@ -267,6 +267,20 @@ export default function HifzPage() {
   };
 
   const handleRestart = () => {
+    // If Phase B: keep same session config but restart at step 2 (beginning of Phase B)
+    if (phaseParam === 'B' && pendingResume) {
+      clearLocalSession();
+      setShowResumePrompt(false);
+      setPendingResume(null);
+      setSession(pendingResume.session);
+      setStep(2);
+      setSessionId(pendingResume.sessionId);
+      // Update DB session to step 2
+      if (pendingResume.sessionId && user) {
+        supabase.from('hifz_sessions').update({ current_step: 2 }).eq('id', pendingResume.sessionId);
+      }
+      return;
+    }
     clearLocalSession();
     setShowResumePrompt(false);
     setPendingResume(null);
