@@ -18,7 +18,7 @@ interface Props {
 
 const REQUIRED = 5;
 
-export default function StepValidation({ surahNumber, verseStart, verseEnd, onNext }: Props) {
+export default function StepValidation({ surahNumber, verseStart, verseEnd, onNext, onBack }: Props) {
   const [count, setCount] = useState(0);
   const done = count >= REQUIRED;
 
