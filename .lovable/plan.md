@@ -1,21 +1,24 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Remplacer "Lire / Lecture" par "Mémoriser / Mémorisé" dans l'étape de mémorisation
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Contexte
+Les termes "Lire" et "Lecture" dans la phase de lecture (read phase) de l'étape Mémorisation prêtent à confusion. Il faut les remplacer par "Mémoriser" / "Mémorisé".
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Fichiers à modifier
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+#### 1. `src/components/hifz/istiqamah/StepImmersion.tsx`
+- **Ligne 557** : `"Passer à la lecture"` → `"Passer à la mémorisation"`
+- **Ligne 567** : `"Lire en regardant le Mushaf (3 fois minimum)"` → `"Mémoriser en regardant le Mushaf (3 fois minimum)"`
+- **Ligne 567** : `"Liaison — Lecture Mushaf"` → `"Liaison — Mémorisation Mushaf"`
+- **Ligne 570** : `"Lis le verset en regardant le Mushaf"` → `"Mémorise le verset en regardant le Mushaf"`
+- **Ligne 588** : `"J'ai lu ✓"` → `"Mémorisé ✓"`
+- **Ligne 599** : `"Lecture {readCount + 1} — Lis attentivement..."` → `"Mémorisation {readCount + 1} — Mémorise attentivement..."`
+- **Ligne 665** : `"Relire les versets"` / `"Relire le verset"` → `"Remémoriser les versets"` / `"Remémoriser le verset"`
+- **Ligne 666** : `"Relis attentivement"` → `"Remémorise attentivement"`
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
-
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+#### 2. `src/components/hifz/HifzStep3Memorisation.tsx`
+- **Ligne 105** : `"Lecture autonome"` → `"Mémorisation autonome"`
+- **Ligne 106** : `"Lisez seul(e)..."` → `"Mémorisez seul(e)..."`
+- **Ligne 413** : `"Lecture"` (label onglet) → `"Mémorisation"`
 
