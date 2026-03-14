@@ -9,7 +9,6 @@ import {
   Head,
   Heading,
   Html,
-  Img,
   Preview,
   Text,
 } from 'npm:@react-email/components@0.0.22'
@@ -19,27 +18,25 @@ interface MagicLinkEmailProps {
   confirmationUrl: string
 }
 
-const logoUrl = 'https://gtnbjquwlgwgnjlhmxnr.supabase.co/storage/v1/object/public/email-assets/logo.png'
-
 export const MagicLinkEmail = ({
   siteName,
   confirmationUrl,
 }: MagicLinkEmailProps) => (
-  <Html lang="fr" dir="ltr">
+  <Html lang="en" dir="ltr">
     <Head />
-    <Preview>Ton lien de connexion Ma Khatma</Preview>
+    <Preview>Your login link for {siteName}</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Img src={logoUrl} width="64" height="64" alt="Ma Khatma" style={logo} />
-        <Heading style={h1}>Ton lien de connexion 🔑</Heading>
+        <Heading style={h1}>Your login link</Heading>
         <Text style={text}>
-          Clique sur le bouton ci-dessous pour te connecter à Ma Khatma. Ce lien expirera bientôt.
+          Click the button below to log in to {siteName}. This link will expire
+          shortly.
         </Text>
         <Button style={button} href={confirmationUrl}>
-          Se connecter
+          Log In
         </Button>
         <Text style={footer}>
-          Si tu n'as pas demandé ce lien, tu peux ignorer cet email.
+          If you didn't request this link, you can safely ignore this email.
         </Text>
       </Container>
     </Body>
@@ -48,28 +45,26 @@ export const MagicLinkEmail = ({
 
 export default MagicLinkEmail
 
-const main = { backgroundColor: '#ffffff', fontFamily: 'Inter, Arial, sans-serif' }
-const container = { padding: '32px 28px', maxWidth: '480px', margin: '0 auto' }
-const logo = { margin: '0 0 24px 0', borderRadius: '12px' }
+const main = { backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif' }
+const container = { padding: '20px 25px' }
 const h1 = {
   fontSize: '22px',
   fontWeight: 'bold' as const,
-  color: '#2d6a4f',
-  margin: '0 0 16px',
-}
-const text = {
-  fontSize: '15px',
-  color: '#4a5568',
-  lineHeight: '1.6',
+  color: '#000000',
   margin: '0 0 20px',
 }
-const button = {
-  backgroundColor: '#2d6a4f',
-  color: '#ffffff',
-  fontSize: '15px',
-  borderRadius: '16px',
-  padding: '14px 28px',
-  textDecoration: 'none',
-  fontWeight: '600' as const,
+const text = {
+  fontSize: '14px',
+  color: '#55575d',
+  lineHeight: '1.5',
+  margin: '0 0 25px',
 }
-const footer = { fontSize: '12px', color: '#a0aec0', margin: '32px 0 0' }
+const button = {
+  backgroundColor: '#000000',
+  color: '#ffffff',
+  fontSize: '14px',
+  borderRadius: '8px',
+  padding: '12px 20px',
+  textDecoration: 'none',
+}
+const footer = { fontSize: '12px', color: '#999999', margin: '30px 0 0' }
