@@ -360,15 +360,15 @@ async function handleWebhook(req: Request): Promise<Response> {
     )
   }
 
-  // Build template props from payload.data (HookData structure)
+  // Build template props from normalized hook payload
   const templateProps = {
     siteName: SITE_NAME,
     siteUrl: `https://${ROOT_DOMAIN}`,
-    recipient: payload.data.email,
-    confirmationUrl: payload.data.url,
-    token: payload.data.token,
-    email: payload.data.email,
-    newEmail: payload.data.new_email,
+    recipient: normalized.recipientEmail,
+    confirmationUrl: normalized.confirmationUrl ?? `https://${ROOT_DOMAIN}`,
+    token: normalized.token,
+    email: normalized.recipientEmail,
+    newEmail: normalized.newEmail,
   }
 
   // Render React Email to HTML and plain text
