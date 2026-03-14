@@ -29,7 +29,7 @@ interface Props {
 export default function HifzStep5Tikrar({
   surahNumber, startVerse, endVerse,
   onNext, onBack, onPause,
-  stepStatus, onUpdateStatus,
+  stepStatus, onUpdateStatus, phaseLabel,
 }: Props) {
   const saved = stepStatus?.tikrar_count ?? 0;
   const savedStart = stepStatus?.tikrar_started_at ?? Date.now();
