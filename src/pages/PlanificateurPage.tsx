@@ -409,49 +409,45 @@ export default function PlanificateurPage() {
     );
   }
 
+  // Juz grid collapsed state
+  const [juzExpanded, setJuzExpanded] = useState(false);
+  const completedJuz = Array.from({ length: 30 }, (_, i) => {
+    const juzEndPage = (i + 1) === 30 ? 604 : (i + 1) * 20;
+    return totalPagesRead >= juzEndPage;
+  }).filter(Boolean).length;
+
   return (
     <AppLayout title="Planificateur">
-      <div className="section-spacing space-y-6">
-        {/* Header */}
-        <div className="zen-header">
-          <h1>📖 Ma Khatma</h1>
-        </div>
+      <div className="section-spacing space-y-5">
 
         {/* Total Progress Bar */}
         <TotalProgressBar totalPagesRead={totalPagesRead} onResetKhatma={resetKhatma} onShowCelebration={() => setShowKhatmaCelebration(true)} targetPagesPerDay={activeGoal?.target_value} startDate={activeGoal?.start_date} />
 
-        {/* Personalized greeting if setup exists */}
+        {/* Subtle info line — merges greeting + estimation */}
         {savedSetup && activeGoal && (
-          <Card className="pastel-card p-4 bg-gradient-to-r from-primary/10 to-accent/10">
-            <p className="text-sm text-center text-foreground">
-              📖 Objectif : <strong>{savedSetup.daily_pages} page{savedSetup.daily_pages > 1 ? 's' : ''}/jour</strong> — 
-              Qu'Allah <span className="honorific font-bold" style={{ fontSize: '1.1em' }}>(عز وجل)</span> t'accorde la constance, <strong>{savedSetup.first_name}</strong> !
-            </p>
-          </Card>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-xs text-muted-foreground text-center leading-relaxed px-2"
+          >
+            {savedSetup.first_name}, {getDynamicEstimationMessage() || `objectif : ${savedSetup.daily_pages} page${savedSetup.daily_pages > 1 ? 's' : ''}/jour`}
+          </motion.p>
         )}
 
-        {/* Precision message */}
-        {activeGoal && getDynamicEstimationMessage() && (
-          <Card className="pastel-card p-4 bg-gradient-to-r from-accent/10 to-primary/10">
-            <p className="text-sm text-center text-foreground">
-              🌟 {getDynamicEstimationMessage()}
-            </p>
-          </Card>
-        )}
-
-        {/* 7-day inactivity prompt */}
+        {/* 7-day inactivity prompt — kept but lighter */}
         {activeGoal && daysSinceLastReading !== null && daysSinceLastReading >= 7 && totalPagesRead < TOTAL_QURAN_PAGES && (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-            <Card className="pastel-card p-5 border-2 border-primary/30 bg-gradient-to-r from-primary/5 to-accent/5">
-              <p className="text-sm text-center text-foreground mb-4 leading-relaxed">
-                Bismillah, <strong>{savedSetup?.first_name || 'chère sœur'}</strong>. Une semaine s'est écoulée depuis ta dernière lecture. Reprends aujourd'hui, même pour une seule page. Veux-tu réajuster ton objectif ? 🌙
+          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
+            <Card className="p-4 border-none rounded-2xl bg-primary/5">
+              <p className="text-xs text-center text-muted-foreground mb-3 leading-relaxed">
+                Une semaine sans lecture. Reprends aujourd'hui, même une seule page. 🌙
               </p>
               <Button
                 onClick={handleRecalculateGoal}
-                className="w-full bg-primary text-primary-foreground rounded-xl"
+                variant="outline"
                 size="sm"
+                className="w-full rounded-xl text-xs"
               >
-                <RefreshCw className="h-4 w-4 mr-2" />
+                <RefreshCw className="h-3 w-3 mr-1.5" />
                 Recalculer mon objectif
               </Button>
             </Card>
@@ -461,34 +457,33 @@ export default function PlanificateurPage() {
         {/* Spiritual Setup (no goal yet) */}
         {!activeGoal && !isCreatingGoal && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <Card className="pastel-card p-6 bg-gradient-to-br from-primary/10 via-accent/10 to-secondary/10 border-2 border-primary/20">
+            <Card className="p-6 border-none rounded-[2rem] bg-card shadow-sm">
               <div className="text-center mb-6">
-                <div className="w-16 h-16 rounded-2xl bg-primary/20 flex items-center justify-center mx-auto mb-4">
-                  <BookOpen className="h-8 w-8 text-primary" />
+                <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                  <BookOpen className="h-7 w-7 text-primary" />
                 </div>
-                <h2 className="font-display text-xl text-foreground mb-2">
-                  Bismillah ! 🌟
+                <h2 className="font-display text-lg text-foreground mb-1.5">
+                  Bismillah
                 </h2>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  Quel est ton objectif de lecture quotidien pour rester constante 
-                  avec le Livre d'Allah <span className="honorific font-bold" style={{ fontSize: '1.1em' }}>(عز وجل)</span> ?
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Définis ton objectif de lecture quotidien
                 </p>
               </div>
 
               {!setupSuccess ? (
                 <div className="space-y-4">
                   <div>
-                    <Label htmlFor="setupName">Ton prénom</Label>
+                    <Label htmlFor="setupName" className="text-xs">Ton prénom</Label>
                     <Input
                       id="setupName"
                       value={setupFirstName}
                       onChange={(e) => setSetupFirstName(e.target.value)}
                       placeholder="Ex: Fatima"
-                      className="mt-1"
+                      className="mt-1 rounded-xl h-11"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="setupPages">Nombre de pages par jour</Label>
+                    <Label htmlFor="setupPages" className="text-xs">Pages par jour</Label>
                     <Input
                       id="setupPages"
                       type="number"
@@ -498,18 +493,18 @@ export default function PlanificateurPage() {
                       onChange={(e) => setSetupPages(e.target.value === '' ? '' as any : parseInt(e.target.value) || ('' as any))}
                       onFocus={(e) => e.target.select()}
                       onBlur={(e) => { if (!e.target.value || parseInt(e.target.value) < 1) setSetupPages(1); }}
-                      className="mt-1"
+                      className="mt-1 rounded-xl h-11"
                     />
                     <p className="text-xs text-muted-foreground mt-1">
-                      ≈ {Math.ceil(TOTAL_QURAN_PAGES / setupPages)} jours pour terminer le Coran
+                      ≈ {Math.ceil(TOTAL_QURAN_PAGES / setupPages)} jours pour terminer
                     </p>
                   </div>
                   <Button
                     onClick={handleSpiritualSetup}
                     disabled={setupSubmitting || !setupFirstName.trim() || setupPages < 1}
-                    className="w-full bg-primary text-primary-foreground"
+                    className="w-full bg-primary text-primary-foreground rounded-xl h-11"
                   >
-                    {setupSubmitting ? 'Enregistrement...' : 'Bismillah, je commence ! ✨'}
+                    {setupSubmitting ? 'Enregistrement...' : 'Bismillah, je commence !'}
                   </Button>
                 </div>
               ) : (
@@ -518,12 +513,9 @@ export default function PlanificateurPage() {
                   animate={{ opacity: 1, scale: 1 }}
                   className="text-center py-4"
                 >
-                  <Sparkles className="h-10 w-10 text-primary mx-auto mb-3" />
-                  <p className="text-foreground leading-relaxed">
-                    Qu'Allah <span className="honorific font-bold" style={{ fontSize: '1.1em' }}>(عز وجل)</span> accepte
-                    ta dévotion, <strong>{setupFirstName}</strong> ! Ton objectif de{' '}
-                    <strong>{setupPages} page{setupPages > 1 ? 's' : ''}</strong> par jour est un
-                    magnifique engagement. 🤲
+                  <Sparkles className="h-8 w-8 text-primary mx-auto mb-3" />
+                  <p className="text-sm text-foreground leading-relaxed">
+                    Qu'Allah accepte ta dévotion, <strong>{setupFirstName}</strong> ! 🤲
                   </p>
                 </motion.div>
               )}
@@ -537,7 +529,7 @@ export default function PlanificateurPage() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
           >
-            <Card className="pastel-card p-6">
+            <Card className="p-6 border-none rounded-[2rem] bg-card shadow-sm">
               <h3 className="font-display text-lg mb-4">Nouvel objectif</h3>
               
               <Tabs value={newGoalType} onValueChange={v => setNewGoalType(v as typeof newGoalType)}>
@@ -556,11 +548,11 @@ export default function PlanificateurPage() {
                         max={604}
                         value={newGoalValue}
                         onChange={e => setNewGoalValue(parseInt(e.target.value) || 1)}
-                        className="text-center text-2xl font-bold w-24"
+                        className="text-center text-2xl font-bold w-24 rounded-xl"
                       />
-                      <span className="text-muted-foreground">pages/jour</span>
+                      <span className="text-muted-foreground text-sm">pages/jour</span>
                     </div>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-xs text-muted-foreground">
                       ≈ {Math.ceil(TOTAL_QURAN_PAGES / newGoalValue)} jours pour finir
                     </p>
                   </div>
@@ -576,11 +568,11 @@ export default function PlanificateurPage() {
                         max={1000}
                         value={newGoalValue}
                         onChange={e => setNewGoalValue(parseInt(e.target.value) || 30)}
-                        className="text-center text-2xl font-bold w-24"
+                        className="text-center text-2xl font-bold w-24 rounded-xl"
                       />
-                      <span className="text-muted-foreground">jours</span>
+                      <span className="text-muted-foreground text-sm">jours</span>
                     </div>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-xs text-muted-foreground">
                       ≈ {(TOTAL_QURAN_PAGES / newGoalValue).toFixed(1)} pages/jour
                     </p>
                   </div>
@@ -588,48 +580,93 @@ export default function PlanificateurPage() {
               </Tabs>
 
               <div className="flex gap-3 mt-6">
-                <Button variant="outline" onClick={() => setIsCreatingGoal(false)} className="flex-1">
+                <Button variant="outline" onClick={() => setIsCreatingGoal(false)} className="flex-1 rounded-xl">
                   Annuler
                 </Button>
-                <Button onClick={createGoal} className="flex-1 bg-primary text-primary-foreground">
-                  Bismillah, je commence!
+                <Button onClick={createGoal} className="flex-1 bg-primary text-primary-foreground rounded-xl">
+                  Bismillah !
                 </Button>
               </div>
             </Card>
           </motion.div>
         )}
 
-        {/* Juz Progress Grid - Middle */}
-        <Card className="pastel-card p-6 shadow-[0_8px_30px_-12px_rgba(0,0,0,0.08)]">
-          <h3 className="font-display text-lg mb-4">Juz lues</h3>
-          <div className="grid grid-cols-5 gap-2">
-            {Array.from({ length: 30 }, (_, i) => {
-              const juzNumber = i + 1;
-              const juzStartPage = (juzNumber - 1) * 20 + 1;
-              const juzEndPage = juzNumber === 30 ? 604 : juzNumber * 20;
-              const isCompleted = totalPagesRead >= juzEndPage;
-              const isInProgress = totalPagesRead >= juzStartPage && totalPagesRead < juzEndPage;
-              
-              return (
-                <div 
-                  key={juzNumber} 
-                  className={`flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium transition-all ${
-                    isCompleted 
-                      ? 'bg-primary text-primary-foreground' 
-                      : isInProgress 
-                        ? 'bg-primary/20 text-primary border-2 border-primary' 
-                        : 'bg-muted text-muted-foreground'
-                  }`}
-                >
-                  <span>Juz {juzNumber}</span>
-                  {isCompleted && <Check className="h-4 w-4" />}
-                </div>
-              );
-            })}
-          </div>
-        </Card>
+        {/* Juz Progress — Collapsible */}
+        <div>
+          <button
+            onClick={() => setJuzExpanded(!juzExpanded)}
+            className="w-full flex items-center justify-between px-1 py-2 group"
+          >
+            <span className="text-sm font-medium text-foreground">
+              Juz — {completedJuz}/30
+            </span>
+            <motion.div
+              animate={{ rotate: juzExpanded ? 180 : 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <ChevronDown className="h-4 w-4 text-muted-foreground" />
+            </motion.div>
+          </button>
 
-        {/* Reading Slider - Where I stopped (End) */}
+          {/* Compact progress dots when collapsed */}
+          {!juzExpanded && (
+            <div className="flex gap-1 px-1 pb-1">
+              {Array.from({ length: 30 }, (_, i) => {
+                const juzEndPage = (i + 1) === 30 ? 604 : (i + 1) * 20;
+                const juzStartPage = i * 20 + 1;
+                const isCompleted = totalPagesRead >= juzEndPage;
+                const isInProgress = totalPagesRead >= juzStartPage && totalPagesRead < juzEndPage;
+                return (
+                  <div
+                    key={i}
+                    className={`h-1.5 flex-1 rounded-full transition-colors ${
+                      isCompleted ? 'bg-primary' : isInProgress ? 'bg-primary/40' : 'bg-muted'
+                    }`}
+                  />
+                );
+              })}
+            </div>
+          )}
+
+          <AnimatePresence>
+            {juzExpanded && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.25 }}
+                className="overflow-hidden"
+              >
+                <div className="grid grid-cols-6 gap-1.5 pt-2 pb-1">
+                  {Array.from({ length: 30 }, (_, i) => {
+                    const juzNumber = i + 1;
+                    const juzStartPage = (juzNumber - 1) * 20 + 1;
+                    const juzEndPage = juzNumber === 30 ? 604 : juzNumber * 20;
+                    const isCompleted = totalPagesRead >= juzEndPage;
+                    const isInProgress = totalPagesRead >= juzStartPage && totalPagesRead < juzEndPage;
+                    
+                    return (
+                      <div 
+                        key={juzNumber} 
+                        className={`flex items-center justify-center py-2 rounded-xl text-xs font-medium transition-all ${
+                          isCompleted 
+                            ? 'bg-primary text-primary-foreground' 
+                            : isInProgress 
+                              ? 'bg-primary/15 text-primary ring-1 ring-primary/30' 
+                              : 'bg-muted/60 text-muted-foreground'
+                        }`}
+                      >
+                        {juzNumber}
+                      </div>
+                    );
+                  })}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Reading Slider */}
         <div className="relative overflow-hidden">
           <SparkleEffect isActive={showSparkles} onComplete={handleSparkleComplete} />
           <ReadingSlider
@@ -646,17 +683,17 @@ export default function PlanificateurPage() {
           targetPages={activeGoal?.target_value}
         />
 
-        {/* Reset Button - always visible when goal or progress exists */}
+        {/* Reset Button */}
         {(totalPagesRead > 0 || activeGoal || savedSetup) && (
-          <div className="flex justify-center pt-4 pb-2">
+          <div className="flex justify-center pt-2 pb-2">
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setShowResetConfirm(true)}
-              className="text-muted-foreground hover:text-destructive text-xs gap-1.5 opacity-70 hover:opacity-100 transition-opacity"
+              className="text-muted-foreground hover:text-destructive text-xs gap-1.5 opacity-60 hover:opacity-100 transition-opacity"
             >
               <RotateCcw className="h-3 w-3" />
-              Réinitialiser ma lecture et mon objectif
+              Réinitialiser
             </Button>
           </div>
         )}
@@ -668,12 +705,12 @@ export default function PlanificateurPage() {
         <Dialog open={showResetConfirm} onOpenChange={setShowResetConfirm}>
           <DialogContent className="max-w-sm mx-4 rounded-3xl">
             <DialogHeader>
-              <DialogTitle className="font-display text-xl text-center">
+              <DialogTitle className="font-display text-lg text-center">
                 Réinitialiser la lecture
               </DialogTitle>
             </DialogHeader>
-            <DialogDescription className="text-center text-muted-foreground">
-              Voulez-vous vraiment recommencer à zéro ? Toute votre progression sera effacée.
+            <DialogDescription className="text-center text-sm text-muted-foreground">
+              Toute ta progression sera effacée.
             </DialogDescription>
             <div className="flex gap-3 mt-4">
               <Button variant="outline" onClick={() => setShowResetConfirm(false)} className="flex-1 rounded-2xl">
@@ -687,7 +724,7 @@ export default function PlanificateurPage() {
                 }}
                 className="flex-1 rounded-2xl"
               >
-                Oui, réinitialiser
+                Réinitialiser
               </Button>
             </div>
           </DialogContent>
