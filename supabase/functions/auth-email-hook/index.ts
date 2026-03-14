@@ -79,6 +79,120 @@ const SAMPLE_DATA: Record<string, object> = {
   },
 }
 
+type UnknownRecord = Record<string, unknown>
+
+type NormalizedHookPayload = {
+  rawEmailType: string | null
+  emailType: string | null
+  recipientEmail: string | null
+  confirmationUrl: string | null
+  token: string | null
+  newEmail: string | null
+}
+
+const EMAIL_TYPE_ALIASES: Record<string, string> = {
+  email: 'signup',
+  confirm_signup: 'signup',
+  email_verification: 'signup',
+  email_confirmation: 'signup',
+  confirmation: 'signup',
+}
+
+function asRecord(value: unknown): UnknownRecord {
+  return value && typeof value === 'object' ? (value as UnknownRecord) : {}
+}
+
+function pickFirstString(...values: unknown[]): string | null {
+  for (const value of values) {
+    if (typeof value === 'string' && value.trim()) {
+      return value
+    }
+  }
+  return null
+}
+
+function normalizeEmailType(rawType: string | null): string | null {
+  if (!rawType) return null
+  const normalized = rawType.trim().toLowerCase()
+  return EMAIL_TYPE_ALIASES[normalized] ?? normalized
+}
+
+function toVerifyType(emailType: string): string {
+  const normalized = normalizeEmailType(emailType) ?? emailType
+  return normalized === 'signup' ? 'signup' : normalized
+}
+
+function buildConfirmationUrl(params: {
+  providedUrl: string | null
+  tokenHash: string | null
+  emailType: string | null
+  redirectTo: string | null
+}): string | null {
+  if (params.providedUrl) return params.providedUrl
+  if (!params.tokenHash || !params.emailType) return null
+
+  const supabaseUrl = Deno.env.get('SUPABASE_URL')
+  if (!supabaseUrl) return null
+
+  const url = new URL(`${supabaseUrl}/auth/v1/verify`)
+  url.searchParams.set('token_hash', params.tokenHash)
+  url.searchParams.set('type', toVerifyType(params.emailType))
+  if (params.redirectTo) {
+    url.searchParams.set('redirect_to', params.redirectTo)
+  }
+
+  return url.toString()
+}
+
+function normalizePayload(payload: unknown): NormalizedHookPayload {
+  const root = asRecord(payload)
+  const data = asRecord(root.data)
+  const emailData = asRecord(data.email_data ?? root.email_data)
+  const userData = asRecord(data.user ?? root.user)
+
+  const rawEmailType = pickFirstString(
+    data.action_type,
+    data.email_action_type,
+    emailData.email_action_type,
+    root.action_type,
+    root.email_action_type,
+  )
+
+  const emailType = normalizeEmailType(rawEmailType)
+
+  const recipientEmail = pickFirstString(
+    data.email,
+    emailData.email,
+    userData.email,
+    root.email,
+  )
+
+  const token = pickFirstString(data.token, emailData.token, root.token)
+  const tokenHash = pickFirstString(data.token_hash, emailData.token_hash, root.token_hash)
+  const redirectTo = pickFirstString(data.redirect_to, emailData.redirect_to, root.redirect_to)
+  const providedUrl = pickFirstString(
+    data.url,
+    data.confirmation_url,
+    emailData.action_link,
+    emailData.url,
+    root.url,
+  )
+
+  return {
+    rawEmailType,
+    emailType,
+    recipientEmail,
+    confirmationUrl: buildConfirmationUrl({
+      providedUrl,
+      tokenHash,
+      emailType: rawEmailType ?? emailType,
+      redirectTo,
+    }),
+    token,
+    newEmail: pickFirstString(data.new_email, emailData.new_email, root.new_email),
+  }
+}
+
 // Preview endpoint handler - returns rendered HTML without sending email
 async function handlePreview(req: Request): Promise<Response> {
   const previewCorsHeaders = {
