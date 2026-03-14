@@ -5,6 +5,7 @@ import { AppLayout } from '@/components/layout/AppLayout';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { getSM2Config } from '@/lib/sm2Config';
+import { pausePomodoro } from '@/components/hifz/PomodoroTimer';
 import HifzConfig from '@/components/hifz/HifzConfig';
 import HifzGoalOnboarding from '@/components/hifz/HifzGoalOnboarding';
 import HifzDiagnostic from '@/components/hifz/HifzDiagnostic';
