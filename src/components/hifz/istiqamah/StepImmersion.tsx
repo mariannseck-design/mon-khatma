@@ -107,10 +107,10 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
   useEffect(() => {
     if (!loading) {
       saveImmersionState(surahNumber, verseStart, verseEnd, {
-        verseIdx: currentVerseIndex, phase, listenCount, memoryCount, liaisonVerses,
+        verseIdx: currentVerseIndex, phase, listenCount, readCount, memoryCount, liaisonVerses,
       });
     }
-  }, [currentVerseIndex, phase, listenCount, memoryCount, liaisonVerses, loading, surahNumber, verseStart, verseEnd]);
+  }, [currentVerseIndex, phase, listenCount, readCount, memoryCount, liaisonVerses, loading, surahNumber, verseStart, verseEnd]);
 
   useEffect(() => {
     setLoading(true);
