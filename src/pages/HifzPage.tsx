@@ -266,11 +266,14 @@ export default function HifzPage() {
     setPendingResume(null);
   };
 
+  const [showRestartConfirm, setShowRestartConfirm] = useState(false);
+
   const handleRestart = () => {
     // If Phase B: keep same session config but restart at step 2 (beginning of Phase B)
     if (phaseParam === 'B' && pendingResume) {
       clearLocalSession();
       setShowResumePrompt(false);
+      setShowRestartConfirm(false);
       setPendingResume(null);
       setSession(pendingResume.session);
       setStep(2);
@@ -283,6 +286,7 @@ export default function HifzPage() {
     }
     clearLocalSession();
     setShowResumePrompt(false);
+    setShowRestartConfirm(false);
     setPendingResume(null);
     setSession(null);
     setStep(-1);
@@ -524,13 +528,37 @@ export default function HifzPage() {
               >
                 ▶️ Reprendre ma session
               </button>
-              <button
-                onClick={handleRestart}
-                className="w-full py-3 rounded-xl font-bold text-sm transition-all active:scale-95"
-                style={{ background: 'rgba(255,255,255,0.1)', color: 'rgba(240,230,200,0.8)', border: '1px solid rgba(240,230,200,0.2)' }}
-              >
-                {phaseParam === 'B' ? '🔄 Recommencer l\'Étape B' : '🔄 Recommencer une nouvelle session'}
-              </button>
+              {!showRestartConfirm ? (
+                <button
+                  onClick={() => setShowRestartConfirm(true)}
+                  className="w-full py-3 rounded-xl font-bold text-sm transition-all active:scale-95"
+                  style={{ background: 'rgba(255,255,255,0.1)', color: 'rgba(240,230,200,0.8)', border: '1px solid rgba(240,230,200,0.2)' }}
+                >
+                  {phaseParam === 'B' ? '🔄 Recommencer l\'Étape B' : '🔄 Recommencer une nouvelle session'}
+                </button>
+              ) : (
+                <div className="space-y-2">
+                  <p className="text-xs text-center" style={{ color: 'rgba(240,230,200,0.9)' }}>
+                    ⚠️ Ta progression actuelle sera perdue. Confirmer ?
+                  </p>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setShowRestartConfirm(false)}
+                      className="flex-1 py-2.5 rounded-xl font-bold text-xs transition-all active:scale-95"
+                      style={{ background: 'rgba(255,255,255,0.1)', color: 'rgba(240,230,200,0.7)', border: '1px solid rgba(240,230,200,0.2)' }}
+                    >
+                      Annuler
+                    </button>
+                    <button
+                      onClick={handleRestart}
+                      className="flex-1 py-2.5 rounded-xl font-bold text-xs transition-all active:scale-95"
+                      style={{ background: 'rgba(220,80,80,0.3)', color: '#f0c8c8', border: '1px solid rgba(220,80,80,0.4)' }}
+                    >
+                      Oui, recommencer
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </motion.div>
         </div>
