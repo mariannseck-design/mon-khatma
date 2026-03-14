@@ -46,6 +46,15 @@ function saveStorage(status: TimerStatus, focusDuration: number, endTimestamp: n
   sessionStorage.setItem(SS_TIMELEFT, String(timeLeft));
 }
 
+/** Pause the Pomodoro externally (e.g. when user leaves the page) */
+export function pausePomodoro() {
+  const stored = readStorage();
+  if (stored.status === 'focus' || stored.status === 'break') {
+    const remaining = Math.max(0, Math.ceil((stored.endTimestamp - Date.now()) / 1000));
+    saveStorage('paused', stored.focusDuration, 0, remaining);
+  }
+}
+
 export default function PomodoroTimer() {
   const [initialized, setInitialized] = useState(false);
   const [status, setStatus] = useState<TimerStatus>('idle');
