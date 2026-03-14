@@ -1,21 +1,44 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Statistiques Hifz sur la page Profil
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Contexte
+Le projet dispose deja de `HifzActivitySummary` (barre hebdomadaire), de `HifzSuiviPage` (suivi par Juz), et de `recharts` installé. La page Profil est simple (infos + rappels + déconnexion). L'objectif est d'y ajouter une section statistiques Hifz complète.
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Ce qui sera construit
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+Un nouveau composant `HifzProfileStats` intégré dans `ProfilPage.tsx`, affichant :
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+1. **4 KPI en grille 2x2** :
+   - Versets mémorisés (total depuis `hifz_memorized_verses`)
+   - Sessions complétées (total depuis `hifz_sessions` + `muraja_sessions`)
+   - Streak actuel (jours consécutifs, calcul existant dans `HifzActivitySummary`)
+   - Temps moyen par session (estimé via `started_at` / `completed_at` de `hifz_sessions`)
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+2. **Graphique de progression (recharts AreaChart)** :
+   - 30 derniers jours
+   - Axe Y = versets cumulés mémorisés
+   - Données issues de `hifz_memorized_verses.memorized_at` agrégées par jour
+   - Style cohérent avec le thème (couleur primary/emerald)
+
+3. **Barre de régularité hebdomadaire** : réutilisation du composant `HifzActivitySummary` existant
+
+### Fichiers modifiés
+
+| Fichier | Action |
+|---|---|
+| `src/components/profil/HifzProfileStats.tsx` | **Créer** — composant autonome avec les 4 KPI, le graphique recharts, et l'import de `HifzActivitySummary` |
+| `src/pages/ProfilPage.tsx` | **Modifier** — importer et afficher `HifzProfileStats` entre la carte Informations et la carte Rappels |
+
+### Détails techniques
+
+- **Requêtes Supabase** (toutes protégées par RLS existant) :
+  - `hifz_memorized_verses` → count total versets + agrégation par `memorized_at` pour le graphique
+  - `hifz_sessions` (completed) → count sessions + calcul durée moyenne via `started_at`/`completed_at`
+  - `muraja_sessions` (completed) → count sessions pour le total
+  - Streak : même logique que `HifzActivitySummary` (60 jours glissants)
+
+- **Graphique** : `recharts` AreaChart avec `ResponsiveContainer`, gradient fill emerald, pas d'axe Y visible, labels jours sur axe X
+
+- **Aucune migration DB nécessaire** — toutes les données existent déjà dans les tables actuelles
 
