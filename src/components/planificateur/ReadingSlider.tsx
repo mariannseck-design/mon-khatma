@@ -16,7 +16,7 @@ import { SURAHS } from '@/lib/surahData';
 const TOTAL_QURAN_PAGES = 604;
 
 interface ReadingSliderProps {
-  onLogReading: (pages: number) => Promise<void>;
+  onLogReading: (absolutePage: number) => Promise<void>;
   isDisabled?: boolean;
   todayPages?: number;
   targetPages?: number;
@@ -39,10 +39,9 @@ export function ReadingSlider({
   const handleSubmit = async () => {
     const page = parseInt(pageNumber);
     if (page > 0 && page <= TOTAL_QURAN_PAGES) {
-      // Calculate pages read based on current position vs previous progress
-      const pagesRead = Math.max(1, page - totalPagesRead);
       setIsLogging(true);
-      await onLogReading(pagesRead);
+      // Pass the absolute page number directly — parent handles the logic
+      await onLogReading(page);
       setPageNumber('');
       setSelectedSurah('');
       setIsLogging(false);

@@ -1,38 +1,21 @@
 
 
-## Diagnostic du Planificateur — Bugs identifiés
+# Diagnostic : 404 sur /quran-reader
 
-### Problème principal : calcul de pages incorrect dans ReadingSlider
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-Le composant `ReadingSlider.tsx` (section "Où je me suis arrêté(e)") a un bug critique dans sa logique de calcul :
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-```typescript
-// Ligne 43 — logique actuelle
-const pagesRead = Math.max(1, page - totalPagesRead);
-```
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-**Scénarios qui cassent :**
-1. L'utilisatrice est à la page 15 (`totalPagesRead = 15`), elle entre page 10 par erreur → `Math.max(1, 10-15) = 1` → ça ajoute 1 page au lieu de corriger la position
-2. L'utilisatrice entre la même page une 2e fois → ça ajoute 1 page à chaque fois
-3. Impossible de corriger sa position — le système est purement additif, pas un "marque-page"
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-### Correction proposée
-
-Transformer la logique pour que le numéro de page entré **devienne** la nouvelle position (marque-page), pas un calcul de différence :
-
-**`src/components/planificateur/ReadingSlider.tsx`** :
-- Si la page entrée > `totalPagesRead` → enregistrer la différence (cas normal, elle avance)
-- Si la page entrée ≤ `totalPagesRead` → ne rien ajouter, mais permettre l'enregistrement comme correction de position (toast informatif)
-- Ajouter une validation : si la page entrée est 0 ou invalide, bloquer
-
-**`src/pages/PlanificateurPage.tsx`** :
-- Adapter `logReading` pour accepter un mode "set position" en plus du mode "add pages"
-- Ajouter une fonction `setReadingPosition(page)` qui met à jour `totalPagesRead` directement dans la DB au lieu d'ajouter
-
-### Fichiers modifiés
-
-| Fichier | Modification |
-|---|---|
-| `src/components/planificateur/ReadingSlider.tsx` | Passer la page brute au parent au lieu de calculer la différence |
-| `src/pages/PlanificateurPage.tsx` | Nouvelle logique `logReading` qui gère position absolue vs ajout |
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
