@@ -554,7 +554,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
                 )}
               </motion.button>
               {minReached && (
-                <ContinueButton onClick={handleContinueListen} label="Passer à la lecture" />
+                <ContinueButton onClick={handleContinueListen} label="Passer à la mémorisation" />
               )}
             </div>
           </motion.div>
@@ -564,10 +564,10 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
         {(phase === 'read' || phase === 'liaison-read') && (
           <motion.div key={phase} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-4">
             <PhaseHeader
-              title={isLiaison ? 'Liaison — Lecture Mushaf' : 'Lire en regardant le Mushaf (3 fois minimum)'}
+              title={isLiaison ? 'Liaison — Mémorisation Mushaf' : 'Mémoriser en regardant le Mushaf (3 fois minimum)'}
               subtitle={isLiaison
-                ? `Lisez les versets ${liaisonVerses[0]}–${liaisonVerses[liaisonVerses.length - 1]} sans audio`
-                : 'Lis le verset en regardant le Mushaf, sans écouter l\'audio'
+                ? `Mémorisez les versets ${liaisonVerses[0]}–${liaisonVerses[liaisonVerses.length - 1]} sans audio`
+                : 'Mémorise le verset en regardant le Mushaf, sans écouter l\'audio'
               }
             />
 
@@ -585,7 +585,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
                 className="flex items-center gap-2 px-6 py-2.5 rounded-xl font-semibold text-sm"
                 style={{ background: 'rgba(245,158,11,0.15)', border: '1px solid rgba(245,158,11,0.4)', color: '#f59e0b' }}
               >
-                <BookOpen className="h-4 w-4" /> J'ai lu ✓
+                <BookOpen className="h-4 w-4" /> Mémorisé ✓
               </motion.button>
 
               {minReached && (
@@ -596,7 +596,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
             <div className="rounded-xl px-4 py-2.5 mx-auto max-w-sm"
               style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
               <p className="text-[11px] font-bold leading-relaxed text-center" style={{ color: '#ffffff' }}>
-                Lecture {readCount + 1} — Lis attentivement en regardant le Mushaf, sans audio
+                Mémorisation {readCount + 1} — Mémorise attentivement en regardant le Mushaf, sans audio
               </p>
             </div>
           </motion.div>
@@ -662,8 +662,8 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
         {(phase === 'error' || phase === 'liaison-error') && (
           <motion.div key={phase} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-4">
             <PhaseHeader
-              title={isLiaison ? 'Relire les versets' : 'Relire le verset'}
-              subtitle="Pas de panique ! Relis attentivement puis recommence"
+              title={isLiaison ? 'Remémoriser les versets' : 'Remémoriser le verset'}
+              subtitle="Pas de panique ! Remémorise attentivement puis recommence"
             />
 
             <div className="space-y-2">
