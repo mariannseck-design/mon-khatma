@@ -24,11 +24,18 @@ const COLORS = {
 
 const SHOW_MOURAD_CARD = false;
 const STEP_NAMES = ['Intention', 'Réveil', 'Imprégnation', 'Istiqâmah', 'Validation'];
+const STEP_PHASE: Record<number, { label: string; tag: string }> = {
+  0: { label: 'Étape A', tag: 'Préparation' },
+  1: { label: 'Étape A', tag: 'Préparation' },
+  2: { label: 'Étape B', tag: 'Mémorisation' },
+  3: { label: 'Étape B', tag: 'Mémorisation' },
+  4: { label: 'Étape B', tag: 'Mémorisation' },
+};
 const MOURAD_PHASE_NAMES = ['Compréhension', 'Imprégnation', 'Liaison', 'Ancrage'];
 
 export default function HifzHubPage() {
   const { user, hasFullAccess, isAdmin, accessLoading } = useAuth();
-  const [activeHifzSession, setActiveHifzSession] = useState<{ surahName: string; stepName: string; pageLabel?: string } | null>(null);
+  const [activeHifzSession, setActiveHifzSession] = useState<{ surahName: string; stepName: string; pageLabel?: string; phase?: { label: string; tag: string } } | null>(null);
   const [activeMouradSession, setActiveMouradSession] = useState<{ surahName: string; phaseName: string; pageLabel?: string } | null>(null);
   const [pendingReviews, setPendingReviews] = useState(0);
 
@@ -77,6 +84,7 @@ export default function HifzHubPage() {
               surahName: surah?.name || `Sourate ${data.session.surahNumber}`,
               stepName: STEP_NAMES[data.step] || `Étape ${data.step}`,
               pageLabel,
+              phase: STEP_PHASE[data.step],
             });
             return;
           }
@@ -99,6 +107,7 @@ export default function HifzHubPage() {
             surahName: surah?.name || `Sourate ${dbSession.surah_number}`,
             stepName: STEP_NAMES[dbSession.current_step] || `Étape ${dbSession.current_step}`,
             pageLabel,
+            phase: STEP_PHASE[dbSession.current_step],
           });
         }
       }
@@ -262,6 +271,23 @@ export default function HifzHubPage() {
                         ? `${activeHifzSession.surahName} — ${activeHifzSession.stepName}${activeHifzSession.pageLabel ? ` (${activeHifzSession.pageLabel})` : ''}`
                         : 'Graver le Coran dans les cœurs'}
                     </p>
+                    {activeHifzSession?.phase && (
+                      <span
+                        className="inline-flex items-center gap-1 mt-2 px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide uppercase"
+                        style={{
+                          background: activeHifzSession.phase.label === 'Étape A'
+                            ? `${COLORS.goldAccent}25`
+                            : `${COLORS.goldAccent}40`,
+                          color: COLORS.goldAccent,
+                          border: `1px solid ${COLORS.goldAccent}50`,
+                        }}
+                      >
+                        {activeHifzSession.phase.label === 'Étape B' && (
+                          <span className="inline-block w-1.5 h-1.5 rounded-full mr-0.5" style={{ background: COLORS.goldAccent, boxShadow: `0 0 4px ${COLORS.goldAccent}` }} />
+                        )}
+                        {activeHifzSession.phase.label} — {activeHifzSession.phase.tag}
+                      </span>
+                    )}
                   </div>
                 </div>
               </motion.div>
