@@ -125,10 +125,10 @@ export default function DefiAlBaqara({ disabled = false }: { disabled?: boolean 
     saveChallenge(state);
   };
 
-  const resetChallenge = () => {
+  const resetChallenge = useCallback(() => {
     setChallenge(null);
     saveChallenge(null);
-  };
+  }, [saveChallenge]);
 
   const toggleToday = () => {
     if (!challenge) return;
@@ -142,6 +142,18 @@ export default function DefiAlBaqara({ disabled = false }: { disabled?: boolean 
     setChallenge(updated);
     saveChallenge(updated);
   };
+
+  // Auto-reset after completion (show celebration for 4 seconds then reset)
+  useEffect(() => {
+    if (!challenge) return;
+    const progress = Math.min((challenge.checkedDays.length / challenge.targetDays) * 100, 100);
+    if (progress >= 100) {
+      const timer = setTimeout(() => {
+        resetChallenge();
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [challenge, resetChallenge]);
 
   if (loading) return null;
 
