@@ -640,6 +640,12 @@ export default function PlanificateurPage() {
           />
         </div>
 
+        {/* Reading History */}
+        <ReadingHistory
+          entries={allProgress}
+          targetPages={activeGoal?.target_value}
+        />
+
         {/* Reset Button - always visible when goal or progress exists */}
         {(totalPagesRead > 0 || activeGoal || savedSetup) && (
           <div className="flex justify-center pt-4 pb-2">
