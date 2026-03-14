@@ -1,30 +1,21 @@
 
 
-## Séparer la carte Hifz en deux cartes : Étape A et Étape B
+# Diagnostic : 404 sur /quran-reader
 
-### Concept
-Remplacer la carte unique "Méthode Tikrar-ISTIQÂMAH" sur le HifzHub par **deux cartes distinctes** :
-- **Étape A — Préparation** : Intention + Imprégnation (faisable la veille)
-- **Étape B — Mémorisation** : Mémorisation + Validation + Tikrâr
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-Chaque carte affiche son propre état (session active, complétion) et redirige vers `/hifz` avec un paramètre `?phase=A` ou `?phase=B` pour reprendre au bon endroit.
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-### Changements
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-#### 1. `src/pages/HifzHubPage.tsx`
-- **Remplacer** le bloc unique "Méthode Tikrar-ISTIQÂMAH" (lignes ~232-330) par deux cartes :
-  - **Carte Étape A** : fond emerald clair, icône BookOpen, sous-titre "Intention & Imprégnation". Si session active en step 0-1, affiche "▶️ Continuer". Si step ≥ 2, affiche "✅ Terminée".
-  - **Carte Étape B** : fond emerald foncé, icône Play/BookHeart, sous-titre "Mémorisation, Validation & Tikrâr". Si session active en step 2-4, affiche "▶️ Continuer". Si pas encore à l'étape B, affiche "Disponible après l'Étape A".
-- Enrichir le state `activeHifzSession` pour stocker le `currentStep` numérique (en plus du nom).
-- Les liens pointent vers `/hifz?phase=A` et `/hifz?phase=B`.
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-#### 2. `src/pages/HifzPage.tsx`
-- Lire le query param `phase` à l'ouverture.
-- Si `phase=B` et qu'une session existe en step < 2, sauter directement au step 2 (début Étape B).
-- Si `phase=A` et step ≥ 2, ne rien changer (la session continue normalement).
-- Comportement par défaut inchangé si pas de paramètre.
-
-### Fichiers modifiés
-- `src/pages/HifzHubPage.tsx` — deux cartes A/B au lieu d'une
-- `src/pages/HifzPage.tsx` — lecture du query param `phase`
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

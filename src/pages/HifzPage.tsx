@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useDevMode } from '@/hooks/useDevMode';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { useAuth } from '@/contexts/AuthContext';
@@ -82,6 +82,8 @@ const PHASE_LABELS: Record<number, string> = {
 export default function HifzPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const phaseParam = searchParams.get('phase');
   const [step, setStep] = useState<number>(-1);
   const [session, setSession] = useState<HifzSession | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -243,12 +245,21 @@ export default function HifzPage() {
 
   const handleResume = () => {
     if (pendingResume) {
+      let resumeStep = pendingResume.step;
+      // If phase=B requested and session is still in phase A, jump to step 2
+      if (phaseParam === 'B' && resumeStep < 2) {
+        resumeStep = 2;
+      }
       setSession(pendingResume.session);
-      setStep(pendingResume.step);
+      setStep(resumeStep);
       setSessionId(pendingResume.sessionId);
       // Restaurer le step_status (contient tikrar_started_at, tikrar_count, etc.)
       if (pendingResume.stepStatus && typeof pendingResume.stepStatus === 'object') {
         stepTimesRef.current = pendingResume.stepStatus;
+      }
+      // Persist the updated step
+      if (resumeStep !== pendingResume.step) {
+        saveLocalSession(pendingResume.session, resumeStep, pendingResume.sessionId, pendingResume.stepStatus);
       }
     }
     setShowResumePrompt(false);

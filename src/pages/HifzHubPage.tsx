@@ -35,7 +35,7 @@ const MOURAD_PHASE_NAMES = ['Compréhension', 'Imprégnation', 'Liaison', 'Ancra
 
 export default function HifzHubPage() {
   const { user, hasFullAccess, isAdmin, accessLoading } = useAuth();
-  const [activeHifzSession, setActiveHifzSession] = useState<{ surahName: string; stepName: string; pageLabel?: string; phase?: { label: string; tag: string } } | null>(null);
+  const [activeHifzSession, setActiveHifzSession] = useState<{ surahName: string; stepName: string; pageLabel?: string; phase?: { label: string; tag: string }; currentStep: number } | null>(null);
   const [activeMouradSession, setActiveMouradSession] = useState<{ surahName: string; phaseName: string; pageLabel?: string } | null>(null);
   const [pendingReviews, setPendingReviews] = useState(0);
 
@@ -85,6 +85,7 @@ export default function HifzHubPage() {
               stepName: STEP_NAMES[data.step] || `Étape ${data.step}`,
               pageLabel,
               phase: STEP_PHASE[data.step],
+              currentStep: data.step,
             });
             return;
           }
@@ -108,6 +109,7 @@ export default function HifzHubPage() {
             stepName: STEP_NAMES[dbSession.current_step] || `Étape ${dbSession.current_step}`,
             pageLabel,
             phase: STEP_PHASE[dbSession.current_step],
+            currentStep: dbSession.current_step,
           });
         }
       }
@@ -229,93 +231,163 @@ export default function HifzHubPage() {
           )}
         </motion.div>
 
-        {/* Méthode Tikrar-ISTIQÂMAH */}
+        {/* Étape A — Préparation */}
         <motion.div variants={itemVariants}>
           {hasFullAccess && !accessLoading ? (
-            <Link to="/hifz" className="block">
-              <motion.div
-                className="relative overflow-hidden rounded-[2rem] p-7 group"
-                style={{
-                  background: activeHifzSession
-                    ? `linear-gradient(135deg, ${COLORS.emeraldDeep} 0%, ${COLORS.emerald} 100%)`
-                    : `linear-gradient(135deg, ${COLORS.emerald} 0%, ${COLORS.emeraldLight} 100%)`,
-                  border: `2px solid ${COLORS.gold}40`,
-                  boxShadow: activeHifzSession
-                    ? `0 8px 32px -8px ${COLORS.emeraldDeep}70`
-                    : `0 8px 32px -8px ${COLORS.emerald}50`,
-                  borderLeft: activeHifzSession ? `4px solid ${COLORS.goldAccent}` : undefined,
-                }}
-                whileTap={{ scale: 0.97 }}
-              >
-                <div className="absolute -bottom-4 -right-4 w-32 h-32 rounded-full blur-xl" style={{ background: `${COLORS.gold}10` }} />
-                <div className="relative z-10 flex items-center gap-5">
-                  <div
-                    className="w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0"
-                    style={{ background: `${COLORS.gold}22`, border: `1px solid ${COLORS.gold}35` }}
+            (() => {
+              const isActiveInA = activeHifzSession && activeHifzSession.currentStep <= 1;
+              const phaseADone = activeHifzSession && activeHifzSession.currentStep >= 2;
+              return (
+                <Link to="/hifz?phase=A" className="block">
+                  <motion.div
+                    className="relative overflow-hidden rounded-[2rem] p-6 group"
+                    style={{
+                      background: phaseADone
+                        ? `linear-gradient(135deg, ${COLORS.emeraldLight} 0%, ${COLORS.sageLight} 100%)`
+                        : `linear-gradient(135deg, ${COLORS.emerald} 0%, ${COLORS.emeraldLight} 100%)`,
+                      border: phaseADone ? `2px solid ${COLORS.goldAccent}60` : `2px solid ${COLORS.gold}40`,
+                      boxShadow: `0 6px 24px -8px ${COLORS.emerald}40`,
+                      borderLeft: isActiveInA ? `4px solid ${COLORS.goldAccent}` : undefined,
+                    }}
+                    whileTap={{ scale: 0.97 }}
                   >
-                    {activeHifzSession ? (
-                      <Play className="h-8 w-8" style={{ color: COLORS.goldAccent }} />
-                    ) : (
-                      <BookOpen className="h-8 w-8" style={{ color: '#fff' }} />
-                    )}
-                  </div>
-                  <div className="flex-1">
-                    <h3
-                      className="text-sm font-bold tracking-[0.08em] uppercase"
-                      style={{ fontFamily: "'Inter', sans-serif", color: activeHifzSession ? COLORS.goldAccent : '#fff' }}
-                    >
-                      {activeHifzSession ? '▶️ Continuer ma session' : <>Méthode Tikrar-ISTIQÂMAH<sup className="text-[0.6em] ml-0.5">1</sup></>}
-                    </h3>
-                    <p className="text-white/70 text-sm mt-1">
-                      {activeHifzSession
-                        ? `${activeHifzSession.surahName} — ${activeHifzSession.stepName}${activeHifzSession.pageLabel ? ` (${activeHifzSession.pageLabel})` : ''}`
-                        : 'Graver le Coran dans les cœurs'}
-                    </p>
-                    {activeHifzSession?.phase && (
-                      <span
-                        className="inline-flex items-center gap-1 mt-2 px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide uppercase"
-                        style={{
-                          background: activeHifzSession.phase.label === 'Étape A'
-                            ? `${COLORS.goldAccent}25`
-                            : `${COLORS.goldAccent}40`,
-                          color: COLORS.goldAccent,
-                          border: `1px solid ${COLORS.goldAccent}50`,
-                        }}
+                    <div className="absolute -bottom-4 -right-4 w-28 h-28 rounded-full blur-xl" style={{ background: `${COLORS.gold}10` }} />
+                    <div className="relative z-10 flex items-center gap-4">
+                      <div
+                        className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0"
+                        style={{ background: `${COLORS.gold}22`, border: `1px solid ${COLORS.gold}35` }}
                       >
-                        {activeHifzSession.phase.label === 'Étape B' && (
-                          <span className="inline-block w-1.5 h-1.5 rounded-full mr-0.5" style={{ background: COLORS.goldAccent, boxShadow: `0 0 4px ${COLORS.goldAccent}` }} />
+                        {phaseADone ? (
+                          <span className="text-2xl">✅</span>
+                        ) : isActiveInA ? (
+                          <Play className="h-7 w-7" style={{ color: COLORS.goldAccent }} />
+                        ) : (
+                          <BookOpen className="h-7 w-7" style={{ color: '#fff' }} />
                         )}
-                        {activeHifzSession.phase.label} — {activeHifzSession.phase.tag}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </motion.div>
-            </Link>
+                      </div>
+                      <div className="flex-1">
+                        <h3
+                          className="text-sm font-bold tracking-[0.08em] uppercase"
+                          style={{ fontFamily: "'Inter', sans-serif", color: phaseADone ? COLORS.goldAccent : '#fff' }}
+                        >
+                          {phaseADone ? '✅ Étape A — Terminée' : isActiveInA ? '▶️ Continuer l\'Étape A' : 'Étape A — Préparation'}
+                        </h3>
+                        <p className="text-white/70 text-xs mt-1">
+                          {isActiveInA
+                            ? `${activeHifzSession!.surahName} — ${activeHifzSession!.stepName}${activeHifzSession!.pageLabel ? ` (${activeHifzSession!.pageLabel})` : ''}`
+                            : 'Intention & Imprégnation'}
+                        </p>
+                        {phaseADone && (
+                          <p className="text-white/50 text-[10px] mt-1 italic">Faisable la veille · Appuyer pour revoir</p>
+                        )}
+                      </div>
+                    </div>
+                  </motion.div>
+                </Link>
+              );
+            })()
           ) : (
             <motion.div
-              className="relative overflow-hidden rounded-[2rem] p-7 opacity-60 cursor-not-allowed"
+              className="relative overflow-hidden rounded-[2rem] p-6 opacity-60 cursor-not-allowed"
               style={{
                 background: `linear-gradient(135deg, ${COLORS.emerald} 0%, ${COLORS.emeraldLight} 100%)`,
                 border: `2px solid ${COLORS.gold}20`,
               }}
             >
-              <div className="absolute -bottom-4 -right-4 w-32 h-32 rounded-full blur-xl" style={{ background: `${COLORS.gold}10` }} />
-              <div className="relative z-10 flex items-center gap-5">
-                <div
-                  className="w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0"
-                  style={{ background: `${COLORS.gold}22`, border: `1px solid ${COLORS.gold}35` }}
-                >
-                  <BookOpen className="h-8 w-8" style={{ color: '#fff' }} />
+              <div className="relative z-10 flex items-center gap-4">
+                <div className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0" style={{ background: `${COLORS.gold}22`, border: `1px solid ${COLORS.gold}35` }}>
+                  <BookOpen className="h-7 w-7" style={{ color: '#fff' }} />
                 </div>
                 <div className="flex-1">
-                  <h3
-                    className="text-sm font-bold tracking-[0.08em] uppercase"
-                    style={{ fontFamily: "'Inter', sans-serif", color: '#fff' }}
+                  <h3 className="text-sm font-bold tracking-[0.08em] uppercase" style={{ fontFamily: "'Inter', sans-serif", color: '#fff' }}>Étape A — Préparation</h3>
+                  <p className="text-white/70 text-xs mt-1">Bientôt disponible in shaa Allah</p>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </motion.div>
+
+        {/* Étape B — Mémorisation */}
+        <motion.div variants={itemVariants}>
+          {hasFullAccess && !accessLoading ? (
+            (() => {
+              const phaseADone = activeHifzSession && activeHifzSession.currentStep >= 2;
+              const isActiveInB = activeHifzSession && activeHifzSession.currentStep >= 2 && activeHifzSession.currentStep <= 4;
+              const noSession = !activeHifzSession;
+              const lockedB = activeHifzSession && activeHifzSession.currentStep < 2;
+              return (
+                <Link to={lockedB ? '#' : '/hifz?phase=B'} className="block" onClick={lockedB ? (e) => e.preventDefault() : undefined}>
+                  <motion.div
+                    className="relative overflow-hidden rounded-[2rem] p-6 group"
+                    style={{
+                      background: isActiveInB
+                        ? `linear-gradient(135deg, ${COLORS.emeraldDeep} 0%, ${COLORS.emerald} 100%)`
+                        : lockedB
+                          ? `linear-gradient(135deg, ${COLORS.sage}90 0%, ${COLORS.sageLight}70 100%)`
+                          : `linear-gradient(135deg, ${COLORS.emeraldDeep} 0%, ${COLORS.emerald} 100%)`,
+                      border: isActiveInB ? `2px solid ${COLORS.goldAccent}60` : `2px solid ${COLORS.gold}30`,
+                      boxShadow: `0 6px 24px -8px ${COLORS.emeraldDeep}50`,
+                      borderLeft: isActiveInB ? `4px solid ${COLORS.goldAccent}` : undefined,
+                      opacity: lockedB ? 0.55 : 1,
+                    }}
+                    whileTap={lockedB ? {} : { scale: 0.97 }}
                   >
-                    Méthode Tikrar-ISTIQÂMAH<sup className="text-[0.6em] ml-0.5">1</sup>
-                  </h3>
-                  <p className="text-white/70 text-sm mt-1">Bientôt disponible in shaa Allah</p>
+                    <div className="absolute -bottom-4 -right-4 w-28 h-28 rounded-full blur-xl" style={{ background: `${COLORS.gold}10` }} />
+                    <div className="relative z-10 flex items-center gap-4">
+                      <div
+                        className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0"
+                        style={{ background: `${COLORS.gold}22`, border: `1px solid ${COLORS.gold}35` }}
+                      >
+                        {isActiveInB ? (
+                          <Play className="h-7 w-7" style={{ color: COLORS.goldAccent }} />
+                        ) : (
+                          <BookHeart className="h-7 w-7" style={{ color: lockedB ? '#fff8' : '#fff' }} />
+                        )}
+                      </div>
+                      <div className="flex-1">
+                        <h3
+                          className="text-sm font-bold tracking-[0.08em] uppercase"
+                          style={{ fontFamily: "'Inter', sans-serif", color: isActiveInB ? COLORS.goldAccent : '#fff' }}
+                        >
+                          {isActiveInB ? '▶️ Continuer l\'Étape B' : 'Étape B — Mémorisation'}
+                        </h3>
+                        <p className="text-white/70 text-xs mt-1">
+                          {isActiveInB
+                            ? `${activeHifzSession!.surahName} — ${activeHifzSession!.stepName}${activeHifzSession!.pageLabel ? ` (${activeHifzSession!.pageLabel})` : ''}`
+                            : lockedB
+                              ? 'Disponible après l\'Étape A'
+                              : 'Mémorisation, Validation & Tikrâr'}
+                        </p>
+                        {isActiveInB && activeHifzSession?.phase && (
+                          <span
+                            className="inline-flex items-center gap-1 mt-2 px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide uppercase"
+                            style={{ background: `${COLORS.goldAccent}40`, color: COLORS.goldAccent, border: `1px solid ${COLORS.goldAccent}50` }}
+                          >
+                            <span className="inline-block w-1.5 h-1.5 rounded-full mr-0.5" style={{ background: COLORS.goldAccent, boxShadow: `0 0 4px ${COLORS.goldAccent}` }} />
+                            {activeHifzSession.phase.label} — {activeHifzSession.phase.tag}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </motion.div>
+                </Link>
+              );
+            })()
+          ) : (
+            <motion.div
+              className="relative overflow-hidden rounded-[2rem] p-6 opacity-60 cursor-not-allowed"
+              style={{
+                background: `linear-gradient(135deg, ${COLORS.emeraldDeep} 0%, ${COLORS.emerald} 100%)`,
+                border: `2px solid ${COLORS.gold}20`,
+              }}
+            >
+              <div className="relative z-10 flex items-center gap-4">
+                <div className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0" style={{ background: `${COLORS.gold}22`, border: `1px solid ${COLORS.gold}35` }}>
+                  <BookHeart className="h-7 w-7" style={{ color: '#fff' }} />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-sm font-bold tracking-[0.08em] uppercase" style={{ fontFamily: "'Inter', sans-serif", color: '#fff' }}>Étape B — Mémorisation</h3>
+                  <p className="text-white/70 text-xs mt-1">Bientôt disponible in shaa Allah</p>
                 </div>
               </div>
             </motion.div>
