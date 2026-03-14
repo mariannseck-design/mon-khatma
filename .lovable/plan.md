@@ -1,21 +1,24 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+# Correction : Export par lots
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
-
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+## Problème
+Le script SQL contient toutes les tables en un seul bloc (~867+ lignes d'INSERT). L'éditeur SQL coupe la connexion avant la fin (timeout).
 
 ## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+Modifier la fonction `export-all-data` pour accepter un paramètre `?batch=1`, `?batch=2`, etc. Chaque batch exportera seulement quelques tables à la fois.
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+### Découpage proposé
+- **Batch 1** : `profiles`, `allowed_emails`, `user_roles`, `sisters_circles`, `quran_goals`, `hifz_goals`, `notification_preferences`, `push_subscriptions`, `reading_reminders`
+- **Batch 2** : `quran_progress`, `hifz_sessions`, `hifz_memorized_verses`, `hifz_streaks`, `mourad_sessions`, `muraja_sessions`, `khatma_completions`
+- **Batch 3** : `circle_members`, `circle_messages`, `circle_message_likes`, `favorite_verses`
+- **Batch 4** : `challenge_baqara`, `challenge_kahf`, `challenge_mulk`, `mood_entries`, `ramadan_reading_goals`, `ramadan_daily_tasks`, `ramadan_dhikr_entries`, `ramadan_reviews`, `ramadan_weekly_reports`
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+## Fichier modifié
+- `supabase/functions/export-all-data/index.ts` — ajouter le paramètre `batch` pour exporter par groupes de tables
+
+## Utilisation
+1. Ouvrir `…/export-all-data?batch=1` → copier → coller dans SQL Editor → Run
+2. Répéter pour `?batch=2`, `?batch=3`, `?batch=4`
+3. 4 petits scripts au lieu d'un gros = pas de timeout
 
