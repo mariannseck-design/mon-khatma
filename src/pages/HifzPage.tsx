@@ -317,16 +317,18 @@ export default function HifzPage() {
     pausePomodoro();
 
     if (session && step >= 0 && step <= 4) {
-      saveLocalSession(session, step, sessionId, stepTimesRef.current);
+      // If pausing from the A→B transition screen, save as step 2 so Phase B is unlocked
+      const saveStep = showBreathingPause ? 2 : step;
+      saveLocalSession(session, saveStep, sessionId, stepTimesRef.current);
       if (sessionId && user) {
         await supabase.from('hifz_sessions').update({
-          current_step: step,
+          current_step: saveStep,
           step_status: { ...stepTimesRef.current, paused: true },
         }).eq('id', sessionId);
       }
     }
     navigate('/accueil');
-  }, [session, step, sessionId, user, navigate]);
+  }, [session, step, sessionId, user, navigate, showBreathingPause]);
 
   // After step 1 (Imprégnation), show breathing pause before step 2 (Mémorisation)
   const handleImpregnationComplete = useCallback(() => {
