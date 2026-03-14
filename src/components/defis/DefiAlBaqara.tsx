@@ -157,7 +157,7 @@ export default function DefiAlBaqara({ disabled = false }: { disabled?: boolean 
     if (progress >= 100) {
       const timer = setTimeout(() => {
         resetChallenge();
-      }, 4000);
+      }, 6000);
       return () => clearTimeout(timer);
     }
   }, [challenge, resetChallenge]);
