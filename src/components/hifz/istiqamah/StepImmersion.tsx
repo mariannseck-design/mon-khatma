@@ -568,7 +568,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
         {(phase === 'read' || phase === 'liaison-read') && (
           <motion.div key={phase} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-4">
             <PhaseHeader
-              title={isLiaison ? 'Liaison — Mémorisation Mushaf' : 'Mémoriser en regardant le Mushaf (3 fois minimum)'}
+              title={isLiaison ? 'Liaison — Mémorisation Mushaf' : `Mémoriser en regardant le Mushaf (${TARGET_READ} fois minimum)`}
               subtitle={isLiaison
                 ? `Mémorisez les versets ${liaisonVerses[0]}–${liaisonVerses[liaisonVerses.length - 1]} sans audio`
                 : 'Mémorise le verset en regardant le Mushaf, sans écouter l\'audio'
