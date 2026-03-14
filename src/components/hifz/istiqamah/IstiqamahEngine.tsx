@@ -7,6 +7,7 @@ import HifzStepWrapper from '../HifzStepWrapper';
 import { useIstiqamahState } from './useIstiqamahState';
 import StepComprehension from './StepComprehension';
 import StepImmersion from './StepImmersion';
+import StepValidation from './StepValidation';
 import StepTikrarFinal from './StepTikrarFinal';
 import { RECITERS } from '@/hooks/useQuranAudio';
 
