@@ -126,8 +126,8 @@ export default function IstiqamahEngine({
       <div className="text-center space-y-4">
         {/* Breadcrumb */}
         <div className="flex items-center justify-center gap-1.5">
-          {(['comprehension', 'immersion', 'tikrar'] as const).map((step, i, arr) => {
-            const labels = { immersion: 'Mémorisation', comprehension: 'Compréhension', tikrar: 'Tikrar' };
+        {(['comprehension', 'immersion', 'validation', 'tikrar'] as const).map((step, i, arr) => {
+            const labels: Record<string, string> = { immersion: 'Mémorisation', comprehension: 'Compréhension', validation: 'Validation', tikrar: 'Grande Mémo.' };
             const isCurrent = effectiveStep === step;
             const stepOrder = arr.indexOf(effectiveStep ?? 'comprehension');
             const isDone = i < stepOrder;
