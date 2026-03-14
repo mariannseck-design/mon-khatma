@@ -60,9 +60,9 @@ export default function IstiqamahEngine({
 
     console.log(`[IstiqamahEngine] 🎯 Rendering step: ${currentNode.type} (index=${state.currentNodeIndex}, immersionCompleted=${immersionCompleted})`);
 
-    // DEFENSE IN DEPTH: If tikrar is requested but immersion wasn't completed, force immersion
-    if (currentNode.type === 'tikrar' && !immersionCompleted) {
-      console.warn('[IstiqamahEngine] Rendering guard: tikrar requested but immersion not completed, forcing immersion');
+    // DEFENSE IN DEPTH: If validation/tikrar is requested but immersion wasn't completed, force immersion
+    if ((currentNode.type === 'tikrar' || currentNode.type === 'validation') && !immersionCompleted) {
+      console.warn('[IstiqamahEngine] Rendering guard: immersion not completed, forcing immersion');
       return (
         <StepImmersion
           key="immersion-guard"
