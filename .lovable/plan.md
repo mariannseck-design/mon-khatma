@@ -1,38 +1,21 @@
 
 
-# Plan de migration des données Test → Live
+# Diagnostic : 404 sur /quran-reader
 
-## Ce que vous devez faire
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-1. **Ouvrir le Backend** (bouton ci-dessus)
-2. **S'assurer d'être sur l'environnement Test** (sélecteur en haut)
-3. **Aller dans Database → Run SQL**
-4. **Exécuter les requêtes d'export** que je vais générer — elles produiront des instructions `INSERT` prêtes à copier
-5. **Basculer sur l'environnement Live**
-6. **Coller et exécuter les INSERT** dans Run SQL côté Live
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-## Ce que je vais implémenter
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-Je vais créer une **Edge Function** `export-all-data` qui :
-- Lit toutes les tables dans l'ordre correct (respect des foreign keys)
-- Génère des instructions SQL `INSERT INTO ... VALUES (...)` pour chaque ligne
-- Retourne un script SQL complet, prêt à copier-coller dans Run SQL côté Live
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-### Ordre d'import (foreign keys)
-1. `profiles`, `allowed_emails`, `user_roles`
-2. `sisters_circles`
-3. `quran_goals`, `hifz_goals`, `notification_preferences`, `push_subscriptions`
-4. `quran_progress`, `hifz_sessions`, `hifz_memorized_verses`, `hifz_streaks`, `mourad_sessions`, `muraja_sessions`
-5. `circle_members`, `circle_messages`, `favorite_verses`, `favorite_douas`
-6. `challenge_*`, `ramadan_*`, `daily_emotion_logs`
-
-### Alternative plus simple
-Plutôt qu'une Edge Function, je peux aussi générer directement des requêtes SQL `SELECT` → `COPY` que vous exécutez dans Run SQL pour produire les INSERT.
-
-**Approche recommandée** : Edge Function car elle gère automatiquement l'échappement des données et l'ordre des tables.
-
-## Étapes concrètes
-1. Créer l'edge function `export-all-data`
-2. L'appeler depuis Run SQL ou via curl pour obtenir le script SQL
-3. Vous copiez le résultat et l'exécutez côté Live
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
