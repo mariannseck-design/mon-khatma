@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { Landmark, RotateCcw, Check, BookOpen, Pencil } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Landmark, RotateCcw, Check, BookOpen, Pencil, Trophy } from 'lucide-react';
+import { SparkleEffect } from '@/components/planificateur/SparkleEffect';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
@@ -15,6 +16,12 @@ const COLORS = {
 };
 
 const BAQARA_PAGES = 48;
+
+function formatPace(pages: number, days: number): string {
+  const val = pages / days;
+  const rounded = Math.round(val * 2) / 2;
+  return rounded % 1 === 0 ? rounded.toString() : rounded.toFixed(1);
+}
 
 const PRESETS = [
   { days: 30, label: '1 mois', emoji: '🌙' },
@@ -150,7 +157,7 @@ export default function DefiAlBaqara({ disabled = false }: { disabled?: boolean 
     if (progress >= 100) {
       const timer = setTimeout(() => {
         resetChallenge();
-      }, 4000);
+      }, 6000);
       return () => clearTimeout(timer);
     }
   }, [challenge, resetChallenge]);
@@ -195,7 +202,7 @@ export default function DefiAlBaqara({ disabled = false }: { disabled?: boolean 
 
           <div className={`space-y-2 mb-4 ${disabled ? 'opacity-50 pointer-events-none' : ''}`}>
             {PRESETS.map((g) => {
-              const pace = (BAQARA_PAGES / g.days).toFixed(1);
+              const pace = formatPace(BAQARA_PAGES, g.days);
               return (
                 <button
                   key={g.days}
@@ -250,7 +257,7 @@ export default function DefiAlBaqara({ disabled = false }: { disabled?: boolean 
                 />
                 {customDays && parseInt(customDays) > 0 && (
                   <span className="text-xs font-medium whitespace-nowrap" style={{ color: COLORS.gold }}>
-                    ~{(BAQARA_PAGES / parseInt(customDays)).toFixed(1)} p/j
+                    ~{formatPace(BAQARA_PAGES, parseInt(customDays))} p/j
                   </span>
                 )}
               </motion.div>
@@ -365,16 +372,52 @@ export default function DefiAlBaqara({ disabled = false }: { disabled?: boolean 
           <BookOpen className="h-3.5 w-3.5 animate-[pulse_3s_ease-in-out_infinite]" />
           Continuer ma lecture 📖
         </motion.button>
-        {progress >= 100 && (
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center text-sm mt-3 font-semibold"
-            style={{ color: COLORS.goldAccent }}
-          >
-            🏆 Défi complété ! Allahumma barik !
-          </motion.p>
-        )}
+        <AnimatePresence>
+          {progress >= 100 && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              className="relative flex flex-col items-center gap-2 mt-4 py-4"
+            >
+              <SparkleEffect isActive={progress >= 100} />
+              <motion.div
+                initial={{ scale: 0, rotate: -20 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ type: 'spring', stiffness: 200, damping: 12, delay: 0.2 }}
+              >
+                <Trophy className="h-10 w-10" style={{ color: COLORS.goldAccent }} fill={COLORS.goldAccent} />
+              </motion.div>
+              <motion.p
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="text-base font-bold text-center"
+                style={{ color: COLORS.goldAccent }}
+              >
+                🏆 Défi complété !
+              </motion.p>
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.6 }}
+                className="text-sm text-center font-medium"
+                style={{ color: COLORS.emerald }}
+              >
+                Allahumma barik ! Tu as terminé en {challenge.checkedDays.length} jours 🌟
+              </motion.p>
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.9 }}
+                className="text-xs text-center"
+                style={{ color: `${COLORS.emerald}90` }}
+              >
+                Qu'Allah accepte et facilite la suite 🤲
+              </motion.p>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </motion.div>
   );
