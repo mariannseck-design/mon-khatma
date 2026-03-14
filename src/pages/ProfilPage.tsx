@@ -23,6 +23,7 @@ import { toast } from '@/hooks/use-toast';
 import { Switch } from '@/components/ui/switch';
 import { useDevMode } from '@/hooks/useDevMode';
 import { useNavigate } from 'react-router-dom';
+import { HifzProfileStats } from '@/components/profil/HifzProfileStats';
 
 export default function ProfilPage() {
   const { user, isAdmin, hasFullAccess } = useAuth();
