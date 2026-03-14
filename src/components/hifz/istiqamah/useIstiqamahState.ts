@@ -69,6 +69,10 @@ function loadIstiqamahState(surah: number, vStart: number, vEnd: number): { node
     if (!raw) return null;
     const data = JSON.parse(raw);
     if (data.fp !== fingerprint(surah, vStart, vEnd)) return null;
+    if (data.flowVersion !== FLOW_VERSION) {
+      localStorage.removeItem(ISTIQAMAH_KEY);
+      return null;
+    }
     if (Date.now() - (data.ts || 0) > 24 * 60 * 60 * 1000) {
       localStorage.removeItem(ISTIQAMAH_KEY);
       return null;
