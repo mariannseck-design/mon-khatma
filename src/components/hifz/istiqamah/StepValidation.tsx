@@ -70,38 +70,40 @@ export default function StepValidation({ surahNumber, verseStart, verseEnd, onNe
         </div>
 
         {!done ? (
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            onClick={increment}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all"
-            style={{
-              background: 'rgba(212,175,55,0.15)',
-              border: '1px solid rgba(212,175,55,0.4)',
-              color: '#d4af37',
-              touchAction: 'manipulation',
-            }}
-          >
-            <CheckCircle2 className="h-4 w-4" />
-            J'ai récité sans faute ✓
-          </motion.button>
-          {count > 0 && (
+          <div className="flex flex-col items-center gap-3">
             <motion.button
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => setCount(0)}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs transition-all"
+              onClick={increment}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all"
               style={{
-                background: 'rgba(255,255,255,0.05)',
-                border: '1px solid rgba(255,255,255,0.15)',
-                color: 'rgba(255,255,255,0.5)',
+                background: 'rgba(212,175,55,0.15)',
+                border: '1px solid rgba(212,175,55,0.4)',
+                color: '#d4af37',
                 touchAction: 'manipulation',
               }}
             >
-              <RotateCcw className="h-3.5 w-3.5" />
-              Recommencer
+              <CheckCircle2 className="h-4 w-4" />
+              J'ai récité sans faute ✓
             </motion.button>
-          )}
+            {count > 0 && (
+              <motion.button
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setCount(0)}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs transition-all"
+                style={{
+                  background: 'rgba(255,255,255,0.05)',
+                  border: '1px solid rgba(255,255,255,0.15)',
+                  color: 'rgba(255,255,255,0.5)',
+                  touchAction: 'manipulation',
+                }}
+              >
+                <RotateCcw className="h-3.5 w-3.5" />
+                Recommencer
+              </motion.button>
+            )}
+          </div>
         ) : (
           <AnimatePresence>
             <motion.div
