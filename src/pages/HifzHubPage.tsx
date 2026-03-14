@@ -271,6 +271,23 @@ export default function HifzHubPage() {
                         ? `${activeHifzSession.surahName} — ${activeHifzSession.stepName}${activeHifzSession.pageLabel ? ` (${activeHifzSession.pageLabel})` : ''}`
                         : 'Graver le Coran dans les cœurs'}
                     </p>
+                    {activeHifzSession?.phase && (
+                      <span
+                        className="inline-flex items-center gap-1 mt-2 px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide uppercase"
+                        style={{
+                          background: activeHifzSession.phase.label === 'Étape A'
+                            ? `${COLORS.goldAccent}25`
+                            : `${COLORS.goldAccent}40`,
+                          color: COLORS.goldAccent,
+                          border: `1px solid ${COLORS.goldAccent}50`,
+                        }}
+                      >
+                        {activeHifzSession.phase.label === 'Étape B' && (
+                          <span className="inline-block w-1.5 h-1.5 rounded-full mr-0.5" style={{ background: COLORS.goldAccent, boxShadow: `0 0 4px ${COLORS.goldAccent}` }} />
+                        )}
+                        {activeHifzSession.phase.label} — {activeHifzSession.phase.tag}
+                      </span>
+                    )}
                   </div>
                 </div>
               </motion.div>
