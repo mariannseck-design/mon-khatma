@@ -12,6 +12,7 @@ import HifzStepIntentionComprehension from '@/components/hifz/HifzStepIntentionC
 import HifzStepImpregnationTajweed from '@/components/hifz/HifzStepImpregnationTajweed';
 import HifzStepMemorisation from '@/components/hifz/HifzStepMemorisation';
 import HifzStep5Tikrar from '@/components/hifz/HifzStep5Tikrar';
+import StepValidation from '@/components/hifz/istiqamah/StepValidation';
 import HifzSuccess from '@/components/hifz/HifzSuccess';
 import HifzBreathingPause from '@/components/hifz/HifzBreathingPause';
 import DevSkipButton from '@/components/hifz/DevSkipButton';
@@ -65,6 +66,7 @@ const STEP_NAMES = [
   'Intention et Compréhension',
   'Imprégnation',
   'Mémorisation',
+  'Validation',
   'Tikrâr',
 ];
 
@@ -101,14 +103,14 @@ export default function HifzPage() {
 
   // Save session progress locally
   useEffect(() => {
-    if (session && step >= 0 && step <= 3 && !completedRef.current) {
+    if (session && step >= 0 && step <= 4 && !completedRef.current) {
       saveLocalSession(session, step, sessionId, stepTimesRef.current);
     }
   }, [session, step, sessionId]);
 
   useEffect(() => {
     const handler = () => {
-      if (document.visibilityState === 'visible' && session && step >= 0 && step <= 3 && !completedRef.current) {
+      if (document.visibilityState === 'visible' && session && step >= 0 && step <= 4 && !completedRef.current) {
         saveLocalSession(session, step, sessionId, stepTimesRef.current);
       }
     };
@@ -179,7 +181,7 @@ export default function HifzPage() {
       if (!goalData) setShowGoalOnboarding(true);
 
       const local = loadLocalSession();
-      if (local && local.step >= 0 && local.step <= 3) {
+      if (local && local.step >= 0 && local.step <= 4) {
         setPendingResume(local);
         setShowResumePrompt(true);
         setRestoringSession(false);
@@ -195,7 +197,7 @@ export default function HifzPage() {
         .limit(1)
         .maybeSingle();
 
-      if (activeSession && activeSession.current_step >= 0 && activeSession.current_step <= 3) {
+      if (activeSession && activeSession.current_step >= 0 && activeSession.current_step <= 4) {
         // Nettoyer les sessions orphelines (toutes sauf celle qu'on restaure)
         supabase.from('hifz_sessions')
           .update({ completed_at: new Date().toISOString(), step_status: { abandoned: true } as any })
@@ -291,7 +293,7 @@ export default function HifzPage() {
   }, [sessionId, user, step]);
 
   const handlePause = useCallback(async () => {
-    if (session && step >= 0 && step <= 3) {
+    if (session && step >= 0 && step <= 4) {
       saveLocalSession(session, step, sessionId, stepTimesRef.current);
       if (sessionId && user) {
         await supabase.from('hifz_sessions').update({
@@ -313,7 +315,7 @@ export default function HifzPage() {
     updateStep(2);
   }, [updateStep]);
 
-  // Complete session after Tikrâr (step 3)
+  // Complete session after Tikrâr (step 4)
   const completeSession = useCallback(async () => {
     const elapsedSeconds = Math.floor((Date.now() - stepStartRef.current) / 1000);
     if (step >= 0) {
@@ -323,11 +325,11 @@ export default function HifzPage() {
     // IMMÉDIAT : afficher succès + bloquer les sauvegardes localStorage
     completedRef.current = true;
     clearLocalSession();
-    setStep(4);
+    setStep(5);
 
     if (sessionId && user) {
       await supabase.from('hifz_sessions').update({
-        current_step: 4,
+        current_step: 5,
         completed_at: new Date().toISOString(),
         step_status: { ...stepTimesRef.current, completed: true },
       }).eq('id', sessionId);
@@ -560,7 +562,7 @@ export default function HifzPage() {
           />
         )}
 
-        {/* Step 2 → Étape 4/5 : Mémorisation */}
+        {/* Step 2 → Étape 4/6 : Mémorisation */}
         {!showBreathingPause && step === 2 && (
           <HifzStepMemorisation
             surahNumber={session.surahNumber}
@@ -572,14 +574,24 @@ export default function HifzPage() {
           />
         )}
 
-        {/* Step 3 → Étape 5/5 : Tikrâr */}
+        {/* Step 3 → Étape 5/6 : Validation */}
         {!showBreathingPause && step === 3 && (
+          <StepValidation
+            surahNumber={session.surahNumber}
+            verseStart={session.startVerse}
+            verseEnd={session.endVerse}
+            onNext={() => updateStep(4)}
+          />
+        )}
+
+        {/* Step 4 → Étape 6/6 : Tikrâr */}
+        {!showBreathingPause && step === 4 && (
           <HifzStep5Tikrar
             surahNumber={session.surahNumber}
             startVerse={session.startVerse}
             endVerse={session.endVerse}
             onNext={completeSession}
-            onBack={() => setStep(2)}
+            onBack={() => setStep(3)}
             onPause={handlePause}
             stepStatus={typeof stepTimesRef.current === 'object' ? stepTimesRef.current : {}}
             onUpdateStatus={(status) => {
@@ -591,18 +603,19 @@ export default function HifzPage() {
           />
         )}
 
-        {/* Step 4 → Succès */}
-        {step === 4 && <HifzSuccess stepTimes={stepTimesRef.current} />}
+        {/* Step 5 → Succès */}
+        {step === 5 && <HifzSuccess stepTimes={stepTimesRef.current} />}
       </div>
-      {step >= 0 && step <= 4 && (
+      {step >= 0 && step <= 5 && (
         <DevSkipButton isDevMode={isDevMode} onSkip={() => {
           console.log(`[DevSkip] 🔀 Skip à step=${step}, breathing=${showBreathingPause}`);
           if (showBreathingPause) { handleBreathingComplete(); }
           else if (step === 0) { updateStep(1); }
           else if (step === 1) { handleImpregnationComplete(); }
           else if (step === 2) { updateStep(3); }
-          else if (step === 3) { completeSession(); }
-          else if (step === 4) { navigate('/muraja'); }
+          else if (step === 3) { updateStep(4); }
+          else if (step === 4) { completeSession(); }
+          else if (step === 5) { navigate('/muraja'); }
         }} />
       )}
     </AppLayout>
