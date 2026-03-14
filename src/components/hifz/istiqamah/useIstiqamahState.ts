@@ -45,6 +45,7 @@ const ALLOWED_NEXT: Record<StepName, StepName> = {
 };
 
 const ISTIQAMAH_KEY = 'hifz_istiqamah_state';
+const FLOW_VERSION = 2;
 
 function fingerprint(surah: number, vStart: number, vEnd: number) {
   return `${surah}:${vStart}-${vEnd}`;
@@ -57,6 +58,7 @@ function saveIstiqamahState(surah: number, vStart: number, vEnd: number, nodeInd
       nodeIndex,
       immersionDone,
       ts: Date.now(),
+      flowVersion: FLOW_VERSION,
     }));
   } catch {}
 }
@@ -67,6 +69,10 @@ function loadIstiqamahState(surah: number, vStart: number, vEnd: number): { node
     if (!raw) return null;
     const data = JSON.parse(raw);
     if (data.fp !== fingerprint(surah, vStart, vEnd)) return null;
+    if (data.flowVersion !== FLOW_VERSION) {
+      localStorage.removeItem(ISTIQAMAH_KEY);
+      return null;
+    }
     if (Date.now() - (data.ts || 0) > 24 * 60 * 60 * 1000) {
       localStorage.removeItem(ISTIQAMAH_KEY);
       return null;
