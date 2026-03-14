@@ -554,7 +554,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
                 )}
               </motion.button>
               {minReached && (
-                <ContinueButton onClick={handleContinueListen} label="Passer à la lecture" />
+                <ContinueButton onClick={handleContinueListen} label="Passer à la mémorisation" />
               )}
             </div>
           </motion.div>
