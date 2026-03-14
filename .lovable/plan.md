@@ -1,21 +1,33 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Séparer le parcours Hifz en Étape A (Préparation) et Étape B (Mémorisation)
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Concept
+Diviser visuellement et fonctionnellement les 5 étapes en deux blocs :
+- **Étape A — Préparation** (faisable la veille) : Intention/Compréhension + Imprégnation Tajweed
+- **Étape B — Mémorisation** (le jour même) : Mémorisation + Validation + Tikrâr
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Changements
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+#### 1. `src/components/hifz/HifzStepWrapper.tsx`
+- Remplacer l'affichage "Étape X/5" par un label contextuel :
+  - Steps 0-1 → **"Étape A · 1/2"** et **"Étape A · 2/2"**
+  - Steps 2-4 → **"Étape B · 1/3"**, **"Étape B · 2/3"**, **"Étape B · 3/3"**
+- Ajouter une prop optionnelle `phaseLabel` pour surcharger l'affichage
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+#### 2. `src/pages/HifzPage.tsx`
+- **Remplacer** le `HifzBreathingPause` entre step 1 et 2 par un nouvel écran de transition "Étape A terminée" qui :
+  - Félicite l'utilisateur (✅ Préparation terminée)
+  - Explique qu'il peut revenir plus tard pour l'Étape B
+  - Offre deux boutons : **"Continuer maintenant →"** et **"Revenir plus tard"** (qui fait `handlePause`)
+- Mettre à jour `STEP_NAMES` pour refléter les phases A/B
+- Passer `phaseLabel` au `HifzStepWrapper` dans chaque step
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+#### 3. `src/components/hifz/HifzBreathingPause.tsx`
+- Transformer en écran de transition A→B avec message clair sur la séparation des deux phases, tout en gardant le timer de décompression optionnel
+
+### Fichiers modifiés
+- `src/components/hifz/HifzStepWrapper.tsx` — affichage phase A/B
+- `src/pages/HifzPage.tsx` — écran de transition, labels mis à jour
+- `src/components/hifz/HifzBreathingPause.tsx` — nouveau design transition A→B
 
