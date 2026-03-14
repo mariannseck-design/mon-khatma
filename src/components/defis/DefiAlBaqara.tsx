@@ -202,7 +202,7 @@ export default function DefiAlBaqara({ disabled = false }: { disabled?: boolean 
 
           <div className={`space-y-2 mb-4 ${disabled ? 'opacity-50 pointer-events-none' : ''}`}>
             {PRESETS.map((g) => {
-              const pace = (BAQARA_PAGES / g.days).toFixed(1);
+              const pace = formatPace(BAQARA_PAGES, g.days);
               return (
                 <button
                   key={g.days}
