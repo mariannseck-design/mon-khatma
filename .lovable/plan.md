@@ -1,21 +1,29 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Rendre le Pomodoro visible et gérer la pause automatique
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Problème
+1. Le Pomodoro est un petit bouton discret en haut à droite, facilement ignoré
+2. Quand l'utilisateur quitte (pause/retour accueil), le Pomodoro continue de tourner au lieu de se mettre en pause
+3. Au retour, le timer ne reprend pas correctement
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Plan
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+#### 1. Rendre le Pomodoro proéminent à l'ouverture (`PomodoroTimer.tsx`)
+- Quand le timer est en état `idle`, afficher une **bannière pleine largeur** bien visible (pas un petit bouton aligné à droite) avec un fond doré semi-transparent et un CTA clair "Activer le Pomodoro avant de commencer"
+- Ajouter une animation pulse/glow pour attirer l'attention
+- Une fois activé, revenir au format compact actuel (timer + pause/reset)
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+#### 2. Pause automatique quand l'utilisateur quitte (`HifzPage.tsx` + `PomodoroTimer.tsx`)
+- Exporter une fonction `pausePomodoro()` depuis `PomodoroTimer` (ou simplement écrire dans sessionStorage) qui met le timer en pause
+- Dans `handlePause` de `HifzPage.tsx`, appeler cette fonction avant de naviguer vers `/accueil`
+- Concrètement : lire le `sessionStorage`, si status = `focus`, calculer le timeLeft restant, sauvegarder en status `paused` avec ce timeLeft
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+#### 3. Reprise au retour (`PomodoroTimer.tsx`)
+- La logique de restauration existante gère déjà le cas `paused` avec `timeLeft` → au retour sur la page Hifz, le timer reprendra là où il s'est arrêté (pas depuis le début)
+- Aucun changement nécessaire ici, c'est déjà fonctionnel grâce à `readStorage()`
+
+### Fichiers modifiés
+- **`src/components/hifz/PomodoroTimer.tsx`** — bannière visible + export fonction `pausePomodoro`
+- **`src/pages/HifzPage.tsx`** — appeler `pausePomodoro()` dans `handlePause`
 
