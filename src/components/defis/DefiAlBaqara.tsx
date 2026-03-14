@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { Landmark, RotateCcw, Check, BookOpen, Pencil } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Landmark, RotateCcw, Check, BookOpen, Pencil, Trophy } from 'lucide-react';
+import { SparkleEffect } from '@/components/planificateur/SparkleEffect';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
