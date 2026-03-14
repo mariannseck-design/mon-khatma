@@ -102,9 +102,9 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
   const isLiaison = phase.startsWith('liaison');
   const minReached = (() => {
     const p = phase;
-    if (p === 'listen' || p === 'liaison-listen') return listenCount >= minReps;
-    if (p === 'read' || p === 'liaison-read') return readCount >= minReps;
-    if (p === 'memory' || p === 'liaison-memory') return memoryCount >= minReps;
+    if (p === 'listen' || p === 'liaison-listen') return listenCount >= minListen;
+    if (p === 'read' || p === 'liaison-read') return readCount >= minRead;
+    if (p === 'memory' || p === 'liaison-memory') return memoryCount >= minMemory;
     return false;
   })();
 
