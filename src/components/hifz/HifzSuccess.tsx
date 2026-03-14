@@ -157,6 +157,16 @@ export default function HifzSuccess({ stepTimes, onBackToTikrar }: Props) {
         Transférer vers la consolidation (Ar-Rabt)
       </motion.button>
 
+      {onBackToTikrar && (
+        <button
+          onClick={onBackToTikrar}
+          className="mx-auto text-[10px] underline underline-offset-4"
+          style={{ color: 'rgba(255,255,255,0.25)' }}
+        >
+          ← Revenir au Tikrâr
+        </button>
+      )}
+
     </motion.div>
   );
 }
