@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, ShieldCheck } from 'lucide-react';
+import { CheckCircle2, ShieldCheck, RotateCcw } from 'lucide-react';
 import MiniRecorder from './MiniRecorder';
 
 interface Props {
