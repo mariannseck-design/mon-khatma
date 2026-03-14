@@ -28,17 +28,19 @@ export interface IstiqamahState {
   clearState: () => void;
 }
 
-// Strict linear flow: comprehension → immersion → tikrar
+// Strict linear flow: comprehension → immersion → validation → tikrar
 const FLOW: FlowNode[] = [
   { type: 'comprehension', partIndex: -1 },
   { type: 'immersion', partIndex: -1 },
+  { type: 'validation', partIndex: -1 },
   { type: 'tikrar', partIndex: -1 },
 ];
 
 // Allowed transitions map
 const ALLOWED_NEXT: Record<StepName, StepName> = {
   comprehension: 'immersion',
-  immersion: 'tikrar',
+  immersion: 'validation',
+  validation: 'tikrar',
   tikrar: 'tikrar', // terminal
 };
 
