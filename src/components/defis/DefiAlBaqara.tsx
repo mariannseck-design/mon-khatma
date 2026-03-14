@@ -38,7 +38,8 @@ export default function DefiAlBaqara({ disabled = false }: { disabled?: boolean 
   const { user } = useAuth();
   const navigate = useNavigate();
   const [challenge, setChallenge] = useState<ChallengeState | null>(null);
-  const [selectedGoal, setSelectedGoal] = useState(48);
+  const [selectedGoal, setSelectedGoal] = useState<number | 'custom'>(30);
+  const [customDays, setCustomDays] = useState<string>('');
   const [loading, setLoading] = useState(disabled ? false : true);
   const [dbId, setDbId] = useState<string | null>(null);
 
