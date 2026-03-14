@@ -282,7 +282,7 @@ export default function PlanificateurPage() {
         setGoalMetToday(true);
       }, 800);
     } else {
-      toast.success(`${pages} page(s) enregistrée(s)! Masha'Allah! 📖`);
+      toast.success(`${pagesToAdd} page(s) enregistrée(s)! Masha'Allah! 📖`);
     }
     await fetchProgress();
   };
