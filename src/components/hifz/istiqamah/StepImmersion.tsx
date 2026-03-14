@@ -581,7 +581,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
             </div>
 
             <div className="flex flex-col items-center gap-3">
-              <CircularCounter count={readCount} target={TARGET_REPS} color={isLiaison ? '#a78bfa' : '#f59e0b'} />
+              <CircularCounter count={readCount} target={TARGET_READ} color={isLiaison ? '#a78bfa' : '#f59e0b'} />
 
               <motion.button
                 whileTap={{ scale: 0.95 }}
