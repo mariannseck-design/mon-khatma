@@ -585,7 +585,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
                 className="flex items-center gap-2 px-6 py-2.5 rounded-xl font-semibold text-sm"
                 style={{ background: 'rgba(245,158,11,0.15)', border: '1px solid rgba(245,158,11,0.4)', color: '#f59e0b' }}
               >
-                <BookOpen className="h-4 w-4" /> J'ai lu ✓
+                <BookOpen className="h-4 w-4" /> Mémorisé ✓
               </motion.button>
 
               {minReached && (
