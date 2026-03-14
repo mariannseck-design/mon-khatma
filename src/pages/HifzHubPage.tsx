@@ -24,6 +24,13 @@ const COLORS = {
 
 const SHOW_MOURAD_CARD = false;
 const STEP_NAMES = ['Intention', 'Réveil', 'Imprégnation', 'Istiqâmah', 'Validation'];
+const STEP_PHASE: Record<number, { label: string; tag: string }> = {
+  0: { label: 'Étape A', tag: 'Préparation' },
+  1: { label: 'Étape A', tag: 'Préparation' },
+  2: { label: 'Étape B', tag: 'Mémorisation' },
+  3: { label: 'Étape B', tag: 'Mémorisation' },
+  4: { label: 'Étape B', tag: 'Mémorisation' },
+};
 const MOURAD_PHASE_NAMES = ['Compréhension', 'Imprégnation', 'Liaison', 'Ancrage'];
 
 export default function HifzHubPage() {
