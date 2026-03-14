@@ -134,7 +134,15 @@ export default function MurajaHubPage() {
           pages.add(p);
         }
       }
-      setTotalDistinctPages(pages.size);
+      // Filter out isolated pages: keep only the largest contiguous cluster
+      const sorted = Array.from(pages).sort((a, b) => a - b);
+      let bestStart = 0, bestLen = 1, curStart = 0, curLen = 1;
+      for (let i = 1; i < sorted.length; i++) {
+        if (sorted[i] - sorted[i - 1] <= 2) { curLen++; }
+        else { if (curLen > bestLen) { bestStart = curStart; bestLen = curLen; } curStart = i; curLen = 1; }
+      }
+      if (curLen > bestLen) { bestStart = curStart; bestLen = curLen; }
+      setTotalDistinctPages(bestLen);
     })();
   }, [allVerses]);
 
