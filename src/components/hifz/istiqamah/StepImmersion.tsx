@@ -33,7 +33,7 @@ interface Props {
   onNext: () => void;
 }
 
-type Phase = 'listen' | 'memory' | 'error' | 'liaison-listen' | 'liaison-memory' | 'liaison-error';
+type Phase = 'listen' | 'read' | 'memory' | 'error' | 'liaison-listen' | 'liaison-read' | 'liaison-memory' | 'liaison-error';
 
 const TARGET_REPS = 3;
 const FONT_FAMILY = "'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
