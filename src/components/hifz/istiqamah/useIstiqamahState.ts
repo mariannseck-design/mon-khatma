@@ -4,6 +4,7 @@ import { splitIntoParts, type Part } from './partSplitter';
 export type StepName =
   | 'immersion'
   | 'comprehension'
+  | 'validation'
   | 'tikrar';
 
 interface FlowNode {
