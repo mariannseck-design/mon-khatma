@@ -662,8 +662,8 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
         {(phase === 'error' || phase === 'liaison-error') && (
           <motion.div key={phase} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-4">
             <PhaseHeader
-              title={isLiaison ? 'Relire les versets' : 'Relire le verset'}
-              subtitle="Pas de panique ! Relis attentivement puis recommence"
+              title={isLiaison ? 'Remémoriser les versets' : 'Remémoriser le verset'}
+              subtitle="Pas de panique ! Remémorise attentivement puis recommence"
             />
 
             <div className="space-y-2">

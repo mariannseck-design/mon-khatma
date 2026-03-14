@@ -410,7 +410,7 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
               className="text-[9px] mt-1 font-medium leading-tight text-center max-w-[60px]"
               style={{ color: isActive ? p.color : 'rgba(255,255,255,0.4)' }}
             >
-              {idx === 0 ? 'Écoute' : idx === 1 ? 'Lecture' : idx === 2 ? 'Récitation' : 'Ancrage'}
+              {idx === 0 ? 'Écoute' : idx === 1 ? 'Mémorisation' : idx === 2 ? 'Récitation' : 'Ancrage'}
             </span>
           </button>
         );
