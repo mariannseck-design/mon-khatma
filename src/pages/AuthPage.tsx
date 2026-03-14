@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Lock, User, ArrowRight, ArrowLeft, CheckCircle, Eye, EyeOff, BookOpen, Brain, Heart, MessageCircle } from 'lucide-react';
+import { Mail, Lock, User, ArrowRight, ArrowLeft, CheckCircle, Eye, EyeOff, BookOpen, Brain, Heart, MessageCircle, Info } from 'lucide-react';
 import logo from '@/assets/logo.png';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
 import { InstallBanner } from '@/components/pwa/InstallBanner';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
@@ -173,6 +174,18 @@ export default function AuthPage() {
             Cheminez vers une lecture et une mémorisation constantes, par la grâce d'Allah (عز وجل).
           </p>
         </div>
+
+        {(mode === 'login' || mode === 'signup') && (
+          <Alert className="mb-4 border-[hsl(38,50%,75%)] bg-[hsl(40,40%,96%)] rounded-xl">
+            <Info className="h-4 w-4 text-[hsl(38,50%,55%)]" />
+            <AlertDescription className="text-xs text-muted-foreground leading-relaxed">
+              <strong className="text-foreground">Mise à jour importante 🌟</strong><br />
+              Ma Khatma a été migrée vers une nouvelle infrastructure pour plus de stabilité. 
+              Merci de te <strong>réinscrire avec le même email</strong>. 
+              Nous nous excusons pour ce désagrément — qu'Allah facilite ! 🤲
+            </AlertDescription>
+          </Alert>
+        )}
 
         <Card className="border-0 bg-white/70 backdrop-blur-sm shadow-[0_8px_32px_hsl(0,0%,0%,0.06)] rounded-2xl p-6">
           {mode === 'check-email' ? (
