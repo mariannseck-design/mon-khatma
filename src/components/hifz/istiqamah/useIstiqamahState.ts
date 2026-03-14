@@ -58,6 +58,7 @@ function saveIstiqamahState(surah: number, vStart: number, vEnd: number, nodeInd
       nodeIndex,
       immersionDone,
       ts: Date.now(),
+      flowVersion: FLOW_VERSION,
     }));
   } catch {}
 }
