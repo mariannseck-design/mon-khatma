@@ -41,6 +41,7 @@ export default function PlanificateurPage() {
   const [todayPages, setTodayPages] = useState(0);
   const [totalPagesRead, setTotalPagesRead] = useState(0);
   const [weekProgress, setWeekProgress] = useState<DailyProgress[]>([]);
+  const [allProgress, setAllProgress] = useState<DailyProgress[]>([]);
   const [isCreatingGoal, setIsCreatingGoal] = useState(false);
   const [newGoalType, setNewGoalType] = useState<'pages_per_day' | 'duration_days'>('pages_per_day');
   const [newGoalValue, setNewGoalValue] = useState(5);
