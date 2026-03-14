@@ -23,12 +23,13 @@ interface Props {
   onPause?: () => void;
   stepStatus?: Record<string, any>;
   onUpdateStatus?: (status: Record<string, any>) => void;
+  phaseLabel?: string;
 }
 
 export default function HifzStep5Tikrar({
   surahNumber, startVerse, endVerse,
   onNext, onBack, onPause,
-  stepStatus, onUpdateStatus,
+  stepStatus, onUpdateStatus, phaseLabel,
 }: Props) {
   const saved = stepStatus?.tikrar_count ?? 0;
   const savedStart = stepStatus?.tikrar_started_at ?? Date.now();
@@ -129,6 +130,7 @@ export default function HifzStep5Tikrar({
       onBack={onBack}
       onPause={onPause}
       totalSteps={5}
+      phaseLabel={phaseLabel}
       surahNumber={surahNumber}
       startVerse={startVerse}
       endVerse={endVerse}

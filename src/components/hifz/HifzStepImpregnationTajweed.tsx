@@ -16,6 +16,7 @@ interface Props {
   onNext: () => void;
   onBack: () => void;
   onPause?: () => void;
+  phaseLabel?: string;
 }
 
 const FONT_FAMILY = "'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
@@ -71,7 +72,7 @@ interface AyahWithAnnotations extends LocalAyah {
   tajweed?: TajweedAnnotation[];
 }
 
-export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, endVerse, onNext, onBack, onPause }: Props) {
+export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, endVerse, onNext, onBack, onPause, phaseLabel }: Props) {
   const storageKey = `hifz_listen_${surahNumber}_${startVerse}_${endVerse}`;
   const surahName = SURAHS.find(s => s.number === surahNumber)?.name || '';
 
@@ -247,7 +248,7 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
   }, []);
 
   return (
-    <HifzStepWrapper stepNumber={3} stepTitle="Imprégnation du Tajweed" onBack={onBack} onPause={onPause} totalSteps={5} surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse}>
+    <HifzStepWrapper stepNumber={3} stepTitle="Imprégnation du Tajweed" onBack={onBack} onPause={onPause} totalSteps={5} phaseLabel={phaseLabel} surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse}>
       <div className="text-center space-y-5">
         {/* Header */}
         <div

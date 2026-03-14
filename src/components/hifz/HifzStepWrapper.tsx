@@ -11,6 +11,7 @@ interface HifzStepWrapperProps {
   onBack?: () => void;
   onPause?: () => void;
   totalSteps?: number;
+  phaseLabel?: string;
   surahNumber?: number;
   startVerse?: number;
   endVerse?: number;
@@ -22,7 +23,7 @@ function formatTime(seconds: number): string {
   return `${m}:${s.toString().padStart(2, '0')}`;
 }
 
-export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBack, onPause, totalSteps = 5, surahNumber, startVerse, endVerse }: HifzStepWrapperProps) {
+export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBack, onPause, totalSteps = 5, phaseLabel, surahNumber, startVerse, endVerse }: HifzStepWrapperProps) {
   const [elapsed, setElapsed] = useState(0);
   const [pageLabel, setPageLabel] = useState('');
   const startRef = useRef(Date.now());
@@ -84,7 +85,7 @@ export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBac
       {/* Step indicator */}
       <div className="flex items-center justify-center gap-2">
         <span className="text-xs font-semibold tracking-wide" style={{ color: 'rgba(212,175,55,0.85)' }}>
-          Étape {stepNumber}/{totalSteps}
+          {phaseLabel || `Étape ${stepNumber}/${totalSteps}`}
         </span>
         <span className="text-[10px]" style={{ color: 'rgba(255,255,255,0.4)' }}>—</span>
         <span className="text-xs" style={{ color: 'rgba(255,255,255,0.6)' }}>

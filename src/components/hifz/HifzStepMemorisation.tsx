@@ -12,9 +12,10 @@ interface Props {
   onNext: () => void;
   onBack: () => void;
   onPause?: () => void;
+  phaseLabel?: string;
 }
 
-export default function HifzStepMemorisation({ surahNumber, startVerse, endVerse, onNext, onBack, onPause }: Props) {
+export default function HifzStepMemorisation({ surahNumber, startVerse, endVerse, onNext, onBack, onPause, phaseLabel }: Props) {
   const [reciterId, setReciterId] = useState(() => localStorage.getItem('quran_reciter') || RECITERS[0].id);
 
   const handleReciterChange = (id: string) => {
@@ -23,7 +24,7 @@ export default function HifzStepMemorisation({ surahNumber, startVerse, endVerse
   };
 
   return (
-    <HifzStepWrapper stepNumber={4} stepTitle="Mémorisation" onBack={onBack} onPause={onPause} totalSteps={5} surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse}>
+    <HifzStepWrapper stepNumber={4} stepTitle="Mémorisation" onBack={onBack} onPause={onPause} totalSteps={5} phaseLabel={phaseLabel} surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse}>
       {/* Sélecteur de récitateur */}
       <div className="flex items-center justify-center gap-2 -mt-2 mb-2">
         <Volume2 className="h-3.5 w-3.5 shrink-0" style={{ color: 'rgba(212,175,55,0.6)' }} />

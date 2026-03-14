@@ -12,9 +12,10 @@ interface Props {
   onNext: () => void;
   onBack: () => void;
   onPause?: () => void;
+  phaseLabel?: string;
 }
 
-export default function HifzStepIntentionComprehension({ surahNumber, startVerse, endVerse, onNext, onBack, onPause }: Props) {
+export default function HifzStepIntentionComprehension({ surahNumber, startVerse, endVerse, onNext, onBack, onPause, phaseLabel }: Props) {
   const [translation, setTranslation] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [pageLabel, setPageLabel] = useState('');
@@ -52,7 +53,7 @@ export default function HifzStepIntentionComprehension({ surahNumber, startVerse
   }, [surahNumber, startVerse, endVerse]);
 
   return (
-    <HifzStepWrapper stepNumber={2} stepTitle="Intention et Compréhension" onBack={onBack} onPause={onPause} totalSteps={5} surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse}>
+    <HifzStepWrapper stepNumber={2} stepTitle="Intention et Compréhension" onBack={onBack} onPause={onPause} totalSteps={5} phaseLabel={phaseLabel} surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse}>
       <div className="text-center space-y-4">
         <div
           className="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center"
