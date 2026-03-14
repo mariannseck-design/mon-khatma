@@ -548,7 +548,7 @@ export default function HifzPage() {
     <AppLayout title="Espace Hifz" hideNav>
       <div className="min-h-[80vh] rounded-[2rem] p-6 mx-[-4px]" style={GRADIENT_STYLE}>
         {devModeBadge}
-        {showBreathingPause && <HifzBreathingPause onComplete={handleBreathingComplete} />}
+        {showBreathingPause && <HifzBreathingPause onComplete={handleBreathingComplete} onPause={handlePause} />}
 
         {/* Step 0 → Étape 2/5 : Intention et Compréhension */}
         {!showBreathingPause && step === 0 && (
