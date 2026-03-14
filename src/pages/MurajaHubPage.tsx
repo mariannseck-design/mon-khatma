@@ -187,7 +187,6 @@ export default function MurajaHubPage() {
               </div>
               <div className="flex items-center justify-between text-[10px]" style={{ color: 'var(--p-text-50)' }}>
                 <span>{totalMemorized} versets · {totalPages} pages</span>
-                <span>{totalJuz} / 30 juz</span>
               </div>
             </motion.div>
 
