@@ -45,7 +45,7 @@ function immersionFingerprint(surah: number, vStart: number, vEnd: number) {
 }
 
 function saveImmersionState(surah: number, vStart: number, vEnd: number, state: {
-  verseIdx: number; phase: Phase; listenCount: number; memoryCount: number; liaisonVerses: number[];
+  verseIdx: number; phase: Phase; listenCount: number; readCount: number; memoryCount: number; liaisonVerses: number[];
 }) {
   try {
     localStorage.setItem(IMMERSION_KEY, JSON.stringify({ fp: immersionFingerprint(surah, vStart, vEnd), ...state, ts: Date.now() }));
@@ -62,7 +62,7 @@ function loadImmersionState(surah: number, vStart: number, vEnd: number) {
       localStorage.removeItem(IMMERSION_KEY);
       return null;
     }
-    return data as { verseIdx: number; phase: Phase; listenCount: number; memoryCount: number; liaisonVerses: number[] };
+    return data as { verseIdx: number; phase: Phase; listenCount: number; readCount: number; memoryCount: number; liaisonVerses: number[] };
   } catch { return null; }
 }
 
