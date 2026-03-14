@@ -302,6 +302,12 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
 
   const handleContinueListen = () => {
     stopAudio();
+    if (isLiaison) setPhase('liaison-read');
+    else setPhase('read');
+    setReadCount(0);
+  };
+
+  const handleContinueRead = () => {
     if (isLiaison) setPhase('liaison-memory');
     else setPhase('memory');
     setMemoryCount(0);
