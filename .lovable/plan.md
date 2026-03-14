@@ -1,21 +1,29 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Ajouter une étape Validation (5/5) entre Mémorisation et Tikrâr
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Vue d'ensemble
+- Insérer une étape **validation** dans le flux : `comprehension → immersion → validation → tikrar`
+- **Validation** : réciter 5 fois sans faute, sans mushaf ni audio, avec possibilité de s'enregistrer (MiniRecorder existant)
+- Renommer **Tikrâr** en **Grande Mémorisation** dans les libellés
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Changements
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+**1. `src/components/hifz/istiqamah/useIstiqamahState.ts`**
+- Ajouter `'validation'` au type `StepName`
+- Ajouter un nœud `{ type: 'validation', partIndex: -1 }` dans `FLOW` entre `immersion` et `tikrar`
+- Mettre à jour `ALLOWED_NEXT` : `immersion → validation`, `validation → tikrar`
+- La garde `immersionCompleted` s'applique à `validation` au lieu de `tikrar`
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+**2. Créer `src/components/hifz/istiqamah/StepValidation.tsx`**
+- UI sobre : titre "Validation", consigne "Récitez 5 fois sans faute, sans mushaf ni audio"
+- Compteur circulaire 0→5 avec bouton "J'ai récité sans faute ✓" pour incrémenter
+- Intégrer le composant `MiniRecorder` existant pour s'enregistrer/réécouter
+- Bouton "Valider" actif quand compteur = 5
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+**3. `src/components/hifz/istiqamah/IstiqamahEngine.tsx`**
+- Importer `StepValidation`
+- Ajouter le cas `'validation'` dans `renderStep()`
+- Mettre à jour le breadcrumb : 4 étapes au lieu de 3 (`Compréhension › Mémorisation › Validation › Grande Mémorisation`)
+- Renommer le label `tikrar` en `Grande Mémorisation`
 
