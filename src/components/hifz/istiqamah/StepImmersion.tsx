@@ -35,7 +35,9 @@ interface Props {
 
 type Phase = 'listen' | 'read' | 'memory' | 'error' | 'liaison-listen' | 'liaison-read' | 'liaison-memory' | 'liaison-error';
 
-const TARGET_REPS = 3;
+const TARGET_LISTEN = 3;
+const TARGET_READ = 10;
+const TARGET_MEMORY = 5;
 const FONT_FAMILY = "'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
 
 const IMMERSION_KEY = 'hifz_immersion_state';
