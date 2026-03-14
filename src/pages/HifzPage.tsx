@@ -197,7 +197,7 @@ export default function HifzPage() {
         .limit(1)
         .maybeSingle();
 
-      if (activeSession && activeSession.current_step >= 0 && activeSession.current_step <= 3) {
+      if (activeSession && activeSession.current_step >= 0 && activeSession.current_step <= 4) {
         // Nettoyer les sessions orphelines (toutes sauf celle qu'on restaure)
         supabase.from('hifz_sessions')
           .update({ completed_at: new Date().toISOString(), step_status: { abandoned: true } as any })
