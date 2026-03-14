@@ -147,7 +147,18 @@ export default function HifzStep5Tikrar({
         </div>
         <p className="text-xs leading-relaxed" style={{ color: 'rgba(240,230,200,0.7)' }}>
           Récitez cette portion <strong style={{ color: '#d4af37' }}>40 fois</strong> pour sceller votre mémorisation.
+          <br />
+          <span style={{ color: 'rgba(240,230,200,0.55)' }}>
+            Vous pouvez réciter les 40 répétitions (ou une partie d'entre elles) durant vos prières.
+          </span>
         </p>
+
+        {/* Reminder note */}
+        <div className="rounded-lg px-3 py-2 text-center" style={{ background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.15)' }}>
+          <p className="text-[11px]" style={{ color: 'rgba(212,175,55,0.6)' }}>
+            📌 Pensez à revenir sur cette page pour enregistrer le nombre de lectures effectuées.
+          </p>
+        </div>
 
         {/* Instructions link */}
         <button

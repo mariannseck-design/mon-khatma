@@ -67,7 +67,7 @@ const STEP_NAMES = [
   'Imprégnation',
   'Mémorisation',
   'Validation',
-  'Tikrâr',
+  'Tikrâr (Grande Mémorisation)',
 ];
 
 export default function HifzPage() {

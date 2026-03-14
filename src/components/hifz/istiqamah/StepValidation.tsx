@@ -36,6 +36,18 @@ export default function StepValidation({ surahNumber, verseStart, verseEnd, onNe
       exit={{ opacity: 0, y: -20 }}
       className="space-y-6 py-4"
     >
+      {/* Back button */}
+      {onBack && (
+        <button
+          onClick={onBack}
+          className="flex items-center gap-1 text-xs transition-opacity"
+          style={{ color: 'rgba(255,255,255,0.25)' }}
+        >
+          <ChevronLeft className="h-4 w-4" />
+          Retour
+        </button>
+      )}
+
       {/* Title */}
       <div className="space-y-2">
         <div className="flex items-center justify-center gap-2">
