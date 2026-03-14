@@ -79,6 +79,120 @@ const SAMPLE_DATA: Record<string, object> = {
   },
 }
 
+type UnknownRecord = Record<string, unknown>
+
+type NormalizedHookPayload = {
+  rawEmailType: string | null
+  emailType: string | null
+  recipientEmail: string | null
+  confirmationUrl: string | null
+  token: string | null
+  newEmail: string | null
+}
+
+const EMAIL_TYPE_ALIASES: Record<string, string> = {
+  email: 'signup',
+  confirm_signup: 'signup',
+  email_verification: 'signup',
+  email_confirmation: 'signup',
+  confirmation: 'signup',
+}
+
+function asRecord(value: unknown): UnknownRecord {
+  return value && typeof value === 'object' ? (value as UnknownRecord) : {}
+}
+
+function pickFirstString(...values: unknown[]): string | null {
+  for (const value of values) {
+    if (typeof value === 'string' && value.trim()) {
+      return value
+    }
+  }
+  return null
+}
+
+function normalizeEmailType(rawType: string | null): string | null {
+  if (!rawType) return null
+  const normalized = rawType.trim().toLowerCase()
+  return EMAIL_TYPE_ALIASES[normalized] ?? normalized
+}
+
+function toVerifyType(emailType: string): string {
+  const normalized = normalizeEmailType(emailType) ?? emailType
+  return normalized === 'signup' ? 'signup' : normalized
+}
+
+function buildConfirmationUrl(params: {
+  providedUrl: string | null
+  tokenHash: string | null
+  emailType: string | null
+  redirectTo: string | null
+}): string | null {
+  if (params.providedUrl) return params.providedUrl
+  if (!params.tokenHash || !params.emailType) return null
+
+  const supabaseUrl = Deno.env.get('SUPABASE_URL')
+  if (!supabaseUrl) return null
+
+  const url = new URL(`${supabaseUrl}/auth/v1/verify`)
+  url.searchParams.set('token_hash', params.tokenHash)
+  url.searchParams.set('type', toVerifyType(params.emailType))
+  if (params.redirectTo) {
+    url.searchParams.set('redirect_to', params.redirectTo)
+  }
+
+  return url.toString()
+}
+
+function normalizePayload(payload: unknown): NormalizedHookPayload {
+  const root = asRecord(payload)
+  const data = asRecord(root.data)
+  const emailData = asRecord(data.email_data ?? root.email_data)
+  const userData = asRecord(data.user ?? root.user)
+
+  const rawEmailType = pickFirstString(
+    data.action_type,
+    data.email_action_type,
+    emailData.email_action_type,
+    root.action_type,
+    root.email_action_type,
+  )
+
+  const emailType = normalizeEmailType(rawEmailType)
+
+  const recipientEmail = pickFirstString(
+    data.email,
+    emailData.email,
+    userData.email,
+    root.email,
+  )
+
+  const token = pickFirstString(data.token, emailData.token, root.token)
+  const tokenHash = pickFirstString(data.token_hash, emailData.token_hash, root.token_hash)
+  const redirectTo = pickFirstString(data.redirect_to, emailData.redirect_to, root.redirect_to)
+  const providedUrl = pickFirstString(
+    data.url,
+    data.confirmation_url,
+    emailData.action_link,
+    emailData.url,
+    root.url,
+  )
+
+  return {
+    rawEmailType,
+    emailType,
+    recipientEmail,
+    confirmationUrl: buildConfirmationUrl({
+      providedUrl,
+      tokenHash,
+      emailType: rawEmailType ?? emailType,
+      redirectTo,
+    }),
+    token,
+    newEmail: pickFirstString(data.new_email, emailData.new_email, root.new_email),
+  }
+}
+
 // Preview endpoint handler - returns rendered HTML without sending email
 async function handlePreview(req: Request): Promise<Response> {
   const previewCorsHeaders = {
@@ -182,9 +296,21 @@ async function handleWebhook(req: Request): Promise<Response> {
   }
 
   if (!run_id) {
-    console.error('Webhook payload missing run_id')
+    run_id = crypto.randomUUID()
+    console.warn('Webhook payload missing run_id, generated fallback', { run_id })
+  }
+
+  if (payload.version && payload.version !== '1') {
+    console.warn('Unexpected payload version', { version: payload.version, run_id })
+  }
+
+  const normalized = normalizePayload(payload)
+  const emailType = normalized.emailType
+
+  if (!emailType) {
+    console.error('Webhook payload missing email action type', { run_id })
     return new Response(
-      JSON.stringify({ error: 'Invalid webhook payload' }),
+      JSON.stringify({ error: 'Invalid webhook payload: missing email action type' }),
       {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -192,40 +318,57 @@ async function handleWebhook(req: Request): Promise<Response> {
     )
   }
 
-  if (payload.version !== '1') {
-    console.error('Unsupported payload version', { version: payload.version, run_id })
-    return new Response(
-      JSON.stringify({ error: `Unsupported payload version: ${payload.version}` }),
-      {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      }
-    )
-  }
-
-  // The email action type is in payload.data.action_type (e.g., "signup", "recovery")
-  // payload.type is the hook event type ("auth")
-  const emailType = payload.data.action_type
-  console.log('Received auth event', { emailType, email: payload.data.email, run_id })
+  console.log('Received auth event', {
+    emailType,
+    rawEmailType: normalized.rawEmailType,
+    email: normalized.recipientEmail,
+    run_id,
+  })
 
   const EmailTemplate = EMAIL_TEMPLATES[emailType]
   if (!EmailTemplate) {
-    console.error('Unknown email type', { emailType, run_id })
+    console.log('Skipping unsupported auth email type', {
+      emailType,
+      rawEmailType: normalized.rawEmailType,
+      run_id,
+    })
     return new Response(
-      JSON.stringify({ error: `Unknown email type: ${emailType}` }),
-      { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      JSON.stringify({ success: true, skipped: true, reason: 'unsupported_email_type' }),
+      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   }
 
-  // Build template props from payload.data (HookData structure)
+  if (!normalized.recipientEmail) {
+    console.error('Webhook payload missing recipient email', { emailType, run_id })
+    return new Response(
+      JSON.stringify({ error: 'Invalid webhook payload: missing recipient email' }),
+      {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      }
+    )
+  }
+
+  if (emailType !== 'reauthentication' && !normalized.confirmationUrl) {
+    console.error('Webhook payload missing confirmation URL', { emailType, run_id })
+    return new Response(
+      JSON.stringify({ error: 'Invalid webhook payload: missing confirmation URL' }),
+      {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      }
+    )
+  }
+
+  // Build template props from normalized hook payload
   const templateProps = {
     siteName: SITE_NAME,
     siteUrl: `https://${ROOT_DOMAIN}`,
-    recipient: payload.data.email,
-    confirmationUrl: payload.data.url,
-    token: payload.data.token,
-    email: payload.data.email,
-    newEmail: payload.data.new_email,
+    recipient: normalized.recipientEmail,
+    confirmationUrl: normalized.confirmationUrl ?? `https://${ROOT_DOMAIN}`,
+    token: normalized.token,
+    email: normalized.recipientEmail,
+    newEmail: normalized.newEmail,
   }
 
   // Render React Email to HTML and plain text
@@ -240,13 +383,14 @@ async function handleWebhook(req: Request): Promise<Response> {
     Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
   )
 
+  const recipientEmail = normalized.recipientEmail
   const messageId = crypto.randomUUID()
 
   // Log pending BEFORE enqueue so we have a record even if enqueue crashes
   await supabase.from('email_send_log').insert({
     message_id: messageId,
     template_name: emailType,
-    recipient_email: payload.data.email,
+    recipient_email: recipientEmail,
     status: 'pending',
   })
 
@@ -255,7 +399,7 @@ async function handleWebhook(req: Request): Promise<Response> {
     payload: {
       run_id,
       message_id: messageId,
-      to: payload.data.email,
+      to: recipientEmail,
       from: `${SITE_NAME} <noreply@${FROM_DOMAIN}>`,
       sender_domain: SENDER_DOMAIN,
       subject: EMAIL_SUBJECTS[emailType] || 'Notification',
@@ -272,7 +416,7 @@ async function handleWebhook(req: Request): Promise<Response> {
     await supabase.from('email_send_log').insert({
       message_id: messageId,
       template_name: emailType,
-      recipient_email: payload.data.email,
+      recipient_email: recipientEmail,
       status: 'failed',
       error_message: 'Failed to enqueue email',
     })
@@ -282,7 +426,7 @@ async function handleWebhook(req: Request): Promise<Response> {
     })
   }
 
-  console.log('Auth email enqueued', { emailType, email: payload.data.email, run_id })
+  console.log('Auth email enqueued', { emailType, email: recipientEmail, run_id })
 
   return new Response(
     JSON.stringify({ success: true, queued: true }),
