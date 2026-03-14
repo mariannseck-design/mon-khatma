@@ -1,6 +1,11 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, ShieldCheck, RotateCcw } from 'lucide-react';
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel,
+  AlertDialogContent, AlertDialogDescription, AlertDialogFooter,
+  AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import MiniRecorder from './MiniRecorder';
 
 interface Props {
@@ -86,22 +91,50 @@ export default function StepValidation({ surahNumber, verseStart, verseEnd, onNe
               J'ai récité sans faute ✓
             </motion.button>
             {count > 0 && (
-              <motion.button
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setCount(0)}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs transition-all"
-                style={{
-                  background: 'rgba(255,255,255,0.05)',
-                  border: '1px solid rgba(255,255,255,0.15)',
-                  color: 'rgba(255,255,255,0.5)',
-                  touchAction: 'manipulation',
-                }}
-              >
-                <RotateCcw className="h-3.5 w-3.5" />
-                Recommencer
-              </motion.button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <motion.button
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs transition-all"
+                    style={{
+                      background: 'rgba(255,255,255,0.05)',
+                      border: '1px solid rgba(255,255,255,0.15)',
+                      color: 'rgba(255,255,255,0.5)',
+                      touchAction: 'manipulation',
+                    }}
+                  >
+                    <RotateCcw className="h-3.5 w-3.5" />
+                    Recommencer
+                  </motion.button>
+                </AlertDialogTrigger>
+                <AlertDialogContent className="max-w-[320px] rounded-2xl border-none" style={{ background: '#1a2e1a' }}>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle className="text-center text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.9)' }}>
+                      Recommencer le compteur ?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription className="text-center text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
+                      Votre progression ({count}/{REQUIRED}) sera remise à zéro.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter className="flex-row gap-2 sm:justify-center">
+                    <AlertDialogCancel
+                      className="flex-1 rounded-xl border-none text-xs"
+                      style={{ background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.7)' }}
+                    >
+                      Annuler
+                    </AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={() => setCount(0)}
+                      className="flex-1 rounded-xl border-none text-xs font-semibold"
+                      style={{ background: 'rgba(239,68,68,0.2)', color: '#f87171' }}
+                    >
+                      Recommencer
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             )}
           </div>
         ) : (
