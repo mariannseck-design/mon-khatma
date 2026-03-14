@@ -562,7 +562,7 @@ export default function HifzPage() {
           />
         )}
 
-        {/* Step 2 → Étape 4/5 : Mémorisation */}
+        {/* Step 2 → Étape 4/6 : Mémorisation */}
         {!showBreathingPause && step === 2 && (
           <HifzStepMemorisation
             surahNumber={session.surahNumber}
@@ -574,14 +574,24 @@ export default function HifzPage() {
           />
         )}
 
-        {/* Step 3 → Étape 5/5 : Tikrâr */}
+        {/* Step 3 → Étape 5/6 : Validation */}
         {!showBreathingPause && step === 3 && (
+          <StepValidation
+            surahNumber={session.surahNumber}
+            verseStart={session.startVerse}
+            verseEnd={session.endVerse}
+            onNext={() => updateStep(4)}
+          />
+        )}
+
+        {/* Step 4 → Étape 6/6 : Tikrâr */}
+        {!showBreathingPause && step === 4 && (
           <HifzStep5Tikrar
             surahNumber={session.surahNumber}
             startVerse={session.startVerse}
             endVerse={session.endVerse}
             onNext={completeSession}
-            onBack={() => setStep(2)}
+            onBack={() => setStep(3)}
             onPause={handlePause}
             stepStatus={typeof stepTimesRef.current === 'object' ? stepTimesRef.current : {}}
             onUpdateStatus={(status) => {
@@ -593,8 +603,8 @@ export default function HifzPage() {
           />
         )}
 
-        {/* Step 4 → Succès */}
-        {step === 4 && <HifzSuccess stepTimes={stepTimesRef.current} />}
+        {/* Step 5 → Succès */}
+        {step === 5 && <HifzSuccess stepTimes={stepTimesRef.current} />}
       </div>
       {step >= 0 && step <= 4 && (
         <DevSkipButton isDevMode={isDevMode} onSkip={() => {
