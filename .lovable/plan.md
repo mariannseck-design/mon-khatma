@@ -1,21 +1,37 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Corriger la reprise audio après pause dans les étapes Hifz
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Problème
+Quand l'utilisateur met pause puis relance la lecture, l'audio reprend depuis le début du verset au lieu de continuer là où il s'était arrêté. Cela affecte 3 composants :
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+1. **StepImpregnation** — `toggleAudio()` appelle `playLoop(0)` à la reprise → redémarre au verset 1
+2. **StepImmersion** — `stopAudio()` détruit l'élément audio (`audioRef.current = null`), donc `playSingleVerse`/`playSequence` recréent un nouvel `Audio` depuis le début
+3. **MouradPhase2** — `playAudio()` crée systématiquement de nouveaux objets `Audio`
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+### Solution
+Pour chaque composant, au lieu de détruire l'audio au pause, **conserver l'élément `HTMLAudioElement` et sa position** :
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+- **Pause** : appeler `audio.pause()` sans nullifier `audioRef.current`
+- **Reprise** : si `audioRef.current` existe et n'est pas terminé, appeler `audio.play()` pour reprendre ; sinon démarrer normalement
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+### Fichiers modifiés
+
+1. **`src/components/hifz/istiqamah/StepImpregnation.tsx`**
+   - `toggleAudio()` : sur reprise, vérifier si `audioRef.current` a un `src` et `currentTime > 0`, et reprendre avec `audio.play()` au lieu de `playLoop(0)`. Conserver `currentAyahIndex` au pause au lieu de le remettre à -1.
+
+2. **`src/components/hifz/istiqamah/StepImmersion.tsx`**
+   - `stopAudio()` : ne plus nullifier `audioRef.current`, seulement `audio.pause()` et `isPlayingRef = false`
+   - `handlePlay()` : si `audioRef.current` existe et est pausé (pas ended), reprendre avec `audio.play()` ; sinon lancer `playSingleVerse`/`playSequence` normalement
+   - `playSingleVerse` / `playSequence` : vérifier que l'audio n'est pas déjà chargé avant de créer un nouvel objet
+
+3. **`src/components/mourad/MouradPhase2.tsx`**
+   - Même pattern : sur pause garder l'audio, sur reprise appeler `audio.play()` si l'élément existe encore
+
+### Détail technique
+Ajouter un ref `pausedRef` (boolean) pour distinguer "pause utilisateur" de "fin naturelle". Quand `pausedRef.current === true` et `audioRef.current` existe :
+- Reprendre avec `audioRef.current.play()`
+- Remettre `pausedRef.current = false`
+
+Quand l'audio se termine naturellement (`onended`), passer au verset suivant comme avant.
 
