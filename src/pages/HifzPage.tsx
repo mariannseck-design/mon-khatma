@@ -606,15 +606,16 @@ export default function HifzPage() {
         {/* Step 5 → Succès */}
         {step === 5 && <HifzSuccess stepTimes={stepTimesRef.current} />}
       </div>
-      {step >= 0 && step <= 4 && (
+      {step >= 0 && step <= 5 && (
         <DevSkipButton isDevMode={isDevMode} onSkip={() => {
           console.log(`[DevSkip] 🔀 Skip à step=${step}, breathing=${showBreathingPause}`);
           if (showBreathingPause) { handleBreathingComplete(); }
           else if (step === 0) { updateStep(1); }
           else if (step === 1) { handleImpregnationComplete(); }
           else if (step === 2) { updateStep(3); }
-          else if (step === 3) { completeSession(); }
-          else if (step === 4) { navigate('/muraja'); }
+          else if (step === 3) { updateStep(4); }
+          else if (step === 4) { completeSession(); }
+          else if (step === 5) { navigate('/muraja'); }
         }} />
       )}
     </AppLayout>
