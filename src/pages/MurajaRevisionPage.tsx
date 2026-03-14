@@ -274,6 +274,10 @@ export default function MurajaRevisionPage() {
               </div>
             )}
 
+            <p className="text-[11px] text-center underline cursor-pointer" style={{ color: 'var(--p-text-50)' }} onClick={() => navigate('/muraja/historique')}>
+              Consulter votre historique de révision
+            </p>
+
             <MurajaHistory sessionType="tour" accentColor="#10B981" />
           </>
         )}
