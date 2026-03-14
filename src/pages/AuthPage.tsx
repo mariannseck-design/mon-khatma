@@ -174,17 +174,6 @@ export default function AuthPage() {
           </p>
         </div>
 
-        {(mode === 'login' || mode === 'signup') && (
-          <Alert className="mb-4 border-[hsl(38,50%,75%)] bg-[hsl(40,40%,96%)] rounded-xl">
-            <Info className="h-4 w-4 text-[hsl(38,50%,55%)]" />
-            <AlertDescription className="text-xs text-muted-foreground leading-relaxed">
-              <strong className="text-foreground">Mise à jour importante 🌟</strong><br />
-              Ma Khatma a été migrée vers une nouvelle infrastructure pour plus de stabilité. 
-              Merci de te <strong>réinscrire avec le même email</strong>. 
-              Nous nous excusons pour ce désagrément — qu'Allah facilite ! 🤲
-            </AlertDescription>
-          </Alert>
-        )}
 
         <Card className="border-0 bg-white/70 backdrop-blur-sm shadow-[0_8px_32px_hsl(0,0%,0%,0.06)] rounded-2xl p-6">
           {mode === 'check-email' ? (
