@@ -46,6 +46,15 @@ function saveStorage(status: TimerStatus, focusDuration: number, endTimestamp: n
   sessionStorage.setItem(SS_TIMELEFT, String(timeLeft));
 }
 
+/** Pause the Pomodoro externally (e.g. when user leaves the page) */
+export function pausePomodoro() {
+  const stored = readStorage();
+  if (stored.status === 'focus' || stored.status === 'break') {
+    const remaining = Math.max(0, Math.ceil((stored.endTimestamp - Date.now()) / 1000));
+    saveStorage('paused', stored.focusDuration, 0, remaining);
+  }
+}
+
 export default function PomodoroTimer() {
   const [initialized, setInitialized] = useState(false);
   const [status, setStatus] = useState<TimerStatus>('idle');
@@ -196,23 +205,30 @@ export default function PomodoroTimer() {
   return (
     <div className="space-y-2">
       {/* Compact timer */}
-      <div className="flex flex-col items-end gap-1">
+      <div className={`flex flex-col ${isActive ? 'items-end' : 'items-stretch'} gap-1`}>
         {!isActive ? (
-          <>
-            <button
-              onClick={() => setShowDialog(true)}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg transition-colors cursor-pointer select-none"
-              style={{ background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.15)' }}
-            >
-              <Timer className="h-3.5 w-3.5" style={{ color: 'rgba(212,175,55,0.5)' }} />
-              <span className="text-[10px] font-medium" style={{ color: 'rgba(212,175,55,0.5)' }}>
-                Pomodoro
-              </span>
-            </button>
-            <span className="text-[10px] font-bold" style={{ color: '#ffffff' }}>
-              ⏱ Cliquez ici pour activer le minuteur Pomodoro
+          <motion.button
+            onClick={() => setShowDialog(true)}
+            className="w-full flex items-center justify-center gap-2.5 px-4 py-3 rounded-xl cursor-pointer select-none"
+            style={{
+              background: 'linear-gradient(135deg, rgba(212,175,55,0.15), rgba(212,175,55,0.08))',
+              border: '1.5px solid rgba(212,175,55,0.35)',
+              boxShadow: '0 0 20px rgba(212,175,55,0.1)',
+            }}
+            animate={{
+              boxShadow: [
+                '0 0 10px rgba(212,175,55,0.1)',
+                '0 0 25px rgba(212,175,55,0.25)',
+                '0 0 10px rgba(212,175,55,0.1)',
+              ],
+            }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+          >
+            <Timer className="h-4.5 w-4.5" style={{ color: '#d4af37' }} />
+            <span className="text-sm font-bold" style={{ color: '#d4af37' }}>
+              ⏱ Activer le Pomodoro avant de commencer
             </span>
-          </>
+          </motion.button>
         ) : (
           <div
             className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg select-none"
