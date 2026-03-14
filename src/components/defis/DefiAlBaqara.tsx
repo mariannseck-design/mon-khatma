@@ -115,8 +115,9 @@ export default function DefiAlBaqara({ disabled = false }: { disabled?: boolean 
   }, [user, dbId]);
 
   const startChallenge = () => {
+    const days = selectedGoal === 'custom' ? (parseInt(customDays) || 30) : selectedGoal;
     const state: ChallengeState = {
-      targetDays: selectedGoal,
+      targetDays: Math.max(1, Math.min(365, days)),
       startDate: getToday(),
       checkedDays: [],
     };
