@@ -330,6 +330,9 @@ export default function MurajaHubPage() {
               <p className="text-[11px] leading-relaxed" style={{ color: 'var(--p-text-40)' }}>
                 Récite chaque jour tes portions récentes pour les ancrer solidement.
               </p>
+              <p className="text-[11px] mt-2 underline" style={{ color: 'var(--p-text-50)' }}>
+                Consulter votre historique de révision
+              </p>
             </motion.button>
 
             {/* Consolidation Card */}
