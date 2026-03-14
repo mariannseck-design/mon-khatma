@@ -201,9 +201,34 @@ export default function PlanificateurPage() {
     fetchGoal();
   };
 
-  const logReading = async (pages: number) => {
+  const logReading = async (pagesOrAbsolutePage: number, isAbsolutePosition = false) => {
     if (!user) return;
     const today = new Date().toISOString().split('T')[0];
+
+    let pagesToAdd: number;
+
+    if (isAbsolutePosition) {
+      // "Bookmark" mode: the value is an absolute page number (1-604)
+      const targetPage = pagesOrAbsolutePage;
+      if (targetPage <= totalPagesRead) {
+        // Position correction (going back or same page) — update total directly
+        // We need to recalculate: delete all progress and insert one record with the new total
+        await supabase.from('quran_progress').delete().eq('user_id', user.id);
+        await supabase.from('quran_progress').insert({
+          user_id: user.id,
+          goal_id: activeGoal?.id,
+          pages_read: targetPage,
+          date: today
+        });
+        toast.success(`Position mise à jour : page ${targetPage} 📖`);
+        await fetchProgress();
+        return;
+      }
+      // Moving forward: add the difference
+      pagesToAdd = targetPage - totalPagesRead;
+    } else {
+      pagesToAdd = pagesOrAbsolutePage;
+    }
 
     const { data: existing } = await supabase
       .from('quran_progress')
@@ -212,9 +237,9 @@ export default function PlanificateurPage() {
       .eq('date', today)
       .maybeSingle();
 
-    let newTotal = pages;
+    let newTotal = pagesToAdd;
     if (existing) {
-      newTotal = existing.pages_read + pages;
+      newTotal = existing.pages_read + pagesToAdd;
       await supabase
         .from('quran_progress')
         .update({ pages_read: newTotal })
@@ -223,12 +248,12 @@ export default function PlanificateurPage() {
       await supabase.from('quran_progress').insert({
         user_id: user.id,
         goal_id: activeGoal?.id,
-        pages_read: pages
+        pages_read: pagesToAdd
       });
     }
 
     // Check if Khatma is now complete
-    const updatedTotal = totalPagesRead + pages;
+    const updatedTotal = totalPagesRead + pagesToAdd;
     if (updatedTotal >= TOTAL_QURAN_PAGES) {
       // Show success modal first, then transition to celebration after delay
       setShowSparkles(true);

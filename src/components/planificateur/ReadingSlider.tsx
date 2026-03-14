@@ -16,7 +16,7 @@ import { SURAHS } from '@/lib/surahData';
 const TOTAL_QURAN_PAGES = 604;
 
 interface ReadingSliderProps {
-  onLogReading: (pages: number) => Promise<void>;
+  onLogReading: (absolutePage: number) => Promise<void>;
   isDisabled?: boolean;
   todayPages?: number;
   targetPages?: number;
