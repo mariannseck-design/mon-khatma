@@ -559,6 +559,7 @@ export default function HifzPage() {
             onNext={() => updateStep(1)}
             onBack={() => setStep(-1)}
             onPause={handlePause}
+            phaseLabel={PHASE_LABELS[0]}
           />
         )}
 
