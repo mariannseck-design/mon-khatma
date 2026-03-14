@@ -1,14 +1,21 @@
 
 
-## Probleme
+# Diagnostic : 404 sur /quran-reader
 
-Le hook `auth-email-hook` n'est pas connecte au systeme d'authentification. Il boot et shutdown mais ne recoit aucune requete. Resultat : aucun email de confirmation n'est envoye. Tous les utilisateurs sont affectes.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
 ## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-1. **Re-scaffolder les templates d'email** via l'outil `scaffold_auth_email_templates` pour que le systeme connecte correctement le hook
-2. **Re-appliquer le branding Ma Khatma** (couleurs vertes, francais, logo) sur les templates regeneres
-3. **Redeployer** `auth-email-hook` pour activer la connexion
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-Cela devrait prendre effet immediatement apres le deploiement. Marianne et tous les futurs utilisateurs recevront alors leurs emails de confirmation.
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
