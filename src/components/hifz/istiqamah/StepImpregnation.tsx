@@ -75,14 +75,22 @@ export default function StepImpregnation({ surahNumber, verseStart, verseEnd, ve
 
   const toggleAudio = () => {
     if (isPlayingRef.current) {
+      // Pause: keep audio element and currentAyahIndex
       isPlayingRef.current = false;
+      pausedRef.current = true;
       audioRef.current?.pause();
       setIsPlaying(false);
-      setCurrentAyahIndex(-1);
     } else {
       isPlayingRef.current = true;
       setIsPlaying(true);
-      playLoop(0);
+      // Resume from where we paused if audio element still exists
+      if (pausedRef.current && audioRef.current && !audioRef.current.ended) {
+        pausedRef.current = false;
+        audioRef.current.play().catch(() => { isPlayingRef.current = false; setIsPlaying(false); });
+      } else {
+        pausedRef.current = false;
+        playLoop(0);
+      }
     }
   };
 
