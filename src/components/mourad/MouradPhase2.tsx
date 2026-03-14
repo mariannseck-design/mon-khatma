@@ -23,6 +23,7 @@ export default function MouradPhase2({ surahNumber, startVerse, endVerse, listen
   const [mushafMode, setMushafModeState] = useState<MushafMode>(getMouradMushafMode());
   const [isPlaying, setIsPlaying] = useState(false);
   const [audioEl, setAudioEl] = useState<HTMLAudioElement | null>(null);
+  const pausedRef = useRef(false);
   const [showReciters, setShowReciters] = useState(false);
 
   const surah = SURAHS.find(s => s.number === surahNumber);
