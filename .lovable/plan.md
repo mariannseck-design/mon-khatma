@@ -1,21 +1,32 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Ajouter une étape "Lecture Mushaf" entre Écoute et Récitation
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Constat actuel
+Le flux dans `StepImmersion.tsx` a 2 phases par verset :
+1. **listen** — Écoute audio + Mushaf (3x min)
+2. **memory** — Récitation de mémoire sans aide (3x min)
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Modification
+Insérer une phase **read** entre les deux, et préciser "3 fois minimum" dans chaque étape.
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+### Changements dans `src/components/hifz/istiqamah/StepImmersion.tsx`
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+1. **Type Phase** — Ajouter `'read'` et `'liaison-read'` au type union.
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+2. **Nouvel état `readCount`** — Compteur pour la phase lecture, initialisé à 0, persisté dans le localStorage (ajouté à `saveImmersionState`/`loadImmersionState`).
+
+3. **Transitions modifiées** :
+   - `handleContinueListen` : passe à `read` (au lieu de `memory`)
+   - Nouveau `handleContinueRead` : passe à `memory`
+   - Liaison idem : `liaison-listen` → `liaison-read` → `liaison-memory`
+
+4. **Rendu phase "read"** — Affiche le Mushaf (toggle image/texte/physique), un compteur circulaire pour `readCount`, un bouton "J'ai lu ✓" qui incrémente `readCount`, et le bouton "Continuer" après 3x.
+
+5. **Libellés mis à jour** (les 3 phases + liaison) :
+   - Écoute : "Écouter, lire & répéter **(3 fois minimum)**"
+   - Lecture : "Lire en regardant le Mushaf **(3 fois minimum)**"
+   - Récitation : "Réciter de mémoire **(3 fois minimum)**"
+
+6. **Reset sur changement de verset** — `readCount` remis à 0 avec les autres compteurs.
 
