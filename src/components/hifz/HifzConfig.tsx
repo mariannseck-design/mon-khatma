@@ -108,6 +108,21 @@ export default function HifzConfig({ onStart, onBack, goalVerseCount }: HifzConf
         )}
       </div>
 
+      {/* Explicit back-to-diagnostic button */}
+      {onBack && (
+        <button
+          onClick={onBack}
+          className="w-full rounded-xl py-3 px-4 text-sm font-semibold flex items-center justify-center gap-2 transition-all active:scale-[0.97]"
+          style={{
+            background: 'rgba(212,175,55,0.1)',
+            border: '1px solid rgba(212,175,55,0.4)',
+            color: '#d4af37',
+          }}
+        >
+          📋 Définir mes acquis
+        </button>
+      )}
+
       {/* Selection mode toggle */}
       <div className="grid grid-cols-2 gap-2">
         {(['surah', 'page'] as const).map(mode => (

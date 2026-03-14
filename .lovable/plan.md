@@ -1,29 +1,21 @@
 
 
-## Problème
+# Diagnostic : 404 sur /quran-reader
 
-Les tentatives précédentes de corriger la navigation via `popstate` et le resolver centralisé ne fonctionnent pas de manière fiable sur tous les appareils. L'approche indirecte via l'historique du navigateur est instable.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-## Solution : bouton explicite et bien visible
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-Ajouter un **gros bouton clairement libellé** directement dans `HifzConfig.tsx` (page "Étape 1/5 · Choix des versets") qui dit **"📋 Définir mes acquis"** et qui ramène à l'écran diagnostic. Pas de dépendance sur `popstate` ou l'historique — un simple appel `onBack()` qui change l'état interne de `HifzPage`.
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-## Changements
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-### 1. `src/components/hifz/HifzConfig.tsx`
-- Ajouter sous le bouton "Retour" existant (ou le remplacer) un **bouton bien visible** avec le texte "📋 Définir mes acquis" qui appelle `onBack`.
-- Style : fond semi-transparent, bordure dorée, texte lisible, taille suffisante pour le tap mobile.
-- Positionné juste sous le titre "Étape 1/5", avant les sélecteurs de sourate/page.
-
-### 2. `src/pages/HifzPage.tsx`
-- S'assurer que `onBack` passé à `HifzConfig` appelle bien `setShowDiagnostic(true)` (déjà le cas via `handlePreSessionBack`).
-- Pas d'autre changement nécessaire — le resolver existant gère déjà le cas `step === -1 → showDiagnostic`.
-
-```
-Flux résultant :
-Étape 1/5 (Config) 
-  → clic "📋 Définir mes acquis" 
-  → affiche l'écran Diagnostic (acquis anciens/récents)
-  → pas de navigation URL, juste changement d'état React
-```
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
