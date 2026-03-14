@@ -152,13 +152,12 @@ export function useIstiqamahState(
         return i;
       }
 
-      // If moving to tikrar, immersion must be completed
-      if (nextNode.type === 'tikrar' && !immersionCompleted) {
-        // Mark immersion as completed since we're transitioning FROM immersion
+      // If moving to validation or tikrar, immersion must be completed
+      if ((nextNode.type === 'validation' || nextNode.type === 'tikrar') && !immersionCompleted) {
         if (current.type === 'immersion') {
           // Will be set below after state update
         } else {
-          console.warn(`[Istiqamah] Blocked tikrar: immersion not completed`);
+          console.warn(`[Istiqamah] Blocked ${nextNode.type}: immersion not completed`);
           return i;
         }
       }
