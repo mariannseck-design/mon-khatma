@@ -255,6 +255,9 @@ export default function AdminPage() {
             ))
           )}
         </div>
+        {/* Email Monitoring */}
+        <EmailMonitoringSection />
+
         {/* Allowed Emails Management */}
         <AllowedEmailsSection />
       </div>
