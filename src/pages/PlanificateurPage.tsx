@@ -147,12 +147,14 @@ export default function PlanificateurPage() {
     setTodayPages(pagesRead);
 
     // Total pages read (all time)
-    const { data: allProgress } = await supabase
+    const { data: allProgressData } = await supabase
       .from('quran_progress')
       .select('pages_read, date')
-      .eq('user_id', user.id);
-    const total = allProgress?.reduce((sum, p) => sum + p.pages_read, 0) || 0;
+      .eq('user_id', user.id)
+      .order('date', { ascending: true });
+    const total = allProgressData?.reduce((sum, p) => sum + p.pages_read, 0) || 0;
     setTotalPagesRead(total);
+    setAllProgress(allProgressData || []);
 
     // Find last reading date
     if (allProgress && allProgress.length > 0) {
