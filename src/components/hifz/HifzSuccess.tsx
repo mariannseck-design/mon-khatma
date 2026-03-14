@@ -156,13 +156,6 @@ export default function HifzSuccess({ stepTimes }: Props) {
         Transférer vers la consolidation (Ar-Rabt)
       </motion.button>
 
-      <button
-        onClick={() => navigate('/accueil')}
-        className="mx-auto text-xs underline underline-offset-4"
-        style={{ color: 'rgba(255,255,255,0.45)' }}
-      >
-        Retour à l'accueil
-      </button>
     </motion.div>
   );
 }

@@ -67,7 +67,7 @@ const STEP_NAMES = [
   'Imprégnation',
   'Mémorisation',
   'Validation',
-  'Tikrâr',
+  'Tikrâr (Grande Mémorisation)',
 ];
 
 export default function HifzPage() {
@@ -581,6 +581,7 @@ export default function HifzPage() {
             verseStart={session.startVerse}
             verseEnd={session.endVerse}
             onNext={() => updateStep(4)}
+            onBack={() => setStep(2)}
           />
         )}
 

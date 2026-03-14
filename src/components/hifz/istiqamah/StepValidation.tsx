@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, ShieldCheck, RotateCcw } from 'lucide-react';
+import { CheckCircle2, ShieldCheck, RotateCcw, ChevronLeft } from 'lucide-react';
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel,
   AlertDialogContent, AlertDialogDescription, AlertDialogFooter,
@@ -13,11 +13,12 @@ interface Props {
   verseStart: number;
   verseEnd: number;
   onNext: () => void;
+  onBack?: () => void;
 }
 
 const REQUIRED = 5;
 
-export default function StepValidation({ surahNumber, verseStart, verseEnd, onNext }: Props) {
+export default function StepValidation({ surahNumber, verseStart, verseEnd, onNext, onBack }: Props) {
   const [count, setCount] = useState(0);
   const done = count >= REQUIRED;
 
@@ -35,6 +36,18 @@ export default function StepValidation({ surahNumber, verseStart, verseEnd, onNe
       exit={{ opacity: 0, y: -20 }}
       className="space-y-6 py-4"
     >
+      {/* Back button */}
+      {onBack && (
+        <button
+          onClick={onBack}
+          className="flex items-center gap-1 text-xs transition-opacity"
+          style={{ color: 'rgba(255,255,255,0.25)' }}
+        >
+          <ChevronLeft className="h-4 w-4" />
+          Retour
+        </button>
+      )}
+
       {/* Title */}
       <div className="space-y-2">
         <div className="flex items-center justify-center gap-2">
