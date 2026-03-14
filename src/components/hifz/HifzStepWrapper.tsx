@@ -11,6 +11,7 @@ interface HifzStepWrapperProps {
   onBack?: () => void;
   onPause?: () => void;
   totalSteps?: number;
+  phaseLabel?: string;
   surahNumber?: number;
   startVerse?: number;
   endVerse?: number;
