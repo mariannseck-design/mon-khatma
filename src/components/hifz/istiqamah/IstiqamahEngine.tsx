@@ -93,6 +93,15 @@ export default function IstiqamahEngine({
           />
         );
 
+      case 'validation':
+        return (
+          <StepValidation
+            key="validation"
+            {...globalProps}
+            onNext={() => next('validation')}
+          />
+        );
+
       case 'tikrar':
         return (
           <StepTikrarFinal
