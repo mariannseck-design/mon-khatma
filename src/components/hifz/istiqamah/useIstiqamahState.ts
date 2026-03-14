@@ -45,6 +45,7 @@ const ALLOWED_NEXT: Record<StepName, StepName> = {
 };
 
 const ISTIQAMAH_KEY = 'hifz_istiqamah_state';
+const FLOW_VERSION = 2;
 
 function fingerprint(surah: number, vStart: number, vEnd: number) {
   return `${surah}:${vStart}-${vEnd}`;
