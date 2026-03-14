@@ -157,8 +157,8 @@ export default function PlanificateurPage() {
     setAllProgress(allProgressData || []);
 
     // Find last reading date
-    if (allProgress && allProgress.length > 0) {
-      const dates = allProgress.map(p => p.date).sort();
+    if (allProgressData && allProgressData.length > 0) {
+      const dates = allProgressData.map(p => p.date).sort();
       setLastReadingDate(dates[dates.length - 1]);
     }
 
