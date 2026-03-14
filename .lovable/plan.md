@@ -1,18 +1,21 @@
 
 
-## Corriger le bouton "Nouvelle session" quand on est en Phase B
+# Diagnostic : 404 sur /quran-reader
 
-### Problème
-Quand l'utilisateur arrive via `/hifz?phase=B` et clique "Recommencer une nouvelle session", le système remet tout à zéro et affiche la configuration (étape 0 = Phase A). Or, Phase B devrait rester indépendante de Phase A.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Solution
-Adapter `handleRestart` pour tenir compte du paramètre `phase` :
-- Si `phase=B` : au lieu de tout effacer, conserver la session existante (sourate/versets) mais repositionner au step 2 (début Phase B). Le bouton affichera "🔄 Recommencer l'Étape B".
-- Si `phase=A` ou pas de phase : comportement actuel inchangé (reset complet vers la config).
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-### Fichier modifié
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-**`src/pages/HifzPage.tsx`** :
-1. **`handleRestart`** (~ligne 269) : si `phaseParam === 'B'` et qu'une `pendingResume` existe, réutiliser la même session mais forcer `step = 2` au lieu de tout effacer.
-2. **Label du bouton** (~ligne 518) : afficher "Recommencer l'Étape B" si `phaseParam === 'B'`, sinon le label actuel.
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
