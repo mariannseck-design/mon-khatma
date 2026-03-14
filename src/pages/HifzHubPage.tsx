@@ -109,6 +109,7 @@ export default function HifzHubPage() {
             stepName: STEP_NAMES[dbSession.current_step] || `Étape ${dbSession.current_step}`,
             pageLabel,
             phase: STEP_PHASE[dbSession.current_step],
+            currentStep: dbSession.current_step,
           });
         }
       }
