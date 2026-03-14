@@ -2,9 +2,10 @@ import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { ArrowLeft, Link2, RefreshCw, BookOpen, CalendarDays, BarChart3, ChevronRight } from 'lucide-react';
+import { SURAHS } from '@/lib/surahData';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useNavigate } from 'react-router-dom';
-import { useMurajaData } from '@/hooks/useMurajaData';
+import { useMurajaData, getSurahName } from '@/hooks/useMurajaData';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { format, startOfWeek, addDays, isSameDay } from 'date-fns';
@@ -90,13 +91,29 @@ export default function MurajaHubPage() {
     resolvePages(tourVerses).then(setTourPageLabel);
   }, [rabtVerses, tourVerses]);
 
-  const TOTAL_QURAN_VERSES = 6236;
-  const totalMemorized = useMemo(() => {
-    return allVerses.reduce((sum, v) => sum + (v.verse_end - v.verse_start + 1), 0);
+  // Context-specific progress: group by surah
+  const { progressLabel, progressPercent, totalMemorized, totalPages } = useMemo(() => {
+    const bySurah: Record<number, number> = {};
+    for (const v of allVerses) {
+      bySurah[v.surah_number] = (bySurah[v.surah_number] || 0) + (v.verse_end - v.verse_start + 1);
+    }
+    const surahNums = Object.keys(bySurah).map(Number);
+    const total = Object.values(bySurah).reduce((a, b) => a + b, 0);
+    const pages = Math.max(total > 0 ? 1 : 0, Math.round(total / 15));
+
+    if (surahNums.length === 1) {
+      const sNum = surahNums[0];
+      const surah = SURAHS.find(s => s.number === sNum);
+      const surahTotal = surah?.versesCount || total;
+      const pct = Math.min(100, (bySurah[sNum] / surahTotal) * 100);
+      return { progressLabel: getSurahName(sNum).toUpperCase(), progressPercent: pct, totalMemorized: total, totalPages: pages };
+    }
+
+    // Multiple surahs: show "Progression actuelle"
+    const TOTAL_QURAN_VERSES = 6236;
+    const pct = Math.min(100, (total / TOTAL_QURAN_VERSES) * 100);
+    return { progressLabel: 'PROGRESSION ACTUELLE', progressPercent: pct, totalMemorized: total, totalPages: pages };
   }, [allVerses]);
-  const progressPercent = Math.min(100, (totalMemorized / TOTAL_QURAN_VERSES) * 100);
-  const totalPages = Math.max(totalMemorized > 0 ? 1 : 0, Math.round(totalMemorized / 15));
-  const totalJuz = Math.round((totalMemorized / TOTAL_QURAN_VERSES) * 30 * 10) / 10;
 
   return (
     <AppLayout title="Muraja'a" hideNav bgClassName="bg-gradient-muraja">
@@ -154,7 +171,7 @@ export default function MurajaHubPage() {
             >
               <div className="flex items-center justify-between">
                 <p className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--p-text-40)' }}>
-                  Progression globale
+                  {progressLabel}
                 </p>
                 <span className="text-xs font-bold" style={{ color: 'var(--p-primary)' }}>
                   {progressPercent.toFixed(1)}%
@@ -171,7 +188,6 @@ export default function MurajaHubPage() {
               </div>
               <div className="flex items-center justify-between text-[10px]" style={{ color: 'var(--p-text-50)' }}>
                 <span>{totalMemorized} versets · {totalPages} pages</span>
-                <span>{totalJuz} / 30 juz</span>
               </div>
             </motion.div>
 
@@ -321,6 +337,18 @@ export default function MurajaHubPage() {
             >
               Continuer la mémorisation
               <ChevronRight className="h-4 w-4" />
+            </motion.button>
+
+            {/* Lien historique discret */}
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              onClick={() => navigate('/muraja/historique')}
+              className="w-full text-center text-[11px] underline underline-offset-4 py-1"
+              style={{ color: 'var(--p-text-30)' }}
+            >
+              Consulter votre historique de révision
             </motion.button>
           </>
         )}

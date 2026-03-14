@@ -165,9 +165,14 @@ export default function MurajaRabtPage() {
               <p className="text-center text-sm py-8" style={{ color: 'var(--p-text-50)' }}>Aucune liaison ce jour.</p>
             ) : (
               <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#D4AF37' }}>Liaison quotidienne</p>
-                  <span className="text-[10px] font-medium" style={{ color: 'var(--p-text-40)' }}>· Récite 1 fois</span>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#D4AF37' }}>Liaison quotidienne</p>
+                    <span className="text-[10px] font-medium" style={{ color: 'var(--p-text-40)' }}>· Récite 1 fois</span>
+                  </div>
+                  <p className="text-[10px] italic mt-1" style={{ color: 'var(--p-text-40)' }}>
+                    Vous pouvez réciter ces pages lors de vos prières quotidiennes.
+                  </p>
                 </div>
                 {(isFutureDay ? items : pending).length > 0 && (
                   <div className="grid grid-cols-2 gap-3">{(isFutureDay ? items : pending).map(item => renderCard(item, true))}</div>

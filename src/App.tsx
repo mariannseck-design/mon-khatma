@@ -25,6 +25,7 @@ import HifzPage from "./pages/HifzPage";
 import MurajaHubPage from "./pages/MurajaHubPage";
 import MurajaRabtPage from "./pages/MurajaRabtPage";
 import MurajaRevisionPage from "./pages/MurajaRevisionPage";
+import MurajaHistoryPage from "./pages/MurajaHistoryPage";
 
 import HifzSuiviPage from "./pages/HifzSuiviPage";
 import HifzHubPage from "./pages/HifzHubPage";
@@ -99,6 +100,7 @@ function AppRoutes() {
       <Route path="/muraja" element={<ProtectedRoute><MurajaHubPage /></ProtectedRoute>} />
       <Route path="/muraja/rabt" element={<ProtectedRoute><MurajaRabtPage /></ProtectedRoute>} />
       <Route path="/muraja/revision" element={<ProtectedRoute><MurajaRevisionPage /></ProtectedRoute>} />
+      <Route path="/muraja/historique" element={<ProtectedRoute><MurajaHistoryPage /></ProtectedRoute>} />
       <Route path="/hifz-suivi" element={<ProtectedRoute><HifzSuiviPage /></ProtectedRoute>} />
       <Route path="/hifz-hub" element={<ProtectedRoute><HifzHubPage /></ProtectedRoute>} />
       <Route path="/sources-de-lumiere" element={<ProtectedRoute><ComingSoonGate title="Sources de Lumière" icon={Sparkles} description="Accède aux salawât, aux noms d'Allah et aux invocations lumineuses pour nourrir ton cœur.">{<SourcesDeLumierePage />}</ComingSoonGate></ProtectedRoute>} />
