@@ -205,7 +205,7 @@ export default function PomodoroTimer() {
   return (
     <div className="space-y-2">
       {/* Compact timer */}
-      <div className="flex flex-col items-end gap-1">
+      <div className={`flex flex-col ${isActive ? 'items-end' : 'items-stretch'} gap-1`}>
         {!isActive ? (
           <motion.button
             onClick={() => setShowDialog(true)}
