@@ -596,7 +596,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
             <div className="rounded-xl px-4 py-2.5 mx-auto max-w-sm"
               style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
               <p className="text-[11px] font-bold leading-relaxed text-center" style={{ color: '#ffffff' }}>
-                Lecture {readCount + 1} — Lis attentivement en regardant le Mushaf, sans audio
+                Mémorisation {readCount + 1} — Mémorise attentivement en regardant le Mushaf, sans audio
               </p>
             </div>
           </motion.div>
