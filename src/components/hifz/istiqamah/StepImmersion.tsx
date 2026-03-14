@@ -496,7 +496,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
         {(phase === 'listen' || phase === 'liaison-listen') && (
           <motion.div key={phase} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-4">
             <PhaseHeader
-              title={isLiaison ? 'Liaison — Écoute + Mushaf + Répétition' : 'Écouter, lire & répéter'}
+              title={isLiaison ? 'Liaison — Écoute + Mushaf + Répétition' : 'Écouter, lire & répéter (3 fois minimum)'}
               subtitle={isLiaison
                 ? `Écoutez les versets ${liaisonVerses[0]}–${liaisonVerses[liaisonVerses.length - 1]} enchaînés`
                 : 'Écoute le récitateur en suivant sur le Mushaf, puis répète en même temps'
@@ -542,8 +542,50 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
                 )}
               </motion.button>
               {minReached && (
-                <ContinueButton onClick={handleContinueListen} label="Passer à la récitation" />
+                <ContinueButton onClick={handleContinueListen} label="Passer à la lecture" />
               )}
+            </div>
+          </motion.div>
+        )}
+
+        {/* ===== READ PHASE (single verse or liaison) ===== */}
+        {(phase === 'read' || phase === 'liaison-read') && (
+          <motion.div key={phase} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-4">
+            <PhaseHeader
+              title={isLiaison ? 'Liaison — Lecture Mushaf' : 'Lire en regardant le Mushaf (3 fois minimum)'}
+              subtitle={isLiaison
+                ? `Lisez les versets ${liaisonVerses[0]}–${liaisonVerses[liaisonVerses.length - 1]} sans audio`
+                : 'Lis le verset en regardant le Mushaf, sans écouter l\'audio'
+              }
+            />
+
+            <div className="space-y-2">
+              <HifzMushafToggle mode={mushafMode} onChange={m => { setMushafModeState(m); setMushafMode(m); }} />
+              {renderMushaf(isLiaison ? liaisonVerses : undefined)}
+            </div>
+
+            <div className="flex flex-col items-center gap-3">
+              <CircularCounter count={readCount} target={TARGET_REPS} color={isLiaison ? '#a78bfa' : '#f59e0b'} />
+
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setReadCount(prev => prev + 1)}
+                className="flex items-center gap-2 px-6 py-2.5 rounded-xl font-semibold text-sm"
+                style={{ background: 'rgba(245,158,11,0.15)', border: '1px solid rgba(245,158,11,0.4)', color: '#f59e0b' }}
+              >
+                <BookOpen className="h-4 w-4" /> J'ai lu ✓
+              </motion.button>
+
+              {minReached && (
+                <ContinueButton onClick={handleContinueRead} label="Passer à la récitation" />
+              )}
+            </div>
+
+            <div className="rounded-xl px-4 py-2.5 mx-auto max-w-sm"
+              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+              <p className="text-[11px] font-bold leading-relaxed text-center" style={{ color: '#ffffff' }}>
+                Lecture {readCount + 1} — Lis attentivement en regardant le Mushaf, sans audio
+              </p>
             </div>
           </motion.div>
         )}
