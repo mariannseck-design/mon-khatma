@@ -170,7 +170,7 @@ export default function MurajaHubPage() {
             >
               <div className="flex items-center justify-between">
                 <p className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--p-text-40)' }}>
-                  Progression globale
+                  {progressLabel}
                 </p>
                 <span className="text-xs font-bold" style={{ color: 'var(--p-primary)' }}>
                   {progressPercent.toFixed(1)}%
