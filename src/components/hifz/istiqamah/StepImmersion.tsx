@@ -35,7 +35,9 @@ interface Props {
 
 type Phase = 'listen' | 'read' | 'memory' | 'error' | 'liaison-listen' | 'liaison-read' | 'liaison-memory' | 'liaison-error';
 
-const TARGET_REPS = 3;
+const TARGET_LISTEN = 3;
+const TARGET_READ = 10;
+const TARGET_MEMORY = 5;
 const FONT_FAMILY = "'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
 
 const IMMERSION_KEY = 'hifz_immersion_state';
@@ -68,7 +70,9 @@ function loadImmersionState(surah: number, vStart: number, vEnd: number) {
 
 export default function StepImmersion({ surahNumber, verseStart, verseEnd, reciterId, onNext }: Props) {
   const { isAdmin } = useAuth();
-  const minReps = isAdmin ? 1 : TARGET_REPS;
+  const minListen = isAdmin ? 1 : TARGET_LISTEN;
+  const minRead = isAdmin ? 1 : TARGET_READ;
+  const minMemory = isAdmin ? 1 : TARGET_MEMORY;
   const totalVerses = verseEnd - verseStart + 1;
 
   // Restore persisted immersion state
@@ -98,9 +102,9 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
   const isLiaison = phase.startsWith('liaison');
   const minReached = (() => {
     const p = phase;
-    if (p === 'listen' || p === 'liaison-listen') return listenCount >= minReps;
-    if (p === 'read' || p === 'liaison-read') return readCount >= minReps;
-    if (p === 'memory' || p === 'liaison-memory') return memoryCount >= minReps;
+    if (p === 'listen' || p === 'liaison-listen') return listenCount >= minListen;
+    if (p === 'read' || p === 'liaison-read') return readCount >= minRead;
+    if (p === 'memory' || p === 'liaison-memory') return memoryCount >= minMemory;
     return false;
   })();
 
@@ -508,7 +512,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
         {(phase === 'listen' || phase === 'liaison-listen') && (
           <motion.div key={phase} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-4">
             <PhaseHeader
-              title={isLiaison ? 'Liaison — Écoute + Mushaf + Répétition' : 'Écouter, lire & répéter (3 fois minimum)'}
+              title={isLiaison ? 'Liaison — Écoute + Mushaf + Répétition' : `Écouter, lire & répéter (${TARGET_LISTEN} fois minimum)`}
               subtitle={isLiaison
                 ? `Écoutez les versets ${liaisonVerses[0]}–${liaisonVerses[liaisonVerses.length - 1]} enchaînés`
                 : 'Écoute le récitateur en suivant sur le Mushaf, puis répète en même temps'
@@ -522,7 +526,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
             </div>
 
             <div className="flex flex-col items-center gap-3">
-              <CircularCounter count={listenCount} target={TARGET_REPS} color={isLiaison ? '#a78bfa' : '#4ecdc4'} />
+              <CircularCounter count={listenCount} target={TARGET_LISTEN} color={isLiaison ? '#a78bfa' : '#4ecdc4'} />
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 onClick={handlePlay}
@@ -564,7 +568,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
         {(phase === 'read' || phase === 'liaison-read') && (
           <motion.div key={phase} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-4">
             <PhaseHeader
-              title={isLiaison ? 'Liaison — Mémorisation Mushaf' : 'Mémoriser en regardant le Mushaf (3 fois minimum)'}
+              title={isLiaison ? 'Liaison — Mémorisation Mushaf' : `Mémoriser en regardant le Mushaf (${TARGET_READ} fois minimum)`}
               subtitle={isLiaison
                 ? `Mémorisez les versets ${liaisonVerses[0]}–${liaisonVerses[liaisonVerses.length - 1]} sans audio`
                 : 'Mémorise le verset en regardant le Mushaf, sans écouter l\'audio'
@@ -577,7 +581,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
             </div>
 
             <div className="flex flex-col items-center gap-3">
-              <CircularCounter count={readCount} target={TARGET_REPS} color={isLiaison ? '#a78bfa' : '#f59e0b'} />
+              <CircularCounter count={readCount} target={TARGET_READ} color={isLiaison ? '#a78bfa' : '#f59e0b'} />
 
               <motion.button
                 whileTap={{ scale: 0.95 }}
@@ -606,7 +610,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
         {(phase === 'memory' || phase === 'liaison-memory') && (
           <motion.div key={phase} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-4">
             <PhaseHeader
-              title={isLiaison ? 'Liaison — Réciter' : 'Réciter de mémoire (3 fois minimum)'}
+              title={isLiaison ? 'Liaison — Réciter' : `Réciter de mémoire (${TARGET_MEMORY} fois minimum)`}
               subtitle={isLiaison
                 ? `Récitez les versets ${liaisonVerses[0]}–${liaisonVerses[liaisonVerses.length - 1]} enchaînés`
                 : 'Récitez ce verset de mémoire (sans regarder le Mushaf et sans audio)'
@@ -614,7 +618,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
             />
 
             <div className="flex justify-center">
-              <CircularCounter count={memoryCount} target={TARGET_REPS} color={isLiaison ? '#a78bfa' : '#d4af37'} />
+              <CircularCounter count={memoryCount} target={TARGET_MEMORY} color={isLiaison ? '#a78bfa' : '#d4af37'} />
             </div>
 
             <MiniRecorder />
