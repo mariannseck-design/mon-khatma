@@ -77,6 +77,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
   const [currentVerseIndex, setCurrentVerseIndex] = useState(savedImmersion?.verseIdx ?? 0);
   const [phase, setPhase] = useState<Phase>(savedImmersion?.phase ?? 'listen');
   const [listenCount, setListenCount] = useState(savedImmersion?.listenCount ?? 0);
+  const [readCount, setReadCount] = useState(savedImmersion?.readCount ?? 0);
   const [memoryCount, setMemoryCount] = useState(savedImmersion?.memoryCount ?? 0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [mushafMode, setMushafModeState] = useState<MushafMode>(getMushafMode);
