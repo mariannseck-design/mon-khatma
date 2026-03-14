@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Lock, User, ArrowRight, ArrowLeft, CheckCircle, Eye, EyeOff, BookOpen, Brain, Heart, MessageCircle, Info } from 'lucide-react';
+import { Mail, Lock, User, ArrowRight, ArrowLeft, CheckCircle, Eye, EyeOff, BookOpen, Brain, Heart, MessageCircle } from 'lucide-react';
 import logo from '@/assets/logo.png';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
