@@ -85,6 +85,7 @@ export default function HifzHubPage() {
               stepName: STEP_NAMES[data.step] || `Étape ${data.step}`,
               pageLabel,
               phase: STEP_PHASE[data.step],
+              currentStep: data.step,
             });
             return;
           }
