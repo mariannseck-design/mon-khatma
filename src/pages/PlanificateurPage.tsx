@@ -410,8 +410,6 @@ export default function PlanificateurPage() {
     );
   }
 
-  // Juz grid collapsed state
-  const [juzExpanded, setJuzExpanded] = useState(false);
   const completedJuz = Array.from({ length: 30 }, (_, i) => {
     const juzEndPage = (i + 1) === 30 ? 604 : (i + 1) * 20;
     return totalPagesRead >= juzEndPage;
