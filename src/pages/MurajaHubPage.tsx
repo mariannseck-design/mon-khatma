@@ -92,17 +92,16 @@ export default function MurajaHubPage() {
   }, [rabtVerses, tourVerses]);
 
   // Context-specific progress: group by surah
-  const { progressLabel, progressPercent, dominantMemorized, dominantTotal, totalMemorized, totalPages } = useMemo(() => {
+  const { progressLabel, progressPercent, dominantMemorized, dominantTotal, totalMemorized } = useMemo(() => {
     const bySurah: Record<number, number> = {};
     for (const v of allVerses) {
       bySurah[v.surah_number] = (bySurah[v.surah_number] || 0) + (v.verse_end - v.verse_start + 1);
     }
     const surahNums = Object.keys(bySurah).map(Number);
     const total = Object.values(bySurah).reduce((a, b) => a + b, 0);
-    const pages = Math.max(total > 0 ? 1 : 0, Math.round(total / 15));
 
     if (surahNums.length === 0) {
-      return { progressLabel: 'PROGRESSION ACTUELLE', progressPercent: 0, dominantMemorized: 0, dominantTotal: 0, totalMemorized: 0, totalPages: 0 };
+      return { progressLabel: 'PROGRESSION ACTUELLE', progressPercent: 0, dominantMemorized: 0, dominantTotal: 0, totalMemorized: 0 };
     }
 
     const dominantSurah = surahNums.reduce((a, b) => bySurah[a] >= bySurah[b] ? a : b);
@@ -111,7 +110,24 @@ export default function MurajaHubPage() {
     const domMem = bySurah[dominantSurah];
     const pct = Math.min(100, (domMem / surahTotal) * 100);
 
-    return { progressLabel: getSurahName(dominantSurah).toUpperCase(), progressPercent: pct, dominantMemorized: domMem, dominantTotal: surahTotal, totalMemorized: total, totalPages: pages };
+    return { progressLabel: getSurahName(dominantSurah).toUpperCase(), progressPercent: pct, dominantMemorized: domMem, dominantTotal: surahTotal, totalMemorized: total };
+  }, [allVerses]);
+
+  // Exact Mushaf page count
+  const [totalDistinctPages, setTotalDistinctPages] = useState(0);
+
+  useEffect(() => {
+    if (allVerses.length === 0) { setTotalDistinctPages(0); return; }
+    (async () => {
+      const pages = new Set<number>();
+      for (const v of allVerses) {
+        for (let i = v.verse_start; i <= v.verse_end; i++) {
+          const p = await getExactVersePage(v.surah_number, i);
+          pages.add(p);
+        }
+      }
+      setTotalDistinctPages(pages.size);
+    })();
   }, [allVerses]);
 
   return (
