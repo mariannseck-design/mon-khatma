@@ -13,7 +13,7 @@ import HifzStepIntentionComprehension from '@/components/hifz/HifzStepIntentionC
 import HifzStepImpregnationTajweed from '@/components/hifz/HifzStepImpregnationTajweed';
 import HifzStepMemorisation from '@/components/hifz/HifzStepMemorisation';
 import HifzStep5Tikrar from '@/components/hifz/HifzStep5Tikrar';
-import HifzStep5Liaison from '@/components/hifz/HifzStep5Liaison';
+
 import StepValidation from '@/components/hifz/istiqamah/StepValidation';
 import HifzSuccess from '@/components/hifz/HifzSuccess';
 import HifzBreathingPause from '@/components/hifz/HifzBreathingPause';
