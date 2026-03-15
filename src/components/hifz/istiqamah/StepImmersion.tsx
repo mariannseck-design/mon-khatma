@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Volume2, Check, X, BookOpen, RefreshCw, Link, ChevronRight, Headphones, ChevronDown, ChevronUp, EyeOff } from 'lucide-react';
+import { Volume2, Check, X, BookOpen, RefreshCw, Link, ChevronRight, Headphones, ChevronDown, ChevronUp, EyeOff, Pause, Square } from 'lucide-react';
 import MiniRecorder from './MiniRecorder';
 import { useAuth } from '@/contexts/AuthContext';
 import { RECITERS, getAyahAudioUrl } from '@/hooks/useQuranAudio';
@@ -376,6 +376,48 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
     }
   }, [currentVerseIndex, totalVerses, onNext]);
 
+  // Full stop — kills audio and resets refs completely (for Stop button)
+  const fullStopAudio = useCallback(() => {
+    generationRef.current++;
+    sequenceAbortRef.current = true;
+    isPlayingRef.current = false;
+    pausedRef.current = false;
+    hardStopAudio();
+    setIsPlaying(false);
+  }, [hardStopAudio]);
+
+  // Play looping audio in read phase (reuses same logic as listen phase)
+  const handleReadAudioToggle = useCallback(() => {
+    if (isPlaying) { stopAudio(); return; }
+    // Resume from pause
+    if (pausedRef.current && audioRef.current && !audioRef.current.ended) {
+      pausedRef.current = false;
+      const gen = ++generationRef.current;
+      isPlayingRef.current = true;
+      sequenceAbortRef.current = false;
+      setIsPlaying(true);
+      const audio = audioRef.current;
+      audio.onended = () => {
+        if (generationRef.current !== gen || !isPlayingRef.current || audioRef.current !== audio) return;
+        if (isLiaison) {
+          // For liaison, don't increment — just loop
+        }
+      };
+      audio.play().catch(() => { if (generationRef.current !== gen) return; isPlayingRef.current = false; setIsPlaying(false); });
+      return;
+    }
+    pausedRef.current = false;
+    if (isLiaison) {
+      playSequence(liaisonVerses);
+    } else {
+      playSingleVerse(currentVerse);
+    }
+  }, [isPlaying, isLiaison, liaisonVerses, currentVerse, stopAudio, playSequence, playSingleVerse]);
+
+  const handleReadAudioStop = useCallback(() => {
+    fullStopAudio();
+  }, [fullStopAudio]);
+
   const handleContinueListen = () => {
     stopAudio();
     if (isLiaison) setPhase('liaison-read');
@@ -384,6 +426,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
   };
 
   const handleContinueRead = () => {
+    fullStopAudio();
     if (isLiaison) setPhase('liaison-memory');
     else setPhase('memory');
     setMemoryCount(0);
@@ -608,8 +651,8 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
             <PhaseHeader
               title={isLiaison ? 'Liaison — Mémorisation Mushaf' : `Mémoriser en regardant le Mushaf (${TARGET_READ} fois minimum)`}
               subtitle={isLiaison
-                ? `Mémorisez les versets ${liaisonVerses[0]}–${liaisonVerses[liaisonVerses.length - 1]} sans audio`
-                : 'Mémorise le verset en regardant le Mushaf, sans écouter l\'audio'
+                ? `Mémorisez les versets ${liaisonVerses[0]}–${liaisonVerses[liaisonVerses.length - 1]}`
+                : 'Mémorise le verset en regardant le Mushaf, avec l\'audio en boucle si besoin'
               }
             />
 
@@ -617,6 +660,39 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
 
             <div className="flex flex-col items-center gap-3">
               <CircularCounter count={readCount} target={TARGET_READ} color={isLiaison ? '#a78bfa' : '#f59e0b'} />
+
+              {/* Audio loop controls */}
+              <div className="flex items-center gap-2">
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleReadAudioToggle}
+                  className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold tracking-wide"
+                  style={{
+                    background: isPlaying ? 'rgba(212,175,55,0.2)' : 'rgba(212,175,55,0.1)',
+                    border: `1px solid ${isPlaying ? 'rgba(212,175,55,0.5)' : 'rgba(212,175,55,0.25)'}`,
+                    color: 'rgba(255,255,255,0.6)',
+                  }}
+                >
+                  {isPlaying ? <Pause className="h-3.5 w-3.5" /> : <Headphones className="h-3.5 w-3.5" />}
+                  {isPlaying ? 'Pause' : 'Écouter en boucle'}
+                </motion.button>
+                {isPlaying && (
+                  <motion.button
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handleReadAudioStop}
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-semibold"
+                    style={{
+                      background: 'rgba(211,47,47,0.15)',
+                      border: '1px solid rgba(211,47,47,0.3)',
+                      color: '#ef5350',
+                    }}
+                  >
+                    <Square className="h-3 w-3" /> Stop
+                  </motion.button>
+                )}
+              </div>
 
               <motion.button
                 whileTap={{ scale: 0.95 }}
@@ -635,7 +711,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
             <div className="rounded-xl px-4 py-2.5 mx-auto max-w-sm"
               style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
               <p className="text-[11px] font-bold leading-relaxed text-center" style={{ color: '#ffffff' }}>
-                Répétition {readCount + 1} — Répète minimum {TARGET_READ} fois en regardant le Mushaf, sans audio
+                Répétition {readCount + 1} — Répète minimum {TARGET_READ} fois en regardant le Mushaf
               </p>
             </div>
           </motion.div>
