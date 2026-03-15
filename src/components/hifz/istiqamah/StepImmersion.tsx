@@ -660,6 +660,39 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
             <div className="flex flex-col items-center gap-3">
               <CircularCounter count={readCount} target={TARGET_READ} color={isLiaison ? '#a78bfa' : '#f59e0b'} />
 
+              {/* Audio loop controls */}
+              <div className="flex items-center gap-2">
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleReadAudioToggle}
+                  className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold tracking-wide"
+                  style={{
+                    background: isPlaying ? 'rgba(212,175,55,0.2)' : 'rgba(212,175,55,0.1)',
+                    border: `1px solid ${isPlaying ? 'rgba(212,175,55,0.5)' : 'rgba(212,175,55,0.25)'}`,
+                    color: 'rgba(255,255,255,0.6)',
+                  }}
+                >
+                  {isPlaying ? <Pause className="h-3.5 w-3.5" /> : <Headphones className="h-3.5 w-3.5" />}
+                  {isPlaying ? 'Pause' : 'Écouter en boucle'}
+                </motion.button>
+                {isPlaying && (
+                  <motion.button
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handleReadAudioStop}
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-semibold"
+                    style={{
+                      background: 'rgba(211,47,47,0.15)',
+                      border: '1px solid rgba(211,47,47,0.3)',
+                      color: '#ef5350',
+                    }}
+                  >
+                    <Square className="h-3 w-3" /> Stop
+                  </motion.button>
+                )}
+              </div>
+
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setReadCount(prev => prev + 1)}
