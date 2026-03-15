@@ -147,6 +147,7 @@ function getPhaseForAncrage(ancrage: number): number {
 }
 
 export default function HifzStep3Memorisation({ surahNumber, startVerse, endVerse, repetitionLevel, onNext, onBack, onPause }: Props) {
+  const navigate = useNavigate();
   const { registerAudio: registerGlobalAudio } = useGlobalAudio();
   const registerRef = useRef(registerGlobalAudio);
   registerRef.current = registerGlobalAudio;
