@@ -1,21 +1,41 @@
 
+Objectif: corriger définitivement la coupure audio quand tu cliques sur Mushaf (cas confirmé: Android Chrome + ouverture en nouvel onglet).
 
-# Diagnostic : 404 sur /quran-reader
+1) Diagnostic ciblé (cause la plus probable)
+- Aujourd’hui, le bouton Mushaf ouvre un nouvel onglet.
+- Sur Android Chrome, l’onglet Hifz passe en arrière-plan et peut être mis en pause automatiquement par le navigateur.
+- Le code actuel resynchronise surtout au retour d’onglet, mais ne garantit pas la continuité pendant que Mushaf est au premier plan.
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+2) Correctif principal (fiable sur mobile): Mushaf intégré sans quitter l’étape
+- Modifier `HifzStepWrapper.tsx` pour que le bouton Mushaf ouvre un panneau plein écran (Dialog/Sheet) dans la même page Hifz.
+- Charger le Mushaf dans ce panneau (iframe interne vers `/quran-reader?page=...` ou rendu intégré selon compatibilité).
+- Garder un bouton secondaire “Ouvrir dans un nouvel onglet” dans ce panneau pour les utilisateurs qui préfèrent.
+- Résultat: l’onglet Hifz ne passe plus en arrière-plan, donc l’audio ne se coupe plus.
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+3) Renforcement audio (anti-pause involontaire)
+- Dans `HifzStepImpregnationTajweed.tsx`, ajouter une garde “pause non manuelle”:
+  - distinguer pause utilisateur (Pause/Stop) vs pause navigateur.
+  - si pause navigateur détectée alors que `isPlayingRef` est actif, tenter une reprise contrôlée (`audio.play()` avec retries courts).
+- Conserver la logique actuelle (triple garde génération + bouton Stop rouge + cleanup strict).
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+4) Harmonisation (éviter que le bug revienne ailleurs)
+- Appliquer le même pattern anti-coupure aux autres étapes audio qui utilisent des boucles similaires:
+  - `StepImpregnation`, `StepImmersion`, `StepGravure`, `MouradPhase2`.
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+5) Validation finale (checklist unique pour éviter de reconsommer des crédits)
+- Android Chrome réel:
+  - lancer audio en Imprégnation Tajweed.
+  - ouvrir Mushaf via panneau intégré → audio doit continuer sans coupure.
+  - fermer panneau Mushaf → audio toujours en cours, UI synchronisée.
+  - tester Pause, Play, Stop rouge.
+  - tester aussi “Ouvrir dans nouvel onglet” (fallback), puis retour.
+- Si un cas échoue, instrumenter 3 logs ciblés (`pause reason`, `visibility`, `play retry`) pour corriger en un seul passage supplémentaire.
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
-
+Détails techniques (concis)
+- Fichiers principaux:
+  - `src/components/hifz/HifzStepWrapper.tsx` (nouveau mode Mushaf intégré)
+  - `src/components/hifz/HifzStepImpregnationTajweed.tsx` (anti-pause involontaire)
+- Contraintes respectées:
+  - compatibilité mobile ancienne (es2015 / comportements prudents),
+  - conservation du bouton Stop rouge,
+  - pas de régression sur la reprise manuelle.
