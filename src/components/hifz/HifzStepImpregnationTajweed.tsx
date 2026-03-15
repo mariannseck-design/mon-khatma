@@ -103,20 +103,6 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
     }
   }, [listenCount, storageKey]);
 
-  useEffect(() => {
-    setVersesLoading(true);
-    getVersesByRange(surahNumber, startVerse, endVerse)
-      .then(async (data) => {
-        const withAnnotations = await Promise.all(
-          data.map(async (ayah) => {
-            const tajweed = await getTajweedAnnotations(ayah.surah.number, ayah.numberInSurah);
-            return { ...ayah, tajweed };
-          })
-        );
-        setAyahs(withAnnotations);
-      })
-      .finally(() => setVersesLoading(false));
-  }, [surahNumber, startVerse, endVerse]);
 
 
   const fetchAudio = useCallback(async () => {
