@@ -286,7 +286,7 @@ export default function QuranMushafView({ page, highlightAyah, darkMode = false,
               <div
                 className="flex items-center w-full"
                 style={{
-                  justifyContent: isSpecialPage ? 'center' : 'space-around',
+                  justifyContent: isSpecialPage ? 'center' : 'space-between',
                   direction: 'rtl',
                   padding: '0',
                 }}
