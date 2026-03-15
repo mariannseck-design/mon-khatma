@@ -1,21 +1,19 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Supprimer le Mushaf flottant (FAB) globalement
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+Le FAB vert "Mushaf" en bas à gauche et le badge doré "Mushaf" en haut sont rendus par `HifzStepWrapper.tsx`. Ils apparaissent dans toutes les étapes qui passent `surahNumber`/`startVerse`/`endVerse` sans `disableMushafOverlay`.
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Changement — `src/components/hifz/HifzStepWrapper.tsx`
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+Supprimer entièrement :
+1. **Le bouton doré "Mushaf"** dans le header (lignes ~89-98) — le petit badge vert à côté du verse info
+2. **Le FAB flottant** (lignes ~133-155) — le bouton vert fixe en bas à gauche
+3. **Le Sheet/overlay Mushaf** (lignes ~157-190) — le panneau qui s'ouvre en bas
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+Conserver uniquement le badge doré avec les infos de verset (📖 sourate · versets · page).
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+Cela supprime le Mushaf flottant dans **toutes** les étapes (Intention, Compréhension, Immersion, Validation, Tikrar) d'un seul coup, sans avoir à passer `disableMushafOverlay` partout.
+
+On peut aussi retirer le state `mushafOpen`, l'import de `Sheet`/`SheetContent`, `ExternalLink`, `X`, `BookOpen`, et la prop `disableMushafOverlay` devenue inutile.
 
