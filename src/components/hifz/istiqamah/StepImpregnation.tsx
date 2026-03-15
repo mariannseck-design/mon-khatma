@@ -61,12 +61,10 @@ export default function StepImpregnation({ surahNumber, verseStart, verseEnd, ve
       if (document.visibilityState === 'visible') {
         const audio = audioRef.current;
         const actuallyPlaying = audio && !audio.paused && !audio.ended;
-        if (actuallyPlaying && !isPlayingRef.current) {
-          isPlayingRef.current = true;
-          setIsPlaying(true);
-        } else if (!actuallyPlaying && isPlayingRef.current) {
-          isPlayingRef.current = false;
-          setIsPlaying(false);
+        isPlayingRef.current = !!actuallyPlaying;
+        setIsPlaying(!!actuallyPlaying);
+        if (!actuallyPlaying) {
+          setCurrentAyahIndex(-1);
         }
       }
     };
