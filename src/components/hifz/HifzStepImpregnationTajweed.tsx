@@ -1,14 +1,11 @@
-import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Headphones, Check, Play, Pause, Square, RotateCcw, ZoomIn, ZoomOut, BookOpen, Minimize2 } from 'lucide-react';
+import { Headphones, Check, Play, Pause, RotateCcw } from 'lucide-react';
 import HifzStepWrapper from './HifzStepWrapper';
-import HifzMushafToggle, { getMushafMode, setMushafMode, type MushafMode } from './HifzMushafToggle';
 import HifzMushafImage from './HifzMushafImage';
 import { RECITERS, getAyahAudioUrl } from '@/hooks/useQuranAudio';
 import { SURAHS } from '@/lib/surahData';
 import { useGlobalAudio } from '@/contexts/AudioContext';
-import { getVersesByRange, type LocalAyah } from '@/lib/quranData';
-import { getTajweedAnnotations, TAJWEED_COLORS, type TajweedAnnotation } from '@/lib/tajweedData';
 
 interface Props {
   surahNumber: number;
@@ -20,58 +17,6 @@ interface Props {
   phaseLabel?: string;
 }
 
-const FONT_FAMILY = "'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
-const BASMALA_WORDS = ['بِسْمِ', 'ٱللَّهِ', 'ٱلرَّحْمَٰنِ', 'ٱلرَّحِيمِ'];
-const FONT_SIZES = [20, 24, 30];
-const FONT_LABELS = ['Petit', 'Moyen', 'Grand'];
-
-function stripLeadingBasmala(text: string): { stripped: string; offset: number } {
-  const trimmed = text.trimStart();
-  if (!trimmed) return { stripped: trimmed, offset: 0 };
-  if (trimmed.startsWith('﷽')) {
-    const after = trimmed.slice(1).trimStart();
-    return { stripped: after, offset: text.length - after.length };
-  }
-  const words = trimmed.split(/\s+/u);
-  if (words.length < 4) return { stripped: trimmed, offset: text.length - trimmed.length };
-  const first4 = words.slice(0, 4);
-  const isBasmala = first4.every((word, i) => {
-    const clean = word.replace(/[\u06DD\u06DE\u06E9\u06DA\u06DB\u06DC\u200E\u200F\u061C]/gu, '');
-    return clean === BASMALA_WORDS[i];
-  });
-  if (!isBasmala) return { stripped: trimmed, offset: text.length - trimmed.length };
-  if (words.length <= 4) return { stripped: '', offset: text.length };
-  const remaining = words.slice(4).join(' ').trimStart();
-  return { stripped: remaining, offset: text.length - remaining.length };
-}
-
-function renderTajweedText(text: string, annotations: TajweedAnnotation[], charOffset: number = 0): React.ReactNode[] {
-  if (!annotations.length) return [text];
-  const colors = TAJWEED_COLORS;
-  const segments: React.ReactNode[] = [];
-  let pos = 0;
-  for (const ann of annotations) {
-    const start = ann.start - charOffset;
-    const end = ann.end - charOffset;
-    if (end <= 0 || start >= text.length) continue;
-    const effectiveStart = Math.max(start, 0);
-    const effectiveEnd = Math.min(end, text.length);
-    if (effectiveStart > pos) segments.push(text.slice(pos, effectiveStart));
-    const color = colors[ann.rule];
-    if (color) {
-      segments.push(<span key={`${ann.rule}-${effectiveStart}`} style={{ color }}>{text.slice(effectiveStart, effectiveEnd)}</span>);
-    } else {
-      segments.push(text.slice(effectiveStart, effectiveEnd));
-    }
-    pos = effectiveEnd;
-  }
-  if (pos < text.length) segments.push(text.slice(pos));
-  return segments;
-}
-
-interface AyahWithAnnotations extends LocalAyah {
-  tajweed?: TajweedAnnotation[];
-}
 
 export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, endVerse, onNext, onBack, onPause, phaseLabel }: Props) {
   const { registerAudio: registerGlobalAudio, stop: stopGlobal } = useGlobalAudio();
@@ -101,12 +46,6 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
   });
   const [isPlaying, setIsPlaying] = useState(false);
   const [reciter, setReciter] = useState(() => localStorage.getItem('quran_reciter') || 'ar.alafasy');
-  const [currentAyahIndex, setCurrentAyahIndex] = useState(-1);
-  const [fontSizeIndex, setFontSizeIndex] = useState(1);
-  const [ayahs, setAyahs] = useState<AyahWithAnnotations[]>([]);
-  const [versesLoading, setVersesLoading] = useState(true);
-  const [mushafMode, setMushafModeState] = useState<MushafMode>(getMushafMode);
-  const [mushafExpanded, setMushafExpanded] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const ayahsRef = useRef<{ audio: string; numberInSurah: number }[]>([]);
   const indexRef = useRef(0);
@@ -141,12 +80,11 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
           audio.play().catch(() => {
             isPlayingRef.current = false;
             setIsPlaying(false);
-            setCurrentAyahIndex(-1);
           });
         } else if (!audio || audio.ended) {
           isPlayingRef.current = false;
           setIsPlaying(false);
-          setCurrentAyahIndex(-1);
+          
         }
       }
     };
@@ -164,86 +102,7 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
     }
   }, [listenCount, storageKey]);
 
-  useEffect(() => {
-    setVersesLoading(true);
-    getVersesByRange(surahNumber, startVerse, endVerse)
-      .then(async (data) => {
-        const withAnnotations = await Promise.all(
-          data.map(async (ayah) => {
-            const tajweed = await getTajweedAnnotations(ayah.surah.number, ayah.numberInSurah);
-            return { ...ayah, tajweed };
-          })
-        );
-        setAyahs(withAnnotations);
-      })
-      .finally(() => setVersesLoading(false));
-  }, [surahNumber, startVerse, endVerse]);
 
-  const renderedText = useMemo(() => {
-    if (!ayahs.length) return null;
-    return (
-      <div
-        dir="rtl"
-        style={{
-          fontFamily: FONT_FAMILY,
-          fontSize: `${FONT_SIZES[fontSizeIndex]}px`,
-          lineHeight: '52px',
-          textAlign: 'justify',
-          textAlignLast: 'center',
-          color: '#ffffff',
-          wordSpacing: '0.12em',
-          fontVariantLigatures: 'common-ligatures',
-          fontFeatureSettings: '"liga" 1, "calt" 1, "kern" 1',
-          textRendering: 'optimizeLegibility',
-        }}
-      >
-        {ayahs.map((ayah, idx) => {
-          const needsStrip = ayah.numberInSurah === 1 && surahNumber !== 1 && surahNumber !== 9;
-          let displayText = ayah.text;
-          let charOffset = 0;
-          if (needsStrip) {
-            const result = stripLeadingBasmala(ayah.text);
-            displayText = result.stripped;
-            charOffset = result.offset;
-          }
-          const textContent = ayah.tajweed?.length
-            ? renderTajweedText(displayText, ayah.tajweed, charOffset)
-            : displayText;
-
-          const isActive = isPlaying && currentAyahIndex === idx;
-
-          return (
-            <span
-              key={ayah.number}
-              style={{
-                borderRadius: '6px',
-                padding: isActive ? '2px 4px' : undefined,
-                backgroundColor: isActive ? 'rgba(212,175,55,0.15)' : undefined,
-                boxShadow: isActive ? '0 0 12px rgba(212,175,55,0.2)' : undefined,
-                transition: 'background-color 0.3s ease, box-shadow 0.3s ease',
-              }}
-            >
-              {textContent}
-              {' '}
-              <span
-                style={{
-                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                  width: '18px', height: '18px', borderRadius: '50%',
-                  backgroundColor: isActive ? '#d4af37' : '#2E7D32',
-                  color: '#ffffff', fontSize: '10px', fontFamily: 'system-ui, sans-serif',
-                  fontWeight: 700, lineHeight: 1, verticalAlign: 'middle', margin: '0 3px',
-                  userSelect: 'none', flexShrink: 0, transition: 'background-color 0.3s ease',
-                }}
-              >
-                {ayah.numberInSurah}
-              </span>
-              {' '}
-            </span>
-          );
-        })}
-      </div>
-    );
-  }, [ayahs, surahNumber, fontSizeIndex, currentAyahIndex, isPlaying]);
 
   const fetchAudio = useCallback(async () => {
     try {
@@ -291,7 +150,7 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
       return;
     }
     indexRef.current = idx;
-    setCurrentAyahIndex(idx);
+    
 
     // Kill previous audio element completely before creating new one
     if (audioRef.current) {
@@ -389,10 +248,10 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
       <div className="text-center space-y-5">
         {/* Header */}
         <div
-          className="w-14 h-14 rounded-2xl mx-auto flex items-center justify-center"
+          className="w-10 h-10 rounded-2xl mx-auto flex items-center justify-center"
           style={{ background: 'rgba(69,183,170,0.15)', border: '1px solid rgba(69,183,170,0.3)' }}
         >
-          <Headphones className="h-7 w-7" style={{ color: '#45b7aa' }} />
+          <Headphones className="h-5 w-5" style={{ color: '#45b7aa' }} />
         </div>
         <h3 className="text-base font-bold" style={{ color: '#f0e6c8', fontFamily: "'Playfair Display', serif" }}>
           Imprégnation de la récitation et du Tajweed
@@ -401,91 +260,8 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
           Écoute le récitateur en suivant sur le Mushaf pour assimiler la bonne prononciation.
         </p>
 
-        {/* Mushaf mode toggle + display */}
-        <div className="space-y-2">
-          <div className="flex items-center justify-between px-1">
-            <HifzMushafToggle mode={mushafMode} onChange={(m) => { setMushafModeState(m); setMushafMode(m); }} />
-            {mushafMode === 'text' && (
-              <div className="flex items-center gap-1.5">
-                <button
-                  onClick={() => setFontSizeIndex(i => Math.max(0, i - 1))}
-                  disabled={fontSizeIndex === 0}
-                  className="w-8 h-8 rounded-lg flex items-center justify-center disabled:opacity-30 transition-all active:scale-95"
-                  style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(212,175,55,0.15)' }}
-                >
-                  <ZoomOut className="h-3.5 w-3.5" style={{ color: '#d4af37' }} />
-                </button>
-                <span className="text-xs px-2" style={{ color: 'rgba(255,255,255,0.5)' }}>{FONT_LABELS[fontSizeIndex]}</span>
-                <button
-                  onClick={() => setFontSizeIndex(i => Math.min(2, i + 1))}
-                  disabled={fontSizeIndex === 2}
-                  className="w-8 h-8 rounded-lg flex items-center justify-center disabled:opacity-30 transition-all active:scale-95"
-                  style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(212,175,55,0.15)' }}
-                >
-                  <ZoomIn className="h-3.5 w-3.5" style={{ color: '#d4af37' }} />
-                </button>
-              </div>
-            )}
-          </div>
-
-          {mushafMode === 'physical' ? (
-            <div className="rounded-xl px-4 py-6 text-center" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(212,175,55,0.15)' }}>
-              <p className="text-xs italic" style={{ color: 'rgba(255,255,255,0.45)' }}>
-                📖 Ouvre ton Mushaf physique et suis depuis celui-ci.
-              </p>
-            </div>
-          ) : mushafMode === 'image' ? (
-            <HifzMushafImage surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse} maxHeight="320px" />
-          ) : (
-            <div
-              className="rounded-xl overflow-auto max-h-72 px-4 py-4"
-              style={{ border: '1px solid rgba(212,175,55,0.25)' }}
-              dir="rtl"
-            >
-              {versesLoading ? (
-                <div className="flex items-center justify-center py-8">
-                  <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: '#d4af37', borderTopColor: 'transparent' }} />
-                </div>
-              ) : (
-                <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '12px', padding: '16px', border: '1px solid rgba(212,175,55,0.15)' }}>
-                  {startVerse === 1 && surahNumber !== 1 && surahNumber !== 9 && (
-                    <p className="text-center mb-3" style={{ fontFamily: FONT_FAMILY, color: '#6a9a6a', fontSize: '22px', lineHeight: '40px', fontWeight: 'bold' }}>
-                      بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
-                    </p>
-                  )}
-                  {renderedText}
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Inline enlarged Mushaf — no iframe, no new tab */}
-        {mushafExpanded ? (
-          <div className="space-y-2">
-            <div className="flex items-center justify-between px-1">
-              <span className="text-xs font-medium" style={{ color: '#d4af37' }}>📖 Mushaf agrandi</span>
-              <button
-                onClick={() => setMushafExpanded(false)}
-                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full transition-all active:scale-95"
-                style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(212,175,55,0.2)' }}
-              >
-                <Minimize2 className="h-3 w-3" style={{ color: '#d4af37' }} />
-                <span className="text-[10px]" style={{ color: 'rgba(255,255,255,0.6)' }}>Réduire</span>
-              </button>
-            </div>
-            <HifzMushafImage surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse} maxHeight="70vh" />
-          </div>
-        ) : (
-          <button
-            onClick={() => setMushafExpanded(true)}
-            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl transition-all active:scale-[0.98]"
-            style={{ background: 'rgba(5,150,105,0.1)', border: '1px solid rgba(5,150,105,0.25)' }}
-          >
-            <BookOpen className="h-4 w-4" style={{ color: '#059669' }} />
-            <span className="text-xs font-medium" style={{ color: 'rgba(5,150,105,0.85)' }}>Ouvrir le Mushaf ici</span>
-          </button>
-        )}
+        {/* Mushaf inline — always visible */}
+        <HifzMushafImage surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse} maxHeight="55vh" />
 
         {/* Audio section */}
         <div className="space-y-3">
@@ -500,45 +276,18 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
             ))}
           </select>
 
-          <div className="flex items-center justify-center gap-4">
+          <div className="flex items-center justify-center">
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={togglePlay}
-              className="w-20 h-20 rounded-full flex items-center justify-center transition-all"
+              className="w-14 h-14 rounded-full flex items-center justify-center transition-all"
               style={{
                 background: isPlaying ? 'rgba(212,175,55,0.25)' : 'rgba(255,255,255,0.1)',
                 border: `2px solid ${isPlaying ? '#d4af37' : 'rgba(255,255,255,0.2)'}`,
               }}
             >
-              {isPlaying ? <Pause className="h-8 w-8" style={{ color: '#d4af37' }} /> : <Play className="h-8 w-8 ml-1" style={{ color: '#d4af37' }} />}
+              {isPlaying ? <Pause className="h-5 w-5" style={{ color: '#d4af37' }} /> : <Play className="h-5 w-5 ml-0.5" style={{ color: '#d4af37' }} />}
             </motion.button>
-
-            {isPlaying && (
-              <motion.button
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => {
-                  generationRef.current++;
-                  isPlayingRef.current = false;
-                  pausedRef.current = null;
-                  hardStopAudio();
-                  stopGlobal();
-                  setIsPlaying(false);
-                  setCurrentAyahIndex(-1);
-                  indexRef.current = 0;
-                }}
-                className="w-14 h-14 rounded-full flex items-center justify-center transition-all"
-                style={{
-                  background: 'rgba(220,38,38,0.15)',
-                  border: '2px solid rgba(220,38,38,0.4)',
-                }}
-                title="Arrêter"
-              >
-                <Square className="h-5 w-5" style={{ color: '#dc2626' }} />
-              </motion.button>
-            )}
           </div>
 
           {/* Listen count */}
@@ -581,7 +330,7 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
         <motion.button
           whileTap={{ scale: 0.97 }}
           onClick={() => { generationRef.current++; audioRef.current?.pause(); setIsPlaying(false); isPlayingRef.current = false; pausedRef.current = null; onNext(); }}
-          className="w-full rounded-2xl py-4 font-semibold flex items-center justify-center gap-2"
+          className="w-full rounded-2xl py-2.5 text-sm flex items-center justify-center gap-2"
           style={{
             background: 'linear-gradient(135deg, #d4af37, #b8962e)',
             color: '#1a2e1a',
