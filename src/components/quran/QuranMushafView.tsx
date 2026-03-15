@@ -215,7 +215,7 @@ export default function QuranMushafView({ page, highlightAyah, darkMode = false,
     <div
       ref={containerRef}
       data-text-scroll
-      className="h-full w-full overflow-y-auto flex flex-col select-text"
+      className="h-full w-full overflow-y-auto overflow-x-hidden flex flex-col select-text"
       dir="rtl"
       style={{ background: bgColor, touchAction: 'pan-y' }}
     >
