@@ -1,21 +1,43 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Ajouter un bouton "Mushaf" au MiniPlayer
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Idée
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+Quand l'audio joue en arrière-plan, l'utilisatrice devrait pouvoir ouvrir le Mushaf directement depuis le MiniPlayer pour suivre la récitation visuellement — sans perdre l'audio.
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+### Modification
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+**`src/components/layout/MiniPlayer.tsx`** :
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+Ajouter un petit bouton icône `BookOpen` (📖) entre les infos du track et le bouton play/pause. Au clic, il navigue vers `/quran-reader` avec la page correspondante si possible.
+
+Pour déterminer la page Mushaf, on enrichit `AudioTrackInfo` dans `AudioContext.tsx` avec un champ optionnel `surahNumber` et `startVerse`. Le MiniPlayer utilisera `getExactVersePage()` pour calculer la page et naviguer vers `/quran-reader?page=X`.
+
+### Détail des fichiers
+
+1. **`src/contexts/AudioContext.tsx`** — Étendre `AudioTrackInfo` :
+   ```ts
+   interface AudioTrackInfo {
+     label: string;
+     returnPath: string;
+     surahNumber?: number;
+     startVerse?: number;
+   }
+   ```
+
+2. **`src/components/layout/MiniPlayer.tsx`** — Ajouter un bouton `BookOpen` :
+   - Importer `BookOpen` de lucide-react et `getExactVersePage` de quranData
+   - Au clic : calculer la page via `getExactVersePage(surahNumber, startVerse)` puis `navigate(/quran-reader?page=X)`
+   - Style : même taille que le bouton Stop (w-8 h-8), fond subtil vert `rgba(5,150,105,0.15)`
+   - N'afficher le bouton que si `trackInfo.surahNumber` est défini
+
+3. **3 composants Hifz** (`HifzStep3Memorisation`, `HifzStepIntentionImpregnation`, `HifzStepImpregnationTajweed`) — Passer `surahNumber` et `startVerse` dans l'appel `registerAudio` :
+   ```ts
+   registerRef.current(audio, { label, returnPath, surahNumber, startVerse })
+   ```
+
+### Résultat
+
+Le MiniPlayer affichera un petit bouton 📖 qui ouvre le Mushaf à la bonne page, permettant de suivre visuellement la récitation audio en cours.
 
