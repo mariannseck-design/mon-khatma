@@ -7,6 +7,7 @@ interface Props {
   startVerse: number;
   endVerse: number;
   maxHeight?: string;
+  fullWidth?: boolean;
 }
 
 const IMAGE_SOURCES = [
@@ -18,7 +19,7 @@ const IMAGE_SOURCES = [
 const MIN_SCALE = 1;
 const MAX_SCALE = 3;
 
-export default function HifzMushafImage({ surahNumber, startVerse, endVerse, maxHeight = '320px' }: Props) {
+export default function HifzMushafImage({ surahNumber, startVerse, endVerse, maxHeight = '320px', fullWidth = false }: Props) {
   const [pages, setPages] = useState<number[]>([]);
   const [currentPageIdx, setCurrentPageIdx] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -202,7 +203,7 @@ export default function HifzMushafImage({ surahNumber, startVerse, endVerse, max
   const isZoomed = scale > 1.05;
 
   return (
-    <div className="space-y-2">
+    <div className={fullWidth ? "space-y-1" : "space-y-2"}>
       {/* Zoom controls */}
       <div className="flex items-center justify-center gap-1.5">
         <button
@@ -237,9 +238,9 @@ export default function HifzMushafImage({ surahNumber, startVerse, endVerse, max
 
       <div
         ref={containerRef}
-        className={`rounded-xl overflow-hidden relative ${scale > 1 ? 'touch-none' : 'touch-pan-y'}`}
+        className={`overflow-hidden relative ${fullWidth ? '' : 'rounded-xl'} ${scale > 1 ? 'touch-none' : 'touch-pan-y'}`}
         style={{
-          border: '1px solid rgba(212,175,55,0.25)',
+          border: fullWidth ? 'none' : '1px solid rgba(212,175,55,0.25)',
           maxHeight,
           display: 'flex',
           alignItems: 'center',
