@@ -215,12 +215,12 @@ export default function QuranMushafView({ page, highlightAyah, darkMode = false,
     <div
       ref={containerRef}
       data-text-scroll
-      className="h-full w-full overflow-hidden flex flex-col select-text"
+      className="h-full w-full overflow-y-auto overflow-x-hidden flex flex-col select-text"
       dir="rtl"
       style={{ background: bgColor, touchAction: 'pan-y' }}
     >
       <div
-        className={`flex-1 flex flex-col px-3 py-1 ${isSpecialPage ? 'justify-center' : 'justify-between'}`}
+        className={`flex-1 flex flex-col w-full px-4 pt-6 pb-2 ${isSpecialPage ? 'justify-center' : 'justify-between'}`}
         style={{ height: '100%' }}
       >
         {lines.map(({ lineNumber, words }) => {
@@ -238,7 +238,7 @@ export default function QuranMushafView({ page, highlightAyah, darkMode = false,
             <div key={lineNumber}>
               {/* Surah header */}
               {surahInfo && (
-                <div className="text-center my-0.5">
+                <div className="text-center my-1.5 mb-2">
                   <div
                     className="inline-flex items-center gap-2 px-4 py-0.5 rounded-md mx-auto"
                     style={{
@@ -288,7 +288,7 @@ export default function QuranMushafView({ page, highlightAyah, darkMode = false,
                 style={{
                   justifyContent: isSpecialPage ? 'center' : 'space-around',
                   direction: 'rtl',
-                  padding: '0 4px',
+                  padding: '0',
                 }}
               >
                 {words.map((word) => {
