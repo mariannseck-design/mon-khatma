@@ -41,8 +41,12 @@ export function TotalProgressBar({ totalPagesRead, onResetKhatma, onShowCelebrat
       >
         {/* Subtle decorative accent */}
         <div
-          className="absolute top-0 right-0 w-32 h-32 rounded-full opacity-[0.07]"
+          className="absolute top-0 right-0 w-32 h-32 rounded-full opacity-[0.12]"
           style={{ background: 'radial-gradient(circle, var(--p-accent), transparent 70%)', transform: 'translate(30%, -30%)' }}
+        />
+        <div
+          className="absolute bottom-0 left-0 w-28 h-28 rounded-full opacity-[0.08]"
+          style={{ background: 'radial-gradient(circle, var(--p-primary), transparent 70%)', transform: 'translate(-30%, 30%)' }}
         />
 
         <div className="px-6 pt-6 pb-3 relative">
