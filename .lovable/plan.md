@@ -1,21 +1,35 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Ajouter un bouton "Télécharger PDF" à l'historique de lecture
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+Quand la lectrice termine sa Khatma (ou à tout moment), elle pourra télécharger un PDF récapitulatif de tout son historique de lecture.
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Approche technique
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+On utilisera **jsPDF** (librairie légère, côté client) pour générer le PDF sans backend. Le PDF contiendra :
+- Un en-tête avec le titre "Ma Khatma — Historique de lecture"
+- Le nom de la lectrice (depuis `savedSetup.first_name`)
+- La date de début et de fin
+- Un tableau : Date | Pages lues | Sourate | Objectif atteint ✓
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+### Changements
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+1. **Installer `jspdf`** — dépendance pour la génération PDF côté client
+
+2. **`src/components/planificateur/ReadingHistory.tsx`** :
+   - Ajouter un bouton "Télécharger PDF" avec une icône `Download`
+   - Nouvelle fonction `generatePDF()` qui :
+     - Crée un document A4
+     - Écrit l'en-tête (titre, prénom, dates)
+     - Génère un tableau avec toutes les entrées (pas seulement les 15 affichées)
+     - Télécharge le fichier `ma-khatma-historique.pdf`
+   - Nouvelles props : `firstName?: string`, `startDate?: string`, `isKhatmaComplete?: boolean`
+
+3. **`src/pages/PlanificateurPage.tsx`** :
+   - Passer les nouvelles props à `<ReadingHistory>` : `firstName`, `startDate`, `isKhatmaComplete`
+
+### Fichiers modifiés
+- `package.json` (ajout `jspdf`)
+- `src/components/planificateur/ReadingHistory.tsx`
+- `src/pages/PlanificateurPage.tsx`
 
