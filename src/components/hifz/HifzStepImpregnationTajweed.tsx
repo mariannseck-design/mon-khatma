@@ -385,10 +385,10 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
       <div className="text-center space-y-5">
         {/* Header */}
         <div
-          className="w-14 h-14 rounded-2xl mx-auto flex items-center justify-center"
+          className="w-10 h-10 rounded-2xl mx-auto flex items-center justify-center"
           style={{ background: 'rgba(69,183,170,0.15)', border: '1px solid rgba(69,183,170,0.3)' }}
         >
-          <Headphones className="h-7 w-7" style={{ color: '#45b7aa' }} />
+          <Headphones className="h-5 w-5" style={{ color: '#45b7aa' }} />
         </div>
         <h3 className="text-base font-bold" style={{ color: '#f0e6c8', fontFamily: "'Playfair Display', serif" }}>
           Imprégnation de la récitation et du Tajweed
