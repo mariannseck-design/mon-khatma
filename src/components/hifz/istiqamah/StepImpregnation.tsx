@@ -39,6 +39,41 @@ export default function StepImpregnation({ surahNumber, verseStart, verseEnd, ve
   const registerRef = useRef(registerGlobalAudio);
   registerRef.current = registerGlobalAudio;
 
+  // Cleanup audio on unmount
+  useEffect(() => {
+    return () => {
+      generationRef.current++;
+      isPlayingRef.current = false;
+      if (audioRef.current) {
+        audioRef.current.onended = null;
+        audioRef.current.onerror = null;
+        audioRef.current.pause();
+        try { audioRef.current.src = ''; } catch {}
+        audioRef.current = null;
+      }
+      stopGlobal();
+    };
+  }, []);
+
+  // Resync UI state when tab becomes visible again
+  useEffect(() => {
+    const handler = () => {
+      if (document.visibilityState === 'visible') {
+        const audio = audioRef.current;
+        const actuallyPlaying = audio && !audio.paused && !audio.ended;
+        if (actuallyPlaying && !isPlayingRef.current) {
+          isPlayingRef.current = true;
+          setIsPlaying(true);
+        } else if (!actuallyPlaying && isPlayingRef.current) {
+          isPlayingRef.current = false;
+          setIsPlaying(false);
+        }
+      }
+    };
+    document.addEventListener('visibilitychange', handler);
+    return () => document.removeEventListener('visibilitychange', handler);
+  }, []);
+
   useEffect(() => {
     setLoading(true);
     getVersesByRange(surahNumber, verseStart, verseEnd)
