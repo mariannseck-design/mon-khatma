@@ -618,17 +618,16 @@ export default function PlanificateurPage() {
                 return (
                   <div
                     key={i}
-                    className="h-1.5 flex-1 rounded-full transition-colors"
-                    style={{
-                      background: isCompleted
-                        ? 'var(--p-primary)'
-                        : isInProgress
-                          ? 'rgba(6,95,70,0.3)'
-                          : undefined,
-                    }}
                     className={`h-1.5 flex-1 rounded-full transition-colors ${
                       !isCompleted && !isInProgress ? 'bg-muted' : ''
                     }`}
+                    style={
+                      isCompleted
+                        ? { background: 'var(--p-primary)' }
+                        : isInProgress
+                          ? { background: 'rgba(6,95,70,0.3)' }
+                          : undefined
+                    }
                   />
                 );
               })}
