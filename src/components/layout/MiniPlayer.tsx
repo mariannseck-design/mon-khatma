@@ -69,7 +69,7 @@ export default function MiniPlayer() {
                 {trackInfo?.label || 'Lecture en cours'}
               </p>
               <p className="text-[10px] truncate" style={{ color: 'rgba(255,255,255,0.4)' }}>
-                Appuyer pour revenir
+                🎧 Écoute en cours · Appuyer pour revenir
               </p>
             </div>
 
