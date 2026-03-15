@@ -520,7 +520,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
 
       <p className="text-center text-xs font-semibold mt-1" style={{ color: '#d4af37' }}>
         {isLiaison
-          ? `Mémorise les versets ${liaisonVerses[0]} à ${liaisonVerses[liaisonVerses.length - 1]}`
+          ? `Écoute les versets ${liaisonVerses[0]} à ${liaisonVerses[liaisonVerses.length - 1]}`
           : `Mémorise le verset ${currentVerse}`
         }
       </p>
@@ -532,7 +532,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
             <PhaseHeader
               title={isLiaison ? 'Liaison — Écoute + Mushaf + Répétition' : `Écouter, lire & répéter (${TARGET_LISTEN} fois minimum)`}
               subtitle={isLiaison
-                ? `Écoutez les versets ${liaisonVerses[0]}–${liaisonVerses[liaisonVerses.length - 1]} enchaînés`
+                ? undefined
                 : 'Écoute le récitateur en suivant sur le Mushaf, puis répète en même temps'
               }
             />
