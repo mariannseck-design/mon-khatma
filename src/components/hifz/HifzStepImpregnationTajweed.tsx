@@ -333,7 +333,10 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
       setIsPlaying(false);
       isPlayingRef.current = false;
     } else {
-      // Resume from paused element or start fresh
+      // Hard-stop any lingering audio before starting
+      hardStopAudio();
+      stopGlobal();
+
       const gen = ++generationRef.current;
       setIsPlaying(true);
       isPlayingRef.current = true;
