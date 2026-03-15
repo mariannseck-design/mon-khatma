@@ -661,10 +661,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
               subtitle="Pas de panique ! Remémorise attentivement puis recommence"
             />
 
-            <div className="space-y-2">
-              <HifzMushafToggle mode={mushafMode} onChange={m => { setMushafModeState(m); setMushafMode(m); }} />
-              {renderMushaf(isLiaison ? liaisonVerses : undefined)}
-            </div>
+            {renderMushaf(isLiaison ? liaisonVerses : undefined)}
 
             <motion.button whileTap={{ scale: 0.97 }} onClick={handleRereadDone}
               className="w-full rounded-2xl py-3 flex items-center justify-center gap-2 font-semibold text-sm"
