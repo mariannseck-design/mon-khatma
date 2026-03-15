@@ -80,6 +80,7 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
   const generationRef = useRef(0);
   const isPlayingRef = useRef(false);
   const pausedRef = useRef<HTMLAudioElement | null>(null);
+  const selfInitiatedRef = useRef(false);
 
   const storageKey = `hifz_listen_${surahNumber}_${startVerse}_${endVerse}`;
   const surahName = SURAHS.find(s => s.number === surahNumber)?.name || '';
@@ -268,6 +269,10 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
   // Sync local state when global audio stops externally (MiniPlayer X)
   useEffect(() => {
     if (globalStatus === 'idle' && isPlayingRef.current) {
+      if (selfInitiatedRef.current) {
+        selfInitiatedRef.current = false;
+        return; // We initiated this transition ourselves — ignore
+      }
       generationRef.current++;
       setIsPlaying(false);
       isPlayingRef.current = false;
@@ -285,7 +290,7 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
       isPlayingRef.current = false;
     } else {
       // Resume from paused element or start fresh
-      stopGlobal();
+      selfInitiatedRef.current = true;
       const gen = ++generationRef.current;
       setIsPlaying(true);
       isPlayingRef.current = true;
