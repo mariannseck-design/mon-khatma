@@ -87,7 +87,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
   const [readCount, setReadCount] = useState(savedImmersion?.readCount ?? 0);
   const [memoryCount, setMemoryCount] = useState(savedImmersion?.memoryCount ?? 0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [mushafMode, setMushafModeState] = useState<MushafMode>(getMushafMode);
+  
   const [ayahs, setAyahs] = useState<LocalAyah[]>([]);
   const [loading, setLoading] = useState(true);
   const [pageLabel, setPageLabel] = useState('');
