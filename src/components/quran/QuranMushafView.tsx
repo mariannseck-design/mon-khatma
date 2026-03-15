@@ -153,73 +153,8 @@ export default function QuranMushafView({ page, highlightAyah, darkMode = false,
   // Reset scroll on page change
   useEffect(() => { containerRef.current?.scrollTo(0, 0); }, [page]);
 
-  // Load tajweed annotations when enabled
-  useEffect(() => {
-    if (!tajweedEnabled || !pageData) {
-      setTajweedMap(new Map());
-      return;
-    }
-    preloadTajweedData();
-    const verseKeys = pageData.verses.map(v => v.verse_key);
-    Promise.all(
-      pageData.verses.map(v =>
-        getTajweedAnnotations(v.chapter_id, v.verse_number).then(anns => ({
-          key: v.verse_key,
-          anns,
-        }))
-      )
-    ).then(results => {
-      const map = new Map<string, TajweedAnnotation[]>();
-      for (const r of results) map.set(r.key, r.anns);
-      setTajweedMap(map);
-    });
-  }, [tajweedEnabled, pageData]);
 
   // Group words by line number
-  const lines = useMemo(() => {
-    if (!pageData) return [];
-
-    const allWords: Word[] = [];
-    for (const verse of pageData.verses) {
-      allWords.push(...verse.words);
-    }
-
-    const lineMap = new Map<number, Word[]>();
-    for (const w of allWords) {
-      if (!lineMap.has(w.line_number)) lineMap.set(w.line_number, []);
-      lineMap.get(w.line_number)!.push(w);
-    }
-
-    // Sort by line number, and words within each line by position
-    const sorted = Array.from(lineMap.entries()).sort((a, b) => a[0] - b[0]);
-    return sorted.map(([lineNum, words]) => ({
-      lineNumber: lineNum,
-      words: words.sort((a, b) => a.position - b.position),
-    }));
-  }, [pageData]);
-
-  // Pre-compute tajweed color per word id
-  const wordTajweedColors = useMemo(() => {
-    const map = new Map<number, string | null>();
-    if (!tajweedEnabled || tajweedMap.size === 0 || !pageData) return map;
-
-    for (const verse of pageData.verses) {
-      const anns = tajweedMap.get(verse.verse_key);
-      if (!anns || anns.length === 0) continue;
-
-      // Build ordered word texts (only 'word' type, matching text_qpc_hafs order)
-      const textWords = verse.words.filter(w => w.char_type_name === 'word');
-      const wordsTexts = textWords.map(w => w.text_qpc_hafs);
-
-      for (let i = 0; i < textWords.length; i++) {
-        const color = getWordTajweedColor(i, wordsTexts, anns, darkMode);
-        if (color) map.set(textWords[i].id, color);
-      }
-    }
-    return map;
-  }, [tajweedEnabled, tajweedMap, pageData, darkMode]);
-
-  // Detect surah starts for headers
   const surahStarts = useMemo(() => {
     if (!pageData) return [];
     return getSurahStartsOnPage(pageData.verses);
