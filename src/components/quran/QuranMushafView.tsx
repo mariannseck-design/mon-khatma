@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { SURAHS } from '@/lib/surahData';
+import { getTajweedAnnotations, getWordTajweedColor, preloadTajweedData, type TajweedAnnotation } from '@/lib/tajweedData';
 
 /* ─── Types ─── */
 interface Word {
