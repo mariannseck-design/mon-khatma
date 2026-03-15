@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { History, Check, BookOpen, Download, Share2 } from 'lucide-react';
+import { History, Check, BookOpen, Download } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { getSurahByPage } from '@/lib/surahData';
@@ -37,8 +37,7 @@ async function generatePDF(
   targetPages: number,
   firstName: string,
   startDate?: string,
-  isKhatmaComplete?: boolean,
-  mode: 'download' | 'share' = 'download'
+  isKhatmaComplete?: boolean
 ) {
   const { jsPDF } = await import('jspdf');
   const doc = new jsPDF('p', 'mm', 'a4');
@@ -167,43 +166,31 @@ async function generatePDF(
     y += boxH + 6;
   }
 
-  // Footer
-  y = Math.max(y + 8, 270);
-  if (y > 280) {
-    doc.addPage();
-    y = 20;
+  // Watermark on every page
+  const totalPdfPages = (doc as any).internal.getNumberOfPages();
+  for (let p = 1; p <= totalPdfPages; p++) {
+    doc.setPage(p);
+    doc.setFontSize(48);
+    doc.setTextColor(200, 200, 200);
+    (doc as any).setGState(new (doc as any).GState({ opacity: 0.08 }));
+    doc.text('Ma Khatma', pageWidth / 2, 150, { align: 'center', angle: 35 });
+    (doc as any).setGState(new (doc as any).GState({ opacity: 1 }));
   }
+
+  // Footer on last page
+  doc.setPage(totalPdfPages);
   doc.setFontSize(8);
   doc.setTextColor(130, 130, 130);
   doc.text('Genere par Ma Khatma — makhatma.lovable.app', pageWidth / 2, 290, { align: 'center' });
 
-  if (mode === 'share') {
-    const pdfBlob = doc.output('blob');
-    const file = new File([pdfBlob], 'ma-khatma-historique.pdf', { type: 'application/pdf' });
-    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      try {
-        await navigator.share({ title: 'Ma Khatma — Historique', files: [file] });
-        toast.success('PDF partagé ! 📤');
-      } catch (err: any) {
-        if (err?.name !== 'AbortError') {
-          doc.save('ma-khatma-historique.pdf');
-          toast.success('PDF téléchargé ! 📄');
-        }
-      }
-    } else {
-      doc.save('ma-khatma-historique.pdf');
-      toast.success('PDF téléchargé ! 📄');
-    }
-  } else {
-    doc.save('ma-khatma-historique.pdf');
-    toast.success('PDF téléchargé ! 📄');
-  }
+  doc.save('ma-khatma-historique.pdf');
+  toast.success('PDF téléchargé ! 📄');
 }
 
 export function ReadingHistory({ entries, targetPages = 0, firstName, startDate, isKhatmaComplete }: ReadingHistoryProps) {
   if (entries.length === 0) return null;
 
-  const canNativeShare = typeof navigator !== 'undefined' && !!navigator.canShare;
+  
 
   const sorted = [...entries].sort((a, b) => a.date.localeCompare(b.date));
   let cumulative = 0;
@@ -224,30 +211,16 @@ export function ReadingHistory({ entries, targetPages = 0, firstName, startDate,
             <History className="h-4 w-4" style={{ color: 'var(--p-primary)' }} />
             <span className="font-semibold text-foreground text-sm">Historique</span>
           </div>
-          <div className="flex items-center gap-1">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-8 px-3 text-xs gap-1.5 rounded-xl"
-              style={{ color: 'var(--p-primary)' }}
-              onClick={() => generatePDF(entries, targetPages, firstName || '', startDate, isKhatmaComplete, 'download')}
-            >
-              <Download className="h-3.5 w-3.5" />
-              PDF
-            </Button>
-            {canNativeShare && (
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-8 px-3 text-xs gap-1.5 rounded-xl"
-                style={{ color: 'var(--p-primary)' }}
-                onClick={() => generatePDF(entries, targetPages, firstName || '', startDate, isKhatmaComplete, 'share')}
-              >
-                <Share2 className="h-3.5 w-3.5" />
-                Partager
-              </Button>
-            )}
-          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-8 px-3 text-xs gap-1.5 rounded-xl"
+            style={{ color: 'var(--p-primary)' }}
+            onClick={() => generatePDF(entries, targetPages, firstName || '', startDate, isKhatmaComplete)}
+          >
+            <Download className="h-3.5 w-3.5" />
+            PDF
+          </Button>
         </div>
 
         <div className="space-y-0.5">
