@@ -532,10 +532,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
             />
 
             {/* Mushaf in listen phase for reference */}
-            <div className="space-y-2">
-              <HifzMushafToggle mode={mushafMode} onChange={m => { setMushafModeState(m); setMushafMode(m); }} />
-              {renderMushaf(isLiaison ? liaisonVerses : undefined)}
-            </div>
+            {renderMushaf(isLiaison ? liaisonVerses : undefined)}
 
             <div className="flex flex-col items-center gap-3">
               <CircularCounter count={listenCount} target={TARGET_LISTEN} color={isLiaison ? '#a78bfa' : '#4ecdc4'} />
