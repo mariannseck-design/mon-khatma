@@ -369,11 +369,11 @@ export default function HifzPage() {
     // IMMÉDIAT : afficher succès + bloquer les sauvegardes localStorage
     completedRef.current = true;
     clearLocalSession();
-    setStep(6);
+    setStep(5);
 
     if (sessionId && user) {
       await supabase.from('hifz_sessions').update({
-        current_step: 6,
+        current_step: 5,
         completed_at: new Date().toISOString(),
         step_status: { ...stepTimesRef.current, completed: true },
       }).eq('id', sessionId);
