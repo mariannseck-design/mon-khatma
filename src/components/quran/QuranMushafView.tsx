@@ -238,7 +238,7 @@ export default function QuranMushafView({ page, highlightAyah, darkMode = false,
             <div key={lineNumber}>
               {/* Surah header */}
               {surahInfo && (
-                <div className="text-center my-0.5">
+                <div className="text-center my-1.5 mb-2">
                   <div
                     className="inline-flex items-center gap-2 px-4 py-0.5 rounded-md mx-auto"
                     style={{
