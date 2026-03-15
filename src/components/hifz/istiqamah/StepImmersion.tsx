@@ -100,6 +100,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
   const pausedRef = useRef(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const sequenceAbortRef = useRef(false);
+  const generationRef = useRef(0);
   const reciter = reciterId || localStorage.getItem('quran_reciter') || 'ar.alafasy';
 
   const currentVerse = verseStart + currentVerseIndex;
