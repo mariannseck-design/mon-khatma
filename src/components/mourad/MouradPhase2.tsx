@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Headphones, Check, Play, Pause } from 'lucide-react';
 import { SURAHS } from '@/lib/surahData';
 import { RECITERS } from '@/hooks/useQuranAudio';
+import { useGlobalAudio } from '@/contexts/AudioContext';
 import MouradMushafToggle, { type MushafMode, getMouradMushafMode, setMouradMushafMode } from './MouradMushafToggle';
 import MouradPhysicalView from './MouradPhysicalView';
 import HifzMushafImage from '@/components/hifz/HifzMushafImage';
