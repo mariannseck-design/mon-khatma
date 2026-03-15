@@ -313,7 +313,7 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
   };
 
   return (
-    <HifzStepWrapper stepNumber={2} stepTitle="Imprégnation & Sens" onBack={onBack} onPause={onPause}>
+    <HifzStepWrapper stepNumber={2} stepTitle="Imprégnation & Sens" onBack={onBack} onPause={onPause} surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse}>
       <div className="text-center space-y-5">
         <div
           className="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center"

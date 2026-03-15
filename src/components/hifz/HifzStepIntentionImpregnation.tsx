@@ -332,7 +332,7 @@ export default function HifzStepIntentionImpregnation({ surahNumber, startVerse,
   };
 
   return (
-    <HifzStepWrapper stepNumber={0} stepTitle="Intention & Imprégnation" onBack={onBack} onPause={onPause}>
+    <HifzStepWrapper stepNumber={0} stepTitle="Intention & Imprégnation" onBack={onBack} onPause={onPause} surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse}>
       <div className="text-center space-y-5">
         {/* Intention banner */}
         <div

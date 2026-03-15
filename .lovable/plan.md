@@ -1,23 +1,21 @@
 
 
-## Plan : Ajouter le lien Mushaf sur toutes les étapes de mémorisation
+# Diagnostic : 404 sur /quran-reader
 
-### Problème
-Le bouton "📖 Mushaf" dans `HifzStepWrapper` s'affiche uniquement quand les props `surahNumber`, `startVerse`, `endVerse` sont transmises. Quatre composants ont ces props mais ne les passent pas au wrapper.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Fichiers à modifier
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-| Fichier | Changement |
-|---------|-----------|
-| `HifzStep0Intention.tsx` (ligne 55) | Ajouter `surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse}` |
-| `HifzStep2Impregnation.tsx` (ligne 316) | Idem |
-| `HifzStepIntentionImpregnation.tsx` (ligne 335) | Idem |
-| `HifzStep4Validation.tsx` | Trouver l'appel à `HifzStepWrapper` et ajouter les mêmes props |
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-### Non modifié
-- `HifzStep1Revision.tsx` : cette étape montre les versets de la veille (dynamiques, pas les versets en cours), donc pas de Mushaf fixe pertinent.
-- Tous les composants qui passent déjà les props correctement.
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-### Résultat
-Le badge doré "📖 Sourate · v.X–Y · p.Z" et le bouton vert "Mushaf" apparaîtront sur **toutes** les étapes de mémorisation (sauf Révision de la veille).
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
