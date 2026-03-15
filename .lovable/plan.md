@@ -1,21 +1,33 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Intégrer l'étape Liaison (Ar-Rabt) avec Mushaf Image + Audio dans le parcours Hifz
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Problème
+Le composant `HifzStep5Liaison` existe mais n'est **jamais importé ni utilisé** dans `HifzPage.tsx`. De plus, il ne contient ni affichage Mushaf Image ni lecteur audio — c'est juste une liste statique avec un bouton de confirmation.
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Solution
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+#### 1. Réécrire `HifzStep5Liaison.tsx` avec Mushaf + Audio
+Transformer le composant pour inclure :
+- **Mushaf Image** (`HifzMushafImage`) affichant les pages des versets mémorisés ces 30 derniers jours
+- **Lecteur audio** avec play/pause pour écouter puis réciter de mémoire
+- **Toggle Mushaf** (Image / Texte / Mon Mushaf) comme dans les autres étapes
+- **3 phases** : Écouter (avec Mushaf visible) → Réciter sans regarder (Mushaf masqué) → Confirmer
+- Utilisation du `registerAudio` global pour la persistance audio
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+#### 2. Intégrer dans le flow `HifzPage.tsx`
+- Ajouter l'import de `HifzStep5Liaison`
+- Insérer comme **step 5** (après Tikrâr step 4, avant Succès step 6)
+- Mettre à jour `STEP_NAMES` et `PHASE_LABELS` pour 6 étapes
+- Déplacer `completeSession` de step 4 → step 5
+- Ajuster le DevSkipButton et les numéros de step
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+```text
+Flow actuel :  0→1→pause→2→3→4→Succès(5)
+Flow corrigé : 0→1→pause→2→3→4→5(Liaison)→Succès(6)
+```
+
+#### Fichiers modifiés
+- `src/components/hifz/HifzStep5Liaison.tsx` — réécriture complète avec Mushaf Image, audio, 3 phases
+- `src/pages/HifzPage.tsx` — import Liaison, ajout step 5, décalage Succès à step 6, mise à jour labels/skip
 
