@@ -77,7 +77,7 @@ export default function StepFusion({ parts, reciterId, onNext }: Props) {
     }
     const audio = new Audio(audiosRef.current[idx]);
     audioRef.current = audio;
-    registerRef.current(audio, { label: `${SURAHS.find(s => s.number === surahNumber)?.name || ''} · v.${globalStart}-${globalEnd}`, returnPath: window.location.pathname });
+    registerRef.current(audio, { label: `${SURAHS.find(s => s.number === surahNumber)?.name || ''} · v.${globalStart}-${globalEnd}`, returnPath: window.location.pathname, surahNumber, startVerse: globalStart + idx });
     audio.onended = () => playSequence(idx + 1);
     audio.onerror = () => playSequence(idx + 1);
     audio.play().catch(() => { isPlayingRef.current = false; setIsPlaying(false); });
