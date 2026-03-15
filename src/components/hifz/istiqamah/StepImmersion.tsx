@@ -4,7 +4,6 @@ import { Volume2, Check, X, BookOpen, RefreshCw, Link, ChevronRight, Headphones 
 import MiniRecorder from './MiniRecorder';
 import { useAuth } from '@/contexts/AuthContext';
 import { RECITERS, getAyahAudioUrl } from '@/hooks/useQuranAudio';
-import HifzMushafToggle, { getMushafMode, setMushafMode, type MushafMode } from '../HifzMushafToggle';
 import HifzMushafImage from '../HifzMushafImage';
 import { getVersesByRange, getExactVersePage, type LocalAyah } from '@/lib/quranData';
 import { SURAHS } from '@/lib/surahData';
