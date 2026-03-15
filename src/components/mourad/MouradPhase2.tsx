@@ -26,6 +26,9 @@ export default function MouradPhase2({ surahNumber, startVerse, endVerse, listen
   const [audioEl, setAudioEl] = useState<HTMLAudioElement | null>(null);
   const pausedRef = useRef(false);
   const [showReciters, setShowReciters] = useState(false);
+  const { registerAudio: registerGlobalAudio } = useGlobalAudio();
+  const registerRef = useRef(registerGlobalAudio);
+  registerRef.current = registerGlobalAudio;
 
   const surah = SURAHS.find(s => s.number === surahNumber);
   const minListens = 5;
