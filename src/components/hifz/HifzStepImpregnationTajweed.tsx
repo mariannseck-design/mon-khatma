@@ -106,6 +106,7 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
   const [ayahs, setAyahs] = useState<AyahWithAnnotations[]>([]);
   const [versesLoading, setVersesLoading] = useState(true);
   const [mushafMode, setMushafModeState] = useState<MushafMode>(getMushafMode);
+  const [mushafExpanded, setMushafExpanded] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const ayahsRef = useRef<{ audio: string; numberInSurah: number }[]>([]);
   const indexRef = useRef(0);
