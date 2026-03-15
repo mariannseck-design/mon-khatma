@@ -1,13 +1,21 @@
 
 
-## Plan : Corriger les textes de la phase Liaison
+# Diagnostic : 404 sur /quran-reader
 
-### Changements dans `src/components/hifz/istiqamah/StepImmersion.tsx`
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-1. **Ligne 521-526** — Label doré sous les pastilles : remplacer "Mémorise" par "Écoute" quand c'est une liaison
-   - `Mémorise les versets X à Y` → `Écoute les versets X à Y`
-   - Garder `Mémorise le verset X` pour les phases non-liaison
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-2. **Ligne 534-535** — Supprimer le subtitle de la phase liaison (la phrase "Écoutez les versets 62–64 enchaînés" sous le titre "Liaison — Écoute + Mushaf + Répétition")
-   - Passer `subtitle` à `undefined` quand `isLiaison` est true
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
+
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
