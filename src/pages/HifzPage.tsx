@@ -667,6 +667,7 @@ export default function HifzPage() {
             verseEnd={session.endVerse}
             onNext={() => updateStep(4)}
             onBack={() => setStep(2)}
+            onPause={handlePause}
           />
         )}
 

@@ -1,24 +1,21 @@
 
 
-## Analyse du problème
+# Diagnostic : 404 sur /quran-reader
 
-J'ai vérifié le code en profondeur. Voici ce que j'ai trouvé :
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-**Les composants utilisés par HifzPage passent déjà les props correctement** :
-- `HifzStepIntentionComprehension` (étape 0) → ✅ props transmises
-- `HifzStepImpregnationTajweed` (étape 1) → ✅ props transmises  
-- `HifzStepMemorisation` (étape 2) → ✅ props transmises
-- `HifzStep5Tikrar` (étape 4) → ✅ props transmises
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-**Le vrai problème** : La modification précédente a édité les **mauvais fichiers** — des composants legacy (`HifzStep0Intention`, `HifzStep2Impregnation`, `HifzStep4Validation`) qui **ne sont plus utilisés** par HifzPage. Les composants actifs avaient déjà les bonnes props.
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-**Composant manquant** : `StepValidation` (étape 3 — la validation par récitation) n'utilise pas du tout `HifzStepWrapper`. Il a son propre layout sans badge de versets ni bouton Mushaf.
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-### Plan
-
-1. **`StepValidation.tsx`** — Intégrer `HifzStepWrapper` avec les props `surahNumber`, `startVerse`, `endVerse` pour afficher le badge doré et le bouton Mushaf sur cette étape aussi. Ajouter les props `onPause` et `phaseLabel` depuis HifzPage.
-
-2. **`HifzPage.tsx`** (ligne 664) — Passer `onPause={handlePause}` à `StepValidation` pour que le bouton "Retourner à l'accueil" apparaisse aussi.
-
-3. **Vérification du cache** — Le bouton Mushaf devrait déjà apparaître sur les étapes 0, 1, 2 et 4. Si tu ne le vois pas, il faut forcer un rechargement (Ctrl+Shift+R). Le seul vrai ajout est sur l'étape 3 (Validation).
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
