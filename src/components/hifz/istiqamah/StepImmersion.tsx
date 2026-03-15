@@ -270,6 +270,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
         setIsPlaying(true);
         const audio = new Audio(url);
         audioRef.current = audio;
+        registerRef.current(audio, { label: `${SURAHS.find(s => s.number === surahNumber)?.name || ''} · v.${currentVerse}`, returnPath: window.location.pathname });
         audio.onended = () => { isPlayingRef.current = false; setIsPlaying(false); };
         audio.onerror = () => { isPlayingRef.current = false; setIsPlaying(false); };
         audio.play().catch(() => { isPlayingRef.current = false; setIsPlaying(false); });
