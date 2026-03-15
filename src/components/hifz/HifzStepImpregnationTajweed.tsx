@@ -84,7 +84,7 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
         } else if (!audio || audio.ended) {
           isPlayingRef.current = false;
           setIsPlaying(false);
-          setCurrentAyahIndex(-1);
+          
         }
       }
     };
