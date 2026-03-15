@@ -1,6 +1,7 @@
 import { ReactNode, useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronLeft, Clock } from 'lucide-react';
+import { ChevronLeft, BookOpen } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { getExactVersePage } from '@/lib/quranData';
 import { SURAHS } from '@/lib/surahData';
 
@@ -26,7 +27,9 @@ function formatTime(seconds: number): string {
 export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBack, onPause, totalSteps = 5, phaseLabel, surahNumber, startVerse, endVerse }: HifzStepWrapperProps) {
   const [elapsed, setElapsed] = useState(0);
   const [pageLabel, setPageLabel] = useState('');
+  const [mushafPage, setMushafPage] = useState<number | null>(null);
   const startRef = useRef(Date.now());
+  const navigate = useNavigate();
 
   useEffect(() => {
     startRef.current = Date.now();
@@ -38,11 +41,12 @@ export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBac
   }, [stepNumber]);
 
   useEffect(() => {
-    if (!surahNumber || !startVerse || !endVerse) { setPageLabel(''); return; }
+    if (!surahNumber || !startVerse || !endVerse) { setPageLabel(''); setMushafPage(null); return; }
     (async () => {
       const pStart = await getExactVersePage(surahNumber, startVerse);
       const pEnd = await getExactVersePage(surahNumber, endVerse);
       setPageLabel(pStart === pEnd ? `p. ${pStart}` : `p. ${pStart}–${pEnd}`);
+      setMushafPage(pStart);
     })();
   }, [surahNumber, startVerse, endVerse]);
 
@@ -71,7 +75,7 @@ export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBac
         </motion.button>
       )}
       {verseInfo && (
-        <div className="flex justify-center">
+        <div className="flex justify-center gap-2">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full"
                style={{ background: 'rgba(212,175,55,0.12)', border: '1px solid rgba(212,175,55,0.25)' }}>
             <span className="text-xs" style={{ color: '#d4af37' }}>📖</span>
@@ -79,6 +83,16 @@ export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBac
               {verseInfo}
             </span>
           </div>
+          {mushafPage && (
+            <button
+              onClick={() => navigate(`/quran-reader?page=${mushafPage}`)}
+              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full transition-all active:scale-95"
+              style={{ background: 'rgba(5,150,105,0.12)', border: '1px solid rgba(5,150,105,0.25)' }}
+            >
+              <BookOpen className="h-3 w-3" style={{ color: '#059669' }} />
+              <span className="text-[10px] font-medium" style={{ color: 'rgba(5,150,105,0.85)' }}>Mushaf</span>
+            </button>
+          )}
         </div>
       )}
 

@@ -74,7 +74,7 @@ interface AyahWithAnnotations extends LocalAyah {
 }
 
 export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, endVerse, onNext, onBack, onPause, phaseLabel }: Props) {
-  const { registerAudio: registerGlobalAudio, stop: stopGlobal, stopSignal } = useGlobalAudio();
+  const { registerAudio: registerGlobalAudio, stop: stopGlobal } = useGlobalAudio();
   const registerRef = useRef(registerGlobalAudio);
   registerRef.current = registerGlobalAudio;
   const generationRef = useRef(0);
@@ -286,21 +286,6 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
       isPlayingRef.current = false;
     });
   }, []);
-
-  // Sync with global audio stop (MiniPlayer X)
-  const stopSignalRef = useRef(stopSignal);
-  useEffect(() => {
-    if (stopSignalRef.current === stopSignal) { stopSignalRef.current = stopSignal; return; }
-    stopSignalRef.current = stopSignal;
-    if (isPlayingRef.current) {
-      generationRef.current++;
-      isPlayingRef.current = false;
-      hardStopAudio();
-      setIsPlaying(false);
-      setCurrentAyahIndex(-1);
-      pausedRef.current = null;
-    }
-  }, [stopSignal, hardStopAudio]);
 
   const togglePlay = () => {
     if (isPlaying) {

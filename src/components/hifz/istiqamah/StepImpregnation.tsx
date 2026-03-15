@@ -35,7 +35,7 @@ export default function StepImpregnation({ surahNumber, verseStart, verseEnd, ve
   const audiosRef = useRef<string[]>([]);
   const generationRef = useRef(0);
   const reciter = reciterId || localStorage.getItem('quran_reciter') || 'ar.alafasy';
-  const { registerAudio: registerGlobalAudio, stop: stopGlobal, stopSignal } = useGlobalAudio();
+  const { registerAudio: registerGlobalAudio, stop: stopGlobal } = useGlobalAudio();
   const registerRef = useRef(registerGlobalAudio);
   registerRef.current = registerGlobalAudio;
 
@@ -119,26 +119,6 @@ export default function StepImpregnation({ surahNumber, verseStart, verseEnd, ve
       }
     }
   };
-
-  // Sync with global audio stop (MiniPlayer X)
-  const stopSignalRef = useRef(stopSignal);
-  useEffect(() => {
-    if (stopSignalRef.current === stopSignal) { stopSignalRef.current = stopSignal; return; }
-    stopSignalRef.current = stopSignal;
-    if (isPlayingRef.current) {
-      generationRef.current++;
-      isPlayingRef.current = false;
-      if (audioRef.current) {
-        audioRef.current.onended = null;
-        audioRef.current.onerror = null;
-        audioRef.current.pause();
-        try { audioRef.current.src = ''; } catch {}
-        audioRef.current = null;
-      }
-      setIsPlaying(false);
-      setCurrentAyahIndex(-1);
-    }
-  }, [stopSignal]);
 
   const done = count >= TARGET;
 

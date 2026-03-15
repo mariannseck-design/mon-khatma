@@ -73,7 +73,7 @@ interface AyahWithAnnotations extends LocalAyah {
 }
 
 export default function HifzStepIntentionImpregnation({ surahNumber, startVerse, endVerse, onNext, onBack, onPause }: Props) {
-  const { registerAudio: registerGlobalAudio, stop: stopGlobal, stopSignal } = useGlobalAudio();
+  const { registerAudio: registerGlobalAudio, stop: stopGlobal } = useGlobalAudio();
   const registerRef = useRef(registerGlobalAudio);
   registerRef.current = registerGlobalAudio;
   const isPlayingRef = useRef(false);
@@ -330,21 +330,6 @@ export default function HifzStepIntentionImpregnation({ surahNumber, startVerse,
       }
     }
   };
-
-  // Sync with global audio stop (MiniPlayer X)
-  const stopSignalRef = useRef(stopSignal);
-  useEffect(() => {
-    if (stopSignalRef.current === stopSignal) { stopSignalRef.current = stopSignal; return; }
-    stopSignalRef.current = stopSignal;
-    if (isPlayingRef.current) {
-      generationRef.current++;
-      isPlayingRef.current = false;
-      hardStopAudio();
-      setIsPlaying(false);
-      setCurrentAyahIndex(-1);
-      pausedRef.current = null;
-    }
-  }, [stopSignal, hardStopAudio]);
 
   return (
     <HifzStepWrapper stepNumber={0} stepTitle="Intention & Imprégnation" onBack={onBack} onPause={onPause}>
