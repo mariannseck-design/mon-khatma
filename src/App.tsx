@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { useServiceWorkerUpdate } from "@/hooks/useServiceWorkerUpdate";
+import { AudioProvider } from "@/contexts/AudioContext";
+import MiniPlayer from "@/components/layout/MiniPlayer";
 import { BookOpenCheck, BarChart3, Sparkles, BookOpen } from "lucide-react";
 import ComingSoonGate from "./components/layout/ComingSoonGate";
 import AuthPage from "./pages/AuthPage";
@@ -125,7 +127,10 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
-          <AppWithSWUpdate />
+          <AudioProvider>
+            <AppWithSWUpdate />
+            <MiniPlayer />
+          </AudioProvider>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>

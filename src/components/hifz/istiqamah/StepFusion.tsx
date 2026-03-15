@@ -6,6 +6,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import HifzMushafImage from '../HifzMushafImage';
 import { getVersesByRange, type LocalAyah } from '@/lib/quranData';
 import { getAyahAudioUrl } from '@/hooks/useQuranAudio';
+import { SURAHS } from '@/lib/surahData';
+import { useGlobalAudio } from '@/contexts/AudioContext';
 import type { Part } from './partSplitter';
 
 interface Props {
@@ -30,6 +32,9 @@ export default function StepFusion({ parts, reciterId, onNext }: Props) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const audiosRef = useRef<string[]>([]);
   const reciter = reciterId || localStorage.getItem('quran_reciter') || 'ar.alafasy';
+  const { registerAudio: registerGlobalAudio } = useGlobalAudio();
+  const registerRef = useRef(registerGlobalAudio);
+  registerRef.current = registerGlobalAudio;
 
   const globalStart = Math.min(...parts.map(p => p.verseStart));
   const globalEnd = Math.max(...parts.map(p => p.verseEnd));
@@ -72,6 +77,7 @@ export default function StepFusion({ parts, reciterId, onNext }: Props) {
     }
     const audio = new Audio(audiosRef.current[idx]);
     audioRef.current = audio;
+    registerRef.current(audio, { label: `${SURAHS.find(s => s.number === surahNumber)?.name || ''} · v.${globalStart}-${globalEnd}`, returnPath: window.location.pathname });
     audio.onended = () => playSequence(idx + 1);
     audio.onerror = () => playSequence(idx + 1);
     audio.play().catch(() => { isPlayingRef.current = false; setIsPlaying(false); });
@@ -89,8 +95,9 @@ export default function StepFusion({ parts, reciterId, onNext }: Props) {
     }
   };
 
+  // Audio persists via global context — don't pause on unmount
   useEffect(() => {
-    return () => { isPlayingRef.current = false; audioRef.current?.pause(); };
+    return () => { isPlayingRef.current = false; };
   }, []);
 
   useEffect(() => {

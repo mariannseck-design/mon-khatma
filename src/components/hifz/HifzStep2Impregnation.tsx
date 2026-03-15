@@ -6,6 +6,7 @@ import HifzMushafToggle, { getMushafMode, setMushafMode, type MushafMode } from 
 import HifzMushafImage from './HifzMushafImage';
 import { RECITERS, getAyahAudioUrl } from '@/hooks/useQuranAudio';
 import { SURAHS } from '@/lib/surahData';
+import { useGlobalAudio } from '@/contexts/AudioContext';
 import { getVersesByRange, type LocalAyah } from '@/lib/quranData';
 import { getTajweedAnnotations, TAJWEED_COLORS, type TajweedAnnotation } from '@/lib/tajweedData';
 
@@ -92,6 +93,9 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const ayahsRef = useRef<{ audio: string; numberInSurah: number }[]>([]);
   const indexRef = useRef(0);
+  const { registerAudio: registerGlobalAudio } = useGlobalAudio();
+  const registerRef = useRef(registerGlobalAudio);
+  registerRef.current = registerGlobalAudio;
 
   // Persist listen count
   useEffect(() => {
@@ -243,6 +247,7 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
     setCurrentAyahIndex(idx);
     const audio = new Audio(ayahsRef.current[idx].audio);
     audioRef.current = audio;
+    registerRef.current(audio, { label: `${surahName} · v.${startVerse}-${endVerse}`, returnPath: window.location.pathname });
     audio.onended = () => playNextAyah(idx + 1);
     audio.onerror = () => playNextAyah(idx + 1);
     audio.play().catch(() => setIsPlaying(false));
@@ -258,8 +263,9 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
     }
   };
 
+  // Audio persists via global context — don't pause on unmount
   useEffect(() => {
-    return () => { audioRef.current?.pause(); };
+    return () => { /* handled by global context */ };
   }, []);
 
   return (

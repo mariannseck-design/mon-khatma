@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Headphones, Check, Play, Pause } from 'lucide-react';
 import { SURAHS } from '@/lib/surahData';
 import { RECITERS } from '@/hooks/useQuranAudio';
+import { useGlobalAudio } from '@/contexts/AudioContext';
 import MouradMushafToggle, { type MushafMode, getMouradMushafMode, setMouradMushafMode } from './MouradMushafToggle';
 import MouradPhysicalView from './MouradPhysicalView';
 import HifzMushafImage from '@/components/hifz/HifzMushafImage';
@@ -25,6 +26,9 @@ export default function MouradPhase2({ surahNumber, startVerse, endVerse, listen
   const [audioEl, setAudioEl] = useState<HTMLAudioElement | null>(null);
   const pausedRef = useRef(false);
   const [showReciters, setShowReciters] = useState(false);
+  const { registerAudio: registerGlobalAudio } = useGlobalAudio();
+  const registerRef = useRef(registerGlobalAudio);
+  registerRef.current = registerGlobalAudio;
 
   const surah = SURAHS.find(s => s.number === surahNumber);
   const minListens = 5;
@@ -87,6 +91,7 @@ export default function MouradPhase2({ surahNumber, startVerse, endVerse, listen
       }
       const audio = new Audio(urls[idx]);
       setAudioEl(audio);
+      registerRef.current(audio, { label: `${surah?.name || ''} · v.${startVerse}-${endVerse}`, returnPath: '/methode-mourad' });
       audio.onended = () => { idx++; playNext(); };
       audio.onerror = () => { idx++; playNext(); };
       audio.play().catch(() => setIsPlaying(false));
@@ -96,9 +101,9 @@ export default function MouradPhase2({ surahNumber, startVerse, endVerse, listen
     playNext();
   }, [isPlaying, audioEl, reciterId, surahNumber, startVerse, endVerse, onListenComplete]);
 
-  // Cleanup
+  // Audio persists via global context — don't pause on unmount
   useEffect(() => {
-    return () => { audioEl?.pause(); };
+    return () => { /* handled by global context */ };
   }, [audioEl]);
 
   return (

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { getPageAyahs } from '@/lib/quranData';
+import { useGlobalAudio } from '@/contexts/AudioContext';
 
 interface ReciterEntry {
   id: string;
@@ -58,6 +59,10 @@ export function useQuranAudio(page: number, onPageFinished?: () => void, startVe
   const indexRef = useRef(0);
   const wasPlayingRef = useRef(false);
 
+  const { registerAudio: registerGlobalAudio } = useGlobalAudio();
+  const registerRef = useRef(registerGlobalAudio);
+  registerRef.current = registerGlobalAudio;
+
   useEffect(() => {
     localStorage.setItem('quran_reciter', reciter);
   }, [reciter]);
@@ -92,6 +97,7 @@ export function useQuranAudio(page: number, onPageFinished?: () => void, startVe
 
     const audio = new Audio(ayah.audio);
     audioRef.current = audio;
+    registerRef.current(audio, { label: `Page ${page}`, returnPath: '/quran-reader' });
 
     audio.onended = () => {
       playAyah(index + 1);
@@ -220,13 +226,10 @@ export function useQuranAudio(page: number, onPageFinished?: () => void, startVe
     }
   }, [startVerse, endVerse]);
 
-  // Cleanup on unmount
+  // Audio persists across navigation via global context
   useEffect(() => {
     return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
+      // Don't pause — let global audio context handle persistence
     };
   }, []);
 
