@@ -8,6 +8,7 @@ import { getExactVersePage } from '@/lib/quranData';
 import { useOnlineStatus } from '@/hooks/useOnlineStatus';
 import SurahDrawer from '@/components/quran/SurahDrawer';
 import QuranTextView from '@/components/quran/QuranTextView';
+import QuranMushafView from '@/components/quran/QuranMushafView';
 import ImageVerseOverlay from '@/components/quran/ImageVerseOverlay';
 import VerseTranslationDrawer from '@/components/quran/VerseTranslationDrawer';
 import ReaderSettingsPanel from '@/components/quran/ReaderSettingsPanel';
