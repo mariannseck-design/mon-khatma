@@ -5,7 +5,8 @@ import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover
 import HifzStepWrapper from './HifzStepWrapper';
 import HifzMushafToggle, { getMushafMode, setMushafMode, type MushafMode } from './HifzMushafToggle';
 import HifzMushafImage from './HifzMushafImage';
-import { getVersesByRange, type LocalAyah } from '@/lib/quranData';
+import { getVersesByRange, getExactVersePage, type LocalAyah } from '@/lib/quranData';
+import { useNavigate } from 'react-router-dom';
 import { RECITERS, getAyahAudioUrl } from '@/hooks/useQuranAudio';
 import { SURAHS } from '@/lib/surahData';
 import { useGlobalAudio } from '@/contexts/AudioContext';
@@ -146,6 +147,7 @@ function getPhaseForAncrage(ancrage: number): number {
 }
 
 export default function HifzStep3Memorisation({ surahNumber, startVerse, endVerse, repetitionLevel, onNext, onBack, onPause }: Props) {
+  const navigate = useNavigate();
   const { registerAudio: registerGlobalAudio } = useGlobalAudio();
   const registerRef = useRef(registerGlobalAudio);
   registerRef.current = registerGlobalAudio;
@@ -734,6 +736,26 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
                       {isPlaying ? 'Arrêter' : 'Aide audio'}
                     </span>
                   </button>
+                )}
+
+                {/* Mushaf link hint */}
+                {isPlaying && (
+                  <p className="text-center text-[10px] leading-relaxed mt-1" style={{ color: 'rgba(255,255,255,0.35)' }}>
+                    📖{' '}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        getExactVersePage(surahNumber, startVerse).then(page =>
+                          navigate(`/quran-reader?page=${page}`)
+                        );
+                      }}
+                      className="underline"
+                      style={{ color: 'rgba(212,175,55,0.6)' }}
+                    >
+                      Lire sur le Mushaf
+                    </button>
+                    {' '}— le compteur reprend dès votre retour
+                  </p>
                 )}
               </div>
             )}
