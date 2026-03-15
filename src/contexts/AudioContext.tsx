@@ -3,6 +3,8 @@ import { createContext, useContext, useState, useRef, useCallback, type ReactNod
 interface AudioTrackInfo {
   label: string;
   returnPath: string;
+  surahNumber?: number;
+  startVerse?: number;
 }
 
 interface AudioContextType {

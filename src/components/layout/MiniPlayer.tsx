@@ -1,6 +1,7 @@
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Play, Pause, X } from 'lucide-react';
+import { Play, Pause, X, BookOpen } from 'lucide-react';
 import { useGlobalAudio } from '@/contexts/AudioContext';
+import { getExactVersePage } from '@/lib/quranData';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function MiniPlayer() {
@@ -10,6 +11,13 @@ export default function MiniPlayer() {
 
   const isVisible = status !== 'idle' && trackInfo !== null;
   const isOnReturnPage = trackInfo && location.pathname === trackInfo.returnPath;
+
+  const handleOpenMushaf = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!trackInfo?.surahNumber) return;
+    const page = await getExactVersePage(trackInfo.surahNumber, trackInfo.startVerse || 1);
+    navigate(`/quran-reader?page=${page}`);
+  };
 
   return (
     <AnimatePresence>
@@ -63,6 +71,18 @@ export default function MiniPlayer() {
                 Appuyer pour revenir
               </p>
             </div>
+
+            {/* Mushaf button */}
+            {trackInfo?.surahNumber && (
+              <button
+                onClick={handleOpenMushaf}
+                className="w-8 h-8 rounded-full flex items-center justify-center shrink-0"
+                style={{ background: 'rgba(5,150,105,0.15)', border: '1px solid rgba(5,150,105,0.3)' }}
+                title="Ouvrir le Mushaf"
+              >
+                <BookOpen className="h-3.5 w-3.5" style={{ color: '#059669' }} />
+              </button>
+            )}
 
             {/* Play / Pause */}
             <button

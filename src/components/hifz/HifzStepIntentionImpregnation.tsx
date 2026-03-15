@@ -262,6 +262,8 @@ export default function HifzStepIntentionImpregnation({ surahNumber, startVerse,
     registerRef.current(audio, {
       label: `${surahName} · v.${startVerse}-${endVerse}`,
       returnPath: window.location.pathname + window.location.search,
+      surahNumber,
+      startVerse,
     });
     audio.onended = () => playNextAyah(idx + 1);
     audio.onerror = () => playNextAyah(idx + 1);
