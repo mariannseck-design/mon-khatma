@@ -440,7 +440,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
             strokeDasharray={`${pct * 276} 276`} style={{ transition: 'stroke-dasharray 0.5s ease' }} />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-2xl font-bold" style={{ color: done ? '#d4af37' : color }}>{count}</span>
+          <span className="text-lg font-bold" style={{ color: done ? '#d4af37' : color }}>{count}</span>
           <span className="text-white/40 text-[10px]">/ {target}+</span>
         </div>
       </div>
