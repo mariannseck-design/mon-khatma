@@ -655,12 +655,15 @@ export default function PlanificateurPage() {
                       <div 
                         key={juzNumber} 
                         className={`flex items-center justify-center py-2 rounded-xl text-xs font-medium transition-all ${
-                          isCompleted 
-                            ? 'bg-primary text-primary-foreground' 
-                            : isInProgress 
-                              ? 'bg-primary/15 text-primary ring-1 ring-primary/30' 
-                              : 'bg-muted/60 text-muted-foreground'
+                          !isCompleted && !isInProgress ? 'bg-muted/60 text-muted-foreground' : ''
                         }`}
+                        style={
+                          isCompleted
+                            ? { background: 'var(--p-primary)', color: 'var(--p-on-dark)' }
+                            : isInProgress
+                              ? { background: 'rgba(6,95,70,0.1)', color: 'var(--p-primary)', boxShadow: 'inset 0 0 0 1.5px rgba(6,95,70,0.3)' }
+                              : undefined
+                        }
                       >
                         {juzNumber}
                       </div>
