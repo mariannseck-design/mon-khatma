@@ -1,21 +1,28 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Refonte de la carte "Ma Khatma" — fond blanc, texte vert et accents dorés
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+La carte utilise actuellement un fond en dégradé émeraude foncé avec du texte blanc. L'utilisatrice souhaite un style plus clair : fond blanc, texte en vert émeraude, accents dorés — cohérent avec le reste du tableau de bord.
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Changements dans `TotalProgressBar.tsx`
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+| Élément | Avant | Après |
+|---|---|---|
+| Fond carte | Dégradé émeraude foncé | `white` |
+| Ombre | `rgba(6,95,70,0.12)` | `0 2px 16px rgba(6,95,70,0.08)` subtile |
+| Titre "Ma Khatma" | Blanc (`--p-on-dark`) | Émeraude (`var(--p-primary-deep)`) |
+| Date "Depuis le..." | Blanc muted | Émeraude clair (`var(--p-primary)` opacité 0.7) |
+| Icône livre | Or sur fond or translucide | Inchangé (or sur fond or pâle) |
+| Badge pourcentage | Or sur fond or translucide | Or sur fond `rgba(212,175,55,0.1)` |
+| Bloc sourate | Fond blanc translucide 10% | Fond émeraude très pâle `rgba(6,95,70,0.06)` |
+| Texte sourate | Blanc | Émeraude foncé (`var(--p-primary-deep)`) |
+| Texte page X/604 | Blanc muted | Émeraude clair |
+| Citation en bas | Blanc muted | Émeraude clair italique |
+| Barre de progression fond | Blanc translucide 12% | `rgba(6,95,70,0.08)` |
+| Barre de progression remplie | Or (`--p-accent`) | Inchangé |
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+Le graphique `WeeklyMiniChart` n'est **pas touché** — ses couleurs restent telles quelles.
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+### Fichier modifié
+- `src/components/planificateur/TotalProgressBar.tsx`
 
