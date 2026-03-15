@@ -1,17 +1,21 @@
 
 
-## Plan : Retirer l'intégration Ar-Rabt de HifzPage.tsx
+# Diagnostic : 404 sur /quran-reader
 
-Modifications dans `src/pages/HifzPage.tsx` :
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-1. **Retirer l'import** de `HifzStep5Liaison` (ligne 16)
-2. **Restaurer `STEP_NAMES`** à 5 éléments (retirer "Liaison")
-3. **Restaurer `PHASE_LABELS`** : Étape B redevient 1/3, 2/3, 3/3
-4. **Tikrâr (step 4)** → `onNext` appelle `completeSession` directement au lieu de `updateStep(5)`
-5. **Supprimer le rendu step 5 Liaison** (lignes 681-692)
-6. **Succès redevient step 5** au lieu de step 6
-7. **Ajuster les gardes** : `step <= 5` → `step <= 4`, `setStep(6)` → `setStep(5)`, etc.
-8. **DevSkipButton** : retirer le cas step 5, step 4 appelle `completeSession()`
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-Le fichier `HifzStep5Liaison.tsx` reste intact (il existe mais n'est plus utilisé).
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
+
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
