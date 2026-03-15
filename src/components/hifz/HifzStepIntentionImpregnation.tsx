@@ -73,9 +73,21 @@ interface AyahWithAnnotations extends LocalAyah {
 }
 
 export default function HifzStepIntentionImpregnation({ surahNumber, startVerse, endVerse, onNext, onBack, onPause }: Props) {
-  const { registerAudio: registerGlobalAudio } = useGlobalAudio();
+  const { registerAudio: registerGlobalAudio, stop: stopGlobal, status: globalStatus } = useGlobalAudio();
   const registerRef = useRef(registerGlobalAudio);
   registerRef.current = registerGlobalAudio;
+  const isPlayingRef = useRef(false);
+  const pausedRef = useRef<HTMLAudioElement | null>(null);
+
+  const hardStopAudio = useCallback(() => {
+    if (audioRef.current) {
+      audioRef.current.onended = null;
+      audioRef.current.onerror = null;
+      audioRef.current.pause();
+      try { audioRef.current.src = ''; } catch {}
+    }
+    audioRef.current = null;
+  }, []);
 
   const storageKey = `hifz_listen_${surahNumber}_${startVerse}_${endVerse}`;
   const surahName = SURAHS.find(s => s.number === surahNumber)?.name || '';
@@ -251,43 +263,90 @@ export default function HifzStepIntentionImpregnation({ surahNumber, startVerse,
   const generationRef = useRef(0);
 
   const playNextAyah = useCallback((idx: number, gen: number) => {
-    if (generationRef.current !== gen) return;
+    if (generationRef.current !== gen || !isPlayingRef.current) return;
     if (ayahsRef.current.length === 0) return;
     if (idx >= ayahsRef.current.length) {
       setListenCount(prev => prev + 1);
       indexRef.current = 0;
-      playNextAyah(0, gen);
+      setTimeout(() => {
+        if (generationRef.current !== gen || !isPlayingRef.current) return;
+        playNextAyah(0, gen);
+      }, 400);
       return;
     }
     indexRef.current = idx;
     setCurrentAyahIndex(idx);
+    if (audioRef.current) {
+      audioRef.current.onended = null;
+      audioRef.current.onerror = null;
+      audioRef.current.pause();
+      try { audioRef.current.src = ''; } catch {}
+    }
     const audio = new Audio(ayahsRef.current[idx].audio);
     audioRef.current = audio;
+    pausedRef.current = null;
     registerRef.current(audio, {
       label: `${surahName} · v.${startVerse}-${endVerse}`,
       returnPath: window.location.pathname + window.location.search,
       surahNumber,
       startVerse,
     });
-    audio.onended = () => { if (generationRef.current === gen) playNextAyah(idx + 1, gen); };
-    audio.onerror = () => { if (generationRef.current === gen) playNextAyah(idx + 1, gen); };
-    audio.play().catch(() => setIsPlaying(false));
+    audio.onended = () => {
+      if (generationRef.current !== gen || !isPlayingRef.current || audioRef.current !== audio) return;
+      playNextAyah(idx + 1, gen);
+    };
+    audio.onerror = () => {
+      if (generationRef.current !== gen || !isPlayingRef.current || audioRef.current !== audio) return;
+      setTimeout(() => {
+        if (generationRef.current !== gen || !isPlayingRef.current) return;
+        playNextAyah(idx + 1, gen);
+      }, 300);
+    };
+    audio.play().catch(() => { if (generationRef.current !== gen) return; setIsPlaying(false); isPlayingRef.current = false; });
   }, []);
 
   const togglePlay = () => {
     if (isPlaying) {
-      audioRef.current?.pause();
-      setIsPlaying(false);
-    } else {
+      pausedRef.current = audioRef.current;
+      if (audioRef.current) { audioRef.current.onended = null; audioRef.current.onerror = null; audioRef.current.pause(); }
+      audioRef.current = null;
       generationRef.current++;
+      setIsPlaying(false);
+      isPlayingRef.current = false;
+    } else {
+      const gen = ++generationRef.current;
       setIsPlaying(true);
-      playNextAyah(indexRef.current, generationRef.current);
+      isPlayingRef.current = true;
+      if (pausedRef.current && pausedRef.current.src) {
+        const audio = pausedRef.current;
+        pausedRef.current = null;
+        audioRef.current = audio;
+        registerRef.current(audio, { label: `${surahName} · v.${startVerse}-${endVerse}`, returnPath: window.location.pathname + window.location.search, surahNumber, startVerse });
+        audio.onended = () => { if (generationRef.current !== gen || !isPlayingRef.current || audioRef.current !== audio) return; playNextAyah(indexRef.current + 1, gen); };
+        audio.onerror = () => { if (generationRef.current !== gen || !isPlayingRef.current || audioRef.current !== audio) return; playNextAyah(indexRef.current + 1, gen); };
+        audio.play().catch(() => { if (generationRef.current !== gen) return; setIsPlaying(false); isPlayingRef.current = false; });
+      } else {
+        playNextAyah(indexRef.current, gen);
+      }
     }
   };
 
+  // Sync with global audio stop (MiniPlayer X)
   useEffect(() => {
-    return () => { /* audio persists globally */ };
-  }, []);
+    if (globalStatus === 'idle' && isPlayingRef.current) {
+      const timer = setTimeout(() => {
+        if (globalStatus === 'idle' && isPlayingRef.current) {
+          generationRef.current++;
+          hardStopAudio();
+          setIsPlaying(false);
+          isPlayingRef.current = false;
+          setCurrentAyahIndex(-1);
+          pausedRef.current = null;
+        }
+      }, 150);
+      return () => clearTimeout(timer);
+    }
+  }, [globalStatus, hardStopAudio]);
 
   return (
     <HifzStepWrapper stepNumber={0} stepTitle="Intention & Imprégnation" onBack={onBack} onPause={onPause}>
@@ -382,7 +441,7 @@ export default function HifzStepIntentionImpregnation({ surahNumber, startVerse,
           {/* Reciter selector */}
           <select
             value={reciter}
-            onChange={e => { setReciter(e.target.value); localStorage.setItem('quran_reciter', e.target.value); audioRef.current?.pause(); setIsPlaying(false); }}
+            onChange={e => { generationRef.current++; setReciter(e.target.value); localStorage.setItem('quran_reciter', e.target.value); hardStopAudio(); setIsPlaying(false); isPlayingRef.current = false; pausedRef.current = null; }}
             className="w-full rounded-xl px-4 py-3 text-sm outline-none"
             style={{
               background: 'rgba(255,255,255,0.08)',
@@ -396,18 +455,18 @@ export default function HifzStepIntentionImpregnation({ surahNumber, startVerse,
             ))}
           </select>
 
-          {/* Play button — TEMPORARILY DISABLED */}
+          {/* Play button */}
           <motion.button
-            disabled
-            className="w-20 h-20 rounded-full mx-auto flex items-center justify-center opacity-50 cursor-not-allowed"
+            whileTap={{ scale: 0.95 }}
+            onClick={togglePlay}
+            className="w-20 h-20 rounded-full mx-auto flex items-center justify-center transition-all"
             style={{
-              background: 'rgba(255,255,255,0.1)',
-              border: '2px solid rgba(255,255,255,0.2)',
+              background: isPlaying ? 'rgba(212,175,55,0.25)' : 'rgba(255,255,255,0.1)',
+              border: `2px solid ${isPlaying ? '#d4af37' : 'rgba(255,255,255,0.2)'}`,
             }}
           >
-            <Play className="h-8 w-8 ml-1" style={{ color: '#d4af37' }} />
+            {isPlaying ? <Pause className="h-8 w-8" style={{ color: '#d4af37' }} /> : <Play className="h-8 w-8 ml-1" style={{ color: '#d4af37' }} />}
           </motion.button>
-          <p className="text-[10px] text-center" style={{ color: 'rgba(255,255,255,0.35)' }}>⏸ Temporairement indisponible</p>
 
           {/* Listen count */}
           <div className="flex items-center justify-center gap-3">
@@ -433,7 +492,7 @@ export default function HifzStepIntentionImpregnation({ surahNumber, startVerse,
             <button
               onClick={() => {
                 if (window.confirm('Réinitialiser le compteur d\'écoute ? Ta progression sera perdue.')) {
-                  setListenCount(0); localStorage.removeItem(storageKey); audioRef.current?.pause(); setIsPlaying(false);
+                  generationRef.current++; setListenCount(0); localStorage.removeItem(storageKey); hardStopAudio(); setIsPlaying(false); isPlayingRef.current = false; pausedRef.current = null;
                 }
               }}
               className="flex items-center justify-center gap-1.5 mx-auto px-3 py-1.5 rounded-lg text-xs transition-all active:scale-95"

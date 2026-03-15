@@ -100,6 +100,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
   const pausedRef = useRef(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const sequenceAbortRef = useRef(false);
+  const generationRef = useRef(0);
   const reciter = reciterId || localStorage.getItem('quran_reciter') || 'ar.alafasy';
 
   const currentVerse = verseStart + currentVerseIndex;
@@ -150,11 +151,26 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
     return null;
   }, [reciter, surahNumber]);
 
+  const hardStopAudio = useCallback(() => {
+    if (audioRef.current) {
+      audioRef.current.onended = null;
+      audioRef.current.onerror = null;
+      audioRef.current.pause();
+      try { audioRef.current.src = ''; } catch {}
+    }
+    audioRef.current = null;
+  }, []);
+
   const stopAudio = useCallback(() => {
+    generationRef.current++;
     sequenceAbortRef.current = true;
     isPlayingRef.current = false;
     pausedRef.current = true;
-    audioRef.current?.pause();
+    if (audioRef.current) {
+      audioRef.current.onended = null;
+      audioRef.current.onerror = null;
+      audioRef.current.pause();
+    }
     // Don't nullify audioRef — preserve for resume
     setIsPlaying(false);
   }, []);
@@ -164,25 +180,27 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
     if (isPlayingRef.current) return;
     const url = await getAudioUrl(verse);
     if (!url) return;
+    const gen = ++generationRef.current;
     isPlayingRef.current = true;
     sequenceAbortRef.current = false;
     setIsPlaying(true);
 
     const playOnce = () => {
+      if (generationRef.current !== gen || !isPlayingRef.current) return;
       const audio = new Audio(url);
       audioRef.current = audio;
       registerRef.current(audio, { label: `${SURAHS.find(s => s.number === surahNumber)?.name || ''} · v.${verse}`, returnPath: window.location.pathname, surahNumber, startVerse: verse });
       audio.onended = () => {
+        if (generationRef.current !== gen || !isPlayingRef.current || audioRef.current !== audio) return;
         setListenCount(prev => prev + 1);
-        if (!sequenceAbortRef.current && isPlayingRef.current) {
-          playOnce(); // auto-loop
-        } else {
-          isPlayingRef.current = false;
-          setIsPlaying(false);
-        }
+        playOnce(); // auto-loop
       };
-      audio.onerror = () => { isPlayingRef.current = false; setIsPlaying(false); };
-      audio.play().catch(() => { isPlayingRef.current = false; setIsPlaying(false); });
+      audio.onerror = () => {
+        if (generationRef.current !== gen) return;
+        isPlayingRef.current = false;
+        setIsPlaying(false);
+      };
+      audio.play().catch(() => { if (generationRef.current !== gen) return; isPlayingRef.current = false; setIsPlaying(false); });
     };
     playOnce();
   }, [getAudioUrl]);
@@ -190,16 +208,18 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
   // Play a sequence of verses in auto-loop (for liaison)
   const playSequence = useCallback(async (verses: number[]) => {
     if (isPlayingRef.current) return;
+    const gen = ++generationRef.current;
     isPlayingRef.current = true;
     sequenceAbortRef.current = false;
     setIsPlaying(true);
 
     const playLoop = async () => {
       for (const verse of verses) {
-        if (sequenceAbortRef.current || !isPlayingRef.current) return;
+        if (generationRef.current !== gen || !isPlayingRef.current) return;
         const url = await getAudioUrl(verse);
         if (!url) continue;
         await new Promise<void>((resolve) => {
+          if (generationRef.current !== gen || !isPlayingRef.current) { resolve(); return; }
           const audio = new Audio(url);
           audioRef.current = audio;
           registerRef.current(audio, { label: `${SURAHS.find(s => s.number === surahNumber)?.name || ''} · v.${verses[0]}–${verses[verses.length - 1]}`, returnPath: window.location.pathname, surahNumber, startVerse: verse });
@@ -208,13 +228,9 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
           audio.play().catch(() => resolve());
         });
       }
-      if (!sequenceAbortRef.current && isPlayingRef.current) {
-        setListenCount(prev => prev + 1);
-        playLoop(); // auto-loop
-      } else {
-        isPlayingRef.current = false;
-        setIsPlaying(false);
-      }
+      if (generationRef.current !== gen || !isPlayingRef.current) return;
+      setListenCount(prev => prev + 1);
+      playLoop(); // auto-loop
     };
     playLoop();
   }, [getAudioUrl]);
@@ -224,10 +240,22 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
     // Resume from pause if audio element still exists and not ended
     if (pausedRef.current && audioRef.current && !audioRef.current.ended) {
       pausedRef.current = false;
+      const gen = ++generationRef.current;
       isPlayingRef.current = true;
       sequenceAbortRef.current = false;
       setIsPlaying(true);
-      audioRef.current.play().catch(() => { isPlayingRef.current = false; setIsPlaying(false); });
+      const audio = audioRef.current;
+      // Rebind callbacks with new generation
+      audio.onended = () => {
+        if (generationRef.current !== gen || !isPlayingRef.current || audioRef.current !== audio) return;
+        setListenCount(prev => prev + 1);
+        if (isLiaison) {
+          // For liaison resume, just stop after this segment
+          isPlayingRef.current = false;
+          setIsPlaying(false);
+        }
+      };
+      audio.play().catch(() => { if (generationRef.current !== gen) return; isPlayingRef.current = false; setIsPlaying(false); });
       return;
     }
     pausedRef.current = false;
@@ -241,16 +269,18 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
   // Hint replay — plays audio once without incrementing any counter
   const playHint = useCallback(() => {
     if (isPlayingRef.current) return;
+    const gen = ++generationRef.current;
     if (isLiaison) {
       (async () => {
         isPlayingRef.current = true;
         sequenceAbortRef.current = false;
         setIsPlaying(true);
         for (const verse of liaisonVerses) {
-          if (sequenceAbortRef.current) break;
+          if (generationRef.current !== gen || !isPlayingRef.current) break;
           const url = await getAudioUrl(verse);
           if (!url) continue;
           await new Promise<void>((resolve) => {
+            if (generationRef.current !== gen) { resolve(); return; }
             const audio = new Audio(url);
             audioRef.current = audio;
             registerRef.current(audio, { label: `${SURAHS.find(s => s.number === surahNumber)?.name || ''} · Indice`, returnPath: window.location.pathname, surahNumber, startVerse: verse });
@@ -259,8 +289,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
             audio.play().catch(() => resolve());
           });
         }
-        isPlayingRef.current = false;
-        setIsPlaying(false);
+        if (generationRef.current === gen) { isPlayingRef.current = false; setIsPlaying(false); }
       })();
     } else {
       (async () => {
@@ -271,9 +300,9 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
         const audio = new Audio(url);
         audioRef.current = audio;
         registerRef.current(audio, { label: `${SURAHS.find(s => s.number === surahNumber)?.name || ''} · v.${currentVerse}`, returnPath: window.location.pathname, surahNumber, startVerse: currentVerse });
-        audio.onended = () => { isPlayingRef.current = false; setIsPlaying(false); };
-        audio.onerror = () => { isPlayingRef.current = false; setIsPlaying(false); };
-        audio.play().catch(() => { isPlayingRef.current = false; setIsPlaying(false); });
+        audio.onended = () => { if (generationRef.current === gen) { isPlayingRef.current = false; setIsPlaying(false); } };
+        audio.onerror = () => { if (generationRef.current === gen) { isPlayingRef.current = false; setIsPlaying(false); } };
+        audio.play().catch(() => { if (generationRef.current === gen) { isPlayingRef.current = false; setIsPlaying(false); } });
       })();
     }
   }, [isLiaison, liaisonVerses, currentVerse, getAudioUrl]);
@@ -536,20 +565,20 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
 
             <div className="flex flex-col items-center gap-3">
               <CircularCounter count={listenCount} target={TARGET_LISTEN} color={isLiaison ? '#a78bfa' : '#4ecdc4'} />
-              {/* Play button — TEMPORARILY DISABLED */}
+              {/* Play button */}
               <motion.button
-                disabled
-                className="flex items-center gap-2 px-5 py-2 rounded-full text-xs font-semibold tracking-wide opacity-50 cursor-not-allowed"
+                whileTap={{ scale: 0.95 }}
+                onClick={handlePlay}
+                className="flex items-center gap-2 px-5 py-2 rounded-full text-xs font-semibold tracking-wide"
                 style={{
-                  background: 'rgba(212,175,55,0.1)',
-                  border: '1px solid rgba(212,175,55,0.25)',
+                  background: isPlaying ? 'rgba(212,175,55,0.2)' : 'rgba(212,175,55,0.1)',
+                  border: `1px solid ${isPlaying ? 'rgba(212,175,55,0.5)' : 'rgba(212,175,55,0.25)'}`,
                   color: 'rgba(255,255,255,0.6)',
                 }}
               >
                 <Headphones className="h-3.5 w-3.5" />
-                Écouter
+                {isPlaying ? 'Pause' : 'Écouter'}
               </motion.button>
-              <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.35)' }}>⏸ Temporairement indisponible</p>
               {minReached && (
                 <ContinueButton onClick={handleContinueListen} label="Passer à la mémorisation" />
               )}
@@ -631,16 +660,17 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
               </motion.button>
             </div>
 
-            {/* Hint button — TEMPORARILY DISABLED */}
+            {/* Hint button */}
             <motion.button
-              disabled
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs mx-auto opacity-50 cursor-not-allowed"
+              whileTap={{ scale: 0.95 }}
+              onClick={playHint}
+              disabled={isPlaying}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs mx-auto disabled:opacity-50"
               style={{ background: 'rgba(78,205,196,0.1)', border: '1px solid rgba(78,205,196,0.25)', color: '#4ecdc4' }}
             >
               <Headphones className="h-3.5 w-3.5" />
               Réécouter une fois
             </motion.button>
-            <p className="text-[10px] text-center" style={{ color: 'rgba(255,255,255,0.35)' }}>⏸ Temporairement indisponible</p>
 
             {minReached && (
               <ContinueButton onClick={handleContinueMemory} label="Continuer ✓" />
