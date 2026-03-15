@@ -238,13 +238,10 @@ export default function HifzMushafImage({ surahNumber, startVerse, endVerse, max
 
       <div
         ref={containerRef}
-        className={`overflow-hidden relative ${fullWidth ? '' : 'rounded-xl'} ${scale > 1 ? 'touch-none' : 'touch-pan-y'}`}
+        className={`overflow-auto relative ${fullWidth ? '' : 'rounded-xl'} ${scale > 1 ? 'touch-none' : 'touch-pan-y'}`}
         style={{
           border: fullWidth ? 'none' : '1px solid rgba(212,175,55,0.25)',
           maxHeight,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
           background: '#f5f0e0',
         }}
         onTouchStart={handleTouchStart}
@@ -265,10 +262,9 @@ export default function HifzMushafImage({ surahNumber, startVerse, endVerse, max
             key={`${page}-${sourceIdx}`}
             src={imgUrl}
             alt={`Page ${page} du Mushaf`}
-            className="w-full h-auto object-contain"
+            className="w-full h-auto"
             style={{
-              maxHeight,
-              transform: `scale(${scale}) translate(${translate.x / scale}px, ${translate.y / scale}px)`,
+              transform: scale > 1 ? `scale(${scale}) translate(${translate.x / scale}px, ${translate.y / scale}px)` : undefined,
               transformOrigin: 'center center',
               transition: isPanningRef.current || lastTouchDistRef.current ? 'none' : 'transform 0.2s ease',
             }}
