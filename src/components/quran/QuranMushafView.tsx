@@ -32,8 +32,8 @@ const fontLoadedCache = new Set<number>();
 function loadPageFont(page: number): Promise<void> {
   if (fontLoadedCache.has(page)) return Promise.resolve();
 
-  const familyName = `QCF_P${String(page).padStart(3, '0')}`;
-  const url = `https://v4.quran.com/fonts/quran/hafs/v2/woff2/p${page}.woff2`;
+  const familyName = `p${page}-v2`;
+  const url = `https://verses.quran.foundation/fonts/quran/hafs/v2/woff2/p${page}.woff2`;
 
   const face = new FontFace(familyName, `url(${url})`, {
     style: 'normal',
@@ -120,7 +120,7 @@ export default function QuranMushafView({ page, highlightAyah, darkMode = false,
   const [selectedVerse, setSelectedVerse] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const fontFamily = `QCF_P${String(page).padStart(3, '0')}`;
+  const fontFamily = `p${page}-v2`;
 
   // Load data + font in parallel
   useEffect(() => {

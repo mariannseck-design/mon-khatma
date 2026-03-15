@@ -1,29 +1,21 @@
 
 
-## Corriger le rendu Mushaf QCF V2
+# Diagnostic : 404 sur /quran-reader
 
-Le composant `QuranMushafView.tsx` ne fonctionne pas car l'URL des polices est incorrecte. Voici les corrections basées sur la documentation officielle de Quran Foundation.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Problèmes identifiés
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-1. **URL de police incorrecte** : `https://v4.quran.com/fonts/...` n'existe pas
-   - Correct : `https://verses.quran.foundation/fonts/quran/hafs/v2/woff2/p${page}.woff2`
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-2. **Nom de police incorrect** : `QCF_P001` au lieu de `p1-v2`
-   - Correct : `p${page}-v2` (sans padding)
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-3. **Marqueurs de fin de verset** : le code utilise actuellement la police KFGQPC pour les `end` markers, mais devrait utiliser `UthmanicHafs` avec `text_qpc_hafs`
-   - Charger `UthmanicHafs` depuis `https://verses.quran.foundation/fonts/quran/hafs/uthmanic_hafs/UthmanicHafs1Ver18.woff2`
-
-### Fichiers modifiés
-
-**`src/components/quran/QuranMushafView.tsx`** :
-- Corriger l'URL CDN des polices QCF V2
-- Corriger le `familyName` en `p${page}-v2`
-- Corriger la référence `fontFamily` dans le rendu
-- Utiliser `UthmanicHafs` (chargée dynamiquement) pour les `end` markers au lieu de KFGQPC
-- Utiliser `word.code_v2` aussi pour les end markers via la police QCF (comme dans l'API response, le code_v2 des end markers contient déjà le bon glyphe) — ou bien utiliser `text_qpc_hafs` avec UthmanicHafs selon la doc officielle
-
-**`index.html`** :
-- Mettre à jour l'URL `@font-face` de UthmanicHafs vers `https://verses.quran.foundation/fonts/quran/hafs/uthmanic_hafs/UthmanicHafs1Ver18.woff2`
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
