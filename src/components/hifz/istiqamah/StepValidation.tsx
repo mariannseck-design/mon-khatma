@@ -42,6 +42,7 @@ export default function StepValidation({ surahNumber, verseStart, verseEnd, onNe
       surahNumber={surahNumber}
       startVerse={verseStart}
       endVerse={verseEnd}
+      disableMushafOverlay
     >
       <motion.div
         initial={{ opacity: 0, y: 20 }}
