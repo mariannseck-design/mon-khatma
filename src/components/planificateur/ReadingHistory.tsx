@@ -127,7 +127,7 @@ async function generatePDF(
     y = 20;
   }
   doc.setFontSize(8);
-  doc.setTextColor(180, 180, 180);
+  doc.setTextColor(130, 130, 130);
   doc.text('Généré par Ma Khatma — makhatma.lovable.app', pageWidth / 2, 290, { align: 'center' });
 
   doc.save('ma-khatma-historique.pdf');
