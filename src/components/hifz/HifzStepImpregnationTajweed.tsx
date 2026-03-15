@@ -233,6 +233,8 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
     registerRef.current(audio, {
       label: `${surahName} · v.${startVerse}-${endVerse}`,
       returnPath: window.location.pathname + window.location.search,
+      surahNumber,
+      startVerse,
     });
     audio.onended = () => playNextAyah(idx + 1);
     audio.onerror = () => {
