@@ -1,17 +1,21 @@
 
 
-## Ajouter le partage natif du PDF
+# Diagnostic : 404 sur /quran-reader
 
-Utiliser l'API `navigator.share()` (Web Share API) pour permettre le partage du PDF sur mobile. Sur desktop ou si l'API n'est pas disponible, on garde le téléchargement classique.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Changements dans `src/components/planificateur/ReadingHistory.tsx`
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-1. **Modifier `generatePDF`** : au lieu de `doc.save()`, générer un `Blob` via `doc.output('blob')`, puis :
-   - Si `navigator.canShare` supporte le fichier → appeler `navigator.share({ files: [file] })` avec le PDF en tant que `File`
-   - Sinon → fallback `doc.save()` classique
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-2. **Bouton** : changer le label de "PDF" à "Partager" avec icône `Share2` quand le partage natif est disponible, garder "PDF" avec `Download` sinon.
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-### Fichier modifié
-- `src/components/planificateur/ReadingHistory.tsx`
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

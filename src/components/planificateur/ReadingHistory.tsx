@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { History, Check, BookOpen, Download } from 'lucide-react';
+import { History, Check, BookOpen, Download, Share2 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { getSurahByPage } from '@/lib/surahData';
@@ -176,12 +176,32 @@ async function generatePDF(
   doc.setTextColor(130, 130, 130);
   doc.text('Genere par Ma Khatma — makhatma.lovable.app', pageWidth / 2, 290, { align: 'center' });
 
-  doc.save('ma-khatma-historique.pdf');
-  toast.success('PDF téléchargé ! 📄');
+  const pdfBlob = doc.output('blob');
+  const file = new File([pdfBlob], 'ma-khatma-historique.pdf', { type: 'application/pdf' });
+
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    try {
+      await navigator.share({
+        title: 'Ma Khatma — Historique',
+        files: [file],
+      });
+      toast.success('PDF partagé ! 📤');
+    } catch (err: any) {
+      if (err?.name !== 'AbortError') {
+        doc.save('ma-khatma-historique.pdf');
+        toast.success('PDF téléchargé ! 📄');
+      }
+    }
+  } else {
+    doc.save('ma-khatma-historique.pdf');
+    toast.success('PDF téléchargé ! 📄');
+  }
 }
 
 export function ReadingHistory({ entries, targetPages = 0, firstName, startDate, isKhatmaComplete }: ReadingHistoryProps) {
   if (entries.length === 0) return null;
+
+  const canNativeShare = typeof navigator !== 'undefined' && !!navigator.canShare;
 
   const sorted = [...entries].sort((a, b) => a.date.localeCompare(b.date));
   let cumulative = 0;
@@ -209,8 +229,8 @@ export function ReadingHistory({ entries, targetPages = 0, firstName, startDate,
             style={{ color: 'var(--p-primary)' }}
             onClick={() => generatePDF(entries, targetPages, firstName || '', startDate, isKhatmaComplete)}
           >
-            <Download className="h-3.5 w-3.5" />
-            PDF
+            {canNativeShare ? <Share2 className="h-3.5 w-3.5" /> : <Download className="h-3.5 w-3.5" />}
+            {canNativeShare ? 'Partager' : 'PDF'}
           </Button>
         </div>
 
