@@ -80,7 +80,17 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
   const generationRef = useRef(0);
   const isPlayingRef = useRef(false);
   const pausedRef = useRef<HTMLAudioElement | null>(null);
-  const selfInitiatedRef = useRef(false);
+
+  // Hard-stop helper: fully kills current audio, clears handlers, prevents stale callbacks
+  const hardStopAudio = useCallback(() => {
+    if (audioRef.current) {
+      audioRef.current.onended = null;
+      audioRef.current.onerror = null;
+      audioRef.current.pause();
+      try { audioRef.current.src = ''; } catch {}
+    }
+    audioRef.current = null;
+  }, []);
 
   const storageKey = `hifz_listen_${surahNumber}_${startVerse}_${endVerse}`;
   const surahName = SURAHS.find(s => s.number === surahNumber)?.name || '';
