@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Headphones, Check, Play, Pause, RotateCcw, ZoomIn, ZoomOut } from 'lucide-react';
+import { Headphones, Check, Play, Pause, Square, RotateCcw, ZoomIn, ZoomOut } from 'lucide-react';
 import HifzStepWrapper from './HifzStepWrapper';
 import HifzMushafToggle, { getMushafMode, setMushafMode, type MushafMode } from './HifzMushafToggle';
 import HifzMushafImage from './HifzMushafImage';
@@ -109,6 +109,38 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const ayahsRef = useRef<{ audio: string; numberInSurah: number }[]>([]);
   const indexRef = useRef(0);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      generationRef.current++;
+      isPlayingRef.current = false;
+      if (audioRef.current) {
+        audioRef.current.onended = null;
+        audioRef.current.onerror = null;
+        audioRef.current.pause();
+        try { audioRef.current.src = ''; } catch {}
+        audioRef.current = null;
+      }
+      pausedRef.current = null;
+      stopGlobal();
+    };
+  }, [stopGlobal]);
+
+  // Visibility sync
+  useEffect(() => {
+    const handler = () => {
+      if (document.visibilityState === 'visible') {
+        const audio = audioRef.current;
+        if (isPlayingRef.current && audio && audio.paused && !audio.ended) {
+          setIsPlaying(false);
+          isPlayingRef.current = false;
+        }
+      }
+    };
+    document.addEventListener('visibilitychange', handler);
+    return () => document.removeEventListener('visibilitychange', handler);
+  }, []);
 
   useEffect(() => {
     localStorage.setItem(storageKey, String(listenCount));
@@ -301,7 +333,10 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
       setIsPlaying(false);
       isPlayingRef.current = false;
     } else {
-      // Resume from paused element or start fresh
+      // Hard-stop any lingering audio before starting
+      hardStopAudio();
+      stopGlobal();
+
       const gen = ++generationRef.current;
       setIsPlaying(true);
       isPlayingRef.current = true;
@@ -426,17 +461,46 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
             ))}
           </select>
 
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            onClick={togglePlay}
-            className="w-20 h-20 rounded-full mx-auto flex items-center justify-center transition-all"
-            style={{
-              background: isPlaying ? 'rgba(212,175,55,0.25)' : 'rgba(255,255,255,0.1)',
-              border: `2px solid ${isPlaying ? '#d4af37' : 'rgba(255,255,255,0.2)'}`,
-            }}
-          >
-            {isPlaying ? <Pause className="h-8 w-8" style={{ color: '#d4af37' }} /> : <Play className="h-8 w-8 ml-1" style={{ color: '#d4af37' }} />}
-          </motion.button>
+          <div className="flex items-center justify-center gap-4">
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              onClick={togglePlay}
+              className="w-20 h-20 rounded-full flex items-center justify-center transition-all"
+              style={{
+                background: isPlaying ? 'rgba(212,175,55,0.25)' : 'rgba(255,255,255,0.1)',
+                border: `2px solid ${isPlaying ? '#d4af37' : 'rgba(255,255,255,0.2)'}`,
+              }}
+            >
+              {isPlaying ? <Pause className="h-8 w-8" style={{ color: '#d4af37' }} /> : <Play className="h-8 w-8 ml-1" style={{ color: '#d4af37' }} />}
+            </motion.button>
+
+            {isPlaying && (
+              <motion.button
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => {
+                  generationRef.current++;
+                  isPlayingRef.current = false;
+                  pausedRef.current = null;
+                  hardStopAudio();
+                  stopGlobal();
+                  setIsPlaying(false);
+                  setCurrentAyahIndex(-1);
+                  indexRef.current = 0;
+                }}
+                className="w-14 h-14 rounded-full flex items-center justify-center transition-all"
+                style={{
+                  background: 'rgba(220,38,38,0.15)',
+                  border: '2px solid rgba(220,38,38,0.4)',
+                }}
+                title="Arrêter"
+              >
+                <Square className="h-5 w-5" style={{ color: '#dc2626' }} />
+              </motion.button>
+            )}
+          </div>
 
           {/* Listen count */}
           <div className="flex items-center justify-center gap-3">
