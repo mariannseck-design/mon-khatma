@@ -561,6 +561,20 @@ export default function HifzPage() {
                 </div>
               )}
             </div>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.5 }}
+              className="flex justify-end pt-4 w-full max-w-xs"
+            >
+              <button
+                onClick={() => navigate('/accueil')}
+                className="text-[10px] tracking-wide transition-all active:scale-95"
+                style={{ color: 'rgba(255,255,255,0.25)' }}
+              >
+                ← Retourner à l'accueil
+              </button>
+            </motion.div>
           </motion.div>
         </div>
         <DevSkipButton isDevMode={isDevMode} onSkip={handleResume} />

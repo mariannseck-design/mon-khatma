@@ -1,20 +1,21 @@
 
 
-## Plan : Ajouter un lien discret "Accueil" sur l'écran "Session en cours"
+# Diagnostic : 404 sur /quran-reader
 
-### Modification
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-**`src/pages/HifzPage.tsx`** — Dans le bloc `showResumePrompt` (lignes ~563-564), ajouter un lien discret sous les boutons existants :
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-```
-← Retourner à l'accueil
-```
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-Style identique au lien discret déjà utilisé dans `HifzStepWrapper` : texte 10px, opacité 0.25, aligné à droite, avec navigation vers `/accueil`.
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-### Détail technique
-
-- Ajouter un `useNavigate()` (déjà importé dans le fichier)
-- Insérer un `<button>` après le `div.flex.flex-col.gap-3` (ligne ~563), avec `onClick={() => navigate('/accueil')}`
-- Style : `text-[10px]`, `color: rgba(255,255,255,0.25)`, aligné en bas à droite, avec `motion` delay 1.5s pour apparition progressive
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
