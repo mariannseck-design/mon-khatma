@@ -288,7 +288,7 @@ export default function QuranMushafView({ page, highlightAyah, darkMode = false,
                 style={{
                   justifyContent: isSpecialPage ? 'center' : 'space-around',
                   direction: 'rtl',
-                  padding: '0 4px',
+                  padding: '0',
                 }}
               >
                 {words.map((word) => {
