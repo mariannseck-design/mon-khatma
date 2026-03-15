@@ -679,7 +679,7 @@ export default function HifzPage() {
         {/* Step 5 → Succès */}
         {step === 5 && <HifzSuccess stepTimes={stepTimesRef.current} onBackToTikrar={() => setStep(4)} />}
       </div>
-      {step >= 0 && step <= 6 && (
+      {step >= 0 && step <= 5 && (
         <DevSkipButton isDevMode={isDevMode} onSkip={() => {
           console.log(`[DevSkip] 🔀 Skip à step=${step}, breathing=${showBreathingPause}`);
           if (showBreathingPause) { handleBreathingComplete(); }
@@ -687,9 +687,8 @@ export default function HifzPage() {
           else if (step === 1) { handleImpregnationComplete(); }
           else if (step === 2) { updateStep(3); }
           else if (step === 3) { updateStep(4); }
-          else if (step === 4) { updateStep(5); }
-          else if (step === 5) { completeSession(); }
-          else if (step === 6) { navigate('/muraja'); }
+          else if (step === 4) { completeSession(); }
+          else if (step === 5) { navigate('/muraja'); }
         }} />
       )}
     </AppLayout>
