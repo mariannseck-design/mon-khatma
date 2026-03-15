@@ -34,15 +34,19 @@ export function TotalProgressBar({ totalPagesRead, onResetKhatma, onShowCelebrat
       <Card
         className="relative overflow-hidden border-none"
         style={{
-          background: 'linear-gradient(145deg, var(--p-card) 0%, rgba(6,95,70,0.04) 100%)',
-          boxShadow: '0 4px 24px rgba(6,95,70,0.1), 0 1px 3px rgba(212,175,55,0.08)',
-          border: '1px solid rgba(6,95,70,0.08)',
+          background: 'linear-gradient(145deg, var(--p-card) 0%, rgba(6,95,70,0.08) 100%)',
+          boxShadow: '0 4px 24px rgba(6,95,70,0.1), 0 2px 8px rgba(212,175,55,0.12)',
+          border: '1px solid rgba(212,175,55,0.15)',
         }}
       >
         {/* Subtle decorative accent */}
         <div
-          className="absolute top-0 right-0 w-32 h-32 rounded-full opacity-[0.07]"
+          className="absolute top-0 right-0 w-32 h-32 rounded-full opacity-[0.12]"
           style={{ background: 'radial-gradient(circle, var(--p-accent), transparent 70%)', transform: 'translate(30%, -30%)' }}
+        />
+        <div
+          className="absolute bottom-0 left-0 w-28 h-28 rounded-full opacity-[0.08]"
+          style={{ background: 'radial-gradient(circle, var(--p-primary), transparent 70%)', transform: 'translate(-30%, 30%)' }}
         />
 
         <div className="px-6 pt-6 pb-3 relative">
@@ -50,7 +54,7 @@ export function TotalProgressBar({ totalPagesRead, onResetKhatma, onShowCelebrat
             <div className="flex items-center gap-3">
               <div
                 className="w-11 h-11 rounded-xl flex items-center justify-center"
-                style={{ background: 'linear-gradient(135deg, rgba(212,175,55,0.18), rgba(212,175,55,0.08))' }}
+                style={{ background: 'linear-gradient(135deg, rgba(212,175,55,0.22), rgba(212,175,55,0.10))' }}
               >
                 {isComplete ? (
                   <Star className="h-5 w-5" style={{ color: 'var(--p-accent)' }} />
@@ -95,7 +99,7 @@ export function TotalProgressBar({ totalPagesRead, onResetKhatma, onShowCelebrat
               className="rounded-xl py-2.5 px-4 text-center mb-3"
               style={{
                 background: 'linear-gradient(135deg, rgba(6,95,70,0.07), rgba(6,95,70,0.03))',
-                border: '1px solid rgba(6,95,70,0.06)',
+                border: '1px solid rgba(212,175,55,0.06)',
               }}
             >
               <p className="text-lg font-bold" style={{ color: 'var(--p-primary-deep)' }}>
@@ -132,7 +136,7 @@ export function TotalProgressBar({ totalPagesRead, onResetKhatma, onShowCelebrat
         </div>
 
         {/* Progress bar at bottom */}
-        <div className="h-2.5 rounded-b-lg" style={{ background: 'rgba(6,95,70,0.06)' }}>
+        <div className="h-2.5 rounded-b-lg" style={{ background: 'rgba(6,95,70,0.10)' }}>
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: `${percentage}%` }}

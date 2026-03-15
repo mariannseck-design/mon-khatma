@@ -1,23 +1,21 @@
 
 
-## Ajouter subtilement du doré et du vert à la carte Ma Khatma
+# Diagnostic : 404 sur /quran-reader
 
-La carte actuelle est trop neutre/terne. On va rehausser avec des touches de couleur subtiles mais visibles :
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Changements dans `TotalProgressBar.tsx`
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-| Élément | Avant | Après |
-|---|---|---|
-| Fond carte | `var(--p-card)` vers `rgba(6,95,70,0.04)` | `var(--p-card)` vers `rgba(6,95,70,0.08)` — vert plus visible |
-| Bordure | `rgba(6,95,70,0.08)` | `rgba(212,175,55,0.15)` — bordure dorée subtile |
-| Halo décoratif | Un seul halo or en haut-droite, opacité 0.07 | Deux halos : or en haut-droite (opacité 0.12) + vert en bas-gauche (opacité 0.08) |
-| Icône fond | Or translucide faible | Or plus marqué `rgba(212,175,55,0.22)` |
-| Bloc sourate | Fond vert très pâle `rgba(6,95,70,0.07)` | Fond avec une touche dorée mélangée : `rgba(212,175,55,0.06)` en bordure |
-| Barre de progression track | `rgba(6,95,70,0.06)` | `rgba(6,95,70,0.10)` — plus visible |
-| Ombre carte | Ombre légère | Ajout d'une touche dorée dans l'ombre `rgba(212,175,55,0.12)` |
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-Résultat : la carte garde son fond clair mais les accents dorés et verts lui donnent de la vie et de la richesse visuelle.
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-### Fichier modifié
-- `src/components/planificateur/TotalProgressBar.tsx`
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
