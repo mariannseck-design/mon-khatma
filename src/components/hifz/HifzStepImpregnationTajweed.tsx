@@ -6,8 +6,6 @@ import HifzMushafImage from './HifzMushafImage';
 import { RECITERS, getAyahAudioUrl } from '@/hooks/useQuranAudio';
 import { SURAHS } from '@/lib/surahData';
 import { useGlobalAudio } from '@/contexts/AudioContext';
-import { getVersesByRange, type LocalAyah } from '@/lib/quranData';
-import { getTajweedAnnotations, TAJWEED_COLORS, type TajweedAnnotation } from '@/lib/tajweedData';
 
 interface Props {
   surahNumber: number;
