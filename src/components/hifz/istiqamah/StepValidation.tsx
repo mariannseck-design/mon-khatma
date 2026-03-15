@@ -39,7 +39,7 @@ export default function StepValidation({ surahNumber, verseStart, verseEnd, onNe
       onPause={onPause}
       totalSteps={6}
       phaseLabel="Étape 5/6 · Validation"
-      disableMushafOverlay
+      
     >
       <motion.div
         initial={{ opacity: 0, y: 20 }}
