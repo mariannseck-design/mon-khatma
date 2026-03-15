@@ -74,7 +74,7 @@ interface AyahWithAnnotations extends LocalAyah {
 }
 
 export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, endVerse, onNext, onBack, onPause, phaseLabel }: Props) {
-  const { registerAudio: registerGlobalAudio, stop: stopGlobal, status: globalStatus } = useGlobalAudio();
+  const { registerAudio: registerGlobalAudio, stop: stopGlobal, stopSignal } = useGlobalAudio();
   const registerRef = useRef(registerGlobalAudio);
   registerRef.current = registerGlobalAudio;
   const generationRef = useRef(0);
