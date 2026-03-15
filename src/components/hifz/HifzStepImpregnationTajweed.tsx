@@ -241,6 +241,7 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
     const audio = new Audio(ayahsRef.current[idx].audio);
     audioRef.current = audio;
     pausedRef.current = null;
+    selfInitiatedRef.current = true;
     registerRef.current(audio, {
       label: `${surahName} · v.${startVerse}-${endVerse}`,
       returnPath: window.location.pathname + window.location.search,
