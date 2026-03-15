@@ -10,6 +10,7 @@ interface AudioTrackInfo {
 interface AudioContextType {
   status: 'idle' | 'playing' | 'paused';
   trackInfo: AudioTrackInfo | null;
+  stopSignal: number;
   registerAudio: (audio: HTMLAudioElement, info: AudioTrackInfo) => void;
   pause: () => void;
   resume: () => void;
@@ -19,6 +20,7 @@ interface AudioContextType {
 const AudioCtx = createContext<AudioContextType>({
   status: 'idle',
   trackInfo: null,
+  stopSignal: 0,
   registerAudio: () => {},
   pause: () => {},
   resume: () => {},
