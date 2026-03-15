@@ -93,9 +93,22 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const ayahsRef = useRef<{ audio: string; numberInSurah: number }[]>([]);
   const indexRef = useRef(0);
-  const { registerAudio: registerGlobalAudio } = useGlobalAudio();
+  const generationRef = useRef(0);
+  const isPlayingRef = useRef(false);
+  const pausedRef = useRef<HTMLAudioElement | null>(null);
+  const { registerAudio: registerGlobalAudio, stop: stopGlobal, status: globalStatus } = useGlobalAudio();
   const registerRef = useRef(registerGlobalAudio);
   registerRef.current = registerGlobalAudio;
+
+  const hardStopAudio = useCallback(() => {
+    if (audioRef.current) {
+      audioRef.current.onended = null;
+      audioRef.current.onerror = null;
+      audioRef.current.pause();
+      try { audioRef.current.src = ''; } catch {}
+    }
+    audioRef.current = null;
+  }, []);
 
   // Persist listen count
   useEffect(() => {
