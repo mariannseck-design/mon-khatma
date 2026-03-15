@@ -8,6 +8,7 @@ import { getExactVersePage } from '@/lib/quranData';
 import { useOnlineStatus } from '@/hooks/useOnlineStatus';
 import SurahDrawer from '@/components/quran/SurahDrawer';
 import QuranTextView from '@/components/quran/QuranTextView';
+import QuranMushafView from '@/components/quran/QuranMushafView';
 import ImageVerseOverlay from '@/components/quran/ImageVerseOverlay';
 import VerseTranslationDrawer from '@/components/quran/VerseTranslationDrawer';
 import ReaderSettingsPanel from '@/components/quran/ReaderSettingsPanel';
@@ -387,19 +388,31 @@ export default function QuranReaderPage() {
             </AnimatePresence>
           </>
         ) : (
-          <QuranTextView
-            page={page}
-            highlightAyah={currentAyahNumber}
-            fontSize={TEXT_SIZES[textSizeIndex].value}
-            darkMode={nightMode}
-            tajweedEnabled={tajweedEnabled}
-            showTranslation={translationEnabled}
-            translationEdition={translationEdition}
-            onVerseSelect={(vk, surahNum, verseNum) => {
-              setSelectedVerse(vk);
-              setPageVerses([{ verseKey: vk, surahNumber: surahNum, verseNumber: verseNum }]);
-            }}
-          />
+          isOnline ? (
+            <QuranMushafView
+              page={page}
+              highlightAyah={currentAyahNumber}
+              darkMode={nightMode}
+              onVerseSelect={(vk, surahNum, verseNum) => {
+                setSelectedVerse(vk);
+                setPageVerses([{ verseKey: vk, surahNumber: surahNum, verseNumber: verseNum }]);
+              }}
+            />
+          ) : (
+            <QuranTextView
+              page={page}
+              highlightAyah={currentAyahNumber}
+              fontSize={TEXT_SIZES[textSizeIndex].value}
+              darkMode={nightMode}
+              tajweedEnabled={tajweedEnabled}
+              showTranslation={translationEnabled}
+              translationEdition={translationEdition}
+              onVerseSelect={(vk, surahNum, verseNum) => {
+                setSelectedVerse(vk);
+                setPageVerses([{ verseKey: vk, surahNumber: surahNum, verseNumber: verseNum }]);
+              }}
+            />
+          )
         )}
       </div>
 
