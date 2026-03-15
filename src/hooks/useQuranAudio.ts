@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { getPageAyahs } from '@/lib/quranData';
+import { useGlobalAudio } from '@/contexts/AudioContext';
 
 interface ReciterEntry {
   id: string;
