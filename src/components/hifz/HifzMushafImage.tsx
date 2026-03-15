@@ -7,6 +7,7 @@ interface Props {
   startVerse: number;
   endVerse: number;
   maxHeight?: string;
+  fullWidth?: boolean;
 }
 
 const IMAGE_SOURCES = [

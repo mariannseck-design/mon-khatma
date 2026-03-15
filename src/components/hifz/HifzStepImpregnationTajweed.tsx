@@ -245,23 +245,12 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
 
   return (
     <HifzStepWrapper stepNumber={3} stepTitle="Imprégnation du Tajweed" onBack={onBack} onPause={onPause} totalSteps={5} phaseLabel={phaseLabel} surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse} disableMushafOverlay>
-      <div className="text-center space-y-5">
-        {/* Header */}
-        <div
-          className="w-10 h-10 rounded-2xl mx-auto flex items-center justify-center"
-          style={{ background: 'rgba(69,183,170,0.15)', border: '1px solid rgba(69,183,170,0.3)' }}
-        >
-          <Headphones className="h-5 w-5" style={{ color: '#45b7aa' }} />
-        </div>
-        <h3 className="text-base font-bold" style={{ color: '#f0e6c8', fontFamily: "'Playfair Display', serif" }}>
-          Imprégnation de la récitation et du Tajweed
-        </h3>
-        <p className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
-          Écoute le récitateur en suivant sur le Mushaf pour assimiler la bonne prononciation.
-        </p>
+      {/* Mushaf inline — full width, outside padded container */}
+      <div className="-mx-4">
+        <HifzMushafImage surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse} maxHeight="55vh" fullWidth />
+      </div>
 
-        {/* Mushaf inline — always visible */}
-        <HifzMushafImage surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse} maxHeight="55vh" />
+      <div className="text-center space-y-3">
 
         {/* Audio section */}
         <div className="space-y-3">
