@@ -91,6 +91,7 @@ export default function MouradPhase2({ surahNumber, startVerse, endVerse, listen
       }
       const audio = new Audio(urls[idx]);
       setAudioEl(audio);
+      registerRef.current(audio, { label: `${surah?.name || ''} · v.${startVerse}-${endVerse}`, returnPath: '/methode-mourad' });
       audio.onended = () => { idx++; playNext(); };
       audio.onerror = () => { idx++; playNext(); };
       audio.play().catch(() => setIsPlaying(false));
