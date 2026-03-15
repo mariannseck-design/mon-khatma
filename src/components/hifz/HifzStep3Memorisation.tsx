@@ -157,6 +157,8 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
     const saved = localStorage.getItem(storageKey);
     return saved ? Math.min(parseInt(saved, 10) || 0, tikrarTarget) : 0;
   });
+  const ancrageRef = useRef(ancrage);
+  useEffect(() => { ancrageRef.current = ancrage; }, [ancrage]);
   const [currentPhase, setCurrentPhase] = useState(() => getPhaseForAncrage(
     (() => { const s = localStorage.getItem(getStorageKey(surahNumber, startVerse, endVerse)); return s ? Math.min(parseInt(s, 10) || 0, repetitionLevel || 40) : 0; })()
   ));
@@ -267,17 +269,19 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
   const playNextAyah = useCallback((idx: number) => {
     if (!isPlayingRef.current && idx > 0) return;
     if (idx >= ayahAudiosRef.current.length) {
-      setAncrage(prev => {
-        const next = Math.min(prev + 1, tikrarTarget);
-        try { navigator?.vibrate?.(40); } catch {}
-        if (next >= tikrarTarget) {
-          isPlayingRef.current = false;
-          setIsPlaying(false);
-          return next;
-        }
-        setTimeout(() => { if (isPlayingRef.current) playNextAyah(0); }, 600);
-        return next;
-      });
+      // Use ref to avoid depending on setState updater (which is a no-op after unmount)
+      const current = ancrageRef.current;
+      const next = Math.min(current + 1, tikrarTarget);
+      ancrageRef.current = next;
+      setAncrage(next); // no-op if unmounted, fine
+      localStorage.setItem(storageKey, String(next));
+      try { navigator?.vibrate?.(40); } catch {}
+      if (next >= tikrarTarget) {
+        isPlayingRef.current = false;
+        setIsPlaying(false);
+        return;
+      }
+      setTimeout(() => { if (isPlayingRef.current) playNextAyah(0); }, 600);
       return;
     }
     const audio = new Audio(ayahAudiosRef.current[idx].audio);
@@ -291,7 +295,7 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
     audio.onended = () => { if (isPlayingRef.current) playNextAyah(idx + 1); };
     audio.onerror = () => { if (isPlayingRef.current) playNextAyah(idx + 1); };
     audio.play().catch(() => { isPlayingRef.current = false; setIsPlaying(false); });
-  }, [tikrarTarget]);
+  }, [tikrarTarget, storageKey]);
 
   const toggleAudioHelp = () => {
     if (isPlayingRef.current) {
