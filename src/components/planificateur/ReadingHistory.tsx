@@ -211,30 +211,16 @@ export function ReadingHistory({ entries, targetPages = 0, firstName, startDate,
             <History className="h-4 w-4" style={{ color: 'var(--p-primary)' }} />
             <span className="font-semibold text-foreground text-sm">Historique</span>
           </div>
-          <div className="flex items-center gap-1">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-8 px-3 text-xs gap-1.5 rounded-xl"
-              style={{ color: 'var(--p-primary)' }}
-              onClick={() => generatePDF(entries, targetPages, firstName || '', startDate, isKhatmaComplete, 'download')}
-            >
-              <Download className="h-3.5 w-3.5" />
-              PDF
-            </Button>
-            {canNativeShare && (
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-8 px-3 text-xs gap-1.5 rounded-xl"
-                style={{ color: 'var(--p-primary)' }}
-                onClick={() => generatePDF(entries, targetPages, firstName || '', startDate, isKhatmaComplete, 'share')}
-              >
-                <Share2 className="h-3.5 w-3.5" />
-                Partager
-              </Button>
-            )}
-          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-8 px-3 text-xs gap-1.5 rounded-xl"
+            style={{ color: 'var(--p-primary)' }}
+            onClick={() => generatePDF(entries, targetPages, firstName || '', startDate, isKhatmaComplete)}
+          >
+            <Download className="h-3.5 w-3.5" />
+            PDF
+          </Button>
         </div>
 
         <div className="space-y-0.5">
