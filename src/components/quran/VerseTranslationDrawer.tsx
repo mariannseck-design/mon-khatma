@@ -198,7 +198,7 @@ export default function VerseTranslationDrawer({ verseKey, allVerses, onClose, o
           transition={{ type: 'spring', damping: 28, stiffness: 300 }}
           className="fixed bottom-0 left-0 right-0 z-40 rounded-t-2xl shadow-2xl"
           style={{
-            background: '#f5e6c8',
+            background: '#ffffff',
             borderTop: '1px solid rgba(181,148,46,0.25)',
             maxHeight: '55vh',
           }}
