@@ -203,7 +203,7 @@ export default function HifzMushafImage({ surahNumber, startVerse, endVerse, max
   const isZoomed = scale > 1.05;
 
   return (
-    <div className="space-y-2">
+    <div className={fullWidth ? "space-y-1" : "space-y-2"}>
       {/* Zoom controls */}
       <div className="flex items-center justify-center gap-1.5">
         <button
