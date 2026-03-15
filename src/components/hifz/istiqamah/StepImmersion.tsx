@@ -536,36 +536,20 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
 
             <div className="flex flex-col items-center gap-3">
               <CircularCounter count={listenCount} target={TARGET_LISTEN} color={isLiaison ? '#a78bfa' : '#4ecdc4'} />
+              {/* Play button — TEMPORARILY DISABLED */}
               <motion.button
-                whileTap={{ scale: 0.95 }}
-                onClick={handlePlay}
-                className="flex items-center gap-2 px-5 py-2 rounded-full text-xs font-semibold tracking-wide"
+                disabled
+                className="flex items-center gap-2 px-5 py-2 rounded-full text-xs font-semibold tracking-wide opacity-50 cursor-not-allowed"
                 style={{
-                  background: isPlaying ? 'rgba(78,205,196,0.12)' : 'rgba(212,175,55,0.1)',
-                  border: `1px solid ${isPlaying ? 'rgba(78,205,196,0.3)' : 'rgba(212,175,55,0.25)'}`,
-                  color: isPlaying ? '#4ecdc4' : 'rgba(255,255,255,0.6)',
+                  background: 'rgba(212,175,55,0.1)',
+                  border: '1px solid rgba(212,175,55,0.25)',
+                  color: 'rgba(255,255,255,0.6)',
                 }}
               >
-                {isPlaying ? (
-                  <>
-                    <motion.span
-                      className="flex items-center gap-[3px]"
-                      animate={{ opacity: [1, 0.4, 1] }}
-                      transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' }}
-                    >
-                      <span className="w-[3px] h-3 rounded-full" style={{ background: '#4ecdc4' }} />
-                      <span className="w-[3px] h-4 rounded-full" style={{ background: '#4ecdc4' }} />
-                      <span className="w-[3px] h-2.5 rounded-full" style={{ background: '#4ecdc4' }} />
-                    </motion.span>
-                    Pause
-                  </>
-                ) : (
-                  <>
-                    <Headphones className="h-3.5 w-3.5" />
-                    Écouter
-                  </>
-                )}
+                <Headphones className="h-3.5 w-3.5" />
+                Écouter
               </motion.button>
+              <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.35)' }}>⏸ Temporairement indisponible</p>
               {minReached && (
                 <ContinueButton onClick={handleContinueListen} label="Passer à la mémorisation" />
               )}
@@ -647,16 +631,16 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
               </motion.button>
             </div>
 
-            {/* Hint: replay audio once without resetting counter */}
+            {/* Hint button — TEMPORARILY DISABLED */}
             <motion.button
-              whileTap={{ scale: 0.95 }}
-              onClick={isPlaying ? stopAudio : playHint}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs mx-auto"
+              disabled
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs mx-auto opacity-50 cursor-not-allowed"
               style={{ background: 'rgba(78,205,196,0.1)', border: '1px solid rgba(78,205,196,0.25)', color: '#4ecdc4' }}
             >
               <Headphones className="h-3.5 w-3.5" />
-              {isPlaying ? 'Écoute en cours…' : 'Réécouter une fois'}
+              Réécouter une fois
             </motion.button>
+            <p className="text-[10px] text-center" style={{ color: 'rgba(255,255,255,0.35)' }}>⏸ Temporairement indisponible</p>
 
             {minReached && (
               <ContinueButton onClick={handleContinueMemory} label="Continuer ✓" />
