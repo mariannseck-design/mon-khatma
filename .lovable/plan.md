@@ -1,21 +1,56 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Corriger le compteur infini dans Imprégnation
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Cause racine
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+Dans `HifzStepIntentionImpregnation.tsx`, ligne 251-255 :
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+```ts
+if (idx >= ayahsRef.current.length) {
+  setListenCount(prev => prev + 1);
+  indexRef.current = 0;
+  playNextAyah(0);  // ← boucle récursive synchrone !
+  return;
+}
+```
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+Si `ayahsRef.current` est vide (URLs audio pas encore chargées au moment du clic), `playNextAyah(0)` → `idx (0) >= length (0)` → incrémente le compteur → `playNextAyah(0)` → boucle infinie synchrone. Le compteur monte à des milliers en quelques millisecondes.
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+### Solution — fichier unique : `src/components/hifz/HifzStepIntentionImpregnation.tsx`
+
+1. **Garde contre tableau vide** : ajouter `if (ayahsRef.current.length === 0) return;` au début de `playNextAyah`
+
+2. **Compteur de génération** (même pattern que HifzStep3) : ajouter `generationRef` pour invalider les boucles obsolètes quand l'utilisateur relance l'audio
+
+3. **Vérification à chaque continuation** : `onended` et `onerror` vérifient `generationRef.current === gen` avant de continuer
+
+```ts
+const generationRef = useRef(0);
+
+const playNextAyah = useCallback((idx: number, gen: number) => {
+  if (generationRef.current !== gen) return;
+  if (ayahsRef.current.length === 0) return;  // guard
+  if (idx >= ayahsRef.current.length) {
+    setListenCount(prev => prev + 1);
+    indexRef.current = 0;
+    playNextAyah(0, gen);  // safe: array is non-empty
+    return;
+  }
+  // ... rest unchanged, but onended/onerror pass gen
+  audio.onended = () => { if (generationRef.current === gen) playNextAyah(idx + 1, gen); };
+  audio.onerror = () => { if (generationRef.current === gen) playNextAyah(idx + 1, gen); };
+}, []);
+
+const togglePlay = () => {
+  if (isPlaying) {
+    audioRef.current?.pause();
+    setIsPlaying(false);
+  } else {
+    generationRef.current++;
+    setIsPlaying(true);
+    playNextAyah(indexRef.current, generationRef.current);
+  }
+};
+```
 
