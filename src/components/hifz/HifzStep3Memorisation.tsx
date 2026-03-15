@@ -282,6 +282,10 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
     }
     const audio = new Audio(ayahAudiosRef.current[idx].audio);
     audioRef.current = audio;
+    registerRef.current(audio, {
+      label: `${surahName} · v.${startVerse}-${endVerse}`,
+      returnPath: window.location.pathname + window.location.search,
+    });
     audio.onended = () => { if (isPlayingRef.current) playNextAyah(idx + 1); };
     audio.onerror = () => { if (isPlayingRef.current) playNextAyah(idx + 1); };
     audio.play().catch(() => { isPlayingRef.current = false; setIsPlaying(false); });
