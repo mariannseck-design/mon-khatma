@@ -109,6 +109,7 @@ interface QuranMushafViewProps {
   page: number;
   highlightAyah?: number | null;
   darkMode?: boolean;
+  tajweedEnabled?: boolean;
   onVerseSelect?: (verseKey: string, surahNumber: number, verseNumber: number) => void;
 }
 
