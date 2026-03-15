@@ -148,9 +148,10 @@ function getPhaseForAncrage(ancrage: number): number {
 
 export default function HifzStep3Memorisation({ surahNumber, startVerse, endVerse, repetitionLevel, onNext, onBack, onPause }: Props) {
   const navigate = useNavigate();
-  const { registerAudio: registerGlobalAudio } = useGlobalAudio();
+  const { registerAudio: registerGlobalAudio, stop: stopGlobal } = useGlobalAudio();
   const registerRef = useRef(registerGlobalAudio);
   registerRef.current = registerGlobalAudio;
+  const generationRef = useRef(0);
 
   const surahName = SURAHS.find(s => s.number === surahNumber)?.name || '';
   const tikrarTarget = repetitionLevel || 40;
@@ -268,14 +269,14 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
     }
   }, [peekMode]);
 
-  const playNextAyah = useCallback((idx: number) => {
+  const playNextAyah = useCallback((idx: number, gen: number) => {
+    if (generationRef.current !== gen) return;
     if (!isPlayingRef.current && idx > 0) return;
     if (idx >= ayahAudiosRef.current.length) {
-      // Use ref to avoid depending on setState updater (which is a no-op after unmount)
       const current = ancrageRef.current;
       const next = Math.min(current + 1, tikrarTarget);
       ancrageRef.current = next;
-      setAncrage(next); // no-op if unmounted, fine
+      setAncrage(next);
       localStorage.setItem(storageKey, String(next));
       try { navigator?.vibrate?.(40); } catch {}
       if (next >= tikrarTarget) {
@@ -283,7 +284,7 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
         setIsPlaying(false);
         return;
       }
-      setTimeout(() => { if (isPlayingRef.current) playNextAyah(0); }, 600);
+      setTimeout(() => { if (isPlayingRef.current && generationRef.current === gen) playNextAyah(0, gen); }, 600);
       return;
     }
     const audio = new Audio(ayahAudiosRef.current[idx].audio);
@@ -294,8 +295,8 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
       surahNumber,
       startVerse,
     });
-    audio.onended = () => { if (isPlayingRef.current) playNextAyah(idx + 1); };
-    audio.onerror = () => { if (isPlayingRef.current) playNextAyah(idx + 1); };
+    audio.onended = () => { if (isPlayingRef.current && generationRef.current === gen) playNextAyah(idx + 1, gen); };
+    audio.onerror = () => { if (isPlayingRef.current && generationRef.current === gen) playNextAyah(idx + 1, gen); };
     audio.play().catch(() => { isPlayingRef.current = false; setIsPlaying(false); });
   }, [tikrarTarget, storageKey]);
 
@@ -305,9 +306,11 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
       audioRef.current?.pause();
       setIsPlaying(false);
     } else if (ayahAudiosRef.current.length > 0) {
+      generationRef.current++;
+      stopGlobal();
       isPlayingRef.current = true;
       setIsPlaying(true);
-      playNextAyah(0);
+      playNextAyah(0, generationRef.current);
     }
   };
 
