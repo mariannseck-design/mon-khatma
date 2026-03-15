@@ -176,8 +176,26 @@ async function generatePDF(
   doc.setTextColor(130, 130, 130);
   doc.text('Genere par Ma Khatma — makhatma.lovable.app', pageWidth / 2, 290, { align: 'center' });
 
-  doc.save('ma-khatma-historique.pdf');
-  toast.success('PDF téléchargé ! 📄');
+  const pdfBlob = doc.output('blob');
+  const file = new File([pdfBlob], 'ma-khatma-historique.pdf', { type: 'application/pdf' });
+
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    try {
+      await navigator.share({
+        title: 'Ma Khatma — Historique',
+        files: [file],
+      });
+      toast.success('PDF partagé ! 📤');
+    } catch (err: any) {
+      if (err?.name !== 'AbortError') {
+        doc.save('ma-khatma-historique.pdf');
+        toast.success('PDF téléchargé ! 📄');
+      }
+    }
+  } else {
+    doc.save('ma-khatma-historique.pdf');
+    toast.success('PDF téléchargé ! 📄');
+  }
 }
 
 export function ReadingHistory({ entries, targetPages = 0, firstName, startDate, isKhatmaComplete }: ReadingHistoryProps) {
