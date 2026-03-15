@@ -215,13 +215,13 @@ export default function QuranMushafView({ page, highlightAyah, darkMode = false,
     <div
       ref={containerRef}
       data-text-scroll
-      className="h-full w-full overflow-y-auto overflow-x-hidden flex flex-col select-text"
+      className="h-full w-full overflow-hidden flex flex-col select-text"
       dir="rtl"
       style={{ background: bgColor, touchAction: 'pan-y' }}
     >
       <div
-        className={`flex-1 flex flex-col px-3 py-3 ${isSpecialPage ? 'justify-center' : 'justify-between'}`}
-        style={{ minHeight: '100%' }}
+        className={`flex-1 flex flex-col px-3 py-1 ${isSpecialPage ? 'justify-center' : 'justify-between'}`}
+        style={{ height: '100%' }}
       >
         {lines.map(({ lineNumber, words }) => {
           // Check if this line starts a new surah
@@ -288,7 +288,6 @@ export default function QuranMushafView({ page, highlightAyah, darkMode = false,
                 style={{
                   justifyContent: isSpecialPage ? 'center' : 'space-around',
                   direction: 'rtl',
-                  minHeight: '40px',
                   padding: '0 4px',
                 }}
               >
@@ -306,7 +305,7 @@ export default function QuranMushafView({ page, highlightAyah, darkMode = false,
                           ? "'KFGQPC HAFS Uthmanic Script', 'Amiri', serif"
                           : `'${fontFamily}', serif`,
                         fontSize: 'clamp(18px, 5.8vw, 28px)',
-                        lineHeight: 1.8,
+                        lineHeight: 1.55,
                         color: isHighlighted
                           ? (darkMode ? '#6a9a6a' : '#2E7D32')
                           : textColor,
