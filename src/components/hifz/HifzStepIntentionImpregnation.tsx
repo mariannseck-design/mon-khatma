@@ -263,43 +263,90 @@ export default function HifzStepIntentionImpregnation({ surahNumber, startVerse,
   const generationRef = useRef(0);
 
   const playNextAyah = useCallback((idx: number, gen: number) => {
-    if (generationRef.current !== gen) return;
+    if (generationRef.current !== gen || !isPlayingRef.current) return;
     if (ayahsRef.current.length === 0) return;
     if (idx >= ayahsRef.current.length) {
       setListenCount(prev => prev + 1);
       indexRef.current = 0;
-      playNextAyah(0, gen);
+      setTimeout(() => {
+        if (generationRef.current !== gen || !isPlayingRef.current) return;
+        playNextAyah(0, gen);
+      }, 400);
       return;
     }
     indexRef.current = idx;
     setCurrentAyahIndex(idx);
+    if (audioRef.current) {
+      audioRef.current.onended = null;
+      audioRef.current.onerror = null;
+      audioRef.current.pause();
+      try { audioRef.current.src = ''; } catch {}
+    }
     const audio = new Audio(ayahsRef.current[idx].audio);
     audioRef.current = audio;
+    pausedRef.current = null;
     registerRef.current(audio, {
       label: `${surahName} · v.${startVerse}-${endVerse}`,
       returnPath: window.location.pathname + window.location.search,
       surahNumber,
       startVerse,
     });
-    audio.onended = () => { if (generationRef.current === gen) playNextAyah(idx + 1, gen); };
-    audio.onerror = () => { if (generationRef.current === gen) playNextAyah(idx + 1, gen); };
-    audio.play().catch(() => setIsPlaying(false));
+    audio.onended = () => {
+      if (generationRef.current !== gen || !isPlayingRef.current || audioRef.current !== audio) return;
+      playNextAyah(idx + 1, gen);
+    };
+    audio.onerror = () => {
+      if (generationRef.current !== gen || !isPlayingRef.current || audioRef.current !== audio) return;
+      setTimeout(() => {
+        if (generationRef.current !== gen || !isPlayingRef.current) return;
+        playNextAyah(idx + 1, gen);
+      }, 300);
+    };
+    audio.play().catch(() => { if (generationRef.current !== gen) return; setIsPlaying(false); isPlayingRef.current = false; });
   }, []);
 
   const togglePlay = () => {
     if (isPlaying) {
-      audioRef.current?.pause();
-      setIsPlaying(false);
-    } else {
+      pausedRef.current = audioRef.current;
+      if (audioRef.current) { audioRef.current.onended = null; audioRef.current.onerror = null; audioRef.current.pause(); }
+      audioRef.current = null;
       generationRef.current++;
+      setIsPlaying(false);
+      isPlayingRef.current = false;
+    } else {
+      const gen = ++generationRef.current;
       setIsPlaying(true);
-      playNextAyah(indexRef.current, generationRef.current);
+      isPlayingRef.current = true;
+      if (pausedRef.current && pausedRef.current.src) {
+        const audio = pausedRef.current;
+        pausedRef.current = null;
+        audioRef.current = audio;
+        registerRef.current(audio, { label: `${surahName} · v.${startVerse}-${endVerse}`, returnPath: window.location.pathname + window.location.search, surahNumber, startVerse });
+        audio.onended = () => { if (generationRef.current !== gen || !isPlayingRef.current || audioRef.current !== audio) return; playNextAyah(indexRef.current + 1, gen); };
+        audio.onerror = () => { if (generationRef.current !== gen || !isPlayingRef.current || audioRef.current !== audio) return; playNextAyah(indexRef.current + 1, gen); };
+        audio.play().catch(() => { if (generationRef.current !== gen) return; setIsPlaying(false); isPlayingRef.current = false; });
+      } else {
+        playNextAyah(indexRef.current, gen);
+      }
     }
   };
 
+  // Sync with global audio stop (MiniPlayer X)
   useEffect(() => {
-    return () => { /* audio persists globally */ };
-  }, []);
+    if (globalStatus === 'idle' && isPlayingRef.current) {
+      const timer = setTimeout(() => {
+        if (globalStatus === 'idle' && isPlayingRef.current) {
+          generationRef.current++;
+          hardStopAudio();
+          setIsPlaying(false);
+          isPlayingRef.current = false;
+          setCurrentAyahIndex(-1);
+          pausedRef.current = null;
+        }
+      }, 150);
+      return () => clearTimeout(timer);
+    }
+  }, [globalStatus, hardStopAudio]);
 
   return (
     <HifzStepWrapper stepNumber={0} stepTitle="Intention & Imprégnation" onBack={onBack} onPause={onPause}>
