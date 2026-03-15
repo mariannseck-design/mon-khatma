@@ -132,7 +132,7 @@ export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBac
 
       {/* Floating Mushaf FAB — bottom-left, always visible */}
       <AnimatePresence>
-        {mushafPage && (
+        {mushafPage && !disableMushafOverlay && (
           <motion.button
             key="mushaf-fab"
             initial={{ opacity: 0, scale: 0.7 }}
