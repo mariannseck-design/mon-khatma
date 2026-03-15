@@ -337,7 +337,7 @@ export default function HifzPage() {
     // Auto-pause the Pomodoro timer before leaving
     pausePomodoro();
 
-    if (session && step >= 0 && step <= 4) {
+    if (session && step >= 0 && step <= 5) {
       // If pausing from the A→B transition screen, save as step 2 so Phase B is unlocked
       const saveStep = showBreathingPause ? 2 : step;
       saveLocalSession(session, saveStep, sessionId, stepTimesRef.current);
