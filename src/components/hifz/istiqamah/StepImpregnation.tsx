@@ -5,6 +5,8 @@ import HifzMushafToggle, { getMushafMode, setMushafMode, type MushafMode } from 
 import HifzMushafImage from '../HifzMushafImage';
 import { getVersesByRange, type LocalAyah } from '@/lib/quranData';
 import { getAyahAudioUrl } from '@/hooks/useQuranAudio';
+import { SURAHS } from '@/lib/surahData';
+import { useGlobalAudio } from '@/contexts/AudioContext';
 
 interface Props {
   surahNumber: number;
