@@ -8,6 +8,8 @@ import { getAyahAudioUrl } from '@/hooks/useQuranAudio';
 import { SURAHS } from '@/lib/surahData';
 import { useGlobalAudio } from '@/contexts/AudioContext';
 
+
+
 interface Props {
   surahNumber: number;
   verseStart: number;
@@ -31,8 +33,9 @@ export default function StepImpregnation({ surahNumber, verseStart, verseEnd, ve
   const pausedRef = useRef(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const audiosRef = useRef<string[]>([]);
+  const generationRef = useRef(0);
   const reciter = reciterId || localStorage.getItem('quran_reciter') || 'ar.alafasy';
-  const { registerAudio: registerGlobalAudio } = useGlobalAudio();
+  const { registerAudio: registerGlobalAudio, stop: stopGlobal } = useGlobalAudio();
   const registerRef = useRef(registerGlobalAudio);
   registerRef.current = registerGlobalAudio;
 
@@ -64,38 +67,43 @@ export default function StepImpregnation({ surahNumber, verseStart, verseEnd, ve
     }
   }, [surahNumber, verseStart, verseEnd, reciter]);
 
-  const playLoop = useCallback((idx: number) => {
-    if (!isPlayingRef.current) { setCurrentAyahIndex(-1); return; }
+  const playLoop = useCallback((idx: number, gen: number) => {
+    if (generationRef.current !== gen) { setCurrentAyahIndex(-1); return; }
+    if (audiosRef.current.length === 0) return;
     if (idx >= audiosRef.current.length) {
-      setTimeout(() => { if (isPlayingRef.current) playLoop(0); }, 600);
+      setTimeout(() => { if (generationRef.current === gen) playLoop(0, gen); }, 600);
       return;
     }
     setCurrentAyahIndex(idx);
     const audio = new Audio(audiosRef.current[idx]);
     audioRef.current = audio;
     registerRef.current(audio, { label: `${SURAHS.find(s => s.number === surahNumber)?.name || ''} · v.${verseStart}-${verseEnd}`, returnPath: window.location.pathname, surahNumber, startVerse: verseStart + idx });
-    audio.onended = () => playLoop(idx + 1);
-    audio.onerror = () => playLoop(idx + 1);
+    audio.onended = () => { if (generationRef.current === gen) playLoop(idx + 1, gen); };
+    audio.onerror = () => { if (generationRef.current === gen) playLoop(idx + 1, gen); };
     audio.play().catch(() => { isPlayingRef.current = false; setIsPlaying(false); setCurrentAyahIndex(-1); });
   }, []);
 
   const toggleAudio = () => {
     if (isPlayingRef.current) {
-      // Pause: keep audio element and currentAyahIndex
       isPlayingRef.current = false;
       pausedRef.current = true;
       audioRef.current?.pause();
       setIsPlaying(false);
     } else {
+      generationRef.current++;
+      stopGlobal();
       isPlayingRef.current = true;
       setIsPlaying(true);
-      // Resume from where we paused if audio element still exists
       if (pausedRef.current && audioRef.current && !audioRef.current.ended) {
         pausedRef.current = false;
+        const gen = generationRef.current;
+        audioRef.current.onended = () => { if (generationRef.current === gen) playLoop(currentAyahIndex + 1, gen); };
+        audioRef.current.onerror = () => { if (generationRef.current === gen) playLoop(currentAyahIndex + 1, gen); };
+        registerRef.current(audioRef.current, { label: `${SURAHS.find(s => s.number === surahNumber)?.name || ''} · v.${verseStart}-${verseEnd}`, returnPath: window.location.pathname, surahNumber, startVerse: verseStart + currentAyahIndex });
         audioRef.current.play().catch(() => { isPlayingRef.current = false; setIsPlaying(false); });
       } else {
         pausedRef.current = false;
-        playLoop(0);
+        playLoop(0, generationRef.current);
       }
     }
   };
@@ -234,7 +242,7 @@ export default function StepImpregnation({ surahNumber, verseStart, verseEnd, ve
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           whileTap={{ scale: 0.97 }}
-          onClick={() => { isPlayingRef.current = false; audioRef.current?.pause(); setIsPlaying(false); onNext(); }}
+          onClick={() => { generationRef.current++; isPlayingRef.current = false; audioRef.current?.pause(); setIsPlaying(false); onNext(); }}
           className="w-full rounded-2xl py-3.5 flex items-center justify-center gap-2 font-semibold text-sm"
           style={{ background: 'linear-gradient(135deg, #d4af37, #b8962e)', color: '#1a2e1a' }}
         >

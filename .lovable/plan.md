@@ -1,28 +1,21 @@
 
 
-## Plan : Corriger le bouton play externe (StepImpregnation)
+# Diagnostic : 404 sur /quran-reader
 
-### Cause racine
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-`StepImpregnation.tsx` (istiqamah) a exactement les mêmes bugs que les fichiers déjà corrigés :
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-1. **Pas de compteur de génération** : quand le MiniPlayer appelle `stop()`, le `AudioContext` met `status = idle` et vide `trackInfo`, mais `isPlayingRef.current` dans StepImpregnation reste `true`. La chaîne `playLoop` via `setTimeout` continue à tourner, crée un nouveau `Audio`, appelle `registerGlobalAudio` → le MiniPlayer réapparaît immédiatement. C'est pourquoi il « refuse de se fermer ».
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-2. **Pas de garde tableau vide** : si `audiosRef.current` est vide (URLs pas encore chargées), `playLoop(0)` → `idx >= length` → `setTimeout → playLoop(0)` en boucle, sans jamais jouer de son.
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-### Solution — fichier unique : `src/components/hifz/istiqamah/StepImpregnation.tsx`
-
-Appliquer le même pattern que les fichiers déjà corrigés :
-
-1. **Ajouter `generationRef = useRef(0)`**
-
-2. **`playLoop(idx, gen)`** : ajouter le paramètre `gen`, vérifier `generationRef.current === gen` au début et dans chaque callback (`onended`, `onerror`, `setTimeout`)
-
-3. **Garde tableau vide** : `if (audiosRef.current.length === 0) return;`
-
-4. **`toggleAudio`** : quand on lance la lecture, incrémenter `generationRef.current++` et appeler `stopGlobal()` pour tuer l'audio précédent proprement
-
-5. **Import `stop` depuis `useGlobalAudio()`** renommé en `stopGlobal`
-
-6. **Bouton Continuer** : incrémenter aussi la génération pour tuer la chaîne
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
