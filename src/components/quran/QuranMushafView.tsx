@@ -220,7 +220,7 @@ export default function QuranMushafView({ page, highlightAyah, darkMode = false,
       style={{ background: bgColor, touchAction: 'pan-y' }}
     >
       <div
-        className={`flex-1 flex flex-col px-2 py-3 ${isSpecialPage ? 'justify-center' : 'justify-between'}`}
+        className={`flex-1 flex flex-col px-3 py-3 ${isSpecialPage ? 'justify-center' : 'justify-between'}`}
         style={{ minHeight: '100%' }}
       >
         {lines.map(({ lineNumber, words }) => {
