@@ -120,7 +120,7 @@ export default function QuranMushafView({ page, highlightAyah, darkMode = false,
   const [selectedVerse, setSelectedVerse] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const fontFamily = `QCF_P${String(page).padStart(3, '0')}`;
+  const fontFamily = `p${page}-v2`;
 
   // Load data + font in parallel
   useEffect(() => {
