@@ -80,6 +80,7 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
   const generationRef = useRef(0);
   const isPlayingRef = useRef(false);
   const pausedRef = useRef<HTMLAudioElement | null>(null);
+  const selfInitiatedRef = useRef(false);
 
   const storageKey = `hifz_listen_${surahNumber}_${startVerse}_${endVerse}`;
   const surahName = SURAHS.find(s => s.number === surahNumber)?.name || '';
