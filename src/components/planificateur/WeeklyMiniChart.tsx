@@ -95,7 +95,7 @@ export function WeeklyMiniChart({ weekProgress, targetPages }: Props) {
             style={{
               bottom: `${targetPercent}%`,
               borderColor: 'var(--p-accent)',
-              opacity: 0.5,
+              opacity: 0.25,
             }}
           />
         )}
