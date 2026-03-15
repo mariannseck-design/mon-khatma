@@ -1,21 +1,14 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Mushaf pleine largeur
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+Le Mushaf est actuellement contraint par le padding du wrapper et le `space-y-2` interne. Pour qu'il remplisse toute la largeur disponible :
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Changements
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+1. **`HifzStepImpregnationTajweed.tsx`** — Sortir le `HifzMushafImage` du conteneur `text-center space-y-5` et lui appliquer des marges négatives (`-mx-4`) pour qu'il déborde du padding du wrapper et prenne toute la largeur écran.
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+2. **`HifzMushafImage.tsx`** — Supprimer le `rounded-xl` et le `border` du conteneur image quand il est en mode pleine largeur (ou par défaut), et s'assurer que l'image utilise `w-full` sans contrainte de marge latérale. Supprimer aussi le `space-y-2` du wrapper racine pour réduire l'espace vertical perdu.
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+Résultat : l'image Mushaf Tajweed occupera 100% de la largeur de l'écran, comme sur la capture de référence.
 
