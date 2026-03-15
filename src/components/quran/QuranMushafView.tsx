@@ -337,7 +337,7 @@ export default function QuranMushafView({ page, highlightAyah, darkMode = false,
                 {words.map((word) => {
                   const isEnd = word.char_type_name === 'end';
                   const isHighlighted = activeVerse === word.verse_key;
-                  const tajweedColor = tajweedEnabled ? wordTajweedColors.get(word.id) : null;
+                  
 
                   return (
                     <span
