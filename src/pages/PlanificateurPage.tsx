@@ -12,6 +12,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { ReadingSlider } from '@/components/planificateur/ReadingSlider';
 import { ReadingHistory } from '@/components/planificateur/ReadingHistory';
+import { WeeklyMiniChart } from '@/components/planificateur/WeeklyMiniChart';
 import { TotalProgressBar } from '@/components/planificateur/TotalProgressBar';
 import { SparkleEffect } from '@/components/planificateur/SparkleEffect';
 import { SuccessModal } from '@/components/planificateur/SuccessModal';
@@ -685,6 +686,12 @@ export default function PlanificateurPage() {
             totalPagesRead={totalPagesRead}
           />
         </div>
+
+        {/* Weekly Chart */}
+        <WeeklyMiniChart
+          weekProgress={weekProgress}
+          targetPages={activeGoal?.target_value || 0}
+        />
 
         {/* Reading History */}
         <ReadingHistory

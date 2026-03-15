@@ -1,35 +1,21 @@
 
 
-## Ajout d'un mini-graphique sur la page Tilawah (Planificateur)
+# Diagnostic : 404 sur /quran-reader
 
-### Ce qui existe
-La page a deja `allProgress` (tableau de `{ date, pages_read }`) et `weekProgress` (7 derniers jours). Les donnees sont disponibles, il manque juste la visualisation.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Proposition
-Ajouter un **mini bar chart des 7 derniers jours** entre le marque-page (ReadingSlider) et l'historique (ReadingHistory). Pas de librairie externe — barres CSS pures pour rester leger.
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-### Design
-- Carte arrondie style existant (`rounded-[2rem]`, `border-none`, `bg-card`)
-- Titre discret "Cette semaine" avec total de pages
-- 7 barres verticales (L M M J V S D), hauteur proportionnelle au max de la semaine
-- Barres emeraude (`var(--p-primary)`), barre du jour en or (`var(--p-accent)`)
-- Si objectif quotidien defini, ligne horizontale pointillee pour le seuil
-- Masque si aucune donnee cette semaine
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-### Fichiers
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-| Fichier | Action |
-|---|---|
-| `src/components/planificateur/WeeklyMiniChart.tsx` | Creer — graphique 7 jours en barres CSS |
-| `src/pages/PlanificateurPage.tsx` | Modifier — inserer `<WeeklyMiniChart>` entre ReadingSlider et ReadingHistory |
-
-### Donnees passees au composant
-```tsx
-<WeeklyMiniChart
-  weekProgress={weekProgress}
-  targetPages={activeGoal?.target_value || 0}
-/>
-```
-
-Le composant genere les 7 jours de la semaine, mappe les entrees `weekProgress` par date, et affiche les barres proportionnelles.
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
