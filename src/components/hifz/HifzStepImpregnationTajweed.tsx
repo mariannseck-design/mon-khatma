@@ -253,7 +253,7 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
   };
 
   useEffect(() => {
-    return () => { audioRef.current?.pause(); };
+    return () => { /* audio persists globally */ };
   }, []);
 
   return (

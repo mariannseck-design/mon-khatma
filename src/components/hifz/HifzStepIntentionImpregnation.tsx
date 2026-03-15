@@ -279,7 +279,7 @@ export default function HifzStepIntentionImpregnation({ surahNumber, startVerse,
   };
 
   useEffect(() => {
-    return () => { audioRef.current?.pause(); };
+    return () => { /* audio persists globally */ };
   }, []);
 
   return (

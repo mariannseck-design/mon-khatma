@@ -304,7 +304,7 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
   };
 
   useEffect(() => {
-    return () => { isPlayingRef.current = false; audioRef.current?.pause(); };
+    return () => { isPlayingRef.current = false; };
   }, []);
 
   const progress = Math.min((ancrage / tikrarTarget) * 100, 100);
