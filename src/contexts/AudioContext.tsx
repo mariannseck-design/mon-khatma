@@ -114,7 +114,7 @@ export function AudioProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <AudioCtx.Provider value={{ status, trackInfo, registerAudio, pause, resume, stop }}>
+    <AudioCtx.Provider value={{ status, trackInfo, stopSignal, registerAudio, pause, resume, stop }}>
       {children}
     </AudioCtx.Provider>
   );
