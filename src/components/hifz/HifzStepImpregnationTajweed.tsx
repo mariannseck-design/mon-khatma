@@ -496,45 +496,18 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
             ))}
           </select>
 
-          <div className="flex items-center justify-center gap-4">
+          <div className="flex items-center justify-center">
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={togglePlay}
-              className="w-20 h-20 rounded-full flex items-center justify-center transition-all"
+              className="w-14 h-14 rounded-full flex items-center justify-center transition-all"
               style={{
                 background: isPlaying ? 'rgba(212,175,55,0.25)' : 'rgba(255,255,255,0.1)',
                 border: `2px solid ${isPlaying ? '#d4af37' : 'rgba(255,255,255,0.2)'}`,
               }}
             >
-              {isPlaying ? <Pause className="h-8 w-8" style={{ color: '#d4af37' }} /> : <Play className="h-8 w-8 ml-1" style={{ color: '#d4af37' }} />}
+              {isPlaying ? <Pause className="h-5 w-5" style={{ color: '#d4af37' }} /> : <Play className="h-5 w-5 ml-0.5" style={{ color: '#d4af37' }} />}
             </motion.button>
-
-            {isPlaying && (
-              <motion.button
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => {
-                  generationRef.current++;
-                  isPlayingRef.current = false;
-                  pausedRef.current = null;
-                  hardStopAudio();
-                  stopGlobal();
-                  setIsPlaying(false);
-                  setCurrentAyahIndex(-1);
-                  indexRef.current = 0;
-                }}
-                className="w-14 h-14 rounded-full flex items-center justify-center transition-all"
-                style={{
-                  background: 'rgba(220,38,38,0.15)',
-                  border: '2px solid rgba(220,38,38,0.4)',
-                }}
-                title="Arrêter"
-              >
-                <Square className="h-5 w-5" style={{ color: '#dc2626' }} />
-              </motion.button>
-            )}
           </div>
 
           {/* Listen count */}
