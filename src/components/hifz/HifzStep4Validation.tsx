@@ -197,7 +197,7 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
   /* ── Validated state ── */
   if (validated && !bonusMode) {
     return (
-      <HifzStepWrapper stepNumber={4} stepTitle="Validation" onBack={onBack} onPause={onPause}>
+      <HifzStepWrapper stepNumber={4} stepTitle="Validation" onBack={onBack} onPause={onPause} surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse}>
         {/* Golden particles overlay */}
         <div className="fixed inset-0 pointer-events-none overflow-hidden z-50">
           {particles.map(p => (
