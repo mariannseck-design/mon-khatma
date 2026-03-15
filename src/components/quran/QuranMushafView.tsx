@@ -155,6 +155,28 @@ export default function QuranMushafView({ page, highlightAyah, darkMode = false,
 
 
   // Group words by line number
+  const lines = useMemo(() => {
+    if (!pageData) return [];
+
+    const allWords: Word[] = [];
+    for (const verse of pageData.verses) {
+      allWords.push(...verse.words);
+    }
+
+    const lineMap = new Map<number, Word[]>();
+    for (const w of allWords) {
+      if (!lineMap.has(w.line_number)) lineMap.set(w.line_number, []);
+      lineMap.get(w.line_number)!.push(w);
+    }
+
+    const sorted = Array.from(lineMap.entries()).sort((a, b) => a[0] - b[0]);
+    return sorted.map(([lineNum, words]) => ({
+      lineNumber: lineNum,
+      words: words.sort((a, b) => a.position - b.position),
+    }));
+  }, [pageData]);
+
+  // Detect surah starts for headers
   const surahStarts = useMemo(() => {
     if (!pageData) return [];
     return getSurahStartsOnPage(pageData.verses);
