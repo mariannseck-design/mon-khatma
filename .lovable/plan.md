@@ -1,26 +1,21 @@
 
 
-## Plan : Afficher le(s) verset(s) à mémoriser à côté des pastilles
+# Diagnostic : 404 sur /quran-reader
 
-### Objectif
-À chaque étape (écoute, lecture, récitation, liaison, erreur), afficher clairement à côté des pastilles de progression quel(s) verset(s) sont à mémoriser. Conserver les couleurs dorées existantes.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Changement unique — `src/components/hifz/istiqamah/StepImmersion.tsx`
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-Ajouter un label textuel juste en dessous de la rangée de pastilles (ligne ~519), après le `</div>` des pastilles :
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-```tsx
-<p className="text-center text-xs font-semibold" style={{ color: '#d4af37' }}>
-  {isLiaison
-    ? `Mémorise les versets ${liaisonVerses[0]} à ${liaisonVerses[liaisonVerses.length - 1]}`
-    : `Mémorise le verset ${currentVerse}`
-  }
-</p>
-```
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-Ce label sera dynamique :
-- **Phase normale** : "Mémorise le verset 12" (verset unique en cours)
-- **Phase liaison** : "Mémorise les versets 10 à 12" (plage de versets liés)
-
-Aucune modification des couleurs des pastilles. Aucun autre fichier touché.
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

@@ -518,6 +518,12 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
         })}
       </div>
 
+      <p className="text-center text-xs font-semibold mt-1" style={{ color: '#d4af37' }}>
+        {isLiaison
+          ? `Mémorise les versets ${liaisonVerses[0]} à ${liaisonVerses[liaisonVerses.length - 1]}`
+          : `Mémorise le verset ${currentVerse}`
+        }
+      </p>
 
       <AnimatePresence mode="wait">
         {/* ===== LISTEN PHASE (single verse or liaison) ===== */}
