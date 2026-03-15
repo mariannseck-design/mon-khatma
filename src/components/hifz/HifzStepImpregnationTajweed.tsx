@@ -269,6 +269,10 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
   // Sync local state when global audio stops externally (MiniPlayer X)
   useEffect(() => {
     if (globalStatus === 'idle' && isPlayingRef.current) {
+      if (selfInitiatedRef.current) {
+        selfInitiatedRef.current = false;
+        return; // We initiated this transition ourselves — ignore
+      }
       generationRef.current++;
       setIsPlaying(false);
       isPlayingRef.current = false;
