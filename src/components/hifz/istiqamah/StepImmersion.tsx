@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Volume2, Check, X, BookOpen, RefreshCw, Link, ChevronRight, Headphones } from 'lucide-react';
+import { Volume2, Check, X, BookOpen, RefreshCw, Link, ChevronRight, Headphones, ChevronDown, ChevronUp, EyeOff } from 'lucide-react';
 import MiniRecorder from './MiniRecorder';
 import { useAuth } from '@/contexts/AuthContext';
 import { RECITERS, getAyahAudioUrl } from '@/hooks/useQuranAudio';
@@ -90,6 +90,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
   
   const [ayahs, setAyahs] = useState<LocalAyah[]>([]);
   const [loading, setLoading] = useState(true);
+  const [mushafHidden, setMushafHidden] = useState(false);
   const [pageLabel, setPageLabel] = useState('');
 
   // Liaison state
@@ -408,7 +409,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
     setPhase(isLiaison ? 'liaison-listen' : 'listen');
   };
 
-  // Mushaf rendering — full-width image only
+  // Mushaf rendering — full-width image only, with hide/show toggle
   const renderMushaf = (verseRange?: number[]) => {
     if (loading) {
       return (
@@ -422,8 +423,46 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
     const endV = Math.max(...versesToShow);
 
     return (
-      <div className="-mx-4">
-        <HifzMushafImage surahNumber={surahNumber} startVerse={startV} endVerse={endV} maxHeight="none" fullWidth />
+      <div className="space-y-1">
+        {/* Toggle button */}
+        <button
+          onClick={() => setMushafHidden(h => !h)}
+          className="flex items-center gap-1.5 mx-auto px-3 py-1 rounded-full text-[11px] font-medium transition-all active:scale-95"
+          style={{
+            background: mushafHidden ? 'rgba(212,175,55,0.15)' : 'rgba(255,255,255,0.06)',
+            border: `1px solid ${mushafHidden ? 'rgba(212,175,55,0.3)' : 'rgba(255,255,255,0.1)'}`,
+            color: mushafHidden ? '#d4af37' : 'rgba(255,255,255,0.4)',
+          }}
+        >
+          {mushafHidden ? (
+            <>
+              <BookOpen className="h-3 w-3" />
+              Afficher le Mushaf
+              <ChevronDown className="h-3 w-3" />
+            </>
+          ) : (
+            <>
+              <EyeOff className="h-3 w-3" />
+              Masquer (Mushaf physique)
+              <ChevronUp className="h-3 w-3" />
+            </>
+          )}
+        </button>
+
+        <AnimatePresence initial={false}>
+          {!mushafHidden && (
+            <motion.div
+              key="mushaf-content"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
+              className="-mx-4 overflow-hidden"
+            >
+              <HifzMushafImage surahNumber={surahNumber} startVerse={startV} endVerse={endV} maxHeight="none" fullWidth />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     );
   };
