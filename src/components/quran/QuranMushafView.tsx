@@ -238,9 +238,9 @@ export default function QuranMushafView({ page, highlightAyah, darkMode = false,
             <div key={lineNumber}>
               {/* Surah header */}
               {surahInfo && (
-                <div className="text-center my-2">
+                <div className="text-center my-0.5">
                   <div
-                    className="inline-flex items-center gap-3 px-6 py-1.5 rounded-lg mx-auto"
+                    className="inline-flex items-center gap-2 px-4 py-0.5 rounded-md mx-auto"
                     style={{
                       background: darkMode
                         ? 'linear-gradient(135deg, rgba(46,125,50,0.2), rgba(46,125,50,0.1))'
@@ -251,9 +251,9 @@ export default function QuranMushafView({ page, highlightAyah, darkMode = false,
                     <span
                       className="flex items-center justify-center rounded-full"
                       style={{
-                        width: '24px', height: '24px',
+                        width: '20px', height: '20px',
                         backgroundColor: '#2E7D32', color: '#fff',
-                        fontSize: '11px', fontWeight: 700,
+                        fontSize: '9px', fontWeight: 700,
                         fontFamily: 'system-ui, sans-serif',
                       }}
                     >
@@ -262,7 +262,7 @@ export default function QuranMushafView({ page, highlightAyah, darkMode = false,
                     <span
                       style={{
                         fontFamily: "'KFGQPC HAFS Uthmanic Script', 'Amiri', serif",
-                        fontSize: '18px', fontWeight: 'bold',
+                        fontSize: '14px', fontWeight: 'bold',
                         color: darkMode ? '#d4c9a8' : '#2d3a25',
                       }}
                     >
@@ -272,7 +272,7 @@ export default function QuranMushafView({ page, highlightAyah, darkMode = false,
                       <span
                         style={{
                           fontFamily: 'system-ui, sans-serif',
-                          fontSize: '11px', color: darkMode ? '#8a9a7a' : '#6b7c5e',
+                          fontSize: '9px', color: darkMode ? '#8a9a7a' : '#6b7c5e',
                         }}
                       >
                         {surahInfo.nameFr}
