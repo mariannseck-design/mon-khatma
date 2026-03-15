@@ -502,7 +502,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
               transition={{ duration: 0.3, ease: 'easeInOut' }}
               className="-mx-4 overflow-hidden"
             >
-              <HifzMushafImage surahNumber={surahNumber} startVerse={startV} endVerse={endV} maxHeight="none" fullWidth />
+              <HifzMushafImage surahNumber={surahNumber} startVerse={startV} endVerse={endV} maxHeight="350px" fullWidth />
             </motion.div>
           )}
         </AnimatePresence>

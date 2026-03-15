@@ -1,20 +1,21 @@
 
 
-## Plan : Limiter la hauteur du Mushaf et ajouter un scroll interne
+# Diagnostic : 404 sur /quran-reader
 
-### Changement — 1 fichier
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-**`src/components/hifz/istiqamah/StepImmersion.tsx`** — fonction `renderMushaf` (ligne ~505)
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-Remplacer `maxHeight="none"` par une hauteur limitée (ex. `maxHeight="350px"`) sur le composant `HifzMushafImage`. Le composant gère déjà le scroll interne via `overflow-auto` dans son container — il suffit de rétablir une hauteur max.
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-```tsx
-// Avant
-<HifzMushafImage ... maxHeight="none" fullWidth />
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-// Après
-<HifzMushafImage ... maxHeight="350px" fullWidth />
-```
-
-Le composant `HifzMushafImage` utilise déjà `overflow-auto` sur son container (visible dans le code fourni), donc la barre de défilement verticale apparaîtra automatiquement dès que l'image dépasse 350px. L'indicateur de scroll (flèche animée) existant restera fonctionnel.
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
