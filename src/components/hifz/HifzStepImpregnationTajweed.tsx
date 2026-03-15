@@ -290,7 +290,7 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
       isPlayingRef.current = false;
     } else {
       // Resume from paused element or start fresh
-      stopGlobal();
+      selfInitiatedRef.current = true;
       const gen = ++generationRef.current;
       setIsPlaying(true);
       isPlayingRef.current = true;
