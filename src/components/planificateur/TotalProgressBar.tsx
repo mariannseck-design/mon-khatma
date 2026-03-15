@@ -99,7 +99,7 @@ export function TotalProgressBar({ totalPagesRead, onResetKhatma, onShowCelebrat
               className="rounded-xl py-2.5 px-4 text-center mb-3"
               style={{
                 background: 'linear-gradient(135deg, rgba(6,95,70,0.07), rgba(6,95,70,0.03))',
-                border: '1px solid rgba(6,95,70,0.06)',
+                border: '1px solid rgba(212,175,55,0.06)',
               }}
             >
               <p className="text-lg font-bold" style={{ color: 'var(--p-primary-deep)' }}>
