@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { getVersesByRange, type LocalAyah } from '@/lib/quranData';
 import { SURAHS } from '@/lib/surahData';
 
-const FONT_FAMILY = "'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
+const FONT_FAMILY = "'KFGQPC HAFS Uthmanic Script', 'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
 
 const BASMALA_WORDS = ['بِسْمِ', 'ٱللَّهِ', 'ٱلرَّحْمَٰنِ', 'ٱلرَّحِيمِ'];
 
@@ -75,7 +75,8 @@ export default function MouradVerseTextView({ surahNumber, startVerse, endVerse,
         style={{
           fontFamily: FONT_FAMILY,
           fontSize,
-          lineHeight: 2.1,
+          lineHeight: 2.3,
+          wordSpacing: '0.18em',
           fontVariantLigatures: 'common-ligatures',
           fontFeatureSettings: '"liga" 1, "calt" 1, "kern" 1',
           color: '#1f2937',

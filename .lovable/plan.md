@@ -1,31 +1,21 @@
 
 
-## Améliorer le rendu du texte coranique
+# Diagnostic : 404 sur /quran-reader
 
-### Comment font les apps professionnelles
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-Les apps comme **Ayat**, **Al Quran** et **Tanzil** utilisent des techniques spécifiques :
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-1. **Police spécialisée Mushaf** : Elles utilisent la police **KFGQPC Uthmanic Script HAFS** (ou similaire), spécialement conçue pour reproduire le rendu exact du Mushaf de Médine. Notre police actuelle "Amiri Quran" est bonne mais n'atteint pas ce niveau de fidélité calligraphique.
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-2. **Rendu page-fidèle** : Chaque page affiche exactement les mêmes lignes que le Mushaf imprimé (mode image que tu as déjà).
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-3. **Tajweed natif dans la police** : Certaines utilisent des polices avec les couleurs tajweed intégrées via OpenType, pas du code couleur appliqué après coup.
-
-### Ce qu'on peut améliorer concrètement
-
-**Changement principal** : Remplacer la police "Amiri Quran" par **"KFGQPC HAFS Uthmanic Script"** (police libre, utilisée par quran.com et tanzil.net). Cette police :
-- Reproduit fidèlement le style calligraphique du Mushaf de Médine
-- Gère mieux les ligatures complexes et les signes de tajweed
-- A un espacement et un rendu des harakat (diacritiques) supérieur
-
-**Fichiers modifiés** :
-- `index.html` — charger la police KFGQPC via un CDN (fonts.qurancomplex.gov.sa ou CDN alternatif)
-- `src/components/quran/QuranTextView.tsx` — mettre à jour `FONT_FAMILY` pour utiliser la nouvelle police en priorité
-- `src/components/mourad/MouradVerseTextView.tsx` — idem
-- Ajuster le `line-height` et `word-spacing` pour s'adapter à la nouvelle police (elle est plus grande que Amiri)
-
-### Limite réaliste
-
-Le rendu **pixel-perfect identique au Mushaf** n'est atteignable qu'en mode image (que tu as déjà). En mode texte, avec KFGQPC on s'en rapprochera fortement — c'est la même police que quran.com utilise.
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

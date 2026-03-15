@@ -21,7 +21,7 @@ interface QuranTextViewProps {
   onVerseSelect?: (verseKey: string, surahNumber: number, verseNumber: number) => void;
 }
 
-const FONT_FAMILY = "'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
+const FONT_FAMILY = "'KFGQPC HAFS Uthmanic Script', 'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
 
 // Raw Basmala words for zero-normalization detection
 const BASMALA_WORDS = ['بِسْمِ', 'ٱللَّهِ', 'ٱلرَّحْمَٰنِ', 'ٱلرَّحِيمِ'];
@@ -375,7 +375,7 @@ export default function QuranTextView({ page, highlightAyah, fontSize = 28, dark
                 fontSize: `${computedFontSize}px`,
                 lineHeight: `${lineHeight}px`,
                 color: textColor,
-                wordSpacing: '0.12em',
+                wordSpacing: '0.18em',
                 fontVariantLigatures: 'common-ligatures',
                 fontFeatureSettings: '"liga" 1, "calt" 1, "kern" 1',
                 textRendering: 'optimizeLegibility',
