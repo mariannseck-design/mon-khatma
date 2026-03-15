@@ -59,7 +59,7 @@ export default function QuranReaderPage() {
   const textModeDisabled = false;
 
   const [tajweedEnabled, setTajweedEnabled] = useState(() => {
-    return localStorage.getItem('quran_tajweed') !== 'false';
+    return localStorage.getItem('quran_tajweed') === 'true';
   });
 
   // Welcome message for first-time users
@@ -393,6 +393,7 @@ export default function QuranReaderPage() {
               page={page}
               highlightAyah={currentAyahNumber}
               darkMode={nightMode}
+              tajweedEnabled={tajweedEnabled}
               onVerseSelect={(vk, surahNum, verseNum) => {
                 setSelectedVerse(vk);
                 setPageVerses([{ verseKey: vk, surahNumber: surahNum, verseNumber: verseNum }]);

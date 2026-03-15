@@ -1,6 +1,7 @@
 /**
  * Tajweed annotations loader — loads cpfair/quran-tajweed data
  * and provides O(1) lookup per verse.
+ * Palette: King Saud University (KSU) academic style.
  */
 
 export interface TajweedAnnotation {
@@ -15,48 +16,55 @@ interface RawEntry {
   annotations: TajweedAnnotation[];
 }
 
-// Color map matching standard Mushaf Tajwid conventions
+// ─── KSU Palette (day mode) ───
 export const TAJWEED_COLORS: Record<string, string> = {
-  ghunnah: '#169b4c',
-  ikhfa: '#26b89a',
-  ikhfa_shafawi: '#26b89a',
-  idghaam_ghunnah: '#f0932b',
-  idghaam_no_ghunnah: '#f0932b',
-  idghaam_shafawi: '#f0932b',
-  idghaam_mutajanisayn: '#f0932b',
-  idghaam_mutaqaribayn: '#f0932b',
-  iqlab: '#10ac84',
-  qalqalah: '#4a90d9',
-  madd_2: '#d63031',
-  madd_246: '#d63031',
-  madd_6: '#d63031',
-  madd_muttasil: '#d63031',
-  madd_munfasil: '#d63031',
-  hamzat_wasl: '#9b9b9b',
+  // Madd — rouge brique foncé
+  madd_2: '#A51B0B',
+  madd_246: '#A51B0B',
+  madd_6: '#A51B0B',
+  madd_muttasil: '#A51B0B',
+  madd_munfasil: '#A51B0B',
+  // Qalqalah — rouge clair / orangé
+  qalqalah: '#C44536',
+  // Ghunnah — vert doux
+  ghunnah: '#2A7B3D',
+  // Ikhfa / Iqlab — bleu
+  ikhfa: '#1A6B8A',
+  ikhfa_shafawi: '#1A6B8A',
+  iqlab: '#1A6B8A',
+  // Idghaam — orange brique
+  idghaam_ghunnah: '#D4790E',
+  idghaam_no_ghunnah: '#D4790E',
+  idghaam_shafawi: '#D4790E',
+  idghaam_mutajanisayn: '#D4790E',
+  idghaam_mutaqaribayn: '#D4790E',
+  // Lettres muettes
+  hamzat_wasl: '#888888',
+  silent: '#888888',
+  // Lam Shamsiyyah
   lam_shamsiyyah: '#636e72',
-  silent: '#b2bec3',
 };
 
-// Night mode colors (brighter for dark backgrounds)
+// ─── KSU Palette (night mode — slightly brighter) ───
 export const TAJWEED_COLORS_NIGHT: Record<string, string> = {
-  ghunnah: '#2ecc71',
-  ikhfa: '#48dbab',
-  ikhfa_shafawi: '#48dbab',
-  idghaam_ghunnah: '#f9a825',
-  idghaam_no_ghunnah: '#f9a825',
-  idghaam_shafawi: '#f9a825',
-  idghaam_mutajanisayn: '#f9a825',
-  idghaam_mutaqaribayn: '#f9a825',
-  iqlab: '#2ed8a3',
-  qalqalah: '#64b5f6',
-  madd_2: '#ff6b6b',
-  madd_246: '#ff6b6b',
-  madd_6: '#ff6b6b',
-  madd_muttasil: '#ff6b6b',
-  madd_munfasil: '#ff6b6b',
-  hamzat_wasl: '#b0b0b0',
+  madd_2: '#e05545',
+  madd_246: '#e05545',
+  madd_6: '#e05545',
+  madd_muttasil: '#e05545',
+  madd_munfasil: '#e05545',
+  qalqalah: '#e06a5a',
+  ghunnah: '#4db86a',
+  ikhfa: '#3ca0c4',
+  ikhfa_shafawi: '#3ca0c4',
+  iqlab: '#3ca0c4',
+  idghaam_ghunnah: '#f0a030',
+  idghaam_no_ghunnah: '#f0a030',
+  idghaam_shafawi: '#f0a030',
+  idghaam_mutajanisayn: '#f0a030',
+  idghaam_mutaqaribayn: '#f0a030',
+  hamzat_wasl: '#a0a0a0',
+  silent: '#a0a0a0',
   lam_shamsiyyah: '#90a4ae',
-  silent: '#cfd8dc',
 };
 
 // Rule labels for legend
@@ -86,7 +94,6 @@ async function buildIndex(): Promise<Map<string, TajweedAnnotation[]>> {
 
   for (const entry of data) {
     const key = makeKey(entry.surah, entry.ayah);
-    // Sort annotations by start index
     const sorted = entry.annotations.sort((a, b) => a.start - b.start);
     index.set(key, sorted);
   }
@@ -96,7 +103,6 @@ async function buildIndex(): Promise<Map<string, TajweedAnnotation[]>> {
 
 /**
  * Get tajweed annotations for a specific verse.
- * Loads the full dataset on first call, then serves from memory.
  */
 export async function getTajweedAnnotations(
   surah: number,
@@ -119,7 +125,7 @@ export async function getTajweedAnnotations(
 }
 
 /**
- * Preload the tajweed data (call early to avoid delay on first render).
+ * Preload the tajweed data.
  */
 export function preloadTajweedData(): void {
   if (!annotationIndex && !loadPromise) {
@@ -129,4 +135,60 @@ export function preloadTajweedData(): void {
       return idx;
     });
   }
+}
+
+/**
+ * Determine the dominant tajweed color for a word based on its position
+ * within the full verse text (text_qpc_hafs).
+ *
+ * @param wordIndex  - 0-based word index in the verse
+ * @param wordsTexts - array of text_qpc_hafs for each word in the verse (in order)
+ * @param annotations - tajweed annotations for this verse
+ * @param darkMode - use night palette
+ * @returns hex color string, or null if no tajweed rule applies
+ */
+export function getWordTajweedColor(
+  wordIndex: number,
+  wordsTexts: string[],
+  annotations: TajweedAnnotation[],
+  darkMode: boolean
+): string | null {
+  if (!annotations.length) return null;
+
+  // Calculate the character offset of this word in the full verse text
+  // Words are joined by spaces in text_qpc_hafs
+  let charOffset = 0;
+  for (let i = 0; i < wordIndex; i++) {
+    charOffset += wordsTexts[i].length + 1; // +1 for space separator
+  }
+  const wordStart = charOffset;
+  const wordEnd = charOffset + wordsTexts[wordIndex].length;
+
+  // Find which annotations overlap this word, track coverage per rule
+  const ruleCoverage = new Map<string, number>();
+
+  for (const ann of annotations) {
+    // Check overlap
+    const overlapStart = Math.max(ann.start, wordStart);
+    const overlapEnd = Math.min(ann.end, wordEnd);
+    if (overlapStart < overlapEnd) {
+      const coverage = overlapEnd - overlapStart;
+      ruleCoverage.set(ann.rule, (ruleCoverage.get(ann.rule) || 0) + coverage);
+    }
+  }
+
+  if (ruleCoverage.size === 0) return null;
+
+  // Pick the rule with greatest coverage
+  let bestRule = '';
+  let bestCoverage = 0;
+  for (const [rule, cov] of ruleCoverage) {
+    if (cov > bestCoverage) {
+      bestCoverage = cov;
+      bestRule = rule;
+    }
+  }
+
+  const palette = darkMode ? TAJWEED_COLORS_NIGHT : TAJWEED_COLORS;
+  return palette[bestRule] || null;
 }
