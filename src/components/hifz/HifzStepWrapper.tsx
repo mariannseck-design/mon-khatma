@@ -1,9 +1,10 @@
 import { ReactNode, useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, BookOpen } from 'lucide-react';
+import { ChevronLeft, BookOpen, ExternalLink, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { getExactVersePage } from '@/lib/quranData';
 import { SURAHS } from '@/lib/surahData';
+import { Sheet, SheetContent } from '@/components/ui/sheet';
 
 interface HifzStepWrapperProps {
   stepNumber: number;
@@ -28,6 +29,7 @@ export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBac
   const [elapsed, setElapsed] = useState(0);
   const [pageLabel, setPageLabel] = useState('');
   const [mushafPage, setMushafPage] = useState<number | null>(null);
+  const [mushafOpen, setMushafOpen] = useState(false);
   const startRef = useRef(Date.now());
   const navigate = useNavigate();
 
@@ -85,7 +87,7 @@ export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBac
           </div>
           {mushafPage && (
             <button
-              onClick={() => window.open(`/quran-reader?page=${mushafPage}`, '_blank')}
+              onClick={() => setMushafOpen(true)}
               className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full transition-all active:scale-95"
               style={{ background: 'rgba(5,150,105,0.12)', border: '1px solid rgba(5,150,105,0.25)' }}
             >
@@ -136,7 +138,7 @@ export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBac
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.7 }}
             transition={{ delay: 0.8 }}
-            onClick={() => window.open(`/quran-reader?page=${mushafPage}`, '_blank')}
+            onClick={() => setMushafOpen(true)}
             className="fixed bottom-24 left-4 z-50 flex items-center gap-1.5 px-3 py-2.5 rounded-full shadow-lg transition-all active:scale-95"
             style={{
               background: 'linear-gradient(135deg, rgba(5,150,105,0.9), rgba(4,120,87,0.95))',
@@ -151,6 +153,38 @@ export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBac
           </motion.button>
         )}
       </AnimatePresence>
+
+      {/* Integrated Mushaf Sheet — stays in same tab, audio keeps playing */}
+      <Sheet open={mushafOpen} onOpenChange={setMushafOpen}>
+        <SheetContent side="bottom" className="h-[95vh] p-0 rounded-t-2xl overflow-hidden" style={{ background: '#1a2e1a' }}>
+          <div className="flex items-center justify-between px-4 py-3" style={{ background: 'rgba(0,0,0,0.3)', borderBottom: '1px solid rgba(212,175,55,0.15)' }}>
+            <span className="text-sm font-medium" style={{ color: '#d4af37' }}>📖 Mushaf — p. {mushafPage}</span>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => window.open(`/quran-reader?page=${mushafPage}`, '_blank')}
+                className="p-1.5 rounded-full transition-all active:scale-90"
+                style={{ background: 'rgba(255,255,255,0.08)' }}
+                title="Ouvrir dans un nouvel onglet"
+              >
+                <ExternalLink className="h-4 w-4" style={{ color: 'rgba(255,255,255,0.5)' }} />
+              </button>
+              <button
+                onClick={() => setMushafOpen(false)}
+                className="p-1.5 rounded-full transition-all active:scale-90"
+                style={{ background: 'rgba(255,255,255,0.08)' }}
+              >
+                <X className="h-4 w-4" style={{ color: 'rgba(255,255,255,0.5)' }} />
+              </button>
+            </div>
+          </div>
+          <iframe
+            src={`/quran-reader?page=${mushafPage}&embed=1`}
+            className="w-full flex-1"
+            style={{ height: 'calc(95vh - 52px)', border: 'none' }}
+            title="Mushaf"
+          />
+        </SheetContent>
+      </Sheet>
     </motion.div>
   );
 }

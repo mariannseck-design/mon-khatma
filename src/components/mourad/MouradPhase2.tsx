@@ -101,10 +101,25 @@ export default function MouradPhase2({ surahNumber, startVerse, endVerse, listen
     playNext();
   }, [isPlaying, audioEl, reciterId, surahNumber, startVerse, endVerse, onListenComplete]);
 
-  // Audio persists via global context — don't pause on unmount
+  // Resync UI state when tab becomes visible — try to resume if browser suspended
   useEffect(() => {
-    return () => { /* handled by global context */ };
-  }, [audioEl]);
+    const handler = () => {
+      if (document.visibilityState === 'visible') {
+        const audio = audioEl;
+        if (!audio) return;
+        const actuallyPlaying = !audio.paused && !audio.ended;
+        if (actuallyPlaying) {
+          setIsPlaying(true);
+        } else if (audio.paused && !audio.ended && isPlaying) {
+          audio.play().catch(() => setIsPlaying(false));
+        } else {
+          setIsPlaying(false);
+        }
+      }
+    };
+    document.addEventListener('visibilitychange', handler);
+    return () => document.removeEventListener('visibilitychange', handler);
+  }, [audioEl, isPlaying]);
 
   return (
     <div className="space-y-4">
