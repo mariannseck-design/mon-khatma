@@ -74,6 +74,10 @@ interface AyahWithAnnotations extends LocalAyah {
 }
 
 export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, endVerse, onNext, onBack, onPause, phaseLabel }: Props) {
+  const { registerAudio: registerGlobalAudio } = useGlobalAudio();
+  const registerRef = useRef(registerGlobalAudio);
+  registerRef.current = registerGlobalAudio;
+
   const storageKey = `hifz_listen_${surahNumber}_${startVerse}_${endVerse}`;
   const surahName = SURAHS.find(s => s.number === surahNumber)?.name || '';
 
