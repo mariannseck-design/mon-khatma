@@ -146,9 +146,13 @@ function getPhaseForAncrage(ancrage: number): number {
 }
 
 export default function HifzStep3Memorisation({ surahNumber, startVerse, endVerse, repetitionLevel, onNext, onBack, onPause }: Props) {
+  const { registerAudio: registerGlobalAudio } = useGlobalAudio();
+  const registerRef = useRef(registerGlobalAudio);
+  registerRef.current = registerGlobalAudio;
+
+  const surahName = SURAHS.find(s => s.number === surahNumber)?.name || '';
   const tikrarTarget = repetitionLevel || 40;
   const storageKey = getStorageKey(surahNumber, startVerse, endVerse);
-
   const [ancrage, setAncrage] = useState(() => {
     const saved = localStorage.getItem(storageKey);
     return saved ? Math.min(parseInt(saved, 10) || 0, tikrarTarget) : 0;
