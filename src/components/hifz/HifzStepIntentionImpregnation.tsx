@@ -455,18 +455,18 @@ export default function HifzStepIntentionImpregnation({ surahNumber, startVerse,
             ))}
           </select>
 
-          {/* Play button — TEMPORARILY DISABLED */}
+          {/* Play button */}
           <motion.button
-            disabled
-            className="w-20 h-20 rounded-full mx-auto flex items-center justify-center opacity-50 cursor-not-allowed"
+            whileTap={{ scale: 0.95 }}
+            onClick={togglePlay}
+            className="w-20 h-20 rounded-full mx-auto flex items-center justify-center transition-all"
             style={{
-              background: 'rgba(255,255,255,0.1)',
-              border: '2px solid rgba(255,255,255,0.2)',
+              background: isPlaying ? 'rgba(212,175,55,0.25)' : 'rgba(255,255,255,0.1)',
+              border: `2px solid ${isPlaying ? '#d4af37' : 'rgba(255,255,255,0.2)'}`,
             }}
           >
-            <Play className="h-8 w-8 ml-1" style={{ color: '#d4af37' }} />
+            {isPlaying ? <Pause className="h-8 w-8" style={{ color: '#d4af37' }} /> : <Play className="h-8 w-8 ml-1" style={{ color: '#d4af37' }} />}
           </motion.button>
-          <p className="text-[10px] text-center" style={{ color: 'rgba(255,255,255,0.35)' }}>⏸ Temporairement indisponible</p>
 
           {/* Listen count */}
           <div className="flex items-center justify-center gap-3">
