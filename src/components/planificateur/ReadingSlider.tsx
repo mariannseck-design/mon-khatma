@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Check, ChevronDown } from 'lucide-react';
+import { Check, BookOpen } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -40,7 +40,6 @@ export function ReadingSlider({
     const page = parseInt(pageNumber);
     if (page > 0 && page <= TOTAL_QURAN_PAGES) {
       setIsLogging(true);
-      // Pass the absolute page number directly — parent handles the logic
       await onLogReading(page);
       setPageNumber('');
       setSelectedSurah('');
@@ -48,7 +47,6 @@ export function ReadingSlider({
     }
   };
 
-  // Auto-fill page when surah is selected
   const handleSurahChange = (value: string) => {
     setSelectedSurah(value);
     const surah = SURAHS.find(s => s.number.toString() === value);
@@ -67,75 +65,69 @@ export function ReadingSlider({
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
+      className="space-y-3"
     >
-      {/* Congrats banner when goal is met */}
+      {/* Congrats banner */}
       {goalMet && (
-        <Card className="p-4 bg-gradient-mint border-none rounded-[2rem] mb-3">
-          <div className="flex items-center justify-center gap-2">
-            <span className="text-lg">✨</span>
-            <p className="text-primary-foreground font-medium text-sm">
-              Objectif atteint, Macha'Allah ! Tu peux continuer ta lecture.
-            </p>
-            <span className="text-lg">✨</span>
-          </div>
-        </Card>
+        <div className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-2xl bg-primary/10">
+          <span className="text-xs text-primary font-medium">
+            ✨ Objectif atteint, Macha'Allah !
+          </span>
+        </div>
       )}
 
-      <Card className="p-6 border-none rounded-[2rem] bg-card shadow-sm">
+      <Card className="p-5 border-none rounded-[2rem] bg-card shadow-sm">
         {/* Header */}
         <div className="flex items-center justify-between mb-5">
-          <span className="font-semibold text-foreground">Où je me suis arrêté(e)</span>
+          <div className="flex items-center gap-2">
+            <BookOpen className="h-4 w-4 text-primary" />
+            <span className="text-sm font-semibold text-foreground">Marque-page</span>
+          </div>
           {targetPages > 0 && (
-            <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
-              {todayPages}/{targetPages} aujourd'hui
+            <span className="text-[11px] text-muted-foreground bg-muted/60 px-2.5 py-1 rounded-full">
+              {todayPages}/{targetPages} auj.
             </span>
           )}
         </div>
 
-        {/* Surah selector */}
-        <div className="space-y-4">
-          <div>
-            <label className="text-sm text-muted-foreground mb-2 block">Sourate</label>
-            <Select value={selectedSurah} onValueChange={handleSurahChange}>
-              <SelectTrigger className="w-full h-12 rounded-xl border-muted">
-                <SelectValue placeholder="Choisir une sourate..." />
-              </SelectTrigger>
-              <SelectContent className="max-h-[300px]">
-                {SURAHS.map((surah) => (
-                  <SelectItem key={surah.number} value={surah.number.toString()}>
-                    <span className="flex items-center gap-2">
-                      <span className="text-muted-foreground w-8">{surah.number}.</span>
-                      <span>{surah.name}</span>
-                    </span>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+        <div className="space-y-3">
+          {/* Surah selector */}
+          <Select value={selectedSurah} onValueChange={handleSurahChange}>
+            <SelectTrigger className="w-full h-11 rounded-xl border-border/50 bg-muted/30 text-sm">
+              <SelectValue placeholder="Sourate..." />
+            </SelectTrigger>
+            <SelectContent className="max-h-[300px]">
+              {SURAHS.map((surah) => (
+                <SelectItem key={surah.number} value={surah.number.toString()}>
+                  <span className="flex items-center gap-2">
+                    <span className="text-muted-foreground w-7 text-xs">{surah.number}.</span>
+                    <span className="text-sm">{surah.name}</span>
+                  </span>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
 
           {/* Page number */}
-          <div>
-            <label className="text-sm text-muted-foreground mb-2 block">Page</label>
-            <Input
-              type="number"
-              inputMode="numeric"
-              min={1}
-              max={604}
-              value={pageNumber}
-              onChange={(e) => setPageNumber(e.target.value)}
-              placeholder="Numéro de page (1-604)"
-              className="h-12 rounded-xl border-muted text-center text-lg font-medium"
-            />
-          </div>
+          <Input
+            type="number"
+            inputMode="numeric"
+            min={1}
+            max={604}
+            value={pageNumber}
+            onChange={(e) => setPageNumber(e.target.value)}
+            placeholder="Page (1-604)"
+            className="h-11 rounded-xl border-border/50 bg-muted/30 text-center text-sm font-medium"
+          />
         </div>
 
         {/* Submit button */}
         <Button
           onClick={handleSubmit}
           disabled={!pageNumber || parseInt(pageNumber) < 1 || parseInt(pageNumber) > 604 || isLogging}
-          className="w-full h-12 mt-5 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium disabled:opacity-40"
+          className="w-full h-11 mt-4 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-medium disabled:opacity-30"
         >
-          <Check className="h-5 w-5 mr-2" />
+          <Check className="h-4 w-4 mr-1.5" />
           Enregistrer
         </Button>
       </Card>
