@@ -53,18 +53,18 @@ async function generatePDF(
   });
 
   // Header
-  doc.setFontSize(18);
-  doc.setTextColor(6, 95, 70);
+  doc.setFontSize(20);
+  doc.setTextColor(4, 60, 45);
   doc.text('Ma Khatma', pageWidth / 2, 22, { align: 'center' });
 
-  doc.setFontSize(11);
-  doc.setTextColor(120, 120, 120);
+  doc.setFontSize(12);
+  doc.setTextColor(60, 60, 60);
   doc.text('Historique de lecture', pageWidth / 2, 30, { align: 'center' });
 
   // Info line
   let y = 42;
   doc.setFontSize(10);
-  doc.setTextColor(80, 80, 80);
+  doc.setTextColor(40, 40, 40);
 
   if (firstName) {
     doc.text(`Lectrice : ${firstName}`, 20, y);
@@ -85,9 +85,9 @@ async function generatePDF(
 
   // Table header
   const colX = [20, 55, 85, 140];
-  doc.setFontSize(9);
+  doc.setFontSize(10);
   doc.setTextColor(255, 255, 255);
-  doc.setFillColor(6, 95, 70);
+  doc.setFillColor(4, 60, 45);
   doc.rect(18, y - 4, pageWidth - 36, 8, 'F');
   doc.text('Date', colX[0], y + 1);
   doc.text('Pages', colX[1], y + 1);
@@ -96,7 +96,7 @@ async function generatePDF(
   y += 10;
 
   // Table rows
-  doc.setFontSize(9);
+  doc.setFontSize(10);
   enriched.forEach((entry, i) => {
     if (y > 275) {
       doc.addPage();
@@ -104,17 +104,17 @@ async function generatePDF(
     }
 
     if (i % 2 === 0) {
-      doc.setFillColor(245, 245, 245);
+      doc.setFillColor(235, 235, 235);
       doc.rect(18, y - 4, pageWidth - 36, 7, 'F');
     }
 
-    doc.setTextColor(50, 50, 50);
+    doc.setTextColor(25, 25, 25);
     doc.text(formatDateLong(entry.date), colX[0], y);
     doc.text(`${entry.pages_read}`, colX[1], y);
     doc.text(entry.surahName, colX[2], y);
 
     const goalMet = targetPages > 0 && entry.pages_read >= targetPages;
-    doc.setTextColor(goalMet ? 6 : 150, goalMet ? 95 : 150, goalMet ? 70 : 150);
+    doc.setTextColor(goalMet ? 4 : 120, goalMet ? 60 : 120, goalMet ? 45 : 120);
     doc.text(goalMet ? '✓' : '—', colX[3], y);
 
     y += 7;
@@ -127,7 +127,7 @@ async function generatePDF(
     y = 20;
   }
   doc.setFontSize(8);
-  doc.setTextColor(180, 180, 180);
+  doc.setTextColor(130, 130, 130);
   doc.text('Généré par Ma Khatma — makhatma.lovable.app', pageWidth / 2, 290, { align: 'center' });
 
   doc.save('ma-khatma-historique.pdf');
