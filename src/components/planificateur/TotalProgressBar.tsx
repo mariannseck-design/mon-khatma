@@ -34,9 +34,9 @@ export function TotalProgressBar({ totalPagesRead, onResetKhatma, onShowCelebrat
       <Card
         className="relative overflow-hidden border-none"
         style={{
-          background: 'linear-gradient(145deg, var(--p-card) 0%, rgba(6,95,70,0.04) 100%)',
-          boxShadow: '0 4px 24px rgba(6,95,70,0.1), 0 1px 3px rgba(212,175,55,0.08)',
-          border: '1px solid rgba(6,95,70,0.08)',
+          background: 'linear-gradient(145deg, var(--p-card) 0%, rgba(6,95,70,0.08) 100%)',
+          boxShadow: '0 4px 24px rgba(6,95,70,0.1), 0 2px 8px rgba(212,175,55,0.12)',
+          border: '1px solid rgba(212,175,55,0.15)',
         }}
       >
         {/* Subtle decorative accent */}
