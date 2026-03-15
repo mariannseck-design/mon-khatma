@@ -1,18 +1,21 @@
 
 
-## Plan : Remplacer le Mushaf toggle par le Mushaf Image pleine largeur dans StepImmersion
+# Diagnostic : 404 sur /quran-reader
 
-### Objectif
-Dans l'étape Mémorisation (StepImmersion), supprimer le sélecteur 3 modes (Image/Texte/Mon Mushaf) et le texte "Lis le verset depuis ton Mushaf physique". Le remplacer par le même `HifzMushafImage` pleine largeur avec scrollbar, comme dans l'étape Imprégnation. Réduire la taille du compteur circulaire.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Changements
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-1. **`src/components/hifz/istiqamah/StepImmersion.tsx`**
-   - Supprimer l'import de `HifzMushafToggle` et les états `mushafMode`/`setMushafModeState`
-   - Remplacer la fonction `renderMushaf()` : au lieu des 3 modes (image/texte/physical), rendre uniquement un `HifzMushafImage` en pleine largeur avec `maxHeight="none"` et `fullWidth`, enveloppé dans un `div className="-mx-4"` (comme dans Imprégnation)
-   - Supprimer tous les blocs `<HifzMushafToggle>` dans les phases listen, read et error
-   - Réduire le `CircularCounter` de `w-28 h-28` à `w-20 h-20`, et le texte de `text-2xl` à `text-lg`
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-2. **`src/components/hifz/HifzStepMemorisation.tsx`**
-   - Passer `disableMushafOverlay` au `HifzStepWrapper` pour éviter le FAB Mushaf redondant (le Mushaf est déjà inline)
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

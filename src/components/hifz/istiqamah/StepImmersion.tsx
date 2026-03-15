@@ -4,7 +4,6 @@ import { Volume2, Check, X, BookOpen, RefreshCw, Link, ChevronRight, Headphones 
 import MiniRecorder from './MiniRecorder';
 import { useAuth } from '@/contexts/AuthContext';
 import { RECITERS, getAyahAudioUrl } from '@/hooks/useQuranAudio';
-import HifzMushafToggle, { getMushafMode, setMushafMode, type MushafMode } from '../HifzMushafToggle';
 import HifzMushafImage from '../HifzMushafImage';
 import { getVersesByRange, getExactVersePage, type LocalAyah } from '@/lib/quranData';
 import { SURAHS } from '@/lib/surahData';
@@ -88,7 +87,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
   const [readCount, setReadCount] = useState(savedImmersion?.readCount ?? 0);
   const [memoryCount, setMemoryCount] = useState(savedImmersion?.memoryCount ?? 0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [mushafMode, setMushafModeState] = useState<MushafMode>(getMushafMode);
+  
   const [ayahs, setAyahs] = useState<LocalAyah[]>([]);
   const [loading, setLoading] = useState(true);
   const [pageLabel, setPageLabel] = useState('');
@@ -409,7 +408,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
     setPhase(isLiaison ? 'liaison-listen' : 'listen');
   };
 
-  // Mushaf rendering
+  // Mushaf rendering — full-width image only
   const renderMushaf = (verseRange?: number[]) => {
     if (loading) {
       return (
@@ -422,57 +421,10 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
     const startV = Math.min(...versesToShow);
     const endV = Math.max(...versesToShow);
 
-    const infoLine = null;
-
-    if (mushafMode === 'physical') {
-      return (
-        <>
-          {infoLine}
-          <div className="rounded-xl px-4 py-4 text-center" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(212,175,55,0.15)' }}>
-            <p className="text-xs italic" style={{ color: 'rgba(255,255,255,0.45)' }}>
-              📖 Lis {versesToShow.length > 1 ? `les versets ${startV}–${endV}` : `le verset ${startV}`} depuis ton Mushaf physique.
-            </p>
-          </div>
-        </>
-      );
-    }
-    if (mushafMode === 'image') {
-      return (
-        <>
-          {infoLine}
-          <HifzMushafImage surahNumber={surahNumber} startVerse={startV} endVerse={endV} maxHeight="240px" />
-        </>
-      );
-    }
-    // Text mode
-    const shownAyahs = ayahs.filter(a => versesToShow.includes(a.numberInSurah));
-    if (!shownAyahs.length) return null;
-    const showBasmala = surahNumber !== 1 && surahNumber !== 9 && versesToShow.includes(1);
     return (
-      <>
-        {infoLine}
-        <div className="rounded-xl px-4 py-4" dir="rtl" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(212,175,55,0.12)' }}>
-          {showBasmala && (
-            <p className="text-center mb-3" style={{ fontFamily: FONT_FAMILY, fontSize: '20px', color: '#2E7D32', lineHeight: 2 }}>
-              بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
-            </p>
-          )}
-          <div style={{ fontFamily: FONT_FAMILY, fontSize: '22px', lineHeight: '48px', color: '#e8e0d0', textAlign: 'center' }}>
-            {shownAyahs.map((a, i) => {
-              const text = showBasmala && a.numberInSurah === 1 ? stripLeadingBasmala(a.text) : a.text;
-              return (
-                <span key={a.numberInSurah}>
-                  {text}{' '}
-                  <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '18px', height: '18px', borderRadius: '50%', backgroundColor: '#2E7D32', color: '#fff', fontSize: '10px', fontFamily: 'system-ui', fontWeight: 700, verticalAlign: 'middle' }}>
-                    {a.numberInSurah}
-                  </span>
-                  {i < shownAyahs.length - 1 ? ' ' : ''}
-                </span>
-              );
-            })}
-          </div>
-        </div>
-      </>
+      <div className="-mx-4">
+        <HifzMushafImage surahNumber={surahNumber} startVerse={startV} endVerse={endV} maxHeight="none" fullWidth />
+      </div>
     );
   };
 
@@ -481,14 +433,14 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
     const pct = Math.min(count / target, 1);
     const done = count >= target;
     return (
-      <div className="relative w-28 h-28">
+      <div className="relative w-20 h-20">
         <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
           <circle cx="50" cy="50" r="44" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="6" />
           <circle cx="50" cy="50" r="44" fill="none" stroke={done ? '#d4af37' : color} strokeWidth="6" strokeLinecap="round"
             strokeDasharray={`${pct * 276} 276`} style={{ transition: 'stroke-dasharray 0.5s ease' }} />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-2xl font-bold" style={{ color: done ? '#d4af37' : color }}>{count}</span>
+          <span className="text-lg font-bold" style={{ color: done ? '#d4af37' : color }}>{count}</span>
           <span className="text-white/40 text-[10px]">/ {target}+</span>
         </div>
       </div>
@@ -580,10 +532,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
             />
 
             {/* Mushaf in listen phase for reference */}
-            <div className="space-y-2">
-              <HifzMushafToggle mode={mushafMode} onChange={m => { setMushafModeState(m); setMushafMode(m); }} />
-              {renderMushaf(isLiaison ? liaisonVerses : undefined)}
-            </div>
+            {renderMushaf(isLiaison ? liaisonVerses : undefined)}
 
             <div className="flex flex-col items-center gap-3">
               <CircularCounter count={listenCount} target={TARGET_LISTEN} color={isLiaison ? '#a78bfa' : '#4ecdc4'} />
@@ -619,10 +568,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
               }
             />
 
-            <div className="space-y-2">
-              <HifzMushafToggle mode={mushafMode} onChange={m => { setMushafModeState(m); setMushafMode(m); }} />
-              {renderMushaf(isLiaison ? liaisonVerses : undefined)}
-            </div>
+            {renderMushaf(isLiaison ? liaisonVerses : undefined)}
 
             <div className="flex flex-col items-center gap-3">
               <CircularCounter count={readCount} target={TARGET_READ} color={isLiaison ? '#a78bfa' : '#f59e0b'} />
@@ -715,10 +661,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
               subtitle="Pas de panique ! Remémorise attentivement puis recommence"
             />
 
-            <div className="space-y-2">
-              <HifzMushafToggle mode={mushafMode} onChange={m => { setMushafModeState(m); setMushafMode(m); }} />
-              {renderMushaf(isLiaison ? liaisonVerses : undefined)}
-            </div>
+            {renderMushaf(isLiaison ? liaisonVerses : undefined)}
 
             <motion.button whileTap={{ scale: 0.97 }} onClick={handleRereadDone}
               className="w-full rounded-2xl py-3 flex items-center justify-center gap-2 font-semibold text-sm"
