@@ -115,14 +115,14 @@ export default function HifzPage() {
 
   // Save session progress locally
   useEffect(() => {
-    if (session && step >= 0 && step <= 5 && !completedRef.current) {
+    if (session && step >= 0 && step <= 4 && !completedRef.current) {
       saveLocalSession(session, step, sessionId, stepTimesRef.current);
     }
   }, [session, step, sessionId]);
 
   useEffect(() => {
     const handler = () => {
-      if (document.visibilityState === 'visible' && session && step >= 0 && step <= 5 && !completedRef.current) {
+      if (document.visibilityState === 'visible' && session && step >= 0 && step <= 4 && !completedRef.current) {
         saveLocalSession(session, step, sessionId, stepTimesRef.current);
       }
     };
