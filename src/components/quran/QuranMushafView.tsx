@@ -112,13 +112,12 @@ interface QuranMushafViewProps {
 }
 
 /* ─── Component ─── */
-export default function QuranMushafView({ page, highlightAyah, darkMode = false, tajweedEnabled = false, onVerseSelect }: QuranMushafViewProps) {
+export default function QuranMushafView({ page, highlightAyah, darkMode = false, onVerseSelect }: QuranMushafViewProps) {
   const [pageData, setPageData] = useState<PageData | null>(null);
   const [fontReady, setFontReady] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [selectedVerse, setSelectedVerse] = useState<string | null>(null);
-  const [tajweedMap, setTajweedMap] = useState<Map<string, TajweedAnnotation[]>>(new Map());
   const containerRef = useRef<HTMLDivElement>(null);
 
   const fontFamily = `p${page}-v2`;
