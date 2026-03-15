@@ -262,10 +262,9 @@ export default function HifzMushafImage({ surahNumber, startVerse, endVerse, max
             key={`${page}-${sourceIdx}`}
             src={imgUrl}
             alt={`Page ${page} du Mushaf`}
-            className="w-full h-auto object-contain"
+            className="w-full h-auto"
             style={{
-              maxHeight,
-              transform: `scale(${scale}) translate(${translate.x / scale}px, ${translate.y / scale}px)`,
+              transform: scale > 1 ? `scale(${scale}) translate(${translate.x / scale}px, ${translate.y / scale}px)` : undefined,
               transformOrigin: 'center center',
               transition: isPanningRef.current || lastTouchDistRef.current ? 'none' : 'transform 0.2s ease',
             }}
