@@ -86,7 +86,7 @@ export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBac
               {verseInfo}
             </span>
           </div>
-          {mushafPage && (
+          {mushafPage && !disableMushafOverlay && (
             <button
               onClick={() => setMushafOpen(true)}
               className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full transition-all active:scale-95"
