@@ -1,21 +1,39 @@
 
+Objectif validé : oui, on peut ouvrir le Mushaf directement dans la page d’Imprégnation (sans iframe / sans nouvel onglet), pour éviter toute coupure audio sur Android Chrome.
 
-# Diagnostic : 404 sur /quran-reader
+Plan de mise en œuvre
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+1) Supprimer le chemin qui coupe l’audio dans cette étape
+- Fichier : `src/components/hifz/HifzStepImpregnationTajweed.tsx`
+- Retirer l’usage du Mushaf “extérieur” (bouton du wrapper) pour cette étape.
+- Garder uniquement le Mushaf intégré déjà présent dans l’étape (`HifzMushafToggle` + `HifzMushafImage`/texte/physique).
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+2) Ouvrir le Mushaf “dans la page” de façon explicite
+- Ajouter un mode “Mushaf agrandi” dans `HifzStepImpregnationTajweed.tsx` :
+  - bouton “Ouvrir le Mushaf ici”
+  - bascule automatique en mode `image`
+  - affichage du Mushaf en grand bloc inline (ex: `maxHeight` ~ `65-75vh`) dans la même vue
+  - bouton “Réduire” pour revenir à la taille normale
+- Aucun `window.open`, aucun changement de route, aucun iframe.
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+3) Adapter le wrapper pour cette étape
+- Fichier : `src/components/hifz/HifzStepWrapper.tsx`
+- Ajouter une prop de contrôle (ex. `disableMushafQuickOpen` ou `mushafQuickAction="none"`).
+- Dans l’étape Imprégnation Tajweed, désactiver le FAB/badge Mushaf du wrapper pour empêcher le clic qui mène au panneau iframe.
+- Les autres étapes conservent leur comportement actuel (pas de régression globale).
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+4) Vérification ciblée (Android Chrome)
+- Démarrer audio en Imprégnation.
+- Cliquer “Ouvrir le Mushaf ici”.
+- Vérifier :
+  - audio continue sans coupure,
+  - Play/Pause/Stop rouge restent fonctionnels,
+  - fermeture/réouverture du Mushaf inline ne casse pas l’état de lecture.
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
-
+Détails techniques
+- Pourquoi ça corrige : la coupure survient sur le chemin d’ouverture externe/iframe ; en restant dans le même composant React, on évite le changement de contexte qui déclenche des pauses non désirées.
+- Compatibilité : conforme au projet (ES2015 / mobile ancien), pas d’import dynamique, pas de dépendance nouvelle.
+- Fichiers touchés :
+  - `src/components/hifz/HifzStepImpregnationTajweed.tsx`
+  - `src/components/hifz/HifzStepWrapper.tsx`
+- Risque principal : impact UX si le bouton Mushaf du wrapper est attendu ailleurs ; limité en le désactivant uniquement pour cette étape.
