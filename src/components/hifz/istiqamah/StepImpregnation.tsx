@@ -120,10 +120,25 @@ export default function StepImpregnation({ surahNumber, verseStart, verseEnd, ve
     }
   };
 
-  // Audio persists via global context — don't pause on unmount
+  // Sync with global audio stop (MiniPlayer X)
+  const stopSignalRef = useRef(stopSignal);
   useEffect(() => {
-    return () => { /* audio persists globally */ };
-  }, []);
+    if (stopSignalRef.current === stopSignal) { stopSignalRef.current = stopSignal; return; }
+    stopSignalRef.current = stopSignal;
+    if (isPlayingRef.current) {
+      generationRef.current++;
+      isPlayingRef.current = false;
+      if (audioRef.current) {
+        audioRef.current.onended = null;
+        audioRef.current.onerror = null;
+        audioRef.current.pause();
+        try { audioRef.current.src = ''; } catch {}
+        audioRef.current = null;
+      }
+      setIsPlaying(false);
+      setCurrentAyahIndex(-1);
+    }
+  }, [stopSignal]);
 
   const done = count >= TARGET;
 

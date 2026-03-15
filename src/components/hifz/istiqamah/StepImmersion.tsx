@@ -307,8 +307,20 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
     }
   }, [isLiaison, liaisonVerses, currentVerse, getAudioUrl]);
 
-  // Audio persists via global context — don't pause on unmount
-  useEffect(() => () => { /* audio persists globally */ }, []);
+  // Sync with global audio stop (MiniPlayer X)
+  const stopSignalRef = useRef(stopSignal);
+  useEffect(() => {
+    if (stopSignalRef.current === stopSignal) { stopSignalRef.current = stopSignal; return; }
+    stopSignalRef.current = stopSignal;
+    if (isPlayingRef.current) {
+      generationRef.current++;
+      sequenceAbortRef.current = true;
+      isPlayingRef.current = false;
+      hardStopAudio();
+      setIsPlaying(false);
+      pausedRef.current = false;
+    }
+  }, [stopSignal, hardStopAudio]);
 
   // Reset on verse change — only if NOT restoring from saved state
   const isInitialMount = useRef(true);
