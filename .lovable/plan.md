@@ -1,35 +1,21 @@
 
-Objectif validé: faire apparaître le bouton Mushaf partout dans le MiniPlayer ET corriger la lecture qui ne continue pas en boucle après sortie de la page.
 
-1) Étendre les métadonnées audio dans les 4 composants demandés
-- Fichiers:
-  - `src/components/hifz/istiqamah/StepImmersion.tsx`
-  - `src/components/hifz/istiqamah/StepImpregnation.tsx`
-  - `src/components/hifz/istiqamah/StepFusion.tsx`
-  - `src/components/mourad/MouradPhase2.tsx`
-- Action:
-  - Ajouter `surahNumber` et `startVerse` dans chaque `registerRef.current(audio, {...})`.
-  - Utiliser la valeur la plus précise:
-    - StepImmersion (single verse): `startVerse: verse`
-    - StepImmersion (sequence): `startVerse: verse` (dans la boucle)
-    - StepImpregnation: `startVerse: verseStart + idx`
-    - StepFusion: `startVerse: globalStart + idx`
-    - MouradPhase2: `startVerse: startVerse + idx`
-- Résultat: le bouton 📖 du MiniPlayer s’affiche dans tous ces flux et ouvre la bonne page du Mushaf.
+# Diagnostic : 404 sur /quran-reader
 
-2) Corriger la persistance de boucle quand on quitte la page
-- Cause trouvée: certains cleanups “unmount” remettent `isPlayingRef.current = false`; du coup, au `onended`, la chaîne s’arrête après le verset en cours.
-- Fichiers à corriger:
-  - `StepImmersion.tsx` (cleanup actuel coupe la chaîne)
-  - `StepImpregnation.tsx` (cleanup actuel coupe la boucle)
-  - `StepFusion.tsx` (cleanup actuel coupe la lecture en cours)
-- Action:
-  - Remplacer ces cleanups par un no-op (commentaire “audio persists globally”), sans reset de refs de lecture.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-3) Vérification fonctionnelle (mobile 390px)
-- Lancer audio dans chaque composant.
-- Quitter vers Accueil ou Mushaf pendant lecture.
-- Vérifier:
-  - le MiniPlayer reste visible,
-  - le bouton Mushaf est présent,
-  - la lecture enchaîne encore au verset suivant après la sortie de page (pas d’arrêt au 1er verset).
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
+
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+

@@ -171,7 +171,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
     const playOnce = () => {
       const audio = new Audio(url);
       audioRef.current = audio;
-      registerRef.current(audio, { label: `${SURAHS.find(s => s.number === surahNumber)?.name || ''} · v.${verse}`, returnPath: window.location.pathname });
+      registerRef.current(audio, { label: `${SURAHS.find(s => s.number === surahNumber)?.name || ''} · v.${verse}`, returnPath: window.location.pathname, surahNumber, startVerse: verse });
       audio.onended = () => {
         setListenCount(prev => prev + 1);
         if (!sequenceAbortRef.current && isPlayingRef.current) {
@@ -202,7 +202,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
         await new Promise<void>((resolve) => {
           const audio = new Audio(url);
           audioRef.current = audio;
-          registerRef.current(audio, { label: `${SURAHS.find(s => s.number === surahNumber)?.name || ''} · v.${verses[0]}–${verses[verses.length - 1]}`, returnPath: window.location.pathname });
+          registerRef.current(audio, { label: `${SURAHS.find(s => s.number === surahNumber)?.name || ''} · v.${verses[0]}–${verses[verses.length - 1]}`, returnPath: window.location.pathname, surahNumber, startVerse: verse });
           audio.onended = () => resolve();
           audio.onerror = () => resolve();
           audio.play().catch(() => resolve());
@@ -253,7 +253,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
           await new Promise<void>((resolve) => {
             const audio = new Audio(url);
             audioRef.current = audio;
-            registerRef.current(audio, { label: `${SURAHS.find(s => s.number === surahNumber)?.name || ''} · Indice`, returnPath: window.location.pathname });
+            registerRef.current(audio, { label: `${SURAHS.find(s => s.number === surahNumber)?.name || ''} · Indice`, returnPath: window.location.pathname, surahNumber, startVerse: verse });
             audio.onended = () => resolve();
             audio.onerror = () => resolve();
             audio.play().catch(() => resolve());
@@ -270,7 +270,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
         setIsPlaying(true);
         const audio = new Audio(url);
         audioRef.current = audio;
-        registerRef.current(audio, { label: `${SURAHS.find(s => s.number === surahNumber)?.name || ''} · v.${currentVerse}`, returnPath: window.location.pathname });
+        registerRef.current(audio, { label: `${SURAHS.find(s => s.number === surahNumber)?.name || ''} · v.${currentVerse}`, returnPath: window.location.pathname, surahNumber, startVerse: currentVerse });
         audio.onended = () => { isPlayingRef.current = false; setIsPlaying(false); };
         audio.onerror = () => { isPlayingRef.current = false; setIsPlaying(false); };
         audio.play().catch(() => { isPlayingRef.current = false; setIsPlaying(false); });
@@ -279,7 +279,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
   }, [isLiaison, liaisonVerses, currentVerse, getAudioUrl]);
 
   // Audio persists via global context — don't pause on unmount
-  useEffect(() => () => { isPlayingRef.current = false; pausedRef.current = false; }, []);
+  useEffect(() => () => { /* audio persists globally */ }, []);
 
   // Reset on verse change — only if NOT restoring from saved state
   const isInitialMount = useRef(true);

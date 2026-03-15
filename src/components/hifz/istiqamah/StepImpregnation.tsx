@@ -73,7 +73,7 @@ export default function StepImpregnation({ surahNumber, verseStart, verseEnd, ve
     setCurrentAyahIndex(idx);
     const audio = new Audio(audiosRef.current[idx]);
     audioRef.current = audio;
-    registerRef.current(audio, { label: `${SURAHS.find(s => s.number === surahNumber)?.name || ''} · v.${verseStart}-${verseEnd}`, returnPath: window.location.pathname });
+    registerRef.current(audio, { label: `${SURAHS.find(s => s.number === surahNumber)?.name || ''} · v.${verseStart}-${verseEnd}`, returnPath: window.location.pathname, surahNumber, startVerse: verseStart + idx });
     audio.onended = () => playLoop(idx + 1);
     audio.onerror = () => playLoop(idx + 1);
     audio.play().catch(() => { isPlayingRef.current = false; setIsPlaying(false); setCurrentAyahIndex(-1); });
@@ -102,7 +102,7 @@ export default function StepImpregnation({ surahNumber, verseStart, verseEnd, ve
 
   // Audio persists via global context — don't pause on unmount
   useEffect(() => {
-    return () => { isPlayingRef.current = false; pausedRef.current = false; setCurrentAyahIndex(-1); };
+    return () => { /* audio persists globally */ };
   }, []);
 
   const done = count >= TARGET;
