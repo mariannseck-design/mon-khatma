@@ -82,7 +82,7 @@ export function TotalProgressBar({ totalPagesRead, onResetKhatma, onShowCelebrat
                 className="rounded-xl px-3 py-1.5"
                 style={{ background: 'linear-gradient(135deg, rgba(212,175,55,0.15), rgba(212,175,55,0.06))' }}
               >
-                <span className="text-lg font-bold" style={{ color: 'var(--p-accent)' }}>
+                <span className="text-lg font-bold istiqamah-shimmer">
                   {percentage.toFixed(1)}%
                 </span>
               </motion.div>
