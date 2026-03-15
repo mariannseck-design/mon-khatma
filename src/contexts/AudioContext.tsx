@@ -42,7 +42,7 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     // Clean up previous listeners
     cleanupRef.current?.();
 
-    // Stop previous audio to prevent overlap
+    // Stop previous audio to prevent overlap — but DON'T set idle (new track is coming)
     if (audioRef.current && audioRef.current !== audio) {
       audioRef.current.pause();
       try { audioRef.current.src = ''; } catch {}
@@ -69,8 +69,11 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     audio.addEventListener('pause', onPause);
     audio.addEventListener('ended', onEnded);
 
-    // Sync current state
+    // Sync current state — assume playing since we're registering a new track
     if (!audio.paused && !audio.ended) {
+      setStatus('playing');
+    } else {
+      // About to play — keep previous status or set playing
       setStatus('playing');
     }
 
