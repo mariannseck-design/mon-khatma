@@ -19,7 +19,6 @@ interface AudioContextType {
 const AudioCtx = createContext<AudioContextType>({
   status: 'idle',
   trackInfo: null,
-  stopSignal: 0,
   registerAudio: () => {},
   pause: () => {},
   resume: () => {},
