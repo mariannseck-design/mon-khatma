@@ -215,12 +215,12 @@ export default function QuranMushafView({ page, highlightAyah, darkMode = false,
     <div
       ref={containerRef}
       data-text-scroll
-      className="h-full w-full overflow-y-auto flex flex-col select-text"
+      className="h-full w-full overflow-y-auto overflow-x-hidden flex flex-col select-text"
       dir="rtl"
       style={{ background: bgColor, touchAction: 'pan-y' }}
     >
       <div
-        className={`flex-1 flex flex-col px-2 py-3 ${isSpecialPage ? 'justify-center' : 'justify-between'}`}
+        className={`flex-1 flex flex-col px-3 py-3 ${isSpecialPage ? 'justify-center' : 'justify-between'}`}
         style={{ minHeight: '100%' }}
       >
         {lines.map(({ lineNumber, words }) => {
@@ -305,7 +305,7 @@ export default function QuranMushafView({ page, highlightAyah, darkMode = false,
                         fontFamily: isEnd
                           ? "'KFGQPC HAFS Uthmanic Script', 'Amiri', serif"
                           : `'${fontFamily}', serif`,
-                        fontSize: isEnd ? '28px' : '28px',
+                        fontSize: 'clamp(18px, 5.8vw, 28px)',
                         lineHeight: 1.8,
                         color: isHighlighted
                           ? (darkMode ? '#6a9a6a' : '#2E7D32')
