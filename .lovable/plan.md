@@ -1,21 +1,18 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Corriger la boucle audio qui s'arrête en quittant le Hifz
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Problème
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+Dans `HifzStep3Memorisation.tsx`, le cleanup au démontage fait `isPlayingRef.current = false` (ligne 309). Or le handler `audio.onended` vérifie `if (isPlayingRef.current)` avant de chaîner au verset suivant (ligne 291). Résultat : quand tu quittes la page, le verset en cours finit mais le suivant ne démarre jamais.
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+Les deux autres composants (`HifzStepImpregnationTajweed`, `HifzStepIntentionImpregnation`) n'ont pas ce problème — leur cleanup est déjà un no-op.
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+### Correction
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+**`src/components/hifz/HifzStep3Memorisation.tsx`** — une seule ligne à modifier :
+
+- Ligne 309 : remplacer `return () => { isPlayingRef.current = false; };` par `return () => { /* audio persists globally */ };`
+
+Cela permet au chaînage `onended → playNextAyah` de continuer après la navigation, et le MiniPlayer affichera les contrôles correctement.
 
