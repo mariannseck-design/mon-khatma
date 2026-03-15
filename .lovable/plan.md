@@ -1,26 +1,21 @@
 
 
-## Problème
+# Diagnostic : 404 sur /quran-reader
 
-Quand tu cliques sur le bouton **Mushaf flottant**, `navigate('/quran-reader?page=...')` **démonte** le composant Hifz. L'audio en cours continue de jouer (grâce au contexte global), mais dès que le verset en cours se termine, le callback `onended` qui relance le verset suivant (la boucle) est lié aux refs du composant Hifz — qui n'existent plus. Résultat : **l'audio s'arrête après le verset en cours**.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
 ## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-Ouvrir le Mushaf **dans un nouvel onglet** au lieu de naviguer dans l'onglet actuel. Ainsi le composant Hifz reste monté, les refs restent vivantes, et la boucle audio continue.
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-### Modification : `src/components/hifz/HifzStepWrapper.tsx`
-
-Remplacer les deux `navigate(...)` par `window.open(url, '_blank')` :
-
-```tsx
-// Avant
-onClick={() => navigate(`/quran-reader?page=${mushafPage}`)}
-
-// Après
-onClick={() => window.open(`/quran-reader?page=${mushafPage}`, '_blank')}
-```
-
-Cela concerne les 2 boutons Mushaf dans le fichier (le badge en haut et le FAB flottant en bas-gauche).
-
-L'import `useNavigate` peut être conservé si `onPause` ou d'autres fonctionnalités l'utilisent, sinon on le retire.
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

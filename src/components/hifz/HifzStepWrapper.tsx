@@ -85,7 +85,7 @@ export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBac
           </div>
           {mushafPage && (
             <button
-              onClick={() => navigate(`/quran-reader?page=${mushafPage}`)}
+              onClick={() => window.open(`/quran-reader?page=${mushafPage}`, '_blank')}
               className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full transition-all active:scale-95"
               style={{ background: 'rgba(5,150,105,0.12)', border: '1px solid rgba(5,150,105,0.25)' }}
             >
@@ -136,7 +136,7 @@ export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBac
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.7 }}
             transition={{ delay: 0.8 }}
-            onClick={() => navigate(`/quran-reader?page=${mushafPage}`)}
+            onClick={() => window.open(`/quran-reader?page=${mushafPage}`, '_blank')}
             className="fixed bottom-24 left-4 z-50 flex items-center gap-1.5 px-3 py-2.5 rounded-full shadow-lg transition-all active:scale-95"
             style={{
               background: 'linear-gradient(135deg, rgba(5,150,105,0.9), rgba(4,120,87,0.95))',
