@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { History, Check, BookOpen, Download, Share2 } from 'lucide-react';
+import { History, Check, BookOpen, Download } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { getSurahByPage } from '@/lib/surahData';
