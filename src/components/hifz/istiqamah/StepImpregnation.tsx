@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { RefreshCw, Check, Volume2 } from 'lucide-react';
+import { RefreshCw, Check, Volume2, Square } from 'lucide-react';
 import HifzMushafToggle, { getMushafMode, setMushafMode, type MushafMode } from '../HifzMushafToggle';
 import HifzMushafImage from '../HifzMushafImage';
 import { getVersesByRange, type LocalAyah } from '@/lib/quranData';
@@ -273,6 +273,33 @@ export default function StepImpregnation({ surahNumber, verseStart, verseEnd, ve
           >
             <Volume2 className="h-4 w-4" style={{ color: isPlaying ? '#d4af37' : 'rgba(255,255,255,0.4)' }} />
           </button>
+
+          {isPlaying && (
+            <button
+              onClick={() => {
+                generationRef.current++;
+                isPlayingRef.current = false;
+                pausedRef.current = false;
+                if (audioRef.current) {
+                  audioRef.current.onended = null;
+                  audioRef.current.onerror = null;
+                  audioRef.current.pause();
+                  try { audioRef.current.src = ''; } catch {}
+                  audioRef.current = null;
+                }
+                stopGlobal();
+                setIsPlaying(false);
+                setCurrentAyahIndex(-1);
+              }}
+              className="w-10 h-10 rounded-full flex items-center justify-center transition-all active:scale-90"
+              style={{
+                background: 'rgba(239,68,68,0.15)',
+                border: '1px solid rgba(239,68,68,0.4)',
+              }}
+            >
+              <Square className="h-3.5 w-3.5" style={{ color: '#ef4444', fill: '#ef4444' }} />
+            </button>
+          )}
         </div>
       </div>
 
