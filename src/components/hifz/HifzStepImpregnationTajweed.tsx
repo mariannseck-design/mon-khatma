@@ -132,9 +132,20 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
     const handler = () => {
       if (document.visibilityState === 'visible') {
         const audio = audioRef.current;
-        if (isPlayingRef.current && audio && audio.paused && !audio.ended) {
-          setIsPlaying(false);
+        const actuallyPlaying = audio && !audio.paused && !audio.ended;
+        if (actuallyPlaying) {
+          isPlayingRef.current = true;
+          setIsPlaying(true);
+        } else if (audio && audio.paused && !audio.ended && isPlayingRef.current) {
+          audio.play().catch(() => {
+            isPlayingRef.current = false;
+            setIsPlaying(false);
+            setCurrentAyahIndex(-1);
+          });
+        } else if (!audio || audio.ended) {
           isPlayingRef.current = false;
+          setIsPlaying(false);
+          setCurrentAyahIndex(-1);
         }
       }
     };
