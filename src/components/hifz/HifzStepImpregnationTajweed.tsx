@@ -1,8 +1,7 @@
-import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Headphones, Check, Play, Pause, Square, RotateCcw, ZoomIn, ZoomOut, BookOpen, Minimize2 } from 'lucide-react';
+import { Headphones, Check, Play, Pause, RotateCcw } from 'lucide-react';
 import HifzStepWrapper from './HifzStepWrapper';
-import HifzMushafToggle, { getMushafMode, setMushafMode, type MushafMode } from './HifzMushafToggle';
 import HifzMushafImage from './HifzMushafImage';
 import { RECITERS, getAyahAudioUrl } from '@/hooks/useQuranAudio';
 import { SURAHS } from '@/lib/surahData';
