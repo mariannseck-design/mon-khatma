@@ -1,21 +1,65 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Problème
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+Deux bugs liés au cycle de vie audio dans `StepImpregnation` :
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+1. **Pas de cleanup au démontage** : quand on passe à l'étape B, le composant StepImpregnation se démonte mais l'audio n'est jamais arrêtée → l'audio de l'étape A continue de jouer par-dessus l'étape B.
+2. **État UI désynchronisé au retour d'onglet** : quand le navigateur met l'onglet en arrière-plan (ouverture Mushaf), `audio.play()` peut échouer silencieusement dans `playLoop`, ce qui met `isPlaying = false`. Au retour, le bouton audio apparaît éteint alors que l'audio a pu reprendre ou est encore en cours.
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+## Plan
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+### 1) Ajouter un `useEffect` cleanup dans `StepImpregnation.tsx`
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+Quand le composant se démonte, arrêter proprement l'audio :
+
+```tsx
+useEffect(() => {
+  return () => {
+    generationRef.current++;
+    isPlayingRef.current = false;
+    if (audioRef.current) {
+      audioRef.current.onended = null;
+      audioRef.current.onerror = null;
+      audioRef.current.pause();
+      try { audioRef.current.src = ''; } catch {}
+      audioRef.current = null;
+    }
+  };
+}, []);
+```
+
+Cela garantit que passer de l'étape A à l'étape B coupe l'audio de A.
+
+### 2) Synchroniser l'état du bouton au retour d'onglet
+
+Ajouter un listener `visibilitychange` qui, au retour de l'onglet, vérifie si l'audio est réellement en train de jouer et met à jour `isPlaying` en conséquence :
+
+```tsx
+useEffect(() => {
+  const handler = () => {
+    if (document.visibilityState === 'visible') {
+      const audio = audioRef.current;
+      const actuallyPlaying = audio && !audio.paused && !audio.ended;
+      if (actuallyPlaying && !isPlayingRef.current) {
+        isPlayingRef.current = true;
+        setIsPlaying(true);
+      } else if (!actuallyPlaying && isPlayingRef.current) {
+        isPlayingRef.current = false;
+        setIsPlaying(false);
+      }
+    }
+  };
+  document.addEventListener('visibilitychange', handler);
+  return () => document.removeEventListener('visibilitychange', handler);
+}, []);
+```
+
+### 3) Appeler `stopGlobal()` dans le cleanup aussi
+
+Pour que le contexte audio global soit aussi nettoyé au démontage, appeler `stopGlobal()` dans le cleanup du `useEffect`.
+
+### Fichier modifié
+
+- `src/components/hifz/istiqamah/StepImpregnation.tsx` — ajout de 2 `useEffect` (cleanup + visibilitychange)
 
