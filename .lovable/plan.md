@@ -1,21 +1,25 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Simplifier l'étape Imprégnation Tajweed
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Changements dans `HifzStepImpregnationTajweed.tsx`
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+**Supprimer :**
+- Le bouton Stop rouge (Square, lignes 516-541)
+- Le toggle `HifzMushafToggle` (image/texte/physical) et tout le bloc conditionnel associé (lignes 405-461)
+- Le bloc "Mushaf agrandi" / "Ouvrir le Mushaf ici" (lignes 463-488) — remplacé par le Mushaf inline par défaut
+- L'icône casque (Headphones) réduite de `w-14 h-14` → `w-10 h-10`, icône de `h-7 w-7` → `h-5 w-5`
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+**Remplacer par :**
+- `HifzMushafImage` affiché directement en permanence, sans toggle, avec `maxHeight="55vh"` pour occuper un maximum d'espace
+- Supprimer les états `mushafMode`, `mushafExpanded`, `fontSizeIndex` et les imports inutiles (`HifzMushafToggle`, `ZoomIn`, `ZoomOut`, `BookOpen`, `Minimize2`)
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+**Réduire :**
+- Bouton Play/Pause : `w-20 h-20` → `w-14 h-14`, icône `h-8 w-8` → `h-5 w-5`
+- Bouton "Je suis prêt(e)" : `py-4` → `py-2.5`, `text-sm` au lieu de font-semibold normal
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+**Conserver :**
+- Sélecteur de récitant
+- Compteur d'écoute (3 cercles)
+- Toute la logique audio (play/pause, visibilitychange, anti-coupure)
 
