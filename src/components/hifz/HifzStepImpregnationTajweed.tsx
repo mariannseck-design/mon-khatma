@@ -101,11 +101,8 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
   const [isPlaying, setIsPlaying] = useState(false);
   const [reciter, setReciter] = useState(() => localStorage.getItem('quran_reciter') || 'ar.alafasy');
   const [currentAyahIndex, setCurrentAyahIndex] = useState(-1);
-  const [fontSizeIndex, setFontSizeIndex] = useState(1);
   const [ayahs, setAyahs] = useState<AyahWithAnnotations[]>([]);
   const [versesLoading, setVersesLoading] = useState(true);
-  const [mushafMode, setMushafModeState] = useState<MushafMode>(getMushafMode);
-  const [mushafExpanded, setMushafExpanded] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const ayahsRef = useRef<{ audio: string; numberInSurah: number }[]>([]);
   const indexRef = useRef(0);
