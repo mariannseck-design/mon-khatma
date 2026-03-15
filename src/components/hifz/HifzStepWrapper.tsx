@@ -1,9 +1,10 @@
 import { ReactNode, useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, BookOpen } from 'lucide-react';
+import { ChevronLeft, BookOpen, ExternalLink, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { getExactVersePage } from '@/lib/quranData';
 import { SURAHS } from '@/lib/surahData';
+import { Sheet, SheetContent } from '@/components/ui/sheet';
 
 interface HifzStepWrapperProps {
   stepNumber: number;
