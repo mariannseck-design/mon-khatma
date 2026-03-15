@@ -87,7 +87,7 @@ export function WeeklyMiniChart({ weekProgress, targetPages }: Props) {
       </div>
 
       {/* Chart */}
-      <div className="relative" style={{ height: 120 }}>
+      <div className="relative" style={{ height: 90 }}>
         {/* Target line */}
         {targetPages > 0 && targetPercent < 100 && (
           <div
