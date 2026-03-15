@@ -312,21 +312,6 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
     }
   };
 
-  // Sync with global audio stop (MiniPlayer X) — stopSignal fires synchronously before onerror
-  const stopSignalRef = useRef(stopSignal);
-  useEffect(() => {
-    if (stopSignalRef.current === stopSignal) { stopSignalRef.current = stopSignal; return; }
-    stopSignalRef.current = stopSignal;
-    if (isPlayingRef.current) {
-      generationRef.current++;
-      isPlayingRef.current = false;
-      hardStopAudio();
-      setIsPlaying(false);
-      setCurrentAyahIndex(-1);
-      pausedRef.current = null;
-    }
-  }, [stopSignal, hardStopAudio]);
-
   return (
     <HifzStepWrapper stepNumber={2} stepTitle="Imprégnation & Sens" onBack={onBack} onPause={onPause}>
       <div className="text-center space-y-5">

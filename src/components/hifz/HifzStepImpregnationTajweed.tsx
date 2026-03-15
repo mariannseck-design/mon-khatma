@@ -287,21 +287,6 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
     });
   }, []);
 
-  // Sync with global audio stop (MiniPlayer X)
-  const stopSignalRef = useRef(stopSignal);
-  useEffect(() => {
-    if (stopSignalRef.current === stopSignal) { stopSignalRef.current = stopSignal; return; }
-    stopSignalRef.current = stopSignal;
-    if (isPlayingRef.current) {
-      generationRef.current++;
-      isPlayingRef.current = false;
-      hardStopAudio();
-      setIsPlaying(false);
-      setCurrentAyahIndex(-1);
-      pausedRef.current = null;
-    }
-  }, [stopSignal, hardStopAudio]);
-
   const togglePlay = () => {
     if (isPlaying) {
       // Pause — keep audio element for resume

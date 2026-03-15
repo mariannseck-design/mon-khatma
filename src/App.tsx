@@ -128,7 +128,6 @@ const App = () => (
         <AuthProvider>
           <AudioProvider>
             <AppWithSWUpdate />
-            <MiniPlayer />
           </AudioProvider>
         </AuthProvider>
       </BrowserRouter>

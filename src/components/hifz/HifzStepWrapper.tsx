@@ -75,7 +75,7 @@ export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBac
         </motion.button>
       )}
       {verseInfo && (
-        <div className="flex justify-center">
+        <div className="flex justify-center gap-2">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full"
                style={{ background: 'rgba(212,175,55,0.12)', border: '1px solid rgba(212,175,55,0.25)' }}>
             <span className="text-xs" style={{ color: '#d4af37' }}>📖</span>
@@ -83,6 +83,16 @@ export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBac
               {verseInfo}
             </span>
           </div>
+          {mushafPage && (
+            <button
+              onClick={() => navigate(`/quran-reader?page=${mushafPage}`)}
+              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full transition-all active:scale-95"
+              style={{ background: 'rgba(5,150,105,0.12)', border: '1px solid rgba(5,150,105,0.25)' }}
+            >
+              <BookOpen className="h-3 w-3" style={{ color: '#059669' }} />
+              <span className="text-[10px] font-medium" style={{ color: 'rgba(5,150,105,0.85)' }}>Mushaf</span>
+            </button>
+          )}
         </div>
       )}
 
