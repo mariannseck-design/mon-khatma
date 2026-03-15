@@ -19,7 +19,7 @@ const IMAGE_SOURCES = [
 const MIN_SCALE = 1;
 const MAX_SCALE = 3;
 
-export default function HifzMushafImage({ surahNumber, startVerse, endVerse, maxHeight = '320px' }: Props) {
+export default function HifzMushafImage({ surahNumber, startVerse, endVerse, maxHeight = '320px', fullWidth = false }: Props) {
   const [pages, setPages] = useState<number[]>([]);
   const [currentPageIdx, setCurrentPageIdx] = useState(0);
   const [loading, setLoading] = useState(true);
