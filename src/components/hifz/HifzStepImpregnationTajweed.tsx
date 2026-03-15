@@ -230,6 +230,10 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
     setCurrentAyahIndex(idx);
     const audio = new Audio(ayahsRef.current[idx].audio);
     audioRef.current = audio;
+    registerRef.current(audio, {
+      label: `${surahName} · v.${startVerse}-${endVerse}`,
+      returnPath: window.location.pathname + window.location.search,
+    });
     audio.onended = () => playNextAyah(idx + 1);
     audio.onerror = () => {
       console.warn('[HifzTajweed] Audio error for ayah', idx);
