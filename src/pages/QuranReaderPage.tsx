@@ -388,19 +388,31 @@ export default function QuranReaderPage() {
             </AnimatePresence>
           </>
         ) : (
-          <QuranTextView
-            page={page}
-            highlightAyah={currentAyahNumber}
-            fontSize={TEXT_SIZES[textSizeIndex].value}
-            darkMode={nightMode}
-            tajweedEnabled={tajweedEnabled}
-            showTranslation={translationEnabled}
-            translationEdition={translationEdition}
-            onVerseSelect={(vk, surahNum, verseNum) => {
-              setSelectedVerse(vk);
-              setPageVerses([{ verseKey: vk, surahNumber: surahNum, verseNumber: verseNum }]);
-            }}
-          />
+          isOnline ? (
+            <QuranMushafView
+              page={page}
+              highlightAyah={currentAyahNumber}
+              darkMode={nightMode}
+              onVerseSelect={(vk, surahNum, verseNum) => {
+                setSelectedVerse(vk);
+                setPageVerses([{ verseKey: vk, surahNumber: surahNum, verseNumber: verseNum }]);
+              }}
+            />
+          ) : (
+            <QuranTextView
+              page={page}
+              highlightAyah={currentAyahNumber}
+              fontSize={TEXT_SIZES[textSizeIndex].value}
+              darkMode={nightMode}
+              tajweedEnabled={tajweedEnabled}
+              showTranslation={translationEnabled}
+              translationEdition={translationEdition}
+              onVerseSelect={(vk, surahNum, verseNum) => {
+                setSelectedVerse(vk);
+                setPageVerses([{ verseKey: vk, surahNumber: surahNum, verseNumber: verseNum }]);
+              }}
+            />
+          )
         )}
       </div>
 
