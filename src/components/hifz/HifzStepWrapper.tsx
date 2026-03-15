@@ -126,6 +126,31 @@ export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBac
           </button>
         </motion.div>
       )}
+
+      {/* Floating Mushaf FAB — bottom-left, always visible */}
+      <AnimatePresence>
+        {mushafPage && (
+          <motion.button
+            key="mushaf-fab"
+            initial={{ opacity: 0, scale: 0.7 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.7 }}
+            transition={{ delay: 0.8 }}
+            onClick={() => navigate(`/quran-reader?page=${mushafPage}`)}
+            className="fixed bottom-24 left-4 z-50 flex items-center gap-1.5 px-3 py-2.5 rounded-full shadow-lg transition-all active:scale-95"
+            style={{
+              background: 'linear-gradient(135deg, rgba(5,150,105,0.9), rgba(4,120,87,0.95))',
+              border: '1px solid rgba(255,255,255,0.15)',
+              backdropFilter: 'blur(8px)',
+            }}
+          >
+            <BookOpen className="h-4 w-4" style={{ color: 'rgba(255,255,255,0.9)' }} />
+            <span className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.9)' }}>
+              Mushaf
+            </span>
+          </motion.button>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
