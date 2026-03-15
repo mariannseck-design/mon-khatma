@@ -150,7 +150,7 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
       return;
     }
     indexRef.current = idx;
-    setCurrentAyahIndex(idx);
+    
 
     // Kill previous audio element completely before creating new one
     if (audioRef.current) {
