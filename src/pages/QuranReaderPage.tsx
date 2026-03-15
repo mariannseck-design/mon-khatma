@@ -47,12 +47,11 @@ export default function QuranReaderPage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const retriesRef = useRef(0);
 
-  // Text mode now uses local bundled data — no network dependency
-  const [viewMode, setViewModeState] = useState<'image' | 'text'>(() => {
-    const saved = localStorage.getItem('quran_view_mode');
-    return saved === 'text' ? 'text' : 'image';
-  });
+  // Text mode hidden until further notice — force image mode
+  const [viewMode, setViewModeState] = useState<'image' | 'text'>('image');
   const handleViewModeChange = (mode: 'image' | 'text') => {
+    // Text mode disabled — always stay on image
+    if (mode === 'text') return;
     setViewModeState(mode);
     localStorage.setItem('quran_view_mode', mode);
   };

@@ -268,36 +268,8 @@ export default function ReaderSettingsPanel({
                 </div>
               )}
 
-              {/* View Mode Toggle */}
-              {!textModeDisabled && (
-                <div className="mb-4">
-                  <p className="text-xs font-medium mb-2 opacity-70">Mode d'affichage</p>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => !isOffline && onViewModeChange('image')}
-                      className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium transition-all"
-                      style={{
-                        background: viewMode === 'image' ? (nightMode ? 'rgba(90,180,180,0.2)' : 'rgba(255,255,255,0.35)') : (nightMode ? 'rgba(90,180,180,0.05)' : 'rgba(255,255,255,0.15)'),
-                        border: viewMode === 'image' ? `1.5px solid ${nightMode ? 'rgba(90,180,180,0.4)' : 'rgba(180,150,60,0.5)'}` : '1.5px solid transparent',
-                        opacity: isOffline ? 0.4 : 1,
-                        cursor: isOffline ? 'not-allowed' : 'pointer',
-                      }}
-                    >
-                      <Image className="h-4 w-4" /> {isOffline ? 'Mushaf (hors-ligne)' : 'Mushaf'}
-                    </button>
-                    <button
-                      onClick={() => onViewModeChange('text')}
-                      className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium transition-all"
-                      style={{
-                        background: viewMode === 'text' ? (nightMode ? 'rgba(90,180,180,0.2)' : 'rgba(255,255,255,0.35)') : (nightMode ? 'rgba(90,180,180,0.05)' : 'rgba(255,255,255,0.15)'),
-                        border: viewMode === 'text' ? `1.5px solid ${nightMode ? 'rgba(90,180,180,0.4)' : 'rgba(180,150,60,0.5)'}` : '1.5px solid transparent',
-                      }}
-                    >
-                      <Type className="h-4 w-4" /> Texte
-                    </button>
-                  </div>
-                </div>
-              )}
+              {/* View Mode Toggle — hidden until further notice */}
+              {/* Text mode is temporarily disabled */}
 
               {/* Tajweed Toggle */}
               {!textModeDisabled && viewMode === 'text' && onTajweedChange && (
