@@ -315,7 +315,7 @@ export default function HifzMushafImage({ surahNumber, startVerse, endVerse, max
             Page {page} ({currentPageIdx + 1}/{pages.length})
           </span>
           <button
-            onClick={() => { setCurrentPageIdx(i => i + 1); setImgLoading(true); setSourceIdx(0); resetZoom(); }}
+            onClick={() => { setCurrentPageIdx(i => i + 1); setImgLoading(true); setSourceIdx(0); resetZoom(); setShowScrollHint(true); }}
             disabled={currentPageIdx === pages.length - 1}
             className="w-8 h-8 rounded-full flex items-center justify-center disabled:opacity-30 transition-all active:scale-95"
             style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(212,175,55,0.2)' }}
