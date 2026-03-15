@@ -94,7 +94,7 @@ export function TotalProgressBar({ totalPagesRead, onResetKhatma, onShowCelebrat
           <p className="text-xs text-primary-foreground/70 text-center italic">
             {isComplete 
               ? "Félicitations ! Qu'Allah (عز وجل) accepte votre lecture."
-              : <>Continue ta Khatma avec l'aide d'Allah <span className="honorific">(عز وجل)</span></>
+              : <>Qu'Allah <span className="honorific font-bold" style={{ fontSize: '1.1em' }}>(عز وجل)</span> facilite ta lecture</>
             }
           </p>
 
