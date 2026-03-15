@@ -1,21 +1,17 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Désactiver temporairement le bouton audio Play (Imprégnation Tajweed)
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Contexte
+Le bouton Play de l'étape Imprégnation Tajweed a un bug persistant (répétition de syllabe). On le désactive visuellement pour le moment. Tout le code audio existant est conservé intact pour pouvoir le réactiver facilement.
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Changement unique — `src/components/hifz/HifzStepImpregnationTajweed.tsx`
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+**Désactiver le bouton Play** (lignes ~450-463) :
+- Ajouter `disabled` + `opacity-50 cursor-not-allowed` au bouton
+- Remplacer `onClick={togglePlay}` par `onClick={undefined}`
+- Ajouter un petit texte sous le bouton : "Temporairement indisponible"
+- Conserver 100% du code audio (`togglePlay`, `playNextAyah`, refs, etc.) — rien n'est supprimé
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
-
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+Le compteur d'écoute (1-2-3) reste visible mais inactif. Le bouton "Suivant" reste accessible pour passer l'étape manuellement.
 
