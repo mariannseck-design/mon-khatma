@@ -29,6 +29,7 @@ export default function HifzMushafImage({ surahNumber, startVerse, endVerse, max
   // Zoom & pan state
   const [scale, setScale] = useState(1);
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
+  const [showScrollHint, setShowScrollHint] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
   const lastTouchDistRef = useRef<number | null>(null);
   const lastTouchCenterRef = useRef<{ x: number; y: number } | null>(null);
