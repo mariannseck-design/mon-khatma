@@ -78,7 +78,7 @@ export function WeeklyMiniChart({ weekProgress, targetPages }: Props) {
         <span
           className="text-xs font-medium px-2 py-0.5 rounded-full"
           style={{
-            background: 'var(--p-track)',
+            background: 'rgba(6,95,70,0.06)',
             color: 'var(--p-primary)',
           }}
         >
