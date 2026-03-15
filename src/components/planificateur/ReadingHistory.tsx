@@ -96,7 +96,7 @@ async function generatePDF(
   y += 10;
 
   // Table rows
-  doc.setFontSize(9);
+  doc.setFontSize(10);
   enriched.forEach((entry, i) => {
     if (y > 275) {
       doc.addPage();
@@ -104,17 +104,17 @@ async function generatePDF(
     }
 
     if (i % 2 === 0) {
-      doc.setFillColor(245, 245, 245);
+      doc.setFillColor(235, 235, 235);
       doc.rect(18, y - 4, pageWidth - 36, 7, 'F');
     }
 
-    doc.setTextColor(50, 50, 50);
+    doc.setTextColor(25, 25, 25);
     doc.text(formatDateLong(entry.date), colX[0], y);
     doc.text(`${entry.pages_read}`, colX[1], y);
     doc.text(entry.surahName, colX[2], y);
 
     const goalMet = targetPages > 0 && entry.pages_read >= targetPages;
-    doc.setTextColor(goalMet ? 6 : 150, goalMet ? 95 : 150, goalMet ? 70 : 150);
+    doc.setTextColor(goalMet ? 4 : 120, goalMet ? 60 : 120, goalMet ? 45 : 120);
     doc.text(goalMet ? '✓' : '—', colX[3], y);
 
     y += 7;
