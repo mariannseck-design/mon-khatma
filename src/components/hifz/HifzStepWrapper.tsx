@@ -17,6 +17,7 @@ interface HifzStepWrapperProps {
   surahNumber?: number;
   startVerse?: number;
   endVerse?: number;
+  disableMushafOverlay?: boolean;
 }
 
 function formatTime(seconds: number): string {
@@ -25,7 +26,7 @@ function formatTime(seconds: number): string {
   return `${m}:${s.toString().padStart(2, '0')}`;
 }
 
-export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBack, onPause, totalSteps = 5, phaseLabel, surahNumber, startVerse, endVerse }: HifzStepWrapperProps) {
+export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBack, onPause, totalSteps = 5, phaseLabel, surahNumber, startVerse, endVerse, disableMushafOverlay = false }: HifzStepWrapperProps) {
   const [elapsed, setElapsed] = useState(0);
   const [pageLabel, setPageLabel] = useState('');
   const [mushafPage, setMushafPage] = useState<number | null>(null);
@@ -85,7 +86,7 @@ export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBac
               {verseInfo}
             </span>
           </div>
-          {mushafPage && (
+          {mushafPage && !disableMushafOverlay && (
             <button
               onClick={() => setMushafOpen(true)}
               className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full transition-all active:scale-95"
@@ -131,7 +132,7 @@ export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBac
 
       {/* Floating Mushaf FAB — bottom-left, always visible */}
       <AnimatePresence>
-        {mushafPage && (
+        {mushafPage && !disableMushafOverlay && (
           <motion.button
             key="mushaf-fab"
             initial={{ opacity: 0, scale: 0.7 }}
@@ -154,37 +155,38 @@ export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBac
         )}
       </AnimatePresence>
 
-      {/* Integrated Mushaf Sheet — stays in same tab, audio keeps playing */}
-      <Sheet open={mushafOpen} onOpenChange={setMushafOpen}>
-        <SheetContent side="bottom" className="h-[95vh] p-0 rounded-t-2xl overflow-hidden" style={{ background: '#1a2e1a' }}>
-          <div className="flex items-center justify-between px-4 py-3" style={{ background: 'rgba(0,0,0,0.3)', borderBottom: '1px solid rgba(212,175,55,0.15)' }}>
-            <span className="text-sm font-medium" style={{ color: '#d4af37' }}>📖 Mushaf — p. {mushafPage}</span>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => window.open(`/quran-reader?page=${mushafPage}`, '_blank')}
-                className="p-1.5 rounded-full transition-all active:scale-90"
-                style={{ background: 'rgba(255,255,255,0.08)' }}
-                title="Ouvrir dans un nouvel onglet"
-              >
-                <ExternalLink className="h-4 w-4" style={{ color: 'rgba(255,255,255,0.5)' }} />
-              </button>
-              <button
-                onClick={() => setMushafOpen(false)}
-                className="p-1.5 rounded-full transition-all active:scale-90"
-                style={{ background: 'rgba(255,255,255,0.08)' }}
-              >
-                <X className="h-4 w-4" style={{ color: 'rgba(255,255,255,0.5)' }} />
-              </button>
+      {!disableMushafOverlay && (
+        <Sheet open={mushafOpen} onOpenChange={setMushafOpen}>
+          <SheetContent side="bottom" className="h-[95vh] p-0 rounded-t-2xl overflow-hidden" style={{ background: '#1a2e1a' }}>
+            <div className="flex items-center justify-between px-4 py-3" style={{ background: 'rgba(0,0,0,0.3)', borderBottom: '1px solid rgba(212,175,55,0.15)' }}>
+              <span className="text-sm font-medium" style={{ color: '#d4af37' }}>📖 Mushaf — p. {mushafPage}</span>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => window.open(`/quran-reader?page=${mushafPage}`, '_blank')}
+                  className="p-1.5 rounded-full transition-all active:scale-90"
+                  style={{ background: 'rgba(255,255,255,0.08)' }}
+                  title="Ouvrir dans un nouvel onglet"
+                >
+                  <ExternalLink className="h-4 w-4" style={{ color: 'rgba(255,255,255,0.5)' }} />
+                </button>
+                <button
+                  onClick={() => setMushafOpen(false)}
+                  className="p-1.5 rounded-full transition-all active:scale-90"
+                  style={{ background: 'rgba(255,255,255,0.08)' }}
+                >
+                  <X className="h-4 w-4" style={{ color: 'rgba(255,255,255,0.5)' }} />
+                </button>
+              </div>
             </div>
-          </div>
-          <iframe
-            src={`/quran-reader?page=${mushafPage}&embed=1`}
-            className="w-full flex-1"
-            style={{ height: 'calc(95vh - 52px)', border: 'none' }}
-            title="Mushaf"
-          />
-        </SheetContent>
-      </Sheet>
+            <iframe
+              src={`/quran-reader?page=${mushafPage}&embed=1`}
+              className="w-full flex-1"
+              style={{ height: 'calc(95vh - 52px)', border: 'none' }}
+              title="Mushaf"
+            />
+          </SheetContent>
+        </Sheet>
+      )}
     </motion.div>
   );
 }

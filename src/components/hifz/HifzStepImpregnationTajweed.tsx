@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Headphones, Check, Play, Pause, Square, RotateCcw, ZoomIn, ZoomOut } from 'lucide-react';
+import { Headphones, Check, Play, Pause, Square, RotateCcw, ZoomIn, ZoomOut, BookOpen, Minimize2 } from 'lucide-react';
 import HifzStepWrapper from './HifzStepWrapper';
 import HifzMushafToggle, { getMushafMode, setMushafMode, type MushafMode } from './HifzMushafToggle';
 import HifzMushafImage from './HifzMushafImage';
@@ -106,6 +106,7 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
   const [ayahs, setAyahs] = useState<AyahWithAnnotations[]>([]);
   const [versesLoading, setVersesLoading] = useState(true);
   const [mushafMode, setMushafModeState] = useState<MushafMode>(getMushafMode);
+  const [mushafExpanded, setMushafExpanded] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const ayahsRef = useRef<{ audio: string; numberInSurah: number }[]>([]);
   const indexRef = useRef(0);
@@ -384,7 +385,7 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
   };
 
   return (
-    <HifzStepWrapper stepNumber={3} stepTitle="Imprégnation du Tajweed" onBack={onBack} onPause={onPause} totalSteps={5} phaseLabel={phaseLabel} surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse}>
+    <HifzStepWrapper stepNumber={3} stepTitle="Imprégnation du Tajweed" onBack={onBack} onPause={onPause} totalSteps={5} phaseLabel={phaseLabel} surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse} disableMushafOverlay>
       <div className="text-center space-y-5">
         {/* Header */}
         <div
@@ -458,6 +459,33 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
             </div>
           )}
         </div>
+
+        {/* Inline enlarged Mushaf — no iframe, no new tab */}
+        {mushafExpanded ? (
+          <div className="space-y-2">
+            <div className="flex items-center justify-between px-1">
+              <span className="text-xs font-medium" style={{ color: '#d4af37' }}>📖 Mushaf agrandi</span>
+              <button
+                onClick={() => setMushafExpanded(false)}
+                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full transition-all active:scale-95"
+                style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(212,175,55,0.2)' }}
+              >
+                <Minimize2 className="h-3 w-3" style={{ color: '#d4af37' }} />
+                <span className="text-[10px]" style={{ color: 'rgba(255,255,255,0.6)' }}>Réduire</span>
+              </button>
+            </div>
+            <HifzMushafImage surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse} maxHeight="70vh" />
+          </div>
+        ) : (
+          <button
+            onClick={() => setMushafExpanded(true)}
+            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl transition-all active:scale-[0.98]"
+            style={{ background: 'rgba(5,150,105,0.1)', border: '1px solid rgba(5,150,105,0.25)' }}
+          >
+            <BookOpen className="h-4 w-4" style={{ color: '#059669' }} />
+            <span className="text-xs font-medium" style={{ color: 'rgba(5,150,105,0.85)' }}>Ouvrir le Mushaf ici</span>
+          </button>
+        )}
 
         {/* Audio section */}
         <div className="space-y-3">
