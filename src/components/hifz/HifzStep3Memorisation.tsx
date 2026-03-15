@@ -5,7 +5,8 @@ import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover
 import HifzStepWrapper from './HifzStepWrapper';
 import HifzMushafToggle, { getMushafMode, setMushafMode, type MushafMode } from './HifzMushafToggle';
 import HifzMushafImage from './HifzMushafImage';
-import { getVersesByRange, type LocalAyah } from '@/lib/quranData';
+import { getVersesByRange, getExactVersePage, type LocalAyah } from '@/lib/quranData';
+import { useNavigate } from 'react-router-dom';
 import { RECITERS, getAyahAudioUrl } from '@/hooks/useQuranAudio';
 import { SURAHS } from '@/lib/surahData';
 import { useGlobalAudio } from '@/contexts/AudioContext';
