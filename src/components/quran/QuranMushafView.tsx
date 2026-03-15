@@ -288,7 +288,6 @@ export default function QuranMushafView({ page, highlightAyah, darkMode = false,
                 style={{
                   justifyContent: isSpecialPage ? 'center' : 'space-around',
                   direction: 'rtl',
-                  minHeight: '40px',
                   padding: '0 4px',
                 }}
               >
