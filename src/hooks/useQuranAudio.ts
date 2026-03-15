@@ -97,6 +97,7 @@ export function useQuranAudio(page: number, onPageFinished?: () => void, startVe
 
     const audio = new Audio(ayah.audio);
     audioRef.current = audio;
+    registerRef.current(audio, { label: `Page ${page}`, returnPath: '/quran-reader' });
 
     audio.onended = () => {
       playAyah(index + 1);
