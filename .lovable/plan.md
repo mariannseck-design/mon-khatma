@@ -1,21 +1,38 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Lien Mushaf + indication sous le compteur audio
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Modification unique : `src/components/hifz/HifzStep3Memorisation.tsx`
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+Ajouter un petit bloc juste **après les contrôles audio** (après ligne 737, avant la fermeture du `</div>` de `space-y-3`) — visible uniquement quand l'audio est en cours de lecture (`isPlaying`).
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+Contenu :
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+```tsx
+{isPlaying && (
+  <p className="text-center text-[10px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.35)' }}>
+    📖{' '}
+    <button
+      onClick={(e) => {
+        e.stopPropagation();
+        // Navigate to mushaf at the right page
+        getExactVersePage(surahNumber, startVerse).then(page => 
+          navigate(`/quran-reader?page=${page}`)
+        );
+      }}
+      className="underline"
+      style={{ color: 'rgba(212,175,55,0.6)' }}
+    >
+      Lire sur le Mushaf
+    </button>
+    {' '}— le compteur reprend dès votre retour
+  </p>
+)}
+```
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+**Imports à ajouter** :
+- `useNavigate` de `react-router-dom`
+- `getExactVersePage` de `@/lib/quranData` (déjà importé via `getVersesByRange`)
+
+**Résultat** : Quand l'audio tourne, une ligne discrète apparaît sous les boutons avec un lien cliquable vers le Mushaf. Le texte est court : « 📖 Lire sur le Mushaf — le compteur reprend dès votre retour ».
 
