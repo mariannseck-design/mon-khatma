@@ -204,14 +204,12 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
       setIsPlaying(false);
       isPlayingRef.current = false;
     } else {
-      // Hard-stop any lingering audio before starting
-      hardStopAudio();
-      stopGlobal();
-
       const gen = ++generationRef.current;
       setIsPlaying(true);
       isPlayingRef.current = true;
+
       if (pausedRef.current && pausedRef.current.src) {
+        // Resume from where we left off — don't destroy the paused audio
         const audio = pausedRef.current;
         pausedRef.current = null;
         audioRef.current = audio;
@@ -236,8 +234,10 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
           setIsPlaying(false);
           isPlayingRef.current = false;
         });
-
       } else {
+        // Fresh start — kill any lingering audio
+        hardStopAudio();
+        stopGlobal();
         playNextAyah(indexRef.current, gen);
       }
     }
