@@ -248,11 +248,15 @@ export default function HifzStepIntentionImpregnation({ surahNumber, startVerse,
 
   useEffect(() => { fetchAudio(); }, [fetchAudio]);
 
-  const playNextAyah = useCallback((idx: number) => {
+  const generationRef = useRef(0);
+
+  const playNextAyah = useCallback((idx: number, gen: number) => {
+    if (generationRef.current !== gen) return;
+    if (ayahsRef.current.length === 0) return;
     if (idx >= ayahsRef.current.length) {
       setListenCount(prev => prev + 1);
       indexRef.current = 0;
-      playNextAyah(0);
+      playNextAyah(0, gen);
       return;
     }
     indexRef.current = idx;
@@ -265,8 +269,8 @@ export default function HifzStepIntentionImpregnation({ surahNumber, startVerse,
       surahNumber,
       startVerse,
     });
-    audio.onended = () => playNextAyah(idx + 1);
-    audio.onerror = () => playNextAyah(idx + 1);
+    audio.onended = () => { if (generationRef.current === gen) playNextAyah(idx + 1, gen); };
+    audio.onerror = () => { if (generationRef.current === gen) playNextAyah(idx + 1, gen); };
     audio.play().catch(() => setIsPlaying(false));
   }, []);
 
@@ -275,8 +279,9 @@ export default function HifzStepIntentionImpregnation({ surahNumber, startVerse,
       audioRef.current?.pause();
       setIsPlaying(false);
     } else {
+      generationRef.current++;
       setIsPlaying(true);
-      playNextAyah(indexRef.current);
+      playNextAyah(indexRef.current, generationRef.current);
     }
   };
 
