@@ -37,7 +37,8 @@ async function generatePDF(
   targetPages: number,
   firstName: string,
   startDate?: string,
-  isKhatmaComplete?: boolean
+  isKhatmaComplete?: boolean,
+  mode: 'download' | 'share' = 'download'
 ) {
   const { jsPDF } = await import('jspdf');
   const doc = new jsPDF('p', 'mm', 'a4');
