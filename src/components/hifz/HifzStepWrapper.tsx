@@ -87,7 +87,7 @@ export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBac
           </div>
           {mushafPage && (
             <button
-              onClick={() => window.open(`/quran-reader?page=${mushafPage}`, '_blank')}
+              onClick={() => setMushafOpen(true)}
               className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full transition-all active:scale-95"
               style={{ background: 'rgba(5,150,105,0.12)', border: '1px solid rgba(5,150,105,0.25)' }}
             >
