@@ -247,7 +247,7 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
     <HifzStepWrapper stepNumber={3} stepTitle="Imprégnation de la Prononciation et du Tajweed" onBack={onBack} onPause={onPause} totalSteps={5} phaseLabel={phaseLabel} surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse} disableMushafOverlay>
       {/* Mushaf inline — full width, outside padded container */}
       <div className="-mx-4">
-        <HifzMushafImage surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse} maxHeight="55vh" fullWidth />
+        <HifzMushafImage surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse} maxHeight="none" fullWidth />
       </div>
 
       <div className="text-center space-y-3">
