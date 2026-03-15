@@ -53,12 +53,12 @@ async function generatePDF(
   });
 
   // Header
-  doc.setFontSize(18);
-  doc.setTextColor(6, 95, 70);
+  doc.setFontSize(20);
+  doc.setTextColor(4, 60, 45);
   doc.text('Ma Khatma', pageWidth / 2, 22, { align: 'center' });
 
-  doc.setFontSize(11);
-  doc.setTextColor(120, 120, 120);
+  doc.setFontSize(12);
+  doc.setTextColor(60, 60, 60);
   doc.text('Historique de lecture', pageWidth / 2, 30, { align: 'center' });
 
   // Info line
