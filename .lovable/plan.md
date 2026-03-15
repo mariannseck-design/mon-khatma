@@ -1,26 +1,21 @@
 
 
-## Affiner le graphique hebdomadaire — style blanc/vert/or discret
+# Diagnostic : 404 sur /quran-reader
 
-Le graphique actuel utilise les bonnes couleurs mais manque de subtilité. Voici les ajustements pour un rendu épuré cohérent avec le tableau de bord (carte Ma Khatma en image).
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Changements dans `WeeklyMiniChart.tsx`
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-| Élément | Avant | Après |
-|---|---|---|
-| Fond carte | `var(--p-card)` | `white` |
-| Ombre | `var(--p-card-shadow)` | Ombre très légère `0 2px 12px rgba(6,95,70,0.06)` |
-| Barres normales | emerald opacité 0.5 | emerald opacité **0.2** |
-| Barres objectif atteint | emerald opacité 1 | emerald opacité **0.5** |
-| Barre du jour | or opacité 1 | or opacité **0.6** |
-| Ligne objectif | or opacité 0.5 | or opacité **0.25**, trait plus fin |
-| Badge total pages | `var(--p-track)` | `rgba(6,95,70,0.06)` |
-| Hauteur chart | 120px | **90px** |
-| Coins barres | 4px | **6px** |
-| Largeur max barres | 28px | 24px |
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-Résultat : un graphique aéré sur fond blanc, barres vert très pâle, jour courant en doré léger — discret et cohérent avec la charte premium.
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-### Fichier modifié
-- `src/components/planificateur/WeeklyMiniChart.tsx`
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

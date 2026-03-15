@@ -60,8 +60,8 @@ export function WeeklyMiniChart({ weekProgress, targetPages }: Props) {
       className="border-none shadow-none p-5"
       style={{
         borderRadius: '2rem',
-        background: 'var(--p-card)',
-        boxShadow: 'var(--p-card-shadow)',
+        background: 'white',
+        boxShadow: '0 2px 12px rgba(6,95,70,0.06)',
       }}
     >
       {/* Header */}
@@ -78,7 +78,7 @@ export function WeeklyMiniChart({ weekProgress, targetPages }: Props) {
         <span
           className="text-xs font-medium px-2 py-0.5 rounded-full"
           style={{
-            background: 'var(--p-track)',
+            background: 'rgba(6,95,70,0.06)',
             color: 'var(--p-primary)',
           }}
         >
@@ -87,7 +87,7 @@ export function WeeklyMiniChart({ weekProgress, targetPages }: Props) {
       </div>
 
       {/* Chart */}
-      <div className="relative" style={{ height: 120 }}>
+      <div className="relative" style={{ height: 90 }}>
         {/* Target line */}
         {targetPages > 0 && targetPercent < 100 && (
           <div
@@ -95,7 +95,7 @@ export function WeeklyMiniChart({ weekProgress, targetPages }: Props) {
             style={{
               bottom: `${targetPercent}%`,
               borderColor: 'var(--p-accent)',
-              opacity: 0.5,
+              opacity: 0.25,
             }}
           />
         )}
@@ -126,12 +126,10 @@ export function WeeklyMiniChart({ weekProgress, targetPages }: Props) {
                     minHeight: day.pages > 0 ? 4 : 0,
                     background: day.isToday
                       ? 'var(--p-accent)'
-                      : metGoal
-                        ? 'var(--p-primary)'
-                        : 'var(--p-primary)',
-                    opacity: day.isToday ? 1 : metGoal ? 1 : 0.5,
-                    borderRadius: '4px 4px 0 0',
-                    maxWidth: 28,
+                      : 'var(--p-primary)',
+                    opacity: day.isToday ? 0.6 : metGoal ? 0.5 : 0.2,
+                    borderRadius: '6px 6px 0 0',
+                    maxWidth: 24,
                     margin: '0 auto',
                   }}
                 />
