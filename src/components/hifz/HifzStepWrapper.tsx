@@ -17,6 +17,7 @@ interface HifzStepWrapperProps {
   surahNumber?: number;
   startVerse?: number;
   endVerse?: number;
+  disableMushafOverlay?: boolean;
 }
 
 function formatTime(seconds: number): string {
