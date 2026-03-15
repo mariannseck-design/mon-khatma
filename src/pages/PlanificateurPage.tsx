@@ -697,6 +697,9 @@ export default function PlanificateurPage() {
         <ReadingHistory
           entries={allProgress}
           targetPages={activeGoal?.target_value}
+          firstName={savedSetup?.first_name}
+          startDate={activeGoal?.start_date}
+          isKhatmaComplete={totalPagesRead >= TOTAL_QURAN_PAGES}
         />
 
         {/* Reset Button */}

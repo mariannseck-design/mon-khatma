@@ -1,7 +1,9 @@
 import { motion } from 'framer-motion';
-import { History, Check, BookOpen } from 'lucide-react';
+import { History, Check, BookOpen, Download } from 'lucide-react';
 import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { getSurahByPage } from '@/lib/surahData';
+import { toast } from 'sonner';
 
 interface HistoryEntry {
   date: string;
@@ -11,6 +13,9 @@ interface HistoryEntry {
 interface ReadingHistoryProps {
   entries: HistoryEntry[];
   targetPages?: number;
+  firstName?: string;
+  startDate?: string;
+  isKhatmaComplete?: boolean;
 }
 
 function formatDate(dateStr: string): string {
@@ -18,11 +23,118 @@ function formatDate(dateStr: string): string {
   return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
 }
 
+function formatDateLong(dateStr: string): string {
+  const date = new Date(dateStr + 'T00:00:00');
+  return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
 function isToday(dateStr: string): boolean {
   return dateStr === new Date().toISOString().split('T')[0];
 }
 
-export function ReadingHistory({ entries, targetPages = 0 }: ReadingHistoryProps) {
+async function generatePDF(
+  entries: HistoryEntry[],
+  targetPages: number,
+  firstName: string,
+  startDate?: string,
+  isKhatmaComplete?: boolean
+) {
+  const { jsPDF } = await import('jspdf');
+  const doc = new jsPDF('p', 'mm', 'a4');
+  const pageWidth = doc.internal.pageSize.getWidth();
+
+  // Sort entries chronologically
+  const sorted = [...entries].sort((a, b) => a.date.localeCompare(b.date));
+  let cumulative = 0;
+  const enriched = sorted.map(e => {
+    cumulative += e.pages_read;
+    const surah = getSurahByPage(Math.min(cumulative, 604));
+    return { ...e, cumulativePage: Math.min(cumulative, 604), surahName: surah?.name || '' };
+  });
+
+  // Header
+  doc.setFontSize(18);
+  doc.setTextColor(6, 95, 70);
+  doc.text('Ma Khatma', pageWidth / 2, 22, { align: 'center' });
+
+  doc.setFontSize(11);
+  doc.setTextColor(120, 120, 120);
+  doc.text('Historique de lecture', pageWidth / 2, 30, { align: 'center' });
+
+  // Info line
+  let y = 42;
+  doc.setFontSize(10);
+  doc.setTextColor(80, 80, 80);
+
+  if (firstName) {
+    doc.text(`Lectrice : ${firstName}`, 20, y);
+    y += 6;
+  }
+  if (startDate) {
+    doc.text(`Début : ${formatDateLong(startDate)}`, 20, y);
+    y += 6;
+  }
+  if (isKhatmaComplete) {
+    const lastDate = sorted.length > 0 ? sorted[sorted.length - 1].date : '';
+    doc.text(`Khatma terminée le ${lastDate ? formatDateLong(lastDate) : '—'}`, 20, y);
+    y += 6;
+  }
+  const totalPages = sorted.reduce((s, e) => s + e.pages_read, 0);
+  doc.text(`Total : ${totalPages} pages lues en ${sorted.length} jour(s)`, 20, y);
+  y += 10;
+
+  // Table header
+  const colX = [20, 55, 85, 140];
+  doc.setFontSize(9);
+  doc.setTextColor(255, 255, 255);
+  doc.setFillColor(6, 95, 70);
+  doc.rect(18, y - 4, pageWidth - 36, 8, 'F');
+  doc.text('Date', colX[0], y + 1);
+  doc.text('Pages', colX[1], y + 1);
+  doc.text('Sourate', colX[2], y + 1);
+  doc.text('Objectif', colX[3], y + 1);
+  y += 10;
+
+  // Table rows
+  doc.setFontSize(9);
+  enriched.forEach((entry, i) => {
+    if (y > 275) {
+      doc.addPage();
+      y = 20;
+    }
+
+    if (i % 2 === 0) {
+      doc.setFillColor(245, 245, 245);
+      doc.rect(18, y - 4, pageWidth - 36, 7, 'F');
+    }
+
+    doc.setTextColor(50, 50, 50);
+    doc.text(formatDateLong(entry.date), colX[0], y);
+    doc.text(`${entry.pages_read}`, colX[1], y);
+    doc.text(entry.surahName, colX[2], y);
+
+    const goalMet = targetPages > 0 && entry.pages_read >= targetPages;
+    doc.setTextColor(goalMet ? 6 : 150, goalMet ? 95 : 150, goalMet ? 70 : 150);
+    doc.text(goalMet ? '✓' : '—', colX[3], y);
+
+    y += 7;
+  });
+
+  // Footer
+  y = Math.max(y + 8, 270);
+  if (y > 280) {
+    doc.addPage();
+    y = 20;
+  }
+  doc.setFontSize(8);
+  doc.setTextColor(180, 180, 180);
+  doc.text('Généré par Ma Khatma — makhatma.lovable.app', pageWidth / 2, 290, { align: 'center' });
+
+  doc.save('ma-khatma-historique.pdf');
+  toast.success('PDF téléchargé ! 📄');
+}
+
+export function ReadingHistory({ entries, targetPages = 0, firstName, startDate, isKhatmaComplete }: ReadingHistoryProps) {
   if (entries.length === 0) return null;
 
   const sorted = [...entries].sort((a, b) => a.date.localeCompare(b.date));
@@ -39,9 +151,21 @@ export function ReadingHistory({ entries, targetPages = 0 }: ReadingHistoryProps
       animate={{ opacity: 1, y: 0 }}
     >
       <Card className="p-5 border-none rounded-[2rem] bg-card shadow-sm">
-        <div className="flex items-center gap-2 mb-4">
-          <History className="h-4 w-4" style={{ color: 'var(--p-primary)' }} />
-          <span className="font-semibold text-foreground text-sm">Historique</span>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <History className="h-4 w-4" style={{ color: 'var(--p-primary)' }} />
+            <span className="font-semibold text-foreground text-sm">Historique</span>
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-8 px-3 text-xs gap-1.5 rounded-xl"
+            style={{ color: 'var(--p-primary)' }}
+            onClick={() => generatePDF(entries, targetPages, firstName || '', startDate, isKhatmaComplete)}
+          >
+            <Download className="h-3.5 w-3.5" />
+            PDF
+          </Button>
         </div>
 
         <div className="space-y-0.5">
