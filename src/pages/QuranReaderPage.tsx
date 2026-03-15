@@ -59,7 +59,7 @@ export default function QuranReaderPage() {
   const textModeDisabled = false;
 
   const [tajweedEnabled, setTajweedEnabled] = useState(() => {
-    return localStorage.getItem('quran_tajweed') !== 'false';
+    return localStorage.getItem('quran_tajweed') === 'true';
   });
 
   // Welcome message for first-time users
