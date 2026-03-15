@@ -8,6 +8,7 @@ import HifzMushafImage from './HifzMushafImage';
 import { getVersesByRange, type LocalAyah } from '@/lib/quranData';
 import { RECITERS, getAyahAudioUrl } from '@/hooks/useQuranAudio';
 import { SURAHS } from '@/lib/surahData';
+import { useGlobalAudio } from '@/contexts/AudioContext';
 import {
   getTajweedAnnotations,
   TAJWEED_COLORS,
