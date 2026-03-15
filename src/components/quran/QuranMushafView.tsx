@@ -305,7 +305,7 @@ export default function QuranMushafView({ page, highlightAyah, darkMode = false,
                           ? "'KFGQPC HAFS Uthmanic Script', 'Amiri', serif"
                           : `'${fontFamily}', serif`,
                         fontSize: 'clamp(18px, 5.8vw, 28px)',
-                        lineHeight: 1.8,
+                        lineHeight: 1.55,
                         color: isHighlighted
                           ? (darkMode ? '#6a9a6a' : '#2E7D32')
                           : textColor,
