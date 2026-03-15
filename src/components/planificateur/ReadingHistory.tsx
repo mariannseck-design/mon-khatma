@@ -85,9 +85,9 @@ async function generatePDF(
 
   // Table header
   const colX = [20, 55, 85, 140];
-  doc.setFontSize(9);
+  doc.setFontSize(10);
   doc.setTextColor(255, 255, 255);
-  doc.setFillColor(6, 95, 70);
+  doc.setFillColor(4, 60, 45);
   doc.rect(18, y - 4, pageWidth - 36, 8, 'F');
   doc.text('Date', colX[0], y + 1);
   doc.text('Pages', colX[1], y + 1);
