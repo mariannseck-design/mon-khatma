@@ -217,34 +217,52 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
 
   useEffect(() => { fetchAudio(); }, [fetchAudio]);
 
-  const playNextAyah = useCallback((idx: number) => {
+  const playNextAyah = useCallback((idx: number, gen: number) => {
+    if (generationRef.current !== gen) return;
     if (!ayahsRef.current.length) {
       console.warn('[HifzTajweed] No audio loaded yet');
       setIsPlaying(false);
+      isPlayingRef.current = false;
       return;
     }
     if (idx >= ayahsRef.current.length) {
       setListenCount(prev => prev + 1);
       indexRef.current = 0;
-      playNextAyah(0);
+      // Controlled restart with delay to prevent runaway counter
+      setTimeout(() => {
+        if (generationRef.current !== gen) return;
+        playNextAyah(0, gen);
+      }, 400);
       return;
     }
     indexRef.current = idx;
     setCurrentAyahIndex(idx);
     const audio = new Audio(ayahsRef.current[idx].audio);
     audioRef.current = audio;
+    pausedRef.current = null;
     registerRef.current(audio, {
       label: `${surahName} · v.${startVerse}-${endVerse}`,
       returnPath: window.location.pathname + window.location.search,
       surahNumber,
       startVerse,
     });
-    audio.onended = () => playNextAyah(idx + 1);
-    audio.onerror = () => {
-      console.warn('[HifzTajweed] Audio error for ayah', idx);
-      playNextAyah(idx + 1);
+    audio.onended = () => {
+      if (generationRef.current !== gen) return;
+      playNextAyah(idx + 1, gen);
     };
-    audio.play().catch(() => setIsPlaying(false));
+    audio.onerror = () => {
+      if (generationRef.current !== gen) return;
+      console.warn('[HifzTajweed] Audio error for ayah', idx);
+      setTimeout(() => {
+        if (generationRef.current !== gen) return;
+        playNextAyah(idx + 1, gen);
+      }, 300);
+    };
+    audio.play().catch(() => {
+      if (generationRef.current !== gen) return;
+      setIsPlaying(false);
+      isPlayingRef.current = false;
+    });
   }, []);
 
   const togglePlay = () => {
