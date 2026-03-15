@@ -1,37 +1,21 @@
 
 
-## Plan: Corriger le bug d'arrêt externe (MiniPlayer Stop)
+# Diagnostic : 404 sur /quran-reader
 
-### Cause racine
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-Quand le MiniPlayer appelle `stop()`, l'AudioContext tue l'élément audio (pause + clear src). Mais le **composant** ne le sait pas — son `isPlayingRef` reste `true`, son `generationRef` n'a pas changé. Le `onerror` déclenché par le clear src passe les 3 gardes et relance un nouvel audio.
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-### Solution
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-Ajouter un **signal de stop** dans l'AudioContext que les composants peuvent écouter.
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-### Fichiers à modifier
-
-#### 1. `src/contexts/AudioContext.tsx`
-- Ajouter `stopSignal` (compteur incrémenté à chaque `stop()`) au contexte
-- Exposer `stopSignal` dans le provider
-
-#### 2. Les 5 composants audio — ajouter un `useEffect` sur `stopSignal`
-Chaque composant écoute `stopSignal` et, quand il change, tue sa boucle interne :
-- `generationRef++`
-- `isPlayingRef = false`
-- `hardStopAudio()` / clear handlers + pause
-- `setIsPlaying(false)`
-
-Composants concernés :
-- `src/components/hifz/HifzStep2Impregnation.tsx`
-- `src/components/hifz/HifzStepIntentionImpregnation.tsx`
-- `src/components/hifz/HifzStepImpregnationTajweed.tsx`
-- `src/components/hifz/istiqamah/StepImpregnation.tsx`
-- `src/components/hifz/istiqamah/StepImmersion.tsx`
-
-### Ce qui ne change PAS
-- Le MiniPlayer reste identique
-- Le pattern triple-garde existant reste en place (protection supplémentaire)
-- Aucune logique de lecture/pause/reprise n'est modifiée
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

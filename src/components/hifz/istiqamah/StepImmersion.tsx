@@ -71,7 +71,7 @@ function loadImmersionState(surah: number, vStart: number, vEnd: number) {
 
 export default function StepImmersion({ surahNumber, verseStart, verseEnd, reciterId, onNext }: Props) {
   const { isAdmin } = useAuth();
-  const { registerAudio: registerGlobalAudio } = useGlobalAudio();
+  const { registerAudio: registerGlobalAudio, stopSignal } = useGlobalAudio();
   const registerRef = useRef(registerGlobalAudio);
   registerRef.current = registerGlobalAudio;
   const minListen = isAdmin ? 1 : TARGET_LISTEN;
@@ -307,8 +307,20 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
     }
   }, [isLiaison, liaisonVerses, currentVerse, getAudioUrl]);
 
-  // Audio persists via global context — don't pause on unmount
-  useEffect(() => () => { /* audio persists globally */ }, []);
+  // Sync with global audio stop (MiniPlayer X)
+  const stopSignalRef = useRef(stopSignal);
+  useEffect(() => {
+    if (stopSignalRef.current === stopSignal) { stopSignalRef.current = stopSignal; return; }
+    stopSignalRef.current = stopSignal;
+    if (isPlayingRef.current) {
+      generationRef.current++;
+      sequenceAbortRef.current = true;
+      isPlayingRef.current = false;
+      hardStopAudio();
+      setIsPlaying(false);
+      pausedRef.current = false;
+    }
+  }, [stopSignal, hardStopAudio]);
 
   // Reset on verse change — only if NOT restoring from saved state
   const isInitialMount = useRef(true);

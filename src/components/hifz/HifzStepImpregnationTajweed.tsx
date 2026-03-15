@@ -74,7 +74,7 @@ interface AyahWithAnnotations extends LocalAyah {
 }
 
 export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, endVerse, onNext, onBack, onPause, phaseLabel }: Props) {
-  const { registerAudio: registerGlobalAudio, stop: stopGlobal, status: globalStatus } = useGlobalAudio();
+  const { registerAudio: registerGlobalAudio, stop: stopGlobal, stopSignal } = useGlobalAudio();
   const registerRef = useRef(registerGlobalAudio);
   registerRef.current = registerGlobalAudio;
   const generationRef = useRef(0);
@@ -287,26 +287,20 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
     });
   }, []);
 
-  // Sync local state when global audio stops externally (MiniPlayer X)
+  // Sync with global audio stop (MiniPlayer X)
+  const stopSignalRef = useRef(stopSignal);
   useEffect(() => {
-    if (globalStatus === 'idle' && isPlayingRef.current) {
-      // If our audioRef is still the one registered globally and it's truly stopped,
-      // then this is an external stop. If the audioRef was replaced (new verse),
-      // the global context would have a different audio — but idle is transient.
-      // Use a short delay to distinguish transient idle (track swap) from real stop.
-      const timer = setTimeout(() => {
-        if (globalStatus === 'idle' && isPlayingRef.current) {
-          generationRef.current++;
-          hardStopAudio();
-          setIsPlaying(false);
-          isPlayingRef.current = false;
-          setCurrentAyahIndex(-1);
-          pausedRef.current = null;
-        }
-      }, 150);
-      return () => clearTimeout(timer);
+    if (stopSignalRef.current === stopSignal) { stopSignalRef.current = stopSignal; return; }
+    stopSignalRef.current = stopSignal;
+    if (isPlayingRef.current) {
+      generationRef.current++;
+      isPlayingRef.current = false;
+      hardStopAudio();
+      setIsPlaying(false);
+      setCurrentAyahIndex(-1);
+      pausedRef.current = null;
     }
-  }, [globalStatus, hardStopAudio]);
+  }, [stopSignal, hardStopAudio]);
 
   const togglePlay = () => {
     if (isPlaying) {

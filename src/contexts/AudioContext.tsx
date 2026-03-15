@@ -10,6 +10,7 @@ interface AudioTrackInfo {
 interface AudioContextType {
   status: 'idle' | 'playing' | 'paused';
   trackInfo: AudioTrackInfo | null;
+  stopSignal: number;
   registerAudio: (audio: HTMLAudioElement, info: AudioTrackInfo) => void;
   pause: () => void;
   resume: () => void;
@@ -19,6 +20,7 @@ interface AudioContextType {
 const AudioCtx = createContext<AudioContextType>({
   status: 'idle',
   trackInfo: null,
+  stopSignal: 0,
   registerAudio: () => {},
   pause: () => {},
   resume: () => {},
@@ -28,6 +30,7 @@ const AudioCtx = createContext<AudioContextType>({
 export function AudioProvider({ children }: { children: ReactNode }) {
   const [status, setStatus] = useState<'idle' | 'playing' | 'paused'>('idle');
   const [trackInfo, setTrackInfo] = useState<AudioTrackInfo | null>(null);
+  const [stopSignal, setStopSignal] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const cleanupRef = useRef<(() => void) | null>(null);
   const endTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -97,6 +100,8 @@ export function AudioProvider({ children }: { children: ReactNode }) {
       clearTimeout(endTimeoutRef.current);
       endTimeoutRef.current = null;
     }
+    // Increment stopSignal BEFORE killing audio so components can react before onerror fires
+    setStopSignal(s => s + 1);
     if (audioRef.current) {
       audioRef.current.pause();
       try { audioRef.current.src = ''; } catch {}
@@ -109,7 +114,7 @@ export function AudioProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <AudioCtx.Provider value={{ status, trackInfo, registerAudio, pause, resume, stop }}>
+    <AudioCtx.Provider value={{ status, trackInfo, stopSignal, registerAudio, pause, resume, stop }}>
       {children}
     </AudioCtx.Provider>
   );
