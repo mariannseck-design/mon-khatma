@@ -60,8 +60,8 @@ export function WeeklyMiniChart({ weekProgress, targetPages }: Props) {
       className="border-none shadow-none p-5"
       style={{
         borderRadius: '2rem',
-        background: 'var(--p-card)',
-        boxShadow: 'var(--p-card-shadow)',
+        background: 'white',
+        boxShadow: '0 2px 12px rgba(6,95,70,0.06)',
       }}
     >
       {/* Header */}
