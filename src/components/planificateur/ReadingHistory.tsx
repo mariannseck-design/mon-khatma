@@ -167,37 +167,25 @@ async function generatePDF(
     y += boxH + 6;
   }
 
-  // Footer
-  y = Math.max(y + 8, 270);
-  if (y > 280) {
-    doc.addPage();
-    y = 20;
+  // Watermark on every page
+  const totalPdfPages = doc.internal.getNumberOfPages();
+  for (let p = 1; p <= totalPdfPages; p++) {
+    doc.setPage(p);
+    doc.setFontSize(48);
+    doc.setTextColor(200, 200, 200);
+    doc.setGState(new doc.GState({ opacity: 0.08 }));
+    doc.text('Ma Khatma', pageWidth / 2, 150, { align: 'center', angle: 35 });
+    doc.setGState(new doc.GState({ opacity: 1 }));
   }
+
+  // Footer on last page
+  doc.setPage(totalPdfPages);
   doc.setFontSize(8);
   doc.setTextColor(130, 130, 130);
   doc.text('Genere par Ma Khatma — makhatma.lovable.app', pageWidth / 2, 290, { align: 'center' });
 
-  if (mode === 'share') {
-    const pdfBlob = doc.output('blob');
-    const file = new File([pdfBlob], 'ma-khatma-historique.pdf', { type: 'application/pdf' });
-    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      try {
-        await navigator.share({ title: 'Ma Khatma — Historique', files: [file] });
-        toast.success('PDF partagé ! 📤');
-      } catch (err: any) {
-        if (err?.name !== 'AbortError') {
-          doc.save('ma-khatma-historique.pdf');
-          toast.success('PDF téléchargé ! 📄');
-        }
-      }
-    } else {
-      doc.save('ma-khatma-historique.pdf');
-      toast.success('PDF téléchargé ! 📄');
-    }
-  } else {
-    doc.save('ma-khatma-historique.pdf');
-    toast.success('PDF téléchargé ! 📄');
-  }
+  doc.save('ma-khatma-historique.pdf');
+  toast.success('PDF téléchargé ! 📄');
 }
 
 export function ReadingHistory({ entries, targetPages = 0, firstName, startDate, isKhatmaComplete }: ReadingHistoryProps) {
