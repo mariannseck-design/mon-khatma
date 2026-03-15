@@ -376,6 +376,48 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
     }
   }, [currentVerseIndex, totalVerses, onNext]);
 
+  // Full stop — kills audio and resets refs completely (for Stop button)
+  const fullStopAudio = useCallback(() => {
+    generationRef.current++;
+    sequenceAbortRef.current = true;
+    isPlayingRef.current = false;
+    pausedRef.current = false;
+    hardStopAudio();
+    setIsPlaying(false);
+  }, [hardStopAudio]);
+
+  // Play looping audio in read phase (reuses same logic as listen phase)
+  const handleReadAudioToggle = useCallback(() => {
+    if (isPlaying) { stopAudio(); return; }
+    // Resume from pause
+    if (pausedRef.current && audioRef.current && !audioRef.current.ended) {
+      pausedRef.current = false;
+      const gen = ++generationRef.current;
+      isPlayingRef.current = true;
+      sequenceAbortRef.current = false;
+      setIsPlaying(true);
+      const audio = audioRef.current;
+      audio.onended = () => {
+        if (generationRef.current !== gen || !isPlayingRef.current || audioRef.current !== audio) return;
+        if (isLiaison) {
+          // For liaison, don't increment — just loop
+        }
+      };
+      audio.play().catch(() => { if (generationRef.current !== gen) return; isPlayingRef.current = false; setIsPlaying(false); });
+      return;
+    }
+    pausedRef.current = false;
+    if (isLiaison) {
+      playSequence(liaisonVerses);
+    } else {
+      playSingleVerse(currentVerse);
+    }
+  }, [isPlaying, isLiaison, liaisonVerses, currentVerse, stopAudio, playSequence, playSingleVerse]);
+
+  const handleReadAudioStop = useCallback(() => {
+    fullStopAudio();
+  }, [fullStopAudio]);
+
   const handleContinueListen = () => {
     stopAudio();
     if (isLiaison) setPhase('liaison-read');
