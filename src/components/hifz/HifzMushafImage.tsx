@@ -237,45 +237,67 @@ export default function HifzMushafImage({ surahNumber, startVerse, endVerse, max
         )}
       </div>
 
-      <div
-        ref={containerRef}
-        className={`overflow-auto relative ${fullWidth ? '' : 'rounded-xl'} ${scale > 1 ? 'touch-none' : 'touch-pan-y'}`}
-        style={{
-          border: fullWidth ? 'none' : '1px solid rgba(212,175,55,0.25)',
-          maxHeight,
-          background: '#f5f0e0',
-        }}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-      >
-        {imgLoading && !allFailed && (
-          <div className="absolute inset-0 flex items-center justify-center" style={{ background: 'rgba(245,240,224,0.9)' }}>
-            <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: '#d4af37', borderTopColor: 'transparent' }} />
-          </div>
-        )}
-        {allFailed ? (
-          <div className="flex items-center justify-center py-8 text-sm" style={{ color: 'rgba(0,0,0,0.4)' }}>
-            Page {page} non disponible
-          </div>
-        ) : (
-          <img
-            key={`${page}-${sourceIdx}`}
-            src={imgUrl}
-            alt={`Page ${page} du Mushaf`}
-            className="w-full h-auto"
+      <div className="relative">
+        <div
+          ref={containerRef}
+          className={`overflow-auto relative ${fullWidth ? '' : 'rounded-xl'} ${scale > 1 ? 'touch-none' : 'touch-pan-y'}`}
+          style={{
+            border: fullWidth ? 'none' : '1px solid rgba(212,175,55,0.25)',
+            maxHeight,
+            background: '#f5f0e0',
+          }}
+          onScroll={() => {
+            const el = containerRef.current;
+            if (el && el.scrollTop > 20) setShowScrollHint(false);
+          }}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
+          {imgLoading && !allFailed && (
+            <div className="absolute inset-0 flex items-center justify-center" style={{ background: 'rgba(245,240,224,0.9)' }}>
+              <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: '#d4af37', borderTopColor: 'transparent' }} />
+            </div>
+          )}
+          {allFailed ? (
+            <div className="flex items-center justify-center py-8 text-sm" style={{ color: 'rgba(0,0,0,0.4)' }}>
+              Page {page} non disponible
+            </div>
+          ) : (
+            <img
+              key={`${page}-${sourceIdx}`}
+              src={imgUrl}
+              alt={`Page ${page} du Mushaf`}
+              className="w-full h-auto"
+              style={{
+                transform: scale > 1 ? `scale(${scale}) translate(${translate.x / scale}px, ${translate.y / scale}px)` : undefined,
+                transformOrigin: 'center center',
+                transition: isPanningRef.current || lastTouchDistRef.current ? 'none' : 'transform 0.2s ease',
+              }}
+              onLoad={() => setImgLoading(false)}
+              onError={() => {
+                setSourceIdx(i => i + 1);
+                setImgLoading(true);
+              }}
+              draggable={false}
+            />
+          )}
+        </div>
+
+        {/* Scroll hint overlay */}
+        {showScrollHint && !imgLoading && !allFailed && (
+          <div
+            className="absolute bottom-0 left-0 right-0 pointer-events-none flex flex-col items-center pb-1"
             style={{
-              transform: scale > 1 ? `scale(${scale}) translate(${translate.x / scale}px, ${translate.y / scale}px)` : undefined,
-              transformOrigin: 'center center',
-              transition: isPanningRef.current || lastTouchDistRef.current ? 'none' : 'transform 0.2s ease',
+              background: 'linear-gradient(to top, rgba(245,240,224,0.95) 0%, rgba(245,240,224,0.6) 50%, transparent 100%)',
+              height: '48px',
             }}
-            onLoad={() => setImgLoading(false)}
-            onError={() => {
-              setSourceIdx(i => i + 1);
-              setImgLoading(true);
-            }}
-            draggable={false}
-          />
+          >
+            <ChevronDown
+              className="h-5 w-5 animate-bounce mt-auto"
+              style={{ color: 'rgba(0,0,0,0.35)' }}
+            />
+          </div>
         )}
       </div>
 
