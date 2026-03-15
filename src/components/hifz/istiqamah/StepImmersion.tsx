@@ -631,16 +631,16 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
               </motion.button>
             </div>
 
-            {/* Hint: replay audio once without resetting counter */}
+            {/* Hint button — TEMPORARILY DISABLED */}
             <motion.button
-              whileTap={{ scale: 0.95 }}
-              onClick={isPlaying ? stopAudio : playHint}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs mx-auto"
+              disabled
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs mx-auto opacity-50 cursor-not-allowed"
               style={{ background: 'rgba(78,205,196,0.1)', border: '1px solid rgba(78,205,196,0.25)', color: '#4ecdc4' }}
             >
               <Headphones className="h-3.5 w-3.5" />
-              {isPlaying ? 'Écoute en cours…' : 'Réécouter une fois'}
+              Réécouter une fois
             </motion.button>
+            <p className="text-[10px] text-center" style={{ color: 'rgba(255,255,255,0.35)' }}>⏸ Temporairement indisponible</p>
 
             {minReached && (
               <ContinueButton onClick={handleContinueMemory} label="Continuer ✓" />
