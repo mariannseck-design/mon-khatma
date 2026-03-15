@@ -41,11 +41,12 @@ export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBac
   }, [stepNumber]);
 
   useEffect(() => {
-    if (!surahNumber || !startVerse || !endVerse) { setPageLabel(''); return; }
+    if (!surahNumber || !startVerse || !endVerse) { setPageLabel(''); setMushafPage(null); return; }
     (async () => {
       const pStart = await getExactVersePage(surahNumber, startVerse);
       const pEnd = await getExactVersePage(surahNumber, endVerse);
       setPageLabel(pStart === pEnd ? `p. ${pStart}` : `p. ${pStart}–${pEnd}`);
+      setMushafPage(pStart);
     })();
   }, [surahNumber, startVerse, endVerse]);
 
