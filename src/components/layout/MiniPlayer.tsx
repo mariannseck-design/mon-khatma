@@ -10,7 +10,8 @@ export default function MiniPlayer() {
   const location = useLocation();
 
   const isVisible = status !== 'idle' && trackInfo !== null;
-  const isOnReturnPage = trackInfo && location.pathname === trackInfo.returnPath;
+  const isOnQuranReader = location.pathname === '/quran-reader';
+  const isOnReturnPage = trackInfo && location.pathname === trackInfo.returnPath && !isOnQuranReader;
 
   const handleOpenMushaf = async (e: React.MouseEvent) => {
     e.stopPropagation();
