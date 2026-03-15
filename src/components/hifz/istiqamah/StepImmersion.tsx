@@ -8,6 +8,7 @@ import HifzMushafToggle, { getMushafMode, setMushafMode, type MushafMode } from 
 import HifzMushafImage from '../HifzMushafImage';
 import { getVersesByRange, getExactVersePage, type LocalAyah } from '@/lib/quranData';
 import { SURAHS } from '@/lib/surahData';
+import { useGlobalAudio } from '@/contexts/AudioContext';
 import PomodoroTimer from '../PomodoroTimer';
 
 const BASMALA_WORDS = ['بِسْمِ', 'ٱللَّهِ', 'ٱلرَّحْمَٰنِ', 'ٱلرَّحِيمِ'];
