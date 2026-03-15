@@ -12,6 +12,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { ReadingSlider } from '@/components/planificateur/ReadingSlider';
 import { ReadingHistory } from '@/components/planificateur/ReadingHistory';
+import { WeeklyMiniChart } from '@/components/planificateur/WeeklyMiniChart';
 import { TotalProgressBar } from '@/components/planificateur/TotalProgressBar';
 import { SparkleEffect } from '@/components/planificateur/SparkleEffect';
 import { SuccessModal } from '@/components/planificateur/SuccessModal';
