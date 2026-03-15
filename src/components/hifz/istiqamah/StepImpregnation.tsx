@@ -33,8 +33,9 @@ export default function StepImpregnation({ surahNumber, verseStart, verseEnd, ve
   const pausedRef = useRef(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const audiosRef = useRef<string[]>([]);
+  const generationRef = useRef(0);
   const reciter = reciterId || localStorage.getItem('quran_reciter') || 'ar.alafasy';
-  const { registerAudio: registerGlobalAudio } = useGlobalAudio();
+  const { registerAudio: registerGlobalAudio, stop: stopGlobal } = useGlobalAudio();
   const registerRef = useRef(registerGlobalAudio);
   registerRef.current = registerGlobalAudio;
 
