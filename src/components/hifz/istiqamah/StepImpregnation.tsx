@@ -55,15 +55,25 @@ export default function StepImpregnation({ surahNumber, verseStart, verseEnd, ve
     };
   }, []);
 
-  // Resync UI state when tab becomes visible again
+  // Resync UI state when tab becomes visible — try to resume if browser suspended
   useEffect(() => {
     const handler = () => {
       if (document.visibilityState === 'visible') {
         const audio = audioRef.current;
         const actuallyPlaying = audio && !audio.paused && !audio.ended;
-        isPlayingRef.current = !!actuallyPlaying;
-        setIsPlaying(!!actuallyPlaying);
-        if (!actuallyPlaying) {
+        if (actuallyPlaying) {
+          isPlayingRef.current = true;
+          setIsPlaying(true);
+        } else if (audio && audio.paused && !audio.ended && isPlayingRef.current) {
+          // Browser suspended audio — try to resume
+          audio.play().catch(() => {
+            isPlayingRef.current = false;
+            setIsPlaying(false);
+            setCurrentAyahIndex(-1);
+          });
+        } else if (!audio || audio.ended) {
+          isPlayingRef.current = false;
+          setIsPlaying(false);
           setCurrentAyahIndex(-1);
         }
       }

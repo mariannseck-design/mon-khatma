@@ -103,6 +103,30 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
   const generationRef = useRef(0);
   const reciter = reciterId || localStorage.getItem('quran_reciter') || 'ar.alafasy';
 
+  // Resync UI state when tab becomes visible — try to resume if browser suspended
+  useEffect(() => {
+    const handler = () => {
+      if (document.visibilityState === 'visible') {
+        const audio = audioRef.current;
+        const actuallyPlaying = audio && !audio.paused && !audio.ended;
+        if (actuallyPlaying) {
+          isPlayingRef.current = true;
+          setIsPlaying(true);
+        } else if (audio && audio.paused && !audio.ended && isPlayingRef.current) {
+          audio.play().catch(() => {
+            isPlayingRef.current = false;
+            setIsPlaying(false);
+          });
+        } else if (!audio || audio.ended) {
+          isPlayingRef.current = false;
+          setIsPlaying(false);
+        }
+      }
+    };
+    document.addEventListener('visibilitychange', handler);
+    return () => document.removeEventListener('visibilitychange', handler);
+  }, []);
+
   const currentVerse = verseStart + currentVerseIndex;
   const isLiaison = phase.startsWith('liaison');
   const minReached = (() => {
