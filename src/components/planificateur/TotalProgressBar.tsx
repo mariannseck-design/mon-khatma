@@ -34,16 +34,23 @@ export function TotalProgressBar({ totalPagesRead, onResetKhatma, onShowCelebrat
       <Card
         className="relative overflow-hidden border-none"
         style={{
-          background: 'var(--p-card)',
-          boxShadow: '0 2px 16px rgba(6,95,70,0.08)',
+          background: 'linear-gradient(145deg, var(--p-card) 0%, rgba(6,95,70,0.04) 100%)',
+          boxShadow: '0 4px 24px rgba(6,95,70,0.1), 0 1px 3px rgba(212,175,55,0.08)',
+          border: '1px solid rgba(6,95,70,0.08)',
         }}
       >
-        <div className="px-6 pt-6 pb-3">
+        {/* Subtle decorative accent */}
+        <div
+          className="absolute top-0 right-0 w-32 h-32 rounded-full opacity-[0.07]"
+          style={{ background: 'radial-gradient(circle, var(--p-accent), transparent 70%)', transform: 'translate(30%, -30%)' }}
+        />
+
+        <div className="px-6 pt-6 pb-3 relative">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-3">
               <div
                 className="w-11 h-11 rounded-xl flex items-center justify-center"
-                style={{ background: 'rgba(212,175,55,0.15)' }}
+                style={{ background: 'linear-gradient(135deg, rgba(212,175,55,0.18), rgba(212,175,55,0.08))' }}
               >
                 {isComplete ? (
                   <Star className="h-5 w-5" style={{ color: 'var(--p-accent)' }} />
@@ -52,12 +59,12 @@ export function TotalProgressBar({ totalPagesRead, onResetKhatma, onShowCelebrat
                 )}
               </div>
               <div>
-                <p className="text-sm font-semibold" style={{ color: 'var(--p-primary-deep)' }}>
+                <p className="text-sm font-bold" style={{ color: 'var(--p-primary-deep)' }}>
                   {isComplete ? 'Khatma complète !' : 'Ma Khatma'}
                 </p>
                 {formattedStartDate && !isComplete && (
-                  <p className="text-xs flex items-center gap-1" style={{ color: 'var(--p-text-60)' }}>
-                    <Calendar className="h-3 w-3" />
+                  <p className="text-xs flex items-center gap-1" style={{ color: 'var(--p-text-65)' }}>
+                    <Calendar className="h-3 w-3" style={{ color: 'var(--p-primary)' }} />
                     Depuis le {formattedStartDate}
                   </p>
                 )}
@@ -69,7 +76,7 @@ export function TotalProgressBar({ totalPagesRead, onResetKhatma, onShowCelebrat
                 initial={{ scale: 1.2, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 className="rounded-xl px-3 py-1.5"
-                style={{ background: 'rgba(212,175,55,0.1)' }}
+                style={{ background: 'linear-gradient(135deg, rgba(212,175,55,0.15), rgba(212,175,55,0.06))' }}
               >
                 <span className="text-lg font-bold" style={{ color: 'var(--p-accent)' }}>
                   {percentage.toFixed(1)}%
@@ -86,19 +93,22 @@ export function TotalProgressBar({ totalPagesRead, onResetKhatma, onShowCelebrat
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
               className="rounded-xl py-2.5 px-4 text-center mb-3"
-              style={{ background: 'rgba(6,95,70,0.06)' }}
+              style={{
+                background: 'linear-gradient(135deg, rgba(6,95,70,0.07), rgba(6,95,70,0.03))',
+                border: '1px solid rgba(6,95,70,0.06)',
+              }}
             >
               <p className="text-lg font-bold" style={{ color: 'var(--p-primary-deep)' }}>
                 Sourate {currentSurah.name}
               </p>
-              <p className="text-xs" style={{ color: 'var(--p-text-60)' }}>
+              <p className="text-xs font-medium" style={{ color: 'var(--p-text-65)' }}>
                 Page {totalPagesRead} / {TOTAL_QURAN_PAGES}
               </p>
             </motion.div>
           )}
 
           {/* Subtitle */}
-          <p className="text-xs text-center italic" style={{ color: 'var(--p-text-55)' }}>
+          <p className="text-xs text-center italic" style={{ color: 'var(--p-text-65)' }}>
             {isComplete 
               ? "Félicitations ! Qu'Allah (عز وجل) accepte votre lecture."
               : <>Qu'Allah <span className="honorific font-bold" style={{ fontSize: '1.1em' }}>(عز وجل)</span> facilite ta lecture</>
@@ -122,13 +132,13 @@ export function TotalProgressBar({ totalPagesRead, onResetKhatma, onShowCelebrat
         </div>
 
         {/* Progress bar at bottom */}
-        <div className="h-2" style={{ background: 'rgba(6,95,70,0.08)' }}>
+        <div className="h-2.5 rounded-b-lg" style={{ background: 'rgba(6,95,70,0.06)' }}>
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: `${percentage}%` }}
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="h-full rounded-r-full"
-            style={{ background: 'var(--p-accent)' }}
+            style={{ background: 'linear-gradient(90deg, var(--p-primary), var(--p-accent))' }}
           />
         </div>
       </Card>
