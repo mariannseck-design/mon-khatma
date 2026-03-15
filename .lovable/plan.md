@@ -1,22 +1,21 @@
 
 
-## Plan : Lien Mushaf toujours visible + bouton audio permanent
+# Diagnostic : 404 sur /quran-reader
 
-### Problème
-Le lien « Lire sur le Mushaf » n'apparaît que quand `isPlaying === true`. L'utilisateur ne voit rien tant qu'il n'a pas lancé l'audio — et le bouton audio lui-même peut être caché selon la phase.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Solution
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-**Fichier unique : `src/components/hifz/HifzStep3Memorisation.tsx`**
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-1. **Rendre le lien Mushaf toujours visible** (ligne ~745) : retirer la condition `{isPlaying && ...}`. Le texte s'adapte selon l'état :
-   - Si audio en cours : « 📖 Lire sur le Mushaf — l'audio continue en arrière-plan »
-   - Sinon : « 📖 Lire sur le Mushaf »
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-2. **Rendre le bouton audio toujours visible** : déplacer le bouton audio (Volume2) **en dehors** des conditions `phase.audioProminent` / `phase.audioAvailable` pour qu'il soit accessible dans toutes les phases, positionné sous le compteur +1, de façon discrète.
-
-3. Le lien Mushaf reste un `<button>` qui navigue vers `/quran-reader?page=X` via `getExactVersePage`.
-
-### Résultat
-L'utilisateur voit en permanence un petit bouton audio et un lien vers le Mushaf, quel que soit l'état de lecture ou la phase en cours.
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 
