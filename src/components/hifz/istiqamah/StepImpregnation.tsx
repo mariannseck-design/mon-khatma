@@ -242,7 +242,7 @@ export default function StepImpregnation({ surahNumber, verseStart, verseEnd, ve
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           whileTap={{ scale: 0.97 }}
-          onClick={() => { isPlayingRef.current = false; audioRef.current?.pause(); setIsPlaying(false); onNext(); }}
+          onClick={() => { generationRef.current++; isPlayingRef.current = false; audioRef.current?.pause(); setIsPlaying(false); onNext(); }}
           className="w-full rounded-2xl py-3.5 flex items-center justify-center gap-2 font-semibold text-sm"
           style={{ background: 'linear-gradient(135deg, #d4af37, #b8962e)', color: '#1a2e1a' }}
         >
