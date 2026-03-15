@@ -10,7 +10,6 @@ interface AudioTrackInfo {
 interface AudioContextType {
   status: 'idle' | 'playing' | 'paused';
   trackInfo: AudioTrackInfo | null;
-  stopSignal: number;
   registerAudio: (audio: HTMLAudioElement, info: AudioTrackInfo) => void;
   pause: () => void;
   resume: () => void;
