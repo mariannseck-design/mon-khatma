@@ -8,6 +8,7 @@ import HifzMushafImage from './HifzMushafImage';
 import { getVersesByRange, type LocalAyah } from '@/lib/quranData';
 import { RECITERS, getAyahAudioUrl } from '@/hooks/useQuranAudio';
 import { SURAHS } from '@/lib/surahData';
+import { useGlobalAudio } from '@/contexts/AudioContext';
 import {
   getTajweedAnnotations,
   TAJWEED_COLORS,
@@ -145,9 +146,13 @@ function getPhaseForAncrage(ancrage: number): number {
 }
 
 export default function HifzStep3Memorisation({ surahNumber, startVerse, endVerse, repetitionLevel, onNext, onBack, onPause }: Props) {
+  const { registerAudio: registerGlobalAudio } = useGlobalAudio();
+  const registerRef = useRef(registerGlobalAudio);
+  registerRef.current = registerGlobalAudio;
+
+  const surahName = SURAHS.find(s => s.number === surahNumber)?.name || '';
   const tikrarTarget = repetitionLevel || 40;
   const storageKey = getStorageKey(surahNumber, startVerse, endVerse);
-
   const [ancrage, setAncrage] = useState(() => {
     const saved = localStorage.getItem(storageKey);
     return saved ? Math.min(parseInt(saved, 10) || 0, tikrarTarget) : 0;
@@ -277,6 +282,10 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
     }
     const audio = new Audio(ayahAudiosRef.current[idx].audio);
     audioRef.current = audio;
+    registerRef.current(audio, {
+      label: `${surahName} · v.${startVerse}-${endVerse}`,
+      returnPath: window.location.pathname + window.location.search,
+    });
     audio.onended = () => { if (isPlayingRef.current) playNextAyah(idx + 1); };
     audio.onerror = () => { if (isPlayingRef.current) playNextAyah(idx + 1); };
     audio.play().catch(() => { isPlayingRef.current = false; setIsPlaying(false); });
@@ -295,7 +304,7 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
   };
 
   useEffect(() => {
-    return () => { isPlayingRef.current = false; audioRef.current?.pause(); };
+    return () => { isPlayingRef.current = false; };
   }, []);
 
   const progress = Math.min((ancrage / tikrarTarget) * 100, 100);
