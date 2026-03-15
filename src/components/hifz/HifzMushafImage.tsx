@@ -238,13 +238,10 @@ export default function HifzMushafImage({ surahNumber, startVerse, endVerse, max
 
       <div
         ref={containerRef}
-        className={`overflow-hidden relative ${fullWidth ? '' : 'rounded-xl'} ${scale > 1 ? 'touch-none' : 'touch-pan-y'}`}
+        className={`overflow-auto relative ${fullWidth ? '' : 'rounded-xl'} ${scale > 1 ? 'touch-none' : 'touch-pan-y'}`}
         style={{
           border: fullWidth ? 'none' : '1px solid rgba(212,175,55,0.25)',
           maxHeight,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
           background: '#f5f0e0',
         }}
         onTouchStart={handleTouchStart}
