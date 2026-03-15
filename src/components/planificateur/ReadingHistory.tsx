@@ -37,7 +37,8 @@ async function generatePDF(
   targetPages: number,
   firstName: string,
   startDate?: string,
-  isKhatmaComplete?: boolean
+  isKhatmaComplete?: boolean,
+  mode: 'download' | 'share' = 'download'
 ) {
   const { jsPDF } = await import('jspdf');
   const doc = new jsPDF('p', 'mm', 'a4');
@@ -176,21 +177,22 @@ async function generatePDF(
   doc.setTextColor(130, 130, 130);
   doc.text('Genere par Ma Khatma — makhatma.lovable.app', pageWidth / 2, 290, { align: 'center' });
 
-  const pdfBlob = doc.output('blob');
-  const file = new File([pdfBlob], 'ma-khatma-historique.pdf', { type: 'application/pdf' });
-
-  if (navigator.canShare && navigator.canShare({ files: [file] })) {
-    try {
-      await navigator.share({
-        title: 'Ma Khatma — Historique',
-        files: [file],
-      });
-      toast.success('PDF partagé ! 📤');
-    } catch (err: any) {
-      if (err?.name !== 'AbortError') {
-        doc.save('ma-khatma-historique.pdf');
-        toast.success('PDF téléchargé ! 📄');
+  if (mode === 'share') {
+    const pdfBlob = doc.output('blob');
+    const file = new File([pdfBlob], 'ma-khatma-historique.pdf', { type: 'application/pdf' });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      try {
+        await navigator.share({ title: 'Ma Khatma — Historique', files: [file] });
+        toast.success('PDF partagé ! 📤');
+      } catch (err: any) {
+        if (err?.name !== 'AbortError') {
+          doc.save('ma-khatma-historique.pdf');
+          toast.success('PDF téléchargé ! 📄');
+        }
       }
+    } else {
+      doc.save('ma-khatma-historique.pdf');
+      toast.success('PDF téléchargé ! 📄');
     }
   } else {
     doc.save('ma-khatma-historique.pdf');
@@ -222,16 +224,30 @@ export function ReadingHistory({ entries, targetPages = 0, firstName, startDate,
             <History className="h-4 w-4" style={{ color: 'var(--p-primary)' }} />
             <span className="font-semibold text-foreground text-sm">Historique</span>
           </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-8 px-3 text-xs gap-1.5 rounded-xl"
-            style={{ color: 'var(--p-primary)' }}
-            onClick={() => generatePDF(entries, targetPages, firstName || '', startDate, isKhatmaComplete)}
-          >
-            {canNativeShare ? <Share2 className="h-3.5 w-3.5" /> : <Download className="h-3.5 w-3.5" />}
-            {canNativeShare ? 'Partager' : 'PDF'}
-          </Button>
+          <div className="flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 px-3 text-xs gap-1.5 rounded-xl"
+              style={{ color: 'var(--p-primary)' }}
+              onClick={() => generatePDF(entries, targetPages, firstName || '', startDate, isKhatmaComplete, 'download')}
+            >
+              <Download className="h-3.5 w-3.5" />
+              PDF
+            </Button>
+            {canNativeShare && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 px-3 text-xs gap-1.5 rounded-xl"
+                style={{ color: 'var(--p-primary)' }}
+                onClick={() => generatePDF(entries, targetPages, firstName || '', startDate, isKhatmaComplete, 'share')}
+              >
+                <Share2 className="h-3.5 w-3.5" />
+                Partager
+              </Button>
+            )}
+          </div>
         </div>
 
         <div className="space-y-0.5">
