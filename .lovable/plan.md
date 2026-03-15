@@ -1,21 +1,24 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Supprimer le Mushaf flottant dans Validation et Tikrar
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Problème
+Le bouton flottant Mushaf (FAB vert en bas à gauche) apparaît encore dans les étapes Validation et Tikrar malgré le `disableMushafOverlay` déjà en place.
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Diagnostic
+Deux `HifzStepWrapper` sont rendus simultanément :
+1. Le **wrapper externe** dans `IstiqamahEngine.tsx` (ligne 125) — il a `disableMushafOverlay` conditionnel mais reçoit toujours `surahNumber`/`startVerse`/`endVerse`, ce qui génère `mushafPage`
+2. Le **wrapper interne** dans `StepValidation.tsx` — a `disableMushafOverlay` activé
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+Le wrapper externe pourrait garder le FAB visible si la condition `effectiveStep` ne se résout pas correctement au moment du rendu.
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+### Solution — 2 fichiers
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+**`src/components/hifz/istiqamah/IstiqamahEngine.tsx`** (ligne 125)
+- Forcer `surahNumber`, `startVerse`, `endVerse` à `undefined` sur le wrapper externe quand l'étape est validation ou tikrar, pour empêcher tout calcul de `mushafPage` et garantir qu'aucun élément Mushaf ne s'affiche.
+
+**`src/components/hifz/istiqamah/StepValidation.tsx`** (ligne 35-46)
+- Retirer `surahNumber`, `startVerse`, `endVerse` du wrapper interne pour être certain qu'aucun mushafPage n'est calculé (le `disableMushafOverlay` seul ne suffit pas si le badge verse info est toujours généré).
+
+Résultat : aucun FAB flottant, aucun bouton Mushaf, dans Validation et Tikrar.
 
