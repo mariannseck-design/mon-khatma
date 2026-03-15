@@ -136,7 +136,7 @@ export function TotalProgressBar({ totalPagesRead, onResetKhatma, onShowCelebrat
         </div>
 
         {/* Progress bar at bottom */}
-        <div className="h-2.5 rounded-b-lg" style={{ background: 'rgba(6,95,70,0.06)' }}>
+        <div className="h-2.5 rounded-b-lg" style={{ background: 'rgba(6,95,70,0.10)' }}>
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: `${percentage}%` }}
