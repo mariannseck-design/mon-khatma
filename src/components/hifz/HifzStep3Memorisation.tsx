@@ -712,54 +712,36 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
                     <span className="text-2xl font-bold" style={{ color: '#d4af37' }}>+1</span>
                   </motion.button>
 
-                  {/* Audio: prominent in phase 1 */}
-                  {phase.audioProminent && (
-                    <button
-                      onClick={toggleAudioHelp}
-                      className="w-12 h-12 rounded-full flex items-center justify-center transition-all active:scale-95 ml-4"
-                      style={{
-                        background: isPlaying ? 'rgba(212,175,55,0.15)' : 'rgba(255,255,255,0.08)',
-                        border: isPlaying ? '1px solid rgba(212,175,55,0.4)' : '1px solid rgba(255,255,255,0.15)',
-                      }}
-                    >
-                      <Volume2 className="h-5 w-5" style={{ color: isPlaying ? '#d4af37' : 'rgba(255,255,255,0.5)' }} />
-                    </button>
-                  )}
-                </div>
-
-                {/* Audio: discreet help in phase 2 */}
-                {!phase.audioProminent && phase.audioAvailable && (
+                  {/* Audio button — always visible */}
                   <button
                     onClick={toggleAudioHelp}
-                    className="flex items-center justify-center gap-1.5 mx-auto px-3 py-1.5 rounded-lg text-xs transition-all active:scale-95"
-                    style={{ color: 'rgba(255,255,255,0.3)' }}
+                    className="w-12 h-12 rounded-full flex items-center justify-center transition-all active:scale-95 ml-4"
+                    style={{
+                      background: isPlaying ? 'rgba(212,175,55,0.15)' : 'rgba(255,255,255,0.08)',
+                      border: isPlaying ? '1px solid rgba(212,175,55,0.4)' : '1px solid rgba(255,255,255,0.15)',
+                    }}
                   >
-                    <Volume2 className="h-3 w-3" style={{ color: isPlaying ? '#d4af37' : 'rgba(255,255,255,0.3)' }} />
-                    <span style={{ color: isPlaying ? '#d4af37' : undefined }}>
-                      {isPlaying ? 'Arrêter' : 'Aide audio'}
-                    </span>
+                    <Volume2 className="h-5 w-5" style={{ color: isPlaying ? '#d4af37' : 'rgba(255,255,255,0.5)' }} />
                   </button>
-                )}
+                </div>
 
-                {/* Mushaf link hint */}
-                {isPlaying && (
-                  <p className="text-center text-[10px] leading-relaxed mt-1" style={{ color: 'rgba(255,255,255,0.35)' }}>
-                    📖{' '}
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        getExactVersePage(surahNumber, startVerse).then(page =>
-                          navigate(`/quran-reader?page=${page}`)
-                        );
-                      }}
-                      className="underline"
-                      style={{ color: 'rgba(212,175,55,0.6)' }}
-                    >
-                      Lire sur le Mushaf
-                    </button>
-                    {' '}— le compteur reprend dès votre retour
-                  </p>
-                )}
+                {/* Mushaf link — always visible */}
+                <p className="text-center text-[10px] leading-relaxed mt-1" style={{ color: 'rgba(255,255,255,0.35)' }}>
+                  📖{' '}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      getExactVersePage(surahNumber, startVerse).then(page =>
+                        navigate(`/quran-reader?page=${page}`)
+                      );
+                    }}
+                    className="underline"
+                    style={{ color: 'rgba(212,175,55,0.6)' }}
+                  >
+                    Lire sur le Mushaf
+                  </button>
+                  {isPlaying ? ' — l\'audio continue en arrière-plan' : ''}
+                </p>
               </div>
             )}
 
