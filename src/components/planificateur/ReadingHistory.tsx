@@ -201,6 +201,8 @@ async function generatePDF(
 export function ReadingHistory({ entries, targetPages = 0, firstName, startDate, isKhatmaComplete }: ReadingHistoryProps) {
   if (entries.length === 0) return null;
 
+  const canNativeShare = typeof navigator !== 'undefined' && !!navigator.canShare;
+
   const sorted = [...entries].sort((a, b) => a.date.localeCompare(b.date));
   let cumulative = 0;
   const withCumulative = sorted.map(e => {
