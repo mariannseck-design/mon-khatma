@@ -8,6 +8,8 @@ import { getAyahAudioUrl } from '@/hooks/useQuranAudio';
 import { SURAHS } from '@/lib/surahData';
 import { useGlobalAudio } from '@/contexts/AudioContext';
 
+
+
 interface Props {
   surahNumber: number;
   verseStart: number;
