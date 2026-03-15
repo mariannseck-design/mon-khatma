@@ -1,21 +1,32 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Activer la persistance audio globale sur les 3 composants manquants
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Problème identifié
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+L'architecture audio globale (`AudioContext` + `MiniPlayer`) est bien en place, mais **3 composants Hifz** n'ont jamais été intégrés. Ils utilisent un audio local et **forcent la pause au démontage**, ce qui coupe le son quand tu quittes la page.
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+Composants concernés :
+- `HifzStep3Memorisation.tsx`
+- `HifzStepIntentionImpregnation.tsx`
+- `HifzStepImpregnationTajweed.tsx`
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+Les autres composants (StepImpregnation, StepImmersion, StepFusion, MouradPhase2, QuranReader) sont déjà intégrés et fonctionnent.
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+### Modifications par fichier
+
+**Pour chacun des 3 fichiers :**
+
+1. Ajouter `import { useGlobalAudio } from '@/contexts/AudioContext'`
+2. Appeler `const { registerAudio: registerGlobalAudio } = useGlobalAudio()` + `registerRef`
+3. Après chaque `new Audio(url)`, appeler `registerRef.current(audio, { label, returnPath })` pour enregistrer l'audio dans le contexte global
+4. Remplacer le cleanup `return () => { audioRef.current?.pause(); }` par `return () => { isPlayingRef.current = false; }` (sans pause, le contexte global gère la persistance)
+
+Le label sera du type `"Sourate An-Naba · v.1-10"` et le `returnPath` sera le chemin courant (`window.location.pathname + window.location.search`).
+
+### Résultat attendu
+
+- L'audio continue de jouer en arrière-plan lors de la navigation
+- Le MiniPlayer apparaît avec les contrôles pause/play et le lien retour
+- Aucun changement de comportement au sein des étapes elles-mêmes
 
