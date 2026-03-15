@@ -550,7 +550,7 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
         <motion.button
           whileTap={{ scale: 0.97 }}
           onClick={() => { generationRef.current++; audioRef.current?.pause(); setIsPlaying(false); isPlayingRef.current = false; pausedRef.current = null; onNext(); }}
-          className="w-full rounded-2xl py-4 font-semibold flex items-center justify-center gap-2"
+          className="w-full rounded-2xl py-2.5 text-sm flex items-center justify-center gap-2"
           style={{
             background: 'linear-gradient(135deg, #d4af37, #b8962e)',
             color: '#1a2e1a',
