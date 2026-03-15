@@ -229,7 +229,8 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
   useEffect(() => { fetchAudio(); }, [fetchAudio]);
 
   const playNextAyah = useCallback((idx: number, gen: number) => {
-    if (generationRef.current !== gen) return;
+    // Strict guards: bail if generation stale OR playback was stopped
+    if (generationRef.current !== gen || !isPlayingRef.current) return;
     if (!ayahsRef.current.length) {
       console.warn('[HifzTajweed] No audio loaded yet');
       setIsPlaying(false);
@@ -239,19 +240,26 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
     if (idx >= ayahsRef.current.length) {
       setListenCount(prev => prev + 1);
       indexRef.current = 0;
-      // Controlled restart with delay to prevent runaway counter
       setTimeout(() => {
-        if (generationRef.current !== gen) return;
+        if (generationRef.current !== gen || !isPlayingRef.current) return;
         playNextAyah(0, gen);
       }, 400);
       return;
     }
     indexRef.current = idx;
     setCurrentAyahIndex(idx);
+
+    // Kill previous audio element completely before creating new one
+    if (audioRef.current) {
+      audioRef.current.onended = null;
+      audioRef.current.onerror = null;
+      audioRef.current.pause();
+      try { audioRef.current.src = ''; } catch {}
+    }
+
     const audio = new Audio(ayahsRef.current[idx].audio);
     audioRef.current = audio;
     pausedRef.current = null;
-    selfInitiatedRef.current = true;
     registerRef.current(audio, {
       label: `${surahName} · v.${startVerse}-${endVerse}`,
       returnPath: window.location.pathname + window.location.search,
@@ -259,14 +267,16 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
       startVerse,
     });
     audio.onended = () => {
-      if (generationRef.current !== gen) return;
+      if (generationRef.current !== gen || !isPlayingRef.current) return;
+      if (audioRef.current !== audio) return; // stale callback
       playNextAyah(idx + 1, gen);
     };
     audio.onerror = () => {
-      if (generationRef.current !== gen) return;
+      if (generationRef.current !== gen || !isPlayingRef.current) return;
+      if (audioRef.current !== audio) return;
       console.warn('[HifzTajweed] Audio error for ayah', idx);
       setTimeout(() => {
-        if (generationRef.current !== gen) return;
+        if (generationRef.current !== gen || !isPlayingRef.current) return;
         playNextAyah(idx + 1, gen);
       }, 300);
     };
@@ -280,28 +290,39 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
   // Sync local state when global audio stops externally (MiniPlayer X)
   useEffect(() => {
     if (globalStatus === 'idle' && isPlayingRef.current) {
-      if (selfInitiatedRef.current) {
-        selfInitiatedRef.current = false;
-        return; // We initiated this transition ourselves — ignore
-      }
-      generationRef.current++;
-      setIsPlaying(false);
-      isPlayingRef.current = false;
-      setCurrentAyahIndex(-1);
-      pausedRef.current = null;
+      // If our audioRef is still the one registered globally and it's truly stopped,
+      // then this is an external stop. If the audioRef was replaced (new verse),
+      // the global context would have a different audio — but idle is transient.
+      // Use a short delay to distinguish transient idle (track swap) from real stop.
+      const timer = setTimeout(() => {
+        if (globalStatus === 'idle' && isPlayingRef.current) {
+          generationRef.current++;
+          hardStopAudio();
+          setIsPlaying(false);
+          isPlayingRef.current = false;
+          setCurrentAyahIndex(-1);
+          pausedRef.current = null;
+        }
+      }, 150);
+      return () => clearTimeout(timer);
     }
-  }, [globalStatus]);
+  }, [globalStatus, hardStopAudio]);
 
   const togglePlay = () => {
     if (isPlaying) {
       // Pause — keep audio element for resume
       pausedRef.current = audioRef.current;
-      audioRef.current?.pause();
+      if (audioRef.current) {
+        audioRef.current.onended = null;
+        audioRef.current.onerror = null;
+        audioRef.current.pause();
+      }
+      audioRef.current = null;
+      generationRef.current++;
       setIsPlaying(false);
       isPlayingRef.current = false;
     } else {
       // Resume from paused element or start fresh
-      selfInitiatedRef.current = true;
       const gen = ++generationRef.current;
       setIsPlaying(true);
       isPlayingRef.current = true;
@@ -316,11 +337,13 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
           startVerse,
         });
         audio.onended = () => {
-          if (generationRef.current !== gen) return;
+          if (generationRef.current !== gen || !isPlayingRef.current) return;
+          if (audioRef.current !== audio) return;
           playNextAyah(indexRef.current + 1, gen);
         };
         audio.onerror = () => {
-          if (generationRef.current !== gen) return;
+          if (generationRef.current !== gen || !isPlayingRef.current) return;
+          if (audioRef.current !== audio) return;
           playNextAyah(indexRef.current + 1, gen);
         };
         audio.play().catch(() => {
@@ -328,6 +351,7 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
           setIsPlaying(false);
           isPlayingRef.current = false;
         });
+
       } else {
         playNextAyah(indexRef.current, gen);
       }
