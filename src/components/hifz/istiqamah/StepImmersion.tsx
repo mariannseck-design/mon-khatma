@@ -650,8 +650,8 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
             <PhaseHeader
               title={isLiaison ? 'Liaison — Mémorisation Mushaf' : `Mémoriser en regardant le Mushaf (${TARGET_READ} fois minimum)`}
               subtitle={isLiaison
-                ? `Mémorisez les versets ${liaisonVerses[0]}–${liaisonVerses[liaisonVerses.length - 1]} sans audio`
-                : 'Mémorise le verset en regardant le Mushaf, sans écouter l\'audio'
+                ? `Mémorisez les versets ${liaisonVerses[0]}–${liaisonVerses[liaisonVerses.length - 1]}`
+                : 'Mémorise le verset en regardant le Mushaf, avec l\'audio en boucle si besoin'
               }
             />
 
