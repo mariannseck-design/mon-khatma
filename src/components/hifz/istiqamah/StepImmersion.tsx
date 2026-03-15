@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Volume2, Check, X, BookOpen, RefreshCw, Link, ChevronRight, Headphones } from 'lucide-react';
+import { Volume2, Check, X, BookOpen, RefreshCw, Link, ChevronRight, Headphones, ChevronDown, ChevronUp, EyeOff } from 'lucide-react';
 import MiniRecorder from './MiniRecorder';
 import { useAuth } from '@/contexts/AuthContext';
 import { RECITERS, getAyahAudioUrl } from '@/hooks/useQuranAudio';
