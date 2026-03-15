@@ -459,7 +459,7 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
         {/* Reciter selector */}
         <select
           value={reciter}
-          onChange={e => { setReciter(e.target.value); localStorage.setItem('quran_reciter', e.target.value); audioRef.current?.pause(); setIsPlaying(false); }}
+          onChange={e => { generationRef.current++; setReciter(e.target.value); localStorage.setItem('quran_reciter', e.target.value); hardStopAudio(); setIsPlaying(false); isPlayingRef.current = false; pausedRef.current = null; }}
           className="w-full rounded-xl px-4 py-3 text-sm outline-none"
           style={{
             background: 'rgba(255,255,255,0.08)',
