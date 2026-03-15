@@ -229,8 +229,8 @@ export function ReadingHistory({ entries, targetPages = 0, firstName, startDate,
             style={{ color: 'var(--p-primary)' }}
             onClick={() => generatePDF(entries, targetPages, firstName || '', startDate, isKhatmaComplete)}
           >
-            <Download className="h-3.5 w-3.5" />
-            PDF
+            {canNativeShare ? <Share2 className="h-3.5 w-3.5" /> : <Download className="h-3.5 w-3.5" />}
+            {canNativeShare ? 'Partager' : 'PDF'}
           </Button>
         </div>
 
