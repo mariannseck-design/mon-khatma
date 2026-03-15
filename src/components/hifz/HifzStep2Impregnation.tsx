@@ -96,7 +96,7 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
   const generationRef = useRef(0);
   const isPlayingRef = useRef(false);
   const pausedRef = useRef<HTMLAudioElement | null>(null);
-  const { registerAudio: registerGlobalAudio, stop: stopGlobal, stopSignal } = useGlobalAudio();
+  const { registerAudio: registerGlobalAudio, stop: stopGlobal } = useGlobalAudio();
   const registerRef = useRef(registerGlobalAudio);
   registerRef.current = registerGlobalAudio;
 
