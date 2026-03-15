@@ -662,7 +662,7 @@ export default function HifzPage() {
             surahNumber={session.surahNumber}
             startVerse={session.startVerse}
             endVerse={session.endVerse}
-            onNext={() => updateStep(5)}
+            onNext={completeSession}
             onBack={() => setStep(3)}
             onPause={handlePause}
             phaseLabel={PHASE_LABELS[4]}
@@ -676,21 +676,8 @@ export default function HifzPage() {
           />
         )}
 
-        {/* Step 5 → Étape B · 4/4 : Liaison */}
-        {!showBreathingPause && step === 5 && (
-          <HifzStep5Liaison
-            surahNumber={session.surahNumber}
-            startVerse={session.startVerse}
-            endVerse={session.endVerse}
-            onNext={completeSession}
-            onBack={() => setStep(4)}
-            onPause={handlePause}
-            phaseLabel={PHASE_LABELS[5]}
-          />
-        )}
-
-        {/* Step 6 → Succès */}
-        {step === 6 && <HifzSuccess stepTimes={stepTimesRef.current} onBackToTikrar={() => setStep(4)} />}
+        {/* Step 5 → Succès */}
+        {step === 5 && <HifzSuccess stepTimes={stepTimesRef.current} onBackToTikrar={() => setStep(4)} />}
       </div>
       {step >= 0 && step <= 6 && (
         <DevSkipButton isDevMode={isDevMode} onSkip={() => {
