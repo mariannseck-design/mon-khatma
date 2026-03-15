@@ -1,21 +1,19 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Séparer les boutons PDF et Partager
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+Actuellement, un seul bouton affiche soit "PDF" soit "Partager" selon le support. Il faut afficher les deux côte à côte.
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+### Changements dans `src/components/planificateur/ReadingHistory.tsx`
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+1. **Séparer `generatePDF` en deux modes** : ajouter un paramètre `mode: 'download' | 'share'`
+   - `download` → `doc.save()` toujours
+   - `share` → `navigator.share()` avec fallback `doc.save()`
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+2. **Deux boutons côte à côte** dans le header :
+   - Bouton **PDF** (icône `Download`) → appelle `generatePDF(...)` en mode download
+   - Bouton **Partager** (icône `Share2`) → affiché uniquement si `canNativeShare`, appelle en mode share
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+### Fichier modifié
+- `src/components/planificateur/ReadingHistory.tsx`
 
