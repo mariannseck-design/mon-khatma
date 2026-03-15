@@ -355,7 +355,7 @@ export default function QuranMushafView({ page, highlightAyah, darkMode = false,
                         lineHeight: 1.55,
                         color: isHighlighted
                           ? (darkMode ? '#6a9a6a' : '#2E7D32')
-                          : textColor,
+                          : (tajweedColor || textColor),
                         background: isHighlighted
                           ? (darkMode ? 'rgba(122,139,111,0.15)' : 'rgba(46,125,50,0.06)')
                           : 'transparent',
