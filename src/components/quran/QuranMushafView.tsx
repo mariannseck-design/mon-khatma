@@ -215,13 +215,13 @@ export default function QuranMushafView({ page, highlightAyah, darkMode = false,
     <div
       ref={containerRef}
       data-text-scroll
-      className="h-full w-full overflow-y-auto overflow-x-hidden flex flex-col select-text"
+      className="h-full w-full overflow-hidden flex flex-col select-text"
       dir="rtl"
       style={{ background: bgColor, touchAction: 'pan-y' }}
     >
       <div
-        className={`flex-1 flex flex-col px-3 py-3 ${isSpecialPage ? 'justify-center' : 'justify-between'}`}
-        style={{ minHeight: '100%' }}
+        className={`flex-1 flex flex-col px-3 py-1 ${isSpecialPage ? 'justify-center' : 'justify-between'}`}
+        style={{ height: '100%' }}
       >
         {lines.map(({ lineNumber, words }) => {
           // Check if this line starts a new surah
