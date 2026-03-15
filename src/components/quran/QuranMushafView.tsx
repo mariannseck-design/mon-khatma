@@ -1,6 +1,5 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { SURAHS } from '@/lib/surahData';
-import { getTajweedAnnotations, getWordTajweedColor, preloadTajweedData, type TajweedAnnotation } from '@/lib/tajweedData';
 
 /* ─── Types ─── */
 interface Word {
@@ -109,18 +108,16 @@ interface QuranMushafViewProps {
   page: number;
   highlightAyah?: number | null;
   darkMode?: boolean;
-  tajweedEnabled?: boolean;
   onVerseSelect?: (verseKey: string, surahNumber: number, verseNumber: number) => void;
 }
 
 /* ─── Component ─── */
-export default function QuranMushafView({ page, highlightAyah, darkMode = false, tajweedEnabled = false, onVerseSelect }: QuranMushafViewProps) {
+export default function QuranMushafView({ page, highlightAyah, darkMode = false, onVerseSelect }: QuranMushafViewProps) {
   const [pageData, setPageData] = useState<PageData | null>(null);
   const [fontReady, setFontReady] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [selectedVerse, setSelectedVerse] = useState<string | null>(null);
-  const [tajweedMap, setTajweedMap] = useState<Map<string, TajweedAnnotation[]>>(new Map());
   const containerRef = useRef<HTMLDivElement>(null);
 
   const fontFamily = `p${page}-v2`;
@@ -156,27 +153,6 @@ export default function QuranMushafView({ page, highlightAyah, darkMode = false,
   // Reset scroll on page change
   useEffect(() => { containerRef.current?.scrollTo(0, 0); }, [page]);
 
-  // Load tajweed annotations when enabled
-  useEffect(() => {
-    if (!tajweedEnabled || !pageData) {
-      setTajweedMap(new Map());
-      return;
-    }
-    preloadTajweedData();
-    const verseKeys = pageData.verses.map(v => v.verse_key);
-    Promise.all(
-      pageData.verses.map(v =>
-        getTajweedAnnotations(v.chapter_id, v.verse_number).then(anns => ({
-          key: v.verse_key,
-          anns,
-        }))
-      )
-    ).then(results => {
-      const map = new Map<string, TajweedAnnotation[]>();
-      for (const r of results) map.set(r.key, r.anns);
-      setTajweedMap(map);
-    });
-  }, [tajweedEnabled, pageData]);
 
   // Group words by line number
   const lines = useMemo(() => {
@@ -193,34 +169,12 @@ export default function QuranMushafView({ page, highlightAyah, darkMode = false,
       lineMap.get(w.line_number)!.push(w);
     }
 
-    // Sort by line number, and words within each line by position
     const sorted = Array.from(lineMap.entries()).sort((a, b) => a[0] - b[0]);
     return sorted.map(([lineNum, words]) => ({
       lineNumber: lineNum,
       words: words.sort((a, b) => a.position - b.position),
     }));
   }, [pageData]);
-
-  // Pre-compute tajweed color per word id
-  const wordTajweedColors = useMemo(() => {
-    const map = new Map<number, string | null>();
-    if (!tajweedEnabled || tajweedMap.size === 0 || !pageData) return map;
-
-    for (const verse of pageData.verses) {
-      const anns = tajweedMap.get(verse.verse_key);
-      if (!anns || anns.length === 0) continue;
-
-      // Build ordered word texts (only 'word' type, matching text_qpc_hafs order)
-      const textWords = verse.words.filter(w => w.char_type_name === 'word');
-      const wordsTexts = textWords.map(w => w.text_qpc_hafs);
-
-      for (let i = 0; i < textWords.length; i++) {
-        const color = getWordTajweedColor(i, wordsTexts, anns, darkMode);
-        if (color) map.set(textWords[i].id, color);
-      }
-    }
-    return map;
-  }, [tajweedEnabled, tajweedMap, pageData, darkMode]);
 
   // Detect surah starts for headers
   const surahStarts = useMemo(() => {
@@ -340,7 +294,7 @@ export default function QuranMushafView({ page, highlightAyah, darkMode = false,
                 {words.map((word) => {
                   const isEnd = word.char_type_name === 'end';
                   const isHighlighted = activeVerse === word.verse_key;
-                  const tajweedColor = tajweedEnabled ? wordTajweedColors.get(word.id) : null;
+                  
 
                   return (
                     <span
@@ -355,7 +309,7 @@ export default function QuranMushafView({ page, highlightAyah, darkMode = false,
                         lineHeight: 1.55,
                         color: isHighlighted
                           ? (darkMode ? '#6a9a6a' : '#2E7D32')
-                          : (tajweedColor || textColor),
+                          : textColor,
                         background: isHighlighted
                           ? (darkMode ? 'rgba(122,139,111,0.15)' : 'rgba(46,125,50,0.06)')
                           : 'transparent',
