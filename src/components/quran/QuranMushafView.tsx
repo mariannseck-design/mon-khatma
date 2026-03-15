@@ -156,6 +156,28 @@ export default function QuranMushafView({ page, highlightAyah, darkMode = false,
   // Reset scroll on page change
   useEffect(() => { containerRef.current?.scrollTo(0, 0); }, [page]);
 
+  // Load tajweed annotations when enabled
+  useEffect(() => {
+    if (!tajweedEnabled || !pageData) {
+      setTajweedMap(new Map());
+      return;
+    }
+    preloadTajweedData();
+    const verseKeys = pageData.verses.map(v => v.verse_key);
+    Promise.all(
+      pageData.verses.map(v =>
+        getTajweedAnnotations(v.chapter_id, v.verse_number).then(anns => ({
+          key: v.verse_key,
+          anns,
+        }))
+      )
+    ).then(results => {
+      const map = new Map<string, TajweedAnnotation[]>();
+      for (const r of results) map.set(r.key, r.anns);
+      setTajweedMap(map);
+    });
+  }, [tajweedEnabled, pageData]);
+
   // Group words by line number
   const lines = useMemo(() => {
     if (!pageData) return [];
