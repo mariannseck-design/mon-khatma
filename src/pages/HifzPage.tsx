@@ -658,13 +658,13 @@ export default function HifzPage() {
           />
         )}
 
-        {/* Step 4 → Étape 6/6 : Tikrâr */}
+        {/* Step 4 → Étape B · 3/4 : Tikrâr */}
         {!showBreathingPause && step === 4 && (
           <HifzStep5Tikrar
             surahNumber={session.surahNumber}
             startVerse={session.startVerse}
             endVerse={session.endVerse}
-            onNext={completeSession}
+            onNext={() => updateStep(5)}
             onBack={() => setStep(3)}
             onPause={handlePause}
             phaseLabel={PHASE_LABELS[4]}
@@ -678,10 +678,23 @@ export default function HifzPage() {
           />
         )}
 
-        {/* Step 5 → Succès */}
-        {step === 5 && <HifzSuccess stepTimes={stepTimesRef.current} onBackToTikrar={() => setStep(4)} />}
+        {/* Step 5 → Étape B · 4/4 : Liaison */}
+        {!showBreathingPause && step === 5 && (
+          <HifzStep5Liaison
+            surahNumber={session.surahNumber}
+            startVerse={session.startVerse}
+            endVerse={session.endVerse}
+            onNext={completeSession}
+            onBack={() => setStep(4)}
+            onPause={handlePause}
+            phaseLabel={PHASE_LABELS[5]}
+          />
+        )}
+
+        {/* Step 6 → Succès */}
+        {step === 6 && <HifzSuccess stepTimes={stepTimesRef.current} onBackToTikrar={() => setStep(4)} />}
       </div>
-      {step >= 0 && step <= 5 && (
+      {step >= 0 && step <= 6 && (
         <DevSkipButton isDevMode={isDevMode} onSkip={() => {
           console.log(`[DevSkip] 🔀 Skip à step=${step}, breathing=${showBreathingPause}`);
           if (showBreathingPause) { handleBreathingComplete(); }
@@ -689,8 +702,9 @@ export default function HifzPage() {
           else if (step === 1) { handleImpregnationComplete(); }
           else if (step === 2) { updateStep(3); }
           else if (step === 3) { updateStep(4); }
-          else if (step === 4) { completeSession(); }
-          else if (step === 5) { navigate('/muraja'); }
+          else if (step === 4) { updateStep(5); }
+          else if (step === 5) { completeSession(); }
+          else if (step === 6) { navigate('/muraja'); }
         }} />
       )}
     </AppLayout>
