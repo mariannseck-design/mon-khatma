@@ -687,6 +687,12 @@ export default function PlanificateurPage() {
           />
         </div>
 
+        {/* Weekly Chart */}
+        <WeeklyMiniChart
+          weekProgress={weekProgress}
+          targetPages={activeGoal?.target_value || 0}
+        />
+
         {/* Reading History */}
         <ReadingHistory
           entries={allProgress}
