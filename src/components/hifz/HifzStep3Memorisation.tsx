@@ -157,6 +157,8 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
     const saved = localStorage.getItem(storageKey);
     return saved ? Math.min(parseInt(saved, 10) || 0, tikrarTarget) : 0;
   });
+  const ancrageRef = useRef(ancrage);
+  useEffect(() => { ancrageRef.current = ancrage; }, [ancrage]);
   const [currentPhase, setCurrentPhase] = useState(() => getPhaseForAncrage(
     (() => { const s = localStorage.getItem(getStorageKey(surahNumber, startVerse, endVerse)); return s ? Math.min(parseInt(s, 10) || 0, repetitionLevel || 40) : 0; })()
   ));
