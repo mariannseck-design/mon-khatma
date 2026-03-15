@@ -71,6 +71,9 @@ function loadImmersionState(surah: number, vStart: number, vEnd: number) {
 
 export default function StepImmersion({ surahNumber, verseStart, verseEnd, reciterId, onNext }: Props) {
   const { isAdmin } = useAuth();
+  const { registerAudio: registerGlobalAudio } = useGlobalAudio();
+  const registerRef = useRef(registerGlobalAudio);
+  registerRef.current = registerGlobalAudio;
   const minListen = isAdmin ? 1 : TARGET_LISTEN;
   const minRead = isAdmin ? 1 : TARGET_READ;
   const minMemory = isAdmin ? 1 : TARGET_MEMORY;
