@@ -17,58 +17,6 @@ interface Props {
   phaseLabel?: string;
 }
 
-const FONT_FAMILY = "'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
-const BASMALA_WORDS = ['بِسْمِ', 'ٱللَّهِ', 'ٱلرَّحْمَٰنِ', 'ٱلرَّحِيمِ'];
-const FONT_SIZES = [20, 24, 30];
-const FONT_LABELS = ['Petit', 'Moyen', 'Grand'];
-
-function stripLeadingBasmala(text: string): { stripped: string; offset: number } {
-  const trimmed = text.trimStart();
-  if (!trimmed) return { stripped: trimmed, offset: 0 };
-  if (trimmed.startsWith('﷽')) {
-    const after = trimmed.slice(1).trimStart();
-    return { stripped: after, offset: text.length - after.length };
-  }
-  const words = trimmed.split(/\s+/u);
-  if (words.length < 4) return { stripped: trimmed, offset: text.length - trimmed.length };
-  const first4 = words.slice(0, 4);
-  const isBasmala = first4.every((word, i) => {
-    const clean = word.replace(/[\u06DD\u06DE\u06E9\u06DA\u06DB\u06DC\u200E\u200F\u061C]/gu, '');
-    return clean === BASMALA_WORDS[i];
-  });
-  if (!isBasmala) return { stripped: trimmed, offset: text.length - trimmed.length };
-  if (words.length <= 4) return { stripped: '', offset: text.length };
-  const remaining = words.slice(4).join(' ').trimStart();
-  return { stripped: remaining, offset: text.length - remaining.length };
-}
-
-function renderTajweedText(text: string, annotations: TajweedAnnotation[], charOffset: number = 0): React.ReactNode[] {
-  if (!annotations.length) return [text];
-  const colors = TAJWEED_COLORS;
-  const segments: React.ReactNode[] = [];
-  let pos = 0;
-  for (const ann of annotations) {
-    const start = ann.start - charOffset;
-    const end = ann.end - charOffset;
-    if (end <= 0 || start >= text.length) continue;
-    const effectiveStart = Math.max(start, 0);
-    const effectiveEnd = Math.min(end, text.length);
-    if (effectiveStart > pos) segments.push(text.slice(pos, effectiveStart));
-    const color = colors[ann.rule];
-    if (color) {
-      segments.push(<span key={`${ann.rule}-${effectiveStart}`} style={{ color }}>{text.slice(effectiveStart, effectiveEnd)}</span>);
-    } else {
-      segments.push(text.slice(effectiveStart, effectiveEnd));
-    }
-    pos = effectiveEnd;
-  }
-  if (pos < text.length) segments.push(text.slice(pos));
-  return segments;
-}
-
-interface AyahWithAnnotations extends LocalAyah {
-  tajweed?: TajweedAnnotation[];
-}
 
 export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, endVerse, onNext, onBack, onPause, phaseLabel }: Props) {
   const { registerAudio: registerGlobalAudio, stop: stopGlobal } = useGlobalAudio();
