@@ -25,8 +25,6 @@ function isToday(dateStr: string): boolean {
 export function ReadingHistory({ entries, targetPages = 0 }: ReadingHistoryProps) {
   if (entries.length === 0) return null;
 
-  // Compute cumulative pages to show surah at that point
-  // We need cumulative from oldest to newest, but display newest first
   const sorted = [...entries].sort((a, b) => a.date.localeCompare(b.date));
   let cumulative = 0;
   const withCumulative = sorted.map(e => {
@@ -42,11 +40,11 @@ export function ReadingHistory({ entries, targetPages = 0 }: ReadingHistoryProps
     >
       <Card className="p-5 border-none rounded-[2rem] bg-card shadow-sm">
         <div className="flex items-center gap-2 mb-4">
-          <History className="h-4 w-4 text-primary" />
-          <span className="font-semibold text-foreground text-sm">Historique de lecture</span>
+          <History className="h-4 w-4" style={{ color: 'var(--p-primary)' }} />
+          <span className="font-semibold text-foreground text-sm">Historique</span>
         </div>
 
-        <div className="space-y-1">
+        <div className="space-y-0.5">
           {display.map((entry, i) => {
             const surah = getSurahByPage(entry.cumulativePage);
             const goalMet = targetPages > 0 && entry.pages_read >= targetPages;
@@ -56,11 +54,15 @@ export function ReadingHistory({ entries, targetPages = 0 }: ReadingHistoryProps
               <div
                 key={entry.date}
                 className={`flex items-center justify-between px-3 py-2.5 rounded-xl transition-colors ${
-                  today ? 'bg-primary/10' : i % 2 === 0 ? 'bg-muted/50' : ''
+                  today ? '' : i % 2 === 0 ? 'bg-muted/40' : ''
                 }`}
+                style={today ? { background: 'rgba(6,95,70,0.06)' } : undefined}
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <span className={`text-xs font-medium w-16 shrink-0 ${today ? 'text-primary' : 'text-muted-foreground'}`}>
+                  <span
+                    className="text-xs font-medium w-16 shrink-0"
+                    style={{ color: today ? 'var(--p-primary)' : undefined }}
+                  >
                     {today ? "Auj." : formatDate(entry.date)}
                   </span>
                   <div className="flex items-center gap-1.5 min-w-0">
@@ -76,8 +78,11 @@ export function ReadingHistory({ entries, targetPages = 0 }: ReadingHistoryProps
                     {entry.pages_read} p.
                   </span>
                   {goalMet && (
-                    <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center">
-                      <Check className="h-3 w-3 text-primary" />
+                    <div
+                      className="w-5 h-5 rounded-full flex items-center justify-center"
+                      style={{ background: 'rgba(212,175,55,0.2)' }}
+                    >
+                      <Check className="h-3 w-3" style={{ color: 'var(--p-accent)' }} />
                     </div>
                   )}
                 </div>
