@@ -100,8 +100,9 @@ export default function StepImpregnation({ surahNumber, verseStart, verseEnd, ve
     }
   };
 
+  // Audio persists via global context — don't pause on unmount
   useEffect(() => {
-    return () => { isPlayingRef.current = false; pausedRef.current = false; audioRef.current?.pause(); setCurrentAyahIndex(-1); };
+    return () => { isPlayingRef.current = false; pausedRef.current = false; setCurrentAyahIndex(-1); };
   }, []);
 
   const done = count >= TARGET;

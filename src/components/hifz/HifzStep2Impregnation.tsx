@@ -263,8 +263,9 @@ export default function HifzStep2Impregnation({ surahNumber, startVerse, endVers
     }
   };
 
+  // Audio persists via global context — don't pause on unmount
   useEffect(() => {
-    return () => { audioRef.current?.pause(); };
+    return () => { /* handled by global context */ };
   }, []);
 
   return (

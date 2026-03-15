@@ -95,8 +95,9 @@ export default function StepFusion({ parts, reciterId, onNext }: Props) {
     }
   };
 
+  // Audio persists via global context — don't pause on unmount
   useEffect(() => {
-    return () => { isPlayingRef.current = false; audioRef.current?.pause(); };
+    return () => { isPlayingRef.current = false; };
   }, []);
 
   useEffect(() => {

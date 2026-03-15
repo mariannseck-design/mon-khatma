@@ -5,7 +5,7 @@ export type MushafMode = 'image' | 'text' | 'physical';
 const STORAGE_KEY = 'mourad_mushaf_mode';
 
 export function getMouradMushafMode(): MushafMode {
-  return (localStorage.getItem(STORAGE_KEY) as MushafMode) || 'text';
+  return (localStorage.getItem(STORAGE_KEY) as MushafMode) || 'image';
 }
 
 export function setMouradMushafMode(mode: MushafMode) {

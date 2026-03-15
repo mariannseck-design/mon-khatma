@@ -127,7 +127,10 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
-          <AppWithSWUpdate />
+          <AudioProvider>
+            <AppWithSWUpdate />
+            <MiniPlayer />
+          </AudioProvider>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>

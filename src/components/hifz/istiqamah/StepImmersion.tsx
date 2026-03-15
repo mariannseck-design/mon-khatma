@@ -278,7 +278,8 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
     }
   }, [isLiaison, liaisonVerses, currentVerse, getAudioUrl]);
 
-  useEffect(() => () => { isPlayingRef.current = false; pausedRef.current = false; audioRef.current?.pause(); audioRef.current = null; }, []);
+  // Audio persists via global context — don't pause on unmount
+  useEffect(() => () => { isPlayingRef.current = false; pausedRef.current = false; }, []);
 
   // Reset on verse change — only if NOT restoring from saved state
   const isInitialMount = useRef(true);

@@ -226,13 +226,10 @@ export function useQuranAudio(page: number, onPageFinished?: () => void, startVe
     }
   }, [startVerse, endVerse]);
 
-  // Cleanup on unmount
+  // Audio persists across navigation via global context
   useEffect(() => {
     return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
+      // Don't pause — let global audio context handle persistence
     };
   }, []);
 

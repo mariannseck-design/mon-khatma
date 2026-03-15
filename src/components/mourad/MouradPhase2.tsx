@@ -101,9 +101,9 @@ export default function MouradPhase2({ surahNumber, startVerse, endVerse, listen
     playNext();
   }, [isPlaying, audioEl, reciterId, surahNumber, startVerse, endVerse, onListenComplete]);
 
-  // Cleanup
+  // Audio persists via global context — don't pause on unmount
   useEffect(() => {
-    return () => { audioEl?.pause(); };
+    return () => { /* handled by global context */ };
   }, [audioEl]);
 
   return (
