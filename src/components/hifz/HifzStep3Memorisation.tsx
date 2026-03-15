@@ -306,9 +306,11 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
       audioRef.current?.pause();
       setIsPlaying(false);
     } else if (ayahAudiosRef.current.length > 0) {
+      generationRef.current++;
+      stopGlobal();
       isPlayingRef.current = true;
       setIsPlaying(true);
-      playNextAyah(0);
+      playNextAyah(0, generationRef.current);
     }
   };
 
