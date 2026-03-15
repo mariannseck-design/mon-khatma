@@ -1,21 +1,24 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Problème
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+Le bouton Stop a été ajouté dans `StepImpregnation.tsx` (Istiqâmah), mais l'utilisateur est sur `HifzStepImpregnationTajweed.tsx` (Phase A classique) qui n'a ni le bouton Stop, ni le cleanup unmount, ni le visibilitychange handler.
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+## Plan
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+### Fichier : `src/components/hifz/HifzStepImpregnationTajweed.tsx`
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+#### 1) Import `Square` depuis lucide-react (ligne 2)
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+#### 2) Ajouter cleanup useEffect (après les refs, ~ligne 112)
+Même logique que StepImpregnation : au démontage, incrémenter generation, pause audio, stopGlobal.
+
+#### 3) Ajouter visibilitychange useEffect
+Synchroniser `isPlaying` avec l'état réel de l'audio au retour d'onglet.
+
+#### 4) Hard-stop dans togglePlay branche "start" (ligne 303-337)
+Avant de reprendre ou démarrer, tuer explicitement `audioRef.current` s'il existe encore, puis `stopGlobal()`, puis démarrer proprement.
+
+#### 5) Ajouter bouton Stop dans le JSX (~ligne 439, après le bouton Play/Pause)
+Un bouton carré rouge qui apparaît uniquement quand `isPlaying === true`, avec la même logique de hard-stop complète.
 
