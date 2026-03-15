@@ -201,6 +201,27 @@ export default function QuranMushafView({ page, highlightAyah, darkMode = false,
     }));
   }, [pageData]);
 
+  // Pre-compute tajweed color per word id
+  const wordTajweedColors = useMemo(() => {
+    const map = new Map<number, string | null>();
+    if (!tajweedEnabled || tajweedMap.size === 0 || !pageData) return map;
+
+    for (const verse of pageData.verses) {
+      const anns = tajweedMap.get(verse.verse_key);
+      if (!anns || anns.length === 0) continue;
+
+      // Build ordered word texts (only 'word' type, matching text_qpc_hafs order)
+      const textWords = verse.words.filter(w => w.char_type_name === 'word');
+      const wordsTexts = textWords.map(w => w.text_qpc_hafs);
+
+      for (let i = 0; i < textWords.length; i++) {
+        const color = getWordTajweedColor(i, wordsTexts, anns, darkMode);
+        if (color) map.set(textWords[i].id, color);
+      }
+    }
+    return map;
+  }, [tajweedEnabled, tajweedMap, pageData, darkMode]);
+
   // Detect surah starts for headers
   const surahStarts = useMemo(() => {
     if (!pageData) return [];
