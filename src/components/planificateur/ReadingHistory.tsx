@@ -167,14 +167,14 @@ async function generatePDF(
   }
 
   // Watermark on every page
-  const totalPdfPages = doc.internal.getNumberOfPages();
+  const totalPdfPages = (doc as any).internal.getNumberOfPages();
   for (let p = 1; p <= totalPdfPages; p++) {
     doc.setPage(p);
     doc.setFontSize(48);
     doc.setTextColor(200, 200, 200);
-    doc.setGState(new doc.GState({ opacity: 0.08 }));
+    (doc as any).setGState(new (doc as any).GState({ opacity: 0.08 }));
     doc.text('Ma Khatma', pageWidth / 2, 150, { align: 'center', angle: 35 });
-    doc.setGState(new doc.GState({ opacity: 1 }));
+    (doc as any).setGState(new (doc as any).GState({ opacity: 1 }));
   }
 
   // Footer on last page
