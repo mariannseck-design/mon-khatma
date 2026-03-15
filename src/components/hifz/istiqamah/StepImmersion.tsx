@@ -433,7 +433,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
     const pct = Math.min(count / target, 1);
     const done = count >= target;
     return (
-      <div className="relative w-28 h-28">
+      <div className="relative w-20 h-20">
         <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
           <circle cx="50" cy="50" r="44" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="6" />
           <circle cx="50" cy="50" r="44" fill="none" stroke={done ? '#d4af37' : color} strokeWidth="6" strokeLinecap="round"
