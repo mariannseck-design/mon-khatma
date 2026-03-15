@@ -73,9 +73,21 @@ interface AyahWithAnnotations extends LocalAyah {
 }
 
 export default function HifzStepIntentionImpregnation({ surahNumber, startVerse, endVerse, onNext, onBack, onPause }: Props) {
-  const { registerAudio: registerGlobalAudio } = useGlobalAudio();
+  const { registerAudio: registerGlobalAudio, stop: stopGlobal, status: globalStatus } = useGlobalAudio();
   const registerRef = useRef(registerGlobalAudio);
   registerRef.current = registerGlobalAudio;
+  const isPlayingRef = useRef(false);
+  const pausedRef = useRef<HTMLAudioElement | null>(null);
+
+  const hardStopAudio = useCallback(() => {
+    if (audioRef.current) {
+      audioRef.current.onended = null;
+      audioRef.current.onerror = null;
+      audioRef.current.pause();
+      try { audioRef.current.src = ''; } catch {}
+    }
+    audioRef.current = null;
+  }, []);
 
   const storageKey = `hifz_listen_${surahNumber}_${startVerse}_${endVerse}`;
   const surahName = SURAHS.find(s => s.number === surahNumber)?.name || '';
