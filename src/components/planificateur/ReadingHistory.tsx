@@ -120,6 +120,52 @@ async function generatePDF(
     y += 7;
   });
 
+  // Khatma celebration box
+  if (isKhatmaComplete) {
+    if (y > 245) {
+      doc.addPage();
+      y = 20;
+    }
+    y += 6;
+    const boxH = 32;
+    const boxX = 18;
+    const boxW = pageWidth - 36;
+
+    // Gold border
+    doc.setDrawColor(180, 145, 30);
+    doc.setLineWidth(1.2);
+    doc.setFillColor(255, 250, 230);
+    doc.roundedRect(boxX, y, boxW, boxH, 4, 4, 'FD');
+
+    // Inner accent line
+    doc.setDrawColor(212, 175, 55);
+    doc.setLineWidth(0.4);
+    doc.roundedRect(boxX + 2, y + 2, boxW - 4, boxH - 4, 3, 3, 'S');
+
+    // Title
+    doc.setFontSize(13);
+    doc.setTextColor(140, 110, 20);
+    doc.text('Khatma terminee !', pageWidth / 2, y + 12, { align: 'center' });
+
+    // Message
+    doc.setFontSize(9);
+    doc.setTextColor(100, 80, 20);
+    const msg = firstName
+      ? `Felicitations ${firstName} ! Qu'Allah accepte ta lecture et t'accorde Sa misericorde.`
+      : `Felicitations ! Qu'Allah accepte ta lecture et t'accorde Sa misericorde.`;
+    doc.text(msg, pageWidth / 2, y + 20, { align: 'center' });
+
+    // Date
+    const lastDate = sorted.length > 0 ? sorted[sorted.length - 1].date : '';
+    if (lastDate) {
+      doc.setFontSize(8);
+      doc.setTextColor(150, 130, 50);
+      doc.text(`Terminee le ${formatDateLong(lastDate)}`, pageWidth / 2, y + 27, { align: 'center' });
+    }
+
+    y += boxH + 6;
+  }
+
   // Footer
   y = Math.max(y + 8, 270);
   if (y > 280) {
@@ -128,7 +174,7 @@ async function generatePDF(
   }
   doc.setFontSize(8);
   doc.setTextColor(130, 130, 130);
-  doc.text('Généré par Ma Khatma — makhatma.lovable.app', pageWidth / 2, 290, { align: 'center' });
+  doc.text('Genere par Ma Khatma — makhatma.lovable.app', pageWidth / 2, 290, { align: 'center' });
 
   doc.save('ma-khatma-historique.pdf');
   toast.success('PDF téléchargé ! 📄');
