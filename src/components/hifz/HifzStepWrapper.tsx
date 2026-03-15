@@ -27,7 +27,9 @@ function formatTime(seconds: number): string {
 export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBack, onPause, totalSteps = 5, phaseLabel, surahNumber, startVerse, endVerse }: HifzStepWrapperProps) {
   const [elapsed, setElapsed] = useState(0);
   const [pageLabel, setPageLabel] = useState('');
+  const [mushafPage, setMushafPage] = useState<number | null>(null);
   const startRef = useRef(Date.now());
+  const navigate = useNavigate();
 
   useEffect(() => {
     startRef.current = Date.now();
