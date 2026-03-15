@@ -26,7 +26,7 @@ function formatTime(seconds: number): string {
   return `${m}:${s.toString().padStart(2, '0')}`;
 }
 
-export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBack, onPause, totalSteps = 5, phaseLabel, surahNumber, startVerse, endVerse }: HifzStepWrapperProps) {
+export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBack, onPause, totalSteps = 5, phaseLabel, surahNumber, startVerse, endVerse, disableMushafOverlay = false }: HifzStepWrapperProps) {
   const [elapsed, setElapsed] = useState(0);
   const [pageLabel, setPageLabel] = useState('');
   const [mushafPage, setMushafPage] = useState<number | null>(null);
