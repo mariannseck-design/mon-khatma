@@ -1,21 +1,14 @@
 
 
-# Diagnostic : 404 sur /quran-reader
+## Plan : Fix de la boucle audio qui s'arrête après 1-2 cycles
 
-## Constat
-Le code est correct :
-- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
-- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
-- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
+### Cause racine
 
-## Cause probable
-La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
+`selfInitiatedRef` n'est mis à `true` qu'une seule fois dans `togglePlay()`. Quand le cycle recommence (ayah 0 du cycle suivant), `playNextAyah` appelle `registerAudio` sur un nouveau `Audio` — le `AudioContext` stoppe l'ancien audio, ce qui peut brièvement passer `globalStatus` à `'idle'`. Le `useEffect` de synchronisation voit `idle` + `isPlayingRef === true`, mais `selfInitiatedRef` est déjà à `false` → il tue la session. Résultat : l'audio s'arrête après 1-2 tours.
 
-## Solution
-Aucune modification de code n'est nécessaire. Il suffit de :
+### Solution — `HifzStepImpregnationTajweed.tsx`
 
-1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
-2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
+Ajouter `selfInitiatedRef.current = true` dans `playNextAyah` juste avant chaque appel à `registerRef.current(...)` (ligne ~244). Ainsi, toute transition `idle` transitoire provoquée par le remplacement d'audio interne sera ignorée par le sync `useEffect`.
 
-Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
+Changement : 1 ligne ajoutée dans `playNextAyah`, avant `registerRef.current(audio, ...)`.
 
