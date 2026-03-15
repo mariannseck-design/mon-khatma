@@ -59,6 +59,10 @@ export function useQuranAudio(page: number, onPageFinished?: () => void, startVe
   const indexRef = useRef(0);
   const wasPlayingRef = useRef(false);
 
+  const { registerAudio: registerGlobalAudio } = useGlobalAudio();
+  const registerRef = useRef(registerGlobalAudio);
+  registerRef.current = registerGlobalAudio;
+
   useEffect(() => {
     localStorage.setItem('quran_reciter', reciter);
   }, [reciter]);
