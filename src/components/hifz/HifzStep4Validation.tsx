@@ -303,7 +303,7 @@ export default function HifzStep4Validation({ surahNumber, startVerse, endVerse,
   }
 
   return (
-    <HifzStepWrapper stepNumber={4} stepTitle="Validation" onBack={onBack} onPause={onPause}>
+    <HifzStepWrapper stepNumber={4} stepTitle="Validation" onBack={onBack} onPause={onPause} surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse}>
       {/* Inject waveform keyframes */}
       <style>{`@keyframes waveAnim { 0% { height: 8px; } 100% { height: 28px; } }`}</style>
 
