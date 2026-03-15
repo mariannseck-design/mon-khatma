@@ -736,6 +736,26 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
                     </span>
                   </button>
                 )}
+
+                {/* Mushaf link hint */}
+                {isPlaying && (
+                  <p className="text-center text-[10px] leading-relaxed mt-1" style={{ color: 'rgba(255,255,255,0.35)' }}>
+                    📖{' '}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        getExactVersePage(surahNumber, startVerse).then(page =>
+                          navigate(`/quran-reader?page=${page}`)
+                        );
+                      }}
+                      className="underline"
+                      style={{ color: 'rgba(212,175,55,0.6)' }}
+                    >
+                      Lire sur le Mushaf
+                    </button>
+                    {' '}— le compteur reprend dès votre retour
+                  </p>
+                )}
               </div>
             )}
 
