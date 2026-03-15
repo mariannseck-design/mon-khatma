@@ -669,7 +669,7 @@ export default function HifzStep3Memorisation({ surahNumber, startVerse, endVers
             )}
 
             {/* Reciter selector — visible in phases with audio */}
-            {!isComplete && (phase.audioProminent || phase.audioAvailable) && (
+            {!isComplete && (
               <select
                 value={reciter}
                 onChange={e => {
