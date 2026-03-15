@@ -6,6 +6,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import HifzMushafImage from '../HifzMushafImage';
 import { getVersesByRange, type LocalAyah } from '@/lib/quranData';
 import { getAyahAudioUrl } from '@/hooks/useQuranAudio';
+import { SURAHS } from '@/lib/surahData';
+import { useGlobalAudio } from '@/contexts/AudioContext';
 import type { Part } from './partSplitter';
 
 interface Props {
