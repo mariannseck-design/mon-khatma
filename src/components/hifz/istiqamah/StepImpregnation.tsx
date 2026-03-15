@@ -68,18 +68,25 @@ export default function StepImpregnation({ surahNumber, verseStart, verseEnd, ve
   }, [surahNumber, verseStart, verseEnd, reciter]);
 
   const playLoop = useCallback((idx: number, gen: number) => {
-    if (generationRef.current !== gen) { setCurrentAyahIndex(-1); return; }
+    if (generationRef.current !== gen || !isPlayingRef.current) { setCurrentAyahIndex(-1); return; }
     if (audiosRef.current.length === 0) return;
     if (idx >= audiosRef.current.length) {
-      setTimeout(() => { if (generationRef.current === gen) playLoop(0, gen); }, 600);
+      setTimeout(() => { if (generationRef.current === gen && isPlayingRef.current) playLoop(0, gen); }, 600);
       return;
     }
     setCurrentAyahIndex(idx);
+    // Kill previous audio completely
+    if (audioRef.current) {
+      audioRef.current.onended = null;
+      audioRef.current.onerror = null;
+      audioRef.current.pause();
+      try { audioRef.current.src = ''; } catch {}
+    }
     const audio = new Audio(audiosRef.current[idx]);
     audioRef.current = audio;
     registerRef.current(audio, { label: `${SURAHS.find(s => s.number === surahNumber)?.name || ''} · v.${verseStart}-${verseEnd}`, returnPath: window.location.pathname, surahNumber, startVerse: verseStart + idx });
-    audio.onended = () => { if (generationRef.current === gen) playLoop(idx + 1, gen); };
-    audio.onerror = () => { if (generationRef.current === gen) playLoop(idx + 1, gen); };
+    audio.onended = () => { if (generationRef.current === gen && isPlayingRef.current && audioRef.current === audio) playLoop(idx + 1, gen); };
+    audio.onerror = () => { if (generationRef.current === gen && isPlayingRef.current && audioRef.current === audio) playLoop(idx + 1, gen); };
     audio.play().catch(() => { isPlayingRef.current = false; setIsPlaying(false); setCurrentAyahIndex(-1); });
   }, []);
 
