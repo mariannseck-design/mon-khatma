@@ -64,7 +64,7 @@ async function generatePDF(
   // Info line
   let y = 42;
   doc.setFontSize(10);
-  doc.setTextColor(80, 80, 80);
+  doc.setTextColor(40, 40, 40);
 
   if (firstName) {
     doc.text(`Lectrice : ${firstName}`, 20, y);
