@@ -126,12 +126,10 @@ export function WeeklyMiniChart({ weekProgress, targetPages }: Props) {
                     minHeight: day.pages > 0 ? 4 : 0,
                     background: day.isToday
                       ? 'var(--p-accent)'
-                      : metGoal
-                        ? 'var(--p-primary)'
-                        : 'var(--p-primary)',
-                    opacity: day.isToday ? 1 : metGoal ? 1 : 0.5,
-                    borderRadius: '4px 4px 0 0',
-                    maxWidth: 28,
+                      : 'var(--p-primary)',
+                    opacity: day.isToday ? 0.6 : metGoal ? 0.5 : 0.2,
+                    borderRadius: '6px 6px 0 0',
+                    maxWidth: 24,
                     margin: '0 auto',
                   }}
                 />
