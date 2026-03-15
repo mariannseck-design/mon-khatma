@@ -492,7 +492,7 @@ export default function HifzStepIntentionImpregnation({ surahNumber, startVerse,
             <button
               onClick={() => {
                 if (window.confirm('Réinitialiser le compteur d\'écoute ? Ta progression sera perdue.')) {
-                  setListenCount(0); localStorage.removeItem(storageKey); audioRef.current?.pause(); setIsPlaying(false);
+                  generationRef.current++; setListenCount(0); localStorage.removeItem(storageKey); hardStopAudio(); setIsPlaying(false); isPlayingRef.current = false; pausedRef.current = null;
                 }
               }}
               className="flex items-center justify-center gap-1.5 mx-auto px-3 py-1.5 rounded-lg text-xs transition-all active:scale-95"

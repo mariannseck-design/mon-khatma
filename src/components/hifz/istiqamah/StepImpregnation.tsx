@@ -237,16 +237,15 @@ export default function StepImpregnation({ surahNumber, verseStart, verseEnd, ve
           </motion.button>
 
           <button
-            disabled
-            className="w-10 h-10 rounded-full flex items-center justify-center transition-all opacity-50 cursor-not-allowed"
+            onClick={toggleAudio}
+            className="w-10 h-10 rounded-full flex items-center justify-center transition-all active:scale-90"
             style={{
-              background: 'rgba(255,255,255,0.06)',
-              border: '1px solid rgba(255,255,255,0.12)',
+              background: isPlaying ? 'rgba(212,175,55,0.2)' : 'rgba(255,255,255,0.06)',
+              border: `1px solid ${isPlaying ? 'rgba(212,175,55,0.4)' : 'rgba(255,255,255,0.12)'}`,
             }}
           >
-            <Volume2 className="h-4 w-4" style={{ color: 'rgba(255,255,255,0.4)' }} />
+            <Volume2 className="h-4 w-4" style={{ color: isPlaying ? '#d4af37' : 'rgba(255,255,255,0.4)' }} />
           </button>
-          <p className="text-[8px]" style={{ color: 'rgba(255,255,255,0.3)' }}>⏸ Indisponible</p>
         </div>
       </div>
 
