@@ -98,8 +98,6 @@ export function AudioProvider({ children }: { children: ReactNode }) {
       clearTimeout(endTimeoutRef.current);
       endTimeoutRef.current = null;
     }
-    // Increment stopSignal BEFORE killing audio so components can react before onerror fires
-    setStopSignal(s => s + 1);
     if (audioRef.current) {
       audioRef.current.pause();
       try { audioRef.current.src = ''; } catch {}
