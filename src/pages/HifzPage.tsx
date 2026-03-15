@@ -70,14 +70,16 @@ const STEP_NAMES = [
   'Étape B · Mémorisation',
   'Étape B · Validation',
   'Étape B · Tikrâr (Grande Mémorisation)',
+  'Étape B · Liaison (Ar-Rabt)',
 ];
 
 const PHASE_LABELS: Record<number, string> = {
   0: 'Étape A · 1/2',
   1: 'Étape A · 2/2',
-  2: 'Étape B · 1/3',
-  3: 'Étape B · 2/3',
-  4: 'Étape B · 3/3',
+  2: 'Étape B · 1/4',
+  3: 'Étape B · 2/4',
+  4: 'Étape B · 3/4',
+  5: 'Étape B · 4/4',
 };
 
 export default function HifzPage() {
