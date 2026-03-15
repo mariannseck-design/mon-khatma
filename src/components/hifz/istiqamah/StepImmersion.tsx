@@ -90,6 +90,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
   
   const [ayahs, setAyahs] = useState<LocalAyah[]>([]);
   const [loading, setLoading] = useState(true);
+  const [mushafHidden, setMushafHidden] = useState(false);
   const [pageLabel, setPageLabel] = useState('');
 
   // Liaison state
