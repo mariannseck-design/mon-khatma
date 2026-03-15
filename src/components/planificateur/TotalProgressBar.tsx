@@ -32,11 +32,10 @@ export function TotalProgressBar({ totalPagesRead, onResetKhatma, onShowCelebrat
       animate={{ opacity: 1, y: 0 }}
     >
       <Card
-        className="relative overflow-hidden border-none shadow-[0_8px_30px_-12px_rgba(6,95,70,0.12)]"
+        className="relative overflow-hidden border-none"
         style={{
-          background: isComplete
-            ? 'linear-gradient(135deg, var(--p-primary), var(--p-primary-deep))'
-            : 'linear-gradient(135deg, var(--p-primary), var(--p-primary-deep))',
+          background: 'var(--p-card)',
+          boxShadow: '0 2px 16px rgba(6,95,70,0.08)',
         }}
       >
         <div className="px-6 pt-6 pb-3">
@@ -44,7 +43,7 @@ export function TotalProgressBar({ totalPagesRead, onResetKhatma, onShowCelebrat
             <div className="flex items-center gap-3">
               <div
                 className="w-11 h-11 rounded-xl flex items-center justify-center"
-                style={{ background: 'rgba(212,175,55,0.2)' }}
+                style={{ background: 'rgba(212,175,55,0.15)' }}
               >
                 {isComplete ? (
                   <Star className="h-5 w-5" style={{ color: 'var(--p-accent)' }} />
@@ -53,11 +52,11 @@ export function TotalProgressBar({ totalPagesRead, onResetKhatma, onShowCelebrat
                 )}
               </div>
               <div>
-                <p className="text-sm font-semibold" style={{ color: 'var(--p-on-dark)' }}>
+                <p className="text-sm font-semibold" style={{ color: 'var(--p-primary-deep)' }}>
                   {isComplete ? 'Khatma complète !' : 'Ma Khatma'}
                 </p>
                 {formattedStartDate && !isComplete && (
-                  <p className="text-xs flex items-center gap-1" style={{ color: 'var(--p-on-dark-muted)' }}>
+                  <p className="text-xs flex items-center gap-1" style={{ color: 'var(--p-text-60)' }}>
                     <Calendar className="h-3 w-3" />
                     Depuis le {formattedStartDate}
                   </p>
@@ -70,7 +69,7 @@ export function TotalProgressBar({ totalPagesRead, onResetKhatma, onShowCelebrat
                 initial={{ scale: 1.2, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 className="rounded-xl px-3 py-1.5"
-                style={{ background: 'rgba(212,175,55,0.15)' }}
+                style={{ background: 'rgba(212,175,55,0.1)' }}
               >
                 <span className="text-lg font-bold" style={{ color: 'var(--p-accent)' }}>
                   {percentage.toFixed(1)}%
@@ -87,19 +86,19 @@ export function TotalProgressBar({ totalPagesRead, onResetKhatma, onShowCelebrat
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
               className="rounded-xl py-2.5 px-4 text-center mb-3"
-              style={{ background: 'rgba(253,251,247,0.1)' }}
+              style={{ background: 'rgba(6,95,70,0.06)' }}
             >
-              <p className="text-lg font-bold" style={{ color: 'var(--p-on-dark)' }}>
+              <p className="text-lg font-bold" style={{ color: 'var(--p-primary-deep)' }}>
                 Sourate {currentSurah.name}
               </p>
-              <p className="text-xs" style={{ color: 'var(--p-on-dark-muted)' }}>
+              <p className="text-xs" style={{ color: 'var(--p-text-60)' }}>
                 Page {totalPagesRead} / {TOTAL_QURAN_PAGES}
               </p>
             </motion.div>
           )}
 
           {/* Subtitle */}
-          <p className="text-xs text-center italic" style={{ color: 'var(--p-on-dark-muted)' }}>
+          <p className="text-xs text-center italic" style={{ color: 'var(--p-text-55)' }}>
             {isComplete 
               ? "Félicitations ! Qu'Allah (عز وجل) accepte votre lecture."
               : <>Qu'Allah <span className="honorific font-bold" style={{ fontSize: '1.1em' }}>(عز وجل)</span> facilite ta lecture</>
@@ -123,7 +122,7 @@ export function TotalProgressBar({ totalPagesRead, onResetKhatma, onShowCelebrat
         </div>
 
         {/* Progress bar at bottom */}
-        <div className="h-2" style={{ background: 'rgba(253,251,247,0.12)' }}>
+        <div className="h-2" style={{ background: 'rgba(6,95,70,0.08)' }}>
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: `${percentage}%` }}
