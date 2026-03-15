@@ -21,7 +21,7 @@ interface QuranTextViewProps {
   onVerseSelect?: (verseKey: string, surahNumber: number, verseNumber: number) => void;
 }
 
-const FONT_FAMILY = "'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
+const FONT_FAMILY = "'KFGQPC HAFS Uthmanic Script', 'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
 
 // Raw Basmala words for zero-normalization detection
 const BASMALA_WORDS = ['بِسْمِ', 'ٱللَّهِ', 'ٱلرَّحْمَٰنِ', 'ٱلرَّحِيمِ'];
