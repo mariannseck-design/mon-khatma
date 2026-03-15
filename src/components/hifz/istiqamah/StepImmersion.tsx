@@ -151,11 +151,26 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
     return null;
   }, [reciter, surahNumber]);
 
+  const hardStopAudio = useCallback(() => {
+    if (audioRef.current) {
+      audioRef.current.onended = null;
+      audioRef.current.onerror = null;
+      audioRef.current.pause();
+      try { audioRef.current.src = ''; } catch {}
+    }
+    audioRef.current = null;
+  }, []);
+
   const stopAudio = useCallback(() => {
+    generationRef.current++;
     sequenceAbortRef.current = true;
     isPlayingRef.current = false;
     pausedRef.current = true;
-    audioRef.current?.pause();
+    if (audioRef.current) {
+      audioRef.current.onended = null;
+      audioRef.current.onerror = null;
+      audioRef.current.pause();
+    }
     // Don't nullify audioRef — preserve for resume
     setIsPlaying(false);
   }, []);
@@ -165,25 +180,27 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
     if (isPlayingRef.current) return;
     const url = await getAudioUrl(verse);
     if (!url) return;
+    const gen = ++generationRef.current;
     isPlayingRef.current = true;
     sequenceAbortRef.current = false;
     setIsPlaying(true);
 
     const playOnce = () => {
+      if (generationRef.current !== gen || !isPlayingRef.current) return;
       const audio = new Audio(url);
       audioRef.current = audio;
       registerRef.current(audio, { label: `${SURAHS.find(s => s.number === surahNumber)?.name || ''} · v.${verse}`, returnPath: window.location.pathname, surahNumber, startVerse: verse });
       audio.onended = () => {
+        if (generationRef.current !== gen || !isPlayingRef.current || audioRef.current !== audio) return;
         setListenCount(prev => prev + 1);
-        if (!sequenceAbortRef.current && isPlayingRef.current) {
-          playOnce(); // auto-loop
-        } else {
-          isPlayingRef.current = false;
-          setIsPlaying(false);
-        }
+        playOnce(); // auto-loop
       };
-      audio.onerror = () => { isPlayingRef.current = false; setIsPlaying(false); };
-      audio.play().catch(() => { isPlayingRef.current = false; setIsPlaying(false); });
+      audio.onerror = () => {
+        if (generationRef.current !== gen) return;
+        isPlayingRef.current = false;
+        setIsPlaying(false);
+      };
+      audio.play().catch(() => { if (generationRef.current !== gen) return; isPlayingRef.current = false; setIsPlaying(false); });
     };
     playOnce();
   }, [getAudioUrl]);
@@ -191,16 +208,18 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
   // Play a sequence of verses in auto-loop (for liaison)
   const playSequence = useCallback(async (verses: number[]) => {
     if (isPlayingRef.current) return;
+    const gen = ++generationRef.current;
     isPlayingRef.current = true;
     sequenceAbortRef.current = false;
     setIsPlaying(true);
 
     const playLoop = async () => {
       for (const verse of verses) {
-        if (sequenceAbortRef.current || !isPlayingRef.current) return;
+        if (generationRef.current !== gen || !isPlayingRef.current) return;
         const url = await getAudioUrl(verse);
         if (!url) continue;
         await new Promise<void>((resolve) => {
+          if (generationRef.current !== gen || !isPlayingRef.current) { resolve(); return; }
           const audio = new Audio(url);
           audioRef.current = audio;
           registerRef.current(audio, { label: `${SURAHS.find(s => s.number === surahNumber)?.name || ''} · v.${verses[0]}–${verses[verses.length - 1]}`, returnPath: window.location.pathname, surahNumber, startVerse: verse });
@@ -209,13 +228,9 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
           audio.play().catch(() => resolve());
         });
       }
-      if (!sequenceAbortRef.current && isPlayingRef.current) {
-        setListenCount(prev => prev + 1);
-        playLoop(); // auto-loop
-      } else {
-        isPlayingRef.current = false;
-        setIsPlaying(false);
-      }
+      if (generationRef.current !== gen || !isPlayingRef.current) return;
+      setListenCount(prev => prev + 1);
+      playLoop(); // auto-loop
     };
     playLoop();
   }, [getAudioUrl]);
@@ -225,10 +240,22 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
     // Resume from pause if audio element still exists and not ended
     if (pausedRef.current && audioRef.current && !audioRef.current.ended) {
       pausedRef.current = false;
+      const gen = ++generationRef.current;
       isPlayingRef.current = true;
       sequenceAbortRef.current = false;
       setIsPlaying(true);
-      audioRef.current.play().catch(() => { isPlayingRef.current = false; setIsPlaying(false); });
+      const audio = audioRef.current;
+      // Rebind callbacks with new generation
+      audio.onended = () => {
+        if (generationRef.current !== gen || !isPlayingRef.current || audioRef.current !== audio) return;
+        setListenCount(prev => prev + 1);
+        if (isLiaison) {
+          // For liaison resume, just stop after this segment
+          isPlayingRef.current = false;
+          setIsPlaying(false);
+        }
+      };
+      audio.play().catch(() => { if (generationRef.current !== gen) return; isPlayingRef.current = false; setIsPlaying(false); });
       return;
     }
     pausedRef.current = false;
@@ -242,16 +269,18 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
   // Hint replay — plays audio once without incrementing any counter
   const playHint = useCallback(() => {
     if (isPlayingRef.current) return;
+    const gen = ++generationRef.current;
     if (isLiaison) {
       (async () => {
         isPlayingRef.current = true;
         sequenceAbortRef.current = false;
         setIsPlaying(true);
         for (const verse of liaisonVerses) {
-          if (sequenceAbortRef.current) break;
+          if (generationRef.current !== gen || !isPlayingRef.current) break;
           const url = await getAudioUrl(verse);
           if (!url) continue;
           await new Promise<void>((resolve) => {
+            if (generationRef.current !== gen) { resolve(); return; }
             const audio = new Audio(url);
             audioRef.current = audio;
             registerRef.current(audio, { label: `${SURAHS.find(s => s.number === surahNumber)?.name || ''} · Indice`, returnPath: window.location.pathname, surahNumber, startVerse: verse });
@@ -260,8 +289,7 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
             audio.play().catch(() => resolve());
           });
         }
-        isPlayingRef.current = false;
-        setIsPlaying(false);
+        if (generationRef.current === gen) { isPlayingRef.current = false; setIsPlaying(false); }
       })();
     } else {
       (async () => {
@@ -272,9 +300,9 @@ export default function StepImmersion({ surahNumber, verseStart, verseEnd, recit
         const audio = new Audio(url);
         audioRef.current = audio;
         registerRef.current(audio, { label: `${SURAHS.find(s => s.number === surahNumber)?.name || ''} · v.${currentVerse}`, returnPath: window.location.pathname, surahNumber, startVerse: currentVerse });
-        audio.onended = () => { isPlayingRef.current = false; setIsPlaying(false); };
-        audio.onerror = () => { isPlayingRef.current = false; setIsPlaying(false); };
-        audio.play().catch(() => { isPlayingRef.current = false; setIsPlaying(false); });
+        audio.onended = () => { if (generationRef.current === gen) { isPlayingRef.current = false; setIsPlaying(false); } };
+        audio.onerror = () => { if (generationRef.current === gen) { isPlayingRef.current = false; setIsPlaying(false); } };
+        audio.play().catch(() => { if (generationRef.current === gen) { isPlayingRef.current = false; setIsPlaying(false); } });
       })();
     }
   }, [isLiaison, liaisonVerses, currentVerse, getAudioUrl]);
