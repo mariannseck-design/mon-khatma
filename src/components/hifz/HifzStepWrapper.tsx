@@ -1,6 +1,7 @@
 import { ReactNode, useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronLeft, Clock } from 'lucide-react';
+import { ChevronLeft, BookOpen } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { getExactVersePage } from '@/lib/quranData';
 import { SURAHS } from '@/lib/surahData';
 
