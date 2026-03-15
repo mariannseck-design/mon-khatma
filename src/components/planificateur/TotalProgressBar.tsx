@@ -19,12 +19,9 @@ export function TotalProgressBar({ totalPagesRead, onResetKhatma, onShowCelebrat
   const isComplete = totalPagesRead >= TOTAL_QURAN_PAGES;
   const remainingPages = TOTAL_QURAN_PAGES - totalPagesRead;
   const effectivePagesPerDay = targetPagesPerDay || 5;
-  const estimatedDays = Math.ceil(remainingPages / effectivePagesPerDay);
 
-  // Get current surah based on pages read
   const currentSurah = getSurahByPage(totalPagesRead);
 
-  // Format start date
   const formattedStartDate = startDate
     ? new Date(startDate).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
     : null;
@@ -34,26 +31,33 @@ export function TotalProgressBar({ totalPagesRead, onResetKhatma, onShowCelebrat
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
     >
-      <Card className={`relative overflow-hidden border-none shadow-[0_8px_30px_-12px_rgba(0,0,0,0.1)] ${
-        isComplete ? 'bg-gradient-to-r from-accent/60 to-accent/40' : 'bg-gradient-mint'
-      }`}>
-        {/* Top section with icon + percentage */}
+      <Card
+        className="relative overflow-hidden border-none shadow-[0_8px_30px_-12px_rgba(6,95,70,0.12)]"
+        style={{
+          background: isComplete
+            ? 'linear-gradient(135deg, var(--p-primary), var(--p-primary-deep))'
+            : 'linear-gradient(135deg, var(--p-primary), var(--p-primary-deep))',
+        }}
+      >
         <div className="px-6 pt-6 pb-3">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-3">
-              <div className="w-11 h-11 rounded-xl bg-white/25 backdrop-blur-sm flex items-center justify-center">
+              <div
+                className="w-11 h-11 rounded-xl flex items-center justify-center"
+                style={{ background: 'rgba(212,175,55,0.2)' }}
+              >
                 {isComplete ? (
-                  <Star className="h-5 w-5 text-accent-foreground fill-accent" />
+                  <Star className="h-5 w-5" style={{ color: 'var(--p-accent)' }} />
                 ) : (
-                  <BookOpen className="h-5 w-5 text-primary-foreground" />
+                  <BookOpen className="h-5 w-5" style={{ color: 'var(--p-accent)' }} />
                 )}
               </div>
               <div>
-                <p className="text-sm font-medium text-primary-foreground/80">
+                <p className="text-sm font-semibold" style={{ color: 'var(--p-on-dark)' }}>
                   {isComplete ? 'Khatma complète !' : 'Ma Khatma'}
                 </p>
                 {formattedStartDate && !isComplete && (
-                  <p className="text-xs text-primary-foreground/60 flex items-center gap-1">
+                  <p className="text-xs flex items-center gap-1" style={{ color: 'var(--p-on-dark-muted)' }}>
                     <Calendar className="h-3 w-3" />
                     Depuis le {formattedStartDate}
                   </p>
@@ -65,9 +69,12 @@ export function TotalProgressBar({ totalPagesRead, onResetKhatma, onShowCelebrat
                 key={percentage}
                 initial={{ scale: 1.2, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="bg-white/20 backdrop-blur-sm rounded-xl px-3 py-1.5"
+                className="rounded-xl px-3 py-1.5"
+                style={{ background: 'rgba(212,175,55,0.15)' }}
               >
-                <span className="text-lg font-bold text-primary-foreground">{percentage.toFixed(1)}%</span>
+                <span className="text-lg font-bold" style={{ color: 'var(--p-accent)' }}>
+                  {percentage.toFixed(1)}%
+                </span>
               </motion.div>
             )}
           </div>
@@ -79,19 +86,20 @@ export function TotalProgressBar({ totalPagesRead, onResetKhatma, onShowCelebrat
               initial={{ scale: 1.05, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
-              className="bg-white/15 backdrop-blur-sm rounded-xl py-2.5 px-4 text-center mb-3"
+              className="rounded-xl py-2.5 px-4 text-center mb-3"
+              style={{ background: 'rgba(253,251,247,0.1)' }}
             >
-              <p className="text-lg font-bold text-primary-foreground">
+              <p className="text-lg font-bold" style={{ color: 'var(--p-on-dark)' }}>
                 Sourate {currentSurah.name}
               </p>
-              <p className="text-xs text-primary-foreground/70">
+              <p className="text-xs" style={{ color: 'var(--p-on-dark-muted)' }}>
                 Page {totalPagesRead} / {TOTAL_QURAN_PAGES}
               </p>
             </motion.div>
           )}
 
           {/* Subtitle */}
-          <p className="text-xs text-primary-foreground/70 text-center italic">
+          <p className="text-xs text-center italic" style={{ color: 'var(--p-on-dark-muted)' }}>
             {isComplete 
               ? "Félicitations ! Qu'Allah (عز وجل) accepte votre lecture."
               : <>Qu'Allah <span className="honorific font-bold" style={{ fontSize: '1.1em' }}>(عز وجل)</span> facilite ta lecture</>
@@ -102,7 +110,11 @@ export function TotalProgressBar({ totalPagesRead, onResetKhatma, onShowCelebrat
           {isComplete && onShowCelebration && (
             <Button
               onClick={onShowCelebration}
-              className="w-full mt-3 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white font-medium border-none"
+              className="w-full mt-3 rounded-xl font-medium border-none"
+              style={{
+                background: 'linear-gradient(90deg, var(--p-accent), hsl(43 85% 60%))',
+                color: 'var(--p-primary-deep)',
+              }}
             >
               <RotateCcw className="h-4 w-4 mr-2" />
               Voir la Doua de fin de Khatma
@@ -111,27 +123,14 @@ export function TotalProgressBar({ totalPagesRead, onResetKhatma, onShowCelebrat
         </div>
 
         {/* Progress bar at bottom */}
-        <div className="h-2.5 bg-white/20 relative overflow-hidden">
+        <div className="h-2" style={{ background: 'rgba(253,251,247,0.12)' }}>
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: `${percentage}%` }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className={`h-full rounded-r-full ${
-              isComplete 
-                ? 'bg-gradient-to-r from-accent to-accent/80' 
-                : 'bg-white/60'
-            }`}
+            className="h-full rounded-r-full"
+            style={{ background: 'var(--p-accent)' }}
           />
-          {/* Milestone markers */}
-          <div className="absolute inset-0 flex justify-between px-0">
-            {[25, 50, 75].map((milestone) => (
-              <div
-                key={milestone}
-                className="w-px bg-white/30 h-full"
-                style={{ marginLeft: `${milestone}%` }}
-              />
-            ))}
-          </div>
         </div>
       </Card>
     </motion.div>

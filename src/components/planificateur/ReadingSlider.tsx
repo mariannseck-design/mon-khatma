@@ -69,8 +69,11 @@ export function ReadingSlider({
     >
       {/* Congrats banner */}
       {goalMet && (
-        <div className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-2xl bg-primary/10">
-          <span className="text-xs text-primary font-medium">
+        <div
+          className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-2xl"
+          style={{ background: 'rgba(6,95,70,0.08)' }}
+        >
+          <span className="text-xs font-medium" style={{ color: 'var(--p-primary)' }}>
             ✨ Objectif atteint, Macha'Allah !
           </span>
         </div>
@@ -80,11 +83,14 @@ export function ReadingSlider({
         {/* Header */}
         <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-2">
-            <BookOpen className="h-4 w-4 text-primary" />
+            <BookOpen className="h-4 w-4" style={{ color: 'var(--p-primary)' }} />
             <span className="text-sm font-semibold text-foreground">Marque-page</span>
           </div>
           {targetPages > 0 && (
-            <span className="text-[11px] text-muted-foreground bg-muted/60 px-2.5 py-1 rounded-full">
+            <span
+              className="text-[11px] font-medium px-2.5 py-1 rounded-full"
+              style={{ background: 'rgba(6,95,70,0.08)', color: 'var(--p-primary)' }}
+            >
               {todayPages}/{targetPages} auj.
             </span>
           )}
@@ -125,7 +131,11 @@ export function ReadingSlider({
         <Button
           onClick={handleSubmit}
           disabled={!pageNumber || parseInt(pageNumber) < 1 || parseInt(pageNumber) > 604 || isLogging}
-          className="w-full h-11 mt-4 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-medium disabled:opacity-30"
+          className="w-full h-11 mt-4 rounded-xl text-sm font-medium disabled:opacity-30 border-none"
+          style={{
+            background: 'var(--p-primary)',
+            color: 'var(--p-on-dark)',
+          }}
         >
           <Check className="h-4 w-4 mr-1.5" />
           Enregistrer
