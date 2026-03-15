@@ -54,7 +54,7 @@ export function TotalProgressBar({ totalPagesRead, onResetKhatma, onShowCelebrat
             <div className="flex items-center gap-3">
               <div
                 className="w-11 h-11 rounded-xl flex items-center justify-center"
-                style={{ background: 'linear-gradient(135deg, rgba(212,175,55,0.18), rgba(212,175,55,0.08))' }}
+                style={{ background: 'linear-gradient(135deg, rgba(212,175,55,0.22), rgba(212,175,55,0.10))' }}
               >
                 {isComplete ? (
                   <Star className="h-5 w-5" style={{ color: 'var(--p-accent)' }} />
