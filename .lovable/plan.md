@@ -1,24 +1,21 @@
 
 
-## Plan : Empêcher deux audios simultanés
+# Diagnostic : 404 sur /quran-reader
 
-### Problème
-Quand l'utilisateur revient sur la page Hifz avec un audio en arrière-plan et clique "Écouter", un nouvel audio démarre sans stopper l'ancien. Les deux jouent en même temps.
+## Constat
+Le code est correct :
+- La route `/quran-reader` est bien définie dans `App.tsx` (ligne 75)
+- Le composant `QuranReaderPage.tsx` existe et compile sans erreur
+- Toutes les importations sont valides (`SurahDrawer`, `surahData`, etc.)
 
-### Solution
-Modifier `registerAudio` dans `AudioContext.tsx` pour **stopper et vider l'ancien `HTMLAudioElement`** avant d'enregistrer le nouveau. Actuellement, `registerAudio` ne fait que retirer les listeners — il ne pause ni ne détruit l'ancien audio.
+## Cause probable
+La page 404 que tu vois est probablement causée par un problème de build temporaire ou de cache du navigateur après les multiples modifications récentes du fichier. Le serveur de dev n'a pas correctement servi la dernière version.
 
-### Modification unique : `src/contexts/AudioContext.tsx`
+## Solution
+Aucune modification de code n'est nécessaire. Il suffit de :
 
-Dans `registerAudio`, après le cleanup des listeners et avant d'assigner le nouveau `audioRef.current`, ajouter :
+1. **Forcer un rafraîchissement complet** du navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
+2. Si ça persiste, **naviguer d'abord vers `/accueil`** puis cliquer sur le lien vers le lecteur Coran — cela forcera le routeur React à charger la bonne route côté client
 
-```ts
-// Stop previous audio to prevent overlap
-if (audioRef.current && audioRef.current !== audio) {
-  audioRef.current.pause();
-  try { audioRef.current.src = ''; } catch {}
-}
-```
-
-C'est la correction minimale : tout nouveau `registerAudio` tue l'ancien. Aucun autre fichier à modifier.
+Si après ces étapes le 404 persiste, je relancerai une écriture du fichier `QuranReaderPage.tsx` pour forcer un rebuild complet.
 

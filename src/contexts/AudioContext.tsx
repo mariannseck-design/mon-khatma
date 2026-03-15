@@ -42,6 +42,12 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     // Clean up previous listeners
     cleanupRef.current?.();
 
+    // Stop previous audio to prevent overlap
+    if (audioRef.current && audioRef.current !== audio) {
+      audioRef.current.pause();
+      try { audioRef.current.src = ''; } catch {}
+    }
+
     audioRef.current = audio;
     setTrackInfo(info);
 
