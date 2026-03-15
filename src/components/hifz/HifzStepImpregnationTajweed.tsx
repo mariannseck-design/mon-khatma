@@ -265,19 +265,58 @@ export default function HifzStepImpregnationTajweed({ surahNumber, startVerse, e
     });
   }, []);
 
+  // Sync local state when global audio stops externally (MiniPlayer X)
+  useEffect(() => {
+    if (globalStatus === 'idle' && isPlayingRef.current) {
+      generationRef.current++;
+      setIsPlaying(false);
+      isPlayingRef.current = false;
+      setCurrentAyahIndex(-1);
+      pausedRef.current = null;
+    }
+  }, [globalStatus]);
+
   const togglePlay = () => {
     if (isPlaying) {
+      // Pause — keep audio element for resume
+      pausedRef.current = audioRef.current;
       audioRef.current?.pause();
       setIsPlaying(false);
+      isPlayingRef.current = false;
     } else {
+      // Resume from paused element or start fresh
+      stopGlobal();
+      const gen = ++generationRef.current;
       setIsPlaying(true);
-      playNextAyah(indexRef.current);
+      isPlayingRef.current = true;
+      if (pausedRef.current && pausedRef.current.src) {
+        const audio = pausedRef.current;
+        pausedRef.current = null;
+        audioRef.current = audio;
+        registerRef.current(audio, {
+          label: `${surahName} · v.${startVerse}-${endVerse}`,
+          returnPath: window.location.pathname + window.location.search,
+          surahNumber,
+          startVerse,
+        });
+        audio.onended = () => {
+          if (generationRef.current !== gen) return;
+          playNextAyah(indexRef.current + 1, gen);
+        };
+        audio.onerror = () => {
+          if (generationRef.current !== gen) return;
+          playNextAyah(indexRef.current + 1, gen);
+        };
+        audio.play().catch(() => {
+          if (generationRef.current !== gen) return;
+          setIsPlaying(false);
+          isPlayingRef.current = false;
+        });
+      } else {
+        playNextAyah(indexRef.current, gen);
+      }
     }
   };
-
-  useEffect(() => {
-    return () => { /* audio persists globally */ };
-  }, []);
 
   return (
     <HifzStepWrapper stepNumber={3} stepTitle="Imprégnation du Tajweed" onBack={onBack} onPause={onPause} totalSteps={5} phaseLabel={phaseLabel} surahNumber={surahNumber} startVerse={startVerse} endVerse={endVerse}>
