@@ -29,6 +29,7 @@ export default function HifzStepWrapper({ stepNumber, stepTitle, children, onBac
   const [elapsed, setElapsed] = useState(0);
   const [pageLabel, setPageLabel] = useState('');
   const [mushafPage, setMushafPage] = useState<number | null>(null);
+  const [mushafOpen, setMushafOpen] = useState(false);
   const startRef = useRef(Date.now());
   const navigate = useNavigate();
 
